@@ -1,0 +1,3 @@
+== Cron jobs ==
+*/10 * * * * /home/zaks/bookkeeping/capture.sh >> /home/zaks/bookkeeping/logs/cron.log 2>&1
+@reboot /home/zaks/bookkeeping/scripts/post_move.sh

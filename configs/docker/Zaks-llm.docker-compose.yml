@@ -1,0 +1,239 @@
+services:
+  vllm-qwen:
+    image: vllm/vllm-openai:latest
+    container_name: vllm-qwen
+    ports:
+      - "8000:8000"
+    runtime: nvidia
+    volumes:
+      - /home/zaks/.cache/huggingface:/root/.cache/huggingface
+    command: >
+      --model Qwen/Qwen2.5-32B-Instruct-AWQ
+      --quantization awq
+      --dtype auto
+      --max-model-len 25000
+      --gpu-memory-utilization 0.90
+      --enable-auto-tool-choice
+      --tool-call-parser hermes
+    networks:
+      - ai-network
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    restart: unless-stopped
+
+  openwebui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: openwebui
+    ports:
+      - "3000:8080"
+    environment:
+      - OPENAI_API_BASE_URLS=http://vllm-qwen:8000/v1
+      - OPENAI_API_KEYS=dummy
+      - WEBUI_AUTH=false
+      - DEFAULT_USER_ROLE=admin
+    volumes:
+      - open-webui:/app/backend/data
+      - /home/zaks/documents:/app/backend/data/docs
+    networks:
+      - ai-network
+    depends_on:
+      - vllm-qwen
+    restart: unless-stopped
+
+  chromadb:
+    image: chromadb/chroma:latest
+    container_name: chromadb
+    ports:
+      - "8002:8000"
+    environment:
+      - ANONYMIZED_TELEMETRY=False
+    volumes:
+      - chroma-data:/chroma/chroma
+    networks:
+      - ai-network
+    restart: unless-stopped
+
+  training:
+    image: huggingface/transformers-pytorch-gpu:latest
+    container_name: training
+    runtime: nvidia
+    env_file:
+      - /home/zaks/.env
+    volumes:
+      - /home/zaks/.cache/huggingface:/root/.cache/huggingface
+      - /home/zaks/models:/workspace/models
+      - /home/zaks/data:/workspace/data
+      - /home/zaks/scripts:/workspace/scripts
+    working_dir: /workspace
+    command: sleep infinity
+    networks:
+      - ai-network
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    restart: unless-stopped
+
+  zakops-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.zakops
+    container_name: zakops-api
+    env_file:
+      - ./.env.langsmith.example
+    ports:
+      - "8080:8080"
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
+      - OPENAI_API_BASE=http://vllm-qwen:8000/v1
+      - OPENAI_API_KEY=dummy
+      - DEFAULT_MODEL=Qwen/Qwen2.5-32B-Instruct-AWQ
+      - MCP_SERVER_URL=http://zakops-mcp:3000
+      - RAG_MCP_URL=http://docs-rag-mcp:8051
+      # LangSmith config loaded from env_file (.env.langsmith.example)
+    volumes:
+      - ./src:/app/src
+      - ./logs:/app/logs
+    networks:
+      - ai-network
+      - rag-backend
+    depends_on:
+      - vllm-qwen
+      - desktop-commander
+    restart: unless-stopped
+
+  rag-rest-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.rag-rest-api
+    container_name: rag-rest-api
+    ports:
+      - "8052:8080"
+    volumes:
+      - ./src:/app/src
+    environment:
+      - POSTGRES_URL=postgresql://postgres:crawl4aipass@rag-db:5432/crawlrag
+      - OLLAMA_API_URL=http://host.docker.internal:11434/api/embeddings
+      - OLLAMA_EMBED_MODEL=bge-m3
+      - OLLAMA_EMBEDDING_DIM=1024
+    networks:
+      - ai-network
+      - rag-backend
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+
+  desktop-commander:
+    build:
+      context: .
+      dockerfile: Dockerfile.mcp
+    container_name: desktop-commander
+    ports:
+      - "3001:3000"
+    environment:
+      AUDIT_LOG_PATH: "/app/logs/audit.log"
+      BLOCKED_COMMANDS: "rm -rf /*,mkfs,dd if=/dev/zero"
+      MAX_COMMAND_TIMEOUT: "300000"
+    volumes:
+      - ./logs/mcp:/app/logs
+      - ./:/workspace
+    networks:
+      - ai-network
+    restart: unless-stopped
+
+  zakops-mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile.zakops-mcp
+    container_name: zakops-mcp
+    ports:
+      - "3002:3000"
+    environment:
+      - MCP_HOST=0.0.0.0
+      - MCP_PORT=3000
+      - AUDIT_LOG_PATH=/app/logs/audit.log
+      - MAX_COMMAND_TIMEOUT=300000
+      - BLOCKED_COMMANDS=rm -rf /*,rm -rf /,mkfs,dd if=/dev/zero,:(){ :|:& };:,chmod -R 777 /,>/dev/sda
+      - ALLOWED_READ_PATHS=/var/log,/etc,/tmp,/home,/app/logs,/workspace/logs
+      - SSH_ALLOWLIST=192.168.1.216:saidi
+      - ENFORCE_DRY_RUN=true
+      - MAX_PROCESS_RESULTS=100
+      - MAX_LOG_LINES=1000
+      - MAX_FILE_SIZE_BYTES=10485760
+    volumes:
+      - ./logs/zakops-mcp:/app/logs
+      - ./:/workspace:ro
+    networks:
+      - ai-network
+    restart: unless-stopped
+
+  google-workspace-mcp:
+    build:
+      context: https://github.com/taylorwilsdon/google_workspace_mcp.git#main
+    container_name: google-workspace-mcp
+    ports:
+      - "8010:8000"  # host:container
+    environment:
+      - GOOGLE_MCP_CREDENTIALS_DIR=/app/store_creds
+      - WORKSPACE_MCP_PORT=8000
+      - WORKSPACE_MCP_BASE_URI=http://google-workspace-mcp:8000
+      - OAUTHLIB_INSECURE_TRANSPORT=1  # remove for production/https
+    env_file:
+      - ./google-workspace-mcp.env  # set GOOGLE_OAUTH_CLIENT_ID/SECRET here
+    volumes:
+      - ./google-workspace-mcp/client_secret.json:/app/client_secret.json:ro
+      - gws-mcp-creds:/app/store_creds
+    networks:
+      - ai-network
+    restart: unless-stopped
+
+  mcp-browser-use:
+    build:
+      context: .
+      dockerfile: Dockerfile.mcp-browser-use
+    container_name: mcp-browser-use
+    ports:
+      - "8020:8000"
+    env_file:
+      - ./mcp-browser-use.env
+    environment:
+      - MCP_RESEARCH_TOOL_SAVE_DIR=/data/research
+      - MCP_PATHS_DOWNLOADS=/data/downloads
+      - MCP_AGENT_TOOL_HISTORY_PATH=/data/history
+      - FASTMCP_HOST=0.0.0.0
+      - FASTMCP_PORT=8000
+    volumes:
+      - mcp-browser-use-data:/data
+    networks:
+      - ai-network
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    restart: unless-stopped
+
+networks:
+  ai-network:
+    driver: bridge
+  # External network for RAG services (from /root/mcp-servers/crawl4ai-rag/)
+  rag-backend:
+    external: true
+    name: crawl4ai-rag_backend
+
+volumes:
+  open-webui:
+  chroma-data:
+  gws-mcp-creds:
+  mcp-browser-use-data:

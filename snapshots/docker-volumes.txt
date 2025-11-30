@@ -1,0 +1,3 @@
+== Docker volumes ==
+permission denied while trying to connect to the docker API at unix:///var/run/docker.sock
+command unavailable or failed: bash -c command -v docker >/dev/null && docker volume ls || false

@@ -1,0 +1,25 @@
+# Logs and temp artifacts
+logs/
+*.log
+*.err
+
+# Python and Node caches
+__pycache__/
+*.pyc
+node_modules/
+
+# Secrets and credentials (do not track)
+*.key
+*.pem
+id_*
+*.env
+.env*
+*credentials*
+*token*
+*secret*
+.aws/
+.azure/
+
+# OS metadata
+.DS_Store
+Thumbs.db
