@@ -35,6 +35,7 @@ Brief reference for services, ports, commands, config paths, data, and logs. Upd
   - `zakops-mcp` (port 3002:3000, volume `./logs/zakops-mcp`, bind mounts repo, tool restrictions via env)
   - `google-workspace-mcp` (port 8010:8000, volume `gws-mcp-creds`, env file for OAuth secrets)
   - `mcp-browser-use` (port 8020:8000, volume `mcp-browser-use-data`, GPU)
+  - `linkedin-mcp` (port 8030:8000, needs `LINKEDIN_COOKIE` env, logs at `./logs/linkedin-mcp`)
 - Logs: `docker compose logs --tail=200` (or `docker logs <container>`)
 
 ## Docker Services (google_workspace_mcp_tmp)
