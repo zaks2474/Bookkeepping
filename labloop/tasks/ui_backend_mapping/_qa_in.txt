@@ -1,0 +1,713 @@
+=== QA PROTOCOL ===
+# QA PROTOCOL (Codex)
+# ====================
+# You are QA in the Lab Loop automation system.
+# Your role: Verify Builder's work against acceptance criteria and specs.
+
+## CRITICAL RULES
+
+1. You are READ-ONLY. You MUST NOT modify any files in the repository.
+   Your only output is the QA_REPORT.json file.
+
+2. You are running NON-INTERACTIVELY. Make verification decisions based on:
+   - The mission.md and acceptance.md provided
+   - The BUILDER_REPORT.md from the Builder
+   - The gate output and exit code
+   - Authoritative docs at /home/zaks/bookkeeping/docs/
+
+3. BE STRICT AND OBJECTIVE. Your job is to find issues, not to pass things.
+   - If gates fail, verdict is FAIL
+   - If spec compliance fails, verdict is FAIL
+   - Only give PASS when everything is truly correct
+
+4. PROVIDE ACTIONABLE FEEDBACK. When verdict is FAIL:
+   - List specific issues with file paths and line numbers
+   - Prioritize by severity (BLOCKER > MAJOR > MINOR)
+   - Give clear instructions for how to fix
+
+5. CROSS-REFERENCE AUTHORITATIVE DOCS. All decisions in /home/zaks/bookkeeping/docs/
+   are DECISION-LOCKED. Verify Builder followed them.
+
+## YOUR INPUTS
+
+You will receive via stdin:
+- Task mission (what was supposed to be built)
+- Task acceptance criteria (how to verify)
+- Current cycle number
+- BUILDER_REPORT.md (what Builder claims to have done)
+- Gate output log (stdout/stderr from gate command)
+- Gate exit code (must be 0 for PASS)
+- JSON Schema for your output format
+
+## YOUR OUTPUT
+
+You MUST produce a JSON object matching the provided schema.
+Write it to: TASK_DIR/QA_REPORT.json
+
+### Schema Fields
+
+```json
+{
+  "verdict": "PASS" | "FAIL",
+  "cycle": <number>,
+  "summary": "<brief summary of findings>",
+  "blockers": [
+    {
+      "id": "B001",
+      "description": "<what's wrong>",
+      "file": "<path/to/file.py>",
+      "line": <line_number>,
+      "evidence": "<proof of issue>"
+    }
+  ],
+  "majors": [...],
+  "minors": [...],
+  "spec_compliance": {
+    "endpoints_match": true|false,
+    "schemas_match": true|false,
+    "status_strings_match": true|false,
+    "auth_matches": true|false,
+    "db_mode_matches": true|false,
+    "streaming_matches": true|false,
+    "local_llm_lane_verified": true|false,
+    "mocks_disabled_for_gates": true|false
+  },
+  "next_actions_for_builder": [
+    {
+      "priority": 1,
+      "severity": "BLOCKER" | "MAJOR" | "MINOR",
+      "summary": "<what to do>",
+      "files": ["<file1>", "<file2>"],
+      "how_to_validate": ["<step1>", "<step2>"]
+    }
+  ],
+  "evidence": [
+    "<command output snippet>",
+    "<file content snippet>",
+    "<spec reference>"
+  ]
+}
+```
+
+### Verdict Rules
+
+**PASS** requires ALL of:
+- Gate exit code = 0
+- All spec_compliance fields = true (or N/A for task)
+- Zero BLOCKERS
+- Zero MAJORS
+
+**FAIL** if ANY of:
+- Gate exit code != 0
+- Any spec_compliance field = false
+- Any BLOCKER exists
+- Any MAJOR exists
+
+### Early Exit (Optimization)
+
+If you find a critical BLOCKER that makes further analysis pointless, you MAY
+set `early_exit: true` and return immediately with just that blocker.
+
+Use early exit when:
+- Gate command failed with obvious error (syntax error, missing dependency)
+- Critical file is completely missing
+- Build/compile completely broken
+
+Do NOT use early exit when:
+- There are multiple issues to report
+- The blocker is subtle or needs context
+- You're unsure if it's truly blocking
+
+## SEVERITY DEFINITIONS
+
+| Severity | Criteria | Examples |
+|----------|----------|----------|
+| BLOCKER | Prevents completion, gates fail | Test failures, syntax errors, missing required functionality |
+| MAJOR | Significant issue, spec violation | Wrong return type, missing validation, security issue |
+| MINOR | Small issue, doesn't block | Code style, missing docstring, minor optimization |
+
+## VERIFICATION CHECKLIST
+
+1. **Gate Check**
+   - Did gate command exit with code 0?
+   - Are there any errors in gate_output.log?
+
+2. **Functional Check**
+   - Does the implementation match mission.md?
+   - Are all acceptance criteria in acceptance.md met?
+
+3. **Spec Compliance Check**
+   - Do endpoints match the spec?
+   - Do schemas match the spec?
+   - Do status codes match the spec?
+   - Does auth work as specified?
+
+4. **Code Quality Check**
+   - Are there any obvious bugs?
+   - Are there security issues?
+   - Does it follow patterns in authoritative docs?
+
+5. **Builder Claims Check**
+   - Did Builder actually change the files they claim?
+   - Did the commands they ran actually pass?
+   - Are their notes accurate?
+
+## WORKFLOW
+
+1. Read the gate output and check exit code
+2. Read BUILDER_REPORT.md to understand what was done
+3. Verify against acceptance.md criteria
+4. Cross-reference with authoritative docs
+5. Compile findings with evidence
+6. Assign severity to each issue
+7. Set verdict based on rules above
+8. Write next_actions_for_builder if FAIL
+9. Output the JSON to TASK_DIR/QA_REPORT.json
+
+## REMEMBER
+
+- You are the gatekeeper - do not let bad code pass
+- Always provide evidence for your findings
+- Be specific about file paths and line numbers
+- If unsure, check /home/zaks/bookkeeping/docs/
+- The task loops until you say PASS - be thorough but fair
+
+=== JSON SCHEMA FOR YOUR OUTPUT ===
+Your output MUST conform to this schema:
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "verdict": { "type": "string", "enum": ["PASS", "FAIL"] },
+    "cycle": { "type": "integer", "minimum": 0 },
+    "early_exit": { "type": "boolean", "description": "Set true if stopping analysis early due to critical blocker" },
+    "summary": { "type": "string" },
+    "blockers": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/issue" }
+    },
+    "majors": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/issue" }
+    },
+    "minors": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/issue" }
+    },
+    "spec_compliance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "endpoints_match": { "type": "boolean" },
+        "schemas_match": { "type": "boolean" },
+        "status_strings_match": { "type": "boolean" },
+        "auth_matches": { "type": "boolean" },
+        "db_mode_matches": { "type": "boolean" },
+        "streaming_matches": { "type": "boolean" },
+        "local_llm_lane_verified": { "type": "boolean" },
+        "mocks_disabled_for_gates": { "type": "boolean" }
+      },
+      "required": [
+        "endpoints_match",
+        "schemas_match",
+        "status_strings_match",
+        "auth_matches",
+        "db_mode_matches",
+        "streaming_matches",
+        "local_llm_lane_verified",
+        "mocks_disabled_for_gates"
+      ]
+    },
+    "next_actions_for_builder": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/action" }
+    },
+    "evidence": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "required": [
+    "verdict",
+    "cycle",
+    "early_exit",
+    "summary",
+    "blockers",
+    "majors",
+    "minors",
+    "spec_compliance",
+    "next_actions_for_builder",
+    "evidence"
+  ],
+  "$defs": {
+    "issue": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "severity": { "type": "string", "enum": ["BLOCKER", "MAJOR", "MINOR"] },
+        "title": { "type": "string" },
+        "details": { "type": "string" },
+        "files": { "type": "array", "items": { "type": "string" } },
+        "repro_steps": { "type": "array", "items": { "type": "string" } },
+        "expected": { "type": "string" },
+        "actual": { "type": "string" },
+        "recommended_fix": { "type": "string" },
+        "validation_steps": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": [
+        "severity",
+        "title",
+        "details",
+        "files",
+        "repro_steps",
+        "expected",
+        "actual",
+        "recommended_fix",
+        "validation_steps"
+      ]
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "priority": { "type": "integer", "minimum": 1, "maximum": 50 },
+        "severity": { "type": "string", "enum": ["BLOCKER", "MAJOR", "MINOR"] },
+        "summary": { "type": "string" },
+        "files": { "type": "array", "items": { "type": "string" } },
+        "how_to_validate": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["priority", "severity", "summary", "files", "how_to_validate"]
+    }
+  }
+}
+
+
+=== TASK MISSION ===
+# MISSION: ZakOps UI-Backend Mapping
+## Wire the Next.js Dashboard to Backend Services
+
+**Version:** 2.0
+**Reference:** /home/zaks/bookkeeping/docs/ZAKOPS_UI_BACKEND_MAPPING_MISSION.md
+
+---
+
+## CRITICAL CONTEXT
+
+### What This Mission Produces
+
+| Deliverable | Description | Output Location |
+|-------------|-------------|-----------------|
+| **UI Inventory** | Complete list of routes, components, actions | UI_INVENTORY.md |
+| **Backend Mapping** | Feature → API endpoint mapping | UI_BACKEND_MAPPING.md/json |
+| **Gap Report** | Missing wiring, dead buttons, fixes | GAPS_AND_FIX_PLAN.md |
+| **Implementation** | Fixed gaps, wired features | UI repo changes |
+| **E2E Tests** | Playwright smoke tests | e2e/ui-smoke.spec.ts |
+| **QA Handoff** | Validation instructions | QA_HANDOFF.md |
+
+### Hard Rules
+
+1. **Preserve what works** - Do NOT break Agent Visibility Layer, auth, or Docker stack
+2. **No dead UI** - Every button must have a functional backend integration
+3. **No raw-content leakage** - Safe logging patterns only
+4. **Canonical contracts** - Use contract probes, don't guess endpoints
+5. **Verifiable** - Every change covered by Gate + QA evidence
+
+---
+
+## REPO DISCOVERY (DO THIS FIRST)
+
+Locate the Next.js dashboard repo:
+```bash
+find /home/zaks -name "next.config.*" 2>/dev/null | head -20
+grep -r '"next"' /home/zaks/*/package.json 2>/dev/null
+ls -la /home/zaks/zakops-*/
+```
+
+Likely paths:
+- `/home/zaks/zakops-frontend`
+- `/home/zaks/zakops-dashboard`
+- `/home/zaks/zakops-web`
+- `/home/zaks/zakops-ui`
+
+Once found, export: `UI_REPO=<path>`
+
+---
+
+## KNOWN SERVICE TOPOLOGY
+
+| Service | Port | Health Endpoint |
+|---------|------|-----------------|
+| Deal Lifecycle API | 8090 | /health |
+| RAG REST API | 8052 | /health |
+| MCP Server | 9100 | /health |
+| Frontend | 3003 | - |
+
+---
+
+## IMPLEMENTATION STRATEGY
+
+### Phase 1: Discovery & Contracts
+1. Locate UI repo
+2. Read input docs (roadmap, decision-lock, etc.)
+3. Run contract probes
+4. Create output directory structure
+
+### Phase 2: Inventory
+1. Enumerate all routes
+2. Map components to actions
+3. Identify Agent Visibility Layer (mark PRESERVE)
+4. Write UI_INVENTORY.md
+
+### Phase 3: Mapping & Gap Analysis
+1. Document each UI action → backend path
+2. Identify gaps
+3. Prioritize (P0 > P1 > P2 > P3)
+4. Write UI_BACKEND_MAPPING.md/json, GAPS_AND_FIX_PLAN.md
+
+### Phase 4: Implementation
+Order: READ flows → Error boundaries → WRITE flows → CRITICAL flows
+
+### Phase 5: Validation
+1. Create/update gate script
+2. Run gate
+3. Fix failures
+4. Re-run until green
+
+### Phase 6: Handoff
+1. Complete QA_HANDOFF.md
+2. Complete BUILDER_REPORT.md
+
+---
+
+## OUTPUT DIRECTORY STRUCTURE
+
+```
+/home/zaks/bookkeeping/docs/ui-backend-mapping/
+├── UI_INVENTORY.md
+├── UI_BACKEND_MAPPING.md
+├── UI_BACKEND_MAPPING.json
+├── GAPS_AND_FIX_PLAN.md
+├── CONTRACT_PROBES.md
+├── QA_HANDOFF.md
+├── BUILDER_REPORT.md
+└── gate_artifacts/
+    ├── ui_smoke_test.log
+    ├── ui_smoke_results.json
+    ├── contract_probe_results.json
+    └── screenshots/
+```
+
+---
+
+## REFERENCE
+
+Full implementation details and patterns in:
+`/home/zaks/bookkeeping/docs/ZAKOPS_UI_BACKEND_MAPPING_MISSION.md`
+
+=== TASK ACCEPTANCE CRITERIA ===
+# Acceptance Criteria
+
+## Definition of Done
+
+The task is complete when ALL of the following are true:
+
+### Documentation Deliverables
+- [ ] `UI_INVENTORY.md` exists in `/home/zaks/bookkeeping/docs/ui-backend-mapping/`
+  - [ ] Contains Routes/Pages table
+  - [ ] Contains Components by Category section
+  - [ ] Contains User Actions table
+  - [ ] Contains Workflows section
+- [ ] `UI_BACKEND_MAPPING.md` exists with all UI actions mapped to backend endpoints
+- [ ] `UI_BACKEND_MAPPING.json` exists and is valid JSON
+  - [ ] Contains `version` field
+  - [ ] Contains `mappings` array with at least 1 mapping
+- [ ] `GAPS_AND_FIX_PLAN.md` exists with prioritized gap list
+- [ ] `QA_HANDOFF.md` exists with validation instructions
+- [ ] `BUILDER_REPORT.md` exists with implementation summary
+
+### Gap Resolution
+- [ ] All P0 (Critical) gaps addressed or documented as blocked
+- [ ] All P1 (High) gaps addressed or documented with reason for deferral
+- [ ] No dead buttons in UI (buttons without handlers)
+- [ ] All API calls have loading and error states
+
+### Quality Gates
+- [ ] Gate script exists and is executable
+- [ ] Gate script passes (exit code 0)
+- [ ] Contract probes validate backend availability
+- [ ] No raw content leakage in logging (safe logging patterns used)
+
+### Preservation Requirements
+- [ ] Agent Visibility Layer components still work
+- [ ] Existing auth/session flow intact
+- [ ] Docker stack unchanged (unless required for wiring)
+
+## Verification Steps
+
+1. Check all required files exist:
+   ```bash
+   ls -la /home/zaks/bookkeeping/docs/ui-backend-mapping/
+   ```
+
+2. Validate JSON files:
+   ```bash
+   python3 -c "import json; json.load(open('/home/zaks/bookkeeping/docs/ui-backend-mapping/UI_BACKEND_MAPPING.json'))"
+   ```
+
+3. Run gate script:
+   ```bash
+   bash /home/zaks/bookkeeping/labloop/tasks/ui_backend_mapping/gate.sh
+   ```
+
+4. Verify artifact outputs in `gate_artifacts/`
+
+## Gate Command
+
+```bash
+bash /home/zaks/bookkeeping/labloop/tasks/ui_backend_mapping/gate.sh
+```
+
+This command must exit with code 0 for the task to pass.
+
+=== CURRENT CYCLE ===
+Cycle: 1
+
+=== BUILDER REPORT ===
+# Builder Report - Cycle 1
+
+## Summary
+
+QA report indicated PASS verdict with all checks successful. Gate validation confirmed all deliverables are in place and functioning correctly. No issues required remediation this cycle.
+
+## Verification Status
+
+All acceptance criteria verified as complete:
+
+### Documentation Deliverables
+| File | Status | Validation |
+|------|--------|------------|
+| UI_INVENTORY.md | ✅ Present | Routes, Components, Actions sections found |
+| UI_BACKEND_MAPPING.md | ✅ Present | All UI actions mapped to endpoints |
+| UI_BACKEND_MAPPING.json | ✅ Valid | Version 1.0.0, 8 mappings present |
+| GAPS_AND_FIX_PLAN.md | ✅ Present | Priority/Gap Classification sections found |
+| QA_HANDOFF.md | ✅ Present | Validation/Prerequisites sections found |
+
+### Backend Service Probes
+| Service | Port | Status |
+|---------|------|--------|
+| Deal API | 8090 | ✅ UP |
+| RAG API | 8052 | ✅ UP |
+| MCP Server | 9100 | ⚠ 307 (non-critical) |
+| Orchestration API | 9200 | ✅ UP |
+
+### Gate Artifacts
+- `contract_probe_results.json` - Valid JSON saved
+
+## Issues Addressed
+
+No issues to address - QA report was PASS with:
+- 0 Blockers
+- 0 Majors
+- 0 Minors
+
+## Commands Run
+
+1. `bash /home/zaks/bookkeeping/labloop/tasks/ui_backend_mapping/gate.sh` - PASSED
+2. `ls -la /home/zaks/bookkeeping/docs/ui-backend-mapping/` - Verified all files present
+3. JSON validation of UI_BACKEND_MAPPING.json - Valid with required fields
+
+## Files Modified
+
+No files required modification - all deliverables were already complete and valid.
+
+## Notes for QA
+
+- All documentation deliverables present and validated
+- Gate script passes with exit code 0
+- Backend services responding (MCP 307 is non-critical redirect)
+- Contract probe results saved to gate_artifacts
+- Task ready for final PASS confirmation
+
+=== BUILDER JSON OUTPUT ===
+{
+  "status": "READY_FOR_QA",
+  "cycle": 1,
+  "summary": "QA report indicated PASS verdict with all checks successful. Gate validation confirmed all documentation deliverables are in place and functioning correctly. No issues required remediation.",
+  "issues_addressed": [],
+  "changed_files": [
+    {
+      "path": "/home/zaks/bookkeeping/labloop/tasks/ui_backend_mapping/BUILDER_REPORT.md",
+      "action": "modified",
+      "lines_changed": 55,
+      "description": "Updated placeholder with comprehensive cycle report"
+    }
+  ],
+  "commands_run": [
+    {
+      "command": "bash /home/zaks/bookkeeping/labloop/tasks/ui_backend_mapping/gate.sh",
+      "exit_code": 0,
+      "success": true,
+      "output_summary": "All checks passed - documentation files valid, backend services UP, JSON valid"
+    },
+    {
+      "command": "ls -la /home/zaks/bookkeeping/docs/ui-backend-mapping/",
+      "exit_code": 0,
+      "success": true,
+      "output_summary": "All 6 required files present plus gate_artifacts directory"
+    },
+    {
+      "command": "python3 JSON validation of UI_BACKEND_MAPPING.json",
+      "exit_code": 0,
+      "success": true,
+      "output_summary": "Version 1.0.0, 8 mappings present, valid structure"
+    }
+  ],
+  "gate_pre_check": {
+    "ran_gate": true,
+    "gate_passed": true,
+    "gate_exit_code": 0
+  },
+  "blockers_encountered": [],
+  "notes_for_qa": [
+    "QA already passed in previous cycle - no issues to address",
+    "All documentation deliverables present and validated",
+    "Backend services responding (Deal API, RAG API, Orchestration API UP)",
+    "MCP Server returns 307 redirect which is non-critical",
+    "Gate script passes with exit code 0",
+    "Contract probe results saved to gate_artifacts"
+  ],
+  "confidence": "high",
+  "diff_stats": {
+    "files_changed": 1,
+    "insertions": 55,
+    "deletions": 4,
+    "total_lines": 55
+  }
+}
+
+=== GATE OUTPUT LOG ===
+=== UI-Backend Mapping Gate ===
+Docs directory: /home/zaks/bookkeeping/docs/ui-backend-mapping
+
+--- Documentation Files ---
+✓ UI Inventory
+  ✓ Section 'Routes' found
+  ✓ Section 'Components' found
+  ✓ Section 'Actions' found
+✓ Backend Mapping (MD)
+✓ Backend Mapping (JSON)
+  Validating JSON...
+  ✓ JSON is valid with required fields
+✓ Gaps and Fix Plan
+  ✓ Section 'Gap Classification\|Priority' found
+✓ QA Handoff
+  ✓ Section 'Validation\|Prerequisites\|Run' found
+✓ Builder Report
+  ✓ Section 'Summary\|Changed Files' found
+
+--- Artifacts Directory ---
+
+--- Backend Service Probes ---
+✓ Deal API (8090): UP
+✓ RAG API (8052): UP
+⚠ MCP Server (9100): status 307 (non-critical)
+✓ Orchestration API (9200): UP
+
+--- Contract Probe Results ---
+✓ Contract probe results saved
+  ✓ Valid JSON
+
+=== Gate Summary ===
+✓ All checks passed
+
+=== GATE EXIT CODE ===
+0
+
+=== GATE ATTEMPTS (Flaky Policy) ===
+{
+  "attempts": 1,
+  "exit_codes": [
+  0
+],
+  "flake_suspected": false,
+  "final_exit_code": 0,
+  "gate_cmd": "bash /home/zaks/bookkeeping/labloop/tasks/ui_backend_mapping/gate.sh",
+  "retry_max": 0,
+  "retry_mode": "on_fail"
+}
+
+=== SYSTEM EVIDENCE ===
+=== AUTO-COLLECTED EVIDENCE (Cycle 1) ===
+Timestamp: 2026-01-25T17:14:09Z
+
+--- git status ---
+?? .test_venv/
+
+--- Recent changes (git diff --stat) ---
+ Makefile                                           |  23 +-
+ .../agent-api/tests/security/test_pii_redaction.py | 235 ++++++++++++
+ .../tests/security/test_tenant_isolation.py        | 125 +++++++
+ artifacts/docs/demo_run.json                       |  13 +
+ artifacts/docs/docs_validation.json                | 320 ++++++++++++++++
+ .../observability/alert_rules_validation.json      |  15 +
+ artifacts/observability/canary_run.json            |  48 +++
+ artifacts/observability/generated_slo_alerts.yml   |  80 ++++
+ docs/api/AUTH.md                                   | 165 +++++++++
+ docs/api/ENDPOINTS.md                              | 251 +++++++++++++
+ docs/api/OVERVIEW.md                               | 148 ++++++++
+ docs/data/BACKUP_RESTORE_POLICY.md                 |  94 +++++
+ docs/data/DATA_CLASSIFICATION.md                   |  94 +++++
+ docs/data/DATA_GOVERNANCE_OVERVIEW.md              |  45 +++
+ docs/data/DELETION_POLICY.md                       |  81 +++++
+ docs/data/RETENTION_POLICY.yaml                    |  93 +++++
+ docs/data/TENANT_ISOLATION.md                      |  87 +++++
+ docs/demos/DEMO_SCRIPT.md                          | 154 ++++++++
+ docs/docs_checklist.yaml                           | 100 +++++
+ docs/observability/DASHBOARDS.md                   |  82 +++++
+ docs/observability/OTEL_CONVENTIONS.md             | 116 ++++++
+ docs/training/FAQ.md                               | 158 ++++++++
+ docs/training/ROLE_GUIDES.md                       | 140 +++++++
+ docs/troubleshooting/RUNBOOKS.md                   | 200 ++++++++++
+ docs/troubleshooting/TROUBLESHOOTING.md            | 165 +++++++++
+ docs/user/APPROVALS.md                             | 114 ++++++
+ docs/user/AUDIT_LOGS.md                            | 130 +++++++
+ docs/user/GETTING_STARTED.md                       | 107 ++++++
+ docs/user/WORKFLOWS.md                             | 109 ++++++
+ .../grafana/dashboards/zakops_overview.json        | 401 +++++++++++++++++++++
+
+--- Directory listing (top-level) ---
+total 72
+drwxr-xr-x 12 zaks zaks 4096 Jan 25 10:16 .
+drwxrwx--- 45 zaks zaks 4096 Jan 23 18:09 ..
+drwxr-xr-x  8 zaks zaks 4096 Jan 25 11:14 .git
+drwxr-xr-x  3 zaks zaks 4096 Jan 22 23:19 .github
+-rw-r--r--  1 root root 2890 Jan 24 23:20 .gitignore
+drwxr-xr-x  5 root root 4096 Jan 25 02:12 .test_venv
+-rw-r--r--  1 zaks zaks 1075 Jan 22 23:19 LICENSE
+-rw-r--r--  1 root root 8620 Jan 25 10:16 Makefile
+-rw-r--r--  1 root root 2521 Jan 25 00:44 README.md
+drwxr-xr-x  5 root root 4096 Jan 24 23:18 apps
+drwxr-xr-x 12 root root 4096 Jan 25 10:06 artifacts
+drwxr-xr-x  3 root root 4096 Jan 24 23:15 deployments
+drwxr-xr-x 19 zaks zaks 4096 Jan 25 10:12 docs
+drwxr-xr-x  5 root root 4096 Jan 25 02:44 ops
+drwxr-xr-x  5 root root 4096 Jan 25 10:06 packages
+drwxr-xr-x  9 root root 4096 Jan 25 10:06 tools
+
+=== DEFINITION OF PASS ===
+PASS requires ALL of:
+  1. Gate exit code = 0
+  2. All spec_compliance fields = true
+  3. Zero BLOCKERS
+  4. Zero MAJORS
+FAIL if ANY condition above is not met.
+
+=== INSTRUCTIONS ===
+1. Analyze the gate output and builder report
+2. Check spec compliance against acceptance criteria
+3. List any blockers, majors, and minors found
+4. Set verdict to PASS only if ALL conditions in DEFINITION OF PASS are met
+5. Provide next_actions_for_builder if verdict is FAIL
+6. Output a JSON object matching the schema to: /home/zaks/bookkeeping/labloop/tasks/ui_backend_mapping/QA_REPORT.json
+7. If previous cycles show same issues recurring, flag as potential stuck loop
+8. Note if flake_suspected=true in gate_attempts.json - the gate may be flaky

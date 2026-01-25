@@ -1,0 +1,429 @@
+{
+  "version": "1.0.0",
+  "generated": "2026-01-25",
+  "ui_repository": "/home/zaks/zakops-dashboard",
+  "backend_services": [
+    {
+      "name": "Deal API",
+      "port": 8090,
+      "base_url": "http://localhost:8090",
+      "status": "UP"
+    },
+    {
+      "name": "RAG API",
+      "port": 8052,
+      "base_url": "http://localhost:8052",
+      "status": "DOWN"
+    },
+    {
+      "name": "MCP Server",
+      "port": 9100,
+      "base_url": "http://localhost:9100",
+      "status": "DOWN"
+    }
+  ],
+  "mappings": [
+    {
+      "feature": "Dashboard",
+      "route": "/dashboard",
+      "file": "src/app/dashboard/page.tsx",
+      "endpoints": [
+        {
+          "ui_element": "Pipeline Funnel",
+          "method": "GET",
+          "endpoint": "/api/deals",
+          "query_params": { "status": "active" },
+          "response_type": "Deal[]",
+          "api_function": "getDeals"
+        },
+        {
+          "ui_element": "Approval Queue",
+          "method": "GET",
+          "endpoint": "/api/kinetic/actions",
+          "query_params": { "status": "PENDING_APPROVAL" },
+          "response_type": "KineticAction[]",
+          "api_function": "getKineticActions"
+        },
+        {
+          "ui_element": "Agent Activity Widget",
+          "method": "GET",
+          "endpoint": "/api/agent/activity",
+          "query_params": { "limit": 100 },
+          "response_type": "AgentActivityResponse",
+          "api_function": "fetch"
+        }
+      ]
+    },
+    {
+      "feature": "Deals List",
+      "route": "/deals",
+      "file": "src/app/deals/page.tsx",
+      "endpoints": [
+        {
+          "ui_element": "Deal Table/Board",
+          "method": "GET",
+          "endpoint": "/api/deals",
+          "response_type": "Deal[]",
+          "api_function": "getDeals"
+        },
+        {
+          "ui_element": "Create Deal",
+          "method": "POST",
+          "endpoint": "/api/deals",
+          "request_type": "CreateDealRequest",
+          "response_type": "Deal",
+          "api_function": "createDeal"
+        },
+        {
+          "ui_element": "Bulk Archive",
+          "method": "POST",
+          "endpoint": "/api/deals/bulk/archive",
+          "request_type": "{ deal_ids: string[] }",
+          "api_function": "bulkArchiveDeals"
+        },
+        {
+          "ui_element": "Bulk Delete",
+          "method": "POST",
+          "endpoint": "/api/deals/bulk/delete",
+          "request_type": "{ deal_ids: string[] }",
+          "api_function": "bulkDeleteDeals"
+        }
+      ]
+    },
+    {
+      "feature": "Deal Detail",
+      "route": "/deals/[id]",
+      "file": "src/app/deals/[id]/page.tsx",
+      "endpoints": [
+        {
+          "ui_element": "Deal Info",
+          "method": "GET",
+          "endpoint": "/api/deals/{id}",
+          "response_type": "DealDetail",
+          "api_function": "getDeal"
+        },
+        {
+          "ui_element": "Deal Events",
+          "method": "GET",
+          "endpoint": "/api/deals/{id}/events",
+          "response_type": "DealEvent[]",
+          "api_function": "getDealEvents"
+        },
+        {
+          "ui_element": "Deal Actions",
+          "method": "GET",
+          "endpoint": "/api/kinetic/actions",
+          "query_params": { "deal_id": "{id}" },
+          "response_type": "KineticAction[]",
+          "api_function": "getKineticActions"
+        },
+        {
+          "ui_element": "Capabilities",
+          "method": "GET",
+          "endpoint": "/api/capabilities",
+          "response_type": "Capability[]",
+          "api_function": "getCapabilities"
+        },
+        {
+          "ui_element": "Update Deal",
+          "method": "PATCH",
+          "endpoint": "/api/deals/{id}",
+          "request_type": "UpdateDealRequest",
+          "response_type": "Deal",
+          "api_function": "updateDeal"
+        },
+        {
+          "ui_element": "Delete Deal",
+          "method": "DELETE",
+          "endpoint": "/api/deals/{id}",
+          "api_function": "deleteDeal"
+        },
+        {
+          "ui_element": "Archive Deal",
+          "method": "POST",
+          "endpoint": "/api/deals/{id}/archive",
+          "response_type": "Deal",
+          "api_function": "archiveDeal"
+        },
+        {
+          "ui_element": "Change Stage",
+          "method": "POST",
+          "endpoint": "/api/deals/{id}/stage",
+          "request_type": "{ stage: DealStage }",
+          "response_type": "Deal",
+          "api_function": "transitionDealStage"
+        },
+        {
+          "ui_element": "Add Note",
+          "method": "POST",
+          "endpoint": "/api/deals/{id}/notes",
+          "request_type": "{ content: string }",
+          "response_type": "Note",
+          "api_function": "addDealNote"
+        },
+        {
+          "ui_element": "Approve Action",
+          "method": "POST",
+          "endpoint": "/api/kinetic/actions/{id}/approve",
+          "response_type": "KineticAction",
+          "api_function": "approveAction"
+        },
+        {
+          "ui_element": "Run Action",
+          "method": "POST",
+          "endpoint": "/api/kinetic/actions/{id}/run",
+          "response_type": "KineticAction",
+          "api_function": "runAction"
+        },
+        {
+          "ui_element": "Cancel Action",
+          "method": "POST",
+          "endpoint": "/api/kinetic/actions/{id}/cancel",
+          "response_type": "KineticAction",
+          "api_function": "cancelAction"
+        },
+        {
+          "ui_element": "Retry Action",
+          "method": "POST",
+          "endpoint": "/api/kinetic/actions/{id}/retry",
+          "response_type": "KineticAction",
+          "api_function": "retryAction"
+        },
+        {
+          "ui_element": "Reject Action",
+          "method": "POST",
+          "endpoint": "/api/kinetic/actions/{id}/reject",
+          "response_type": "KineticAction",
+          "api_function": "rejectAction"
+        }
+      ]
+    },
+    {
+      "feature": "Actions Command Center",
+      "route": "/actions",
+      "file": "src/app/actions/page.tsx",
+      "endpoints": [
+        {
+          "ui_element": "Actions List",
+          "method": "GET",
+          "endpoint": "/api/kinetic/actions",
+          "response_type": "KineticAction[]",
+          "api_function": "getKineticActions"
+        },
+        {
+          "ui_element": "Action Detail",
+          "method": "GET",
+          "endpoint": "/api/kinetic/actions/{id}",
+          "response_type": "KineticAction",
+          "api_function": "getKineticAction"
+        },
+        {
+          "ui_element": "Create Action",
+          "method": "POST",
+          "endpoint": "/api/kinetic/actions",
+          "request_type": "CreateActionRequest",
+          "response_type": "KineticAction",
+          "api_function": "createKineticAction"
+        },
+        {
+          "ui_element": "Approve Action",
+          "method": "POST",
+          "endpoint": "/api/kinetic/actions/{id}/approve",
+          "api_function": "approveAction"
+        },
+        {
+          "ui_element": "Run Action",
+          "method": "POST",
+          "endpoint": "/api/kinetic/actions/{id}/run",
+          "api_function": "runAction"
+        },
+        {
+          "ui_element": "Cancel Action",
+          "method": "POST",
+          "endpoint": "/api/kinetic/actions/{id}/cancel",
+          "api_function": "cancelAction"
+        },
+        {
+          "ui_element": "Retry Action",
+          "method": "POST",
+          "endpoint": "/api/kinetic/actions/{id}/retry",
+          "api_function": "retryAction"
+        },
+        {
+          "ui_element": "Reject Action",
+          "method": "POST",
+          "endpoint": "/api/kinetic/actions/{id}/reject",
+          "api_function": "rejectAction"
+        },
+        {
+          "ui_element": "Bulk Approve",
+          "method": "POST",
+          "endpoint": "/api/kinetic/actions/bulk/approve",
+          "request_type": "{ action_ids: string[] }",
+          "api_function": "bulkApproveActions"
+        }
+      ]
+    },
+    {
+      "feature": "Agent Activity",
+      "route": "/agent/activity",
+      "file": "src/app/agent/activity/page.tsx",
+      "endpoints": [
+        {
+          "ui_element": "Runs List",
+          "method": "GET",
+          "endpoint": "/api/agent/runs",
+          "response_type": "AgentRun[]",
+          "api_function": "getAgentRuns"
+        },
+        {
+          "ui_element": "Run Detail",
+          "method": "GET",
+          "endpoint": "/api/agent/runs/{id}",
+          "response_type": "AgentRun",
+          "api_function": "getAgentRun"
+        },
+        {
+          "ui_element": "Run Events",
+          "method": "GET",
+          "endpoint": "/api/agent/runs/{id}/events",
+          "response_type": "AgentEvent[]",
+          "api_function": "getAgentRunEvents"
+        },
+        {
+          "ui_element": "Activity Stats",
+          "method": "GET",
+          "endpoint": "/api/agent/activity",
+          "response_type": "AgentActivityResponse",
+          "api_function": "fetch"
+        }
+      ]
+    },
+    {
+      "feature": "Quarantine",
+      "route": "/quarantine",
+      "file": "src/app/quarantine/page.tsx",
+      "endpoints": [
+        {
+          "ui_element": "Queue List",
+          "method": "GET",
+          "endpoint": "/api/triage/quarantine",
+          "query_params": { "decision": "pending" },
+          "response_type": "QuarantineItem[]",
+          "api_function": "getQuarantineQueue"
+        },
+        {
+          "ui_element": "Item Detail",
+          "method": "GET",
+          "endpoint": "/api/triage/quarantine/{id}",
+          "response_type": "QuarantineItem",
+          "api_function": "getQuarantineItem"
+        },
+        {
+          "ui_element": "Approve",
+          "method": "POST",
+          "endpoint": "/api/triage/quarantine/{id}/approve",
+          "request_type": "{ deal_id?: string }",
+          "response_type": "QuarantineItem",
+          "api_function": "approveQuarantineItem"
+        },
+        {
+          "ui_element": "Reject",
+          "method": "POST",
+          "endpoint": "/api/triage/quarantine/{id}/reject",
+          "request_type": "{ reason?: string }",
+          "response_type": "QuarantineItem",
+          "api_function": "rejectQuarantineItem"
+        }
+      ]
+    },
+    {
+      "feature": "Chat",
+      "route": "/chat",
+      "file": "src/app/chat/page.tsx",
+      "endpoints": [
+        {
+          "ui_element": "Send Message",
+          "method": "POST",
+          "endpoint": "/api/chat/stream",
+          "request_type": "ChatRequest",
+          "response_type": "SSE Stream",
+          "api_function": "streamChatMessage",
+          "notes": "Server-Sent Events for streaming responses"
+        },
+        {
+          "ui_element": "Get Sessions",
+          "method": "GET",
+          "endpoint": "/api/chat/sessions",
+          "response_type": "ChatSession[]",
+          "api_function": "getChatSessions"
+        },
+        {
+          "ui_element": "Create Session",
+          "method": "POST",
+          "endpoint": "/api/chat/sessions",
+          "request_type": "{ title?: string }",
+          "response_type": "ChatSession",
+          "api_function": "createChatSession"
+        },
+        {
+          "ui_element": "Delete Session",
+          "method": "DELETE",
+          "endpoint": "/api/chat/sessions/{id}",
+          "api_function": "deleteChatSession"
+        }
+      ]
+    },
+    {
+      "feature": "Operator HQ",
+      "route": "/hq",
+      "file": "src/app/hq/page.tsx",
+      "endpoints": [
+        {
+          "ui_element": "Pipeline Stats",
+          "method": "GET",
+          "endpoint": "/api/deals",
+          "query_params": { "status": "active" },
+          "response_type": "Deal[]",
+          "api_function": "getDeals",
+          "notes": "Stats computed client-side from deals"
+        },
+        {
+          "ui_element": "Pending Actions",
+          "method": "GET",
+          "endpoint": "/api/kinetic/actions",
+          "query_params": { "status": "PENDING_APPROVAL" },
+          "response_type": "KineticAction[]",
+          "api_function": "getKineticActions"
+        },
+        {
+          "ui_element": "Quarantine Count",
+          "method": "GET",
+          "endpoint": "/api/triage/quarantine",
+          "response_type": "QuarantineItem[]",
+          "api_function": "getQuarantineQueue"
+        },
+        {
+          "ui_element": "Agent Activity",
+          "method": "GET",
+          "endpoint": "/api/agent/activity",
+          "query_params": { "limit": 100 },
+          "response_type": "AgentActivityResponse",
+          "api_function": "fetch"
+        }
+      ]
+    }
+  ],
+  "type_definitions": {
+    "DealStage": ["inbound", "screening", "qualified", "loi", "diligence", "closing", "portfolio"],
+    "DealStatus": ["active", "archived", "deleted"],
+    "ActionStatus": ["PENDING_APPROVAL", "QUEUED", "READY", "RUNNING", "COMPLETED", "FAILED", "CANCELLED", "REJECTED"],
+    "QuarantineDecision": ["pending", "approved", "rejected"]
+  },
+  "api_client": {
+    "location": "/home/zaks/zakops-dashboard/src/lib/api.ts",
+    "base_url_env": "NEXT_PUBLIC_API_URL",
+    "default_base_url": "http://localhost:8090",
+    "validation": "Zod schemas"
+  }
+}

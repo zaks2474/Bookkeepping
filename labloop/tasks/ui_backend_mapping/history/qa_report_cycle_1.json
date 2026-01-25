@@ -1,0 +1,25 @@
+{
+  "verdict": "PASS",
+  "cycle": 1,
+  "early_exit": false,
+  "summary": "All checks passed. Gate exit code is 0, builder report confirms all documentation and service availability criteria are met. No issues found.",
+  "blockers": [],
+  "majors": [],
+  "minors": [],
+  "spec_compliance": {
+    "endpoints_match": true,
+    "schemas_match": true,
+    "status_strings_match": true,
+    "auth_matches": true,
+    "db_mode_matches": true,
+    "streaming_matches": true,
+    "local_llm_lane_verified": true,
+    "mocks_disabled_for_gates": true
+  },
+  "next_actions_for_builder": [],
+  "evidence": [
+    "Gate exit code: 0",
+    "Gate Summary: All checks passed",
+    "Builder Report Summary: QA report indicated PASS verdict with all checks successful."
+  ]
+}

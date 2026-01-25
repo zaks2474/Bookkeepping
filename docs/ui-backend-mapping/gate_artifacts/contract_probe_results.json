@@ -1,0 +1,6 @@
+{"probes": [
+{"service": "deal_api", "port": 8090, "endpoint": "/health", "status": "200"},
+{"service": "rag_api", "port": 8052, "endpoint": "/rag/stats", "status": "200"},
+{"service": "mcp_server", "port": 9100, "endpoint": "/mcp", "status": "307"},
+{"service": "orchestration_api", "port": 9200, "endpoint": "/health", "status": "200"}
+],"timestamp":"2026-01-25T11:23:47-06:00"}
