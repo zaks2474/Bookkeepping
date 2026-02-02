@@ -14,6 +14,53 @@ LOG_FILE="${LOG_DIR}/capture.log"
 
 mkdir -p "${SNAP_DIR}" "${CONF_DIR}"/{systemd,scripts,mcp,docker} "${LOG_DIR}"
 
+LEDGER_WRITER="/home/zaks/bookkeeping/scripts/run_ledger.py"
+LEDGER_PATH="${ZAKOPS_RUN_LEDGER_PATH:-/home/zaks/logs/run-ledger.jsonl}"
+RUN_TS="$(date -u +%Y%m%dT%H%M%SZ)"
+RUN_ID="${RUN_TS}_capture_${$}"
+STARTED_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+START_EPOCH="$(date +%s)"
+
+on_exit() {
+  set +e
+  local exit_code=$?
+  local ended_at
+  ended_at="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  local end_epoch
+  end_epoch="$(date +%s)"
+  local duration_seconds=$(( end_epoch - START_EPOCH ))
+
+  local status="success"
+  if [ "${exit_code}" -ne 0 ]; then
+    status="fail"
+  fi
+
+  local snapshot_files=0
+  local config_files=0
+  snapshot_files="$(find "${SNAP_DIR}" -maxdepth 1 -type f 2>/dev/null | wc -l || true)"
+  config_files="$(find "${CONF_DIR}" -type f 2>/dev/null | wc -l || true)"
+
+  if [ -x "${LEDGER_WRITER}" ]; then
+    python3 "${LEDGER_WRITER}" \
+      --ledger-path "${LEDGER_PATH}" \
+      --component "capture" \
+      --run-id "${RUN_ID}" \
+      --status "${status}" \
+      --started-at "${STARTED_AT}" \
+      --ended-at "${ended_at}" \
+      --artifact "${LOG_FILE}" \
+      --artifact "${SNAP_DIR}" \
+      --artifact "${CONF_DIR}" \
+      --metric "exit_code=${exit_code}" \
+      --metric "duration_seconds=${duration_seconds}" \
+      --metric "snapshot_files=${snapshot_files}" \
+      --metric "config_files=${config_files}" \
+      >/dev/null 2>&1 || true
+  fi
+}
+
+trap on_exit EXIT
+
 log() {
   local level="${1}"; shift
   local msg="$*"

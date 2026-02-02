@@ -1,2 +1,33 @@
 == Docker port bindings ==
-permission denied while trying to connect to the docker API at unix:///var/run/docker.sock
+--- zakops-backend-backend-1 (a0d9f4b51621)
+8091/tcp -> 0.0.0.0:8091
+8091/tcp -> [::]:8091
+
+--- zakops-agent-api (405464f71871)
+
+--- zakops-agent-db (dc7e3254455b)
+
+--- openwebui (89134be5caa9)
+8080/tcp -> 0.0.0.0:3000
+8080/tcp -> [::]:3000
+
+--- vllm-qwen (dcfa8cb2d579)
+8000/tcp -> 0.0.0.0:8000
+8000/tcp -> [::]:8000
+
+--- rag-rest-api (967c9101c32f)
+8080/tcp -> 0.0.0.0:8052
+8080/tcp -> [::]:8052
+
+--- rag-db (be34edc22b1d)
+5432/tcp -> 0.0.0.0:5434
+5432/tcp -> [::]:5434
+
+--- zakops-postgres-1 (501c6760ea7d)
+5432/tcp -> 0.0.0.0:5432
+5432/tcp -> [::]:5432
+
+--- zakops-redis-1 (d0e5fa431983)
+6379/tcp -> 0.0.0.0:6379
+6379/tcp -> [::]:6379
+

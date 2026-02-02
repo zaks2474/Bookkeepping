@@ -1,3 +1,37 @@
 == Docker images ==
-permission denied while trying to connect to the docker API at unix:///var/run/docker.sock
-command unavailable or failed: bash -c command -v docker >/dev/null && docker images || false
+WARNING: This output is designed for human readability. For machine-readable output, please use --format.
+IMAGE                                         ID             DISK USAGE   CONTENT SIZE   EXTRA
+agent-api-agent-api:latest                    0255d8a8b91b       1.78GB          393MB   U    
+chromadb/chroma:latest                        70c20dbcb64e        750MB          154MB        
+curlimages/curl:latest                        d94d07ba9e7d       36.1MB         10.8MB        
+docker-agent-api:latest                       ad9a261fa3cd       1.78GB          393MB   U    
+docker-dashboard:latest                       d6f5771ac684        346MB         84.6MB        
+ghcr.io/open-webui/open-webui:main            000b87a6ae72        6.2GB         1.59GB   U    
+grafana/grafana:10.4.1                        753bbb971071        578MB          119MB   U    
+grafana/loki:2.9.4                            f379a20ce9dd        101MB         24.6MB   U    
+grafana/promtail:2.9.4                        3667f68c8f33        285MB         75.1MB   U    
+huggingface/transformers-pytorch-gpu:latest   4c7317881a53       39.9GB         13.9GB        
+langfuse/langfuse:2                           85c278dcab96       1.12GB          242MB        
+nvidia/cuda:12.2.0-base-ubuntu22.04           ecdf8549dd5f        341MB         90.3MB        
+nvidia/cuda:12.2.0-runtime-ubuntu22.04        739e0bde7baf       3.17GB         1.19GB        
+pgvector/pgvector:pg16                        0a07c4114ba6        723MB          185MB   U    
+pgvector/pgvector:pg17                        1a5ea285a159        626MB          158MB   U    
+postgres:15-alpine                            2e7b888f2211        392MB          109MB   U    
+postgres:16-alpine                            23e88eb049fd        395MB          110MB   U    
+prom/prometheus:v2.50.1                       bc1794e85c9e        358MB          101MB   U    
+redis:7-alpine                                ee64a64eaab6       60.7MB         17.2MB   U    
+stickerdaniel/linkedin-mcp-server:latest      c437eb638f80       1.75GB          477MB        
+temporalio/auto-setup:1.25.2                  b1edc1e20002        620MB          185MB        
+temporalio/ui:2.34.0                          cb17ea423d76        163MB         48.1MB        
+vllm/vllm-openai:latest                       d623253f2ba2       28.7GB         8.94GB   U    
+zakops-agent-api-agent-api:latest             f26f9f2141f9       1.78GB          393MB        
+zakops-backend-backend:latest                 8a76b67ece32          2GB          417MB   U    
+zakops-backend-outbox-worker:latest           cfe499221fd0        1.9GB          391MB        
+zakops-backend:latest                         ee7fee434d9c          2GB          417MB        
+zakops-outbox-worker:latest                   36a8bc3e1b9d        1.9GB          391MB        
+zaks-llm-desktop-commander:latest             1c30f72f28a6        236MB         57.3MB        
+zaks-llm-google-workspace-mcp:latest          523763c4b5bb        679MB          136MB        
+zaks-llm-mcp-browser-use:latest               de153c88940f       13.1GB         4.15GB        
+zaks-llm-rag-rest-api:latest                  cfc44ee8fc2b        849MB          176MB   U    
+zaks-llm-zakops-api:latest                    7fb26adbaa9f        849MB          176MB        
+zaks-llm-zakops-mcp:latest                    762a5018f872        237MB         57.5MB        

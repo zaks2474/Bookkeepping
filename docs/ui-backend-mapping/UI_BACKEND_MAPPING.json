@@ -1,6 +1,7 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "generated": "2026-01-25",
+  "updated": "2026-01-25T13:30:00Z",
   "ui_repository": "/home/zaks/zakops-dashboard",
   "backend_services": [
     {
@@ -13,13 +14,14 @@
       "name": "RAG API",
       "port": 8052,
       "base_url": "http://localhost:8052",
-      "status": "DOWN"
+      "status": "UP"
     },
     {
       "name": "MCP Server",
       "port": 9100,
       "base_url": "http://localhost:9100",
-      "status": "DOWN"
+      "status": "DOWN",
+      "notes": "Optional service for MCP orchestration"
     }
   ],
   "mappings": [
@@ -39,18 +41,17 @@
         {
           "ui_element": "Approval Queue",
           "method": "GET",
-          "endpoint": "/api/kinetic/actions",
+          "endpoint": "/api/actions",
           "query_params": { "status": "PENDING_APPROVAL" },
-          "response_type": "KineticAction[]",
-          "api_function": "getKineticActions"
+          "response_type": "Action[]",
+          "api_function": "getActions"
         },
         {
           "ui_element": "Agent Activity Widget",
           "method": "GET",
-          "endpoint": "/api/agent/activity",
-          "query_params": { "limit": 100 },
-          "response_type": "AgentActivityResponse",
-          "api_function": "fetch"
+          "endpoint": "/api/actions/metrics",
+          "response_type": "ActionMetrics",
+          "api_function": "getActionMetrics"
         }
       ]
     },
@@ -67,26 +68,11 @@
           "api_function": "getDeals"
         },
         {
-          "ui_element": "Create Deal",
-          "method": "POST",
-          "endpoint": "/api/deals",
-          "request_type": "CreateDealRequest",
-          "response_type": "Deal",
-          "api_function": "createDeal"
-        },
-        {
           "ui_element": "Bulk Archive",
           "method": "POST",
-          "endpoint": "/api/deals/bulk/archive",
+          "endpoint": "/api/deals/bulk-archive",
           "request_type": "{ deal_ids: string[] }",
           "api_function": "bulkArchiveDeals"
-        },
-        {
-          "ui_element": "Bulk Delete",
-          "method": "POST",
-          "endpoint": "/api/deals/bulk/delete",
-          "request_type": "{ deal_ids: string[] }",
-          "api_function": "bulkDeleteDeals"
         }
       ]
     },
@@ -98,57 +84,50 @@
         {
           "ui_element": "Deal Info",
           "method": "GET",
-          "endpoint": "/api/deals/{id}",
+          "endpoint": "/api/deals/{deal_id}",
           "response_type": "DealDetail",
           "api_function": "getDeal"
         },
         {
           "ui_element": "Deal Events",
           "method": "GET",
-          "endpoint": "/api/deals/{id}/events",
+          "endpoint": "/api/deals/{deal_id}/events",
           "response_type": "DealEvent[]",
           "api_function": "getDealEvents"
         },
         {
           "ui_element": "Deal Actions",
           "method": "GET",
-          "endpoint": "/api/kinetic/actions",
-          "query_params": { "deal_id": "{id}" },
-          "response_type": "KineticAction[]",
-          "api_function": "getKineticActions"
+          "endpoint": "/api/actions",
+          "query_params": { "deal_id": "{deal_id}" },
+          "response_type": "Action[]",
+          "api_function": "getActions"
         },
         {
           "ui_element": "Capabilities",
           "method": "GET",
-          "endpoint": "/api/capabilities",
+          "endpoint": "/api/actions/capabilities",
           "response_type": "Capability[]",
           "api_function": "getCapabilities"
         },
         {
-          "ui_element": "Update Deal",
-          "method": "PATCH",
-          "endpoint": "/api/deals/{id}",
-          "request_type": "UpdateDealRequest",
-          "response_type": "Deal",
-          "api_function": "updateDeal"
-        },
-        {
-          "ui_element": "Delete Deal",
-          "method": "DELETE",
-          "endpoint": "/api/deals/{id}",
-          "api_function": "deleteDeal"
-        },
-        {
           "ui_element": "Archive Deal",
           "method": "POST",
-          "endpoint": "/api/deals/{id}/archive",
+          "endpoint": "/api/deals/{deal_id}/archive",
           "response_type": "Deal",
           "api_function": "archiveDeal"
         },
         {
+          "ui_element": "Restore Deal",
+          "method": "POST",
+          "endpoint": "/api/deals/{deal_id}/restore",
+          "response_type": "Deal",
+          "api_function": "restoreDeal"
+        },
+        {
           "ui_element": "Change Stage",
           "method": "POST",
-          "endpoint": "/api/deals/{id}/stage",
+          "endpoint": "/api/deals/{deal_id}/transition",
           "request_type": "{ stage: DealStage }",
           "response_type": "Deal",
           "api_function": "transitionDealStage"
@@ -156,7 +135,7 @@
         {
           "ui_element": "Add Note",
           "method": "POST",
-          "endpoint": "/api/deals/{id}/notes",
+          "endpoint": "/api/deals/{deal_id}/note",
           "request_type": "{ content: string }",
           "response_type": "Note",
           "api_function": "addDealNote"
@@ -164,37 +143,30 @@
         {
           "ui_element": "Approve Action",
           "method": "POST",
-          "endpoint": "/api/kinetic/actions/{id}/approve",
-          "response_type": "KineticAction",
+          "endpoint": "/api/actions/{action_id}/approve",
+          "response_type": "Action",
           "api_function": "approveAction"
         },
         {
-          "ui_element": "Run Action",
+          "ui_element": "Execute Action",
           "method": "POST",
-          "endpoint": "/api/kinetic/actions/{id}/run",
-          "response_type": "KineticAction",
-          "api_function": "runAction"
+          "endpoint": "/api/actions/{action_id}/execute",
+          "response_type": "Action",
+          "api_function": "executeAction"
         },
         {
           "ui_element": "Cancel Action",
           "method": "POST",
-          "endpoint": "/api/kinetic/actions/{id}/cancel",
-          "response_type": "KineticAction",
+          "endpoint": "/api/actions/{action_id}/cancel",
+          "response_type": "Action",
           "api_function": "cancelAction"
         },
         {
           "ui_element": "Retry Action",
           "method": "POST",
-          "endpoint": "/api/kinetic/actions/{id}/retry",
-          "response_type": "KineticAction",
+          "endpoint": "/api/actions/{action_id}/retry",
+          "response_type": "Action",
           "api_function": "retryAction"
-        },
-        {
-          "ui_element": "Reject Action",
-          "method": "POST",
-          "endpoint": "/api/kinetic/actions/{id}/reject",
-          "response_type": "KineticAction",
-          "api_function": "rejectAction"
         }
       ]
     },
@@ -206,61 +178,54 @@
         {
           "ui_element": "Actions List",
           "method": "GET",
-          "endpoint": "/api/kinetic/actions",
-          "response_type": "KineticAction[]",
-          "api_function": "getKineticActions"
+          "endpoint": "/api/actions",
+          "response_type": "Action[]",
+          "api_function": "getActions"
         },
         {
           "ui_element": "Action Detail",
           "method": "GET",
-          "endpoint": "/api/kinetic/actions/{id}",
-          "response_type": "KineticAction",
-          "api_function": "getKineticAction"
-        },
-        {
-          "ui_element": "Create Action",
-          "method": "POST",
-          "endpoint": "/api/kinetic/actions",
-          "request_type": "CreateActionRequest",
-          "response_type": "KineticAction",
-          "api_function": "createKineticAction"
+          "endpoint": "/api/actions/{action_id}",
+          "response_type": "Action",
+          "api_function": "getAction"
         },
         {
           "ui_element": "Approve Action",
           "method": "POST",
-          "endpoint": "/api/kinetic/actions/{id}/approve",
+          "endpoint": "/api/actions/{action_id}/approve",
           "api_function": "approveAction"
         },
         {
-          "ui_element": "Run Action",
+          "ui_element": "Execute Action",
           "method": "POST",
-          "endpoint": "/api/kinetic/actions/{id}/run",
-          "api_function": "runAction"
+          "endpoint": "/api/actions/{action_id}/execute",
+          "api_function": "executeAction"
         },
         {
           "ui_element": "Cancel Action",
           "method": "POST",
-          "endpoint": "/api/kinetic/actions/{id}/cancel",
+          "endpoint": "/api/actions/{action_id}/cancel",
           "api_function": "cancelAction"
         },
         {
           "ui_element": "Retry Action",
           "method": "POST",
-          "endpoint": "/api/kinetic/actions/{id}/retry",
+          "endpoint": "/api/actions/{action_id}/retry",
           "api_function": "retryAction"
         },
         {
-          "ui_element": "Reject Action",
-          "method": "POST",
-          "endpoint": "/api/kinetic/actions/{id}/reject",
-          "api_function": "rejectAction"
+          "ui_element": "Action Metrics",
+          "method": "GET",
+          "endpoint": "/api/actions/metrics",
+          "response_type": "ActionMetrics",
+          "api_function": "getActionMetrics"
         },
         {
-          "ui_element": "Bulk Approve",
-          "method": "POST",
-          "endpoint": "/api/kinetic/actions/bulk/approve",
-          "request_type": "{ action_ids: string[] }",
-          "api_function": "bulkApproveActions"
+          "ui_element": "Runner Status",
+          "method": "GET",
+          "endpoint": "/api/actions/runner-status",
+          "response_type": "RunnerStatus",
+          "api_function": "getRunnerStatus"
         }
       ]
     },
@@ -270,32 +235,27 @@
       "file": "src/app/agent/activity/page.tsx",
       "endpoints": [
         {
-          "ui_element": "Runs List",
+          "ui_element": "Agent History",
           "method": "GET",
-          "endpoint": "/api/agent/runs",
-          "response_type": "AgentRun[]",
-          "api_function": "getAgentRuns"
+          "endpoint": "/api/agents/{agent_name}/history",
+          "response_type": "AgentHistory[]",
+          "api_function": "getAgentHistory"
         },
         {
-          "ui_element": "Run Detail",
-          "method": "GET",
-          "endpoint": "/api/agent/runs/{id}",
-          "response_type": "AgentRun",
-          "api_function": "getAgentRun"
+          "ui_element": "Invoke Agent",
+          "method": "POST",
+          "endpoint": "/api/agents/{agent_name}/invoke",
+          "request_type": "AgentInvokeRequest",
+          "response_type": "AgentInvokeResponse",
+          "api_function": "invokeAgent"
         },
         {
-          "ui_element": "Run Events",
+          "ui_element": "Action Metrics",
           "method": "GET",
-          "endpoint": "/api/agent/runs/{id}/events",
-          "response_type": "AgentEvent[]",
-          "api_function": "getAgentRunEvents"
-        },
-        {
-          "ui_element": "Activity Stats",
-          "method": "GET",
-          "endpoint": "/api/agent/activity",
-          "response_type": "AgentActivityResponse",
-          "api_function": "fetch"
+          "endpoint": "/api/actions/metrics",
+          "response_type": "ActionMetrics",
+          "api_function": "getActionMetrics",
+          "notes": "Used for activity statistics"
         }
       ]
     },
@@ -307,33 +267,79 @@
         {
           "ui_element": "Queue List",
           "method": "GET",
-          "endpoint": "/api/triage/quarantine",
-          "query_params": { "decision": "pending" },
+          "endpoint": "/api/quarantine",
           "response_type": "QuarantineItem[]",
           "api_function": "getQuarantineQueue"
         },
         {
           "ui_element": "Item Detail",
           "method": "GET",
-          "endpoint": "/api/triage/quarantine/{id}",
+          "endpoint": "/api/quarantine/{quarantine_id}",
           "response_type": "QuarantineItem",
           "api_function": "getQuarantineItem"
         },
         {
+          "ui_element": "Resolve",
+          "method": "POST",
+          "endpoint": "/api/quarantine/{quarantine_id}/resolve",
+          "request_type": "{ resolution: string }",
+          "response_type": "QuarantineItem",
+          "api_function": "resolveQuarantineItem"
+        },
+        {
+          "ui_element": "Delete",
+          "method": "POST",
+          "endpoint": "/api/quarantine/{quarantine_id}/delete",
+          "api_function": "deleteQuarantineItem"
+        },
+        {
+          "ui_element": "Bulk Delete",
+          "method": "POST",
+          "endpoint": "/api/quarantine/bulk-delete",
+          "request_type": "{ quarantine_ids: string[] }",
+          "api_function": "bulkDeleteQuarantine"
+        }
+      ]
+    },
+    {
+      "feature": "Actions Quarantine",
+      "route": "/actions/quarantine",
+      "file": "src/app/actions/quarantine/page.tsx",
+      "endpoints": [
+        {
+          "ui_element": "Queue List",
+          "method": "GET",
+          "endpoint": "/api/actions/quarantine",
+          "response_type": "ActionQuarantineItem[]",
+          "api_function": "getActionQuarantineQueue"
+        },
+        {
+          "ui_element": "Item Detail",
+          "method": "GET",
+          "endpoint": "/api/actions/quarantine/{action_id}",
+          "response_type": "ActionQuarantineItem",
+          "api_function": "getActionQuarantineItem"
+        },
+        {
+          "ui_element": "Preview",
+          "method": "GET",
+          "endpoint": "/api/actions/quarantine/{action_id}/preview",
+          "response_type": "ActionPreview",
+          "api_function": "previewQuarantinedAction"
+        },
+        {
           "ui_element": "Approve",
           "method": "POST",
-          "endpoint": "/api/triage/quarantine/{id}/approve",
-          "request_type": "{ deal_id?: string }",
-          "response_type": "QuarantineItem",
-          "api_function": "approveQuarantineItem"
+          "endpoint": "/api/actions/quarantine/{action_id}/approve",
+          "response_type": "Action",
+          "api_function": "approveQuarantinedAction"
         },
         {
           "ui_element": "Reject",
           "method": "POST",
-          "endpoint": "/api/triage/quarantine/{id}/reject",
-          "request_type": "{ reason?: string }",
-          "response_type": "QuarantineItem",
-          "api_function": "rejectQuarantineItem"
+          "endpoint": "/api/actions/quarantine/{action_id}/reject",
+          "response_type": "Action",
+          "api_function": "rejectQuarantinedAction"
         }
       ]
     },
@@ -345,32 +351,40 @@
         {
           "ui_element": "Send Message",
           "method": "POST",
-          "endpoint": "/api/chat/stream",
+          "endpoint": "/api/chat",
           "request_type": "ChatRequest",
-          "response_type": "SSE Stream",
-          "api_function": "streamChatMessage",
-          "notes": "Server-Sent Events for streaming responses"
+          "response_type": "ChatResponse",
+          "api_function": "sendChatMessage"
         },
         {
-          "ui_element": "Get Sessions",
-          "method": "GET",
-          "endpoint": "/api/chat/sessions",
-          "response_type": "ChatSession[]",
-          "api_function": "getChatSessions"
-        },
-        {
-          "ui_element": "Create Session",
+          "ui_element": "Complete Chat",
           "method": "POST",
-          "endpoint": "/api/chat/sessions",
-          "request_type": "{ title?: string }",
-          "response_type": "ChatSession",
-          "api_function": "createChatSession"
+          "endpoint": "/api/chat/complete",
+          "request_type": "ChatCompleteRequest",
+          "response_type": "ChatCompleteResponse",
+          "api_function": "completeChatMessage"
         },
         {
-          "ui_element": "Delete Session",
-          "method": "DELETE",
-          "endpoint": "/api/chat/sessions/{id}",
-          "api_function": "deleteChatSession"
+          "ui_element": "Execute Proposal",
+          "method": "POST",
+          "endpoint": "/api/chat/execute-proposal",
+          "request_type": "ExecuteProposalRequest",
+          "response_type": "ExecuteProposalResponse",
+          "api_function": "executeProposal"
+        },
+        {
+          "ui_element": "Get Session",
+          "method": "GET",
+          "endpoint": "/api/chat/session/{session_id}",
+          "response_type": "ChatSession",
+          "api_function": "getChatSession"
+        },
+        {
+          "ui_element": "LLM Health",
+          "method": "GET",
+          "endpoint": "/api/chat/llm-health",
+          "response_type": "LLMHealthStatus",
+          "api_function": "getLLMHealth"
         }
       ]
     },
@@ -391,25 +405,73 @@
         {
           "ui_element": "Pending Actions",
           "method": "GET",
-          "endpoint": "/api/kinetic/actions",
+          "endpoint": "/api/actions",
           "query_params": { "status": "PENDING_APPROVAL" },
-          "response_type": "KineticAction[]",
-          "api_function": "getKineticActions"
+          "response_type": "Action[]",
+          "api_function": "getActions"
         },
         {
           "ui_element": "Quarantine Count",
           "method": "GET",
-          "endpoint": "/api/triage/quarantine",
+          "endpoint": "/api/quarantine",
           "response_type": "QuarantineItem[]",
           "api_function": "getQuarantineQueue"
         },
         {
-          "ui_element": "Agent Activity",
+          "ui_element": "Action Metrics",
           "method": "GET",
-          "endpoint": "/api/agent/activity",
-          "query_params": { "limit": 100 },
-          "response_type": "AgentActivityResponse",
-          "api_function": "fetch"
+          "endpoint": "/api/actions/metrics",
+          "response_type": "ActionMetrics",
+          "api_function": "getActionMetrics"
+        }
+      ]
+    },
+    {
+      "feature": "Tools",
+      "route": "/tools",
+      "file": "src/app/tools/page.tsx",
+      "endpoints": [
+        {
+          "ui_element": "Tools List",
+          "method": "GET",
+          "endpoint": "/api/tools",
+          "response_type": "Tool[]",
+          "api_function": "getTools"
+        },
+        {
+          "ui_element": "Tool Health",
+          "method": "GET",
+          "endpoint": "/api/tools/health",
+          "response_type": "ToolHealth",
+          "api_function": "getToolHealth"
+        },
+        {
+          "ui_element": "Tool Detail",
+          "method": "GET",
+          "endpoint": "/api/tools/{tool_id}",
+          "response_type": "Tool",
+          "api_function": "getTool"
+        }
+      ]
+    },
+    {
+      "feature": "Diagnostics",
+      "route": "/diagnostics",
+      "file": "src/app/diagnostics/page.tsx",
+      "endpoints": [
+        {
+          "ui_element": "System Diagnostics",
+          "method": "GET",
+          "endpoint": "/api/diagnostics",
+          "response_type": "DiagnosticsReport",
+          "api_function": "getDiagnostics"
+        },
+        {
+          "ui_element": "Debug Config",
+          "method": "GET",
+          "endpoint": "/api/debug/config",
+          "response_type": "DebugConfig",
+          "api_function": "getDebugConfig"
         }
       ]
     }
@@ -418,7 +480,7 @@
     "DealStage": ["inbound", "screening", "qualified", "loi", "diligence", "closing", "portfolio"],
     "DealStatus": ["active", "archived", "deleted"],
     "ActionStatus": ["PENDING_APPROVAL", "QUEUED", "READY", "RUNNING", "COMPLETED", "FAILED", "CANCELLED", "REJECTED"],
-    "QuarantineDecision": ["pending", "approved", "rejected"]
+    "QuarantineStatus": ["pending", "resolved", "deleted"]
   },
   "api_client": {
     "location": "/home/zaks/zakops-dashboard/src/lib/api.ts",

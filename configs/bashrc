@@ -101,3 +101,6 @@ fi
 # opencode
 export PATH=/root/.opencode/bin:$PATH
 export PATH=~/.npm-global/bin:$PATH
+export GEMINI_API_KEY="AIzaSyArbzYwXT_umvg0EdnbIWPBlZPRnz-ID-s"
+source /home/zaks/bookkeeping/labloop/labloop.profile.sh
+export PATH="$HOME/.local/bin:$PATH"

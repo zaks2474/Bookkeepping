@@ -27,6 +27,7 @@ Single entry point for this environment. Everything else is linked from here. Se
 ## Before you push (checklist)
 - `make snapshot` and ensure `snapshots/` looks sane.
 - Run `make health` and resolve FAILs if services should be up.
+- Run `make preflight` and fix any flagged files.
 - Update `CHANGES.md` for any edits.
 - Update `docs/SERVICE-CATALOG.md` if ports/commands/env files changed.
 - Confirm no secrets in git (check `.env`, keys, tokens stayed out).
@@ -43,8 +44,17 @@ make logs            # tail capture log
 ```
 
 ## Automation
-- Cron: `*/10 * * * * /home/zaks/bookkeeping/capture.sh >> /home/zaks/bookkeeping/logs/cron.log 2>&1`
-- Logs from automation land in `logs/` (git-ignored).
+- Root crontab (`sudo crontab -l`) runs:
+  - Snapshots: `50 */5 * * * /home/zaks/bookkeeping/capture.sh >> /home/zaks/bookkeeping/logs/cron.log 2>&1`
+  - OpenWebUI DB backups: `20 */2 * * * /home/zaks/bookkeeping/scripts/openwebui_sync.sh >> /home/zaks/bookkeeping/logs/openwebui-sync.log 2>&1`
+  - Email intake: `5 6-21 * * * sudo -u zaks python3 /home/zaks/scripts/sync_acquisition_emails.py >> /home/zaks/logs/email_sync.log 2>&1`
+  - Email intake (off-hours): `5 22,2 * * * sudo -u zaks python3 /home/zaks/scripts/sync_acquisition_emails.py >> /home/zaks/logs/email_sync.log 2>&1`
+- `/etc/cron.d/dataroom-automation` runs:
+  - SharePoint sync: `*/15 * * * * zaks bash /home/zaks/scripts/run_sharepoint_sync.sh`
+  - RAG index: `*/30 * * * * zaks bash /home/zaks/scripts/run_rag_index.sh`
+  - OpenWebUI export: `0 2 * * * zaks python3 /home/zaks/scripts/export_openwebui_chats.py >> /home/zaks/logs/openwebui_export.log 2>&1`
+  - DataRoom backup: `0 3 * * * zaks /home/zaks/scripts/backup_dataroom.sh >> /home/zaks/logs/backup_cron.log 2>&1`
+- Run ledger: `/home/zaks/logs/run-ledger.jsonl` (append-only; safe metadata only).
 
 ## Docker snapshots captured
 - `docker-info.txt`, `docker-containers.txt`, `docker-containers-ports.txt`, `docker-ports.txt`, `docker-images.txt`, `docker-volumes.txt`, `docker-networks.txt`, `docker-networks-detail.txt`, `docker-compose.txt` (permission errors are recorded if Docker access is restricted).

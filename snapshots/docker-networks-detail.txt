@@ -1,3 +1,37 @@
 == Docker networks (containers and IPs) ==
-permission denied while trying to connect to the docker API at unix:///var/run/docker.sock
-no networks
+=== agent-api_agent-network (0b9550fcc278) driver=bridge
+template parsing error: template: :1: unexpected "," in range
+
+=== bridge (2a60a0a17132) driver=bridge
+template parsing error: template: :1: unexpected "," in range
+
+=== crawl4ai-rag_backend (cd70d330af1e) driver=bridge
+template parsing error: template: :1: unexpected "," in range
+
+=== docker_default (67d13af2e0a0) driver=bridge
+template parsing error: template: :1: unexpected "," in range
+
+=== docker_zakops-network (f23dd32ebfd3) driver=bridge
+template parsing error: template: :1: unexpected "," in range
+
+=== host (0764546bc510) driver=host
+template parsing error: template: :1: unexpected "," in range
+
+=== none (36d3b1ed6a4d) driver=null
+template parsing error: template: :1: unexpected "," in range
+
+=== zakops-agent-api_agent-network (419cc1a2919e) driver=bridge
+template parsing error: template: :1: unexpected "," in range
+
+=== zakops-backend_zakops (58742158cf8f) driver=bridge
+template parsing error: template: :1: unexpected "," in range
+
+=== zakops-temporal_temporal-network (2157cfb8d86f) driver=bridge
+template parsing error: template: :1: unexpected "," in range
+
+=== zakops_network (11dd70001e88) driver=bridge
+template parsing error: template: :1: unexpected "," in range
+
+=== zaks-llm_ai-network (ead8c6c72273) driver=bridge
+template parsing error: template: :1: unexpected "," in range
+

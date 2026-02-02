@@ -15,6 +15,7 @@ services:
       --gpu-memory-utilization 0.90
       --enable-auto-tool-choice
       --tool-call-parser hermes
+      --enforce-eager
     networks:
       - ai-network
     deploy:
@@ -32,15 +33,17 @@ services:
     ports:
       - "3000:8080"
     environment:
-      - OPENAI_API_BASE_URLS=http://vllm-qwen:8000/v1
-      - OPENAI_API_KEYS=dummy
-      - WEBUI_AUTH=false
-      - DEFAULT_USER_ROLE=admin
+      - OPENAI_API_BASE_URLS=http://vllm-qwen:8000/v1;http://host.docker.internal:4000/v1
+      - OPENAI_API_KEYS=dummy;dummy
+      - WEBUI_AUTH=true
+      # Defaults removed; existing users remain in volume. Set via UI or re-add if needed.
     volumes:
       - open-webui:/app/backend/data
       - /home/zaks/documents:/app/backend/data/docs
     networks:
       - ai-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       - vllm-qwen
     restart: unless-stopped
@@ -80,35 +83,6 @@ services:
             - driver: nvidia
               count: all
               capabilities: [gpu]
-    restart: unless-stopped
-
-  zakops-api:
-    build:
-      context: .
-      dockerfile: Dockerfile.zakops
-    container_name: zakops-api
-    env_file:
-      - ./.env.langsmith.example
-    ports:
-      - "8080:8080"
-    environment:
-      - PYTHONDONTWRITEBYTECODE=1
-      - PYTHONUNBUFFERED=1
-      - OPENAI_API_BASE=http://vllm-qwen:8000/v1
-      - OPENAI_API_KEY=dummy
-      - DEFAULT_MODEL=Qwen/Qwen2.5-32B-Instruct-AWQ
-      - MCP_SERVER_URL=http://zakops-mcp:3000
-      - RAG_MCP_URL=http://docs-rag-mcp:8051
-      # LangSmith config loaded from env_file (.env.langsmith.example)
-    volumes:
-      - ./src:/app/src
-      - ./logs:/app/logs
-    networks:
-      - ai-network
-      - rag-backend
-    depends_on:
-      - vllm-qwen
-      - desktop-commander
     restart: unless-stopped
 
   rag-rest-api:
@@ -222,6 +196,22 @@ services:
             - driver: nvidia
               count: all
               capabilities: [gpu]
+    restart: unless-stopped
+
+  linkedin-mcp:
+    image: stickerdaniel/linkedin-mcp-server:latest
+    container_name: linkedin-mcp
+    ports:
+      - "8030:8000"
+    environment:
+      - LINKEDIN_COOKIE=${LINKEDIN_COOKIE}
+      - DISPLAY=${DISPLAY:-:0}
+    command: ["--transport", "streamable-http", "--host", "0.0.0.0", "--port", "8000", "--log-level", "INFO", "--user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"]
+    volumes:
+      - ./logs/linkedin-mcp:/app/logs
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    networks:
+      - ai-network
     restart: unless-stopped
 
 networks:

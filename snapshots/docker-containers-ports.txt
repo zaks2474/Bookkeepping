@@ -1,3 +1,11 @@
 == Docker containers (ports view) ==
-permission denied while trying to connect to the docker API at unix:///var/run/docker.sock
-command unavailable or failed: bash -c command -v docker >/dev/null && docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}' || false
+NAMES                      IMAGE                                STATUS                         PORTS
+zakops-backend-backend-1   zakops-backend-backend               Up 58 minutes (healthy)        0.0.0.0:8091->8091/tcp, [::]:8091->8091/tcp
+zakops-agent-api           agent-api-agent-api                  Restarting (1) 8 seconds ago   
+zakops-agent-db            pgvector/pgvector:pg16               Up 58 minutes (healthy)        5432/tcp
+openwebui                  ghcr.io/open-webui/open-webui:main   Up 58 minutes (healthy)        0.0.0.0:3000->8080/tcp, [::]:3000->8080/tcp
+vllm-qwen                  vllm/vllm-openai:latest              Up 58 minutes                  0.0.0.0:8000->8000/tcp, [::]:8000->8000/tcp
+rag-rest-api               zaks-llm-rag-rest-api                Up 58 minutes                  0.0.0.0:8052->8080/tcp, [::]:8052->8080/tcp
+rag-db                     pgvector/pgvector:pg17               Up 58 minutes                  0.0.0.0:5434->5432/tcp, [::]:5434->5432/tcp
+zakops-postgres-1          postgres:15-alpine                   Up 58 minutes (healthy)        0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp
+zakops-redis-1             redis:7-alpine                       Up 58 minutes (healthy)        0.0.0.0:6379->6379/tcp, [::]:6379->6379/tcp

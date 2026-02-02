@@ -1,3 +1,16 @@
 == Cron jobs ==
-*/10 * * * * /home/zaks/bookkeeping/capture.sh >> /home/zaks/bookkeeping/logs/cron.log 2>&1
-@reboot /home/zaks/bookkeeping/scripts/post_move.sh
+# Bookkeeping snapshots
+50 */5 * * * /home/zaks/bookkeeping/capture.sh >> /home/zaks/bookkeeping/logs/cron.log 2>&1
+
+# OpenWebUI DB backup (do not sync full volume to DataRoom)
+20 */2 * * * /home/zaks/bookkeeping/scripts/openwebui_sync.sh >> /home/zaks/bookkeeping/logs/openwebui-sync.log 2>&1
+
+# ============================================================
+# Email-to-DataRoom Automation
+# UPDATED 2025-12-27: Now uses new email_ingestion pipeline
+# Single source of truth: make ingest in email_ingestion/
+# ============================================================
+# DISABLED - Legacy script:
+# 5 6-21 * * * sudo -u zaks python3 /home/zaks/scripts/sync_acquisition_emails.py >> /home/zaks/logs/email_sync.log 2>&1
+# 5 22,2 * * * sudo -u zaks python3 /home/zaks/scripts/sync_acquisition_emails.py >> /home/zaks/logs/email_sync.log 2>&1
+# NOTE: Email sync now handled by /etc/cron.d/dataroom-automation using 'make ingest'
