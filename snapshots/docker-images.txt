@@ -2,6 +2,7 @@
 WARNING: This output is designed for human readability. For machine-readable output, please use --format.
 IMAGE                                         ID             DISK USAGE   CONTENT SIZE   EXTRA
 agent-api-agent-api:latest                    0255d8a8b91b       1.78GB          393MB   U    
+alpine:latest                                 25109184c71b         13MB         3.86MB        
 chromadb/chroma:latest                        70c20dbcb64e        750MB          154MB        
 curlimages/curl:latest                        d94d07ba9e7d       36.1MB         10.8MB        
 docker-agent-api:latest                       ad9a261fa3cd       1.78GB          393MB   U    
@@ -11,7 +12,7 @@ grafana/grafana:10.4.1                        753bbb971071        578MB         
 grafana/loki:2.9.4                            f379a20ce9dd        101MB         24.6MB   U    
 grafana/promtail:2.9.4                        3667f68c8f33        285MB         75.1MB   U    
 huggingface/transformers-pytorch-gpu:latest   4c7317881a53       39.9GB         13.9GB        
-langfuse/langfuse:2                           85c278dcab96       1.12GB          242MB        
+langfuse/langfuse:2                           85c278dcab96       1.12GB          242MB   U    
 nvidia/cuda:12.2.0-base-ubuntu22.04           ecdf8549dd5f        341MB         90.3MB        
 nvidia/cuda:12.2.0-runtime-ubuntu22.04        739e0bde7baf       3.17GB         1.19GB        
 pgvector/pgvector:pg16                        0a07c4114ba6        723MB          185MB   U    
@@ -25,8 +26,8 @@ temporalio/auto-setup:1.25.2                  b1edc1e20002        620MB         
 temporalio/ui:2.34.0                          cb17ea423d76        163MB         48.1MB        
 vllm/vllm-openai:latest                       d623253f2ba2       28.7GB         8.94GB   U    
 zakops-agent-api-agent-api:latest             f26f9f2141f9       1.78GB          393MB        
-zakops-backend-backend:latest                 8a76b67ece32          2GB          417MB   U    
-zakops-backend-outbox-worker:latest           cfe499221fd0        1.9GB          391MB        
+zakops-backend-backend:latest                 688a94b62990       2.01GB          421MB   U    
+zakops-backend-outbox-worker:latest           963381725a01       2.01GB          421MB   U    
 zakops-backend:latest                         ee7fee434d9c          2GB          417MB        
 zakops-outbox-worker:latest                   36a8bc3e1b9d        1.9GB          391MB        
 zaks-llm-desktop-commander:latest             1c30f72f28a6        236MB         57.3MB        

@@ -1,20 +1,22 @@
 == Docker containers (all) ==
-CONTAINER ID   IMAGE                                COMMAND                  CREATED        STATUS                         PORTS                                         NAMES
-a0d9f4b51621   zakops-backend-backend               "uvicorn src.api.orc…"   11 hours ago   Up 58 minutes (healthy)        0.0.0.0:8091->8091/tcp, [::]:8091->8091/tcp   zakops-backend-backend-1
-405464f71871   agent-api-agent-api                  "/app/scripts/docker…"   42 hours ago   Restarting (1) 8 seconds ago                                                 zakops-agent-api
-be9e698d3a66   postgres:15-alpine                   "docker-entrypoint.s…"   43 hours ago   Created                                                                      zakops-backend-postgres-1
-9ec297a1dc89   redis:7-alpine                       "docker-entrypoint.s…"   43 hours ago   Created                                                                      zakops-backend-redis-1
-fe08295335d5   grafana/grafana:10.4.1               "/run.sh"                2 days ago     Exited (0) 44 hours ago                                                      zakops-grafana
-5dd5cad88694   grafana/promtail:2.9.4               "/usr/bin/promtail -…"   2 days ago     Exited (0) 44 hours ago                                                      zakops-promtail
-4c94372e2e06   prom/prometheus:v2.50.1              "/bin/prometheus --c…"   2 days ago     Exited (0) 44 hours ago                                                      docker-prometheus-1
-f0819db8cb1b   grafana/loki:2.9.4                   "/usr/bin/loki -conf…"   2 days ago     Exited (0) 44 hours ago                                                      zakops-loki
-dc7e3254455b   pgvector/pgvector:pg16               "docker-entrypoint.s…"   7 days ago     Up 58 minutes (healthy)        5432/tcp                                      zakops-agent-db
-89134be5caa9   ghcr.io/open-webui/open-webui:main   "bash start.sh"          7 days ago     Up 58 minutes (healthy)        0.0.0.0:3000->8080/tcp, [::]:3000->8080/tcp   openwebui
-dcfa8cb2d579   vllm/vllm-openai:latest              "vllm serve --model …"   7 days ago     Up 58 minutes                  0.0.0.0:8000->8000/tcp, [::]:8000->8000/tcp   vllm-qwen
-967c9101c32f   zaks-llm-rag-rest-api                "uvicorn src.api.rag…"   7 days ago     Up 58 minutes                  0.0.0.0:8052->8080/tcp, [::]:8052->8080/tcp   rag-rest-api
-be34edc22b1d   pgvector/pgvector:pg17               "docker-entrypoint.s…"   7 days ago     Up 58 minutes                  0.0.0.0:5434->5432/tcp, [::]:5434->5432/tcp   rag-db
-80e05ad1b6d2   docker-agent-api                     "/app/scripts/docker…"   7 days ago     Created                                                                      docker-agent-api-1
-d5c9658d826e   postgres:16-alpine                   "docker-entrypoint.s…"   7 days ago     Created                                                                      docker-postgres-1
-1710e1d497b8   redis:7-alpine                       "docker-entrypoint.s…"   7 days ago     Created                                                                      docker-redis-1
-501c6760ea7d   postgres:15-alpine                   "docker-entrypoint.s…"   7 days ago     Up 58 minutes (healthy)        0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp   zakops-postgres-1
-d0e5fa431983   redis:7-alpine                       "docker-entrypoint.s…"   7 days ago     Up 58 minutes (healthy)        0.0.0.0:6379->6379/tcp, [::]:6379->6379/tcp   zakops-redis-1
+CONTAINER ID   IMAGE                                COMMAND                  CREATED          STATUS                       PORTS                                         NAMES
+2a74f7d7c66f   zakops-backend-backend               "uvicorn src.api.orc…"   30 minutes ago   Up 30 minutes (healthy)      0.0.0.0:8091->8091/tcp, [::]:8091->8091/tcp   zakops-backend-backend-1
+2eb1011dbc38   postgres:15-alpine                   "docker-entrypoint.s…"   50 minutes ago   Up 30 minutes (healthy)                                                    zakops-backend-postgres-1
+f4fa69697ded   redis:7-alpine                       "docker-entrypoint.s…"   50 minutes ago   Up 30 minutes (healthy)                                                    zakops-backend-redis-1
+6af854539c76   langfuse/langfuse:2                  "dumb-init -- ./web/…"   52 minutes ago   Up 22 minutes (unhealthy)    0.0.0.0:3001->3000/tcp, [::]:3001->3000/tcp   zakops-backend-langfuse-1
+7f761dff02f0   zakops-backend-outbox-worker         "python -m src.core.…"   2 hours ago      Up About an hour (healthy)   8091/tcp                                      zakops-backend-outbox-worker-1
+1bbe6c37d624   agent-api-agent-api                  "/app/scripts/docker…"   4 hours ago      Up 4 hours (healthy)         0.0.0.0:8095->8000/tcp, [::]:8095->8000/tcp   zakops-agent-api
+fe08295335d5   grafana/grafana:10.4.1               "/run.sh"                2 days ago       Exited (0) 2 days ago                                                      zakops-grafana
+5dd5cad88694   grafana/promtail:2.9.4               "/usr/bin/promtail -…"   2 days ago       Exited (0) 2 days ago                                                      zakops-promtail
+4c94372e2e06   prom/prometheus:v2.50.1              "/bin/prometheus --c…"   2 days ago       Exited (0) 2 days ago                                                      docker-prometheus-1
+f0819db8cb1b   grafana/loki:2.9.4                   "/usr/bin/loki -conf…"   2 days ago       Exited (0) 2 days ago                                                      zakops-loki
+dc7e3254455b   pgvector/pgvector:pg16               "docker-entrypoint.s…"   7 days ago       Up 6 hours (healthy)         5432/tcp                                      zakops-agent-db
+89134be5caa9   ghcr.io/open-webui/open-webui:main   "bash start.sh"          7 days ago       Up 6 hours (healthy)         0.0.0.0:3000->8080/tcp, [::]:3000->8080/tcp   openwebui
+dcfa8cb2d579   vllm/vllm-openai:latest              "vllm serve --model …"   7 days ago       Up 6 hours                   0.0.0.0:8000->8000/tcp, [::]:8000->8000/tcp   vllm-qwen
+967c9101c32f   zaks-llm-rag-rest-api                "uvicorn src.api.rag…"   7 days ago       Up 6 hours                   0.0.0.0:8052->8080/tcp, [::]:8052->8080/tcp   rag-rest-api
+be34edc22b1d   pgvector/pgvector:pg17               "docker-entrypoint.s…"   7 days ago       Up 6 hours                   0.0.0.0:5434->5432/tcp, [::]:5434->5432/tcp   rag-db
+80e05ad1b6d2   docker-agent-api                     "/app/scripts/docker…"   7 days ago       Created                                                                    docker-agent-api-1
+d5c9658d826e   postgres:16-alpine                   "docker-entrypoint.s…"   7 days ago       Created                                                                    docker-postgres-1
+1710e1d497b8   redis:7-alpine                       "docker-entrypoint.s…"   7 days ago       Created                                                                    docker-redis-1
+501c6760ea7d   postgres:15-alpine                   "docker-entrypoint.s…"   7 days ago       Up 30 minutes (healthy)      0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp   zakops-postgres-1
+d0e5fa431983   redis:7-alpine                       "docker-entrypoint.s…"   7 days ago       Up 6 hours (healthy)         0.0.0.0:6379->6379/tcp, [::]:6379->6379/tcp   zakops-redis-1

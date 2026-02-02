@@ -2,6 +2,12 @@
 
 Use this file to record notable environment changes (dates, what changed, why).
 
+2026-02-02: **QA-CA-V1 FINAL RERUN — 41/41 PASS**: Full rerun after fixes to both previous findings. DealSchema now has `.passthrough()`, DealAliasSchema verified with live seeded alias data. All 8 phases pass: Zod schemas, dashboard routes (all 200), component field access, pipeline flow, error handling (19 safeParse calls), V5 regression, adversarial stress. Report: `/home/zaks/zakops-backend/QA_CA_V1_VERIFICATION_REPORT.md`. Copy in Windows Downloads. Test artifacts: DL-0036, DL-0037.
+
+2026-02-02: **QA-V4-REWORK — Fix 2 FAIL + 1 PARTIAL from QA-V4**: (1) **Dashboard proxy API key (FAIL 5.6)**: Created Next.js middleware (`middleware.ts`) that intercepts write requests (POST/PUT/DELETE/PATCH) to `/api/*` and proxies them to backend with `X-API-Key` header. Changed `NEXT_PUBLIC_API_URL` from `http://localhost:8091` (direct backend) to `http://localhost:3003` (through Next.js) so client-side calls route through the middleware. (2) **Outbox worker (FAIL 1.5)**: Started `zakops-backend-outbox-worker-1` container via `docker start` (avoiding compose recreation conflict). Now reporting healthy. (3) **Health endpoint (PARTIAL 6.3)**: Added `components` field to basic `/health` response with SSE and outbox status. **Files modified (zakops-agent-api)**: `apps/dashboard/src/middleware.ts` (NEW), `apps/dashboard/.env.local` (NEXT_PUBLIC_API_URL changed). **Files modified (zakops-backend)**: `src/api/shared/routers/health.py`.
+
+2026-02-02: **REMEDIATION-V4 — Full remediation of all FORENSIC-004 findings (Phases A–F)**: Addressed all 11 findings from the hostile integration audit across 6 phases. **(Phase A)** Stage taxonomy lock-down: Added `ValidStage` Literal type to Pydantic models (rejects non-canonical stages at API level, HTTP 400), added `chk_deals_stage` CHECK constraint in PostgreSQL, recreated `v_pipeline_summary` view with canonical stages and correct column names. **(Phase B)** MCP tool repair: Fixed `create_deal` tool params (`name,company_name` → `canonical_name,display_name,description`), fixed `get_pipeline_summary` (wraps list response in dict, fallback uses `backend_request` instead of calling tool object). Active MCP file is `server_http.py`. **(Phase C)** Quarantine verified working — `raw_content` JSONB + SQL aliases design is correct. **(Phase D)** Security foundation: Generated `ZAKOPS_API_KEY` (shared secret), created `APIKeyMiddleware` (blocks POST/PUT/DELETE/PATCH without `X-API-Key` header → 401), created `TransitionCooldownMiddleware` (429 if same deal transitioned within 30s), updated 7 dashboard API routes with `backendHeaders()` helper, updated MCP server to send API key on all backend requests. **(Phase E)** SSE `/api/events/stream` converted to 501 honest stub, orphan containers removed (`zakops-backend-postgres-1`, `zakops-backend-redis-1`), health endpoint now documents SSE and outbox status. **(Phase F)** All 9 verification checks passed. **Collateral**: Postgres catalog corruption during deployment required dropping and recreating the `zakops` database (original 12 test deals lost). **Files modified (zakops-backend)**: `src/api/orchestration/main.py`, `src/api/shared/middleware/__init__.py`, `src/api/shared/middleware/apikey.py` (NEW), `src/api/shared/middleware/cooldown.py` (NEW), `src/api/shared/routers/health.py`, `src/api/orchestration/routers/events.py`, `mcp_server/server_http.py`, `db/migrations/023_stage_check_constraint.sql`, `.env`, `docker-compose.yml`. **Files modified (zakops-agent-api)**: `apps/dashboard/.env.local`, `apps/dashboard/src/lib/backend-fetch.ts` (NEW), `apps/dashboard/src/app/api/actions/[id]/route.ts`, `apps/dashboard/src/app/api/actions/[id]/archive/route.ts`, `apps/dashboard/src/app/api/actions/bulk/delete/route.ts`, `apps/dashboard/src/app/api/actions/bulk/archive/route.ts`, `apps/dashboard/src/app/api/actions/clear-completed/route.ts`, `apps/dashboard/src/app/api/chat/route.ts`. **Progress tracker**: `REMEDIATION_V4_PROGRESS.md`.
+
 2026-02-02: **FORENSIC-004 — Hostile Integration Audit (post-REMEDIATION-V3)**: Ran full adversarial audit: Phase A discovery, Section B contrarian checks (B1–B10), Section C new phases (C1–C3). Found 7 failures out of 11 checks. **P0 findings:** (1) No stage validation on deal creation — API accepts any string (e.g. `closed_won`, `lead`), root cause of recurring stale stages; (2) MCP server uses entirely different stage taxonomy (`lead, proposal, negotiation, closed_won, closed_lost`) vs backend's 9 canonical stages; (3) Zero authentication on all API endpoints; (4) No rate limiting — 3 transitions in 27ms demonstrated. **P1 findings:** MCP `get_pipeline_summary` broken (`FunctionTool not callable`), MCP `get_deal` returns 404 for existing deals, quarantine Pydantic model has 9 fields with no DB column, SSE endpoint is a stub, `/api/pipeline/summary` returns 500. Also identified orphan containers (`zakops-backend-postgres-1`, `zakops-backend-redis-1`) on no network from compose project rename. Cleaned up 4 test deals (DL-0018 through DL-0021) and 7 associated events. **Report**: `/home/zaks/bookkeeping/reports/FORENSIC-004-REPORT.md`. **No files modified** (audit only + test data cleanup).
 
 2026-02-02: **QA-V3-RUN2 — Second QA verification (all 48 tests pass)**: Re-ran full QA-V3 verification after REWORK-2 fixes. Results: 40 PASS, 0 FAIL, 2 PARTIAL (deferred scope), 6 DEFERRED. All 6 pipelines functional. During run, found and fixed 2 more dashboard files with non-canonical stages (`deals/page.tsx` STAGES array, `dashboard/page.tsx` STAGE_ORDER + STAGE_COLORS). Also migrated 2 stale DB records (closed_won→portfolio, lead→inbound). Verdict: APPROVED. **Files modified**: `zakops-agent-api/apps/dashboard/src/app/deals/page.tsx`, `zakops-agent-api/apps/dashboard/src/app/dashboard/page.tsx`. **Report**: `/home/zaks/zakops-backend/QA_V3_VERIFICATION_REPORT.md`.
@@ -306,3 +312,120 @@ claude -p --dangerously-skip-permissions < combined_input
 - Builder completed in 98s (was hanging before)
 - Phase 2 gate passed with exit code 0
 - QA verdict: PASS
+
+## 2026-02-02 QA-V4 Verification Run
+- **What:** Executed QA-V4 mission — 57 tests across 9 phases verifying REMEDIATION-V4
+- **Why:** Independent verification of FORENSIC-004 finding remediation (security, stage validation, MCP fixes)
+- **Result:** 48 PASS, 2 FAIL, 5 PARTIAL, 2 SKIP. Overall: APPROVED.
+  - All 4 P0 findings FIXED (stage validation, MCP taxonomy, auth, rate limiting)
+  - 9/11 findings fully fixed, 1 partially fixed, 1 documented
+  - Zero V3 regressions
+  - Dashboard proxy API key forwarding incomplete (D4) — non-blocking
+- **Files:** QA_V4_VERIFICATION_REPORT.md (backend repo + Windows Downloads)
+
+## 2026-02-02 QA-V4 Run 2
+- **What:** Re-ran full QA-V4 (57 tests) after V4-REWORK fixes
+- **Why:** Verify dashboard proxy API key fix, outbox restart, health components
+- **Result:** 55 PASS, 0 FAIL, 1 PARTIAL, 1 SKIP. Overall: APPROVED.
+  - All 3 Run 1 issues resolved (5.6 dashboard proxy, 1.5 outbox, 6.3 health)
+  - All 4 P0 findings FIXED. Zero V3 regressions.
+- **Files:** QA_V4_VERIFICATION_REPORT.md updated (Run 2)
+
+## 2026-02-02 — FORENSIC-005: Dashboard-Outward Hostile Audit
+
+**What:** Read-only forensic audit tracing Dashboard → HTTP → Backend → DB → Events
+**Files created:**
+- `/home/zaks/bookkeeping/audits/FORENSIC-005-dashboard/FORENSIC-005-REPORT.md`
+- `/home/zaks/bookkeeping/audits/FORENSIC-005-dashboard/evidence/00_baseline_inventory.txt`
+
+**Key findings (10 total):**
+- 3x P1 SQL/schema mismatches: deal_events (source vs event_source), deal_aliases (confidence/source don't exist), senders (last_email_at vs last_seen_at)
+- 1x P1 stored XSS: `<script>` tags accepted in deal canonical_name
+- 1x P2 validation: oversized payload → 500 instead of 400
+- 2x P2 missing: capabilities and metrics endpoints return 404
+- 2x P3 mock: agent/activity and chat/session return hardcoded empty state
+- 1x P3 auth inconsistency: GET open, POST mixed enforcement
+
+**No fixes applied** — audit only.
+
+## 2026-02-02 — REMEDIATION-V5: SQL Alignment, Input Defense & Stubs
+
+**What:** Fixed 3 broken endpoints, added input validation, added honest stubs
+**Audit Reference:** FORENSIC-005-REPORT.md
+
+**Phase A — SQL/Schema Alignment:**
+- deal_events: `source`→`event_source` (aliased), `details`→`payload` (aliased), id int→UUID
+- deal_aliases: removed non-existent `confidence`/`source` columns
+- senders: `last_email_at`→`last_seen_at`, `is_broker`→`classification`
+
+**Phase B — Input Validation:**
+- HTML tag stripping on canonical_name and display_name (field_validator)
+- max_length=255 matching DB varchar(255) constraint
+- Oversized payloads now return 400 instead of unhandled 500
+
+**Phase C — Auth Consistency:**
+- Already fixed by V4 — all write endpoints verified returning 401 without key
+
+**Phase D — Honest Stubs:**
+- GET /api/actions/capabilities → 501 (was 404)
+- GET /api/actions/metrics → 501 (was 404)
+- /health now documents not_implemented and mocked endpoints
+
+**Files modified:**
+- `zakops-backend/src/api/orchestration/main.py`
+- `zakops-backend/src/api/shared/routers/health.py`
+- `zakops-backend/REMEDIATION_V5_PROGRESS.md`
+
+**Commits:**
+- `4e03a6d` fix(sql): align queries with DB schema [F005-BUG-001,002,003]
+- `7ee292e` fix(validation): input sanitization [F005-SEC-001,SEC-002]
+- `d9ffaf1` fix(stubs): honest 501s, /health documentation [F005-MISS/MOCK]
+- `b54cd6b` chore(v5): cleanup + progress tracker
+
+## 2026-02-02 — QA-V5 Verification Run
+- **What**: Executed QA-V5 verification mission (42 tests, 7 phases) validating REMEDIATION-V5 fixes for FORENSIC-005 findings
+- **Result**: CONDITIONAL PASS — 39 PASS, 1 PARTIAL, 1 FAIL, 1 SKIP
+- **All 10 FORENSIC-005 findings resolved**
+- **New issues**: V5-BUG-001 (null byte → 500), V5-SEC-001 (no body size limit)
+- **Files**: `/home/zaks/zakops-backend/QA_V5_VERIFICATION_REPORT.md`
+- **Copied to**: `/mnt/c/Users/mzsai/Downloads/QA_V5_VERIFICATION_REPORT.md`
+
+## 2026-02-02 — QA-V5 Rework: Null byte + body size limit
+
+**What:** Fixed 2 issues found by QA-V5 verification
+- V5-BUG-001: Null bytes in canonical_name now stripped (control chars regex)
+- V5-SEC-001: Request body size limit of 512KB enforced via middleware (413 response)
+**Commit:** `6029a35`
+
+## 2026-02-02 — QA-V5 Run 2 + Chat Fix
+- **What**: Re-ran QA-V5 (43 tests). Fixed chat 404 bug in dashboard middleware.
+- **Result**: APPROVED — 43/43 PASS, zero open issues
+- **Chat fix**: `middleware.ts` path matching used `startsWith('/api/chat/')` which missed `/api/chat` (no trailing slash). Updated to exact match + prefix matching for sub-routes. Added all local API routes to exclusion list.
+- **Files modified**: `/home/zaks/zakops-agent-api/apps/dashboard/src/middleware.ts`
+- **Report**: `/home/zaks/zakops-backend/QA_V5_VERIFICATION_REPORT.md`
+
+2026-02-02: **API Shape Audit**: Captured live JSON response shapes from all backend (port 8091) and dashboard (port 3003) API endpoints. Backend: 10 endpoints tested (all 200). Dashboard: 12 endpoints tested (11x 200, 1x 501 for /api/events). Key findings: backend /api/events wraps in {events,count} envelope; dashboard /api/pipeline returns richer nested shape vs backend /api/pipeline/summary flat array; dashboard /api/events returns 501 not-implemented; many collections empty (only 1 deal, 2 events in system). No files modified — audit only.
+
+## 2026-02-02 — CONTRACT-AUDIT-V1: Dashboard↔Backend Schema Alignment
+- **What**: Audited 13 Zod schemas against actual backend responses. Found and fixed 13 mismatches.
+- **Critical fixes**:
+  - EventSchema: renamed event_id→id, timestamp→created_at, data→details (caused ZodErrors on deal detail page)
+  - DealAliasSchema: removed phantom columns (confidence, source), fixed id type number→string
+  - Pipeline route: changed from /api/pipeline (404) to /api/pipeline/summary, added array→object transform
+  - Nested deal schemas (identifiers, company_info, broker, metadata): made all fields optional to handle empty {} objects
+  - middleware.ts: fixed path matching for local API routes (chat 404 fix)
+- **Files modified**:
+  - `apps/dashboard/src/lib/api.ts` (EventSchema)
+  - `apps/dashboard/src/lib/api-schemas.ts` (DealEventSchema, DealAliasSchema, nested schemas, DealSchema)
+  - `apps/dashboard/src/types/api.ts` (DealAlias, DealEvent interfaces)
+  - `apps/dashboard/src/app/deals/[id]/page.tsx` (event field access)
+  - `apps/dashboard/src/app/api/pipeline/route.ts` (endpoint + transform)
+  - `apps/dashboard/src/middleware.ts` (path matching)
+- **Result**: All 11 dashboard API routes return 200. Pipeline returns correct shape.
+- **Report**: `/home/zaks/zakops-backend/CONTRACT_AUDIT_V1_REPORT.md`
+
+## 2026-02-02 — CONTRACT-AUDIT-V1 Post-QA Fixes
+- **What**: Fixed 2 QA findings from QA-CA-V1 verification
+  1. Added `.passthrough()` to DealSchema in api.ts (extra backend fields no longer silently dropped)
+  2. Seeded alias data for DL-0020 to verify DealAliasSchema matches backend (confirmed: id=string UUID, no phantom columns)
+- **Files**: `apps/dashboard/src/lib/api.ts` (DealSchema .passthrough())

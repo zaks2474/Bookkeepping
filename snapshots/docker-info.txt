@@ -12,11 +12,11 @@ Client: Docker Engine - Community
     Path:     /usr/libexec/docker/cli-plugins/docker-compose
 
 Server:
- Containers: 18
-  Running: 8
+ Containers: 20
+  Running: 13
   Paused: 0
-  Stopped: 10
- Images: 34
+  Stopped: 7
+ Images: 35
  Server Version: 29.0.2
  Storage Driver: overlayfs
   driver-type: io.containerd.snapshotter.v1
@@ -31,7 +31,7 @@ Server:
   /etc/cdi
   /var/run/cdi
  Swarm: inactive
- Runtimes: io.containerd.runc.v2 nvidia runc
+ Runtimes: nvidia runc io.containerd.runc.v2
  Default Runtime: runc
  Init Binary: docker-init
  containerd version: fcd43222d6b07379a4be9786bda52438f0dd16a1
