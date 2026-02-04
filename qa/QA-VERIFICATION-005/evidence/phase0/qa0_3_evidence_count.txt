@@ -1,0 +1,33 @@
+=== QA-0.3: Evidence Count ===
+before evidence:
+6
+/home/zaks/bookkeeping/remediations/AGENT-REMEDIATION-005/evidence/before/r0_2_langfuse_before.txt
+/home/zaks/bookkeeping/remediations/AGENT-REMEDIATION-005/evidence/before/r0_5_db_sot.txt
+/home/zaks/bookkeeping/remediations/AGENT-REMEDIATION-005/evidence/before/r1_b1_orphan_inspect.txt
+/home/zaks/bookkeeping/remediations/AGENT-REMEDIATION-005/evidence/before/r0_4_p3_findings_before.txt
+/home/zaks/bookkeeping/remediations/AGENT-REMEDIATION-005/evidence/before/r0_3_containers_before.txt
+/home/zaks/bookkeeping/remediations/AGENT-REMEDIATION-005/evidence/before/r0_1_service_health.txt
+after evidence:
+19
+/home/zaks/bookkeeping/remediations/AGENT-REMEDIATION-005/evidence/after/r2_d2_archive_table.txt
+/home/zaks/bookkeeping/remediations/AGENT-REMEDIATION-005/evidence/after/r2_a3_bypass_tests.txt
+/home/zaks/bookkeeping/remediations/AGENT-REMEDIATION-005/evidence/after/r1_a7_trace_sink_test.txt
+/home/zaks/bookkeeping/remediations/AGENT-REMEDIATION-005/evidence/after/r2_e3_server_header.txt
+/home/zaks/bookkeeping/remediations/AGENT-REMEDIATION-005/evidence/after/r1_a6_activation_guide.md
+/home/zaks/bookkeeping/remediations/AGENT-REMEDIATION-005/evidence/after/r2_d3_retention_policy.md
+/home/zaks/bookkeeping/remediations/AGENT-REMEDIATION-005/evidence/after/r2_a1_trigger_create.txt
+/home/zaks/bookkeeping/remediations/AGENT-REMEDIATION-005/evidence/after/r2_a2_trigger_verify.txt
+/home/zaks/bookkeeping/remediations/AGENT-REMEDIATION-005/evidence/after/r1_a6_health_no_langfuse.txt
+/home/zaks/bookkeeping/remediations/AGENT-REMEDIATION-005/evidence/after/r1_a6_dependency.txt
+/home/zaks/bookkeeping/remediations/AGENT-REMEDIATION-005/evidence/after/r1_a6_tracing_module.txt
+/home/zaks/bookkeeping/remediations/AGENT-REMEDIATION-005/evidence/after/r1_b_deferred_justification.md
+/home/zaks/bookkeeping/remediations/AGENT-REMEDIATION-005/evidence/after/r2_a2_delete_test.txt
+/home/zaks/bookkeeping/remediations/AGENT-REMEDIATION-005/evidence/after/r1_a6_instrumentation.txt
+/home/zaks/bookkeeping/remediations/AGENT-REMEDIATION-005/evidence/after/r2_c3_log_config.txt
+/home/zaks/bookkeeping/remediations/AGENT-REMEDIATION-005/evidence/after/r1_a6_env_placeholders.txt
+/home/zaks/bookkeeping/remediations/AGENT-REMEDIATION-005/evidence/after/r1_a6_startup_log.txt
+/home/zaks/bookkeeping/remediations/AGENT-REMEDIATION-005/evidence/after/r2_e4_fingerprint_scan.txt
+/home/zaks/bookkeeping/remediations/AGENT-REMEDIATION-005/evidence/after/r2_a2_insert_test.txt
+regression evidence:
+1
+/home/zaks/bookkeeping/remediations/AGENT-REMEDIATION-005/evidence/regression/r3_1_final_health.txt

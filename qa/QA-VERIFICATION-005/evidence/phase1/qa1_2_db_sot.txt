@@ -1,0 +1,49 @@
+=== QA-1.2: RT-DB-SOT — Split-Brain Proof Gate ===
+--- STEP 1: Container DATABASE_URL env vars ---
+Agent container: zakops-agent-api
+                "POSTGRES_HOST=db",
+                "POSTGRES_PORT=5432",
+                "DATABASE_URL=postgresql://agent:agent_secure_pass_123@db:5432/zakops_agent",
+Backend container: zakops-backend-backend-1
+                "DATABASE_URL=postgresql://zakops:zakops_dev@postgres:5432/zakops",
+--- STEP 2: Live DB Identity Query ---
+Agent DB (via compose command):
+time="2026-02-03T19:42:29-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-03T19:42:29-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+   db_name    | db_user | server_addr | server_port |   search_path   
+--------------+---------+-------------+-------------+-----------------
+ zakops_agent | agent   |             |             | "$user", public
+(1 row)
+
+Backend DB (via compose command):
+time="2026-02-03T19:42:29-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-03T19:42:29-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+service "postgres" is not running
+--- STEP 3: Canary Write Test ---
+Canary UUID: 890ea369-3bff-4ec8-93d9-de8d1e06e27e
+Inserting canary into Agent DB...
+time="2026-02-03T19:42:29-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-03T19:42:29-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+ERROR:  null value in column "actor_id" of relation "audit_log" violates not-null constraint
+DETAIL:  Failing row contains (f42a33a3-af54-42c8-ad12-90aefb50b3be, 2026-02-04 01:42:30.074363+00, null, qa_canary_test, null, null, null, {"canary_id": "890ea369-3bff-4ec8-93d9-de8d1e06e27e"}).
+Query canary in Agent DB:
+time="2026-02-03T19:42:30-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-03T19:42:30-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+ id | event_type | payload 
+----+------------+---------
+(0 rows)
+
+--- STEP 4: All Postgres Containers ---
+zakops-backend-postgres-1        postgres:15-alpine                   Up 9 hours (healthy)            
+zakops-postgres-1                postgres:15-alpine                   Up 33 hours (healthy)           0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp
+Total Postgres containers: 2
+
+=== BACKEND DB CHECK (zakops-backend compose) ===
+ db_name | db_user | server_addr | server_port 
+---------+---------+-------------+-------------
+ zakops  | zakops  |             |            
+(1 row)
+
+=== Agent-API Agent DB (zakops_agent) ===
+service "db" is not running
+=== Backend DB (zakops) ===

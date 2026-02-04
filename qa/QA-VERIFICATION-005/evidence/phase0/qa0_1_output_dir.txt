@@ -1,0 +1,51 @@
+=== QA-0.1: Output Directory ===
+total 28
+drwxr-xr-x 5 root root 4096 Feb  3 18:31 .
+drwxr-xr-x 7 root root 4096 Feb  3 18:17 ..
+-rw-r--r-- 1 root root 5496 Feb  3 18:31 AGENT_REMEDIATION_005_REPORT.md
+drwxr-xr-x 2 root root 4096 Feb  3 18:17 changes
+drwxr-xr-x 5 root root 4096 Feb  3 18:17 evidence
+drwxr-xr-x 2 root root 4096 Feb  3 18:31 matrices
+--- evidence/before ---
+total 32
+drwxr-xr-x 2 root root 4096 Feb  3 18:23 .
+drwxr-xr-x 5 root root 4096 Feb  3 18:17 ..
+-rw-r--r-- 1 root root 1227 Feb  3 18:17 r0_1_service_health.txt
+-rw-r--r-- 1 root root 1793 Feb  3 18:17 r0_2_langfuse_before.txt
+-rw-r--r-- 1 root root 3369 Feb  3 18:17 r0_3_containers_before.txt
+-rw-r--r-- 1 root root 1519 Feb  3 18:18 r0_4_p3_findings_before.txt
+-rw-r--r-- 1 root root  401 Feb  3 18:19 r0_5_db_sot.txt
+-rw-r--r-- 1 root root  333 Feb  3 18:23 r1_b1_orphan_inspect.txt
+--- evidence/after ---
+total 88
+drwxr-xr-x 2 root root 4096 Feb  3 18:30 .
+drwxr-xr-x 5 root root 4096 Feb  3 18:17 ..
+-rw-r--r-- 1 root root 1436 Feb  3 18:22 r1_a6_activation_guide.md
+-rw-r--r-- 1 root root   23 Feb  3 18:22 r1_a6_dependency.txt
+-rw-r--r-- 1 root root  198 Feb  3 18:22 r1_a6_env_placeholders.txt
+-rw-r--r-- 1 root root  216 Feb  3 18:22 r1_a6_health_no_langfuse.txt
+-rw-r--r-- 1 root root 1473 Feb  3 18:22 r1_a6_instrumentation.txt
+-rw-r--r-- 1 root root  131 Feb  3 18:22 r1_a6_startup_log.txt
+-rw-r--r-- 1 root root 4117 Feb  3 18:22 r1_a6_tracing_module.txt
+-rw-r--r-- 1 root root  430 Feb  3 18:22 r1_a7_trace_sink_test.txt
+-rw-r--r-- 1 root root 1581 Feb  3 18:25 r1_b_deferred_justification.md
+-rw-r--r-- 1 root root  142 Feb  3 18:25 r2_a1_trigger_create.txt
+-rw-r--r-- 1 root root  110 Feb  3 18:25 r2_a2_delete_test.txt
+-rw-r--r-- 1 root root  352 Feb  3 18:25 r2_a2_insert_test.txt
+-rw-r--r-- 1 root root   37 Feb  3 18:25 r2_a2_trigger_verify.txt
+-rw-r--r-- 1 root root  841 Feb  3 18:26 r2_a3_bypass_tests.txt
+-rw-r--r-- 1 root root  138 Feb  3 18:30 r2_c3_log_config.txt
+-rw-r--r-- 1 root root  234 Feb  3 18:29 r2_d2_archive_table.txt
+-rw-r--r-- 1 root root  839 Feb  3 18:30 r2_d3_retention_policy.md
+-rw-r--r-- 1 root root  147 Feb  3 18:28 r2_e3_server_header.txt
+-rw-r--r-- 1 root root  745 Feb  3 18:29 r2_e4_fingerprint_scan.txt
+--- evidence/regression ---
+total 12
+drwxr-xr-x 2 root root 4096 Feb  3 18:30 .
+drwxr-xr-x 5 root root 4096 Feb  3 18:17 ..
+-rw-r--r-- 1 root root 1167 Feb  3 18:30 r3_1_final_health.txt
+--- matrices ---
+total 12
+drwxr-xr-x 2 root root 4096 Feb  3 18:31 .
+drwxr-xr-x 5 root root 4096 Feb  3 18:31 ..
+-rw-r--r-- 1 root root 1302 Feb  3 18:31 finding_to_fix_matrix.md

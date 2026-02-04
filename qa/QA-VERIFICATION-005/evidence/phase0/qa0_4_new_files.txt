@@ -1,0 +1,20 @@
+=== QA-0.4: New Files ===
+--- /home/zaks/zakops-agent-api/apps/agent-api/app/core/tracing.py ---
+EXISTS (140 lines)
+--- /home/zaks/zakops-agent-api/apps/agent-api/app/core/trace_sink.py ---
+EXISTS (76 lines)
+--- /home/zaks/zakops-agent-api/apps/agent-api/scripts/test_trace_sink.py ---
+EXISTS (57 lines)
+--- /home/zaks/zakops-agent-api/apps/agent-api/scripts/audit_log_maintenance.sql ---
+EXISTS (35 lines)
+--- Modified Files ---
+--- /home/zaks/zakops-agent-api/apps/agent-api/app/main.py ---
+EXISTS
+--- /home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py ---
+EXISTS
+--- /home/zaks/zakops-agent-api/apps/agent-api/app/core/middleware/__init__.py ---
+EXISTS
+--- /home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml ---
+EXISTS
+--- /home/zaks/zakops-agent-api/apps/agent-api/.env ---
+EXISTS
