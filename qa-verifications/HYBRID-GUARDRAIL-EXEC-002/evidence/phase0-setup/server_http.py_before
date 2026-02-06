@@ -1,0 +1,419 @@
+#!/usr/bin/env python3
+"""
+ZakOps MCP Server - HTTP Transport (Streamable HTTP)
+
+This is the CORRECT implementation for LangSmith Agent Builder.
+
+Key differences from SSE version:
+- Uses HTTP transport (not SSE)
+- Endpoint: /mcp (not /sse)
+- JSON-RPC over HTTP POST
+- Proper MCP protocol compliance
+
+Start with minimal tools to validate discovery, then expand.
+"""
+
+import os
+import json
+import logging
+from datetime import datetime
+from typing import Optional, List, Dict, Any
+import httpx
+
+# ============================================================================
+# FastMCP with HTTP Transport
+# ============================================================================
+
+from fastmcp import FastMCP
+
+# Configuration
+BACKEND_URL = os.getenv("ZAKOPS_BACKEND_URL", "http://localhost:8091")
+ZAKOPS_API_KEY = os.getenv("ZAKOPS_API_KEY", "")
+MCP_AUTH_TOKEN = os.getenv("MCP_AUTH_TOKEN", "")
+MCP_PORT = int(os.getenv("MCP_PORT", "9100"))
+MCP_HOST = os.getenv("MCP_HOST", "0.0.0.0")
+
+# Logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s"
+)
+logger = logging.getLogger("zakops-mcp")
+
+# ============================================================================
+# Create MCP Server
+# ============================================================================
+
+mcp = FastMCP(
+    name="ZakOps",
+    version="2.0.0",
+)
+
+# ============================================================================
+# Backend API Helper
+# ============================================================================
+
+async def backend_request(method: str, path: str, data: dict = None) -> dict:
+    """Make request to ZakOps backend API."""
+    url = f"{BACKEND_URL}{path}"
+    headers = {"Content-Type": "application/json", "Accept": "application/json"}
+    if ZAKOPS_API_KEY:
+        headers["X-API-Key"] = ZAKOPS_API_KEY
+
+    logger.info(f"Backend {method} {url}")
+
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            if method == "GET":
+                response = await client.get(url, headers=headers, params=data)
+            else:
+                response = await client.post(url, headers=headers, json=data or {})
+
+            if response.status_code == 404:
+                return {"error": f"Not found: {path}", "status": 404}
+
+            response.raise_for_status()
+            return response.json()
+
+    except httpx.HTTPStatusError as e:
+        logger.error(f"HTTP error: {e}")
+        return {"error": str(e), "status": e.response.status_code}
+    except Exception as e:
+        logger.error(f"Request error: {e}")
+        return {"error": str(e)}
+
+# ============================================================================
+# MINIMAL TOOL SET (Start with 2 tools for validation)
+# ============================================================================
+
+@mcp.tool()
+async def check_system_health() -> Dict[str, Any]:
+    """
+    Check the health status of the ZakOps system.
+
+    Returns health information about all system components.
+    Use this to verify the connection is working.
+    """
+    logger.info("Tool called: check_system_health")
+
+    try:
+        health = await backend_request("GET", "/health/ready")
+        return {
+            "status": "healthy",
+            "backend": health,
+            "mcp_server": "healthy",
+            "checked_at": datetime.utcnow().isoformat(),
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "error": str(e),
+            "checked_at": datetime.utcnow().isoformat(),
+        }
+
+
+@mcp.tool()
+async def list_deals(
+    stage: Optional[str] = None,
+    limit: int = 20,
+) -> Dict[str, Any]:
+    """
+    List deals in the ZakOps pipeline.
+
+    Args:
+        stage: Optional filter by stage (inbound, screening, qualified, loi, diligence, closing, portfolio, junk, archived)
+        limit: Maximum number of deals to return (default: 20)
+
+    Returns:
+        Dictionary containing list of deals and count.
+    """
+    logger.info(f"Tool called: list_deals (stage={stage}, limit={limit})")
+
+    params = {"limit": limit}
+    if stage:
+        params["stage"] = stage
+
+    try:
+        result = await backend_request("GET", "/api/deals", params)
+
+        # Normalize response format
+        if isinstance(result, list):
+            deals = result
+        elif isinstance(result, dict):
+            deals = result.get("items") or result.get("data") or result.get("deals") or []
+        else:
+            deals = []
+
+        return {
+            "deals": deals[:limit],
+            "count": len(deals),
+            "filter": {"stage": stage} if stage else None,
+        }
+
+    except Exception as e:
+        logger.error(f"list_deals error: {e}")
+        return {"error": str(e), "deals": [], "count": 0}
+
+
+# ============================================================================
+# ADDITIONAL TOOLS (Add after discovery is validated)
+# ============================================================================
+
+@mcp.tool()
+async def get_deal(deal_id: str) -> Dict[str, Any]:
+    """
+    Get detailed information about a specific deal.
+
+    Args:
+        deal_id: The unique identifier of the deal (e.g., DL-0001)
+
+    Returns:
+        Complete deal information including timeline and current status.
+    """
+    logger.info(f"Tool called: get_deal (deal_id={deal_id})")
+
+    try:
+        return await backend_request("GET", f"/api/deals/{deal_id}")
+    except Exception as e:
+        logger.error(f"get_deal error: {e}")
+        return {"error": str(e)}
+
+
+@mcp.tool(name="ZakOps_create_deal")
+async def create_deal(
+    canonical_name: str,
+    stage: str = "inbound",
+    display_name: str = "",
+    description: str = "",
+) -> Dict[str, Any]:
+    """
+    Create a new deal in the ZakOps pipeline.
+
+    Args:
+        canonical_name: Deal name (e.g., "Acme Corp Acquisition")
+        stage: Initial stage - inbound, screening, qualified, loi, diligence, closing, portfolio, junk, archived (default: inbound)
+        display_name: Optional display name (defaults to canonical_name)
+        description: Optional description
+
+    Returns:
+        The created deal with its assigned ID.
+    """
+    logger.info(f"Tool called: create_deal (canonical_name={canonical_name})")
+
+    try:
+        data = {
+            "canonical_name": canonical_name,
+            "display_name": display_name or canonical_name,
+            "stage": stage,
+            "metadata": {
+                "description": description,
+                "source": "mcp_agent",
+            }
+        }
+        return await backend_request("POST", "/api/deals", data)
+    except Exception as e:
+        logger.error(f"create_deal error: {e}")
+        return {"error": str(e)}
+
+
+@mcp.tool()
+async def transition_deal(
+    deal_id: str,
+    new_stage: str,
+    reason: str = "",
+) -> Dict[str, Any]:
+    """
+    Move a deal to a different pipeline stage.
+
+    Args:
+        deal_id: The deal's unique identifier
+        new_stage: Target stage (inbound, screening, qualified, loi, diligence, closing, portfolio, junk, archived)
+        reason: Optional reason for the transition
+
+    Returns:
+        Updated deal information.
+    """
+    logger.info(f"Tool called: transition_deal (deal_id={deal_id}, new_stage={new_stage})")
+
+    try:
+        data = {"new_stage": new_stage}
+        if reason:
+            data["reason"] = reason
+        return await backend_request("POST", f"/api/deals/{deal_id}/transition", data)
+    except Exception as e:
+        logger.error(f"transition_deal error: {e}")
+        return {"error": str(e)}
+
+
+@mcp.tool()
+async def get_pipeline_summary() -> Dict[str, Any]:
+    """
+    Get a summary overview of the entire deal pipeline.
+
+    Returns:
+        Summary including deal counts by stage and key metrics.
+    """
+    logger.info("Tool called: get_pipeline_summary")
+
+    try:
+        # Try dedicated endpoint first
+        result = await backend_request("GET", "/api/pipeline/summary")
+        if isinstance(result, list):
+            stage_counts = {item["stage"]: item["count"] for item in result}
+            return {
+                "total_deals": sum(item["count"] for item in result),
+                "deals_by_stage": stage_counts,
+                "stages": result,
+                "generated_at": datetime.utcnow().isoformat(),
+            }
+        if isinstance(result, dict) and "error" not in result:
+            return result
+
+        # Fall back to building summary from deals list
+        deals_result = await backend_request("GET", "/api/deals", {"limit": 200})
+        deals = deals_result if isinstance(deals_result, list) else []
+
+        stage_counts = {}
+        for deal in deals:
+            stage = deal.get("stage", "unknown")
+            stage_counts[stage] = stage_counts.get(stage, 0) + 1
+
+        return {
+            "total_deals": len(deals),
+            "deals_by_stage": stage_counts,
+            "generated_at": datetime.utcnow().isoformat(),
+        }
+
+    except Exception as e:
+        logger.error(f"get_pipeline_summary error: {e}")
+        return {"error": str(e)}
+
+
+# ============================================================================
+# Quarantine Tools
+# ============================================================================
+
+@mcp.tool()
+async def list_quarantine() -> Dict[str, Any]:
+    """
+    List items in quarantine waiting for review.
+
+    Returns:
+        List of quarantine items with their details.
+    """
+    logger.info("Tool called: list_quarantine")
+
+    try:
+        result = await backend_request("GET", "/api/quarantine")
+
+        if isinstance(result, list):
+            items = result
+        elif isinstance(result, dict):
+            items = result.get("items") or result.get("data") or []
+        else:
+            items = []
+
+        return {"items": items, "count": len(items)}
+
+    except Exception as e:
+        logger.error(f"list_quarantine error: {e}")
+        return {"error": str(e), "items": [], "count": 0}
+
+
+@mcp.tool()
+async def approve_quarantine(item_id: str) -> Dict[str, Any]:
+    """
+    Approve a quarantine item and convert it to a deal.
+
+    Args:
+        item_id: The quarantine item's unique identifier
+
+    Returns:
+        The newly created deal.
+    """
+    logger.info(f"Tool called: approve_quarantine (item_id={item_id})")
+
+    try:
+        return await backend_request("POST", f"/api/quarantine/{item_id}/approve")
+    except Exception as e:
+        logger.error(f"approve_quarantine error: {e}")
+        return {"error": str(e)}
+
+
+# ============================================================================
+# Actions Tools
+# ============================================================================
+
+@mcp.tool()
+async def list_actions(status: Optional[str] = None) -> Dict[str, Any]:
+    """
+    List actions in the system.
+
+    Args:
+        status: Optional filter (pending_approval, approved, rejected, completed)
+
+    Returns:
+        List of actions with their details.
+    """
+    logger.info(f"Tool called: list_actions (status={status})")
+
+    try:
+        params = {"status": status} if status else None
+        result = await backend_request("GET", "/api/actions", params)
+
+        if isinstance(result, list):
+            items = result
+        elif isinstance(result, dict):
+            items = result.get("items") or result.get("data") or []
+        else:
+            items = []
+
+        return {"actions": items, "count": len(items)}
+
+    except Exception as e:
+        logger.error(f"list_actions error: {e}")
+        return {"error": str(e), "actions": [], "count": 0}
+
+
+@mcp.tool()
+async def approve_action(action_id: str) -> Dict[str, Any]:
+    """
+    Approve a pending action for execution.
+
+    Args:
+        action_id: The action's unique identifier
+
+    Returns:
+        Updated action status.
+    """
+    logger.info(f"Tool called: approve_action (action_id={action_id})")
+
+    try:
+        return await backend_request("POST", f"/api/actions/{action_id}/approve")
+    except Exception as e:
+        logger.error(f"approve_action error: {e}")
+        return {"error": str(e)}
+
+
+# ============================================================================
+# Server Entry Point
+# ============================================================================
+
+if __name__ == "__main__":
+    logger.info("=" * 60)
+    logger.info("Starting ZakOps MCP Server (HTTP Transport)")
+    logger.info(f"Host: {MCP_HOST}")
+    logger.info(f"Port: {MCP_PORT}")
+    logger.info(f"Backend: {BACKEND_URL}")
+    logger.info(f"Transport: HTTP (Streamable HTTP)")
+    logger.info(f"Endpoint: /mcp")
+    logger.info("=" * 60)
+
+    # Run with HTTP transport (NOT SSE!)
+    # This is the correct transport for LangSmith Agent Builder
+    mcp.run(
+        transport="http",
+        host=MCP_HOST,
+        port=MCP_PORT,
+        path="/mcp",
+    )

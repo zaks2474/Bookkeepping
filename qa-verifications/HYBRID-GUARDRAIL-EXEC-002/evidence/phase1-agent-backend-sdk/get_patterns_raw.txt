@@ -1,0 +1,39 @@
+50:    return _correlation_id_ctx.get()
+230:            get_response = await client.get(f"{DEAL_API_URL}/api/deals/{deal_id}", headers=headers)
+239:            actual_from_stage = deal_data.get("stage", "unknown")
+240:            before_updated_at = deal_data.get("updated_at", "")
+314:            verify_response = await client.get(f"{DEAL_API_URL}/api/deals/{deal_id}", headers=headers)
+324:            after_stage = verify_data.get("stage", "unknown")
+325:            after_updated_at = verify_data.get("updated_at", "")
+403:            response = await client.get(f"{DEAL_API_URL}/api/deals/{deal_id}", headers=headers)
+477:            response = await client.get(
+488:                    deals = deals.get("deals", deals.get("results", []))
+496:                stage_counts = Counter(d.get("stage", "unknown") for d in deals)
+561:            response = await client.get(
+571:                    "results": data.get("deals", data.get("results", [])),
+572:                    "total": data.get("total", len(data.get("deals", []))),
+617:            response = await client.get(
+627:                    all_deals = all_deals.get("deals", all_deals.get("results", []))
+635:                        str(deal.get("canonical_name", "") or ""),
+636:                        str(deal.get("display_name", "") or ""),
+637:                        str(deal.get("deal_id", "") or ""),
+638:                        str(deal.get("broker", {}).get("name", "") if isinstance(deal.get("broker"), dict) else deal.get("broker", "") or ""),
+639:                        str(deal.get("stage", "") or ""),
+792:                deal_id = deal_data.get("deal_id", "unknown")
+803:                    "stage": deal_data.get("stage", stage_lower),
+893:                    event_id=result.get("event_id"),
+899:                    "event_id": result.get("event_id"),
+979:    stage = deal_data.get("stage", "inbound").lower()
+980:    created_at_str = deal_data.get("created_at")
+981:    updated_at_str = deal_data.get("updated_at")
+982:    stage_changed_at_str = deal_data.get("stage_changed_at") or updated_at_str
+983:    canonical_name = deal_data.get("canonical_name", "")
+984:    company_info = deal_data.get("company_info", {})
+985:    broker = deal_data.get("broker", {})
+986:    metadata = deal_data.get("metadata", {})
+1001:            expected_days = STAGE_EXPECTED_DAYS.get(stage, 30)
+1048:    if not company_info.get("company_name"):
+1054:        if not broker.get("name") and not broker.get("email"):
+1068:        notes_count = deal_data.get("notes_count", metadata.get("notes_count", 0))
+1076:        if not deal_data.get("value") and not metadata.get("estimated_value"):
+1131:            response = await client.get(f"{DEAL_API_URL}/api/deals/{deal_id}", headers=headers)
