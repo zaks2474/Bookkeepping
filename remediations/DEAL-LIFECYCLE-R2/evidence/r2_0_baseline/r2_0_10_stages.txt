@@ -1,0 +1,18 @@
+=== R2-0.10: Stage Taxonomy ===
+   stage   
+-----------
+ archived
+ diligence
+ inbound
+ loi
+ qualified
+ screening
+(6 rows)
+
+
+--- Check constraint ---
+     conname     |                                                                                                                                                      pg_get_constraintdef                                                                                                                                                       
+-----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ chk_deals_stage | CHECK (((stage)::text = ANY ((ARRAY['inbound'::character varying, 'screening'::character varying, 'qualified'::character varying, 'loi'::character varying, 'diligence'::character varying, 'closing'::character varying, 'portfolio'::character varying, 'junk'::character varying, 'archived'::character varying])::text[])))
+(1 row)
+

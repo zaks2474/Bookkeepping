@@ -1,0 +1,187 @@
+=== R2-0.2: DB Schema Dump ===
+--- Table: deals ---
+                                      Table "zakops.deals"
+     Column     |           Type           | Collation | Nullable |           Default            
+----------------+--------------------------+-----------+----------+------------------------------
+ deal_id        | character varying(20)    |           | not null | 
+ canonical_name | character varying(255)   |           | not null | 
+ display_name   | character varying(255)   |           |          | 
+ folder_path    | character varying(1024)  |           |          | 
+ stage          | character varying(50)    |           |          | 'inbound'::character varying
+ status         | character varying(50)    |           |          | 'active'::character varying
+ identifiers    | jsonb                    |           |          | '{}'::jsonb
+ company_info   | jsonb                    |           |          | '{}'::jsonb
+ broker         | jsonb                    |           |          | '{}'::jsonb
+ metadata       | jsonb                    |           |          | '{}'::jsonb
+ deleted        | boolean                  |           |          | false
+ created_at     | timestamp with time zone |           | not null | now()
+ updated_at     | timestamp with time zone |           | not null | now()
+Indexes:
+    "deals_pkey" PRIMARY KEY, btree (deal_id)
+    "idx_deals_canonical_name" btree (canonical_name)
+    "idx_deals_created_at" btree (created_at DESC)
+    "idx_deals_cursor_pagination" btree (updated_at DESC, deal_id DESC)
+    "idx_deals_stage" btree (stage)
+    "idx_deals_status" btree (status)
+    "idx_deals_updated_at" btree (updated_at DESC)
+Check constraints:
+    "chk_deals_stage" CHECK (stage::text = ANY (ARRAY['inbound'::character varying, 'screening'::character varying, 'qualified'::character varying, 'loi'::character varying, 'diligence'::character varying, 'closing'::character varying, 'portfolio'::character varying, 'junk'::character varying, 'archived'::character varying]::text[]))
+Referenced by:
+    TABLE "actions" CONSTRAINT "actions_deal_id_fkey" FOREIGN KEY (deal_id) REFERENCES deals(deal_id) ON DELETE SET NULL
+    TABLE "artifacts" CONSTRAINT "artifacts_deal_id_fkey" FOREIGN KEY (deal_id) REFERENCES deals(deal_id) ON DELETE SET NULL
+    TABLE "deal_aliases" CONSTRAINT "deal_aliases_deal_id_fkey" FOREIGN KEY (deal_id) REFERENCES deals(deal_id) ON DELETE CASCADE
+    TABLE "deal_events" CONSTRAINT "deal_events_deal_id_fkey" FOREIGN KEY (deal_id) REFERENCES deals(deal_id) ON DELETE CASCADE
+    TABLE "email_threads" CONSTRAINT "email_threads_deal_id_fkey" FOREIGN KEY (deal_id) REFERENCES deals(deal_id) ON DELETE SET NULL
+    TABLE "quarantine_items" CONSTRAINT "quarantine_items_deal_id_fkey" FOREIGN KEY (deal_id) REFERENCES deals(deal_id) ON DELETE SET NULL
+Triggers:
+    deals_updated_at BEFORE UPDATE ON deals FOR EACH ROW EXECUTE FUNCTION update_timestamp()
+
+
+--- Table: actions ---
+                                       Table "zakops.actions"
+      Column       |           Type           | Collation | Nullable |           Default            
+-------------------+--------------------------+-----------+----------+------------------------------
+ action_id         | character varying(50)    |           | not null | 
+ deal_id           | character varying(20)    |           |          | 
+ correlation_id    | uuid                     |           |          | 
+ action_type       | character varying(100)   |           | not null | 
+ title             | character varying(255)   |           |          | 
+ description       | text                     |           |          | 
+ status            | character varying(50)    |           |          | 'pending'::character varying
+ priority          | integer                  |           |          | 0
+ agent_type        | character varying(100)   |           |          | 
+ agent_config      | jsonb                    |           |          | '{}'::jsonb
+ result            | jsonb                    |           |          | '{}'::jsonb
+ error_message     | text                     |           |          | 
+ requires_approval | boolean                  |           |          | false
+ approved_by       | uuid                     |           |          | 
+ approved_at       | timestamp with time zone |           |          | 
+ created_at        | timestamp with time zone |           | not null | now()
+ updated_at        | timestamp with time zone |           | not null | now()
+ started_at        | timestamp with time zone |           |          | 
+ completed_at      | timestamp with time zone |           |          | 
+ trace_id          | uuid                     |           |          | 
+ causation_id      | uuid                     |           |          | 
+ operator_id       | uuid                     |           |          | 
+ run_id            | uuid                     |           |          | 
+ idempotency_key   | character varying(64)    |           |          | 
+ initiator_type    | character varying(32)    |           |          | 'user'::character varying
+ reasoning         | text                     |           |          | 
+ reviewed_at       | timestamp with time zone |           |          | 
+ reviewed_by       | uuid                     |           |          | 
+ executed_at       | timestamp with time zone |           |          | 
+ execution_result  | jsonb                    |           |          | 
+ initiator_id      | uuid                     |           |          | 
+ policy_version    | character varying(16)    |           |          | 
+ risk_level        | character varying(16)    |           |          | 
+ rejected_by       | uuid                     |           |          | 
+ rejected_at       | timestamp with time zone |           |          | 
+ rejection_reason  | text                     |           |          | 
+ approvals         | jsonb                    |           |          | '[]'::jsonb
+Indexes:
+    "actions_pkey" PRIMARY KEY, btree (action_id)
+    "idx_actions_action_type" btree (action_type)
+    "idx_actions_approvals" gin (approvals)
+    "idx_actions_correlation_id" btree (correlation_id)
+    "idx_actions_cursor_pagination" btree (created_at DESC, action_id DESC)
+    "idx_actions_deal_id" btree (deal_id)
+    "idx_actions_idempotency" btree (idempotency_key) WHERE idempotency_key IS NOT NULL
+    "idx_actions_initiator" btree (initiator_type, status)
+    "idx_actions_initiator_deal" btree (initiator_type, deal_id)
+    "idx_actions_pending_additional" btree (status) WHERE status::text = 'pending_additional_approval'::text
+    "idx_actions_policy" btree (initiator_type, status, policy_version)
+    "idx_actions_risk" btree (risk_level, status)
+    "idx_actions_run_id" btree (run_id)
+    "idx_actions_status" btree (status)
+    "idx_actions_trace_id" btree (trace_id)
+Foreign-key constraints:
+    "actions_deal_id_fkey" FOREIGN KEY (deal_id) REFERENCES deals(deal_id) ON DELETE SET NULL
+Referenced by:
+    TABLE "agent_tool_calls" CONSTRAINT "agent_tool_calls_action_id_fkey" FOREIGN KEY (action_id) REFERENCES actions(action_id) ON DELETE CASCADE
+    TABLE "artifacts" CONSTRAINT "artifacts_action_id_fkey" FOREIGN KEY (action_id) REFERENCES actions(action_id) ON DELETE SET NULL
+    TABLE "execution_checkpoints" CONSTRAINT "execution_checkpoints_action_id_fkey" FOREIGN KEY (action_id) REFERENCES actions(action_id) ON DELETE CASCADE
+Triggers:
+    actions_updated_at BEFORE UPDATE ON actions FOR EACH ROW EXECUTE FUNCTION update_timestamp()
+
+
+--- Table: quarantine_items ---
+                                Table "zakops.quarantine_items"
+    Column    |           Type           | Collation | Nullable |           Default            
+--------------+--------------------------+-----------+----------+------------------------------
+ id           | uuid                     |           | not null | gen_random_uuid()
+ deal_id      | character varying(20)    |           |          | 
+ sender       | character varying(255)   |           |          | 
+ subject      | character varying(500)   |           |          | 
+ message_id   | character varying(500)   |           |          | 
+ body_preview | text                     |           |          | 
+ raw_content  | jsonb                    |           |          | '{}'::jsonb
+ reason       | character varying(100)   |           |          | 
+ confidence   | double precision         |           |          | 
+ status       | character varying(50)    |           |          | 'pending'::character varying
+ reviewed_by  | uuid                     |           |          | 
+ reviewed_at  | timestamp with time zone |           |          | 
+ received_at  | timestamp with time zone |           |          | 
+ created_at   | timestamp with time zone |           | not null | now()
+ updated_at   | timestamp with time zone |           | not null | now()
+Indexes:
+    "quarantine_items_pkey" PRIMARY KEY, btree (id)
+    "idx_quarantine_items_deal_id" btree (deal_id)
+    "idx_quarantine_items_sender" btree (sender)
+    "idx_quarantine_items_status" btree (status)
+Foreign-key constraints:
+    "quarantine_items_deal_id_fkey" FOREIGN KEY (deal_id) REFERENCES deals(deal_id) ON DELETE SET NULL
+
+
+--- Table: deal_events ---
+                                            Table "zakops.deal_events"
+     Column      |           Type           | Collation | Nullable |                    Default                    
+-----------------+--------------------------+-----------+----------+-----------------------------------------------
+ id              | uuid                     |           | not null | gen_random_uuid()
+ deal_id         | character varying(20)    |           |          | 
+ event_type      | character varying(100)   |           | not null | 
+ event_source    | character varying(100)   |           |          | 
+ actor           | character varying(255)   |           |          | 
+ payload         | jsonb                    |           |          | '{}'::jsonb
+ created_at      | timestamp with time zone |           | not null | now()
+ idempotency_key | character varying(64)    |           |          | 
+ sequence_number | bigint                   |           |          | nextval('deal_events_sequence_seq'::regclass)
+ actor_id        | character varying(64)    |           |          | 
+ actor_type      | character varying(32)    |           |          | 'system'::character varying
+ causation_id    | character varying(64)    |           |          | 
+ event_version   | integer                  |           |          | 1
+ aggregate_type  | character varying(64)    |           |          | 
+ aggregate_id    | uuid                     |           |          | 
+ schema_version  | character varying(16)    |           |          | '1.0.0'::character varying
+ validation_mode | character varying(16)    |           |          | 'strict'::character varying
+ correlation_id  | character varying(64)    |           |          | 
+Indexes:
+    "deal_events_pkey" PRIMARY KEY, btree (id)
+    "idx_deal_events_aggregate" btree (aggregate_type, aggregate_id, created_at)
+    "idx_deal_events_correlation_id" btree (correlation_id) WHERE correlation_id IS NOT NULL
+    "idx_deal_events_created_at" btree (created_at DESC)
+    "idx_deal_events_deal_id" btree (deal_id)
+    "idx_deal_events_deal_sequence" btree (deal_id, sequence_number)
+    "idx_deal_events_event_type" btree (event_type)
+    "idx_deal_events_idempotency" btree (deal_id, idempotency_key, created_at) WHERE idempotency_key IS NOT NULL
+    "idx_deal_events_sequence" btree (sequence_number)
+Foreign-key constraints:
+    "deal_events_deal_id_fkey" FOREIGN KEY (deal_id) REFERENCES deals(deal_id) ON DELETE CASCADE
+
+
+--- Table: deal_aliases ---
+                                 Table "zakops.deal_aliases"
+   Column   |           Type           | Collation | Nullable |           Default            
+------------+--------------------------+-----------+----------+------------------------------
+ id         | uuid                     |           | not null | gen_random_uuid()
+ deal_id    | character varying(20)    |           |          | 
+ alias      | character varying(255)   |           | not null | 
+ alias_type | character varying(50)    |           |          | 'general'::character varying
+ created_at | timestamp with time zone |           | not null | now()
+Indexes:
+    "deal_aliases_pkey" PRIMARY KEY, btree (id)
+    "idx_deal_aliases_alias" btree (alias)
+    "idx_deal_aliases_deal_id" btree (deal_id)
+Foreign-key constraints:
+    "deal_aliases_deal_id_fkey" FOREIGN KEY (deal_id) REFERENCES deals(deal_id) ON DELETE CASCADE
+
+

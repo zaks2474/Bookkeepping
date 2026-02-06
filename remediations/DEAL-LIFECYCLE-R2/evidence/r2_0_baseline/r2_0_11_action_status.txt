@@ -1,0 +1,75 @@
+=== R2-0.11: ActionStatus Enum ===
+--- Backend ActionStatus (main.py) ---
+106:    status: str = "active"
+133:    status: str | None = None
+275:        raise HTTPException(status_code=503, detail="Database not initialized")
+441:                status_code=413,
+457:    status: str | None = Query("active", description="Filter by status"),
+474:        conditions.append(f"status = ${param_idx}")
+525:        raise HTTPException(status_code=404, detail=f"No deal found for alias {alias} (type={alias_type})")
+546:        raise HTTPException(status_code=404, detail=f"Deal {deal_id} not found")
+619:        raise HTTPException(status_code=400, detail="No fields to update")
+635:            raise HTTPException(status_code=404, detail=f"Deal {deal_id} not found")
+697:@app.post("/api/deals/{deal_id}/aliases", status_code=201)
+716:            raise HTTPException(status_code=404, detail=f"Deal {deal_id} not found")
+730:                    status_code=409,
+752:@app.post("/api/deals/{deal_id}/notes", status_code=201)
+766:            raise HTTPException(status_code=404, detail=f"Deal {deal_id} not found")
+
+--- Dashboard ActionStatus (Zod) ---
+export const ActionStatusSchema = z.enum([
+  'PENDING_APPROVAL',
+  'QUEUED',
+  'READY',
+  'RUNNING',
+  'COMPLETED',
+  'FAILED',
+  'CANCELLED',
+  'REJECTED',
+]);
+
+export const RiskLevelSchema = z.enum(['low', 'medium', 'high']);
+
+export const ActionSourceSchema = z.enum(['chat', 'ui', 'system', 'agent', 'api']);
+
+export const QuarantineClassificationSchema = z.enum(['DEAL_SIGNAL', 'UNCERTAIN', 'JUNK', 'unknown']);
+--
+  status: ActionStatusSchema,
+  created_at: z.string(),
+  updated_at: z.string(),
+  started_at: z.string().nullable().optional(),
+  completed_at: z.string().nullable().optional(),
+  scheduled_for: z.string().nullable().optional(),
+  duration_seconds: z.number().nullable().optional(),
+  created_by: z.string(),
+  source: ActionSourceSchema,
+  risk_level: RiskLevelSchema,
+  requires_human_review: z.boolean(),
+  idempotency_key: z.string().nullable().optional(),
+  inputs: z.record(z.unknown()),
+  outputs: z.record(z.unknown()),
+  retry_count: z.number(),
+  max_retries: z.number(),
+--
+export type ActionStatus = z.infer<typeof ActionStatusSchema>;
+export type RiskLevel = z.infer<typeof RiskLevelSchema>;
+export type ActionSource = z.infer<typeof ActionSourceSchema>;
+export type QuarantineClassification = z.infer<typeof QuarantineClassificationSchema>;
+export type QuarantineStatus = z.infer<typeof QuarantineStatusSchema>;
+export type SenderType = z.infer<typeof SenderTypeSchema>;
+export type Deal = z.infer<typeof DealSchema>;
+export type DealCreate = z.infer<typeof DealCreateSchema>;
+export type DealUpdate = z.infer<typeof DealUpdateSchema>;
+export type DealEvent = z.infer<typeof DealEventSchema>;
+export type DealAlias = z.infer<typeof DealAliasSchema>;
+export type Action = z.infer<typeof ActionSchema>;
+export type ActionApprove = z.infer<typeof ActionApproveSchema>;
+export type ActionReject = z.infer<typeof ActionRejectSchema>;
+export type QuarantineItem = z.infer<typeof QuarantineItemSchema>;
+export type QuarantineProcess = z.infer<typeof QuarantineProcessSchema>;
+
+--- DB actions table status values ---
+ status 
+--------
+(0 rows)
+

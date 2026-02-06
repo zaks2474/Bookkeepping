@@ -1,0 +1,7 @@
+=== R2-1.1: OpenAPI Client Analysis ===
+--- Comparing actual /api/actions response vs Zod schema ---
+Backend /api/actions response fields:
+  Empty array
+
+OpenAPI ActionResponse schema:
+ActionResponse: ['action_id', 'deal_id', 'capability_id', 'action_type', 'title', 'summary', 'status', 'created_at', 'updated_at', 'risk_level', 'requires_human_review', 'inputs', 'outputs', 'deal_name', 'deal_stage']

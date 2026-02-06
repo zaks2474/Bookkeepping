@@ -1,0 +1,44 @@
+=== R2-0.4: Zod Schemas ===
+--- api-schemas.ts existence check ---
+EXISTS: 492 lines
+
+--- Schema definitions ---
+12:export const DealStageSchema = z.enum([
+24:export const DealStatusSchema = z.enum(['active', 'junk', 'merged', 'archived']);
+26:export const PrioritySchema = z.enum(['HIGH', 'MEDIUM', 'LOW', 'NORMAL']);
+28:export const NdaStatusSchema = z.enum(['none', 'requested', 'signed', 'expired']);
+30:export const ActionStatusSchema = z.enum([
+41:export const RiskLevelSchema = z.enum(['low', 'medium', 'high']);
+43:export const ActionSourceSchema = z.enum(['chat', 'ui', 'system', 'agent', 'api']);
+45:export const QuarantineClassificationSchema = z.enum(['DEAL_SIGNAL', 'UNCERTAIN', 'JUNK', 'unknown']);
+47:export const QuarantineStatusSchema = z.enum(['pending', 'approved', 'rejected', 'expired']);
+49:export const SenderTypeSchema = z.enum(['broker', 'seller', 'advisor', 'platform', 'unknown']);
+55:export const DealIdentifiersSchema = z.object({
+63:export const CompanyInfoSchema = z.object({
+72:export const BrokerInfoSchema = z.object({
+83:export const DealMetadataSchema = z.object({
+95:export const AuditEntrySchema = z.object({
+104:export const ArtifactSchema = z.object({
+111:export const QuarantineLinkSchema = z.object({
+124:export const DealSchema = z.object({
+143:export const DealCreateSchema = z.object({
+155:export const DealUpdateSchema = z.object({
+168:export const DealEventSchema = z.object({
+179:export const DealAliasSchema = z.object({
+188:export const ActionSchema = z.object({
+222:export const ActionApproveSchema = z.object({
+227:export const ActionRejectSchema = z.object({
+232:export const QuarantineItemSchema = z.object({
+262:export const QuarantineProcessSchema = z.object({
+269:export const SenderProfileSchema = z.object({
+287:export const PipelineStageSummarySchema = z.object({
+293:export const PipelineStatsSchema = z.object({
+
+--- api.ts safeParse usages ---
+19
+
+--- .passthrough() count ---
+11
+
+--- .nullable().optional() count ---
+71

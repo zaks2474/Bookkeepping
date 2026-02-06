@@ -1,0 +1,18 @@
+=== PRE-0.2: Agent DB Identity ===
+--- Agent: Runtime DB Identity ---
+ current_database | current_user | inet_server_addr | inet_server_port |   pg_postmaster_start_time    
+------------------+--------------+------------------+------------------+-------------------------------
+ zakops_agent     | agent        |                  |                  | 2026-02-04 00:30:23.030155+00
+(1 row)
+
+
+--- Agent: table count ---
+ table_count 
+-------------
+          10
+(1 row)
+
+
+--- AGENT SOT FINGERPRINT ---
+ CANARY:72c0738cdda1a4ca26d38c5d6bb7372e
+

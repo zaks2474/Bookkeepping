@@ -1,0 +1,50 @@
+=== R2-3c.1: Email Ingestion Pipeline Enabled ===
+
+**Status:** PASS
+**Date:** 2026-02-04
+**Closes:** ZK-ISSUE-0002 (Email ingestion disabled)
+
+## Summary
+Enabled the email triage systemd timer that was previously disabled.
+Fixed the port configuration from decommissioned 8090 to correct 8091.
+
+## Changes Made
+
+1. Fixed port in systemd service:
+   - File: `/etc/systemd/system/zakops-email-triage.service`
+   - Changed: `EMAIL_TRIAGE_ACTIONS_BASE_URL=http://localhost:8090`
+   - To: `EMAIL_TRIAGE_ACTIONS_BASE_URL=http://localhost:8091`
+
+2. Enabled and started timer:
+   ```bash
+   sudo systemctl daemon-reload
+   sudo systemctl enable zakops-email-triage.timer
+   sudo systemctl start zakops-email-triage.timer
+   ```
+
+## Verification
+
+```
+● zakops-email-triage.timer - ZakOps Email Triage (hourly)
+     Loaded: loaded (/etc/systemd/system/zakops-email-triage.timer; enabled; preset: enabled)
+     Active: active (waiting) since Wed 2026-02-04 14:05:58 CST
+    Trigger: Wed 2026-02-04 15:03:09 CST; 57min left
+   Triggers: ● zakops-email-triage.service
+```
+
+## Architecture
+
+The email ingestion pipeline works as follows:
+1. Timer triggers service hourly
+2. Service runs email_triage_agent.run_once module
+3. Module uses Gmail MCP to fetch new emails
+4. Emails classified and sent to quarantine via POST /api/quarantine
+5. User approves in UI -> R2-3a.1 creates deal atomically
+
+## Module Location
+`/home/zaks/bookkeeping/scripts/email_triage_agent/`
+
+## Notes
+- Port 8090 is DECOMMISSIONED - all services should use 8091
+- Timer runs hourly (business hours: every hour 6-21, off-hours: 22 and 02)
+- Previous cron-based approach is commented out in /etc/cron.d/dataroom-automation

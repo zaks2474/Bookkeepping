@@ -1,0 +1,80 @@
+=== R2-0.7: Legacy Pattern Scan ===
+--- Port 8090 references ---
+/home/zaks/zakops-backend/QA_V3_VERIFICATION_REPORT.md:136:| ZK-AUD-0002 Port & URL config | PARTIALLY FIXED | FIXED | OPENAI_API_BASE=host.docker.internal:8000/v1, 0 active 8090 refs | **FIXED** |
+/home/zaks/zakops-backend/gate_artifacts/phase1/deal_api_contract.json:3:  "deal_api_base": "http://localhost:8090",
+/home/zaks/zakops-backend/gate_artifacts/phase1/phase1_gate_report.json:15:    "deal_api_url": "http://localhost:8090",
+/home/zaks/zakops-backend/gate_artifacts/phase2/phase2_gate_report.json:13:    "deal_api_url": "http://localhost:8090",
+/home/zaks/zakops-backend/gate_artifacts/phase2/deal_api_contract.json:3:  "deal_api_url": "http://localhost:8090",
+/home/zaks/zakops-backend/gate_artifacts/phase2/deal_api_e2e_transition.json:4:  "deal_api_url": "http://localhost:8090",
+/home/zaks/zakops-backend/gate_artifacts/phase2/deal_api_e2e_transition.json:13:      "endpoint": "http://localhost:8090/api/deals"
+/home/zaks/zakops-backend/gate_artifacts/phase2/deal_api_e2e_transition.json:18:      "endpoint": "http://localhost:8090/api/deals/DEAL-2026-001"
+/home/zaks/zakops-backend/gate_artifacts/phase2/repro_commands.sh:4:# Base URL: http://localhost:8090
+/home/zaks/zakops-backend/gate_artifacts/phase2/repro_commands.sh:7:curl -s "http://localhost:8090/health" | jq .
+/home/zaks/zakops-backend/gate_artifacts/phase2/repro_commands.sh:10:curl -s "http://localhost:8090/api/deals?limit=10" | jq .
+/home/zaks/zakops-backend/gate_artifacts/phase2/repro_commands.sh:13:curl -s "http://localhost:8090/api/deals/DEAL-2026-001" | jq .
+/home/zaks/zakops-backend/gate_artifacts/phase2/repro_commands.sh:16:# curl -X POST "http://localhost:8090/api/deals/DEAL-2026-001/transition" \
+/home/zaks/zakops-backend/scripts/probes/phase2_cloudflare_lint.py:7:- :8090 (legacy Deal API, decommissioned) is NOT exposed externally
+/home/zaks/zakops-backend/scripts/probes/phase2_cloudflare_lint.py:34:FORBIDDEN_EXPOSED_PORTS = {"8090", "5432"}  # 8090 = legacy Deal API (decommissioned), 5432 = Postgres
+/home/zaks/zakops-backend/scripts/probes/phase2_cloudflare_lint.py:153:            # Pattern: - "8090:8090" or ports: ["8090:8090"]
+/home/zaks/zakops-backend/scripts/probes/phase2_cloudflare_lint.py:182:        "- Deal API :8090 - Must NOT be exposed externally",
+/home/zaks/zakops-agent-api/agent.md:36:# Port 8090 must be DEAD (legacy)
+/home/zaks/zakops-agent-api/agent.md:37:lsof -i :8090 && echo "FAIL: Legacy port alive" || echo "PASS: 8090 dead"
+/home/zaks/zakops-agent-api/agent.md:59:**FORBIDDEN: Port 8090 (legacy, decommissioned)**
+/home/zaks/zakops-agent-api/agent.md:156:1. **Port 8090 is FORBIDDEN** - Legacy, decommissioned
+/home/zaks/zakops-agent-api/apps/agent-api/WHAT_CHANGED.md:200:1. **Mock Tool Responses**: When Deal API (:8090) is unavailable in development mode (`APP_ENV=development` AND `ALLOW_TOOL_MOCKS=true`), `transition_deal` returns mock success. In production or when `ALLOW_TOOL_MOCKS=false`, it fails closed.
+/home/zaks/zakops-agent-api/apps/agent-api/WHAT_CHANGED.md:210:2. Wire to actual Deal API (:8090) when available
+/home/zaks/zakops-backend/CLAUDE.md:12:Docker container: `zakops-backend-backend-1`. Port 8090 is FORBIDDEN (legacy).
+/home/zaks/zakops-agent-api/docs/ATOMIC_TASKS.md:240:- [ ] Verify environment (ports 8090 dead, 3003/8091/8095 alive)
+/home/zaks/zakops-agent-api/docs/ATOMIC_TASKS.md:254:- [ ] No forbidden patterns used (especially port 8090)
+/home/zaks/zakops-agent-api/docs/ATOMIC_TASKS.md:268:- [x] Verified ports: 8090 dead ✅, 3003 ✅, 8091 ✅, 8095 ✅
+/home/zaks/zakops-agent-api/docs/CONSTRAINTS.md:11:### 1. PORT 8090 IS FORBIDDEN
+/home/zaks/zakops-agent-api/docs/CONSTRAINTS.md:16:║   PORT 8090 IS A LEGACY SERVICE THAT HAS BEEN DECOMMISSIONED.                ║
+/home/zaks/zakops-agent-api/docs/CONSTRAINTS.md:18:║   - DO NOT start any service on port 8090                                    ║
+
+--- deal_registry.json references ---
+/home/zaks/zakops-backend/audit/storage-audit.md:34:│   ├── deal_registry.json   # Main deal registry (JSON)
+/home/zaks/zakops-backend/audit/storage-audit.md:89:registry_path = Path("/home/zaks/DataRoom/.deal-registry/deal_registry.json")
+/home/zaks/zakops-backend/audit/storage-audit.md:113:| test_e2e_actions.py | /home/zaks/DataRoom/.deal-registry/deal_registry.json | Registry |
+/home/zaks/zakops-backend/audit/current-schema.md:191:**Location**: `/home/zaks/DataRoom/.deal-registry/deal_registry.json`
+/home/zaks/zakops-backend/src/core/deal_registry.py:744:        self.db_path = self.registry_path.parent / "deal_registry.db"
+/home/zaks/zakops-backend/src/core/deal_registry.py:896:            backup_path = backup_dir / f"deal_registry_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+/home/zaks/zakops-backend/src/core/deal_registry.py:899:            backups = sorted(backup_dir.glob("deal_registry_*.json"))
+/home/zaks/zakops-backend/src/core/deal_registry.py:1421:    registry = DealRegistry("/home/zaks/DataRoom/.deal-registry/deal_registry.json")
+/home/zaks/zakops-backend/src/core/chat_evidence_builder.py:261:    def __init__(self, registry_path: str = "/home/zaks/DataRoom/.deal-registry/deal_registry.json"):
+/home/zaks/zakops-backend/src/workers/actions_runner.py:31:from deal_registry import DealRegistry
+
+--- ingest_state.db / sqlite references ---
+/home/zaks/zakops-backend/db/migrate_data.py:3:Data Migration: SQLite → PostgreSQL
+/home/zaks/zakops-backend/db/migrate_data.py:5:Migrates existing data from SQLite action engine to PostgreSQL while preserving
+/home/zaks/zakops-backend/db/migrate_data.py:14:    SQLITE_PATH - Path to SQLite database
+/home/zaks/zakops-backend/db/migrate_data.py:24:import sqlite3
+/home/zaks/zakops-backend/db/migrate_data.py:38:    os.getenv("ZAKOPS_STATE_DB", "/home/zaks/DataRoom/.deal-registry/ingest_state.db")
+/home/zaks/zakops-backend/db/migrate_data.py:45:# Table mapping: SQLite table -> PostgreSQL schema.table
+/home/zaks/zakops-backend/db/migrate_data.py:54:# Column mapping for actions table: SQLite column -> PostgreSQL column
+/home/zaks/zakops-backend/db/migrate_data.py:104:    """Migrates data from SQLite to PostgreSQL."""
+/home/zaks/zakops-backend/db/migrate_data.py:108:        self.sqlite_conn: Optional[sqlite3.Connection] = None
+/home/zaks/zakops-backend/db/migrate_data.py:114:        print(f"SQLite: {SQLITE_PATH}")
+/home/zaks/zakops-backend/db/migrate_data.py:119:            raise FileNotFoundError(f"SQLite database not found: {SQLITE_PATH}")
+/home/zaks/zakops-backend/db/migrate_data.py:121:        self.sqlite_conn = sqlite3.connect(SQLITE_PATH)
+/home/zaks/zakops-backend/db/migrate_data.py:122:        self.sqlite_conn.row_factory = sqlite3.Row
+/home/zaks/zakops-backend/db/migrate_data.py:129:        if self.sqlite_conn:
+/home/zaks/zakops-backend/db/migrate_data.py:130:            self.sqlite_conn.close()
+/home/zaks/zakops-backend/db/migrate_data.py:134:    def get_sqlite_tables(self) -> List[str]:
+/home/zaks/zakops-backend/db/migrate_data.py:135:        """Get list of tables in SQLite."""
+/home/zaks/zakops-backend/db/migrate_data.py:136:        cursor = self.sqlite_conn.execute(
+/home/zaks/zakops-backend/db/migrate_data.py:137:            "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"
+/home/zaks/zakops-backend/db/migrate_data.py:142:        """Get row count for a SQLite table."""
+
+--- sys.path hacks ---
+/home/zaks/zakops-backend/scripts/gates/kill9_encrypted_test.sh:91:sys.path.insert(0, os.getcwd())
+/home/zaks/zakops-backend/scripts/gates/kill9_encrypted_test.sh:177:sys.path.insert(0, os.getcwd())
+/home/zaks/zakops-backend/scripts/gates/kill9_encrypted_test.sh:241:sys.path.insert(0, os.getcwd())
+/home/zaks/zakops-backend/scripts/gates/kill9_encrypted_test.sh:306:sys.path.insert(0, os.getcwd())
+/home/zaks/zakops-backend/scripts/gates/tests/test_raw_content_scan.py:23:sys.path.insert(0, str(PROJECT_ROOT))
+/home/zaks/zakops-backend/scripts/gates/tests/test_prod_exposure_fail_closed.py:21:sys.path.insert(0, str(PROJECT_ROOT))
+/home/zaks/zakops-backend/scripts/gates/tests/test_resilience_config.py:20:sys.path.insert(0, str(PROJECT_ROOT))
+/home/zaks/zakops-backend/scripts/gates/tests/test_langfuse_selfhost.py:21:sys.path.insert(0, str(PROJECT_ROOT))
+/home/zaks/zakops-backend/scripts/gates/tests/test_secrets_hygiene.py:23:sys.path.insert(0, str(PROJECT_ROOT))
+/home/zaks/zakops-backend/scripts/gates/tests/test_encryption.py:7:sys.path.insert(0, os.getcwd())
+
+Total legacy references (lines): 78 (must reach minimal by R2-9)

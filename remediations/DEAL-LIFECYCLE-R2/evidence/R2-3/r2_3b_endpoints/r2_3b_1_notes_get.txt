@@ -1,0 +1,46 @@
+=== R2-3b.1: GET Notes Endpoint ===
+
+**Status:** PASS
+**Date:** 2026-02-04
+
+## Summary
+Added GET /api/deals/{deal_id}/notes endpoint to retrieve notes for a deal.
+
+## Implementation
+
+Modified: `/home/zaks/zakops-backend/src/api/orchestration/main.py`
+
+New endpoint: `GET /api/deals/{deal_id}/notes`
+- Query params: limit (1-500, default 100), offset (default 0)
+- Returns notes from deal_events where event_type='note_added'
+- Response: `{deal_id, notes: [{id, content, category, created_by, created_at}], count}`
+
+## Verification Test
+
+```
+GET /api/deals/DL-0005/notes
+{
+  "deal_id": "DL-0005",
+  "notes": [
+    {
+      "id": "3d25415f-5598-44b4-b797-33f60e2c16d9",
+      "content": "R2-3b test note: GET notes endpoint verification",
+      "category": "test",
+      "created_by": "ui_user",
+      "created_at": "2026-02-04T20:02:00.699758+00:00"
+    },
+    {
+      "id": "0c9d7574-0a71-4ff1-8000-54f6db3bea50",
+      "content": "Test note from R2-3b verification",
+      "category": "general",
+      "created_by": "ui_user",
+      "created_at": "2026-02-04T20:00:24.717964+00:00"
+    }
+  ],
+  "count": 2
+}
+```
+
+## Notes
+- Fixed JSONB parsing issue (payload may be string or dict depending on asyncpg)
+- Pagination supported via limit/offset params

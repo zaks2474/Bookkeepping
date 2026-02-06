@@ -1,0 +1,17 @@
+=== R2-0.8: SCHEMA-GUARD-001 Inventory ===
+--- validate-schemas.sh exists ---
+
+--- .nullable().optional() count ---
+71
+
+--- .safeParse() count ---
+19
+
+--- .passthrough() count ---
+11
+
+ASSESSMENT:
+- SCHEMA-GUARD-001 fixed nullability class (.nullable().optional())
+- REMAINING: Field-name mismatches (id vs event_id, created_at vs timestamp)
+- REMAINING: Missing fields (queue_lengths, avg_duration_by_type, etc.)
+- REMAINING: validate-schemas.sh checks HTTP status only, NOT response shape

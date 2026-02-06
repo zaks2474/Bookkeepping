@@ -1,0 +1,7 @@
+=== PRE-0.4: Container-Volume Map ===
+--- All Postgres containers ---
+c23719bab741   postgres:15-alpine                   "docker-entrypoint.s…"   11 hours ago   Up 5 hours (healthy)                                                         zakops-backend-postgres-1
+501c6760ea7d   postgres:15-alpine                   "docker-entrypoint.s…"   9 days ago     Up 11 hours (healthy)          0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp   zakops-postgres-1
+
+--- Running Postgres count ---
+Running Postgres containers: 2 (expect 2-3)

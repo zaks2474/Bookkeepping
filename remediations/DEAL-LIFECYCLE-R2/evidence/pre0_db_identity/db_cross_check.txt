@@ -1,0 +1,14 @@
+=== PRE-0.3: Cross-Contamination Check ===
+--- Backend: approvals table should NOT exist ---
+ count 
+-------
+     0
+(1 row)
+
+
+--- Agent: deals table should NOT exist ---
+ count 
+-------
+     0
+(1 row)
+

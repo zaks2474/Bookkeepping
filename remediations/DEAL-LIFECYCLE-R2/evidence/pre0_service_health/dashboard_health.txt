@@ -1,0 +1,13 @@
+=== PRE-0.6: Dashboard Health ===
+Dashboard health (port 3003): HTTP 307
+Dashboard health (port 3000): HTTP 200
+
+--- Dashboard env config ---
+/home/zaks/zakops-agent-api/apps/dashboard/.env.example:NEXT_PUBLIC_API_URL=***
+/home/zaks/zakops-agent-api/apps/dashboard/.env.example:API_URL=***
+/home/zaks/zakops-agent-api/apps/dashboard/.env.example:BACKEND_URL=***
+/home/zaks/zakops-agent-api/apps/dashboard/.env.example:NEXT_PUBLIC_AGENT_API_URL=***
+/home/zaks/zakops-agent-api/apps/dashboard/.env.local:NEXT_PUBLIC_API_URL=***
+/home/zaks/zakops-agent-api/apps/dashboard/.env.local:NEXT_PUBLIC_AGENT_API_URL=***
+/home/zaks/zakops-agent-api/apps/dashboard/.env.local:API_URL=***
+/home/zaks/zakops-agent-api/apps/dashboard/.env.local:BACKEND_URL=***

@@ -1,0 +1,87 @@
+    table_name    |    column_name    |        data_type         | is_nullable 
+------------------+-------------------+--------------------------+-------------
+ actions          | action_id         | character varying        | NO
+ actions          | deal_id           | character varying        | YES
+ actions          | correlation_id    | uuid                     | YES
+ actions          | action_type       | character varying        | NO
+ actions          | title             | character varying        | YES
+ actions          | description       | text                     | YES
+ actions          | status            | character varying        | YES
+ actions          | priority          | integer                  | YES
+ actions          | agent_type        | character varying        | YES
+ actions          | agent_config      | jsonb                    | YES
+ actions          | result            | jsonb                    | YES
+ actions          | error_message     | text                     | YES
+ actions          | requires_approval | boolean                  | YES
+ actions          | approved_by       | uuid                     | YES
+ actions          | approved_at       | timestamp with time zone | YES
+ actions          | created_at        | timestamp with time zone | NO
+ actions          | updated_at        | timestamp with time zone | NO
+ actions          | started_at        | timestamp with time zone | YES
+ actions          | completed_at      | timestamp with time zone | YES
+ actions          | trace_id          | uuid                     | YES
+ actions          | causation_id      | uuid                     | YES
+ actions          | operator_id       | uuid                     | YES
+ actions          | run_id            | uuid                     | YES
+ actions          | idempotency_key   | character varying        | YES
+ actions          | initiator_type    | character varying        | YES
+ actions          | reasoning         | text                     | YES
+ actions          | reviewed_at       | timestamp with time zone | YES
+ actions          | reviewed_by       | uuid                     | YES
+ actions          | executed_at       | timestamp with time zone | YES
+ actions          | execution_result  | jsonb                    | YES
+ actions          | initiator_id      | uuid                     | YES
+ actions          | policy_version    | character varying        | YES
+ actions          | risk_level        | character varying        | YES
+ actions          | rejected_by       | uuid                     | YES
+ actions          | rejected_at       | timestamp with time zone | YES
+ actions          | rejection_reason  | text                     | YES
+ actions          | approvals         | jsonb                    | YES
+ deal_events      | id                | uuid                     | NO
+ deal_events      | deal_id           | character varying        | YES
+ deal_events      | event_type        | character varying        | NO
+ deal_events      | event_source      | character varying        | YES
+ deal_events      | actor             | character varying        | YES
+ deal_events      | payload           | jsonb                    | YES
+ deal_events      | created_at        | timestamp with time zone | NO
+ deal_events      | idempotency_key   | character varying        | YES
+ deal_events      | sequence_number   | bigint                   | YES
+ deal_events      | actor_id          | character varying        | YES
+ deal_events      | actor_type        | character varying        | YES
+ deal_events      | causation_id      | character varying        | YES
+ deal_events      | event_version     | integer                  | YES
+ deal_events      | aggregate_type    | character varying        | YES
+ deal_events      | aggregate_id      | uuid                     | YES
+ deal_events      | schema_version    | character varying        | YES
+ deal_events      | validation_mode   | character varying        | YES
+ deal_events      | correlation_id    | character varying        | YES
+ deals            | deal_id           | character varying        | NO
+ deals            | canonical_name    | character varying        | NO
+ deals            | display_name      | character varying        | YES
+ deals            | folder_path       | character varying        | YES
+ deals            | stage             | character varying        | YES
+ deals            | status            | character varying        | YES
+ deals            | identifiers       | jsonb                    | YES
+ deals            | company_info      | jsonb                    | YES
+ deals            | broker            | jsonb                    | YES
+ deals            | metadata          | jsonb                    | YES
+ deals            | deleted           | boolean                  | YES
+ deals            | created_at        | timestamp with time zone | NO
+ deals            | updated_at        | timestamp with time zone | NO
+ quarantine_items | id                | uuid                     | NO
+ quarantine_items | deal_id           | character varying        | YES
+ quarantine_items | sender            | character varying        | YES
+ quarantine_items | subject           | character varying        | YES
+ quarantine_items | message_id        | character varying        | YES
+ quarantine_items | body_preview      | text                     | YES
+ quarantine_items | raw_content       | jsonb                    | YES
+ quarantine_items | reason            | character varying        | YES
+ quarantine_items | confidence        | double precision         | YES
+ quarantine_items | status            | character varying        | YES
+ quarantine_items | reviewed_by       | uuid                     | YES
+ quarantine_items | reviewed_at       | timestamp with time zone | YES
+ quarantine_items | received_at       | timestamp with time zone | YES
+ quarantine_items | created_at        | timestamp with time zone | NO
+ quarantine_items | updated_at        | timestamp with time zone | NO
+(83 rows)
+

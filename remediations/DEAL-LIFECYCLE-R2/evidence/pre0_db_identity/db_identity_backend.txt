@@ -1,0 +1,21 @@
+=== PRE-0.1: Backend DB Identity ===
+--- Backend DATABASE_URL (redacted) ---
+postgresql:***@postgres:5432/zakops
+
+--- Backend: Runtime DB Identity ---
+ current_database | current_user | inet_server_addr | inet_server_port |   pg_postmaster_start_time    
+------------------+--------------+------------------+------------------+-------------------------------
+ zakops           | zakops       |                  |                  | 2026-02-04 13:51:01.992375+00
+(1 row)
+
+
+--- Backend: deals table count ---
+ deal_count 
+------------
+         32
+(1 row)
+
+
+--- BACKEND SOT FINGERPRINT ---
+ CANARY:bb1993db2f3eac94c6694ba3cc5d0ef9
+

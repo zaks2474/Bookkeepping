@@ -1,0 +1,72 @@
+=== R2-3a.1: Atomic Deal Creation on Quarantine Approval ===
+
+**Status:** PASS
+**Date:** 2026-02-04
+**Closes:** ZK-ISSUE-0003 (Quarantine approval doesn't create deal)
+
+## Summary
+When approving a quarantine item without providing an explicit deal_id,
+the system now atomically creates a new deal from the quarantine item data.
+
+## Implementation
+
+Modified: `/home/zaks/zakops-backend/src/api/orchestration/main.py`
+Function: `process_quarantine()` (POST /api/quarantine/{item_id}/process)
+
+Changes:
+1. Added transaction wrapper for atomicity (`async with conn.transaction()`)
+2. On approve without deal_id:
+   - Auto-generate deal_id via `zakops.next_deal_id()`
+   - Extract canonical_name from quarantine subject
+   - Extract broker info from sender email
+   - Insert into deals table (stage='inbound', status='active')
+   - Record deal_created event with source='quarantine_approval'
+3. Link new deal_id to quarantine item
+4. Return `deal_created: true` flag in response
+
+## Verification Test
+
+```
+=== R2-3a.1 Test: Creating quarantine item ===
+Created Item: a4cbdc8d-7fd8-42cb-b080-ef6d67257063
+
+=== Approving without deal_id ===
+{
+  "status": "approved",
+  "item_id": "a4cbdc8d-7fd8-42cb-b080-ef6d67257063",
+  "deal_id": "DL-0005",
+  "deal_created": true
+}
+
+=== Deal Verification ===
+{
+  "deal_id": "DL-0005",
+  "canonical_name": "Clean R2-3a Test: Auto Deal Creation",
+  "stage": "inbound",
+  "status": "active"
+}
+
+=== Deal Event ===
+deal_id | event_type   | actor      | source                | created_at
+DL-0005 | deal_created | r2_3a_test | "quarantine_approval" | 2026-02-04
+
+=== Quarantine Item Link ===
+id                                   | subject                              | status   | deal_id
+a4cbdc8d-7fd8-42cb-b080-ef6d67257063 | Clean R2-3a Test: Auto Deal Creation | approved | DL-0005
+```
+
+## Contract Change
+
+Response schema updated:
+```json
+{
+  "status": "approved|rejected",
+  "item_id": "<uuid>",
+  "deal_id": "<DL-XXXX>|null",
+  "deal_created": true|false  // NEW: indicates if deal was auto-created
+}
+```
+
+## Backward Compatibility
+- If `deal_id` is provided in request, behavior unchanged (uses provided deal_id)
+- New `deal_created` field is additive (clients can ignore)

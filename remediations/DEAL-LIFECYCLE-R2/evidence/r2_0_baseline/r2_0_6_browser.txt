@@ -1,0 +1,24 @@
+=== R2-0.6: Browser Console Capture ===
+
+MANUAL VERIFICATION REQUIRED (Playwright not available):
+
+1. Open http://localhost:3003 in Chrome
+2. Press F12 → Console tab
+3. Navigate to each page: /, /deals, /quarantine, /agent, /alerts
+4. After each page, verify:
+   - No HTTP 404/500/501 in Network tab
+   - No red errors in Console tab
+   - At least one /api/* call succeeded (green 200)
+5. Export HAR: Network tab → right-click → Save all as HAR
+6. Save to: evidence/r2_0_baseline/har/manual_crawl.har
+
+KNOWN ZODERRORS TO CHECK FOR:
+  - 'event_id: Required' (backend sends 'id')
+  - 'timestamp: Required' (backend sends 'created_at')
+  - 'queue_lengths: Required' (field doesn't exist)
+  - 'avg_duration_by_type: Required'
+  - 'success_rate_24h: Required'
+
+--- Dashboard proxy test ---
+  /api/deals via dashboard: HTTP 200
+  /api/actions via dashboard: HTTP 200

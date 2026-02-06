@@ -1,0 +1,8 @@
+=== PRE-0.5: Backend Health ===
+Backend health: HTTP 200
+
+--- Backend endpoints ---
+  /api/deals: HTTP 200
+  /api/actions: HTTP 200
+  /health: HTTP 200
+  /api/quarantine: HTTP 200
