@@ -1,7 +1,7 @@
 # ZakOps Mission Prompt Generation Standard — Complete Reference
 
-**Standard Version:** 2.0
-**Last Updated:** 2026-02-10
+**Standard Version:** 2.4
+**Last Updated:** 2026-02-17
 **Change Log:** See [Version History](#version-history) at end of document
 
 ---
@@ -14,12 +14,23 @@ The builder (Claude Code) automatically loads `CLAUDE.md`, `MEMORY.md`, path-sco
 
 - **CLAUDE.md** — Architectural constraints, sync commands, contract surfaces, guardrails
 - **MEMORY.md** — Project map, databases, make targets, key file locations, completed missions
-- **7 hooks** — Session lifecycle enforcement (pre-edit blocks generated files, stop runs validation)
-- **5 path-scoped rules** — Auto-injected conventions for agent-api, backend, contracts, dashboard, design system
+- <!-- AUTOSYNC:hook_count --> **10 hooks** — Session lifecycle enforcement (pre-edit blocks generated files, pre-bash blocks destructive commands, stop runs validation)
+- <!-- AUTOSYNC:rule_count --> **8 path-scoped rules** — Auto-injected conventions for agent-api, backend, contracts, dashboard, design system, accessibility, component patterns, mission standard
 - **12 deny rules** — Tool-level blocks on generated files, `.env`, destructive commands
 - **3 delegated agents** — contract-guardian, arch-reviewer, test-engineer
-- **9 contract surfaces** — Sync pipelines with `make sync-*` commands
-- **15 slash commands** — `/before-task`, `/after-change`, `/sync-all`, `/validate`, etc.
+- <!-- AUTOSYNC:surface_count --> **17 contract surfaces** — Sync pipelines with `make sync-*` commands (Surfaces 1-9 core, 10-14 governance, 15-17 integration)
+- <!-- AUTOSYNC:command_count --> **16 monorepo commands + 8 skills** — `/before-task`, `/health`, `/run-gates`, `/deploy-backend`, `/frontend-design`, etc.
+
+### Monorepo Consolidation (2026-02-15)
+
+The backend (`zakops-backend`) was merged into the monorepo at `apps/backend/` via git subtree. All backend code, migrations, scripts, and tests now live under `/home/zaks/zakops-agent-api/apps/backend/`. The legacy standalone repo at `/home/zaks/zakops-backend/` is archived — do not reference it in new missions.
+
+### Integration Infrastructure
+
+- **23 MCP bridge tools** (Surface 15) — Bridge between Claude Code and backend services via `apps/backend/mcp_server/`
+- **Delegation framework** — 16 action types, Identity Contract enforcement, `delegate_actions` feature flag gate
+- **LangSmith agent** — Live external consumer of Agent API (tracing, monitoring)
+- **Email Triage** (Surface 16) — Injection pipeline for email processing with schema validation
 
 ### What Mission Prompts Add (information the builder does NOT already have)
 
@@ -228,7 +239,7 @@ Each phase is a self-contained unit of work:
 ```
 
 **Phase characteristics:**
-- **Phase 0** is always **Discovery & Baseline** — verify findings are still current, capture baseline validation
+- **Phase 0** is always **Discovery & Baseline** — verify findings are still current, capture baseline validation. Phase 0 MUST identify all contract surfaces affected by the mission and list their `make validate-surface{N}` commands as gates (per IA-15)
 - Phases are numbered sequentially and build on each other
 - Each task has a unique ID (`P{phase}-{number}`)
 - Each task names the exact file(s) to modify with full paths
@@ -316,7 +327,8 @@ Things the executor must NOT do, or must always do:
 4. Rename prohibition ("Do not rename environment variables — document instead")
 5. Skip decorator preservation ("Do not remove @pytest.mark.skip")
 6. Surface 9 compliance
-7. WSL safety (CRLF + ownership)
+7. Governance surface gates — when blast radius includes Surfaces 10-14+, reference `make validate-surface{N}` in phase gates (per IA-15)
+8. WSL safety (CRLF + ownership)
 8. Pre-task protocol adherence
 9. Classification guidance ("err toward leaving as error if uncertain")
 10. Repo boundary respect
@@ -347,13 +359,15 @@ Questions the executor asks itself at key checkpoints — the equivalent of a pi
 - [ ] "Does `make validate-local` pass right now, not 3 phases ago?"
 - [ ] "Did I update CHANGES.md?"
 - [ ] "Did I produce a completion summary with evidence paths for every AC?"
+- [ ] "Did I create ALL files listed in the 'Files to Create' table?" (DWR-001 lesson: code was done but VALIDATION.md and checkpoint.md were missing)
+- [ ] "If tests were required, do test names contain functional keywords that QA grep patterns can find?" (DWR-001 lesson: finding-based names like 'F-04' didn't match QA grep for 'board')
 ```
 
 Rules:
 - 3–5 questions per checkpoint
 - Questions must be specific to common mistakes, not generic ("did I do a good job?")
 - Phrased as yes/no or binary — no open-ended questions
-- Drawn from actual failures in past missions (V1 fullstack gap, CRLF breakage, forgotten sync)
+- Drawn from actual failures in past missions (V1 fullstack gap, CRLF breakage, forgotten sync, DWR-001 artifact gap)
 
 ### Section 8: File Paths Reference (Three tables)
 
@@ -372,6 +386,45 @@ Rules:
 ```
 
 This section gives the executor a complete map of its workspace.
+
+### Section 9b: Completion Report Template (MANDATORY for execution missions)
+
+Every execution mission must produce a completion report as its final deliverable. The executor fills in this template:
+
+```
+## Completion Report — {MISSION-ID}
+
+**Date:** {YYYY-MM-DD}
+**Executor:** {Agent identifier}
+**Status:** {COMPLETE / PARTIAL}
+
+### Phases Completed
+| Phase | Name | Gate | Status |
+|-------|------|------|--------|
+| P0 | Discovery & Baseline | Gate P0 | PASS |
+| P1 | ... | Gate P1 | PASS |
+
+### Acceptance Criteria
+| AC | Description | Status | Evidence |
+|----|-------------|--------|----------|
+| AC-1 | ... | PASS | {evidence path or command output} |
+
+### Validation Results
+- `make validate-local`: {PASS/FAIL}
+- TypeScript compilation: {PASS/FAIL}
+- Contract surface validation: {PASS/FAIL/N/A}
+
+### Files Modified
+{List of files modified with brief change description}
+
+### Files Created
+{List of files created with purpose}
+
+### Notes
+{Any deviations from the mission, decisions made, issues encountered}
+```
+
+The completion report is committed alongside the code changes. Without it, the mission is not DONE.
 
 ### Section 9: Stop Condition (1–2 paragraphs)
 
@@ -606,14 +659,90 @@ After evaluating whether to fold QA into execution, the recommendation is to **k
 - QA missions now include an **ENH feedback loop** — enhancement opportunities are explicitly evaluated when generating the next execution mission
 - The workflow is a cycle, not a line: ENH items from QA seed improvements in the next execution mission
 
-### When to Use TriPass QA vs. Standard QA
+### When to Use Each Execution & QA Mode
 
-| Criteria | Standard QA (single Claude session) | TriPass QA (3-agent pipeline) |
-|----------|-------------------------------------|-------------------------------|
-| Mission scope | Single-domain, < 50 gates | Cross-service, 50+ gates |
-| Risk level | Medium — regressions would be caught in next cycle | High — regressions would cause data integrity issues |
-| Time budget | Standard | Extended (TriPass takes 3x longer) |
-| When to use | Default for most missions | Platform stabilization, data integrity, infrastructure changes |
+| Criteria | Manual Execution | Lab Loop (automated) | Standard QA | TriPass QA (3-agent) |
+|----------|-----------------|---------------------|-------------|---------------------|
+| Mission scope | Any | Well-defined gate command | Single-domain, < 50 gates | Cross-service, 50+ gates |
+| Risk level | Any | Medium — gate catches regressions per cycle | Medium | High — data integrity |
+| Human involvement | Full control | Monitor only (email alerts) | Full control | Monitor only |
+| Time budget | Standard | Extended (up to 50 cycles) | Standard | Extended (3x longer) |
+| Best for | Complex decisions, novel architecture | Iterative fix-until-pass, remediation | Default QA for most missions | Platform stabilization, infrastructure |
+| Agent(s) | You + Claude Code | Claude (builder) + Codex/Gemini (QA) | Single Claude session | Claude + Gemini + Codex (parallel) |
+
+### Lab Loop Automation Pipeline
+
+Lab Loop is an **iterative Builder → Gate → QA cycle** that runs unattended until acceptance criteria pass or human intervention is needed. It is complementary to TriPass — TriPass finds issues (investigation), Lab Loop fixes them (execution).
+
+```
+                    ┌─────────────────────────────────────────┐
+                    │  LAB LOOP CYCLE N                        │
+                    │                                          │
+                    │  1. BUILDER (Claude Code, opus)          │
+                    │     └─ Reads QA report, implements fix   │
+                    │                                          │
+                    │  2. GATES (mission gate command)          │
+                    │     └─ make validate-local, tests, etc   │
+                    │                                          │
+                    │  3. QA (Primary: Codex, Fallback: Gemini)│
+                    │     └─ Reviews changes, issues verdict   │
+                    │                                          │
+                    │  PASS? → Done (email notification)       │
+                    │  FAIL? → Loop to Cycle N+1              │
+                    │  STUCK? → Escalate (email notification)  │
+                    └─────────────────────────────────────────┘
+```
+
+**Agent roles in Lab Loop:**
+
+| Role | Agent | Model | Flag |
+|------|-------|-------|------|
+| Builder | Claude Code | opus | `claude -p --dangerously-skip-permissions` |
+| QA (primary) | Codex | gpt-5.3-codex | `codex exec` |
+| QA (fallback) | Gemini | gemini-3-pro | `gemini --yolo` |
+
+**Configuration:** `~/.labloop/config` (models, email, max cycles, agent priority).
+
+**Key operational facts:**
+- All 3 agents run the same CLIs as interactive sessions — they read CLAUDE.md, GEMINI.md, AGENTS.md, rules, and memory from the working directory
+- `--dangerously-skip-permissions` / `--yolo` auto-approve tool calls (no human in the loop)
+- Builder gets 20 min timeout, QA gets 15 min — complex tasks may need multiple cycles
+- Max 50 cycles by default, stuck detection after 3 identical QA reports
+- Email notifications on: STARTED, PASS, STUCK, MAX_CYCLES, PREFLIGHT_FAIL
+- Safety: protected paths (.env, secrets), diff limits (20 files / 500 lines per cycle), command denylist
+
+**When to use Lab Loop in missions:**
+- Add `## Lab Loop Configuration` section to the mission prompt with `TASK_ID`, `REPO_DIR`, and `GATE_CMD`
+- The gate command must be a single bash expression that exits 0 on success (e.g., `make validate-local`)
+- Lab Loop works best for missions with clear, scriptable acceptance criteria
+
+**Creating a Lab Loop task from a mission:**
+```bash
+labloop new <TASK_ID> --repo <REPO_DIR> --gate "<GATE_CMD>"
+# Write mission.md and acceptance.md to tasks/<TASK_ID>/
+labloop run <TASK_ID>
+```
+
+**Gate profiles** (reusable gate commands): `gate-python-fast.sh`, `gate-python-full.sh`, `gate-nextjs.sh`, `gate-docker.sh`, `gate-go.sh`, `gate-rust.sh` — stored in `/home/zaks/bookkeeping/labloop/profiles/`.
+
+### TriPass Pipeline Configuration
+
+TriPass runs 3 agents (Claude CLI, Gemini CLI, Codex CLI) with mode-aware timeouts:
+
+| Mode | Timeout per agent | Use case |
+|------|------------------|----------|
+| forensic | 1,800s (30m) | Codebase investigation, bug forensics |
+| design | 30,000s (8h 20m) | Architectural reviews of large specs |
+| implement | 1,800s (30m) | Code generation tasks |
+
+**For design-mode missions reviewing large documents**, use `--inline-files` to pre-load key specs directly into agent prompts. This prevents timeout waste from sandbox file I/O restrictions (especially Codex):
+
+```bash
+make tripass-run MISSION=mission.md MODE=design \
+  INLINE_FILES=/path/to/spec.md,/path/to/other.md
+```
+
+Configuration: `~/.tripass/models.conf` (models + timeouts). SOP: `/home/zaks/bookkeeping/docs/TRIPASS_SOP.md`.
 
 ---
 
@@ -629,7 +758,8 @@ After evaluating whether to fold QA into execution, the recommendation is to **k
 - "I checked and it's fine" is never evidence
 
 ### 3. Validation Cadence
-- `make validate-local` runs after every phase/sweep/family
+- `make validate-local` runs after every phase/sweep/family (offline, CI-safe)
+- `make validate-full` runs gates A–H for comprehensive verification (manual/CI)
 - TypeScript compilation (`npx tsc --noEmit`) is an explicit gate
 - ESLint is checked at final verification
 
@@ -700,8 +830,15 @@ We track total gate counts and report them in memory:
 - The builder loads CLAUDE.md, MEMORY.md, hooks, rules, and deny rules before reading the mission prompt
 - Mission prompts reference standing rules by name ("per Surface 9", "per contract surface discipline") — never copy them
 - Only elaborate on infrastructure when the mission DEVIATES from or EXTENDS a standing rule
-- When a mission modifies contract surfaces, name which `make sync-*` command is required (this IS mission-specific)
+- When a mission modifies contract surfaces, name which `make sync-*` command is required (this IS mission-specific). These MUST appear as mandatory phase gates (not informational self-checks) — the chain `make update-spec → make sync-types → npx tsc --noEmit` is mandatory after any backend API change (per IA-15)
 - Never instruct the builder to do something a hook will block — route through the correct pipeline instead
+
+### 15. Git Commit Discipline
+- **Per-phase commit cadence**: Commit after each phase gate passes. Message format: `MISSION-ID P{N}: {description}`
+- **Branch strategy**: Feature branch for multi-phase missions, direct for single-phase infrastructure changes
+- **Intermediate commits**: If a phase has 5+ tasks, commit at mid-phase checkpoints to enable crash recovery
+- **Final commit**: `MISSION-ID: {one-line summary}` after all AC pass
+- Multi-phase missions (3+) MUST document commit cadence in the mission prompt
 
 ---
 
@@ -769,6 +906,69 @@ We track total gate counts and report them in memory:
 **Description:** When this standard is updated, the change log should include a "prompt diff" — what specifically changes in generated prompts. Example: "v1.5 → v2.0: All missions now include a Preamble reference. QA missions now require ENH feedback loop section." This helps builders who learned the old standard quickly understand what's different.
 **When to incorporate:** Starting with this version (v2.0). Applied retroactively in the version history below.
 
+### IA-10: Test Naming Convention for QA Grep Compatibility
+**Status:** Ready to adopt
+**Prerequisites:** None
+**Source:** QA-DWR-VERIFY-001 finding VF-02.5 — tests named by finding ID (`F-04: deals page loads`) instead of functional keywords (`board`, `export`), causing QA grep misses
+**Description:** When a mission requires E2E or unit tests, specify a test naming convention: test descriptions must include **functional keywords** that match the domain being tested (e.g., "board", "export", "onboarding"), not just internal finding IDs. This ensures QA verification grep patterns can discover tests without knowing the builder's naming scheme.
+**When to incorporate:** Any mission that includes a testing phase
+
+### IA-11: Artifact Drift Checker
+**Status:** Under evaluation
+**Prerequisites:** A script that compares "Files to Create" in the mission prompt against what actually exists post-execution
+**Source:** QA-DWR-VERIFY-001 remediations R-1/R-2 — VALIDATION.md and checkpoint.md were listed in the mission but never created
+**Description:** Build a post-execution check (or add to the stop hook) that parses the mission prompt's "Files to Create" table and verifies each listed file exists. Missing artifacts are flagged before the builder declares completion. This is ENH-10 from the DWR QA report.
+**When to incorporate:** When the script is built. Candidate for the next infrastructure mission.
+
+### IA-12: Explicit Benchmark Extraction for "Raise to X Standard" Findings
+**Status:** Ready to adopt
+**Prerequisites:** None
+**Source:** QA-DWR-VERIFY-001 finding F-07 — "raise all pages to Agent Activity quality" was handled implicitly rather than producing an explicit pattern document
+**Description:** When a mission finding says "raise X to the quality level of Y," the mission prompt must require an explicit benchmark extraction phase: (1) document what makes Y good (the patterns), (2) list each pattern, (3) apply each pattern to X with evidence. The deliverable is a pattern document, not just code changes. This prevents implicit handling where the builder "knows" the benchmark but doesn't prove it.
+**When to incorporate:** Any mission with a "match this standard" or "raise to this quality" finding
+
+### IA-13: TriPass Design-Mode Content Pre-Loading
+**Status:** Adopted (v2.2)
+**Prerequisites:** None
+**Source:** TP-20260213-003326 — 67% agent attrition in design-mode run. Claude and Codex timed out (89/87 bytes output) because 900s timeout was too short and agents couldn't read spec files from disk due to sandbox restrictions.
+**Description:** For design-mode TriPass missions reviewing large specifications (500+ lines), the mission prompt should specify key documents for `--inline-files` pre-loading. This inlines document content directly into agent prompts, eliminating file I/O waste. Combined with mode-aware timeouts (design: 30,000s), this ensures all 3 agents complete their analysis.
+**When to incorporate:** Any mission that will be run through TriPass in design mode with documents > 500 lines.
+
+### IA-14: Multi-Agent Parity Awareness
+**Status:** Ready to adopt
+**Prerequisites:** CODEX-ALIGN-001 complete (Codex CLI parity achieved 2026-02-12)
+**Source:** CODEX-ALIGN-001 gap register — 7 capability gaps between Claude Code, Gemini CLI, and Codex CLI (MCP server differences, hook architectures, skill formats)
+**Description:** When a mission creates infrastructure artifacts (hooks, rules, skills, MCP configs), the mission should include a "Multi-Agent Parity" phase that updates equivalent configs for all 3 CLI agents. Each agent has different config formats: Claude (`.claude/`), Codex (`.codex/`), Gemini (`.gemini/`). Without this, agents drift apart and TriPass produces inconsistent results.
+**When to incorporate:** Any mission that modifies Claude Code hooks, rules, skills, or MCP server configuration.
+
+### IA-15: Governance Surface Validation in Missions
+**Status:** Adopted (v2.3) — 2026-02-14
+**Prerequisites:** Surfaces 10-14 registered (SURFACES-10-14-REGISTER-001 complete 2026-02-10)
+**Source:** CI-HARDENING-001 — governance surfaces (10: dependency health, 11: env registry, 12: error taxonomy, 13: test coverage, 14: performance budget) were registered but not consistently referenced in mission guardrails. Validated by pre-execution audit of VALIDATION_ROADMAP_EXEC_PLAN (920 lines, zero surface references).
+**Description:** When a mission touches dependencies (Surface 10), environment variables (Surface 11), error handling (Surface 12), tests (Surface 13), or performance-critical code (Surface 14), the mission guardrails should reference the specific governance surface and its validation command (`make validate-surface{N}`). Additionally, every mission's Phase 0 must identify all affected contract surfaces, and `make sync-*` commands must appear as mandatory phase gates (not self-checks) when API boundaries change.
+**When to incorporate:** Any mission whose blast radius includes one or more contract surfaces.
+
+### IA-16: Lease Reaper Pattern
+**Status:** Under evaluation
+**Prerequisites:** Agent API lease management deployed
+**Source:** ENH-9, QA-UNIFIED-P1P2-VERIFY-001 — stale leases accumulate when agent sessions crash without cleanup
+**Description:** Missions that introduce lease-based resource management should include a "reaper" background task that reclaims expired leases. The mission should specify: lease TTL, reaper interval, and cleanup action. Without this, crashed sessions leave orphaned resources.
+**When to incorporate:** Any mission that introduces lease-based resource allocation or reservation patterns.
+
+### IA-17: Identity Contract Enforcement on MCP Writes
+**Status:** Under evaluation
+**Prerequisites:** MCP Bridge (Surface 15) write operations deployed
+**Source:** Integration Phase 2 planning — MCP tools that write to backend lack caller identity verification
+**Description:** Any MCP tool that performs a write operation (create, update, delete) must include Identity Contract validation: the caller's identity claim is verified against the backend session before the write is executed. Read-only tools are exempt. The mission should include a phase that adds identity validation to new write endpoints.
+**When to incorporate:** Any mission that adds or modifies MCP bridge write operations.
+
+### IA-18: Post-Merge Surface Verification
+**Status:** Ready to adopt
+**Prerequisites:** None
+**Source:** POST-MERGE-STABILIZE-001 — after monorepo consolidation (2026-02-15), 22 files needed fixing across 17 surfaces
+**Description:** After any significant repository merge or restructuring (subtree merge, monorepo consolidation, major refactor), the mission must include a dedicated "post-merge surface verification" phase that validates all 17 contract surfaces end-to-end. This catches path drift, import breakage, and config staleness that individual surface validators may miss in isolation.
+**When to incorporate:** Any mission that involves repository merges, major restructuring, or changes to 5+ contract surfaces simultaneously.
+
 ---
 
 ## STANDARD EVOLUTION PROTOCOL
@@ -785,7 +985,7 @@ This standard is a **living document**. It evolves alongside the ZakOps platform
 | Trigger | Example | Update Type |
 |---------|---------|-------------|
 | New hook, rule, or agent added to Claude Code config | New `pre-commit.sh` hook | Minor — update Preamble |
-| Infrastructure change that affects mission execution | New contract surface (Surface 10) | Minor — update Preamble + constraints |
+| Infrastructure change that affects mission execution | New contract surface, TriPass pipeline change, hook addition | Minor — update Preamble + constraints |
 | Structural lesson from a failed or suboptimal mission | QA found that crash recovery was needed | Minor — new Improvement Area |
 | Improvement Area promoted to standard practice | IA-1 adopted in 3 consecutive missions | Major — move from IA section to main body |
 | Workflow change | Self-audit phase added to execution missions | Major — update workflow section |
@@ -810,6 +1010,29 @@ This standard is maintained by whoever generates mission prompts. When Claude Co
 
 ---
 
+## ENFORCEMENT INFRASTRUCTURE
+
+This standard is technically enforced through hooks and scripts that prevent silent drift:
+
+### Write-Time Enforcement (pre-edit.sh)
+- **Mission prompts** written to `bookkeeping/docs/` with `# MISSION:` header are checked for structural completeness (phases, AC, file paths)
+- **QA scorecards** written to `qa-verifications/` are checked for required sections (PF, VF, XC, ST, ENH)
+- Files under 20 lines are skipped (still being written)
+- Non-mission/scorecard files have zero overhead
+
+### Session-End Sync (stop.sh → sync-standard.sh)
+- At session end, `sync-standard.sh` updates AUTOSYNC markers in this document from filesystem reality
+- Facts synced: surface count, command count, hook count
+- Non-fatal: failure prints a warning but does not block session end
+- Backup created before any sed operation; aborts if line count delta exceeds 10
+
+### Drift Detection (validate-standard.sh)
+- Standalone script that compares this document's claims against filesystem
+- Checks: surface count, command count, hook count, AUTOSYNC markers present, quickstart version match, freshness
+- Available as `make validate-standard` (NOT wired into `validate-local` to avoid cascading failures)
+
+---
+
 ## QUALITY CHECKLIST FOR PROMPT AUTHORS
 
 Before finalizing any mission prompt, the author verifies:
@@ -831,6 +1054,12 @@ Before finalizing any mission prompt, the author verifies:
 - [ ] **Builder infrastructure acknowledged** — Preamble constraints are reflected in the mission (no instructions that conflict with hooks/deny rules)
 - [ ] **Crash recovery included** — For missions with 3+ phases (per IA-2)
 - [ ] **Context checkpoint included** — For missions with 5+ phases or 500+ lines (per IA-1)
+- [ ] **Test naming convention specified** — If mission includes testing phase, functional keywords required in test names (per IA-10)
+- [ ] **Benchmark extraction explicit** — If any finding says "raise to X standard," mission requires pattern document deliverable (per IA-12)
+- [ ] **Governance surfaces identified** — Phase 0 lists affected contract surfaces and their `make validate-surface{N}` gates; `make sync-*` commands appear as mandatory phase gates when API boundaries change (per IA-15)
+- [ ] **Git commit cadence documented** — For multi-phase (3+) missions, commit discipline section present with per-phase commit format
+- [ ] **Completion report template included** — For execution missions, Section 9b completion report template present as mandatory deliverable
+- [ ] **Integration infrastructure acknowledged** — If touching MCP/delegation/email triage, relevant surfaces (15-17) and delegation framework referenced
 
 ---
 
@@ -841,7 +1070,11 @@ Before finalizing any mission prompt, the author verifies:
 | 1.0 | 2026-02-10 | Major | Initial standard extracted from 7 mission documents (DEAL-INTEGRITY-UNIFIED, SURFACE-REMEDIATION-001/002, DASHBOARD-R4-CONTINUE-001, QA-SR-VERIFY-001, QA-R4C-VERIFY-001, QA-V6GR-VERIFY-001) |
 | 1.1 | 2026-02-10 | Minor | Added 10 industry best practices: rollback per phase, decision trees, complexity signals, anti-pattern examples, blast radius maps, pre-mortem, mid-task checkpoints, glossary, dependency graph, executor self-checks |
 | 2.0 | 2026-02-10 | Major | **Prompt diff from 1.1:** (1) Added Preamble section — high-level reference to builder infrastructure (CLAUDE.md, MEMORY.md, hooks, rules, agents) with "reference, don't repeat" principle. (2) Replaced simple "Mission Chain" cross-cutting standard with full "Workflow" section including integrated verification model (execution self-audit + QA + ENH feedback loop), TriPass decision matrix, and V2 workflow diagram. (3) Added "Improvement Areas" section (9 items: IA-1 through IA-9) with mandatory builder review protocol. (4) Added "Standard Evolution Protocol" with version numbering, update triggers, update procedure, and ownership rules. (5) Added "Reference, Don't Repeat" as cross-cutting standard #14. (6) Expanded Quality Checklist with 4 new items (IA review, infrastructure acknowledgment, crash recovery, context checkpoint). (7) Added Version History with prompt diffs. |
+| 2.1 | 2026-02-11 | Minor | **Prompt diff from 2.0 (source: QA-DWR-VERIFY-001 findings):** (1) Added 2 self-check questions: artifact completeness ("Did I create ALL files in Files to Create table?") and test naming ("Do test names contain functional keywords for QA grep?"). (2) Added IA-10 (test naming convention for QA grep compatibility — ready to adopt), IA-11 (artifact drift checker script — under evaluation), IA-12 (explicit benchmark extraction for "raise to X standard" findings — ready to adopt). (3) Added 2 quality checklist items: test naming convention specified, benchmark extraction explicit. First update driven by the ENH feedback loop from a real QA mission. |
+| 2.2 | 2026-02-13 | Minor | **Prompt diff from 2.1 (source: TriPass agent attrition, CODEX-ALIGN-001, SURFACES-10-14-REGISTER-001, CI-HARDENING-001):** (1) Preamble counts corrected: hooks 7→10, path-scoped rules 5→7, contract surfaces 9→14, slash commands updated to 12 commands + 8 skills. (2) Added TriPass Pipeline Configuration subsection in QA workflow: mode-aware timeouts (design 30,000s), `--inline-files` pre-loading, `~/.tripass/models.conf` reference. (3) Added `make validate-full` to Validation Cadence (gates A–H). (4) Stale evolution example updated (was "New contract surface Surface 10" — Surface 10 already exists). (5) Added IA-13 (TriPass design-mode content pre-loading — adopted), IA-14 (multi-agent parity awareness — ready to adopt), IA-15 (governance surface validation — ready to adopt). |
+| 2.3 | 2026-02-14 | Minor | **Prompt diff from 2.2 (source: Email Triage Validation Roadmap pre-execution audit — 920-line exec plan had zero contract surface references):** (1) IA-15 promoted to "Adopted (v2.3)" — governance surface validation now mandatory, not just recommended. (2) Phase 0 must identify all affected contract surfaces and list `make validate-surface{N}` gates. (3) Added Guardrail #7: governance surface gates for Surfaces 10-14+. (4) Cross-cutting #14 strengthened: `make sync-*` commands are mandatory phase gates (not informational self-checks); `make update-spec → make sync-types → npx tsc --noEmit` chain required after backend API changes. (5) Added Quality Checklist item: governance surfaces identified. |
+| 2.4 | 2026-02-17 | Minor | **Prompt diff from 2.3 (source: STANDARD-ENFORCE-001 — content drift audit, structural gaps, enforcement infrastructure):** (1) **Content drift fixed:** contract surfaces 14→17 (added S15 MCP Bridge, S16 Email Triage, S17 Dashboard Routes), commands "12 slash commands"→"16 monorepo commands", added AUTOSYNC markers to 4 preamble counts for automated drift prevention. (2) **Monorepo consolidation awareness:** backend at `apps/backend/` within monorepo (merged 2026-02-15), legacy `zakops-backend` repo archived. (3) **Integration infrastructure awareness:** 23 MCP bridge tools (Surface 15), delegation framework (16 action types, Identity Contract), LangSmith agent, Email Triage (Surface 16). (4) **Git commit discipline** added as Cross-Cutting Standard #15: per-phase commit cadence, message format `MISSION-ID P{N}: {description}`, branch strategy. (5) **Completion report template** added as Section 9b: mandatory deliverable for execution missions with structured template (phases, AC status, validation results, files modified/created). (6) **3 new Improvement Areas:** IA-16 (lease reaper pattern), IA-17 (Identity Contract on MCP writes), IA-18 (post-merge surface verification — ready to adopt). (7) **Enforcement Infrastructure section** documenting technical enforcement: pre-edit.sh write-time validation, sync-standard.sh session-end auto-sync, validate-standard.sh drift detection. (8) **Quality Checklist expanded** with 3 items: git commit cadence, completion report, integration infrastructure. (9) **Quickstart companion** updated to v2.4 with completion report and git commit discipline. |
 
 ---
 
-*End of Mission Prompt Generation Standard — Version 2.0*
+*End of Mission Prompt Generation Standard — Version 2.4*
