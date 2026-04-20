@@ -1,0 +1,9 @@
+=== BACKEND STAGES ===
+['archived', 'inbound', 'screening']
+
+=== DASHBOARD STAGE REFERENCES (heuristic) ===
+['default', 'outline', 'screening']
+
+=== COMPARISON ===
+STAGES ONLY IN BACKEND: ['archived', 'inbound']
+STAGES ONLY IN DASHBOARD: ['default', 'outline']

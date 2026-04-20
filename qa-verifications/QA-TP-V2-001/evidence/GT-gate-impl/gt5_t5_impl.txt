@@ -1,0 +1,15 @@
+=== GT-5: T-5 No-Drop Verification (inline at lines 488-499) ===
+Implementation: Conditional on Pass 4 running. Checks METAQA.md for
+"OVERALL VERDICT.*PASS". SKIPs if Pass 4 not run.
+  # T-5: No-Drop (only if Pass 4 ran)
+  if [ "$skip_pass4" = "false" ] && [ -s "$run_dir/04_metaqa/METAQA.md" ]; then
+    total=$((total + 1))
+    if grep -qi "OVERALL VERDICT.*PASS" "$run_dir/04_metaqa/METAQA.md" 2>/dev/null; then
+      echo "| T-5: No-Drop | PASS | Meta-QA verified |" >> "$gates_file"
+      passed=$((passed + 1))
+    else
+      echo "| T-5: No-Drop | FAIL | Meta-QA did not pass |" >> "$gates_file"
+    fi
+  else
+    echo "| T-5: No-Drop | SKIP | Pass 4 not run |" >> "$gates_file"
+  fi

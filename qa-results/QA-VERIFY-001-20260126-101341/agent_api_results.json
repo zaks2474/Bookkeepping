@@ -1,0 +1,114 @@
+{
+  "summary": {
+    "passed": 3,
+    "total": 3
+  },
+  "test_suite": "Agent API",
+  "tests": [
+    {
+      "details": {
+        "request": {
+          "elapsed_ms": 3,
+          "method": "GET",
+          "ok": true,
+          "request_json": null,
+          "response_headers": {
+            "content-length": "159",
+            "content-type": "application/json",
+            "date": "Mon, 26 Jan 2026 16:13:50 GMT",
+            "server": "uvicorn",
+            "x-request-id": "d0666180",
+            "x-response-time": "0.002s"
+          },
+          "response_json": {
+            "components": {
+              "api": "healthy",
+              "database": "healthy"
+            },
+            "environment": "development",
+            "status": "healthy",
+            "timestamp": "2026-01-26T16:13:51.186653",
+            "version": "1.0.0"
+          },
+          "response_text": "{\"status\":\"healthy\",\"version\":\"1.0.0\",\"environment\":\"development\",\"components\":{\"api\":\"healthy\",\"database\":\"healthy\"},\"timestamp\":\"2026-01-26T16:13:51.186653\"}",
+          "status_code": 200,
+          "url": "http://localhost:8095/health"
+        }
+      },
+      "id": "2.1.1",
+      "name": "Agent /health",
+      "passed": true,
+      "timestamp_utc": "2026-01-26T16:13:51.187350+00:00"
+    },
+    {
+      "details": {
+        "request": {
+          "elapsed_ms": 724,
+          "method": "POST",
+          "ok": true,
+          "request_json": {
+            "actor_id": "qa-verify-001",
+            "message": "QA test: respond with 'QA test received'."
+          },
+          "response_headers": {
+            "content-length": "159",
+            "content-type": "application/json",
+            "date": "Mon, 26 Jan 2026 16:13:50 GMT",
+            "server": "uvicorn",
+            "x-request-id": "66899671",
+            "x-response-time": "0.723s"
+          },
+          "response_json": {
+            "actions_taken": [],
+            "content": "QA test received.",
+            "error": null,
+            "pending_approval": null,
+            "status": "completed",
+            "thread_id": "1db5ab1d-34fb-40c9-a3d3-5df80a50149d"
+          },
+          "response_text": "{\"thread_id\":\"1db5ab1d-34fb-40c9-a3d3-5df80a50149d\",\"status\":\"completed\",\"content\":\"QA test received.\",\"pending_approval\":null,\"actions_taken\":[],\"error\":null}",
+          "status_code": 200,
+          "url": "http://localhost:8095/api/v1/agent/invoke"
+        },
+        "schema_ok": true
+      },
+      "id": "2.1.2",
+      "name": "Agent invoke (simple) + schema keys",
+      "passed": true,
+      "timestamp_utc": "2026-01-26T16:13:51.912034+00:00"
+    },
+    {
+      "details": {
+        "request": {
+          "elapsed_ms": 352,
+          "method": "POST",
+          "ok": true,
+          "request_json": {
+            "actor_id": "qa-verify-001",
+            "message": "QA stream test: say hello."
+          },
+          "response_headers": {
+            "Transfer-Encoding": "chunked",
+            "cache-control": "no-cache",
+            "connection": "keep-alive",
+            "content-type": "text/event-stream; charset=utf-8",
+            "date": "Mon, 26 Jan 2026 16:13:51 GMT",
+            "server": "uvicorn",
+            "x-accel-buffering": "no",
+            "x-request-id": "a8e60d76",
+            "x-response-time": "0.001s"
+          },
+          "response_json": null,
+          "response_text": "event: start\ndata: {\"thread_id\": \"1b0287bb-6fbf-42fa-b25c-cd2bd76851d3\"}\n\nevent: content\ndata: {\"content\": \"Hello! How can I assist you today?\"}\n\nevent: end\ndata: {\"status\": \"completed\", \"thread_id\": \"1b0287bb-6fbf-42fa-b25c-cd2bd76851d3\"}\n\n",
+          "status_code": 200,
+          "url": "http://localhost:8095/api/v1/agent/invoke/stream"
+        }
+      },
+      "id": "2.1.3",
+      "name": "Agent invoke stream (basic HTTP reachability)",
+      "passed": true,
+      "timestamp_utc": "2026-01-26T16:13:52.265165+00:00"
+    }
+  ],
+  "timestamp_utc": "2026-01-26T16:13:52.265185+00:00"
+}

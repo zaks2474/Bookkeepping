@@ -1,0 +1,24 @@
+=== V2 RUNTIME CONFORMANCE TEST RESULTS ===
+Date: 2026-02-06
+Script: tools/test-runtime-conformance.ts
+Backend: http://localhost:8091
+
+  PASS  GET /api/deals — 3 items conform to DealResponse
+  PASS  GET /api/actions — 3 items conform to ActionResponse
+  PASS  GET /api/quarantine — 3 items conform to QuarantineResponse
+  WARN  GET /api/deals/DL-0001/events — empty array, no items to validate
+
+Results: 4 PASS, 0 FAIL, 0 SKIP
+All reachable endpoints conform to schemas
+
+AJV Golden Payload Validation:
+  PASS  actions.json — 9 items validated against ActionResponse
+  PASS  deals.json — 25 items validated against DealResponse
+  DEBT  error-401.json — Auth middleware flat {error,message} shape (tracked)
+  PASS  error-404.json — validates against ErrorResponse
+  PASS  error-500.json — validates against ErrorResponse
+  PASS  error-validation-400.json — validates against ErrorResponse
+  WARN  events.json — empty array, no items to validate
+  PASS  quarantine.json — 3 items validated against QuarantineResponse
+
+Results: 7 PASS, 0 FAIL, 1 KNOWN-DEBT

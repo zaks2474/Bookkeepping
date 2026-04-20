@@ -1,0 +1,5 @@
+File: /home/zaks/zakops-backend/src/core/agent/deal_brain_service.py
+---
+Line 33: async def get_brain(self, deal_id: str) -> dict | None:
+Line 44: async def get_or_create_brain(self, deal_id: str) -> dict:
+VERDICT: PASS — both methods exist

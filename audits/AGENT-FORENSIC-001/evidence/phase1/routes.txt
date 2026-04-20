@@ -1,0 +1,47 @@
+AGENT-FORENSIC-001 Phase 1 — Step 1.1: Route Enumeration
+==========================================================
+Date: 2026-02-02
+Source: OpenAPI spec at /api/v1/openapi.json + source code analysis
+
+FULL ROUTE LIST (from OpenAPI + source):
+
+=== Public/Infrastructure Routes (no prefix) ===
+GET  /                              — Root info endpoint
+GET  /health                        — Health check (DB connectivity)
+GET  /docs                          — Swagger UI (EXPOSED)
+GET  /redoc                         — ReDoc (EXPOSED)
+GET  /metrics                       — Prometheus metrics (EXPOSED)
+
+=== Auth Routes (/api/v1/auth) ===
+POST /api/v1/auth/register          — User registration
+POST /api/v1/auth/login             — User login (OAuth2 password grant)
+POST /api/v1/auth/session           — Create chat session (requires Bearer)
+PATCH /api/v1/auth/session/{session_id}/name — Update session name (requires Bearer)
+DELETE /api/v1/auth/session/{session_id}     — Delete session (requires Bearer)
+GET  /api/v1/auth/sessions          — List user sessions (requires Bearer)
+
+=== Chatbot Routes (/api/v1/chatbot) ===
+POST /api/v1/chatbot/chat           — Chat (requires Bearer OR X-Service-Token)
+POST /api/v1/chatbot/chat/stream    — Streaming chat SSE (requires Bearer OR X-Service-Token)
+GET  /api/v1/chatbot/messages       — Get session messages (requires Bearer)
+DELETE /api/v1/chatbot/messages     — Clear chat history (requires Bearer)
+
+=== Agent Routes (/api/v1/agent) — v1-prefixed ===
+POST /api/v1/agent/invoke           — Invoke agent (NO AUTH REQUIRED)
+POST /api/v1/agent/approvals/{approval_id}:approve  — Approve action (optional JWT)
+POST /api/v1/agent/approvals/{approval_id}:reject   — Reject action (optional JWT)
+GET  /api/v1/agent/approvals        — List pending approvals (NO AUTH REQUIRED)
+GET  /api/v1/agent/approvals/{approval_id} — Get approval detail (NO AUTH REQUIRED)
+GET  /api/v1/agent/threads/{thread_id}/state — Thread state (NO AUTH REQUIRED)
+POST /api/v1/agent/invoke/stream    — Streaming invoke SSE (NO AUTH REQUIRED)
+
+=== Agent Routes (/agent) — canonical unprefixed (same handlers) ===
+POST /agent/invoke
+POST /agent/approvals/{approval_id}:approve
+POST /agent/approvals/{approval_id}:reject
+GET  /agent/approvals
+GET  /agent/approvals/{approval_id}
+GET  /agent/threads/{thread_id}/state
+POST /agent/invoke/stream
+
+TOTAL: 28 route-method combinations (14 unique handlers, 7 duplicated at /agent/*)

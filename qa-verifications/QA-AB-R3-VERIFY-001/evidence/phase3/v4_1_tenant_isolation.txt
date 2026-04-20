@@ -1,0 +1,4 @@
+195:    def _validate_user_id(self, user_id: str) -> bool:
+248:        if not self._validate_user_id(user_id):
+274:        if not self._validate_user_id(user_id):
+305:        if not self._validate_user_id(user_id):

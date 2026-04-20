@@ -1,0 +1,2 @@
+{"detail":{"error":"INVALID_STAGE_TRANSITION","message":"Invalid transition: loi -> inbound. Valid transitions: ['diligence', 'qualified', 'junk', 'archived']","current_stage":"loi","requested_stage":"inbound","valid_transitions":["diligence","qualified","junk","archived"]}}
+HTTP_CODE: 422

@@ -1,0 +1,48 @@
+{
+  "test_suite": "E2E Workflows",
+  "timestamp": "2026-01-26T10:02:51.200591",
+  "tests": [
+    {
+      "id": "4.1.1",
+      "name": "Database Tables Consistency",
+      "passed": true,
+      "timestamp": "2026-01-26T10:02:51.434850",
+      "details": {
+        "table_counts": {
+          "deals": 2,
+          "actions": 0,
+          "quarantine_items": 0,
+          "agent_runs": 0
+        }
+      }
+    },
+    {
+      "id": "4.1.2",
+      "name": "Agent Invoke Creates Activity",
+      "passed": true,
+      "timestamp": "2026-01-26T10:02:56.353508",
+      "details": {
+        "runs_before": 0,
+        "runs_after": 0,
+        "activity_recorded": false
+      }
+    },
+    {
+      "id": "4.1.3",
+      "name": "Cross-Service Health",
+      "passed": true,
+      "timestamp": "2026-01-26T10:02:56.363458",
+      "details": {
+        "services": {
+          "backend": true,
+          "agent": true,
+          "rag": true
+        }
+      }
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "total": 3
+  }
+}

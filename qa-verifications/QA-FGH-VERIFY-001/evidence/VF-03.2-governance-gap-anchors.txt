@@ -1,0 +1,11 @@
+=== VF-03.2 GOVERNANCE GAP ANCHORS ===
+56:- Commit to a specific aesthetic tone — options include: brutally minimal, maximalist, retro-futuristic, organic/natural, luxury/refined, playful/toy-like, editorial/magazine, brutalist/raw, art deco/geometric, soft/pastel, industrial/utilitarian
+78:- Every layout choice should serve the content and user flow
+88:- Cookie-cutter component layouts that could be any project
+99:- Use Tailwind's default breakpoint scale as reference: `sm` (640px), `md` (768px), `lg` (1024px), `xl` (1280px), `2xl` (1536px)
+101:- Test critical layouts at 3 widths minimum: mobile (375px), tablet (768px), desktop (1280px)
+102:- Avoid custom breakpoints unless the project's `tailwind.config.ts` explicitly defines them
+105:- Use a defined z-index token scale to prevent stacking conflicts:
+114:- New stacking contexts (`isolation: isolate`) can reset z-index scope within a subtree
+120:- Test both themes: every component must be legible in both light and dark modes
+124:- **GPU-composited properties** (prefer for animations): `transform`, `opacity`, `filter`, `clip-path`

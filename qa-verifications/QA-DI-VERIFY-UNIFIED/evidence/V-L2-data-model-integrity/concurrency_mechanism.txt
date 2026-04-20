@@ -1,0 +1,11 @@
+=== Concurrency control search in BACKEND_ROOT/src/*.py ===
+--- /home/zaks/zakops-backend/src/actions/engine/store.py ---
+510:                "UPDATE actions SET inputs=?, updated_at=? WHERE action_id=?",
+529:                "UPDATE actions SET status='ready', updated_at=? WHERE action_id=?",
+
+--- /home/zaks/zakops-backend/src/core/actions/executor.py ---
+74:            "UPDATE zakops.actions SET status = $2, updated_at = $3 WHERE action_id = $1",
+
+--- /home/zaks/zakops-backend/src/core/outbox/processor.py ---
+106:        # Uses SELECT FOR UPDATE SKIP LOCKED to prevent duplicate processing
+

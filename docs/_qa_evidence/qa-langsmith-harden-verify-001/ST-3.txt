@@ -1,0 +1,4 @@
+49:from ..shared.security import SecurityMiddleware, check_rate_limit, get_client_ip, injection_rate_limiter
+1505:    client_ip = get_client_ip(request)
+1506:    check_rate_limit(f"quarantine:{client_ip}", limiter=injection_rate_limiter)
+VERDICT: Rate limit key is "quarantine:{client_ip}" -- includes client IP. PASS.

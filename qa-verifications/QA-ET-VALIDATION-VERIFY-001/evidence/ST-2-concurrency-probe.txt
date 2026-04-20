@@ -1,0 +1,38 @@
+=== ST-2 CONCURRENCY PROBE ===
+260:    schema_version: str | None = None
+262:    version: int = 1
+266:    tool_version: str | None = None
+267:    prompt_version: str | None = None
+282:      schema_version, correlation_id, email_body_snippet, source_message_id)
+308:    # Threading & versioning
+310:    schema_version: str | None = None
+311:    tool_version: str | None = None
+312:    prompt_version: str | None = None
+327:    @field_validator("schema_version")
+329:    def validate_schema_version(cls, v: str | None) -> str | None:
+331:            raise ValueError(f"Unknown schema_version '{v}'. Allowed: {sorted(ALLOWED_SCHEMA_VERSIONS)}")
+338:# P1-02: Schema version allowlist — reject unknown versions to prevent silent drift
+343:    "email_subject", "sender", "classification", "schema_version",
+429:            service_version=os.getenv("APP_VERSION", "1.0.0"),
+534:    version="1.0.0",
+914:    If the alias exists for a different deal, returns 409 (conflict).
+1525:            q.schema_version,
+1527:            q.version,
+1530:            q.tool_version,
+1531:            q.prompt_version,
+1593:            q.schema_version,
+1595:            q.version,
+1598:            q.tool_version,
+1599:            q.prompt_version,
+1680:        if not item.schema_version:
+1681:            missing.append("schema_version")
+1728:               q.schema_version, q.source_type, q.version,
+1729:               q.langsmith_run_id, q.langsmith_trace_url, q.tool_version,
+1730:               q.prompt_version, q.correlation_id,
+1755:                 urgency, source_thread_id, schema_version, tool_version,
+1756:                 prompt_version, langsmith_run_id, langsmith_trace_url,
+1775:                      schema_version, source_type, version,
+1776:                      langsmith_run_id, langsmith_trace_url, tool_version,
+1777:                      prompt_version, correlation_id,
+1793:            item.source_thread_id, item.schema_version, item.tool_version,
+1794:            item.prompt_version, item.langsmith_run_id, item.langsmith_trace_url,

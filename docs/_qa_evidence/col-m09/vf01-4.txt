@@ -1,0 +1,4 @@
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/qdrant_client.py:3089:            batch_size: Batch size to be in scroll and upsert operations during migration
+apps/agent-api/scripts/migrate_chat_data.py:99:                    ON CONFLICT (canonical_id) DO NOTHING
+apps/agent-api/scripts/migrate_chat_data.py:159:                    ON CONFLICT (id) DO NOTHING
+apps/agent-api/scripts/migrate_chat_data.py:167:                    ON CONFLICT (thread_id) DO NOTHING

@@ -1,0 +1,45 @@
+BOOKKEEPING_DOCS_HITS=44
+/home/zaks/bookkeeping/docs/MISSION-LANGSMITH-SHADOW-PILOT-READY-001.md:40:Any other LangSmith label (including `langsmith_production`) is **legacy drift** and must be removed or migrated.
+/home/zaks/bookkeeping/docs/MISSION-LANGSMITH-SHADOW-PILOT-READY-001.md:46:| Backend model comment | `main.py` | 272 | `langsmith_production` | `langsmith_live` |
+/home/zaks/bookkeeping/docs/MISSION-LANGSMITH-SHADOW-PILOT-READY-001.md:47:| Contract documentation | `INJECTION-CONTRACT.md` | 79 | `langsmith_production` | `langsmith_live` |
+/home/zaks/bookkeeping/docs/MISSION-LANGSMITH-SHADOW-PILOT-READY-001.md:48:| Dashboard filter option | `quarantine/page.tsx` | 327 | `langsmith_production` | `langsmith_live` |
+/home/zaks/bookkeeping/docs/MISSION-LANGSMITH-SHADOW-PILOT-READY-001.md:76:| Drift | When the same concept has different labels in different locations (e.g., `langsmith_production` vs `langsmith_live`) |
+/home/zaks/bookkeeping/docs/MISSION-LANGSMITH-SHADOW-PILOT-READY-001.md:99:| 1 | Fix `langsmith_production` in 3 known files but miss a 4th reference in MASTER-PROGRAM or QA docs | HIGH | Drift reappears in future mission citing old docs | Phase 0 discovery greps ALL repos for `langsmith_production` |
+/home/zaks/bookkeeping/docs/MISSION-LANGSMITH-SHADOW-PILOT-READY-001.md:122:- P0-03: Grep ALL repos for `langsmith_production` — capture every occurrence
+/home/zaks/bookkeeping/docs/MISSION-LANGSMITH-SHADOW-PILOT-READY-001.md:131:- All `langsmith_production` occurrences cataloged with classifications
+/home/zaks/bookkeeping/docs/MISSION-LANGSMITH-SHADOW-PILOT-READY-001.md:141:**Purpose:** Eliminate `langsmith_production` from all CODE and DOCS surfaces. Replace with `langsmith_live` per the locked naming decision.
+/home/zaks/bookkeeping/docs/MISSION-LANGSMITH-SHADOW-PILOT-READY-001.md:150:  - Change: `langsmith_production` → `langsmith_live` in the comment string
+/home/zaks/bookkeeping/docs/MISSION-LANGSMITH-SHADOW-PILOT-READY-001.md:155:  - Change: `langsmith_production` → `langsmith_live` in the source type values table
+/home/zaks/bookkeeping/docs/MISSION-LANGSMITH-SHADOW-PILOT-READY-001.md:159:  - Change: `langsmith_production` → `langsmith_live` in `<option>` value and label
+/home/zaks/bookkeeping/docs/MISSION-LANGSMITH-SHADOW-PILOT-READY-001.md:174:- Zero occurrences of `langsmith_production` in CODE or DOCS files (QA evidence/snapshots excluded)
+/home/zaks/bookkeeping/docs/MISSION-LANGSMITH-SHADOW-PILOT-READY-001.md:202:  - **Checkpoint:** Validation rejects `langsmith_production`, accepts `langsmith_live`
+/home/zaks/bookkeeping/docs/MISSION-LANGSMITH-SHADOW-PILOT-READY-001.md:209:- **IF** existing data in the database contains `langsmith_production` values → These are read-only (GET endpoint returns whatever is stored). Validation only applies to new INSERTs.
+/home/zaks/bookkeeping/docs/MISSION-LANGSMITH-SHADOW-PILOT-READY-001.md:219:- POST with `source_type=langsmith_production` would return 400 (logic check)
+/home/zaks/bookkeeping/docs/MISSION-LANGSMITH-SHADOW-PILOT-READY-001.md:276:- P4-01: **Evidence: source_type drift eliminated** — Grep all repos for `langsmith_production` in CODE/DOCS. Must return 0 hits.
+/home/zaks/bookkeeping/docs/MISSION-LANGSMITH-SHADOW-PILOT-READY-001.md:337:Zero occurrences of `langsmith_production` in CODE or DOCS files across all repos (QA evidence/snapshots excluded).
+/home/zaks/bookkeeping/docs/MISSION-LANGSMITH-SHADOW-PILOT-READY-001.md:375:3. **Historical evidence preservation** — Do NOT modify QA evidence files or pre-compact snapshots that contain `langsmith_production`. These are historical records.
+/home/zaks/bookkeeping/docs/MISSION-LANGSMITH-SHADOW-PILOT-READY-001.md:376:4. **No database migration** — If existing rows contain `langsmith_production`, document as follow-up. Do NOT create a migration in this mission.
+/home/zaks/bookkeeping/docs/MISSION-LANGSMITH-SHADOW-PILOT-READY-001.md:387:- [ ] "Did I grep ALL 3 repos (backend, monorepo, bookkeeping) for `langsmith_production`?"
+/home/zaks/bookkeeping/docs/MISSION-LANGSMITH-SHADOW-PILOT-READY-001.md:409:| `/home/zaks/zakops-backend/docs/INJECTION-CONTRACT.md` | 1,2 | Fix langsmith_production → langsmith_live, add 400 response doc |
+/home/zaks/bookkeeping/docs/MISSION-LANGSMITH-SHADOW-PILOT-READY-001.md:410:| `/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx` | 1 | Fix filter option langsmith_production → langsmith_live |
+/home/zaks/bookkeeping/docs/MISSION-LANGSMITH-SHADOW-PILOT-READY-001.md:446:Do NOT proceed to: LangSmith shadow-mode pilot execution, database migration of existing `langsmith_production` rows, or dashboard feature additions.
+/home/zaks/bookkeeping/docs/QA-LANGSMITH-SHADOW-PILOT-VERIFY-001.md:16:1. **Verify the drift elimination claim** — not just searching for `langsmith_production`, but sweeping ALL repos, ALL file types (Python, TypeScript, Markdown, JSON, SQL), and ALL naming variations for any surviving drift.
+/home/zaks/bookkeeping/docs/QA-LANGSMITH-SHADOW-PILOT-VERIFY-001.md:109:**Context:** Completion report claims `langsmith_production` was fixed to `langsmith_live` in 3 locations. E01 evidence shows zero hits in backend/src, backend/docs, dashboard/src, and program spec. This VF independently re-verifies AND expands the search scope to cover ALL repos and file types.
+/home/zaks/bookkeeping/docs/QA-LANGSMITH-SHADOW-PILOT-VERIFY-001.md:111:#### VF-01.1: Zero `langsmith_production` in backend Python code
+/home/zaks/bookkeeping/docs/QA-LANGSMITH-SHADOW-PILOT-VERIFY-001.md:113:HITS=$(grep -rn "langsmith_production" /home/zaks/zakops-backend/src/ 2>/dev/null | grep -v __pycache__ | wc -l) || HITS=0
+/home/zaks/bookkeeping/docs/QA-LANGSMITH-SHADOW-PILOT-VERIFY-001.md:115:grep -rn "langsmith_production" /home/zaks/zakops-backend/src/ 2>/dev/null | grep -v __pycache__ | tee -a "$EVIDENCE_DIR/VF-01-1.txt"
+/home/zaks/bookkeeping/docs/QA-LANGSMITH-SHADOW-PILOT-VERIFY-001.md:119:#### VF-01.2: Zero `langsmith_production` in backend docs
+/home/zaks/bookkeeping/docs/QA-LANGSMITH-SHADOW-PILOT-VERIFY-001.md:121:HITS=$(grep -rn "langsmith_production" /home/zaks/zakops-backend/docs/ 2>/dev/null | wc -l) || HITS=0
+/home/zaks/bookkeeping/docs/QA-LANGSMITH-SHADOW-PILOT-VERIFY-001.md:123:grep -rn "langsmith_production" /home/zaks/zakops-backend/docs/ 2>/dev/null | tee -a "$EVIDENCE_DIR/VF-01-2.txt"
+/home/zaks/bookkeeping/docs/QA-LANGSMITH-SHADOW-PILOT-VERIFY-001.md:127:#### VF-01.3: Zero `langsmith_production` in dashboard source
+/home/zaks/bookkeeping/docs/QA-LANGSMITH-SHADOW-PILOT-VERIFY-001.md:129:HITS=$(grep -rn "langsmith_production" /home/zaks/zakops-agent-api/apps/dashboard/src/ 2>/dev/null | wc -l) || HITS=0
+/home/zaks/bookkeeping/docs/QA-LANGSMITH-SHADOW-PILOT-VERIFY-001.md:131:grep -rn "langsmith_production" /home/zaks/zakops-agent-api/apps/dashboard/src/ 2>/dev/null | tee -a "$EVIDENCE_DIR/VF-01-3.txt"
+/home/zaks/bookkeeping/docs/QA-LANGSMITH-SHADOW-PILOT-VERIFY-001.md:135:#### VF-01.4: Zero `langsmith_production` in agent-api source (EXPANDED SCOPE)
+/home/zaks/bookkeeping/docs/QA-LANGSMITH-SHADOW-PILOT-VERIFY-001.md:137:HITS=$(grep -rn "langsmith_production" /home/zaks/zakops-agent-api/apps/agent-api/ 2>/dev/null | grep -v __pycache__ | grep -v node_modules | wc -l) || HITS=0
+/home/zaks/bookkeeping/docs/QA-LANGSMITH-SHADOW-PILOT-VERIFY-001.md:139:grep -rn "langsmith_production" /home/zaks/zakops-agent-api/apps/agent-api/ 2>/dev/null | grep -v __pycache__ | grep -v node_modules | tee -a "$EVIDENCE_DIR/VF-01-4.txt"
+/home/zaks/bookkeeping/docs/QA-LANGSMITH-SHADOW-PILOT-VERIFY-001.md:143:#### VF-01.5: Zero `langsmith_production` in bookkeeping docs (EXPANDED SCOPE)
+/home/zaks/bookkeeping/docs/QA-LANGSMITH-SHADOW-PILOT-VERIFY-001.md:566:**Context:** Completion report claims the contract was updated with 400 response code for unknown source_type and the langsmith_production → langsmith_live fix.
+/home/zaks/bookkeeping/docs/QA-LANGSMITH-SHADOW-PILOT-VERIFY-001.md:577:# Verify no langsmith_production in contract
+/home/zaks/bookkeeping/docs/QA-LANGSMITH-SHADOW-PILOT-VERIFY-001.md:578:LP_HITS=$(grep -c "langsmith_production" /home/zaks/zakops-backend/docs/INJECTION-CONTRACT.md 2>/dev/null) || LP_HITS=0
+/home/zaks/bookkeeping/docs/QA-LANGSMITH-SHADOW-PILOT-VERIFY-001.md:741:### ENH-1: Database Migration for Existing `langsmith_production` Rows
+/home/zaks/bookkeeping/docs/QA-LANGSMITH-SHADOW-PILOT-VERIFY-001.md:742:The completion report's follow-up item #1: any quarantine_items rows stored with `langsmith_production` before the drift fix remain unchanged. A future `UPDATE ... SET source_type = 'langsmith_live' WHERE source_type = 'langsmith_production'` migration would clean these.

@@ -1,0 +1,36 @@
+All public methods in ChatRepository:
+28:    def to_dict(self) -> dict:
+39:    def to_dict(self) -> dict:
+58:    async def create_thread(
+96:    async def get_thread(self, thread_id: str, user_id: str) -> ChatThread:
+117:    async def list_threads(
+154:    async def update_thread(
+190:    async def soft_delete_thread(self, thread_id: str, user_id: str) -> None:
+209:    async def hard_delete_thread(self, thread_id: str, user_id: str) -> None:
+273:    async def restore_thread(self, thread_id: str, user_id: str) -> ChatThread:
+290:    async def add_message(
+353:    async def get_messages(
+391:    async def get_messages_since_turn(
+416:    async def get_thread_for_llm(
+446:    async def record_cost(
+494:    async def enqueue_brain_extraction(
+529:    async def get_message_proposals(self, message_id: str) -> list:
+550:    async def update_proposal_status(
+617:    async def validate_deal_reference(self, deal_id: str) -> bool:
+---
+Spec S3.6 required methods:
+  create_thread: 1
+  get_thread: 2
+  list_threads: 1
+  update_thread: 1
+  soft_delete_thread: 1
+  hard_delete_thread: 1
+  restore_thread: 1
+  add_message: 1
+  get_messages: 2
+  get_thread_for_llm: 1
+  validate_deal_reference: 1
+  enqueue_brain_extraction: 1
+---
+Methods found: 12 / 12
+VERDICT: PASS (12 >= 10)

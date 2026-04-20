@@ -1,0 +1,5 @@
+decision_outcomes table: line 92
+  Line 92: CREATE TABLE IF NOT EXISTS zakops.decision_outcomes (
+---
+Columns: deal_id, decision_id, predicted_value, actual_value, delta, recorded_by, recorded_at
+VERDICT: PASS

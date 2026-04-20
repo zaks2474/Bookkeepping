@@ -1,0 +1,11 @@
+170:HITL_TOOLS = frozenset([
+185:    return tool_name in HITL_TOOLS
+# Tools that require HITL approval
+# R3 REMEDIATION: Both transition_deal and create_deal require HITL
+# These are destructive operations that modify deal state
+HITL_TOOLS = frozenset([
+    "transition_deal",
+    "create_deal",
+])
+
+

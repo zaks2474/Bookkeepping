@@ -1,0 +1,4 @@
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:2277:// ── COL-V2 S19.5: Devil's Advocate ────────────────────────
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:2298:export interface DevilsAdvocateResult {
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:2315:export async function getDealChallenge(dealId: string): Promise<DevilsAdvocateResult | null> {
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:2317:    return await apiFetch<DevilsAdvocateResult>(`/api/deals/${dealId}/brain/challenge`);

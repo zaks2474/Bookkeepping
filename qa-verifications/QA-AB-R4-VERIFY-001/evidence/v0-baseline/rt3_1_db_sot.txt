@@ -1,0 +1,25 @@
+=== DATABASE SOURCE OF TRUTH CHECK ===
+
+--- BACKEND DATABASE ENV ---
+7:DATABASE_URL=postgresql://zakops:zakops_dev@postgres:5432/zakops
+9:DATABASE_BACKEND=postgresql
+
+--- BACKEND POSTGRES CONTAINER STATUS ---
+zakops-backend-postgres-1	Up 1 second (health: starting)
+
+--- DATABASE IDENTITY (zakops-postgres) ---
+ current_database | inet_server_addr |                                         version                                          
+------------------+------------------+------------------------------------------------------------------------------------------
+ zakops           |                  | PostgreSQL 15.15 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit
+(1 row)
+
+
+--- DEAL COUNT IN ACTUAL DB (zakops-postgres) ---
+ deal_count 
+------------
+         22
+(1 row)
+
+
+--- DEAL COUNT FROM API ---
+API returns: 22 deals

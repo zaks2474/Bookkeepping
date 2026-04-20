@@ -1,0 +1,29 @@
+=== VF-03: Standard 3-Column Table Accuracy ===
+
+Verified .codex/AGENTS.md and .agents/AGENTS.md tables against canonical source:
+
+| # | Table Name | Table Command | Canonical Command | Match |
+|---|-----------|---------------|-------------------|-------|
+| 1 | Backend → Dashboard | make sync-types | make sync-types | ✓ |
+| 2 | Backend → Agent SDK | make sync-backend-models | make sync-backend-models | ✓ |
+| 3 | Agent API OpenAPI Spec | make update-agent-spec | make update-agent-spec | ✓ |
+| 4 | Agent → Dashboard | make sync-agent-types | make sync-agent-types | ✓ |
+| 5 | RAG → Backend SDK | make sync-rag-models | make sync-rag-models | ✓ |
+| 6 | MCP Tool Schemas | (reference schema) | (no command) | ✓ |
+| 7 | SSE Event Schema | (reference schema) | (no command) | ✓ |
+| 8 | Agent Configuration | make validate-agent-config | make validate-agent-config | ✓ |
+| 9 | Component Design System → Dashboard | make validate-surface9 | bash tools/infra/validate-surface9.sh | ✓* |
+| 10 | Dependency Health | make validate-surface10 | make validate-surface10 | ✓ |
+| 11 | Secret & Environment Variable Registry | make validate-surface11 | make validate-surface11 | ✓ |
+| 12 | Error Taxonomy | make validate-surface12 | make validate-surface12 | ✓ |
+| 13 | Test Coverage | make validate-surface13 | make validate-surface13 | ✓ |
+| 14 | Performance Budget | make validate-surface14 | make validate-surface14 | ✓ |
+| 15 | MCP Bridge Tool Interface | make validate-surface15 | make validate-surface15 | ✓ |
+| 16 | Email Triage Injection | make validate-surface16 | make validate-surface16 | ✓ |
+| 17 | Dashboard API Route Coverage | make validate-surface17 | make validate-surface17 | ✓ |
+
+* S9: Canonical has only `bash tools/infra/validate-surface9.sh` (no make variant).
+  Script correctly constructs `make validate-surface9` via the fallback logic (line 73).
+  This is the bug fix described in the completion report — VERIFIED.
+
+VERDICT: PASS — All 17 names and commands match canonical source

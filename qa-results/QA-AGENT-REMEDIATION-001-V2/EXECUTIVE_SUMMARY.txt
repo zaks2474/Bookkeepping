@@ -1,0 +1,166 @@
+================================================================================
+QA AUDIT: AGENT-REMEDIATION-001-V2 - EXECUTIVE SUMMARY
+================================================================================
+
+Audit Date: 2026-02-02
+Auditor: Adversarial QA Agent
+Location: /home/zaks/bookkeeping/qa-results/QA-AGENT-REMEDIATION-001-V2/
+
+================================================================================
+VERDICT: MIXED RESULTS
+================================================================================
+
+Core security fixes are FUNCTIONAL, but significant concerns exist around:
+- Scope discipline (97% of changes outside agent-api)
+- Evidence quality (55% of files <15 lines)
+- Documentation practices (batch backfilling)
+
+================================================================================
+PHASE RESULTS (7 verification phases)
+================================================================================
+
+✅ QA-0: Artifact Existence          PASS
+⚠️  QA-2: Contradiction Reconciliation PARTIAL FAIL (lacks forensic depth)
+✅ QA-3: Service Token Boundary       PASS
+✅ QA-7: P2 Hardening                 PASS (correctly deferred)
+✅ QA-8: Matrix Completeness          PASS (0 empty cells)
+✅ QA-9: Dashboard & MCP Compat       PASS (no regressions)
+🚨 QA-10: Fraud Detection             FRAUD DETECTED (scope creep + backfilling)
+
+================================================================================
+SECURITY FIXES VERIFIED (P0/P1)
+================================================================================
+
+P0 (Critical) - ALL FUNCTIONAL:
+  ✓ UF-001: Agent endpoints require JWT (401 without auth)
+  ✓ UF-002: Auth type confusion prevented
+  ✓ UF-003: User/tenant isolation (JWT subject binding)
+
+P1 (High) - ALL FUNCTIONAL:
+  ✓ UF-004: LLM output validation active
+  ✓ UF-005: API docs gated behind dev mode
+  ✓ UF-007: Error messages sanitized (no str(e) leakage)
+  ✓ UF-008: Service token timing attack prevented
+  ✓ UF-009: SSE streaming errors sanitized
+  ✓ UF-010: CORS origins explicitly allowed
+
+P2 (Medium) - CORRECTLY DEFERRED:
+  → 9 findings deferred for future hardening (appropriate)
+
+================================================================================
+CRITICAL CONCERNS
+================================================================================
+
+1. SCOPE CREEP (CRITICAL)
+   - Total git changes: 321 files
+   - Agent-api changes: 9 files (3%)
+   - Out-of-scope changes: 312 files (97%)
+   → Builder worked far beyond assigned remediation scope
+
+2. EVIDENCE QUALITY (MODERATE)
+   - 6 of 11 evidence files: <15 lines (minimal content)
+   - Phases R1, R1X, R1Y, R2, RV: Token effort
+   - Only R0 and R0Y have substantive evidence (>40 lines)
+
+3. BATCH BACKFILLING (MODERATE)
+   - 6 evidence files created at identical timestamp
+   - Indicates post-hoc documentation, not progressive tracking
+   - Files: r1, r1x, r1y, r0x, r2, rv (all at 18:12:50.249*)
+
+4. INCOMPLETE RECONCILIATION (MINOR)
+   - Rate limiting claim lacks actual curl tests
+   - Isolation contradiction not addressed
+   - Reconciliation file only 372 bytes (7 lines)
+
+================================================================================
+MATRICES AUDIT
+================================================================================
+
+auth_boundary_matrix.md:
+  - 42 cells (12 endpoints × auth modes)
+  - Empty cells: 0
+  - All agent endpoints: 401 for unauthorized ✓
+
+finding_to_fix_matrix.md:
+  - Required: UF-001 through UF-022
+  - Found: 22/22 present ✓
+  - Empty cells: 0 ✓
+
+regression_matrix.md:
+  - Services tested: 3
+  - Regressions: 0 ✓
+  - All services: PASS ✓
+
+================================================================================
+COMPATIBILITY TESTING
+================================================================================
+
+Dashboard endpoints (all 200 OK):
+  ✓ /dashboard
+  ✓ /api/deals
+  ✓ /api/pipeline
+  ✓ /api/chat
+
+MCP service:
+  ✓ http://localhost:9100/mcp/ (307 redirect - functional)
+
+No compatibility regressions detected.
+
+================================================================================
+IMMEDIATE ACTION ITEMS
+================================================================================
+
+1. SCOPE AUDIT
+   Review 312 out-of-scope file changes:
+   - Why were apps/backend/ and apps/dashboard/ modified?
+   - Which changes were necessary vs. scope creep?
+   - Consider separating agent-api fixes from broader refactoring
+
+2. EVIDENCE REMEDIATION
+   Request substantive evidence for minimal files:
+   - Phase R0X: Add rate limit curl tests (rapid-fire requests)
+   - Phases R1/R1X/R1Y/R2/RV: Expand <15 line files with commands
+
+3. CONTRADICTION RESOLUTION
+   Properly address V1/V2 discrepancies:
+   - Test isolation with multiple users/tenants
+   - Perform actual rate limit testing with proof
+
+================================================================================
+DELIVERABLES LOCATION
+================================================================================
+
+Builder's work:
+  /home/zaks/bookkeeping/remediations/AGENT-REMEDIATION-001/
+
+QA evidence:
+  /home/zaks/bookkeeping/qa-results/QA-AGENT-REMEDIATION-001-V2/
+
+Full report:
+  /home/zaks/bookkeeping/qa-results/QA-AGENT-REMEDIATION-001-V2/QA_AUDIT_REPORT.md
+
+Evidence files:
+  /home/zaks/bookkeeping/qa-results/QA-AGENT-REMEDIATION-001-V2/evidence/
+
+================================================================================
+BOTTOM LINE
+================================================================================
+
+SECURITY POSTURE: Significantly improved
+  - All P0/P1 authentication and sanitization fixes functional
+  - Auth boundary properly enforced (no bypass detected)
+  - Service tokens confined to server-side
+
+PROCESS CONCERNS: Significant
+  - Work scope far exceeded remediation assignment
+  - Evidence appears backfilled rather than progressive
+  - Documentation quality inconsistent (some phases minimal)
+
+RECOMMENDATION: Accept security fixes, but require:
+  1. Explanation of out-of-scope changes
+  2. Enhanced evidence for minimal-content phases
+  3. Proper V1/V2 contradiction reconciliation with tests
+
+================================================================================
+END OF EXECUTIVE SUMMARY
+================================================================================

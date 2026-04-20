@@ -1,0 +1,6 @@
+    DATE_TRUNC('month', created_at) AS month,
+    SUM(input_tokens) AS total_input_tokens,
+    SUM(output_tokens) AS total_output_tokens,
+    SUM(cost_usd) AS total_cost_usd,
+    COUNT(DISTINCT user_id) AS unique_users,
+    MODE() WITHIN GROUP (ORDER BY model) AS primary_model

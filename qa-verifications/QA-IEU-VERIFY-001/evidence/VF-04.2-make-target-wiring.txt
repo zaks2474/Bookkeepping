@@ -1,0 +1,14 @@
+=== VF-04.2 MAKE TARGET WIRING ===
+427:	@bash tools/infra/validate-surface10.sh
+432:	@bash tools/infra/validate-surface11.sh
+437:	@bash tools/infra/validate-surface12.sh
+442:	@bash tools/infra/validate-surface13.sh
+447:	@bash tools/infra/validate-surface14.sh
+464:	@bash tools/infra/validate-surface10.sh
+465:	@bash tools/infra/validate-surface11.sh
+466:	@bash tools/infra/validate-surface12.sh
+467:	@bash tools/infra/validate-surface13.sh
+468:	@bash tools/infra/validate-surface14.sh
+475:	@bash tools/infra/validate-stop-hook-contract.sh
+476:	@bash tools/infra/validate-stop-hook-selftest.sh
+484:	@bash tools/infra/validate-stop-hook-selftest.sh

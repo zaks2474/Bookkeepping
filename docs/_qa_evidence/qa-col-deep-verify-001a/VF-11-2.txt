@@ -1,0 +1,9 @@
+Line 31: def record_attempt(self, session_id: str, severity: str) -> bool:
+  Increments attempts (line 38)
+  Checks threshold (line 40)
+  Returns True when lockdown triggered
+---
+Class: SessionInjectionTracker (line 24)
+Integration: graph.py line 82 imports, line 1134 calls record_attempt()
+Singleton: line 62: session_injection_tracker = SessionInjectionTracker()
+VERDICT: PASS

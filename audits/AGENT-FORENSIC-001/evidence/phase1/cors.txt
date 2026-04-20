@@ -1,0 +1,33 @@
+AGENT-FORENSIC-001 Phase 1 — Step 1.10: CORS Configuration
+============================================================
+Date: 2026-02-02
+
+CONFIGURATION (main.py:115-121):
+  allow_origins = settings.ALLOWED_ORIGINS  → defaults to ["*"]
+  allow_credentials = True
+  allow_methods = ["*"]
+  allow_headers = ["*"]
+
+LIVE TEST RESULTS:
+
+OPTIONS preflight from http://evil.com:
+  → 400 Bad Request (no access-control-allow-origin returned)
+  → access-control-allow-methods: DELETE, GET, HEAD, OPTIONS, PATCH, POST, PUT
+  → access-control-allow-credentials: true
+  → access-control-allow-headers: Content-Type
+
+GET from http://evil.com:
+  → 200 OK
+  → access-control-allow-credentials: true
+  → NO access-control-allow-origin header
+
+ANALYSIS:
+[WARN] CORS config has allow_origins=["*"] with allow_credentials=True
+       — Per spec, browsers reject Access-Control-Allow-Origin: * when credentials=true
+       — FastAPI's CORSMiddleware handles this by NOT reflecting the origin when it's "*"
+         with credentials, making cross-origin credentialed requests fail
+       — However, if ALLOWED_ORIGINS is set to specific origins, the origin IS reflected
+[INFO] Current config effectively blocks credentialed cross-origin requests
+       because the middleware doesn't echo back the origin with wildcard + credentials
+[WARN] allow_methods=["*"] and allow_headers=["*"] are overly permissive
+[INFO] In development environment this is acceptable but must be locked down for production

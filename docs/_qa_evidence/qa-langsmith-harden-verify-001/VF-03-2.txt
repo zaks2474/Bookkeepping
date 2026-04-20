@@ -1,0 +1,16 @@
+432:    async def _fetch_registry(self, bundle: EvidenceBundle, deal_id: str):
+433-        """Fetch deal from PostgreSQL (canonical source of truth)."""
+434-        try:
+435-            conn = await asyncpg.connect(BACKEND_DB_URL)
+436-            try:
+437-                row = await conn.fetchrow(
+438-                    "SELECT deal_id, canonical_name, stage, status, broker, "
+439-                    "metadata, updated_at "
+440-                    "FROM zakops.deals WHERE deal_id = $1 AND deleted = FALSE",
+441-                    deal_id,
+442-                )
+443-                if row:
+444-                    broker_data = row["broker"] or {}
+445-                    if isinstance(broker_data, str):
+446-                        broker_data = json.loads(broker_data)
+447-                    metadata = row["metadata"] or {}

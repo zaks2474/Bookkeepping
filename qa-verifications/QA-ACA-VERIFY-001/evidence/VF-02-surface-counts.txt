@@ -1,0 +1,20 @@
+=== VF-02: Surface Count = 17 in All 3 Files (AC-2) ===
+
+Canonical source: .claude/rules/contract-surfaces.md line 11: "## The 17 Contract Surfaces"
+
+1. /home/zaks/.codex/AGENTS.md
+   - Line 123: "## Contract Surfaces (17 Total)" ✓
+   - Table rows: 17 (S1-S17 at lines 128-144) ✓
+   - Format: standard 3-column ✓
+
+2. /home/zaks/zakops-agent-api/.agents/AGENTS.md
+   - Line 30: "## Contract Surfaces (17 Total)" ✓
+   - Table rows: 17 (S1-S17 at lines 75-91) ✓
+   - Format: standard 3-column ✓
+
+3. /home/zaks/zakops-agent-api/GEMINI.md
+   - Line 11: "## 3. The 17 Contract Surfaces" ✓
+   - Table rows: 17 (S1-S17 at lines 16-32) ✓
+   - Format: gemini 5-column ✓
+
+VERDICT: PASS — All 3 files show 17 surfaces matching canonical

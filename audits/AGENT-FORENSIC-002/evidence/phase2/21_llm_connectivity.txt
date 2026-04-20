@@ -1,0 +1,32 @@
+=== STEP 2.1: LLM Through Agent ===
+--- Test 1: Simple math (proves generation, not echo) ---
+{
+    "detail": "Authentication required"
+}
+--- Test 2: Multi-sentence reasoning ---
+{
+    "detail": "Authentication required"
+}
+--- Test 3: V1 Chatbot path (JWT auth) ---
+{
+    "detail": "Not Found"
+}
+NOTE: /api/v1/sessions did not return session_id; attempting /api/v1/auth/session
+{
+  "session_id": "18b4dbcf-ebc1-4934-b4a8-f395a65d465c",
+  "name": "",
+  "token": {
+    "access_token": "eyJh****guZQ",
+    "token_type": "bearer",
+    "expires_at": "2026-03-05T02:48:44.401831Z"
+  }
+}
+F002_SESSION=18b4dbcf-ebc1-4934-b4a8-f395a65d465c
+{
+    "detail": "Not authenticated. Provide either X-Service-Token or Bearer token."
+}
+NOTE: If above failed, try messages[] format per OpenAPI
+{
+    "detail": "Not authenticated. Provide either X-Service-Token or Bearer token."
+}
+GATE G2.1: Response contains coherent LLM text (not error/empty/stub)

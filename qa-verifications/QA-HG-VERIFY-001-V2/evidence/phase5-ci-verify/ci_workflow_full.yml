@@ -1,0 +1,239 @@
+# ZakOps Monorepo CI Pipeline
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ===========================================================================
+  # Detect Changes
+  # ===========================================================================
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      agent-api: ${{ steps.filter.outputs.agent-api }}
+      dashboard: ${{ steps.filter.outputs.dashboard }}
+      contracts: ${{ steps.filter.outputs.contracts }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            agent-api:
+              - 'apps/agent-api/**'
+            dashboard:
+              - 'apps/dashboard/**'
+            contracts:
+              - 'packages/contracts/**'
+
+  # ===========================================================================
+  # Agent API
+  # ===========================================================================
+  agent-api:
+    needs: changes
+    if: needs.changes.outputs.agent-api == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/agent-api
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Set up Python
+        run: uv python install 3.12
+
+      - name: Install dependencies
+        run: uv sync --extra dev
+
+      - name: Lint
+        run: uv run ruff check app/
+
+      - name: Type check (regression gate)
+        run: |
+          OUTPUT=$(uv run mypy app/ --ignore-missing-imports --explicit-package-bases 2>&1)
+          echo "$OUTPUT"
+          ERRORS=$(echo "$OUTPUT" | grep -oP 'Found \K[0-9]+(?= error)' || echo "0")
+          if [ -z "$ERRORS" ]; then ERRORS=0; fi
+          BASELINE=$(head -1 ../../tools/type_baselines/mypy_baseline.txt)
+          echo "mypy errors: $ERRORS (baseline: $BASELINE)"
+          if [ "$ERRORS" -gt "$BASELINE" ]; then
+            echo "::error::mypy error count ($ERRORS) exceeds baseline ($BASELINE)"
+            exit 1
+          fi
+
+      - name: Test
+        env:
+          DATABASE_URL: postgresql://test:test@localhost:5432/test
+        run: uv run pytest evals/ -v --tb=short || test $? -eq 5
+
+  # ===========================================================================
+  # Dashboard
+  # ===========================================================================
+  dashboard:
+    needs: changes
+    if: needs.changes.outputs.dashboard == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/dashboard
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: apps/dashboard/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type check
+        run: npm run type-check
+
+      - name: Build
+        run: npm run build
+
+      - name: Test
+        run: npm test -- --passWithNoTests
+
+  # ===========================================================================
+  # Contract Validation
+  # ===========================================================================
+  contracts:
+    needs: changes
+    if: needs.changes.outputs.contracts == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate OpenAPI
+        run: npx @redocly/cli lint packages/contracts/openapi/*.json
+
+      - name: Redocly ignore debt check
+        run: |
+          IGNORE_COUNT=$(grep -c "^    - " .redocly.lint-ignore.yaml 2>/dev/null || echo 0)
+          CEILING=57
+          echo "Redocly ignores: $IGNORE_COUNT (ceiling: $CEILING)"
+          if [ "$IGNORE_COUNT" -gt "$CEILING" ]; then
+            echo "::error::Redocly ignore count ($IGNORE_COUNT) exceeds ceiling ($CEILING). Fix the lint issue or update ceiling with justification in docs/debt-ledger.md."
+            exit 1
+          fi
+
+  # ===========================================================================
+  # Type Sync (Codegen Drift Detection)
+  # ===========================================================================
+  type-sync:
+    needs: changes
+    if: needs.changes.outputs.dashboard == 'true' || needs.changes.outputs.contracts == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/dashboard
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: apps/dashboard/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Codegen from committed spec
+        run: npx openapi-typescript ../../packages/contracts/openapi/zakops-api.json -o src/lib/api-types.generated.ts
+
+      - name: Drift check
+        run: |
+          if ! git diff --exit-code src/lib/api-types.generated.ts; then
+            echo "::error::Generated types are out of sync with committed spec. Run 'make sync-types' locally."
+            exit 1
+          fi
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Legacy import check
+        run: |
+          VIOLATIONS=$(grep -r "api-types\.generated" src/ --include='*.ts' --include='*.tsx' -l | grep -v "src/types/api.ts" | grep -v "src/lib/api-types.generated.ts" || true)
+          if [ -n "$VIOLATIONS" ]; then
+            echo "::error::Direct imports from api-types.generated found outside bridge file:"
+            echo "$VIOLATIONS"
+            exit 1
+          fi
+
+      - name: Manual type debt check
+        run: |
+          MANUAL=$(grep -c "MANUAL_TYPE_DEBT" src/types/api.ts 2>/dev/null || echo 0)
+          CEILING=0
+          echo "Manual types: $MANUAL (ceiling: $CEILING)"
+          if [ "$MANUAL" -gt "$CEILING" ]; then
+            echo "::error::Manual type count ($MANUAL) exceeds ceiling ($CEILING). Update docs/debt-ledger.md with justification."
+            exit 1
+          fi
+
+      - name: Zod ceiling check (backup — ESLint is primary gate)
+        run: |
+          # Primary enforcement is via ESLint no-restricted-imports rule.
+          # This grep check is a backup safety net.
+          ZOD_FILES=$(grep -rl "from.*zod" src/ --include='*.ts' --include='*.tsx' | \
+            grep -v "validators\|api.ts\|parsers\|schemas" | wc -l)
+          CEILING=46
+          echo "Zod consumer files outside approved modules: $ZOD_FILES (ceiling: $CEILING)"
+          if [ "$ZOD_FILES" -gt "$CEILING" ]; then
+            echo "::warning::Zod found outside approved modules. ESLint should have caught this."
+          fi
+
+  # ===========================================================================
+  # Gate Check (Full Suite)
+  # ===========================================================================
+  gates:
+    needs: [agent-api, dashboard, type-sync]
+    if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check all jobs passed
+        run: |
+          if [[ "${{ needs.agent-api.result }}" == "failure" ]] || \
+             [[ "${{ needs.dashboard.result }}" == "failure" ]] || \
+             [[ "${{ needs.type-sync.result }}" == "failure" ]]; then
+            echo "One or more jobs failed"
+            exit 1
+          fi
+          echo "All gates passed"

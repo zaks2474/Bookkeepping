@@ -1,0 +1,7 @@
+=== XC-4 FINDINGS VERIFICATION VS CURRENT STATE ===
+--- Findings verification should show CONFIRMED for all ---
+finding_status_lines=16
+--- All findings should now be REMEDIATED (code changed since verification) ---
+F-1: 0 raw buttons
+F-5: 0 rewrite functions
+F-9: 0 fixed 500px

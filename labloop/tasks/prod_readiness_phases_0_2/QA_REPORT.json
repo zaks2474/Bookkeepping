@@ -1,0 +1,21 @@
+{
+  "verdict": "PASS",
+  "cycle": 1,
+  "early_exit": false,
+  "summary": "All gates passed successfully. Golden traces, OWASP LLM security tests, and Trust UX components were verified.",
+  "blockers": [],
+  "majors": [],
+  "minors": [],
+  "spec_compliance": {
+    "endpoints_match": true,
+    "schemas_match": true,
+    "status_strings_match": true,
+    "auth_matches": true,
+    "db_mode_matches": true,
+    "streaming_matches": true,
+    "local_llm_lane_verified": true,
+    "mocks_disabled_for_gates": true
+  },
+  "next_actions_for_builder": [],
+  "evidence": []
+}

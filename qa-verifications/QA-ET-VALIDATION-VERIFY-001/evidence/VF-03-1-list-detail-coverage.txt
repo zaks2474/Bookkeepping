@@ -1,0 +1,13 @@
+=== VF-03.1 LIST + DETAIL COVERAGE ===
+87:        source_type: sourceTypeFilter || undefined,
+427:                    const subj = item.email_subject || item.subject || 'Unknown subject';
+429:                    const received = item.received_at || item.timestamp;
+461:                              {item.urgency && (
+462:                                <Badge variant={item.urgency === 'high' ? 'destructive' : 'secondary'} className='text-xs'>
+463:                                  {item.urgency}
+466:                              {item.classification && (
+468:                                  {item.classification}
+474:                              {item.source_type?.startsWith('langsmith_') && (
+514:                  {selectedItem ? (selectedItem.email_subject || selectedItem.subject || 'Email preview') : 'Select an item'}
+519:                {selectedItem?.source_type?.startsWith('langsmith_') && (
+523:                      Shadow Mode — {selectedItem.source_type}

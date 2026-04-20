@@ -1,0 +1,14 @@
+=== PRE-3.1: Pre-Reset State ===
+--- Agent DB: Row Counts ---
+       tbl       | count 
+-----------------+-------
+ approvals       |     7
+ tool_executions |     3
+ audit_log       |    14
+ checkpoints     |   410
+(4 rows)
+
+
+--- Backend DB: Row Counts ---
+
+PRE-3: State documented. Not truncating — testing on live data.

@@ -1,0 +1,64 @@
+=== QA-1.1: UF-001 Auth Bypass Testing ===
+Testing ALL agent endpoints without authentication.
+Expected: ALL must return 401 Unauthorized.
+
+TEST 1: POST /api/v1/agent/invoke
+{"detail":"Authentication required"}
+HTTP 401
+
+---
+
+TEST 2: GET /api/v1/agent/sessions
+{"detail":"Not Found"}
+HTTP 404
+
+---
+
+TEST 3: POST /api/v1/agent/sessions
+{"detail":"Not Found"}
+HTTP 404
+
+---
+
+TEST 4: GET /api/v1/agent/approvals
+{"detail":"Authentication required"}
+HTTP 401
+
+---
+
+TEST 5: POST /api/v1/agent/approvals/test-id/approve
+{"detail":"Not Found"}
+HTTP 404
+
+---
+
+TEST 6: POST /api/v1/agent/approvals/test-id/reject
+{"detail":"Not Found"}
+HTTP 404
+
+---
+
+TEST 7: POST /api/v1/chat/stream
+{"detail":"Not Found"}
+HTTP 404
+
+---
+
+TEST 8: DELETE /api/v1/agent/sessions/test-id
+{"detail":"Not Found"}
+HTTP 404
+
+---
+
+TEST 9: PATCH /api/v1/agent/sessions/test-id
+{"detail":"Not Found"}
+HTTP 404
+
+---
+
+TEST 10: GET /api/v1/agent/threads/test-id/state
+{"detail":"Authentication required"}
+HTTP 401
+
+---
+

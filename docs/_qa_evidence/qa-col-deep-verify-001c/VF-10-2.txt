@@ -1,0 +1,5 @@
+=== evaluate() method ===
+Found in: /home/zaks/zakops-agent-api/apps/agent-api/app/services/retention_policy.py
+Lines 48-108: def evaluate(self, thread_id, scope_type, has_legal_hold, has_compliance_flag, created_at)
+Determines tier (highest protection wins), calculates expiration, returns RetentionResult
+RESULT: PASS — evaluate() method present with full tier logic

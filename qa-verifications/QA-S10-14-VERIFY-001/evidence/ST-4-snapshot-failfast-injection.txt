@@ -1,0 +1,3 @@
+=== ST-4 SNAPSHOT FAIL-FAST INJECTION ===
+make infra-snapshot INFRA_TOOLS=/does/not/exist => exit code 2 (non-zero)
+OVERALL= PASS

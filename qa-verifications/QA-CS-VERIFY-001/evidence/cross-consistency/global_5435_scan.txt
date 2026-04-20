@@ -1,0 +1,4 @@
+=== XC-6 ===
+=== Scanning all Claude Code config for port 5435 ===
+/home/zaks/bookkeeping/docs/ClaudeCode_Setup_ZakOps_V5PP_Guide.md: 74:> **Note:** All databases run on port 5432 (single PostgreSQL instance). Port 5435 was eradicated during Deal Integrity (see ADR-002: Canonical Database).
+TOTAL_5435_REFS=found (see above)

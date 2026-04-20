@@ -1,0 +1,11 @@
+=== CHECK 6.A.3 — PLANE 2: Traces ===
+
+--- Langfuse Configuration ---
+LANGFUSE_PUBLIC_KEY=
+LANGFUSE_SECRET_KEY=
+LANGFUSE_HOST=https://cloud.langfuse.com
+
+--- OpenTelemetry/Trace code references ---
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/agent.py:                thread_id=thread_id,  # F-006: Include thread_id for traceability
+/home/zaks/zakops-agent-api/apps/agent-api/app/main.py:async def lifespan(app: FastAPI):
+/home/zaks/zakops-agent-api/apps/agent-api/app/main.py:    lifespan=lifespan,

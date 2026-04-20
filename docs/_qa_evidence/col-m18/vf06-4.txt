@@ -1,0 +1,15 @@
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/security/tool_scoping.py:17:SCOPE_TOOL_MAP: dict[str, frozenset[str]] = {
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/security/tool_scoping.py:78:    scope_tools = SCOPE_TOOL_MAP.get(scope, SCOPE_TOOL_MAP[DEFAULT_SCOPE])
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langgraph_sdk/auth/__init__.py:532:                action_list = [actions]
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langgraph_sdk/auth/__init__.py:534:                action_list = list(actions) if actions is not None else ["*"]
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langgraph_sdk/auth/__init__.py:535:            for action in action_list:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langgraph_sdk/auth/__init__.py:663:                action_list = [actions]
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langgraph_sdk/auth/__init__.py:665:                action_list = list(actions) if actions is not None else ["*"]
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langgraph_sdk/auth/__init__.py:667:                for action in action_list:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/bigquery_vector_search.py:471:        fraction_lists_to_search: Optional[float] = None,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/bigquery_vector_search.py:516:        elif fraction_lists_to_search:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/bigquery_vector_search.py:517:            if fraction_lists_to_search == 0 or fraction_lists_to_search >= 1.0:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/bigquery_vector_search.py:519:                    "`fraction_lists_to_search` must be between 0.0 and 1.0"
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/bigquery_vector_search.py:522:                ',options => \'{"fraction_lists_to_search":'
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/bigquery_vector_search.py:523:                f"{fraction_lists_to_search}}}'"
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/bigquery_vector_search.py:573:        fraction_lists_to_search: Optional[float] = None,

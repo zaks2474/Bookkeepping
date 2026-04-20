@@ -1,0 +1,7 @@
+Line 361: @router.delete('/threads/{thread_id}')
+Line 365: permanent: bool = Query(False)
+Line 375-378: if permanent: hard_delete_thread else: soft_delete_thread
+---
+Legal hold block:
+  Line 380-382: except ValueError as ve: if 'legal hold' in str(ve).lower(): raise HTTPException(status_code=409, detail=str(ve))
+VERDICT: PASS

@@ -1,0 +1,15 @@
+=== VF-05.2 CHECK2 LOGIC ===
+26:CANONICAL_MEMORY="/root/.claude/projects/-home-zaks/memory/MEMORY.md"
+51:  check_fail "1" "Canonical MEMORY.md not found at $CANONICAL_MEMORY"
+55:# CHECK 2: Surface Count Consistency (4-way reconciliation)
+56:# Sources: CLAUDE.md, MEMORY.md, validator header, manifest
+63:if [ -f "$MONOREPO/CLAUDE.md" ]; then
+64:  CLAUDE_MD_SURFACES=$(grep -oP '\d+(?= Total)' "$MONOREPO/CLAUDE.md" 2>/dev/null) || CLAUDE_MD_SURFACES=""
+69:VALIDATOR_SCRIPT="$MONOREPO/tools/infra/validate-contract-surfaces.sh"
+73:MANIFEST="$MONOREPO/INFRASTRUCTURE_MANIFEST.md"
+81:for src_pair in "CLAUDE.md:$CLAUDE_MD_SURFACES" "MEMORY.md:$MEMORY_SURFACES" "validator:$VALIDATOR_SURFACES" "manifest:$MANIFEST_SURFACES"; do
+117:if [ -f "$CANONICAL_MEMORY" ] && [ -f "$MONOREPO/CLAUDE.md" ]; then
+118:  # CLAUDE.md lines
+119:  SENT_CLAUDE_LINES=$(grep -oP 'CLAUDE.md: \K\d+' "$CANONICAL_MEMORY" 2>/dev/null) || SENT_CLAUDE_LINES=""
+120:  ACTUAL_CLAUDE_LINES=$(wc -l < "$MONOREPO/CLAUDE.md" 2>/dev/null | tr -d ' ')
+121:  [ -n "$SENT_CLAUDE_LINES" ] && check_sentinel "CLAUDE.md lines" "$SENT_CLAUDE_LINES" "$ACTUAL_CLAUDE_LINES"

@@ -1,0 +1,532 @@
+=== VF-08.1 FINAL VALIDATION COMMAND SET ===
+[36m=== Sync Types ===[0m
+cd /home/zaks/zakops-agent-api/apps/dashboard && npx openapi-typescript ../../packages/contracts/openapi/zakops-api.json -o src/lib/api-types.generated.ts
+✨ openapi-typescript 7.10.1
+🚀 ../../packages/contracts/openapi/zakops-api.json → src/lib/api-types.generated.ts [113ms]
+[32mTypes regenerated from committed spec[0m
+[36m=== Sync Agent Types ===[0m
+cd /home/zaks/zakops-agent-api/apps/dashboard && npx openapi-typescript ../../packages/contracts/openapi/agent-api.json -o src/lib/agent-api-types.generated.ts
+✨ openapi-typescript 7.10.1
+🚀 ../../packages/contracts/openapi/agent-api.json → src/lib/agent-api-types.generated.ts [61.9ms]
+[32mAgent API types regenerated from committed spec[0m
+[36m[dashboard][0m Linting...
+cd apps/dashboard && npm run lint
+
+> zakops-dashboard@1.0.0 lint
+> next lint
+
+`next lint` is deprecated and will be removed in Next.js 16.
+For new projects, use create-next-app to choose your preferred linter.
+For existing projects, migrate to the ESLint CLI:
+npx @next/codemod@canary next-lint-to-eslint-cli .
+
+ ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of /home/zaks/zakops-agent-api/package-lock.json as the root directory.
+ To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+ Detected additional lockfiles: 
+   * /home/zaks/zakops-agent-api/apps/dashboard/package-lock.json
+
+
+./src/app/actions/page.tsx
+275:6  Warning: React Hook useEffect has a missing dependency: 'actions'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/deals/[id]/page.tsx
+268:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/deals/page.tsx
+126:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/components/global-search.tsx
+147:6  Warning: React Hook React.useEffect has missing dependencies: 'allActions.length', 'allDeals.length', and 'allQuarantine.length'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+180:6  Warning: React Hook React.useEffect has a missing dependency: 'searchAll'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/components/onboarding/OnboardingWizard.tsx
+166:6  Warning: React Hook useEffect has missing dependencies: 'initialState' and 'updatePersistedState'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/hooks/use-realtime-events.ts
+411:6  Warning: React Hook useEffect has missing dependencies: 'connect' and 'disconnect'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+549:6  Warning: React Hook useEffect has missing dependencies: 'connect' and 'disconnect'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/hooks/use-render-tracking.ts
+40:79  Warning: The ref value 'renderCount.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'renderCount.current' to a variable inside the effect, and use that variable in the cleanup function.  react-hooks/exhaustive-deps
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules
+[36m=== Contract Surface Validation ===[0m
+=== CONTRACT SURFACE VALIDATION ===
+
+--- Generated File Freshness ---
+  PASS: Surface 1: Backend -> Dashboard: current
+  PASS: Surface 2: Backend -> Agent SDK: current
+  PASS: Surface 4: Agent -> Dashboard: current
+  PASS: Surface 5: RAG -> Backend SDK: current
+
+--- Reference Schema Existence ---
+  PASS: Surface 3: Agent OpenAPI: exists
+  PASS: Surface 6: MCP Tools: exists
+  PASS: Surface 7: SSE Events: exists
+
+--- Bridge Import Enforcement ---
+  PASS: No direct generated file imports found
+
+--- Typed SDK Enforcement ---
+  PASS: deal_tools.py uses typed SDK (0 untyped patterns)
+
+--- Surface 8: Agent Config Alignment ---
+  PASS: Surface 8: Agent config alignment check passed
+
+--- Surface 9: Design System Conventions ---
+  PASS: Surface 9: Design system convention check passed
+
+--- Surface 10: Dependency Health ---
+  PASS: Surface 10: Dependency health check passed
+
+--- Surface 11: Env Registry ---
+  PASS: Surface 11: Env registry check passed
+
+--- Surface 12: Error Taxonomy ---
+  PASS: Surface 12: Error taxonomy check passed
+
+--- Surface 13: Test Coverage ---
+  PASS: Surface 13: Test coverage check passed
+
+--- Surface 14: Performance Budget ---
+  PASS: Surface 14: Performance budget check passed
+
+================================
+PASS: ALL 14 CONTRACT SURFACE CHECKS PASSED
+[32mContract surface validation passed[0m
+[36m=== Agent Config Validation ===[0m
+WARN: system.md lists tools not found in deal_tools.py:
+  - add_note
+  - create_deal
+  - get_deal
+  - get_deal_health
+  - list_deals
+  - search_deals
+  - transition_deal
+PASS: agent config alignment checks passed
+============================================================
+R3 REMEDIATION [P2.4]: Prompt Tool List Validation
+============================================================
+Loading environment: Environment.DEVELOPMENT
+Loaded environment from /home/zaks/zakops-agent-api/apps/agent-api/.env.development
+[2m2026-02-10T22:35:47.560917Z[0m [[32m[1minfo     [0m] [1mlogging_initialized           [0m [[0m[1m[34mapp.core.logging[0m][0m [36mdebug[0m=[35mTrue[0m [36menvironment[0m=[35mdevelopment[0m [36mfilename[0m=[35mlogging.py[0m [36mfunc_name[0m=[35m<module>[0m [36mlineno[0m=[35m300[0m [36mlog_format[0m=[35mconsole[0m [36mlog_level[0m=[35mDEBUG[0m [36mmodule[0m=[35mlogging[0m [36mpathname[0m=[35m/home/zaks/zakops-agent-api/apps/agent-api/app/core/logging.py[0m
+[2m2026-02-10T22:35:59.120595Z[0m [[31m[1merror    [0m] [1mdatabase_initialization_error [0m [[0m[1m[34mapp.core.logging[0m][0m [36menvironment[0m=[35mdevelopment[0m [36merror[0m=[35m"(psycopg.OperationalError) failed to resolve host 'db': [Errno -3] Temporary failure in name resolution\n(Background on this error at: https://sqlalche.me/e/20/e3q8)"[0m [36mfilename[0m=[35mdatabase.py[0m [36mfunc_name[0m=[35m__init__[0m [36mlineno[0m=[35m68[0m [36mmodule[0m=[35mdatabase[0m [36mpathname[0m=[35m/home/zaks/zakops-agent-api/apps/agent-api/app/services/database.py[0m
+WARN: validate_prompt_tools.py failed (requires running DB) — skipping
+PASS: validate-agent-config.sh
+[32mAgent config validation passed[0m
+[36m=== SSE Schema Validation ===[0m
+PASS: SSE schema valid
+[32mSSE schema validation passed[0m
+[36m=== Frontend Governance Validation ===[0m
+=== Rule Frontmatter Validation ===
+
+Checking: design-system.md
+  PASS: Valid frontmatter with dashboard path coverage
+Checking: accessibility.md
+  PASS: Valid frontmatter with dashboard path coverage
+Checking: component-patterns.md
+  PASS: Valid frontmatter with dashboard path coverage
+
+--- General frontmatter structure check ---
+  OK: accessibility.md has valid frontmatter structure
+  OK: agent-tools.md has valid frontmatter structure
+  INFO: backend-api.md has no frontmatter (non-scoped rule)
+  OK: component-patterns.md has valid frontmatter structure
+  OK: contract-surfaces.md has valid frontmatter structure
+  INFO: dashboard-types.md has no frontmatter (non-scoped rule)
+  OK: design-system.md has valid frontmatter structure
+
+Rule Frontmatter Validation: PASS
+=== Frontend Governance Anchor Validation ===
+
+--- design-system.md governance sections ---
+  PASS: Skill Preload
+  PASS: Responsive Breakpoint
+  PASS: Z-Index
+  PASS: Dark Mode
+  PASS: Animation Performance
+  PASS: State Management
+  PASS: Anti-convergence
+  PASS: Data Fetching
+  PASS: Error Handling
+  PASS: CSS Architecture
+  PASS: Import Discipline
+
+--- accessibility.md governance sections ---
+  PASS: Semantic Structure
+  PASS: Keyboard Navigation
+  PASS: Color Contrast
+  PASS: ARIA
+  PASS: Reduced Motion
+
+--- component-patterns.md governance sections ---
+  PASS: Server vs Client
+  PASS: Loading.*Empty.*Error
+  PASS: Suspense
+  PASS: State Ownership
+  PASS: Composability
+
+--- Port 8090 drift check ---
+  PASS: No port 8090 references in governance rules
+
+Frontend Governance Validation: PASS
+=== Gate E: Raw httpx Client Usage Check ===
+Scanner: grep
+PASS: No raw httpx client usage in deal_tools.py
+[32mFrontend governance validation passed[0m
+[36m=== Local Validation (Offline) ===[0m
+cd /home/zaks/zakops-agent-api/apps/dashboard && npx tsc --noEmit
+make[1]: Entering directory '/home/zaks/zakops-agent-api'
+Redocly ignores: 57 (ceiling: 57)
+make[1]: Leaving directory '/home/zaks/zakops-agent-api'
+[32mAll local validations passed[0m
+[36m=== Contract Surface Validation ===[0m
+=== CONTRACT SURFACE VALIDATION ===
+
+--- Generated File Freshness ---
+  PASS: Surface 1: Backend -> Dashboard: current
+  PASS: Surface 2: Backend -> Agent SDK: current
+  PASS: Surface 4: Agent -> Dashboard: current
+  PASS: Surface 5: RAG -> Backend SDK: current
+
+--- Reference Schema Existence ---
+  PASS: Surface 3: Agent OpenAPI: exists
+  PASS: Surface 6: MCP Tools: exists
+  PASS: Surface 7: SSE Events: exists
+
+--- Bridge Import Enforcement ---
+  PASS: No direct generated file imports found
+
+--- Typed SDK Enforcement ---
+  PASS: deal_tools.py uses typed SDK (0 untyped patterns)
+
+--- Surface 8: Agent Config Alignment ---
+  PASS: Surface 8: Agent config alignment check passed
+
+--- Surface 9: Design System Conventions ---
+  PASS: Surface 9: Design system convention check passed
+
+--- Surface 10: Dependency Health ---
+  PASS: Surface 10: Dependency health check passed
+
+--- Surface 11: Env Registry ---
+  PASS: Surface 11: Env registry check passed
+
+--- Surface 12: Error Taxonomy ---
+  PASS: Surface 12: Error taxonomy check passed
+
+--- Surface 13: Test Coverage ---
+  PASS: Surface 13: Test coverage check passed
+
+--- Surface 14: Performance Budget ---
+  PASS: Surface 14: Performance budget check passed
+
+================================
+PASS: ALL 14 CONTRACT SURFACE CHECKS PASSED
+[32mContract surface validation passed[0m
+[36m=== Frontend Governance Validation ===[0m
+=== Rule Frontmatter Validation ===
+
+Checking: design-system.md
+  PASS: Valid frontmatter with dashboard path coverage
+Checking: accessibility.md
+  PASS: Valid frontmatter with dashboard path coverage
+Checking: component-patterns.md
+  PASS: Valid frontmatter with dashboard path coverage
+
+--- General frontmatter structure check ---
+  OK: accessibility.md has valid frontmatter structure
+  OK: agent-tools.md has valid frontmatter structure
+  INFO: backend-api.md has no frontmatter (non-scoped rule)
+  OK: component-patterns.md has valid frontmatter structure
+  OK: contract-surfaces.md has valid frontmatter structure
+  INFO: dashboard-types.md has no frontmatter (non-scoped rule)
+  OK: design-system.md has valid frontmatter structure
+
+Rule Frontmatter Validation: PASS
+=== Frontend Governance Anchor Validation ===
+
+--- design-system.md governance sections ---
+  PASS: Skill Preload
+  PASS: Responsive Breakpoint
+  PASS: Z-Index
+  PASS: Dark Mode
+  PASS: Animation Performance
+  PASS: State Management
+  PASS: Anti-convergence
+  PASS: Data Fetching
+  PASS: Error Handling
+  PASS: CSS Architecture
+  PASS: Import Discipline
+
+--- accessibility.md governance sections ---
+  PASS: Semantic Structure
+  PASS: Keyboard Navigation
+  PASS: Color Contrast
+  PASS: ARIA
+  PASS: Reduced Motion
+
+--- component-patterns.md governance sections ---
+  PASS: Server vs Client
+  PASS: Loading.*Empty.*Error
+  PASS: Suspense
+  PASS: State Ownership
+  PASS: Composability
+
+--- Port 8090 drift check ---
+  PASS: No port 8090 references in governance rules
+
+Frontend Governance Validation: PASS
+=== Gate E: Raw httpx Client Usage Check ===
+Scanner: grep
+PASS: No raw httpx client usage in deal_tools.py
+[32mFrontend governance validation passed[0m
+[36m=== Surfaces 10-14 + Schema Validation ===[0m
+=== SURFACE 10: DEPENDENCY HEALTH CONTRACT ===
+
+--- Check 1: Source Artifact ---
+  PASS: SERVICE-TOPOLOGY.md exists (95 lines)
+
+--- Check 2: Service Config File Resolution ---
+  PASS: Dashboard — app directory exists
+  PASS: Backend — docker-compose exists
+  PASS: Agent API — docker-compose exists
+  PASS: RAG — repository directory exists
+
+--- Check 3: Health Endpoint Source Resolution ---
+  PASS: Backend health router exists
+  PASS: Agent API main.py exists (health endpoint source)
+  PASS: Dashboard middleware exists (502 handler)
+  PASS: Resilience config exists (circuit breaker source)
+
+--- Check 4: Forbidden Port 8090 ---
+  PASS: No active port 8090 references (2 decommissioned warnings OK)
+
+--- Check 5: Canonical Port Alignment ---
+  PASS: Dashboard port 3003 documented
+  PASS: Backend port 8091 documented
+  PASS: Agent port 8095 documented
+  PASS: RAG port 8052 documented
+
+================================
+PASS: SURFACE 10 DEPENDENCY HEALTH CONTRACT (0 warning(s))
+=== SURFACE 11: ENV REGISTRY CONTRACT ===
+
+--- Check 1: Source Artifact ---
+  PASS: ENV-CROSSREF.md exists (104 lines)
+
+--- Check 2: Cross-Service Variable Discovery ---
+  Cross-service variables: 7 found, 0 not in .env.example
+  PASS: Cross-service variable coverage acceptable
+
+--- Check 3: Service Env File Presence ---
+  PASS: Backend .env.example exists (169 lines)
+  PASS: Agent-API .env.example exists (64 lines)
+  PASS: Dashboard .env.example exists (55 lines)
+
+--- Check 4: Secret Variable Coverage ---
+  PASS: Secret variables annotated in registry (4 entries marked **secret**)
+
+--- Check 5: Forbidden Port 8090 ---
+  PASS: No port 8090 references in .env.example files
+
+================================
+PASS: SURFACE 11 ENV REGISTRY CONTRACT (0 warning(s))
+=== SURFACE 12: ERROR TAXONOMY CONTRACT ===
+
+--- Check 1: Source Artifact ---
+  PASS: ERROR-SHAPES.md exists (158 lines)
+
+--- Check 2: Shape Count ---
+  PASS: 6 error shapes documented (expected >= 6)
+
+--- Check 3: Source File Resolution ---
+  PASS: Shape 1 source — responses.py exists
+  PASS: Shape 1 source — error_codes.py exists
+  PASS: Shape 3 source — agent main.py exists
+  PASS: Shape 4 source — rate_limiter.py exists
+  PASS: Shape 6 source — middleware.ts exists
+
+--- Check 4: Dashboard Error Normalizer ---
+  PASS: error-normalizer.ts handles multiple shapes (detail=12, error=12 references)
+
+--- Check 5: ApiError Class ---
+  PASS: ApiError class present in api.ts (18 references)
+
+================================
+PASS: SURFACE 12 ERROR TAXONOMY CONTRACT (0 warning(s))
+=== SURFACE 13: TEST COVERAGE CONTRACT ===
+
+--- Check 1: Source Artifact ---
+  PASS: TEST-COVERAGE-GAPS.md exists (270 lines)
+
+--- Check 2: Test Directory Presence ---
+  PASS: Backend unit — exists (7 test files)
+  PASS: Backend integration — exists (10 test files)
+  PASS: Backend E2E — exists (9 test files)
+  PASS: Backend contract — exists (4 test files)
+  PASS: Backend security — exists (2 test files)
+  PASS: Agent-API security — exists (6 test files)
+  PASS: Dashboard E2E (Playwright) — exists (8 test files)
+  PASS: Dashboard unit (Vitest) — exists (3 test files)
+  Summary: 8/8 declared test directories found
+
+--- Check 3: Test Framework Configs ---
+  PASS: Backend pyproject.toml exists (pytest config)
+  PASS: Agent-API pyproject.toml exists (pytest config)
+  PASS: Dashboard package.json exists (vitest/playwright config)
+
+--- Check 4: Critical Test Artifacts ---
+  PASS: deal-integrity.test.ts exists
+  PASS: Playwright specs found (12 files)
+  PASS: Backend gate tests found (9 files)
+
+--- Check 5: Known Gaps Documented ---
+  PASS: RAG zero-test gap explicitly documented
+
+================================
+PASS: SURFACE 13 TEST COVERAGE CONTRACT (0 warning(s))
+=== SURFACE 14: PERFORMANCE BUDGET CONTRACT ===
+Mode: ADVISORY
+
+--- Check 1: Source Artifact ---
+  PASS: PERFORMANCE-BUDGET.md exists (73 lines)
+
+--- Check 2: Threshold Coverage ---
+  PASS: 16 measurable thresholds found (minimum 5)
+  PASS: 30 table rows — structured budget tables present
+
+--- Check 3: OpenAPI Spec Size Budget ---
+  PASS: zakops-api.json — 208786 bytes (limit: 512000)
+  PASS: agent-api.json — 73612 bytes (limit: 204800)
+  PASS: rag-api.json — 7053 bytes (limit: 51200)
+
+--- Check 4: Dashboard Bundle Size ---
+  INFO: Static directory size: 187 MB (dev limit: 300 MB)
+  PASS: Dashboard static within dev budget
+  INFO: main-app.js: 7599321 bytes (limit: 2097152)
+  WARN: main-app.js exceeds 2 MB limit (advisory)
+
+--- Check 5: Budget Section Completeness ---
+  Budget sections: 4/4 present
+  PASS: All required budget sections present
+
+================================
+PASS: SURFACE 14 PERFORMANCE BUDGET CONTRACT (1 warning(s))
+=== Performance Budget Schema Validation ===
+
+  PASS: PERFORMANCE-BUDGET.md exists
+  PASS: Schema file exists
+  PASS: Section found: API Latency
+  PASS: Section found: Bundle Size
+  PASS: Section found: Payload Size
+  PASS: Section found: Spec Size
+  PASS: Section found: Ownership
+  PASS: Has millisecond/second targets (8 references)
+  PASS: Has megabyte targets (2 references)
+  PASS: Has kilobyte targets (8 references)
+  PASS: Threshold count: 16 (minimum 5)
+  PASS: Measurement methodology documented
+  PASS: Advisory/strict mode semantics documented
+
+Performance Budget Schema Validation: PASS (13 pass, 0 fail, 0 warn)
+=== Manifest Contract Section Schema Validation ===
+
+  PASS: Manifest file exists
+  PASS: Schema file exists
+  PASS: Contract Surfaces header found
+  PASS: Header references 14 surfaces
+  PASS: Entry count: 14 (expected 14)
+  PASS: All surface IDs S1-S14 present
+  PASS: All entries have valid status (present or PASS)
+  PASS: Generation timestamp present
+  PASS: All S10-S14 labels present (5/5)
+
+Manifest Contract Section Validation: PASS (9 pass, 0 fail, 0 warn)
+[32mSurfaces 10-14 + schema validation passed[0m
+[36m=== Hook Contract Validation ===[0m
+=== Stop Hook Contract Validation (local-only) ===
+Check 1: Multi-path project detection
+  PASS: Three detection paths present (env-override, git-rev-parse, known-path-fallback)
+Check 2: Explicit skip reason
+  PASS: Explicit skip messages present
+Check 3: Gate labels
+  PASS: Gate A label present
+  PASS: Gate B label present
+  PASS: Gate E label present
+Check 4: Time budget
+  PASS: Time budget checks present (3)
+Check 5: Gate E scanner fallback
+  PASS: rg->grep fallback present
+
+Stop Hook Contract Validation: PASS
+=== Stop Hook Self-Test ===
+
+  PASS: Hook file exists
+
+--- Detection Branch Analysis ---
+  PASS: Branch 1: env-override (MONOREPO_ROOT_OVERRIDE)
+  PASS: Branch 2: git-rev-parse
+  PASS: Branch 3: known-path-fallback
+
+--- Fail-Closed Semantics ---
+  PASS: Fail-closed: 9 exit-2 markers (gate failures block stop)
+  PASS: Explicit skip reasons: 3 SKIP messages
+
+--- Gate Label Verification ---
+  PASS: Label: Gate A present
+  PASS: Label: Gate B present
+  PASS: Label: Gate E present
+
+--- Time Budget ---
+  PASS: Time budget enforcement: 3 checks
+
+--- Gate E Scanner Fallback ---
+  PASS: Gate E: rg scanner check present
+  PASS: Gate E: grep fallback present
+
+--- Signature Validation ---
+  PASS: Makefile signature check: validate-fast target lookup
+
+--- Runtime Branch Tests ---
+  PASS: Runtime: env-override branch works
+  PASS: Runtime: known-path-fallback branch works
+
+Stop Hook Self-Test: PASS (15 pass, 0 fail, 0 warn)
+[32mHook contract validation passed[0m
+=== Governance Policy Drift Check ===
+
+--- Surface 9 validator references ---
+  PASS: accessibility.md referenced in validate-surface9.sh
+  PASS: component-patterns.md referenced in validate-surface9.sh
+
+--- CI workflow governance wiring ---
+  PASS: validate-rule-frontmatter.sh referenced in ci.yml
+  PASS: validate-frontend-governance.sh referenced in ci.yml
+  PASS: validate-gatee-scan.sh referenced in ci.yml
+
+--- Makefile governance target ---
+  PASS: validate-frontend-governance target exists
+
+--- validate-local governance inclusion ---
+  PASS: validate-frontend-governance is a validate-local dependency
+
+--- Port 8090 governance rule check ---
+  PASS: No port 8090 in governance rule files
+
+--- Enhancement guard wiring ---
+  PASS: validate-surfaces-new target exists
+  PASS: validate-hook-contract target exists
+  PASS: validate-enhancements target exists
+
+--- CI enhancement gate wiring ---
+  PASS: validate-ci-gatee-policy.sh referenced in ci.yml
+  PASS: validate-surface-count-consistency.sh referenced in ci.yml
+
+--- Governance validation benchmark ---
+  PASS: validate-frontend-governance completed in 27ms (budget: 5000ms)
+
+Governance Drift Check: PASS (no drift)
+EXIT=0

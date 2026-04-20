@@ -1,0 +1,166 @@
+'use client';
+
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { streamChatMessage, type ChatScope, type ChatStreamEvent } from '@/lib/api';
+
+const STORAGE_KEY = 'zakops-chat-session';
+const STORAGE_VERSION = 1;
+
+export interface SharedChatMessage {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp: string;
+  isStreaming?: boolean;
+  dataSource?: string;
+}
+
+interface StoredSession {
+  version: number;
+  messages: SharedChatMessage[];
+  savedAt: string;
+}
+
+function loadMessages(): SharedChatMessage[] {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return [];
+    const parsed: StoredSession = JSON.parse(raw);
+    if (parsed.version !== STORAGE_VERSION) return [];
+    return parsed.messages || [];
+  } catch {
+    return [];
+  }
+}
+
+function saveMessages(messages: SharedChatMessage[]) {
+  try {
+    const existing = localStorage.getItem(STORAGE_KEY);
+    let session: Record<string, unknown> = {};
+    if (existing) {
+      try { session = JSON.parse(existing); } catch { /* ignore */ }
+    }
+    session.version = STORAGE_VERSION;
+    session.messages = messages.filter(m => !m.isStreaming);
+    session.savedAt = new Date().toISOString();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
+  } catch {
+    // localStorage may be unavailable
+  }
+}
+
+/**
+ * Shared chat session hook for syncing messages between Chat page and AgentDrawer.
+ * Both surfaces read/write the same localStorage key.
+ */
+export function useChatSession() {
+  const [messages, setMessages] = useState<SharedChatMessage[]>([]);
+  const [isStreaming, setIsStreaming] = useState(false);
+  const messagesRef = useRef(messages);
+  messagesRef.current = messages;
+
+  // Load messages from localStorage on mount
+  useEffect(() => {
+    setMessages(loadMessages());
+
+    // Listen for storage changes from other tabs/components
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === STORAGE_KEY && e.newValue) {
+        try {
+          const parsed: StoredSession = JSON.parse(e.newValue);
+          if (parsed.version === STORAGE_VERSION) {
+            setMessages(parsed.messages || []);
+          }
+        } catch { /* ignore */ }
+      }
+    };
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
+  }, []);
+
+  // Sync messages to localStorage when changed (debounced)
+  useEffect(() => {
+    if (messages.length > 0 && !messages.some(m => m.isStreaming)) {
+      saveMessages(messages);
+    }
+  }, [messages]);
+
+  const sendMessage = useCallback(async (
+    content: string,
+    scope?: { dealId?: string }
+  ) => {
+    if (!content.trim() || isStreaming) return;
+
+    const userMsg: SharedChatMessage = {
+      id: `user-${Date.now()}`,
+      role: 'user',
+      content: content.trim(),
+      timestamp: new Date().toISOString(),
+    };
+
+    const assistantId = `assistant-${Date.now()}`;
+    const assistantMsg: SharedChatMessage = {
+      id: assistantId,
+      role: 'assistant',
+      content: '',
+      timestamp: new Date().toISOString(),
+      isStreaming: true,
+    };
+
+    setMessages(prev => [...prev, userMsg, assistantMsg]);
+    setIsStreaming(true);
+
+    const chatScope: ChatScope = scope?.dealId
+      ? { type: 'deal', deal_id: scope.dealId }
+      : { type: 'global' };
+
+    try {
+      let accumulated = '';
+      let dataSource: string | undefined;
+
+      for await (const event of streamChatMessage(content, chatScope)) {
+        if (event.type === 'token' && 'token' in event.data && event.data.token) {
+          accumulated += event.data.token;
+          setMessages(prev =>
+            prev.map(m => m.id === assistantId ? { ...m, content: accumulated } : m)
+          );
+        } else if (event.type === 'done') {
+          const doneData = event.data as Record<string, unknown>;
+          if (doneData.final_text && typeof doneData.final_text === 'string') {
+            accumulated = doneData.final_text;
+          }
+          if (doneData.data_source && typeof doneData.data_source === 'string') {
+            dataSource = doneData.data_source;
+          }
+        }
+      }
+
+      setMessages(prev =>
+        prev.map(m => m.id === assistantId
+          ? { ...m, content: accumulated || 'No response received.', isStreaming: false, dataSource }
+          : m
+        )
+      );
+    } catch (err) {
+      setMessages(prev =>
+        prev.map(m => m.id === assistantId
+          ? { ...m, content: `Error: ${err instanceof Error ? err.message : 'Unknown error'}`, isStreaming: false }
+          : m
+        )
+      );
+    } finally {
+      setIsStreaming(false);
+    }
+  }, [isStreaming]);
+
+  const refreshFromStorage = useCallback(() => {
+    setMessages(loadMessages());
+  }, []);
+
+  return {
+    messages,
+    isStreaming,
+    sendMessage,
+    refreshFromStorage,
+  };
+}

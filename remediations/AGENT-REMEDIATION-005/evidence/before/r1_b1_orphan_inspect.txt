@@ -1,0 +1,13 @@
+=== R1.B.1 ORPHAN CONTAINER INVESTIGATION ===
+Name: /zakops-postgres-1
+Image: postgres:15-alpine
+Status: running
+Created: 2026-01-26T03:17:26.334520865Z
+Compose Project: zakops
+Compose Service: postgres
+
+=== PORT COMPARISON ===
+zakops-postgres-1 ports:
+5432/tcp -> 0.0.0.0:5432
+5432/tcp -> [::]:5432
+zakops-backend-postgres-1 ports:

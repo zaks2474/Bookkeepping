@@ -1,0 +1,6 @@
+=== A8.5 ===
+10:TriPass is a multi-agent pipeline orchestrator that runs three AI agents (Claude Code, Gemini CLI, Codex CLI) in parallel for independent investigation, followed by structured cross-review and consolidation. It is a native V5PP capability integrated with the existing gate system, memory system, hooks, and bookkeeping infrastructure.
+166:4. The stop hook logs interrupted runs to the session log for next-session pickup
+170:## V5PP Integration Points
+172:### Gate System
+177:### Memory System

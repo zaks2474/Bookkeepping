@@ -1,0 +1,87 @@
+=== VF-04.2 SNAPSHOT STRUCTURE ===
+latest=/home/zaks/bookkeeping/snapshots/pre-compact-20260211-114226.md
+1:# Pre-Compact Snapshot
+4:## Recent Changes (last 30 lines)
+38:## Monorepo Git Status
+190:## Backend Git Status
+245:## Recent Bookkeeping Snapshots
+# Pre-Compact Snapshot
+## 2026-02-11 11:42:26
+
+## Recent Changes (last 30 lines)
+```
+
+## 2026-02-10 - Dashboard Worldclass Remediation Regression Tests
+
+**What Changed:**
+Created 5 regression test files for DASHBOARD-WORLDCLASS-REMEDIATION-001 mission fixes in `/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/`:
+
+1. `deals-board-shape.test.ts` - Tests DealBoard handles both array and wrapped response shapes
+2. `dashboard-refresh-toast.test.tsx` - Tests auto-refresh silent mode (no toast spam)
+3. `onboarding-sequence.test.tsx` - Tests wizard step sequencing (start at 0, resume, reset)
+4. `quarantine-input-state.test.tsx` - Tests operator name persists only after actions (not keystrokes)
+5. `settings-export-route.test.ts` - Tests export error handling returns user-safe messages
+
+**Why:**
+Prevent regression of DASHBOARD-WORLDCLASS-REMEDIATION-001 fixes. Each test validates a specific remediated behavior with clear "before/after" narrative.
+
+**Files Modified:**
+- Created: `/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/deals-board-shape.test.ts`
+- Created: `/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/dashboard-refresh-toast.test.tsx`
+- Created: `/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/onboarding-sequence.test.tsx`
+- Created: `/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/quarantine-input-state.test.tsx`
+- Created: `/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/settings-export-route.test.ts`
+
+**Test Results:**
+- 27 new regression tests created
+- 24 PASS, 3 FAIL (onboarding async mock issues - non-blocking)
+- Run: `cd /home/zaks/zakops-agent-api/apps/dashboard && npm run test`
+
+**Evidence:**
+All 5 test files self-contained, use vitest, mock all API calls, no service dependencies required.
+
+```
+
+## Monorepo Git Status
+```
+ M .claude/commands/contract-checker.md
+ M .claude/rules/backend-api.md
+ M .claude/rules/contract-surfaces.md
+ M .claude/rules/design-system.md
+ M .github/workflows/ci.yml
+ M CLAUDE.md
+ M INFRASTRUCTURE_MANIFEST.md
+ M Makefile
+ M apps/agent-api/.env.example
+ M apps/agent-api/WHAT_CHANGED.md
+ M apps/agent-api/app/core/langgraph/graph.py
+ M apps/agent-api/app/core/langgraph/tools/deal_tools.py
+ M apps/agent-api/app/core/resilience.py
+ M apps/agent-api/app/core/telemetry/cost_tracking.py
+ M apps/agent-api/app/schemas/backend_models.py
+ M apps/agent-api/app/services/llm.py
+ M apps/agent-api/app/services/rag_rest.py
+ M apps/agent-api/docker-compose.yml
+ M apps/agent-api/evals/datasets/tool_accuracy/v1/prompts.json
+ M apps/agent-api/evals/datasets/tool_selection/v1/cases.json
+ M apps/agent-api/evals/golden_traces/GT-001.json
+ M apps/agent-api/evals/golden_traces/GT-002.json
+ M apps/agent-api/evals/golden_traces/GT-003.json
+ M apps/agent-api/evals/golden_traces/GT-007.json
+ M apps/agent-api/evals/golden_traces/GT-008.json
+ M apps/agent-api/evals/golden_traces/GT-009.json
+ M apps/agent-api/evals/golden_traces/GT-016.json
+ M apps/agent-api/evals/golden_traces/GT-018.json
+ M apps/agent-api/evals/golden_traces/GT-022.json
+ M apps/agent-api/evals/golden_traces/GT-023.json
+ M apps/agent-api/evals/golden_traces/GT-029.json
+ M apps/agent-api/tests/security/test_owasp_llm_top10.py
+ M apps/dashboard/.eslintrc.json
+ M apps/dashboard/Makefile
+ M apps/dashboard/README.md
+ M apps/dashboard/audit/risk-assessment.md
+ M apps/dashboard/src/app/actions/page.tsx
+ M apps/dashboard/src/app/api/actions/[id]/archive/route.ts
+ M apps/dashboard/src/app/api/actions/[id]/execute/route.ts
+ M apps/dashboard/src/app/api/actions/[id]/route.ts
+ M apps/dashboard/src/app/api/actions/bulk/archive/route.ts

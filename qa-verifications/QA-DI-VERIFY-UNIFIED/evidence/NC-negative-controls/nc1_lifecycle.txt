@@ -1,0 +1,34 @@
+================================================================================
+NC-1: LIFECYCLE BYPASS — CHECK Constraint + Trigger Test
+================================================================================
+Timestamp: 2026-02-08
+
+TEST: Attempt impossible state: status='active', stage='archived' on existing deal
+
+Command:
+  docker exec zakops-backend-postgres-1 psql -U zakops -d zakops -c "
+  BEGIN;
+  SELECT deal_id, status, stage, deleted FROM zakops.deals WHERE deal_id = 'DL-QA003';
+  UPDATE zakops.deals SET status = 'active', stage = 'archived' WHERE deal_id = 'DL-QA003';
+  SELECT deal_id, status, stage, deleted FROM zakops.deals WHERE deal_id = 'DL-QA003';
+  ROLLBACK;"
+
+BEFORE: deal_id=DL-QA003, status=active, stage=screening, deleted=f
+AFTER:  deal_id=DL-QA003, status=archived, stage=archived, deleted=f
+
+BEHAVIOR: The enforce_deal_lifecycle_trigger BEFORE UPDATE trigger AUTO-CORRECTED:
+  - Input:  status='active', stage='archived' (invalid combo)
+  - Output: status='archived', stage='archived' (valid combo)
+
+The trigger logic:
+  IF NEW.stage IN ('archived', 'junk') AND NEW.status = 'active' AND NOT NEW.deleted THEN
+      NEW.status := 'archived';
+  END IF;
+
+Then the CHECK constraint validates the corrected state passes:
+  (status='archived' AND stage IN ('archived','junk') AND deleted=false) → VALID
+
+ROLLBACK confirmed — no persistent changes.
+
+VERDICT: PASS — The trigger auto-corrects impossible states before the CHECK constraint evaluates.
+The system does NOT allow status='active' + stage='archived' to persist.

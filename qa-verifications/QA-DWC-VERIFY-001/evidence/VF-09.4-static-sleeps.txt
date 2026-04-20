@@ -1,0 +1,24 @@
+/home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/deal-workspace-tab-truthfulness.spec.ts:7
+/home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/hq-pipeline-legibility-and-controls.spec.ts:5
+/home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/dashboard-worldclass-remediation.spec.ts:8
+/home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/cross-page-integration-flows.spec.ts:2
+/home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/accessibility-contrast-semantics-smoke.spec.ts:2
+/home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/responsive-regression.spec.ts:1
+/home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/actions-detail-workflow.spec.ts:4
+/home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/accessibility-keyboard-sweep.spec.ts:5
+/home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/agent-activity-mobile-density.spec.ts:5
+/home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/visual-regression.spec.ts:1
+/home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/chat-shared.spec.ts:6
+/home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/chat-interaction-closure.spec.ts:21
+/home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/deal-workspace-mobile-readability.spec.ts:5
+/home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/no-dead-ui.spec.ts:3
+/home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/deals-list-responsive-nuqs.spec.ts:3
+/home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/settings-mobile-layout-and-degraded-states.spec.ts:1
+/home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/quarantine-actions.spec.ts:5
+/home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/chat-responsive-toolbar.spec.ts:5
+/home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/actions-mobile-primary-controls.spec.ts:5
+/home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/phase-coverage.spec.ts:3
+/home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/accessibility-focus-management.spec.ts:9
+---
+FAIL: 100+ static waitForTimeout across 17+ E2E test files
+CLASSIFICATION: SCOPE_GAP — widespread pattern, replacing all would be redesign not remediation

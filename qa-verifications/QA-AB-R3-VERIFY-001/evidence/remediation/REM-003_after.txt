@@ -1,0 +1,16 @@
+============================================================
+R3 REMEDIATION [P2.4]: Prompt Tool List Validation
+============================================================
+
+Running in CI mode (using static tool list)
+
+Known tools (7):
+  - duckduckgo_search
+  - transition_deal [HITL]
+  - get_deal
+  - search_deals
+  - create_deal [HITL]
+  - add_note [HITL]
+  - get_deal_health
+
+✅ PASS: Prompt tool list matches known tools (7 tools)

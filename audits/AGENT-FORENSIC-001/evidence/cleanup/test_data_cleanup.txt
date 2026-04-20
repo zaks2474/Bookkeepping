@@ -1,0 +1,12 @@
+=== STEP 1.14: Cleanup ===
+Delete session A (JWT):
+Delete session A: 404
+Delete session A (session token):
+Delete session A (session token): 200
+Delete session B (JWT_B):
+Delete session B: 404
+Users kept: forensic-001@zakops.com, forensic-002@zakops.com
+Delete session B (session token):
+Delete session B (session token): 307
+Delete session B (session token, follow redirects):
+Delete session B (session token, -L): 200

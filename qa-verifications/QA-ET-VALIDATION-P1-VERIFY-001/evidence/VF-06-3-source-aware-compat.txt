@@ -1,0 +1,62 @@
+=== VF-06.3 SOURCE-AWARE COMPATIBILITY ===
+/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py:541:    profile["updated_by"] = "langsmith_bridge"
+/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py:724:    langsmith_run_id: Optional[str] = None,
+/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py:725:    langsmith_trace_url: Optional[str] = None,
+/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py:734:    - shadow_mode=ON: tagged as 'langsmith_shadow' (isolated from production)
+/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py:735:    - shadow_mode=OFF: tagged as 'langsmith_live' (production flow)
+/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py:761:        langsmith_run_id: LangSmith run ID for traceability
+/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py:762:        langsmith_trace_url: LangSmith trace URL
+/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py:801:    # P0-T3: source_type driven by shadow_mode flag (not hardcoded)
+/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py:802:    source_type = "langsmith_shadow" if _get_flag("shadow_mode", default=True) else "langsmith_live"
+/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py:814:        "source_type": source_type,
+/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py:832:        "langsmith_run_id": langsmith_run_id,
+/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py:833:        "langsmith_trace_url": langsmith_trace_url,
+/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py:928:            "source": "langsmith_bridge",
+/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py:929:            "created_by": "langsmith_agent",
+/home/zaks/zakops-backend/src/api/orchestration/main.py:261:    source_type: str | None = None
+/home/zaks/zakops-backend/src/api/orchestration/main.py:264:    langsmith_run_id: str | None = None
+/home/zaks/zakops-backend/src/api/orchestration/main.py:265:    langsmith_trace_url: str | None = None
+/home/zaks/zakops-backend/src/api/orchestration/main.py:281:    - langsmith_* sources: strict required fields (email_subject, sender, classification,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:283:    - email_sync/manual/email: legacy validation (only message_id required)
+/home/zaks/zakops-backend/src/api/orchestration/main.py:289:    # Display fields (email_subject is canonical; subject is backward-compat alias for email_sync)
+/home/zaks/zakops-backend/src/api/orchestration/main.py:291:    subject: str | None = None  # P1-02: legacy email_sync backward compat — mapped to email_subject
+/home/zaks/zakops-backend/src/api/orchestration/main.py:315:    langsmith_run_id: str | None = None
+/home/zaks/zakops-backend/src/api/orchestration/main.py:316:    langsmith_trace_url: str | None = None
+/home/zaks/zakops-backend/src/api/orchestration/main.py:323:    source_type: str | None = None  # manual, email_sync, langsmith_shadow, langsmith_live
+/home/zaks/zakops-backend/src/api/orchestration/main.py:324:    injection_metadata: dict | None = None  # Legacy field for backward compat
+/home/zaks/zakops-backend/src/api/orchestration/main.py:330:        """Map legacy 'subject' to 'email_subject' for backward compat with email_sync."""
+/home/zaks/zakops-backend/src/api/orchestration/main.py:343:# Canonical source_type values — the ONLY values accepted on injection
+/home/zaks/zakops-backend/src/api/orchestration/main.py:344:VALID_SOURCE_TYPES = {"email", "email_sync", "langsmith_shadow", "langsmith_live", "manual"}
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1170:# R2 QA compatibility: legacy/actions alias for quarantine list
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1502:    source_type: str | None = Query(None, description="Filter by source_type (e.g. email_sync, langsmith_shadow)"),
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1527:    if source_type:
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1528:        conditions.append(f"q.source_type = ${param_idx}")
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1529:        params.append(source_type)
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1598:            q.source_type,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1600:            q.langsmith_run_id,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1601:            q.langsmith_trace_url,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1659:            q.source_type,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1661:            q.langsmith_run_id,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1662:            q.langsmith_trace_url,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1694:    P1-04: Source-aware validation enforces strict required fields for langsmith_* sources
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1695:    while preserving backward compat for email_sync/manual flows.
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1722:    # P4-07: source_type from body takes priority, then header, then default
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1723:    source_type = item.source_type or request.headers.get("X-Source-Type") or "email"
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1725:    # Reject unknown source_type values to prevent silent drift
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1726:    if source_type not in VALID_SOURCE_TYPES:
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1730:                "error": "invalid_source_type",
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1731:                "message": f"source_type '{source_type}' is not allowed",
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1736:    # P1-04: Source-aware required field validation for langsmith_* sources
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1737:    if source_type.startswith("langsmith_"):
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1766:    # Store extended fields in raw_content jsonb (backward compat + overflow)
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1793:               q.schema_version, q.source_type, q.version,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1794:               q.langsmith_run_id, q.langsmith_trace_url, q.tool_version,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1819:                 status, correlation_id, source_type, company_name, broker_name,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1821:                 prompt_version, langsmith_run_id, langsmith_trace_url,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1840:                      schema_version, source_type, version,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1841:                      langsmith_run_id, langsmith_trace_url, tool_version,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1846:            item.subject or item.email_subject,  # $3: subject (legacy column, preserves original)
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1850:            item.raw_body,  # $9: body_preview (legacy)
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1855:            correlation_id, source_type,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1859:            item.prompt_version, item.langsmith_run_id, item.langsmith_trace_url,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:2207:                        'source_type': item.get('source_type', 'email'),

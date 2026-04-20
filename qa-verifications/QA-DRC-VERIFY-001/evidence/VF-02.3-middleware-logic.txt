@@ -1,0 +1,6 @@
+  for (const prefix of handledByRoutes) {
+    if (request.nextUrl.pathname === prefix || request.nextUrl.pathname.startsWith(prefix + '/') || request.nextUrl.pathname.startsWith(prefix)) {
+      const response = NextResponse.next();
+      response.headers.set('X-Correlation-ID', correlationId);
+      // COL-V2 S10.2: Inject user identity headers
+      response.headers.set('X-User-Id', USER_ID);

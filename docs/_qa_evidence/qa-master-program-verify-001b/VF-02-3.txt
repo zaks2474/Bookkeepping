@@ -1,0 +1,6 @@
+26:      if (!cancelled && result && result.anomaly_count > 0) {
+35:  const highestSeverity = anomalies.some(a => a.severity === 'high')
+37:    : anomalies.some(a => a.severity === 'medium')
+61:                  a.severity === 'high' ? 'text-red-500' :
+62:                  a.severity === 'medium' ? 'text-amber-500' : 'text-blue-500'
+64:                  [{a.severity}]

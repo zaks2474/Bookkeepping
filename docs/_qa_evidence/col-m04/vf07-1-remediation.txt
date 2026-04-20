@@ -1,0 +1,12 @@
+INSERT INTO zakops.deal_brain (deal_id, summary, facts, created_at, updated_at)
+SELECT
+    d.deal_id,
+    acs.summary_text,
+    acs.facts_json,
+    acs.created_at,
+    acs.updated_at
+FROM zakops.agent_context_summaries acs
+JOIN zakops.deals d ON d.deal_id = acs.deal_id::text
+ON CONFLICT (deal_id) DO NOTHING;
+
+COMMIT;

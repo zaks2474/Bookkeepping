@@ -1,0 +1,21 @@
+● claude-code-api.service - Claude Code OpenWebUI API
+     Loaded: loaded (/etc/systemd/system/claude-code-api.service; disabled; preset: enabled)
+     Active: active (running) since Mon 2026-01-26 20:28:10 CST; 23min ago
+   Main PID: 558595 (python3)
+      Tasks: 6 (limit: 38126)
+     Memory: 38.1M (peak: 39.2M)
+        CPU: 2.060s
+     CGroup: /system.slice/claude-code-api.service
+             └─558595 /usr/bin/python3 -m uvicorn main:app --host 0.0.0.0 --port 8090
+
+Jan 26 20:28:10 Zako systemd[1]: Started claude-code-api.service - Claude Code OpenWebUI API.
+Jan 26 20:28:11 Zako python3[558595]: INFO:     Started server process [558595]
+Jan 26 20:28:11 Zako python3[558595]: INFO:     Waiting for application startup.
+Jan 26 20:28:11 Zako python3[558595]: INFO:     Application startup complete.
+Jan 26 20:28:11 Zako python3[558595]: INFO:     Uvicorn running on http://0.0.0.0:8090 (Press CTRL+C to quit)
+Jan 26 20:28:15 Zako python3[558595]: INFO:     127.0.0.1:49546 - "GET /health HTTP/1.1" 200 OK
+Jan 26 20:28:27 Zako python3[558595]: INFO:     127.0.0.1:36112 - "GET /health HTTP/1.1" 200 OK
+Jan 26 20:44:52 Zako python3[558595]: INFO:     127.0.0.1:57138 - "GET /health HTTP/1.1" 200 OK
+Jan 26 20:45:02 Zako python3[558595]: INFO:     127.0.0.1:37612 - "GET /health HTTP/1.1" 200 OK
+Jan 26 20:51:43 Zako python3[558595]: INFO:     127.0.0.1:45394 - "GET /health HTTP/1.1" 200 OK
+Jan 26 20:51:43 Zako python3[558595]: INFO:     127.0.0.1:45400 - "GET /health HTTP/1.1" 200 OK

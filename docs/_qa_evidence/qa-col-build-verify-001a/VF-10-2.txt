@@ -1,0 +1,10 @@
+21:    trend: str = "neutral"  # "improving", "declining", "neutral", "volatile"
+54:    def get_trend(self, deal_id: str) -> SentimentTrend:
+71:                trend = "improving"
+73:                trend = "declining"
+75:                trend = "volatile"
+77:                trend = "neutral"
+79:            trend = "improving" if scores[-1] > scores[-2] + 0.1 else (
+80:                "declining" if scores[-1] < scores[-2] - 0.1 else "neutral"
+83:            trend = "neutral"
+95:        if trend in ("declining", "volatile"):

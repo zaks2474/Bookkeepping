@@ -1,0 +1,6 @@
+=== VF-05.1 STATIC GATE MARKERS ===
+9:# Gate 1: CRLF detection — scan files modified in last hour under /home/zaks/
+22:# Gate 2: Root ownership — check for root-owned files in hooks dir created in last hour
+28:# Gate 3: TypeScript check — if .ts/.tsx changed in monorepo recently, run tsc
+41:  echo -e "Task quality gates FAILED:\n\n${ERRORS}" >&2
+42:  exit 2

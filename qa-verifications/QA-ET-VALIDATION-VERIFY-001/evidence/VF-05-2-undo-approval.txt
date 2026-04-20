@@ -1,0 +1,16 @@
+=== VF-05.2 UNDO APPROVAL ===
+/home/zaks/zakops-backend/src/api/orchestration/main.py:28:    "diligence", "closing", "portfolio", "junk", "archived"
+/home/zaks/zakops-backend/src/api/orchestration/main.py:55:from .routers.admin import router as admin_router
+/home/zaks/zakops-backend/src/api/orchestration/main.py:579:app.include_router(admin_router)
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1051:                "SELECT * FROM zakops.transition_deal_state($1, 'archived', 'ui_user', 'archived via API')",
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1087:    archived: list[str] = []
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1089:    reason = body.reason or "bulk archived via API"
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1095:                    "SELECT * FROM zakops.transition_deal_state($1, 'archived', $2, $3)",
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1098:                archived.append(deal_id)
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1102:    return {"archived": archived, "skipped": skipped}
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1111:    """Restore a deal from archived status via centralized transition_deal_state() FSM."""
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1113:        # Verify deal is actually archived before restoring
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1120:        if deal["stage"] != "archived":
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1123:                "message": f"Deal is not archived (current stage: {deal['stage']})",
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1408:            # Archive: set status to 'archived'
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1412:                SET status = 'archived', updated_at = NOW()

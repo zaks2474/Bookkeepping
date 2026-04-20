@@ -1,0 +1,26 @@
+=== R0.1.1: Pre-Fix Baseline ===
+Date: Tue Feb  3 04:30:44 UTC 2026
+
+--- Service Token Discovery ---
+.env.development:66:DASHBOARD_SERVICE_TOKEN=k-bG0Us8LHBso4S4OnjqVOXkCNR_C8smNqtflzukWpo
+SERVICE_TOKEN length: 43
+SERVICE_TOKEN: k-bG****kWpo
+
+--- Baseline DB Counts ---
+       tbl       | count 
+-----------------+-------
+ approvals       |     6
+ tool_executions |     3
+ audit_log       |    13
+ checkpoints     |   392
+(4 rows)
+
+
+=== R0.1.2: Reproduce F-001 (Service Token Rejected) ===
+{"detail":"Authentication required"}
+HTTP 401
+
+=== R0.1.3: Reproduce F-002 (Confused Deputy - JWT on /agent/*) ===
+Agent JWT length: 1353
+Invalid HTTP request received.
+HTTP 400

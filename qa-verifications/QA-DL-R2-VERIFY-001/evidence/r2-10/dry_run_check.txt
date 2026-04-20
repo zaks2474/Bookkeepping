@@ -1,0 +1,28 @@
+65:    dry_run: bool = field(
+66:        default_factory=lambda: os.getenv("RETENTION_DRY_RUN", "false").lower() == "true"
+76:    dry_run: bool
+95:        logger.info(f"[R2-10] Starting retention cleanup (dry_run={self.config.dry_run})")
+119:            if self.config.dry_run:
+147:            dry_run=self.config.dry_run,
+150:        logger.info(f"[R2-10] idempotency_keys: {count} records {'would be' if self.config.dry_run else ''} deleted")
+161:            if self.config.dry_run:
+188:            dry_run=self.config.dry_run,
+191:        logger.info(f"[R2-10] outbox (delivered): {count} records {'would be' if self.config.dry_run else ''} deleted")
+202:            if self.config.dry_run:
+229:            dry_run=self.config.dry_run,
+232:        logger.info(f"[R2-10] outbox (dead): {count} records {'would be' if self.config.dry_run else ''} deleted")
+243:            if self.config.dry_run:
+270:            dry_run=self.config.dry_run,
+273:        logger.info(f"[R2-10] quarantine (rejected): {count} records {'would be' if self.config.dry_run else ''} deleted")
+284:            if self.config.dry_run:
+316:            dry_run=self.config.dry_run,
+319:        logger.info(f"[R2-10] quarantine (pending): {count} records {'would be' if self.config.dry_run else ''} auto-rejected")
+330:            if self.config.dry_run:
+359:            dry_run=self.config.dry_run,
+362:        logger.info(f"[R2-10] deals (junk): {count} records {'would be' if self.config.dry_run else ''} soft-deleted")
+368:            "dry_run": self.config.dry_run,
+381:async def run_retention_cleanup(dry_run: bool = False) -> dict[str, Any]:
+386:        dry_run: If True, only report what would be deleted
+392:    if dry_run:
+393:        config.dry_run = True
+405:    config.dry_run = True  # Always dry run for stats

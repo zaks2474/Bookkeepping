@@ -1,0 +1,163 @@
+{
+  "model_id": "Claude OPUS 4.5",
+  "timestamp_utc": "2026-01-24T05:00:00Z",
+  "review_type": "hostile_technical_audit",
+  "verdict": "STOP_SHIP_FINDINGS_PRESENT",
+  "documents_reviewed": [
+    {"name": "S_Claude_OPUS_4.5.md", "bytes": 16424, "coverage_score": 85, "precision_score": 70, "actionability_score": 80},
+    {"name": "S_Gemini 3.0.md", "bytes": 7262, "coverage_score": 65, "precision_score": 75, "actionability_score": 70}
+  ],
+  "stop_ship": [
+    {
+      "id": "SS-01",
+      "severity": "CRITICAL",
+      "document": "S_Gemini 3.0.md",
+      "issue": "Missing Non-Negotiable Gates section entirely",
+      "impact": "Cannot validate production readiness without explicit pass/fail gates",
+      "required_fix": "Add complete NG section with 8 gates matching S_Claude structure"
+    },
+    {
+      "id": "SS-02",
+      "severity": "CRITICAL",
+      "document": "both",
+      "issue": "No encryption key management strategy specified",
+      "impact": "Cannot implement checkpoint encryption without key source",
+      "required_fix": "Add CHECKPOINT_ENCRYPTION_KEY env var spec with 256-bit requirement"
+    },
+    {
+      "id": "SS-03",
+      "severity": "HIGH",
+      "document": "S_Claude_OPUS_4.5.md",
+      "issue": "FM-01 mitigation is vague (hash/encrypt)",
+      "impact": "Implementation variance, possible insecure defaults",
+      "required_fix": "Change to 'AES-256-GCM via SecurePostgresSaver wrapper'"
+    },
+    {
+      "id": "SS-04",
+      "severity": "HIGH",
+      "document": "both",
+      "issue": "checkpoint_writes table not addressed in encryption scope",
+      "impact": "PII may leak through unencrypted column",
+      "required_fix": "Add checkpoint_writes.channel_values to encryption scope"
+    },
+    {
+      "id": "SS-05",
+      "severity": "MEDIUM",
+      "document": "both",
+      "issue": "No raw content definition is ambiguous",
+      "impact": "Implementation variance across logging, tracing, DB",
+      "required_fix": "Add explicit scope: prompts, responses, tool args, tool results, deal content"
+    }
+  ],
+  "contradictions": [
+    {
+      "id": "C-01",
+      "between": ["S_Claude_OPUS_4.5.md", "S_Gemini 3.0.md", "ZakOps-Scaffold-Master-Plan-v2.md"],
+      "topic": "Phase naming",
+      "details": "S_Claude: 'Production Integration', S_Gemini: 'Production Hardening', Scaffold: Phase 0-6 structure",
+      "resolution_rule": "Align with Scaffold-Plan OR document deviation with rationale"
+    },
+    {
+      "id": "C-02",
+      "between": ["S_Claude_OPUS_4.5.md", "QA_REPORT.md"],
+      "topic": "Concurrency test threshold",
+      "details": "QA_REPORT validated N=20, S_Claude requires N=50 without justification",
+      "resolution_rule": "Either match N=20 (validated) OR add explicit rationale for N=50"
+    },
+    {
+      "id": "C-03",
+      "between": ["S_Claude_OPUS_4.5.md", "ZakOps-Scaffold-Master-Plan-v2.md"],
+      "topic": "Duration estimates",
+      "details": "S_Claude says 1 week for Phase 1, Scaffold-Plan has different structure",
+      "resolution_rule": "Reference Scaffold-Plan explicitly for timing"
+    }
+  ],
+  "missing": [
+    {
+      "id": "M-01",
+      "gap": "Deal API endpoint specifications",
+      "impact": "Cannot implement tools without knowing exact endpoints",
+      "source": "MDv2 §5.2 has the specs",
+      "fix": "Copy endpoint table from MDv2 into both roadmaps"
+    },
+    {
+      "id": "M-02",
+      "gap": "Error handling for external services",
+      "impact": "No retry logic = cascading failures",
+      "source": "Not specified anywhere",
+      "fix": "Add External Service Resilience table with timeout/retry/circuit-breaker specs"
+    },
+    {
+      "id": "M-03",
+      "gap": "Token counting middleware",
+      "impact": "vLLM OOM under large context",
+      "source": "DECISION-LOCK specifies 32K max",
+      "fix": "Add CTX-001 task for token counting middleware"
+    },
+    {
+      "id": "M-04",
+      "gap": "Approval expiry implementation details",
+      "impact": "Orphaned approvals block workflows indefinitely",
+      "source": "Both mention briefly but lack specification",
+      "fix": "Expand HITL-002 with TTL, action, audit, resume behavior"
+    },
+    {
+      "id": "M-05",
+      "gap": "Phase 0 (Fork & Setup) missing",
+      "impact": "Cannot start Phase 1 without completing fork",
+      "source": "Scaffold-Plan §4 has explicit Phase 0",
+      "fix": "Add Phase 0 section to both docs"
+    }
+  ],
+  "gate_problems": [
+    {
+      "id": "G-01",
+      "gate": "Non-Negotiable Gates section",
+      "document": "S_Gemini 3.0.md",
+      "problem": "Section completely missing",
+      "fix": "Add complete NG section with 8 gates"
+    },
+    {
+      "id": "G-02",
+      "gate": "Gate script existence",
+      "document": "both",
+      "problem": "Scripts referenced (pii_canary_gate.sh, etc.) do not exist",
+      "fix": "Add GATE-001 task to create all gate scripts"
+    },
+    {
+      "id": "G-03",
+      "gate": "NG-02 Concurrent idempotency",
+      "document": "S_Claude_OPUS_4.5.md",
+      "problem": "Threshold N=50 not validated (spike only tested N=20)",
+      "fix": "Either match N=20 OR add validation task for N=50"
+    },
+    {
+      "id": "G-04",
+      "gate": "PII Canary patterns",
+      "document": "both",
+      "problem": "No regex patterns defined for what constitutes PII",
+      "fix": "Add explicit regex patterns for SSN, CC, email, phone, deal values"
+    }
+  ],
+  "questions_to_resolve": [
+    {"id": "QT-01", "question": "Does SecurePostgresSaver add >50ms latency?", "test": "Benchmark 1MB checkpoint save"},
+    {"id": "QT-02", "question": "Is checkpoint_writes column encrypted?", "test": "Inspect table after checkpoint"},
+    {"id": "QT-03", "question": "Does Deal API require JWT or different auth?", "test": "curl with JWT to localhost:8090"},
+    {"id": "QT-04", "question": "Can vLLM Hermes parser handle nested schemas?", "test": "10-prompt tool-calling suite"},
+    {"id": "QT-05", "question": "Are all gate scripts executable?", "test": "bash -n scripts/gates/*.sh"},
+    {"id": "QT-06", "question": "What is actual N=50 concurrency result?", "test": "Extended concurrent approve test"}
+  ],
+  "fix_priority": {
+    "P0_stop_ship": ["FIX-SS01", "FIX-SS02", "FIX-SS03", "FIX-SS04", "FIX-SS05"],
+    "P1_contradictions": ["FIX-C01", "FIX-C02", "FIX-C03"],
+    "P2_gaps": ["FIX-M01", "FIX-M02", "FIX-M03", "FIX-M04", "FIX-M05"],
+    "P3_gates": ["FIX-G02", "FIX-G04"]
+  },
+  "summary": {
+    "total_stop_ship": 5,
+    "total_contradictions": 3,
+    "total_missing": 5,
+    "total_gate_problems": 4,
+    "recommendation": "Address all P0 stop-ship findings before proceeding to Phase 1. Neither document is production-ready in current state."
+  }
+}

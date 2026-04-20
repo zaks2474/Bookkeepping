@@ -1,0 +1,79 @@
+=== ST-5 E2E MISSION SPEC STABILITY ===
+
+> zakops-dashboard@1.0.0 test:e2e
+> playwright test tests/e2e/dashboard-worldclass-remediation.spec.ts
+
+
+Running 11 tests using 1 worker
+
+  ✓   1 [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:22:5 › F-01: dashboard page loads with scroll container (1.9s)
+  ✓   2 [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:37:5 › F-02: agent drawer has "Full chat" link (2.1s)
+  ✓   3 [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:53:5 › F-03: no toast appears during passive dashboard use (4.7s)
+  ✓   4 [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:67:5 › F-04: deals page loads without runtime crash (4.6s)
+  ✓   5 [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:83:5 › F-05: quarantine page loads without ghost characters in inputs (5.7s)
+  ✓   6 [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:107:5 › F-06: chat page has history toggle button (1.6s)
+  ✓   7 [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:117:5 › F-08: onboarding page exists and loads (4.6s)
+  ✓   8 [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:128:5 › F-09: settings page loads with all sections (4.1s)
+  ✓   9 [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:140:5 › F-10: settings page has back-to-dashboard link (4.3s)
+  ✓  10 [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:154:5 › F-10: settings page content is scrollable (4.1s)
+  ✓  11 [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:175:5 › chat page has provider selector and scope controls (4.6s)
+
+  11 passed (43.1s)
+--- run 2 ---
+
+> zakops-dashboard@1.0.0 test:e2e
+> playwright test tests/e2e/dashboard-worldclass-remediation.spec.ts
+
+
+Running 11 tests using 1 worker
+
+  ✓   1 [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:22:5 › F-01: dashboard page loads with scroll container (2.6s)
+  ✘   2 [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:37:5 › F-02: agent drawer has "Full chat" link (6.9s)
+  ✓   3 [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:37:5 › F-02: agent drawer has "Full chat" link (retry #1) (1.9s)
+  ✓   4 [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:53:5 › F-03: no toast appears during passive dashboard use (4.6s)
+  ✓   5 [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:67:5 › F-04: deals page loads without runtime crash (4.6s)
+  ✓   6 [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:83:5 › F-05: quarantine page loads without ghost characters in inputs (4.7s)
+  ✓   7 [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:107:5 › F-06: chat page has history toggle button (1.9s)
+  ✓   8 [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:117:5 › F-08: onboarding page exists and loads (4.5s)
+  ✓   9 [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:128:5 › F-09: settings page loads with all sections (4.0s)
+  ✓  10 [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:140:5 › F-10: settings page has back-to-dashboard link (4.1s)
+  ✓  11 [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:154:5 › F-10: settings page content is scrollable (4.1s)
+  ✓  12 [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:175:5 › chat page has provider selector and scope controls (4.7s)
+
+
+  1) [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:37:5 › F-02: agent drawer has "Full chat" link 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('a').filter({ hasText: /full chat/i })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('a').filter({ hasText: /full chat/i })[22m
+
+
+      43 |     // Verify "Full chat" link exists in the drawer
+      44 |     const fullChatLink = page.locator('a', { hasText: /full chat/i });
+    > 45 |     await expect(fullChatLink).toBeVisible({ timeout: 5000 });
+         |                                ^
+      46 |   }
+      47 | });
+      48 |
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/dashboard-worldclass-remediation.spec.ts:45:32
+
+    Error Context: test-results/dashboard-worldclass-remed-acd99-t-drawer-has-Full-chat-link-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/dashboard-worldclass-remed-acd99-t-drawer-has-Full-chat-link-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/dashboard-worldclass-remed-acd99-t-drawer-has-Full-chat-link-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 flaky
+    [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:37:5 › F-02: agent drawer has "Full chat" link 
+  10 passed (50.2s)

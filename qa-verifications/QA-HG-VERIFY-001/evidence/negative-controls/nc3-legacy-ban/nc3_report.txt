@@ -1,0 +1,12 @@
+=== NC-3: LEGACY-BAN GATE NEGATIVE CONTROL ===
+CI workflow: /home/zaks/.github/workflows/type-sync.yml
+ESLint config: /home/zaks/zakops-agent-api/apps/dashboard/.eslintrc.json
+Running legacy check (MUST find hits)...
+Legacy import hits after sabotage: 1
+✅ PASS: Legacy-ban grep correctly detected banned import (1 hits)
+--- tsc check after banned import ---
+src/lib/format.ts(2,28): error TS2307: Cannot find module './api-schemas' or its corresponding type declarations.
+tsc exit code: 2
+✅ PASS: tsc also catches banned import (module not found)
+After revert legacy hits: 0
+After revert tsc exit: 0

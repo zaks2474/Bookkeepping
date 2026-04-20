@@ -1,0 +1,28 @@
+38:        deal_id: Optional[str] = None,
+50:                        (thread_id, user_id, deal_id, turn_number, request_id,
+54:                        (:thread_id, :user_id, :deal_id, :turn_number, :request_id,
+61:                    "deal_id": deal_id,
+81:            deal_id=deal_id,
+102:    async def get_monthly_spend(self, deal_id: str) -> float:
+108:                    WHERE deal_id = :deal_id
+111:                params={"deal_id": deal_id},
+115:    async def get_avg_daily_cost(self, deal_id: str, days: int = 7) -> float:
+122:                    WHERE deal_id = :deal_id
+125:                params={"deal_id": deal_id, "days": days},
+129:    async def get_deal_cost_summary(self, deal_id: str) -> Optional[dict]:
+135:                    WHERE deal_id = :deal_id
+139:                params={"deal_id": deal_id},
+145:    async def get_budget(self, deal_id: str) -> Optional[dict]:
+149:                text("SELECT * FROM deal_budgets WHERE deal_id = :deal_id"),
+150:                params={"deal_id": deal_id},
+156:        deal_id: str,
+165:                    INSERT INTO deal_budgets (deal_id, monthly_limit_usd, alert_threshold, hard_cap)
+166:                    VALUES (:deal_id, :monthly_limit_usd, :alert_threshold, :hard_cap)
+167:                    ON CONFLICT (deal_id) DO UPDATE SET
+174:                    "deal_id": deal_id,
+181:        return await self.get_budget(deal_id)
+183:    async def check_budget(self, deal_id: str) -> dict:
+195:        budget = await self.get_budget(deal_id)
+206:        monthly_spend = await self.get_monthly_spend(deal_id)
+213:                deal_id=deal_id,
+229:                deal_id=deal_id,

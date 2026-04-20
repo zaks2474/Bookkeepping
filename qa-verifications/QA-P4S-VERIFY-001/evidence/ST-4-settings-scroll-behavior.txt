@@ -1,0 +1,20 @@
+=== ST-4 SETTINGS SCROLL BEHAVIOR ===
+
+375px mobile — scrolled to bottom (scrollTop=5480):
+  - Back to Dashboard: VISIBLE in fixed header (link ref=e7) after scroll
+  - Appearance section fully visible at bottom
+  - Nav: combobox dropdown (mobile mode)
+  - Content area scrolls independently of fixed header
+
+768px tablet (from VF-05.3):
+  - Back to Dashboard: VISIBLE
+  - Nav: combobox dropdown
+
+1280px desktop (from VF-05.3):
+  - Back to Dashboard: VISIBLE
+  - Nav: sticky sidebar buttons with 6 sections
+  
+Back arrow accessible at all scroll positions across all breakpoints.
+Mobile uses dropdown nav (combobox). Desktop uses sidebar nav buttons.
+
+VERDICT: PASS

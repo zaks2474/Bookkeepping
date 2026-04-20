@@ -1,0 +1,25 @@
+=== R0.3.3: F-002 Verification (Confused Deputy Prevention) ===
+Date: Tue Feb  3 04:36:50 UTC 2026
+Agent JWT length: 1353
+
+--- Test 1: Bearer JWT on /agent/approvals (should be 401) ---
+Invalid HTTP request received.
+HTTP 400
+--- Test 2: X-Service-Token on /agent/approvals (should work) ---
+{"approvals":[],"total":0}
+HTTP 200
+--- Test 3: Bearer JWT on /agent/invoke (should be 401) ---
+Invalid HTTP request received.
+HTTP 400
+--- Test 4: Both tokens (should be 401 - ambiguous) ---
+Invalid HTTP request received.
+HTTP 400
+--- Test 1b: Simple Bearer JWT on /agent/approvals (should be 401) ---
+{"detail":"Authentication required"}
+HTTP 401
+--- Test 3b: Simple Bearer JWT on /agent/invoke (should be 401) ---
+{"detail":"Authentication required"}
+HTTP 401
+--- Test 4b: Both tokens (service + simple JWT - should be 401) ---
+{"detail":"Authentication required"}
+HTTP 401

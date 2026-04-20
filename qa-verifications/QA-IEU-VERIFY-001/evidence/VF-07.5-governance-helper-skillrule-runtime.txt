@@ -1,0 +1,83 @@
+=== VF-07.5 GOVERNANCE HELPER + SKILL-RULE RUNTIME ===
+=== Governance Changelog Helper ===
+Rules directory: /home/zaks/zakops-agent-api/.claude/rules
+Looking for changes since: 7 days ago
+
+## Governance Changes
+
+| File | Last Modified | Status |
+|------|--------------|--------|
+| .claude/rules/design-system.md | 2026-02-10 | 7672 bytes |
+| .claude/rules/accessibility.md | 2026-02-10 | 2162 bytes |
+| .claude/rules/component-patterns.md | 2026-02-10 | 2794 bytes |
+| .claude/rules/contract-surfaces.md | 2026-02-10 | 6645 bytes |
+| tools/infra/validate-frontend-governance.sh | 2026-02-10 | 3277 bytes |
+| tools/infra/validate-rule-frontmatter.sh | 2026-02-10 | 2856 bytes |
+| tools/infra/check-governance-drift.sh | 2026-02-10 | 4638 bytes |
+
+Total governance files tracked: 7/7
+
+Governance Changelog Helper: DONE
+=== Frontend Skill vs Rule Comparison ===
+
+Rule: /home/zaks/zakops-agent-api/.claude/rules/design-system.md
+Skill: /home/zaks/.claude/skills/frontend-design/SKILL.md
+
+Rule headings: 25
+Skill headings: 2
+
+## Category B Coverage in design-system.md
+
+| Section | In Rule | In Skill |
+|---------|---------|----------|
+| B1. Design Thinking | Yes | Yes |
+| B2. Typography | Yes | Yes |
+| B3. Color and Theme | Yes | Yes |
+| B4. Motion and Micro-Interactions | Yes | Yes |
+| B5. Spatial Composition | Yes | Yes |
+| B6. Backgrounds and Visual Depth | Yes | Yes |
+| B7. Anti-Patterns and Anti-Convergence | Yes | Yes |
+
+## Keyword Analysis
+- Shared keywords: 191
+- Rule-only keywords: 306
+- Skill-only keywords: 104
+
+### Top rule-only keywords (sample)
+  - actions
+  - active
+  - after
+  - agent
+  - aggregation
+  - allsettled
+  - animate
+  - animating
+  - anti
+  - anything
+
+### Top skill-only keywords (sample)
+  - application
+  - applications
+  - asks
+  - attention
+  - audience
+  - available
+  - avoids
+  - beautiful
+  - build
+  - capable
+
+Skill vs Rule Comparison: DONE
+10:**Script:** `/home/zaks/bookkeeping/scripts/qa-scaffold.sh`
+17:bash /home/zaks/bookkeeping/scripts/qa-scaffold.sh QA-IEU-VERIFY-001 --dry-run
+20:bash /home/zaks/bookkeeping/scripts/qa-scaffold.sh QA-IEU-VERIFY-001
+32:**Script:** `/home/zaks/bookkeeping/scripts/check-ac-coverage.py`
+38:python3 /home/zaks/bookkeeping/scripts/check-ac-coverage.py \
+51:**Script:** `/home/zaks/bookkeeping/scripts/generate-reconciliation-table.py`
+58:python3 /home/zaks/bookkeeping/scripts/generate-reconciliation-table.py
+61:python3 /home/zaks/bookkeeping/scripts/generate-reconciliation-table.py --before 9 --after 14
+70:**Script:** `/home/zaks/bookkeeping/scripts/governance-changelog-helper.sh`
+76:bash /home/zaks/bookkeeping/scripts/governance-changelog-helper.sh
+92:**Script:** `/home/zaks/bookkeeping/scripts/compare-frontend-skill-vs-rule.py`
+98:python3 /home/zaks/bookkeeping/scripts/compare-frontend-skill-vs-rule.py
+EXIT=0

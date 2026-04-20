@@ -1,0 +1,130 @@
+- generic [active] [ref=e1]:
+  - region "Notifications alt+T"
+  - main [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - button "Toggle Sidebar" [ref=e6]:
+          - img
+          - generic [ref=e7]: Toggle Sidebar
+        - navigation "breadcrumb" [ref=e8]:
+          - list [ref=e9]:
+            - link "DL-0020" [disabled] [ref=e10]
+      - generic [ref=e11]:
+        - button [ref=e25]:
+          - img
+        - button [ref=e12]:
+          - generic [ref=e14]:
+            - img
+        - button "Toggle theme" [ref=e15]:
+          - img
+          - generic [ref=e16]: Toggle theme
+    - generic [ref=e17]:
+      - generic [ref=e27]:
+        - generic [ref=e28]:
+          - button "Deals" [ref=e30]:
+            - img
+            - text: Deals
+          - heading "Seed Deal Alpha" [level=1] [ref=e31]
+          - generic [ref=e32]:
+            - generic [ref=e33]: archived
+            - generic [ref=e35]: archived
+            - generic [ref=e36]: DL-0020
+        - generic [ref=e37]:
+          - button "Add Note" [ref=e38]
+          - link "Chat" [ref=e39] [cursor=pointer]:
+            - /url: /chat?deal_id=DL-0020
+            - button "Chat" [ref=e40]:
+              - img
+              - text: Chat
+          - button "Refresh" [ref=e41]:
+            - img
+            - text: Refresh
+      - generic [ref=e42]:
+        - generic [ref=e44]:
+          - tablist [ref=e45]:
+            - tab "Overview" [selected] [ref=e46]
+            - tab "Actions" [ref=e47]:
+              - img
+              - text: Actions
+            - tab "Pipeline" [ref=e48]:
+              - img
+              - text: Pipeline
+            - tab "Materials" [ref=e49]
+            - tab "Case File" [ref=e50]
+            - tab "Events (9)" [ref=e51]
+          - tabpanel "Overview" [ref=e52]:
+            - generic [ref=e53]:
+              - generic [ref=e54]:
+                - generic [ref=e56]: Deal Information
+                - generic [ref=e57]:
+                  - generic [ref=e58]:
+                    - generic [ref=e59]: Stage
+                    - generic [ref=e60]: archived
+                  - generic [ref=e61]:
+                    - generic [ref=e62]: Status
+                    - generic [ref=e63]: archived
+                  - generic [ref=e64]:
+                    - generic [ref=e65]: Created
+                    - generic [ref=e66]: Feb 2, 2026
+                  - generic [ref=e67]:
+                    - generic [ref=e68]: Updated
+                    - generic [ref=e69]: Feb 9, 2026
+              - generic [ref=e70]:
+                - generic [ref=e72]: Broker
+                - generic [ref=e73]:
+                  - generic [ref=e74]:
+                    - generic [ref=e75]: Name
+                    - generic [ref=e76]: "-"
+                  - generic [ref=e77]:
+                    - generic [ref=e78]: Email
+                    - generic [ref=e79]: "-"
+                  - generic [ref=e80]:
+                    - generic [ref=e81]: Company
+                    - generic [ref=e82]: "-"
+              - generic [ref=e83]:
+                - generic [ref=e85]: Financials
+                - generic [ref=e86]:
+                  - generic [ref=e87]:
+                    - generic [ref=e88]: Asking Price
+                    - generic [ref=e89]: TBD
+                  - generic [ref=e90]:
+                    - generic [ref=e91]: EBITDA
+                    - generic [ref=e92]: TBD
+                  - generic [ref=e93]:
+                    - generic [ref=e94]: NDA Status
+                    - generic [ref=e95]: Unknown
+                  - generic [ref=e96]:
+                    - generic [ref=e97]: CIM Received
+                    - generic [ref=e98]: Unknown
+              - generic [ref=e99]:
+                - generic [ref=e101]: Company
+                - generic [ref=e102]:
+                  - generic [ref=e103]:
+                    - generic [ref=e104]: Sector
+                    - generic [ref=e105]: Unknown
+                  - generic [ref=e106]:
+                    - generic [ref=e107]: Location
+                    - generic [ref=e108]: Unknown
+        - generic [ref=e109]:
+          - generic [ref=e110]:
+            - generic [ref=e111]:
+              - generic [ref=e112]: Stage Transitions
+              - generic [ref=e113]: Move deal to next stage
+            - paragraph [ref=e115]: No transitions available (terminal stage)
+          - generic [ref=e116]:
+            - generic [ref=e118]:
+              - img [ref=e119]
+              - text: Actions
+            - generic [ref=e122]:
+              - img [ref=e123]
+              - paragraph [ref=e125]: No actions
+          - generic [ref=e126]:
+            - generic [ref=e128]: Quick Links
+            - link "View All Actions" [ref=e130] [cursor=pointer]:
+              - /url: /actions?deal_id=DL-0020
+              - button "View All Actions" [ref=e131]:
+                - img
+                - text: View All Actions
+  - button "Open Next.js Dev Tools" [ref=e137] [cursor=pointer]:
+    - img [ref=e138]
+  - alert [ref=e141]

@@ -1,0 +1,5 @@
+1461 /home/zaks/zakops-backend/src/core/deal_registry.py
+/home/zaks/zakops-backend/src/actions/executors/email_triage_review_email.py:499:                from deal_registry import DealMatcher, EmailContent
+/home/zaks/zakops-backend/src/actions/executors/email_triage_review_email.py:568:                from deal_registry import BrokerInfo as DealBrokerInfo
+/home/zaks/zakops-backend/src/actions/executors/email_triage_review_email.py:673:                from deal_registry import DealRegistry
+/home/zaks/zakops-backend/src/workers/actions_runner.py:33:from deal_registry import DealRegistry

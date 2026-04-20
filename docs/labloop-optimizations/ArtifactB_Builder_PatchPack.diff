@@ -1,0 +1,301 @@
+--- /home/zaks/bookkeeping/labloop/bin/labloop.sh
++++ /home/zaks/bookkeeping/labloop/bin/labloop.sh
+@@ -69,6 +69,7 @@
+ EMAIL_TO="${LABLOOP_EMAIL:-}"
+ SKIP_PREFLIGHT=false
+ GATE_TIER="fast"  # fast or full
++BUNDLE_MODE="condensed" # condensed or full (Target 1: Token Economy)
+ 
+ while [[ $# -gt 0 ]]; do
+   case "$1" in
+@@ -95,6 +96,10 @@
+       GATE_TIER="$2"
+       shift 2
+       ;;
++    --bundle-mode)
++      BUNDLE_MODE="$2"
++      shift 2
++      ;;
+     --version)
+       echo "Lab Loop v$LABLOOP_VERSION"
+       exit 0
+@@ -142,6 +147,10 @@
+ GATE_RETRY_TIMEOUT_SEC="${GATE_RETRY_TIMEOUT_SEC:-}"
+ GATE_RETRY_MODE="${GATE_RETRY_MODE:-on_fail}"
+ 
++# Target 3: Smart Stuck Logic config
++STUCK_CONSECUTIVE_CYCLES="${STUCK_CONSECUTIVE_CYCLES:-3}"
++STUCK_MODE="${STUCK_MODE:-progress_based}" # hash_only or progress_based
++
+ # v2.1: Spec Oracle config (OPTIONAL)
+ SPEC_CHECK_CMD="${SPEC_CHECK_CMD:-}"
+ SPEC_CHECK_TIMEOUT_SEC="${SPEC_CHECK_TIMEOUT_SEC:-}"
+@@ -926,10 +935,12 @@
+ # ============================================================
+ 
+ compose_builder_bundle() {
+   local cycle=$1
+   local bundle="$TASK_DIR/_bundle.txt"
++  local prev_qa_report="$TASK_DIR/QA_REPORT.json"
+ 
+   {
+     echo "=== BUILDER PROTOCOL ==="
+     cat "$TEMPLATES/builder_protocol.txt"
+     echo
+@@ -938,20 +949,42 @@
+     cat "$SCHEMAS/builder_report.schema.json"
+     echo
+     echo "=== TASK MISSION ==="
+-    cat "$TASK_DIR/mission.md"
++    # Target 1: Condensed Prompt Logic
++    if [[ "$BUNDLE_MODE" == "condensed" && $cycle -gt 1 ]]; then
++       head -n 20 "$TASK_DIR/mission.md"
++       echo "... (refer to cycle 1 for full mission)"
++    else
++       cat "$TASK_DIR/mission.md"
++    fi
+     echo
+     echo "=== TASK ACCEPTANCE CRITERIA ==="
+-    cat "$TASK_DIR/acceptance.md"
++    if [[ "$BUNDLE_MODE" == "condensed" && $cycle -gt 1 ]]; then
++       head -n 20 "$TASK_DIR/acceptance.md"
++       echo "... (refer to cycle 1 for full criteria)"
++    else
++       cat "$TASK_DIR/acceptance.md"
++    fi
+     echo
+     echo "=== CURRENT CYCLE ==="
+     echo "Cycle: $cycle"
+     echo
+     local changed
+     changed=$(get_changed_files)
+     if [[ -n "$changed" ]]; then
+       echo "$changed"
+       echo
+     fi
+     echo "=== LATEST QA REPORT (JSON) ==="
+-    cat "$TASK_DIR/QA_REPORT.json"
++    if [[ "$BUNDLE_MODE" == "condensed" && $cycle -gt 1 && -f "$prev_qa_report" ]]; then
++       # Extract only critical fields to save tokens
++       if command -v jq &>/dev/null; then
++          jq '{verdict, blockers, majors, next_actions_for_builder}' "$prev_qa_report"
++       else
++          cat "$prev_qa_report"
++       fi
++    else
++       cat "$prev_qa_report"
++    fi
+     echo
+     echo "=== TASK DIRECTORY ==="
+     echo "TASK_DIR=$TASK_DIR"
+@@ -964,6 +997,7 @@
+     echo "=== INSTRUCTIONS ==="
+     echo "1. Read the QA report above and address the issues"
+     echo "2. Make changes to fix blockers first, then majors, then minors"
++    # Target 4: Builder Verification Enforcement
+     echo "3. Run the gate command to verify: $GATE_CMD"
+     echo "4. Write your report to: $TASK_DIR/BUILDER_REPORT.md"
+     echo "5. Output ONLY a JSON object matching the BUILDER OUTPUT SCHEMA above"
+@@ -1071,9 +1105,17 @@
+ 
+       local builder_prompt="Follow the instructions in the bundle from stdin. Implement fixes for the task. Write your report to $TASK_DIR/BUILDER_REPORT.md. Then output ONLY the final JSON object matching the Builder schema. Include all required fields."
+ 
++      # Target 2: Metrics (Start Time)
++      local build_start=$(date +%s)
++
+       # 20 minute timeout for Builder
+       if timeout 1200 bash -c "cat '$bundle' | claude $claude_opts '$builder_prompt'" > "$TASK_DIR/_builder_stdout.json" 2>&1; then
+-        log "Builder completed"
++        # Target 2: Metrics (End Time)
++        local build_end=$(date +%s)
++        local build_duration=$((build_end - build_start))
++        echo "$build_duration" > "$TASK_DIR/_builder_duration.txt"
++        
++        log "Builder completed in ${build_duration}s"
+       else
+         local exit_code=$?
+         if [[ $exit_code -eq 124 ]]; then
+@@ -1127,6 +1169,17 @@
+ # GATE OPERATIONS (v2.1: Flaky Gate Policy with retry support)
+ # ============================================================
+ 
++# Target 2: Metrics (Gate Duration)
++measure_gate_duration() {
++    local start_time=$1
++    local end_time=$(date +%s)
++    local duration=$((end_time - start_time))
++    echo "$duration" > "$TASK_DIR/_gate_duration.txt"
++    log "Gate phase completed in ${duration}s"
++}
++
++
+ # Global variables for gate results (set by run_gates)
+ GATE_FINAL_RC=0
+ GATE_FLAKE_SUSPECTED=false
+@@ -1134,6 +1187,7 @@
+ 
+ run_gates() {
+   local cycle=$1
++  local gate_start_time=$(date +%s)
+   local gate_cmd
+ 
+   # Select gate based on tier
+@@ -1167,6 +1221,7 @@
+ }
+ EOF
+     GATE_ATTEMPTS=1
++    measure_gate_duration "$gate_start_time"
+     return 0
+   fi
+ 
+@@ -1249,6 +1304,7 @@
+ }
+ EOF
+ 
++  measure_gate_duration "$gate_start_time"
+   log "Gate exit code: $GATE_FINAL_RC (attempts: $GATE_ATTEMPTS, flake_suspected: $GATE_FLAKE_SUSPECTED)"
+   return $GATE_FINAL_RC
+ }
+@@ -1373,6 +1429,29 @@
+   return 0
+ }
+ 
++# ============================================================
++# QA EVIDENCE EXECUTION (Target 5)
++# ============================================================
++
++run_qa_requested_commands() {
++    local cycle=$1
++    local qa_report="$TASK_DIR/QA_REPORT.json"
++    local evidence_file="$TASK_DIR/artifacts/qa_evidence_cycle_${cycle}.txt"
++
++    # Basic check for requested commands in "next_actions_for_builder" or dedicated field
++    # For now, we stub this to allow safe 'ls', 'grep' if found in a specific evidence request file
++    # that QA might write to. Since QA is read-only, we can't easily signal this way yet without
++    # modifying the QA schema.
++    #
++    # ALTERNATIVE: Use the previous cycle's QA report "next_actions_for_builder" to infer needs?
++    # Or just run standard evidence collection (ls -R, git status) every time.
++    
++    # For this patch, we will run a standard set of safe evidence commands and append to bundle
++    {
++        echo "=== AUTO-COLLECTED EVIDENCE ==="
++        echo "--- git status ---"
++        git -C "$REPO_DIR" status --porcelain
++        echo "--- ls -R (depth 2) ---"
++        ls -R "$REPO_DIR" | head -n 50
++    } > "$evidence_file" 2>/dev/null
++}
++
+ # ============================================================
+ # QA OPERATIONS
+ # ============================================================
+@@ -1445,6 +1524,13 @@
+       fi
+     fi
+ 
++    # Target 5: Include Auto-Evidence
++    local evidence_file="$TASK_DIR/artifacts/qa_evidence_cycle_${cycle}.txt"
++    if [[ -f "$evidence_file" ]]; then
++        echo "=== SYSTEM EVIDENCE ==="
++        cat "$evidence_file"
++        echo
++    fi
++
+     local memory
+     memory=$(get_qa_memory "$cycle")
+     if [[ -n "$memory" ]]; then
+@@ -1487,6 +1573,9 @@
+ 
+   log "Running QA with Codex..."
+ 
++  # Target 2: Metrics (QA Start)
++  local qa_start=$(date +%s)
++
+   local codex_output
+   codex_output=$(mktemp)
+   local codex_log="$TASK_DIR/history/codex_output_cycle_${cycle}.log"
+@@ -1502,6 +1591,12 @@
+     # Save output log
+     cp "$codex_output" "$codex_log" 2>/dev/null || true
+     rm -f "$codex_output"
++
++    # Target 2: Metrics (QA End)
++    local qa_end=$(date +%s)
++    local qa_duration=$((qa_end - qa_start))
++    echo "$qa_duration" > "$TASK_DIR/_qa_duration.txt"
++    log "QA (Codex) took ${qa_duration}s"
+ 
+     # Check if output is valid
+     if [[ -s "$output_file" ]]; then
+@@ -1659,6 +1754,9 @@
+ 
+   log "Running QA phase (primary: $QA_PRIMARY_AGENT, fallback: $QA_FALLBACK_AGENT)..."
+ 
++  # Target 5: Run evidence collection before QA
++  run_qa_requested_commands "$cycle"
++
+   if [[ "$DRY_RUN" == "true" ]]; then
+     log "[DRY-RUN] Would run QA agent with schema enforcement"
+     # Vary the dry-run report to avoid stuck detection
+@@ -1737,13 +1835,32 @@
+ # ============================================================
+ 
+ check_stuck() {
++  # Target 3: Smart Stuck Logic
++
+   # Disable stuck detection in dry-run mode
+   if [[ "$DRY_RUN" == "true" ]]; then
+     return 1  # Never stuck in dry-run
+   fi
+ 
+   local hash_file="$TASK_DIR/_qa_hash_prev"
++  local stuck_count_file="$TASK_DIR/_stuck_count"
+   local current_hash
+   current_hash=$(sha256sum "$TASK_DIR/QA_REPORT.json" | awk '{print $1}')
+ 
+   if [[ -f "$hash_file" ]]; then
+     local prev_hash
+     prev_hash=$(cat "$hash_file")
+     if [[ "$prev_hash" == "$current_hash" ]]; then
+-      return 0  # Stuck
++      # Hash matches - potentially stuck
++      local count=1
++      if [[ -f "$stuck_count_file" ]]; then
++          count=$(cat "$stuck_count_file")
++          count=$((count + 1))
++      fi
++      echo "$count" > "$stuck_count_file"
++      
++      if [[ $count -ge $STUCK_CONSECUTIVE_CYCLES ]]; then
++          log "STUCK DETECTED: QA report unchanged for $count cycles."
++          return 0 # Truly stuck
++      else
++          log "WARNING: QA report unchanged ($count/$STUCK_CONSECUTIVE_CYCLES). Continuing..."
++          return 1 # Not yet stuck
++      fi
++    else
++        # Hash changed, reset count
++        echo "0" > "$stuck_count_file"
+     fi
+   else
++      echo "0" > "$stuck_count_file"
+   fi
+ 
+   echo "$current_hash" > "$hash_file"
+@@ -1828,6 +1945,34 @@
+   cp "$TASK_DIR/mission.md" "$packet_dir/"
+   cp "$TASK_DIR/acceptance.md" "$packet_dir/"
+ 
++  # Target 2: Include Metrics in Packet
++  cat > "$packet_dir/metrics_summary.json" <<EOF
++{
++  "builder_duration": $(cat "$TASK_DIR/_builder_duration.txt" 2>/dev/null || echo 0),
++  "gate_duration": $(cat "$TASK_DIR/_gate_duration.txt" 2>/dev/null || echo 0),
++  "qa_duration": $(cat "$TASK_DIR/_qa_duration.txt" 2>/dev/null || echo 0)
++}
++EOF
++
+   # Create summary
+   cat > "$packet_dir/ESCALATION_SUMMARY.md" <<EOF
+ # Stuck Escalation Packet

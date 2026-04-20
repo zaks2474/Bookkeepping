@@ -1,0 +1,12 @@
+=== legal_hold_log table ===
+Found in: /home/zaks/zakops-agent-api/apps/agent-api/migrations/029_legal_hold.sql
+Lines 26-34: CREATE TABLE IF NOT EXISTS legal_hold_log (
+  id SERIAL PRIMARY KEY,
+  thread_id TEXT NOT NULL,
+  action VARCHAR(20) NOT NULL,
+  hold_type VARCHAR(50) NOT NULL,
+  actor VARCHAR(255) NOT NULL,
+  reason TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+RESULT: PASS — legal_hold_log audit table exists

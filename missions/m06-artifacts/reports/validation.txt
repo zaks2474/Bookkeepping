@@ -1,0 +1,30 @@
+# Validation Report — UI-MASTERPLAN-M06
+# Date: 2026-02-11
+
+## npx tsc --noEmit
+Result: PASS (zero errors)
+
+## make validate-local
+Result: PASS
+- Sync types: PASS
+- Lint: PASS
+- TSC: PASS
+- Contract surfaces: PASS
+- Frontend governance: PASS
+- Gate E (raw httpx): PASS
+- Redocly ignores: 57 (at ceiling)
+
+## E2E Tests (Playwright)
+Command: npx playwright test tests/e2e/actions-mobile-primary-controls.spec.ts tests/e2e/actions-detail-workflow.spec.ts
+Result: 9/9 PASS (48.6s)
+
+Tests:
+  1. [PASS] 1280px: no empty detail panel when no action selected (3.6s)
+  2. [PASS] 768px: no detail panel shown at tablet width (5.2s)
+  3. [PASS] 375px: mobile detail sheet hidden when no selection (4.1s)
+  4. [PASS] page loads with correct layout structure at all breakpoints (9.3s)
+  5. [PASS] 375px: toolbar buttons visible and within viewport (3.6s)
+  6. [PASS] 768px: toolbar buttons show text labels (7.7s)
+  7. [PASS] 1280px: full toolbar with text labels and no clipping (3.6s)
+  8. [PASS] 375px: search and type filter remain usable (3.7s)
+  9. [PASS] status tabs wrap without clipping at 375px (6.9s)

@@ -1,0 +1,34 @@
+=== VF-03.5 RUN SURFACE13 ===
+[36m=== Surface 13 Validation ===[0m
+=== SURFACE 13: TEST COVERAGE CONTRACT ===
+
+--- Check 1: Source Artifact ---
+  PASS: TEST-COVERAGE-GAPS.md exists (270 lines)
+
+--- Check 2: Test Directory Presence ---
+  PASS: Backend unit — exists (7 test files)
+  PASS: Backend integration — exists (10 test files)
+  PASS: Backend E2E — exists (9 test files)
+  PASS: Backend contract — exists (4 test files)
+  PASS: Backend security — exists (2 test files)
+  PASS: Agent-API security — exists (6 test files)
+  PASS: Dashboard E2E (Playwright) — exists (8 test files)
+  PASS: Dashboard unit (Vitest) — exists (3 test files)
+  Summary: 8/8 declared test directories found
+
+--- Check 3: Test Framework Configs ---
+  PASS: Backend pyproject.toml exists (pytest config)
+  PASS: Agent-API pyproject.toml exists (pytest config)
+  PASS: Dashboard package.json exists (vitest/playwright config)
+
+--- Check 4: Critical Test Artifacts ---
+  PASS: deal-integrity.test.ts exists
+  PASS: Playwright specs found (12 files)
+  PASS: Backend gate tests found (9 files)
+
+--- Check 5: Known Gaps Documented ---
+  PASS: RAG zero-test gap explicitly documented
+
+================================
+PASS: SURFACE 13 TEST COVERAGE CONTRACT (0 warning(s))
+[32mSurface 13 validation passed[0m

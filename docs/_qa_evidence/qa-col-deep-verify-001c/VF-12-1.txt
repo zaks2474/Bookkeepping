@@ -1,0 +1,10 @@
+FILE EXISTS
+10:    "stall_probability": 0.73,
+35:def _compute_stall_probability(days_in_stage: int, stats: dict) -> float:
+83:    async def predict(self, deal_id: str) -> dict[str, Any]:
+87:            Dict with stall_probability, median_stage_duration, percentile,
+120:        stall_prob = round(_compute_stall_probability(days_in_stage, stats), 2)
+142:            "stall_probability": stall_prob,
+161:    async def predict_batch(self, deal_ids: list[str]) -> list[dict]:
+247:            "stall_probability": 0.0,
+257 /home/zaks/zakops-backend/src/core/agent/stall_predictor.py

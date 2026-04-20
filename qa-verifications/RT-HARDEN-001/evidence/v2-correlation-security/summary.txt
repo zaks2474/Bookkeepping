@@ -1,0 +1,47 @@
+RT-HARDEN-001 / v2-correlation-security
+========================================
+Date: 2026-02-06
+File: /home/zaks/zakops-backend/src/api/shared/middleware/trace.py
+
+PROBLEM
+-------
+TraceMiddleware accepted ANY value for X-Correlation-ID and X-Trace-ID
+headers without validation. An attacker could inject arbitrarily long
+strings, special characters, or control sequences that would then be:
+  - Stored in context variables
+  - Echoed in response headers
+  - Potentially written to logs (log injection risk)
+
+CHANGES MADE
+------------
+1. Added `import re` and two module-level constants:
+   - _MAX_ID_LENGTH = 128
+   - _VALID_ID_PATTERN = re.compile(r"^[a-zA-Z0-9\-_.]+$")
+
+2. Added `_validate_id(value: str | None) -> str | None` function that:
+   - Returns None if value is empty/None
+   - Returns None if value exceeds 128 characters
+   - Returns None if value contains characters outside [a-zA-Z0-9-_.]
+   - Returns the original value if all checks pass
+
+3. Modified `dispatch()` to route both X-Trace-ID and X-Correlation-ID
+   through `_validate_id()` before use. Invalid values are silently
+   replaced with server-generated UUIDs (not echoed back).
+
+BEHAVIOR MATRIX
+---------------
+| Input                        | Result                        |
+|------------------------------|-------------------------------|
+| Valid ID (e.g., "abc-123")   | Used as-is                    |
+| Missing header               | Server-generated UUID         |
+| Empty string                 | Server-generated UUID         |
+| 129+ characters              | Server-generated UUID         |
+| Contains spaces              | Server-generated UUID         |
+| Contains <script> etc.       | Server-generated UUID         |
+| Contains newlines (\r\n)     | Server-generated UUID         |
+
+EVIDENCE FILES
+--------------
+- trace_BEFORE.py  -- original file (no validation)
+- trace_AFTER.py   -- patched file (with validation)
+- summary.txt      -- this file

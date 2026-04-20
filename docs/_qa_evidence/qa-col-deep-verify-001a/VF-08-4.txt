@@ -1,0 +1,3 @@
+Line 128: async def compute(self, deal_id: str, brain: dict | None = None, deal_data: dict | None = None) -> dict[str, Any]:
+Line 207: async def compute_and_store(self, deal_id: str) -> dict:
+VERDICT: PASS — both compute() and compute_and_store() take deal_id

@@ -1,0 +1,21 @@
+=== VF-05.1 ASK AGENT DRAWER UX CONTRACT ===
+4: * Global drawer for consistent "Ask Agent" experience.
+5: * All "Ask Agent" buttons across the app use this via useAskAgent hook.
+18:  SheetContent,
+24:import { Input } from '@/components/ui/input';
+29:  IconSend,
+143:      <SheetContent side="right" className="w-full max-w-md sm:max-w-lg flex flex-col overflow-hidden">
+152:                : 'Ask Agent'}
+177:      </SheetContent>
+194:  const [input, setInput] = useState(initialQuestion || '');
+212:    setInput('');
+237:                {dealId ? `Ask about ${dealName || 'this deal'}` : 'Ask Agent'}
+247:                    <QuickAction icon={IconChartBar} label="Analyze financials" onClick={() => setInput('Analyze the financials')} />
+248:                    <QuickAction icon={IconMail} label="Draft broker response" onClick={() => setInput('Draft a broker response')} />
+249:                    <QuickAction icon={IconCalendar} label="Review timeline" onClick={() => setInput('Review the deal timeline')} />
+253:                    <QuickAction icon={IconAlertTriangle} label="Deals needing attention" onClick={() => setInput('Show me deals needing attention')} />
+254:                    <QuickAction icon={IconCalendar} label="Today's priorities" onClick={() => setInput("What should I focus on today?")} />
+298:      {/* Input */}
+304:          <Input
+306:            onChange={(e) => setInput(e.target.value)}
+315:              <IconSend className="h-4 w-4" />

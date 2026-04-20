@@ -1,0 +1,3 @@
+    sanitized_content: Optional[str] = None
+    - sanitized_content: input with patterns replaced by [FILTERED]
+    # Sanitize: replace matched patterns with [FILTERED]

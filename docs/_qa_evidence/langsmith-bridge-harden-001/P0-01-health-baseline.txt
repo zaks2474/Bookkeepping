@@ -1,0 +1,12 @@
+{
+    "status": "degraded",
+    "timestamp": "2026-02-14T11:58:30.408182+00:00",
+    "checks": {
+        "bridge": "healthy",
+        "deal_api": "unhealthy",
+        "rag_api": "healthy",
+        "dataroom": "healthy"
+    },
+    "mcp_version": "fastmcp",
+    "transport": "sse"
+}

@@ -1,0 +1,14 @@
+=== ST-1: WSL Ownership Check ===
+
+File: /home/zaks/zakops-agent-api/tools/infra/sync-agent-configs.sh
+Owner: root:root
+Expected: zaks:zaks
+
+Per MEMORY.md WSL Hazard #2: "Root ownership: Claude runs as root.
+Every file created is root-owned. Run `sudo chown zaks:zaks <file>`
+after creating files in `/home/zaks/`."
+
+Impact: User cannot edit the file without sudo. Script execution
+unaffected (755 perms allow all users to execute).
+
+VERDICT: MINOR — root:root instead of zaks:zaks

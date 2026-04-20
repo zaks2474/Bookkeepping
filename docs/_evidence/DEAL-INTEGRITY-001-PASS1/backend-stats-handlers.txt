@@ -1,0 +1,51 @@
+/home/zaks/zakops-backend/src/services/rag_client.py:172:    async def get_stats(self) -> Dict[str, Any]:
+/home/zaks/zakops-backend/src/api/shared/sse.py:185:    def connection_count(self) -> int:
+/home/zaks/zakops-backend/src/api/shared/sse.py:466:    def get_stats(self) -> dict[str, Any]:
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1629:async def get_pipeline_summary(pool: asyncpg.Pool = Depends(get_db)):
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1642:async def get_pipeline_stats(pool: asyncpg.Pool = Depends(get_db)):
+/home/zaks/zakops-backend/src/workers/actions_runner.py:79:def _next_backoff_seconds(*, retry_count: int, base_seconds: int = 5, max_seconds: int = 300) -> int:
+/home/zaks/zakops-backend/src/api/shared/middleware/metrics.py:163:    def get_stats(self) -> dict:
+/home/zaks/zakops-backend/src/api/shared/routers/events.py:147:async def get_event_stats(
+/home/zaks/zakops-backend/src/api/orchestration/routers/events.py:183:async def sse_stats():
+/home/zaks/zakops-backend/src/actions/memory/store.py:129:    def record(self, summary: ActionSummary) -> None:
+/home/zaks/zakops-backend/src/actions/memory/store.py:265:def build_summary_from_action(
+/home/zaks/zakops-backend/src/actions/contracts/plan_spec.py:52:    summary: str = Field(default="", description="1-2 line summary")
+/home/zaks/zakops-backend/src/api/orchestration/routers/timeline.py:181:async def get_deal_activity_summary(deal_id: str):
+/home/zaks/zakops-backend/src/api/orchestration/routers/email.py:218:async def list_email_accounts(request: Request):
+/home/zaks/zakops-backend/src/api/orchestration/routers/email.py:238:async def disconnect_email_account(request: Request, email_address: str):
+/home/zaks/zakops-backend/src/api/orchestration/routers/workflow.py:168:async def get_stages_summary():
+/home/zaks/zakops-backend/src/api/orchestration/routers/admin.py:63:async def dlq_stats(request: Request):
+/home/zaks/zakops-backend/src/api/orchestration/routers/admin.py:157:async def outbox_stats(request: Request):
+/home/zaks/zakops-backend/src/api/orchestration/routers/admin.py:190:async def sse_stats(request: Request):
+/home/zaks/zakops-backend/src/api/orchestration/routers/admin.py:270:async def retention_stats(request: Request):
+/home/zaks/zakops-backend/src/core/chat_cache.py:257:    def stats(self) -> dict[str, Any]:
+/home/zaks/zakops-backend/src/core/observability/metrics.py:166:def record_counter(
+/home/zaks/zakops-backend/src/core/integrations/email/outlook.py:128:    async def send_email(self, account: EmailAccount, request: SendEmailRequest) -> EmailMessage:
+/home/zaks/zakops-backend/src/core/integrations/email/outlook.py:141:    async def get_inbox(self, account: EmailAccount, max_results: int = 20) -> list[EmailMessage]:
+/home/zaks/zakops-backend/src/core/integrations/email/outlook.py:154:    async def get_thread(self, account: EmailAccount, thread_id: str) -> EmailThread:
+/home/zaks/zakops-backend/src/core/observability/safe_logger.py:143:    def stats(self) -> SafeLoggerStats:
+/home/zaks/zakops-backend/src/core/integrations/email/gmail.py:114:    def _get_credentials(self, account: EmailAccount) -> Credentials:
+/home/zaks/zakops-backend/src/core/integrations/email/gmail.py:124:    def _get_service(self, account: EmailAccount):
+/home/zaks/zakops-backend/src/core/integrations/email/gmail.py:225:    async def get_thread(self, account: EmailAccount, thread_id: str) -> EmailThread:
+/home/zaks/zakops-backend/src/core/integrations/email/gmail.py:327:    async def refresh_token(self, account: EmailAccount) -> OAuthTokens:
+/home/zaks/zakops-backend/src/core/integrations/email/gmail.py:352:    def _parse_message(self, msg: dict, account_email: str) -> EmailMessage:
+/home/zaks/zakops-backend/src/core/integrations/email/service.py:43:    def _is_token_expired(self, account: EmailAccount) -> bool:
+/home/zaks/zakops-backend/src/core/integrations/email/service.py:63:    async def get_account(
+/home/zaks/zakops-backend/src/core/integrations/email/service.py:102:    async def get_user_accounts(self, user_id: str) -> list[EmailAccount]:
+/home/zaks/zakops-backend/src/core/integrations/email/service.py:139:    async def save_account(
+/home/zaks/zakops-backend/src/core/integrations/email/service.py:181:    async def deactivate_account(self, user_id: str, email_address: str) -> bool:
+/home/zaks/zakops-backend/src/core/integrations/email/service.py:207:    async def refresh_account_tokens(self, account: EmailAccount) -> EmailAccount:
+/home/zaks/zakops-backend/src/core/integrations/email/service.py:306:    async def get_thread(self, account: EmailAccount, thread_id: str) -> EmailThread:
+/home/zaks/zakops-backend/src/core/chat_benchmark.py:198:def calculate_stats(results: list[BenchmarkResult], category: str) -> CategoryStats:
+/home/zaks/zakops-backend/src/core/events/validator.py:200:    def get_stats(self) -> dict[str, Any]:
+/home/zaks/zakops-backend/src/core/chat_evidence_builder.py:116:    def get_evidence_summary(self) -> dict[str, Any]:
+/home/zaks/zakops-backend/src/core/outbox/dlq.py:118:    async def get_count(self, correlation_id: str | None = None) -> int:
+/home/zaks/zakops-backend/src/core/outbox/dlq.py:261:    async def get_stats(self) -> dict[str, Any]:
+/home/zaks/zakops-backend/src/core/outbox/processor.py:226:    async def get_stats(self) -> dict[str, int]:
+/home/zaks/zakops-backend/src/core/events/query.py:297:    async def get_stats(
+/home/zaks/zakops-backend/src/core/deals/workflow.py:361:    async def get_deal_stages_summary(self) -> dict[str, int]:
+/home/zaks/zakops-backend/src/core/events/schema.py:292:def email_account_connected(
+/home/zaks/zakops-backend/src/core/security/cookies.py:176:def get_cookie_config_summary() -> dict:
+/home/zaks/zakops-backend/src/core/retention/cleanup.py:364:    def get_summary(self) -> dict[str, Any]:
+/home/zaks/zakops-backend/src/core/retention/cleanup.py:400:async def get_retention_stats() -> dict[str, Any]:
+/home/zaks/zakops-backend/src/core/security/checkpoint_encryption.py:207:    def stats(self) -> EncryptionStats:

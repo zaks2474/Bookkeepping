@@ -1,0 +1,9 @@
+=== NC-2: TYPECHECK GATE NEGATIVE CONTROL ===
+Target file: /home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/setup.ts
+Running tsc (MUST FAIL)...
+src/__tests__/setup.ts(27,7): error TS2322: Type 'number' is not assignable to type 'string'.
+tsc exit code: 2 (expected: non-zero)
+PASS: tsc correctly failed
+Running tsc after revert...
+After revert exit code: 0
+=== NC-2 COMPLETE ===

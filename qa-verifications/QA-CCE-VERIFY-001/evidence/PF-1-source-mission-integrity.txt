@@ -1,0 +1,18 @@
+=== PF-1 SOURCE MISSION INTEGRITY ===
+361 /home/zaks/bookkeeping/missions/CLAUDE-CODE-ENHANCE-001.md
+120:### Phase 1 — Create Hook Scripts
+156:### Phase 2 — WSL Safety + Permissions
+193:### Phase 3 — Configure settings.json
+260:### Phase 4 — Verification + Bookkeeping
+331:| AC-1 | `ENABLE_TOOL_SEARCH=auto:5` in settings.json env | P4-04 prints `ToolSearch: auto:5` |
+332:| AC-2 | PreCompact hook creates snapshot file on compaction | P4-01 dry-run produces file in `snapshots/` |
+333:| AC-3 | TaskCompleted hook blocks on CRLF violations | Create CRLF test file, trigger hook, verify exit 2 |
+334:| AC-4 | `alwaysThinkingEnabled=true` in settings.json | P4-03 prints `Thinking: True` |
+335:| AC-5 | Compact recovery injects context via `additionalContext` JSON | P4-02 prints `compact-recovery: OK` |
+336:| AC-6 | All scripts: no CRLF, executable, zaks-owned | P2-04 shows no CRLF, `ls -la` shows `zaks zaks` and `x` bit |
+337:| AC-7 | settings.json is valid JSON with 6 hook events | P3-06 prints OK with all 6 event names |
+338:| AC-8 | MEMORY.md hook count updated to 10 | `grep "Hooks: 10" MEMORY.md` |
+339:| AC-9 | CHANGES.md entry recorded | `grep "CLAUDE-CODE-ENHANCE-001" CHANGES.md` |
+phase_count= 4
+ac_count= 9
+line_count= 361

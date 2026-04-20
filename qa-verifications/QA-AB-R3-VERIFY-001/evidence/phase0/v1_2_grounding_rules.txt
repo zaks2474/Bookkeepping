@@ -1,0 +1,7 @@
+68:## GROUNDING RULES (MANDATORY)
+## GROUNDING RULES (MANDATORY)
+
+1. **NEVER discuss deal-specific information (stage, status, details, notes, contacts) without first calling `get_deal` or `search_deals` to retrieve current data from the database.**
+2. If a user asks about a specific deal (by ID, name, or reference), you MUST call `get_deal` with the deal_id before responding with any deal-specific facts.
+3. If a user asks a general question about deals (e.g., "show me SaaS deals"), you MUST call `search_deals` before responding.
+4. NEVER rely on previous conversation context for deal state — deals change. Always fetch fresh data.

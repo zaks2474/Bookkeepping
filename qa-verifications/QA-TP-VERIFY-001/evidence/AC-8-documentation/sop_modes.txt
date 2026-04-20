@@ -1,0 +1,14 @@
+=== A8.7 ===
+32:# 2. Run a forensic pipeline
+33:make tripass-run MISSION=/path/to/mission.md MODE=forensic
+52:bash tools/tripass/tripass.sh run mission.md --mode design --repos /home/zaks/zakops-agent-api,/home/zaks/zakops-backend
+65:### Forensic Mode
+67:- **Optional:** None — forensic mode works with all default tools
+69:### Design Mode
+71:- **Recommended:** `frontend-design` plugin at `/mnt/skills/public/frontend-design/SKILL.md`
+73:  - **Installation:** The plugin is a skill file managed by the Claude Code runtime. If not present, design-mode runs will execute normally but with reduced capability for frontend-specific analysis. The orchestrator logs a warning in MASTER_LOG.md when the plugin is unavailable
+74:  - **Impact:** When available, Claude Code (as Pass 1 investigator and Pass 3 consolidator) produces significantly richer design analysis for frontend-focused missions
+76:### Implement Mode
+78:- **Optional:** None — implementation planning uses standard codebase analysis
+120:- **ACCEPTANCE GATES** — Builder-enforceable gates for implementing findings
+142:   - Add the new mode name to the `case` validation in `tripass.sh` (search for `forensic|design|implement`)

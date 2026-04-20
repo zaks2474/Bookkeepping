@@ -1,0 +1,7 @@
+=== R2.REG.2: Dashboard Chat (retry) ===
+event: token
+data: {"token":"Hello! How can I assist you today? If you have any questions or need help with your deals, feel free to let me know!"}
+
+event: done
+data: {"citations":[],"proposals":[],"model_used":"local-vllm","latency_ms":3298,"warnings":[],"final_text":"Hello! How can I assist you today? If you have any questions or need help with your deals, feel free to let me know!"}
+

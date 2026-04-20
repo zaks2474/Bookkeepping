@@ -1,0 +1,17 @@
+Builder Evidence Root: /home/zaks/bookkeeping/missions/HYBRID-GUARDRAIL-EXEC-001/evidence
+Total files: 47
+Empty files: 0
+
+Phases found:
+  phase1-poc: 12 files
+  phase2-pipeline: 2 files
+  phase3-migration: 4 files
+  phase4-remaining: 14 files
+  phase5-ci: 4 files
+  phase6-hardening: 5 files
+  phase7-cutover: 4 files
+  phase8-scaffolder: 0 files
+
+Top-level files:
+-rw-r--r-- 1 root root 2.1K Feb  6 00:11 /home/zaks/bookkeeping/missions/HYBRID-GUARDRAIL-EXEC-001/evidence/path_corrections.txt
+-rw-r--r-- 1 root root 58 Feb  6 00:11 /home/zaks/bookkeeping/missions/HYBRID-GUARDRAIL-EXEC-001/evidence/mission_start.txt

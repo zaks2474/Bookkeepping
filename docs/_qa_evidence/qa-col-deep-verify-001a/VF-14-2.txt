@@ -1,0 +1,10 @@
+Checking 004 rollback for partition/function cleanup:
+3:-- Drops all tables, views, functions, and triggers created by 004
+8:-- Drop trigger first (depends on function + table)
+25:-- Drop functions
+26:DROP FUNCTION IF EXISTS update_thread_message_count() CASCADE;
+27:DROP FUNCTION IF EXISTS create_monthly_partitions(TEXT, INTEGER) CASCADE;
+---
+Searching for separate partition rollback:
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store_rollback.sql
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/030_partition_automation_rollback.sql

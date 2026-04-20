@@ -1,0 +1,15 @@
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/icons.tsx:57:  trash: IconTrash,
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealDocuments.tsx:63:  onDelete?: (doc: DealDocument) => void;
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealDocuments.tsx:112:  onDelete,
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealDocuments.tsx:286:                        onDelete={onDelete}
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealDocuments.tsx:301:                  onDelete={onDelete}
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealDocuments.tsx:320:  onDelete?: (doc: DealDocument) => void;
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealDocuments.tsx:323:function DocumentRow({ document, onDownload, onPreview, onDelete }: DocumentRowProps) {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealDocuments.tsx:372:          {onDelete && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealDocuments.tsx:382:                  onClick={() => onDelete(document)}
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/useDealsBulkDelete.ts:6:import { deleteDealsBulkDelete } from '@/lib/deals-bulk-delete-api';
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/useDealsBulkDelete.ts:20:    mutationFn: (id: string) => deleteDealsBulkDelete(id),
+/home/zaks/zakops-agent-api/apps/dashboard/src/config/safety.ts:107:    'archive_deal',
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/events.ts:463:  'deal.archived': ['deals'],
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx:254:          : `Deleted (archived) ${deleteTargetIds.length} deals`
+/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/e2e/integration.test.tsx:285:        expect(['submit_loi', 'sign_document', 'reject_deal', 'archive_deal']).toContain(

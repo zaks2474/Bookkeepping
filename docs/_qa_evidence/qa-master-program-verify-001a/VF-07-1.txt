@@ -1,0 +1,9 @@
+/home/zaks/zakops-backend/db/migrations/029_quarantine_hardening.sql:8:--   3. Add correlation_id column (for LangSmith shadow-mode tracing)
+/home/zaks/zakops-backend/db/migrations/029_quarantine_hardening.sql:10:--   5. Index on correlation_id for trace lookups
+/home/zaks/zakops-backend/db/migrations/029_quarantine_hardening.sql:27:    ADD COLUMN IF NOT EXISTS correlation_id VARCHAR(255) DEFAULT NULL;
+/home/zaks/zakops-backend/db/migrations/029_quarantine_hardening.sql:33:-- 5. Index for correlation_id lookups
+/home/zaks/zakops-backend/db/migrations/029_quarantine_hardening.sql:34:CREATE INDEX IF NOT EXISTS idx_quarantine_correlation_id
+/home/zaks/zakops-backend/db/migrations/029_quarantine_hardening.sql:35:    ON zakops.quarantine_items (correlation_id)
+/home/zaks/zakops-backend/db/migrations/029_quarantine_hardening.sql:36:    WHERE correlation_id IS NOT NULL;
+/home/zaks/zakops-backend/db/migrations/029_quarantine_hardening_rollback.sql:6:DROP INDEX IF EXISTS zakops.idx_quarantine_correlation_id;
+/home/zaks/zakops-backend/db/migrations/029_quarantine_hardening_rollback.sql:8:ALTER TABLE zakops.quarantine_items DROP COLUMN IF EXISTS correlation_id;

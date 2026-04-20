@@ -1,0 +1,4 @@
+288:    async def forget_user_memory(self, user_id: str) -> bool:
+291:        Provides GDPR-style "right to be forgotten" capability.
+301:            logger.info("forget_user_memory_skipped_disabled", user_id=user_id)
+324:                "forget_user_memory_failed",

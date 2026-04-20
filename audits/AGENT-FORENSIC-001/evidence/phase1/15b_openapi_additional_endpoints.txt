@@ -1,0 +1,116 @@
+=== STEP 1.6b: Additional OpenAPI Endpoint Coverage ===
+--- /api/v1/health ---
+HTTP/1.1 200 OK
+date: Mon, 02 Feb 2026 22:18:36 GMT
+server: uvicorn
+content-length: 38
+content-type: application/json
+x-request-id: 0beba045
+x-response-time: 0.001s
+
+{"status":"healthy","version":"1.0.0"}\n--- /agent/threads/{thread_id}/state ---
+HTTP/1.1 200 OK
+date: Mon, 02 Feb 2026 22:18:36 GMT
+server: uvicorn
+content-length: 84
+content-type: application/json
+x-request-id: 09a740e0
+x-response-time: 0.005s
+
+{"thread_id":"forensic-001-thread-001","status":"completed","pending_approval":null}\n--- /agent/approvals/{approval_id} ---
+HTTP/1.1 404 Not Found
+date: Mon, 02 Feb 2026 22:18:36 GMT
+server: uvicorn
+content-length: 31
+content-type: application/json
+x-request-id: df3909a4
+x-response-time: 0.002s
+
+{"detail":"Approval not found"}\n--- /agent/approvals/{approval_id}:approve ---
+HTTP/1.1 404 Not Found
+date: Mon, 02 Feb 2026 22:18:36 GMT
+server: uvicorn
+content-length: 31
+content-type: application/json
+x-request-id: 6f643c63
+x-response-time: 0.005s
+
+{"detail":"Approval not found"}\n--- /agent/approvals/{approval_id}:reject ---
+HTTP/1.1 404 Not Found
+date: Mon, 02 Feb 2026 22:18:36 GMT
+server: uvicorn
+content-length: 31
+content-type: application/json
+x-request-id: 09125549
+x-response-time: 0.004s
+
+{"detail":"Approval not found"}\n--- /api/v1/agent/invoke (no auth) ---
+HTTP/1.1 200 OK
+date: Mon, 02 Feb 2026 22:18:36 GMT
+server: uvicorn
+content-length: 175
+content-type: application/json
+x-request-id: d6466a33
+x-response-time: 0.915s
+
+{"thread_id":"61c10725-64c8-4fdf-bd49-d38b16bf1b69","status":"completed","content":"Pong! How can I assist you today?","pending_approval":null,"actions_taken":[],"error":null}\n--- /api/v1/agent/invoke (JWT) ---
+HTTP/1.1 200 OK
+date: Mon, 02 Feb 2026 22:18:37 GMT
+server: uvicorn
+content-length: 175
+content-type: application/json
+x-request-id: 672047e1
+x-response-time: 0.810s
+
+{"thread_id":"7b880e7b-f89d-42b7-b393-c19af44b27fa","status":"completed","content":"Pong! How can I assist you today?","pending_approval":null,"actions_taken":[],"error":null}\n--- /api/v1/agent/invoke/stream (no auth, first line) ---
+HTTP/1.1 200 OK
+date: Mon, 02 Feb 2026 22:18:38 GMT
+server: uvicorn
+cache-control: no-cache
+connection: keep-alive
+\n--- /api/v1/agent/threads/{thread_id}/state ---
+HTTP/1.1 200 OK
+date: Mon, 02 Feb 2026 22:18:38 GMT
+server: uvicorn
+content-length: 84
+content-type: application/json
+x-request-id: c1c6bb04
+x-response-time: 0.002s
+
+{"thread_id":"forensic-001-thread-001","status":"completed","pending_approval":null}\n--- /api/v1/agent/approvals (GET) ---
+HTTP/1.1 200 OK
+date: Mon, 02 Feb 2026 22:18:38 GMT
+server: uvicorn
+content-length: 26
+content-type: application/json
+x-request-id: a5f55e8e
+x-response-time: 0.002s
+
+{"approvals":[],"total":0}\n--- /api/v1/agent/approvals/{approval_id} (GET) ---
+HTTP/1.1 404 Not Found
+date: Mon, 02 Feb 2026 22:18:38 GMT
+server: uvicorn
+content-length: 31
+content-type: application/json
+x-request-id: 9b81d3d8
+x-response-time: 0.001s
+
+{"detail":"Approval not found"}\n--- /api/v1/agent/approvals/{approval_id}:approve (JWT) ---
+HTTP/1.1 404 Not Found
+date: Mon, 02 Feb 2026 22:18:38 GMT
+server: uvicorn
+content-length: 31
+content-type: application/json
+x-request-id: ebf466ef
+x-response-time: 0.003s
+
+{"detail":"Approval not found"}\n--- /api/v1/agent/approvals/{approval_id}:reject (JWT) ---
+HTTP/1.1 404 Not Found
+date: Mon, 02 Feb 2026 22:18:38 GMT
+server: uvicorn
+content-length: 31
+content-type: application/json
+x-request-id: 8d78c124
+x-response-time: 0.003s
+
+{"detail":"Approval not found"}

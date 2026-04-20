@@ -1,0 +1,8 @@
+=== CHECK 4.2: validate-full Composition ===
+validate-full definition: validate-full: validate-fast validate-contract-surfaces validate-agent-config validate-sse-schema validate-migrations ## Full validation gates (A–H)
+PASS Includes validate-fast
+PASS Includes validate-contract-surfaces
+PASS Includes validate-agent-config
+PASS Includes validate-sse-schema
+PASS Includes validate-migrations
+CHECK 4.2: PASS

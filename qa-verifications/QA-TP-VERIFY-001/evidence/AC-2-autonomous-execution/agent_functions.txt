@@ -1,0 +1,7 @@
+=== A2.1 ===
+217:run_agent_claude() {
+678:    run_agent_claude "$run_dir/01_pass1/claude_prompt.md" "$run_dir/01_pass1/claude_report.md" "$repos" &
+249:run_agent_gemini() {
+682:    run_agent_gemini "$run_dir/01_pass1/gemini_prompt.md" "$run_dir/01_pass1/gemini_report.md" &
+271:run_agent_codex() {
+686:    run_agent_codex "$run_dir/01_pass1/codex_prompt.md" "$run_dir/01_pass1/codex_report.md" "$repos" &

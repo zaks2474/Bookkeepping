@@ -1,0 +1,132 @@
+D-9 search_deals fallback wiring
+
+async def _search_deals_fallback(query: str, limit: int) -> str:
+    """R3 REMEDIATION [P3.4]: Fallback to backend API when RAG is unavailable.
+
+    Searches deals directly via the backend /api/deals endpoint.
+    """
+    headers = _get_backend_headers()
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.get(
+                f"{DEAL_API_URL}/api/deals",
+                headers=headers,
+                params={"q": query, "limit": limit},
+            )
+
+            if response.status_code == 200:
+                data = response.json()
+                # Format for user with provenance warning
+                return json.dumps({
+                    "results": data.get("deals", data.get("results", [])),
+                    "total": data.get("total", len(data.get("deals", []))),
+                    "provenance": {
+                        "source": "backend_api",
+                        "note": "Deal search is temporarily using direct database search (RAG unavailable). Results may be less comprehensive.",
+                    }
+                })
+            else:
+                return json.dumps({
+                    "ok": False,
+                    "error": f"Backend search failed: HTTP {response.status_code}",
+                })
+    except Exception as e:
+        logger.error("search_deals_fallback_failed", error=str(e))
+        return json.dumps({
+            "ok": False,
+            "error": f"Both RAG and backend search unavailable: {str(e)}",
+        })
+
+
+@tool(args_schema=SearchDealsInput)
+async def search_deals(query: str, limit: int = 10) -> str:
+    """Search for deals using RAG.
+
+    R3 REMEDIATION [P3.4]: Added provenance tracking and fallback to backend API.
+
+    Args:
+        query: Search query for deals
+        limit: Maximum number of results
+
+    Returns:
+        str: Search results with provenance metadata
+    """
+    logger.info("search_deals_called", query=query, limit=limit)
+
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.post(
+                f"{RAG_REST_URL}/rag/query",
+                json={
+                    "query": query,
+                    "top_k": limit,
+                },
+            )
+
+            if response.status_code == 200:
+                data = response.json()
+                # R3 REMEDIATION [P3.4]: Add provenance to RAG results
+                results = data.get("results", [])
+                return json.dumps({
+                    "results": results,
+                    "total": data.get("count", len(results)),
+                    "provenance": {
+                        "source": "rag_rest",
+                        "indexed_at": data.get("indexed_at"),  # If provided by RAG
+                        "query_latency_ms": data.get("latency_ms"),
+                    }
+                })
+            else:
+                # RAG returned error - try fallback
+                logger.warning(
+                    "rag_rest_error_fallback",
+                    query=query,
+                    status_code=response.status_code,
+                )
+                return await _search_deals_fallback(query, limit)
+
+    except httpx.ConnectError:
+        # R3 REMEDIATION [P3.4]: Circuit breaker - fallback to backend API
+        logger.warning(
+            "rag_rest_unavailable_fallback",
+            query=query,
+            environment=ENVIRONMENT,
+        )
+
+        if ENVIRONMENT == "development" and ALLOW_TOOL_MOCKS:
+            return json.dumps({
+                "results": [{"id": "deal-001", "title": "Sample Deal", "stage": "loi"}],
+                "total": 1,
+                "provenance": {
+                    "source": "mock",
+                    "note": "MOCK: RAG REST unavailable",
+                }
+            })
+
+        # Try fallback to backend API
+        return await _search_deals_fallback(query, limit)
+
+    except Exception as e:
+        logger.error("search_deals_error", error=str(e))
+        # Try fallback before giving up
+        try:
+            return await _search_deals_fallback(query, limit)
+        except Exception:
+            return json.dumps({
+                "ok": False,
+                "error": f"Deal search unavailable: {str(e)}. Please try again later.",
+            })
+
+
+# REMEDIATION-V3 [ZK-ISSUE-0009]: create_deal agent tool with HITL
+@tool(args_schema=CreateDealInput)
+async def create_deal(
+    canonical_name: str,
+    display_name: Optional[str] = None,
+    stage: str = "inbound",
+    company_name: Optional[str] = None,
+    broker_name: Optional[str] = None,
+    broker_email: Optional[str] = None,
+    source: Optional[str] = None,
+    notes: Optional[str] = None,
+) -> str:

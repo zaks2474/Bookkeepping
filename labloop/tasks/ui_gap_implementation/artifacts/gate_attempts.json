@@ -1,0 +1,11 @@
+{
+  "attempts": 2,
+  "exit_codes": [
+  1
+],
+  "flake_suspected": false,
+  "final_exit_code": 1,
+  "gate_cmd": "cd /home/zaks/zakops-agent-api/apps/dashboard && npx tsc --noEmit && npm run lint",
+  "retry_max": 0,
+  "retry_mode": "on_fail"
+}

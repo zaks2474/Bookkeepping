@@ -1,0 +1,31 @@
+- Server proxies to: Deal Lifecycle API (:8091), RAG API (:8052), DataRoom filesystem
+Transport: SSE (Server-Sent Events)
+- Bearer token authentication on all MCP requests
+    print("=" * 60)
+    print("ZakOps Agent Bridge - MCP Server (FastMCP)")
+    print("=" * 60)
+    print(f"Transport: SSE (to switch: change transport='sse' to 'streamable-http' in create_app)")
+    print(f"Endpoint: http://{BRIDGE_HOST}:{BRIDGE_PORT}/sse")
+    print(f"Health: http://{BRIDGE_HOST}:{BRIDGE_PORT}/health")
+    print(f"Deal API: {DEAL_API_URL}")
+
+if __name__ == "__main__":
+    import uvicorn
+
+    print("=" * 60)
+    print("ZakOps Agent Bridge - MCP Server (FastMCP)")
+    print("=" * 60)
+    print(f"Transport: SSE (to switch: change transport='sse' to 'streamable-http' in create_app)")
+    print(f"Endpoint: http://{BRIDGE_HOST}:{BRIDGE_PORT}/sse")
+    print(f"Health: http://{BRIDGE_HOST}:{BRIDGE_PORT}/health")
+    print(f"Deal API: {DEAL_API_URL}")
+    print(f"RAG API: {RAG_API_URL}")
+    print(f"DataRoom: {DATAROOM_ROOT}")
+    print(f"Auth: {'Enabled' if API_KEY else 'DISABLED (dev mode)'}")
+    print("=" * 60)
+
+    # Create app with auth middleware
+    app = create_app()
+
+    # Run with uvicorn
+    uvicorn.run(app, host=BRIDGE_HOST, port=BRIDGE_PORT)

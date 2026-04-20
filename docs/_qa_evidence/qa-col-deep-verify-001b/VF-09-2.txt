@@ -1,0 +1,12 @@
+12:  - similarity_score: cosine similarity between original and replayed completion
+88:            similarity=comparison["similarity_score"],
+174:    def _compare(
+184:        # Cosine similarity (word-level bag-of-words approximation)
+185:        similarity = self._word_similarity(original_completion, replay_completion)
+196:        if similarity >= 0.85:
+198:        elif similarity >= 0.60:
+204:            "similarity_score": round(similarity, 3),
+210:    def _word_similarity(self, text_a: str, text_b: str) -> float:
+211:        """Compute bag-of-words cosine similarity between two texts.
+214:        embedding-based similarity via the RAG service.
+226:        # Jaccard-like similarity (not true cosine, but lightweight)

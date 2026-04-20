@@ -1,0 +1,6 @@
+684:                correlation_id=uuid.UUID(deal_id.replace('DL-', '00000000-0000-0000-0000-').zfill(36)) if deal_id.startswith('DL-') else uuid.uuid4(),
+1502:    correlation_id = request.headers.get("X-Correlation-ID") or request.headers.get("x-correlation-id")
+1548:                 correlation_id, source_type)
+1564:            correlation_id, source_type,
+1771:                        'correlation_id': str(item.get('correlation_id') or ''),
+1804:                        (correlation_id, aggregate_type, aggregate_id, event_type, event_data)

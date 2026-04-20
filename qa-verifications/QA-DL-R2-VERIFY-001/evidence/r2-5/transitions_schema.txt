@@ -1,0 +1,14 @@
+   column_name   |        data_type         | is_nullable 
+-----------------+--------------------------+-------------
+ id              | uuid                     | NO
+ deal_id         | character varying        | NO
+ from_stage      | character varying        | NO
+ to_stage        | character varying        | NO
+ actor_id        | character varying        | YES
+ actor_type      | character varying        | YES
+ correlation_id  | character varying        | YES
+ reason          | text                     | YES
+ idempotency_key | character varying        | YES
+ created_at      | timestamp with time zone | NO
+(10 rows)
+

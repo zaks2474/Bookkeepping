@@ -1,0 +1,6 @@
+=== DROP-L1: Evidence Verification Bash Commands ===
+VERDICT: ADDRESSED
+Evidence: Layer 5 test suites (deal-integrity.test.ts, test_idempotency.py,
+test_golden_path_deal.py) provide automated verification. Additionally,
+negative controls NC-0 through NC-8 use bash-level sabotage and verification.
+make validate-local runs automated evidence collection.

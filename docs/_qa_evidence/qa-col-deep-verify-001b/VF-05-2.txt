@@ -1,0 +1,5 @@
+4:Extends the No-Illusions Gate pattern from transition_deal to ALL
+95:async def _verify_transition_deal(args: dict, result: dict) -> bool:
+96:    """Verify that transition_deal actually changed the stage."""
+133:register_post_condition("transition_deal", _verify_transition_deal)
+134:register_post_condition("create_deal", _verify_create_deal)

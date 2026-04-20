@@ -1,0 +1,38 @@
+=== XC-2: Completion Report Claims vs Codebase Reality ===
+
+1. "8 route handlers migrated" — VERIFIED
+   Agent activity, sentiment (NEW), chat/complete, chat/route, chat/threads,
+   chat/threads/[id], chat/threads/[id]/messages, chat/execute-proposal
+   All 8 import and use agentFetch ✓
+
+2. "0 direct AGENT_API_URL usage in src/app/api/" — VERIFIED
+   grep returns 0 matches ✓ (ST-1 evidence)
+
+3. "4 Zod schemas with safeParse" — VERIFIED
+   CaseFileEnvelopeSchema, DealEnrichmentSchema, DelegatedTaskSchema+DealTasksResponseSchema,
+   SentimentTrendSchema — all use safeParse + console.warn + typed fallback ✓
+
+4. "44/44 PASS, 0 FAIL, 0 WARN, 2 INFO" (Surface 17) — VERIFIED
+   Manifest has 44 entries, PROXY_PASS_EXCEPTIONS produces 2 INFO ✓
+
+5. "Synthetic bundle_id = qi-{id}" — VERIFIED
+   main.py line 3387: f"qi-{row['id']}" ✓
+
+6. "Pipeline raises HTTPException(500)" — VERIFIED
+   main.py lines 2647-2649: except → HTTPException(status_code=500) ✓
+
+7. "Sentiment path corrected" — VERIFIED
+   api.ts line 2714: /api/agent/sentiment/${dealId} (no double prefix) ✓
+   New route handler: /api/v1/chatbot/sentiment/${dealId} ✓
+
+8. "Threads path corrected" — VERIFIED
+   threads/route.ts lines 19, 41: /api/v1/chatbot/threads (has /api prefix) ✓
+
+9. "16 liveness probes" — VERIFIED
+   validate-endpoint-liveness.sh ENDPOINTS array: 16 entries ✓
+
+10. Backend files: "2 files" — VERIFIED
+    001_base_tables.sql + src/api/orchestration/main.py ✓
+    (Other backend git changes are from other missions — INFO)
+
+VERDICT: PASS — All 10 claims verified against codebase

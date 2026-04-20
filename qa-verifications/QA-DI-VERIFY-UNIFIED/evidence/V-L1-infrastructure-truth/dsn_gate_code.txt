@@ -1,0 +1,37 @@
+=== DSN/DATABASE_URL/startup check in BACKEND_ROOT/src/*.py ===
+--- /home/zaks/zakops-backend/src/core/outbox/runner.py ---
+13:    DATABASE_URL: PostgreSQL connection string (required)
+117:    # Verify DATABASE_URL is set
+118:    if not os.getenv("DATABASE_URL"):
+119:        logger.error("DATABASE_URL environment variable is required")
+
+--- /home/zaks/zakops-backend/src/core/outbox/healthcheck.py ---
+28:        database_url = os.environ.get("DATABASE_URL")
+29:        if not database_url:
+30:            print("Unhealthy: DATABASE_URL not set")
+34:        conn = await asyncpg.connect(database_url)
+
+--- /home/zaks/zakops-backend/src/core/security/checkpoint_encryption.py ---
+11:- Startup behavior: Fail-closed (refuse to start without valid key in production)
+
+--- /home/zaks/zakops-backend/src/core/database/adapter.py ---
+59:            "DATABASE_URL",
+
+--- /home/zaks/zakops-backend/src/api/orchestration/agent_invocation.py ---
+39:DATABASE_URL = os.getenv(
+40:    "ZAKOPS_DATABASE_URL",
+193:            DATABASE_URL,
+
+--- /home/zaks/zakops-backend/src/api/orchestration/main.py ---
+77:    "DATABASE_URL",
+343:# Canonical DB identity — used by startup gate and health endpoint
+366:    # LAYER 1 — Startup DSN verification gate
+367:    # Refuse to start if connected DB does not match canonical identity
+375:        print(f"DSN gate check: db={actual_db}, user={actual_user}")
+379:                f"STARTUP GATE FAILURE: Connected to database '{actual_db}' "
+381:                f"Refusing to start. Fix DATABASE_URL to point to the canonical DB."
+390:    print(f"DSN gate PASSED: {app.state.db_identity}")
+
+--- /home/zaks/zakops-backend/src/api/shared/routers/health.py ---
+130:async def startup_check() -> dict[str, Any]:
+

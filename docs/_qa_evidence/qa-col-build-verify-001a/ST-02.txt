@@ -1,0 +1,3 @@
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/reflexion.py:19:REFLEXION_ENABLED = True
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:92:from app.services.reflexion import reflexion_service, REFLEXION_ENABLED
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:1061:        if REFLEXION_ENABLED and deal_id and assistant_message:

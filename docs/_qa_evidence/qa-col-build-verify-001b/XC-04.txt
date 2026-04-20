@@ -1,0 +1,10 @@
+and skip is logged to legal_hold_log for audit compliance.
+                LEFT JOIN legal_hold_locks lh ON t.thread_id = lh.thread_id
+                    # Log skip to legal_hold_log
+                        INSERT INTO legal_hold_log
+                        "DELETE FROM messages WHERE thread_id = $1", thread_id,
+                        "DELETE FROM turn_snapshots WHERE thread_id = $1", thread_id,
+                        "DELETE FROM thread_summaries WHERE thread_id = $1", thread_id,
+                        "DELETE FROM threads WHERE thread_id = $1", thread_id,
+                    # Log deletion to legal_hold_log
+                        INSERT INTO legal_hold_log

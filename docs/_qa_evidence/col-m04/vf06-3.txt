@@ -1,0 +1,1 @@
+    deal_id         VARCHAR(20) NOT NULL REFERENCES zakops.deals(deal_id) ON DELETE CASCADE,

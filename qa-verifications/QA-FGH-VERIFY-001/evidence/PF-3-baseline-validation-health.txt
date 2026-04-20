@@ -1,0 +1,199 @@
+=== PF-3 BASELINE VALIDATION HEALTH ===
+[36m=== Sync Types ===[0m
+cd /home/zaks/zakops-agent-api/apps/dashboard && npx openapi-typescript ../../packages/contracts/openapi/zakops-api.json -o src/lib/api-types.generated.ts
+✨ openapi-typescript 7.10.1
+🚀 ../../packages/contracts/openapi/zakops-api.json → src/lib/api-types.generated.ts [115.3ms]
+[32mTypes regenerated from committed spec[0m
+[36m=== Sync Agent Types ===[0m
+cd /home/zaks/zakops-agent-api/apps/dashboard && npx openapi-typescript ../../packages/contracts/openapi/agent-api.json -o src/lib/agent-api-types.generated.ts
+✨ openapi-typescript 7.10.1
+🚀 ../../packages/contracts/openapi/agent-api.json → src/lib/agent-api-types.generated.ts [64.5ms]
+[32mAgent API types regenerated from committed spec[0m
+[36m[dashboard][0m Linting...
+cd apps/dashboard && npm run lint
+
+> zakops-dashboard@1.0.0 lint
+> next lint
+
+`next lint` is deprecated and will be removed in Next.js 16.
+For new projects, use create-next-app to choose your preferred linter.
+For existing projects, migrate to the ESLint CLI:
+npx @next/codemod@canary next-lint-to-eslint-cli .
+
+ ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of /home/zaks/zakops-agent-api/package-lock.json as the root directory.
+ To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+ Detected additional lockfiles: 
+   * /home/zaks/zakops-agent-api/apps/dashboard/package-lock.json
+
+
+./src/app/actions/page.tsx
+275:6  Warning: React Hook useEffect has a missing dependency: 'actions'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/deals/[id]/page.tsx
+268:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/deals/page.tsx
+126:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/components/global-search.tsx
+147:6  Warning: React Hook React.useEffect has missing dependencies: 'allActions.length', 'allDeals.length', and 'allQuarantine.length'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+180:6  Warning: React Hook React.useEffect has a missing dependency: 'searchAll'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/components/onboarding/OnboardingWizard.tsx
+166:6  Warning: React Hook useEffect has missing dependencies: 'initialState' and 'updatePersistedState'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/hooks/use-realtime-events.ts
+411:6  Warning: React Hook useEffect has missing dependencies: 'connect' and 'disconnect'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+549:6  Warning: React Hook useEffect has missing dependencies: 'connect' and 'disconnect'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/hooks/use-render-tracking.ts
+40:79  Warning: The ref value 'renderCount.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'renderCount.current' to a variable inside the effect, and use that variable in the cleanup function.  react-hooks/exhaustive-deps
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules
+[36m=== Contract Surface Validation ===[0m
+=== CONTRACT SURFACE VALIDATION ===
+
+--- Generated File Freshness ---
+  PASS: Surface 1: Backend -> Dashboard: current
+  PASS: Surface 2: Backend -> Agent SDK: current
+  PASS: Surface 4: Agent -> Dashboard: current
+  PASS: Surface 5: RAG -> Backend SDK: current
+
+--- Reference Schema Existence ---
+  PASS: Surface 3: Agent OpenAPI: exists
+  PASS: Surface 6: MCP Tools: exists
+  PASS: Surface 7: SSE Events: exists
+
+--- Bridge Import Enforcement ---
+  PASS: No direct generated file imports found
+
+--- Typed SDK Enforcement ---
+  PASS: deal_tools.py uses typed SDK (0 untyped patterns)
+
+--- Surface 8: Agent Config Alignment ---
+  PASS: Surface 8: Agent config alignment check passed
+
+--- Surface 9: Design System Conventions ---
+  PASS: Surface 9: Design system convention check passed
+
+--- Surface 10: Dependency Health ---
+  PASS: Surface 10: Dependency health check passed
+
+--- Surface 11: Env Registry ---
+  PASS: Surface 11: Env registry check passed
+
+--- Surface 12: Error Taxonomy ---
+  PASS: Surface 12: Error taxonomy check passed
+
+--- Surface 13: Test Coverage ---
+  PASS: Surface 13: Test coverage check passed
+
+--- Surface 14: Performance Budget ---
+  PASS: Surface 14: Performance budget check passed
+
+================================
+PASS: ALL 14 CONTRACT SURFACE CHECKS PASSED
+[32mContract surface validation passed[0m
+[36m=== Agent Config Validation ===[0m
+WARN: system.md lists tools not found in deal_tools.py:
+  - add_note
+  - create_deal
+  - get_deal
+  - get_deal_health
+  - list_deals
+  - search_deals
+  - transition_deal
+PASS: agent config alignment checks passed
+============================================================
+R3 REMEDIATION [P2.4]: Prompt Tool List Validation
+============================================================
+Loading environment: Environment.DEVELOPMENT
+Loaded environment from /home/zaks/zakops-agent-api/apps/agent-api/.env.development
+[2m2026-02-10T18:38:07.992310Z[0m [[32m[1minfo     [0m] [1mlogging_initialized           [0m [[0m[1m[34mapp.core.logging[0m][0m [36mdebug[0m=[35mTrue[0m [36menvironment[0m=[35mdevelopment[0m [36mfilename[0m=[35mlogging.py[0m [36mfunc_name[0m=[35m<module>[0m [36mlineno[0m=[35m300[0m [36mlog_format[0m=[35mconsole[0m [36mlog_level[0m=[35mDEBUG[0m [36mmodule[0m=[35mlogging[0m [36mpathname[0m=[35m/home/zaks/zakops-agent-api/apps/agent-api/app/core/logging.py[0m
+[2m2026-02-10T18:38:18.231431Z[0m [[31m[1merror    [0m] [1mdatabase_initialization_error [0m [[0m[1m[34mapp.core.logging[0m][0m [36menvironment[0m=[35mdevelopment[0m [36merror[0m=[35m"(psycopg.OperationalError) failed to resolve host 'db': [Errno -3] Temporary failure in name resolution\n(Background on this error at: https://sqlalche.me/e/20/e3q8)"[0m [36mfilename[0m=[35mdatabase.py[0m [36mfunc_name[0m=[35m__init__[0m [36mlineno[0m=[35m68[0m [36mmodule[0m=[35mdatabase[0m [36mpathname[0m=[35m/home/zaks/zakops-agent-api/apps/agent-api/app/services/database.py[0m
+WARN: validate_prompt_tools.py failed (requires running DB) — skipping
+PASS: validate-agent-config.sh
+[32mAgent config validation passed[0m
+[36m=== SSE Schema Validation ===[0m
+PASS: SSE schema valid
+[32mSSE schema validation passed[0m
+[36m=== Local Validation (Offline) ===[0m
+cd /home/zaks/zakops-agent-api/apps/dashboard && npx tsc --noEmit
+make[1]: Entering directory '/home/zaks/zakops-agent-api'
+Redocly ignores: 57 (ceiling: 57)
+make[1]: Leaving directory '/home/zaks/zakops-agent-api'
+[32mAll local validations passed[0m
+[36m=== Surface 9 Validation ===[0m
+=== Surface 9: Design System Convention Validation ===
+
+Check 1: Import discipline (no direct generated file imports)
+  PASS: No direct generated file imports
+Check 2: Stage definitions (no hardcoded stage arrays)
+  PASS: No hardcoded stage arrays detected
+Check 3: Data fetching (Promise.allSettled usage)
+  PASS: No banned Promise.all usage in page files
+Check 4: Design system manifest
+  PASS: Manifest exists
+Check 5: Design system path-scoped rule
+  PASS: Rule file exists
+Check 6: Frontend governance rule files
+  PASS: accessibility.md exists with path frontmatter
+  PASS: component-patterns.md exists with path frontmatter
+Check 7: Design-system governance sections
+  PASS: Section found: Skill Preload
+  PASS: Section found: Responsive Breakpoint
+  PASS: Section found: Z-Index
+  PASS: Section found: Dark Mode
+  PASS: Section found: Animation Performance
+  PASS: Section found: State Management
+Check 8: Anti-convergence policy
+  PASS: Anti-convergence policy present
+
+Surface 9 Validation: PASS (0 violations)
+[32mSurface 9 validation passed[0m
+[36m=== Contract Surface Validation ===[0m
+=== CONTRACT SURFACE VALIDATION ===
+
+--- Generated File Freshness ---
+  PASS: Surface 1: Backend -> Dashboard: current
+  PASS: Surface 2: Backend -> Agent SDK: current
+  PASS: Surface 4: Agent -> Dashboard: current
+  PASS: Surface 5: RAG -> Backend SDK: current
+
+--- Reference Schema Existence ---
+  PASS: Surface 3: Agent OpenAPI: exists
+  PASS: Surface 6: MCP Tools: exists
+  PASS: Surface 7: SSE Events: exists
+
+--- Bridge Import Enforcement ---
+  PASS: No direct generated file imports found
+
+--- Typed SDK Enforcement ---
+  PASS: deal_tools.py uses typed SDK (0 untyped patterns)
+
+--- Surface 8: Agent Config Alignment ---
+  PASS: Surface 8: Agent config alignment check passed
+
+--- Surface 9: Design System Conventions ---
+  PASS: Surface 9: Design system convention check passed
+
+--- Surface 10: Dependency Health ---
+  PASS: Surface 10: Dependency health check passed
+
+--- Surface 11: Env Registry ---
+  PASS: Surface 11: Env registry check passed
+
+--- Surface 12: Error Taxonomy ---
+  PASS: Surface 12: Error taxonomy check passed
+
+--- Surface 13: Test Coverage ---
+  PASS: Surface 13: Test coverage check passed
+
+--- Surface 14: Performance Budget ---
+  PASS: Surface 14: Performance budget check passed
+
+================================
+PASS: ALL 14 CONTRACT SURFACE CHECKS PASSED
+[32mContract surface validation passed[0m

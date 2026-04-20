@@ -1,0 +1,360 @@
+=== SECTION 7: FINAL VERIFICATION ===
+Date: 2026-02-06T17:42:41-06:00
+
+--- make sync-types ---
+[36m=== Sync Types ===[0m
+cd /home/zaks/zakops-agent-api/apps/dashboard && npx openapi-typescript ../../packages/contracts/openapi/zakops-api.json -o src/lib/api-types.generated.ts
+✨ openapi-typescript 7.10.1
+🚀 ../../packages/contracts/openapi/zakops-api.json → src/lib/api-types.generated.ts [95ms]
+[32mTypes regenerated from committed spec[0m
+Exit: 0
+
+--- make sync-agent-types ---
+[36m=== Sync Agent Types ===[0m
+cd /home/zaks/zakops-agent-api/apps/dashboard && npx openapi-typescript ../../packages/contracts/openapi/agent-api.json -o src/lib/agent-api-types.generated.ts
+✨ openapi-typescript 7.10.1
+🚀 ../../packages/contracts/openapi/agent-api.json → src/lib/agent-api-types.generated.ts [54.4ms]
+[32mAgent API types regenerated from committed spec[0m
+Exit: 0
+
+--- make sync-backend-models ---
+	--output-model-type pydantic_v2.BaseModel \
+	--use-annotated --field-constraints --use-double-quotes \
+	--target-python-version 3.12 \
+	--output /tmp/backend_models.py
+[32mBackend models regenerated from committed spec[0m
+Exit: 0
+
+--- make sync-rag-models ---
+[36m=== Sync RAG Models ===[0m
+docker exec zakops-agent-api /home/appuser/.local/bin/datamodel-codegen \
+	--input /tmp/rag-api.json \
+	--input-file-type openapi \
+	--output-model-type pydantic_v2.BaseModel \
+	--use-annotated --field-constraints --use-double-quotes \
+	--target-python-version 3.12 \
+	--output /tmp/rag_models.py
+[32mRAG models regenerated from committed spec[0m
+Exit: 0
+
+--- make validate-local ---
+./src/hooks/use-render-tracking.ts
+40:79  Warning: The ref value 'renderCount.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'renderCount.current' to a variable inside the effect, and use that variable in the cleanup function.  react-hooks/exhaustive-deps
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules
+[36m=== Local Validation (Offline) ===[0m
+cd /home/zaks/zakops-agent-api/apps/dashboard && npx tsc --noEmit
+make[1]: Entering directory '/home/zaks/zakops-agent-api'
+Redocly ignores: 57 (ceiling: 57)
+make[1]: Leaving directory '/home/zaks/zakops-agent-api'
+[32mAll local validations passed[0m
+Exit: 0
+
+--- npx tsc --noEmit ---
+Exit: 0
+
+--- npm run lint ---
+
+./src/hooks/use-render-tracking.ts
+40:79  Warning: The ref value 'renderCount.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'renderCount.current' to a variable inside the effect, and use that variable in the cleanup function.  react-hooks/exhaustive-deps
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules
+Exit: 0
+
+--- Empty evidence files ---
+/home/zaks/bookkeeping/qa-verifications/QA-HG-VERIFY-002/evidence/FINAL-verification/empty_files.txt
+/home/zaks/bookkeeping/qa-verifications/QA-HG-VERIFY-002/evidence/V0-baseline/exec001-sync-types.log
+Empty files: 1
+
+=== FINAL METRICS ===
+deal_tools.py .get() count: 0
+0
+deal_tools.py response.json() count: 0
+0
+deal_tools.py BackendClient count: 22
+Committed specs: 4
+Make sync targets: 5
+MCP active servers: 1
+Bridge files: 2
+@ts-ignore count: /home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/e2e/integration.test.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/setup.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/constants/mock-api.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/constants/data.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/layout.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/not-found.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/layout.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/layout.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/settings/page.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/error.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/loading.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/layout.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/page.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/error.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/loading.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/layout.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/error.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/loading.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/layout.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/onboarding/page.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/onboarding/layout.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/[id]/archive/route.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/[id]/route.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/quarantine/route.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/quarantine/[actionId]/preview/route.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/completed-count/route.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/bulk/archive/route.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/bulk/delete/route.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/clear-completed/route.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/execute-proposal/route.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/session/[sessionId]/route.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/route.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/complete/route.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/alerts/route.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/agent/activity/route.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/deferred-actions/route.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/deferred-actions/due/route.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/quarantine/health/route.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/checkpoints/route.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/pipeline/route.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/events/route.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/error.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/loading.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/page.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/layout.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/ui-test/page.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/ui-test/layout.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/layout.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/format.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/observability.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/searchparams.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent-client.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent/__tests__/toolGateway.test.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent/toolGateway.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent/providers/local.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent/toolRegistry.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent/types.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent/provider-service.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent/index.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/error-normalizer.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/settings/provider-settings.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/storage-utils.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/action-registry.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/utils.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/deals-bulk-delete-api.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/routes.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent-api-types.generated.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/data-table.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/quarantine-delete-api.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/backend-fetch.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-types.generated.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/schemas/approval.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/parsers.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/font.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-client.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/middleware.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/agent-api.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/events.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/execution-contracts.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api/generated.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/data-table.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/base-form.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/agent-activity.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/index.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/config/safety.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/config/nav-config.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/config/data-table.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/proxy.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/use-data-table.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/use-debounce.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/use-media-query.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/useQuarantineDelete.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/use-callback-ref.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/use-render-tracking.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/use-realtime-events.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/use-debounced-callback.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/useDealsBulkDelete.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/use-multistep-form.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/useAgentActivity.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/use-breadcrumbs.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/use-controllable-state.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/use-callback-ref.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/use-mobile.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/useOnboardingState.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/use-nav.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/actions/action-input-form.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/actions/ActionQueue.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/actions/action-card.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/breadcrumbs.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/org-switcher.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/user-avatar-profile.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/forms/form-checkbox-group.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/forms/form-textarea.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/forms/form-input.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/forms/form-slider.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/forms/form-switch.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/forms/form-date-picker.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/forms/form-select.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/forms/form-radio-group.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/forms/form-file-upload.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/forms/demo-form.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/forms/form-checkbox.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/nav-main.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/chat/ProviderSelector.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/approvals/ApprovalPreview.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/approvals/ApprovalCard.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/approvals/ApprovalQueue.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/approvals/ApprovalBadge.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/approvals/index.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/modal/alert-modal.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/LoadingSkeleton.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ErrorBoundary.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealHeader.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealAgentPanel.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealWorkspace.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealTabs.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealTimeline.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealDocuments.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/index.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealChat.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/global-search.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/nav-user.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/ReasoningDisplay.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/ToolCallCard.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/EvidenceLinks.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/AgentRunTimeline.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/hooks/useApprovalFlow.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/hooks/useAgentRun.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/ApprovalCheckpoint.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/AgentDrawer.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/AgentPanel.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/index.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/nav-projects.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/kbar/render-result.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/kbar/result-item.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/kbar/index.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/kbar/use-theme-switching.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/button.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/command.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/context-menu.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/hover-card.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/breadcrumb.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/toggle-group.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/switch.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/checkbox.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/alert-dialog.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/navigation-menu.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/input.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/input-otp.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/form.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/table.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/slider.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/aspect-ratio.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/dropdown-menu.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/scroll-area.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/collapsible.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/calendar.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/skeleton.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/sheet.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/avatar.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/sonner.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/toggle.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/resizable.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/select.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/drawer.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/dialog.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/tabs.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/badge.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/textarea.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/pagination.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/accordion.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/sidebar.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/chart.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/alert.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/card.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/label.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/popover.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/table/data-table-column-header.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/table/data-table.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/table/data-table-pagination.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/table/data-table-date-filter.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/table/data-table-faceted-filter.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/table/data-table-slider-filter.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/table/data-table-view-options.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/table/data-table-skeleton.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/table/data-table-toolbar.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/radio-group.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/separator.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/modal.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/menubar.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/heading.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/progress.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ui/tooltip.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/layout/user-nav.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/layout/cta-github.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/layout/ThemeToggle/theme-provider.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/layout/ThemeToggle/theme-toggle.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/layout/app-sidebar.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/layout/page-container.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/layout/providers.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/layout/AgentStatusIndicator.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/layout/header.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deals/DealBoard.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/audit/AuditLogViewer.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/audit/index.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/operator-hq/QuickStats.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/operator-hq/PipelineOverview.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/operator-hq/ActivityFeed.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/operator-hq/index.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/operator-hq/OperatorHQ.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/active-theme.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/onboarding/OnboardingWizard.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/onboarding/steps/CompleteStep.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/onboarding/steps/AgentDemoStep.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/onboarding/steps/EmailSetupStep.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/onboarding/steps/AgentConfigStep.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/onboarding/steps/PreferencesStep.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/onboarding/steps/OperatorProfileStep.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/onboarding/steps/WelcomeStep.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/onboarding/CapabilityModal.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/onboarding/index.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/form-card-skeleton.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/file-uploader.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/dashboard/ExecutionInbox.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/dashboard/TodayNextUpStrip.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/dashboard/index.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/dashboard/AgentActivityWidget.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/diligence/useDiligence.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/diligence/DiligenceCategory.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/diligence/DiligenceProgress.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/diligence/DiligenceChecklist.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/diligence/index.ts:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/diligence/DiligenceItem.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/theme-selector.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/search-input.tsx:0
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/icons.tsx:0
+0
+Empty evidence files: 1
+Makefile /home/zaks count: 0
+0
+
+=== EXIT CODE SUMMARY ===
+make sync-types: 0
+make sync-agent-types: 0
+make sync-backend-models: 0
+make sync-rag-models: 0
+make validate-local: 0
+npx tsc --noEmit: 0
+npm run lint: 0
+Empty evidence: 1
+
+ALL PASS: true
+Date: 2026-02-06T17:42:49-06:00

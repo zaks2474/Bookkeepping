@@ -1,0 +1,23 @@
+=== DEAL FIELDS ===
+  action_count: int = 0
+  alias_count: int = 0
+  broker: dict = {}
+  canonical_name: str = 'CrashTestCorp'
+  company_info: dict = {}
+  created_at: str = '2026-02-05T16:30:23.980576Z'
+  days_since_update: float = 0.0
+  deal_id: str = 'DL-0013'
+  display_name: NoneType = None
+  folder_path: NoneType = None
+  identifiers: dict = {}
+  metadata: dict = {}
+  stage: str = 'inbound'
+  status: str = 'active'
+  updated_at: str = '2026-02-05T16:30:23.980576Z'
+
+=== TOTAL DEALS: 10 ===
+
+=== STAGES ===
+  inbound: 8
+  archived: 1
+  screening: 1

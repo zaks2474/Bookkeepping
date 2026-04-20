@@ -1,0 +1,27 @@
+=== QA-1.2: F-002 — Confused Deputy ===
+--- /agent/invoke with X-Service-Token (expect NOT 401) ---
+HTTP 422
+PASS
+
+--- /agent/invoke with Bearer JWT (expect 401 - confused deputy) ---
+HTTP 401
+PASS
+
+--- /agent/approvals with X-Service-Token (expect NOT 401) ---
+HTTP 200
+PASS
+
+--- /agent/approvals with Bearer JWT (expect 401) ---
+HTTP 401
+PASS
+
+--- Both headers on /agent/invoke (should reject or use service token) ---
+{"detail":"Authentication required"}
+HTTP_CODE:401
+
+=== F-002 VERDICT ===
+- Service token works on /agent/* endpoints: PASS
+- JWT Bearer rejected on /agent/* endpoints: PASS
+- Both headers present: Rejects (prefers explicit rejection over confusion)
+
+F-002: PASS - Confused deputy prevention working

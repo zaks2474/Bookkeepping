@@ -1,0 +1,5 @@
+File: /home/zaks/zakops-agent-api/apps/agent-api/app/core/security/session_tracker.py
+---
+Line 14: MAX_ATTEMPTS_BEFORE_LOCKDOWN = 3
+Used at line 40: if state.attempts >= MAX_ATTEMPTS_BEFORE_LOCKDOWN: state.locked_down = True
+VERDICT: PASS

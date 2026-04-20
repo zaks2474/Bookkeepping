@@ -1,0 +1,38 @@
+=== AUTO-COLLECTED EVIDENCE (Cycle 1) ===
+Timestamp: 2026-01-24T20:14:26Z
+
+--- git status ---
+(git status unavailable)
+
+--- Recent changes (git diff --stat) ---
+(git diff unavailable)
+
+--- Directory listing (top-level) ---
+total 124
+drwxr-xr-x 18 zaks zaks 4096 Jan 24 13:58 .
+drwxrwx--- 45 zaks zaks 4096 Jan 23 18:09 ..
+drwxr-xr-x  3 zaks zaks 4096 Jan 19 01:53 .claude
+-rw-r--r--  1 zaks zaks 4915 Jan 20 19:54 .env
+-rw-r--r--  1 zaks zaks 6279 Jan 20 19:54 .env.example
+drwxr-xr-x  8 zaks zaks 4096 Jan 24 14:12 .git
+drwxr-xr-x  3 zaks zaks 4096 Jan 19 15:07 .github
+-rw-r--r--  1 zaks zaks  426 Jan 19 01:54 .gitignore
+-rw-r--r--  1 root root 1836 Jan 24 13:58 .labloop.yaml
+drwxr-xr-x  3 zaks zaks 4096 Jan 19 15:09 .pytest_cache
+drwxr-xr-x  3 root root 4096 Jan 24 13:05 .ruff_cache
+-rw-r--r--  1 zaks zaks 1312 Jan 20 13:24 Dockerfile
+-rw-r--r--  1 zaks zaks 7157 Jan 19 12:50 README.md
+drwxr-xr-x  3 zaks zaks 4096 Jan 19 15:27 audit
+drwxr-xr-x  5 zaks zaks 4096 Jan 20 23:00 db
+-rw-r--r--  1 root root 4789 Jan 24 00:31 docker-compose.yml
+drwxr-xr-x  2 zaks zaks 4096 Jan 20 19:02 docs
+drwxr-xr-x  4 root root 4096 Jan 24 12:44 gate_artifacts
+drwxr-xr-x  4 zaks zaks 4096 Jan 19 15:52 infra
+drwxr-xr-x  3 zaks zaks 4096 Jan 21 20:27 mcp_server
+-rw-r--r--  1 root root 1503 Jan 24 13:28 pyproject.toml
+-rw-r--r--  1 zaks zaks  790 Jan 19 19:06 requirements.txt
+drwxr-xr-x  5 zaks zaks 4096 Jan 24 13:30 scripts
+drwxr-xr-x  3 zaks zaks 4096 Jan 19 15:06 shared
+drwxr-xr-x  8 zaks zaks 4096 Jan 19 11:59 src
+drwxr-xr-x  8 zaks zaks 4096 Jan 19 20:17 tests
+drwxr-xr-x  5 zaks zaks 4096 Jan 19 16:17 venv

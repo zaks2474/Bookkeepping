@@ -1,0 +1,2 @@
+CREATE INDEX IF NOT EXISTS idx_messages_thread ON chat_messages(thread_id, turn_number);
+CREATE INDEX IF NOT EXISTS idx_messages_user ON chat_messages(user_id);

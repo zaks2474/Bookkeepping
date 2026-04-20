@@ -1,0 +1,8 @@
+78:  const [sourceTypeFilter, setSourceTypeFilter] = useState<string>('');
+87:        source_type: sourceTypeFilter || undefined,
+100:  }, [sourceTypeFilter]);
+319:            value={sourceTypeFilter}
+320:            onChange={(e) => setSourceTypeFilter(e.target.value)}
+474:                              {item.source_type?.startsWith('langsmith_') && (
+519:                {selectedItem?.source_type?.startsWith('langsmith_') && (
+523:                      Shadow Mode — {selectedItem.source_type}

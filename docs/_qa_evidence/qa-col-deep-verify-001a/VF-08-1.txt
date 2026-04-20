@@ -1,0 +1,10 @@
+File: /home/zaks/zakops-backend/src/core/agent/momentum_calculator.py
+---
+WEIGHTS dict (lines 37-43):
+  stage_velocity: 0.30
+  event_frequency: 0.20
+  open_item_completion: 0.20
+  risk_trajectory: 0.15
+  action_rate: 0.15
+Sum: 0.30 + 0.20 + 0.20 + 0.15 + 0.15 = 1.00
+VERDICT: PASS

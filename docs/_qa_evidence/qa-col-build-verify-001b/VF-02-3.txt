@@ -1,0 +1,8 @@
+11: * Also renders a "Refined" badge when critiqueResult is present,
+41:  critiqueResult?: {
+45:  } | null;
+51:  if (score === undefined || score === null) {
+105:export function RefinedBadge({ critiqueResult }: RefinedBadgeProps) {
+106:  if (!critiqueResult) return null;
+122:          {critiqueResult.severity && critiqueResult.severity !== 'none'
+123:            ? ` (severity: ${critiqueResult.severity})`

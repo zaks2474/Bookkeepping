@@ -1,0 +1,49 @@
+170:            try:
+187:            except Exception as e:
+255:        try:
+259:        except Exception as e:
+281:        try:
+285:        except Exception as e:
+312:        try:
+322:        except Exception as e:
+355:        try:
+394:                            "pending_tool_calls": pending,
+405:        except Exception as e:
+414:    async def _tool_call(self, state: GraphState) -> Command:
+462:            try:
+490:                        try:
+492:                        except json.JSONDecodeError:
+519:            except Exception as parse_error:
+533:            try:
+578:            except Exception as e:
+588:                    metadata={"tool_name": tool_name, "exception_type": type(e).__name__}
+622:                pending_tools=[tc.tool_name for tc in state.pending_tool_calls],
+628:                "pending_tool_calls": [tc.model_dump() for tc in state.pending_tool_calls],
+648:                        "pending_tool_calls": [],
+681:        for pending_call in state.pending_tool_calls:
+685:            try:
+720:            except Exception as e:
+737:                "pending_tool_calls": [],
+750:            try:
+755:                graph_builder.add_node("tool_call", self._tool_call, ends=["chat"])
+788:            except Exception as e:
+838:        try:
+855:                pending_calls = result.get("pending_tool_calls", [])
+924:        except Exception as e:
+961:        try:
+979:                    try:
+981:                    except json.JSONDecodeError:
+1012:        except Exception as e:
+1045:        try:
+1060:        except Exception as e:
+1089:        try:
+1100:        except Exception as e:
+1127:        try:
+1133:                try:
+1142:                except Exception as token_error:
+1153:        except Exception as stream_error:
+1177:        try:
+1181:                    try:
+1184:                    except Exception as e:
+1187:        except Exception as e:
+_tool_call has try/except: True

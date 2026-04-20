@@ -1,0 +1,15 @@
+=== DC-4: Bookkeeping Integration ===
+--- DC-4.1: Outputs in bookkeeping/docs ---
+/home/zaks/bookkeeping/docs/_tripass_runs
+/home/zaks/bookkeeping/docs/_tripass_templates
+
+--- DC-4.2: Run naming convention ---
+/home/zaks/bookkeeping/docs/_tripass_runs/TP-20260209-211737
+
+--- DC-4.3: CHANGES.md updated ---
+3:## 2026-02-09 — QA-TP-VERIFY-001: TriPass Pipeline QA Verification
+4:- **Mission:** Verify all 9 acceptance criteria of TRIPASS-INTEGRATE-002
+15:## 2026-02-09 — TRIPASS-INTEGRATE-002: Three-Pass Pipeline Orchestrator
+19:  - `tools/tripass/tripass.sh` — Main orchestrator (init/run/status/gates commands)
+20:  - `bookkeeping/docs/_tripass_templates/pass{1,2,3,4_metaqa}.md` — 4 prompt templates
+

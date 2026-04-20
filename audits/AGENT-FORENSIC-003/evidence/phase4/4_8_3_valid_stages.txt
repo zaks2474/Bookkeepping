@@ -1,0 +1,42 @@
+=== CHECK 4.8.3: Verify VALID_STAGES constant exists ===
+Timestamp: 2026-02-03T13:18:35-06:00
+
+=== VALID_STAGES definition in deal_tools.py ===
+VALID_STAGES = frozenset([
+    "inbound", "screening", "qualified", "loi",
+    "diligence", "closing", "portfolio", "junk", "archived"
+])
+
+
+class TransitionDealInput(BaseModel):
+    """Input schema for transition_deal tool.
+
+    Uses extra='forbid' to reject unexpected fields (strict validation).
+
+    NOTE (F-003 RT-2): from_stage is ADVISORY only. The tool fetches
+    the actual current stage from the backend as ground truth.
+    """
+    model_config = ConfigDict(extra="forbid")
+
+    deal_id: str = Field(..., description="The unique identifier of the deal to transition")
+    from_stage: str = Field(..., description="Advisory: current stage (tool will verify)")
+    to_stage: str = Field(..., description="Target stage to transition the deal to. Valid: inbound, screening, qualified, loi, diligence, closing, portfolio, junk, archived")
+    reason: Optional[str] = Field(None, description="Reason for the transition")
+
+--
+    if to_stage_lower not in VALID_STAGES:
+        error_msg = f"Invalid target stage '{to_stage}'. Valid stages: {', '.join(sorted(VALID_STAGES))}"
+        logger.warning("transition_deal_invalid_stage", deal_id=deal_id, to_stage=to_stage)
+
+=== Backend deals - current stages in production ===
+Stages in backend: ['qualified', 'screening']
+Total deals: 7
+
+=== Cross-validation: VALID_STAGES vs Backend stages ===
+From code (VALID_STAGES constant):
+diligenceclosingportfoliojunkarchived
+inboundscreeningqualifiedloi
+
+From backend (actual stages):
+qualified
+screening

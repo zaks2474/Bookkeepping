@@ -1,0 +1,24 @@
+=== QA-7.1: Legacy Files ===
+--- deal_registry.json ---
+ls: cannot access '/home/zaks/DataRoom/.deal-registry/deal_registry.json': No such file or directory
+--- deal_registry.py ---
+ls: cannot access '/home/zaks/scripts/deal_registry.py': No such file or directory
+--- deal_state_machine.py ---
+ls: cannot access '/home/zaks/scripts/deal_state_machine.py': No such file or directory
+--- api/deal_lifecycle/ ---
+ls: cannot access '/home/zaks/zakops-backend/src/api/deal_lifecycle/': No such file or directory
+
+--- Legacy reference scan in backend/agent ---
+/home/zaks/zakops-backend/src/api/orchestration/routers/chat.py:Ported from deal_lifecycle to orchestration API (REMEDIATION-001, decision 4A).
+/home/zaks/zakops-backend/src/core/chat_orchestrator.py:        from deal_state_machine import DealStage, DealStateMachine
+/home/zaks/zakops-backend/src/core/chat_orchestrator.py:        registry_path = "/home/zaks/DataRoom/.deal-registry/deal_registry.json"
+/home/zaks/zakops-backend/src/core/chat_orchestrator.py:        registry_path = "/home/zaks/DataRoom/.deal-registry/deal_registry.json"
+/home/zaks/zakops-backend/src/core/events/models.py:        source: str = "deal_lifecycle"
+/home/zaks/zakops-backend/src/core/events/publisher.py:        source: str = "deal_lifecycle"
+/home/zaks/zakops-backend/src/core/events/publisher.py:    source: str = "deal_lifecycle"
+/home/zaks/zakops-backend/src/core/deal_registry.py:    registry = DealRegistry("/home/zaks/DataRoom/.deal-registry/deal_registry.json")
+/home/zaks/zakops-backend/src/core/chat_evidence_builder.py:    def __init__(self, registry_path: str = "/home/zaks/DataRoom/.deal-registry/deal_registry.json"):
+/home/zaks/zakops-backend/src/workers/actions_runner.py:REGISTRY_PATH = str(DATAROOM_ROOT / ".deal-registry" / "deal_registry.json")
+/home/zaks/zakops-backend/src/actions/executors/email_triage_review_email.py:                registry_path = os.getenv("DEAL_REGISTRY_PATH", "/home/zaks/DataRoom/.deal-registry/deal_registry.json")
+/home/zaks/zakops-backend/src/actions/tests/test_e2e_actions.py:    registry_path = Path("/home/zaks/DataRoom/.deal-registry/deal_registry.json")
+/home/zaks/zakops-backend/src/actions/context/context_pack.py:DEAL_REGISTRY_PATH = DATAROOM_ROOT / ".deal-registry" / "deal_registry.json"

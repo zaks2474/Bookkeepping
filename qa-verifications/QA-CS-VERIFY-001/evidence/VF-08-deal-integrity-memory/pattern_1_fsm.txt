@@ -1,0 +1,2 @@
+=== V8.2 ===
+78:- `transition_deal_state()` is the SINGLE choke point for all deal state changes — no direct state mutations

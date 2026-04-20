@@ -1,0 +1,17 @@
+=== QA-3.4: T2.6+T2.7 Archive/Restore ===
+Test deal: 
+--- TEST 1: Archive ---
+{"detail":"Not Found"}
+HTTP: 404
+
+--- TEST 2: Restore ---
+{"detail":"Not Found"}
+HTTP: 404
+Test deal: DL-0050
+--- Retry TEST 1: Archive ---
+{"success":true,"deal_id":"DL-0050","previous_stage":"inbound"}
+HTTP: 200
+
+--- Retry TEST 2: Restore ---
+{"success":true,"deal_id":"DL-0050","restored_to_stage":"inbound"}
+HTTP: 200

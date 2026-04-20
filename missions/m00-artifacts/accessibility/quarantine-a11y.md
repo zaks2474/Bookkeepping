@@ -1,0 +1,67 @@
+- generic [active] [ref=e1]:
+  - region "Notifications alt+T"
+  - main [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - button "Toggle Sidebar" [ref=e6]:
+          - img
+          - generic [ref=e7]: Toggle Sidebar
+        - navigation "breadcrumb" [ref=e8]:
+          - list [ref=e9]:
+            - link "Quarantine" [disabled] [ref=e10]
+      - generic [ref=e11]:
+        - button [ref=e133]:
+          - img
+        - button [ref=e12]:
+          - generic [ref=e14]:
+            - img
+        - button "Toggle theme" [ref=e15]:
+          - img
+          - generic [ref=e16]: Toggle theme
+    - generic [ref=e17]:
+      - generic [ref=e18]:
+        - generic [ref=e19]:
+          - heading "Quarantine" [level=1] [ref=e20]
+          - paragraph [ref=e21]: Decision point for deal-signal emails (Approve → create deal; Reject → mark non-deal)
+        - button "Refresh" [ref=e146]:
+          - img
+          - text: Refresh
+      - generic [ref=e22]:
+        - generic [ref=e23]:
+          - generic [ref=e24]:
+            - generic [ref=e25]:
+              - img [ref=e26]
+              - text: Queue
+            - generic [ref=e28]: 0 items pending approval
+          - generic [ref=e30]:
+            - img [ref=e147]
+            - paragraph [ref=e149]: All clear!
+            - paragraph [ref=e150]: No items in quarantine
+        - generic [ref=e39]:
+          - generic [ref=e40]:
+            - generic [ref=e41]:
+              - generic [ref=e43]:
+                - img [ref=e44]
+                - text: Select an item
+              - generic [ref=e47]:
+                - button "Clear" [disabled]:
+                  - img
+                  - text: Clear
+                - button "Reject" [disabled]
+                - button "Approve" [disabled]
+            - generic [ref=e48]:
+              - generic [ref=e49]:
+                - generic [ref=e50]: Operator
+                - textbox "Operator" [ref=e51]:
+                  - /placeholder: e.g., zaks
+              - generic [ref=e52]:
+                - generic [ref=e53]: Reject reason (optional)
+                - textbox "Reject reason (optional)" [ref=e54]:
+                  - /placeholder: e.g., receipt/newsletter/not a deal
+          - generic [ref=e55]:
+            - generic:
+              - img [ref=e56]
+              - paragraph [ref=e58]: Select an item from the queue to review
+  - button "Open Next.js Dev Tools" [ref=e141] [cursor=pointer]:
+    - img [ref=e142]
+  - alert [ref=e145]

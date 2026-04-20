@@ -1,0 +1,52 @@
+AGENT-FORENSIC-001 Phase 1 — Step 1.14: Sensitive Data Exposure
+================================================================
+Date: 2026-02-02
+
+ENDPOINTS EXPOSING DATA:
+
+GET / → Exposes:
+  - API name, version, environment ("development")
+  - Swagger URL (/docs), ReDoc URL (/redoc)
+  [WARN] Environment value reveals deployment context
+
+GET /health → Exposes:
+  - Version, environment, DB health status, timestamp
+  [WARN] DB connectivity status reveals infrastructure details
+
+GET /docs → Exposes:
+  - Full OpenAPI schema with all endpoints, schemas, and descriptions
+  [FAIL] Swagger UI accessible without authentication in all environments
+  [FAIL] Reveals complete API surface, request/response schemas, internal descriptions
+
+GET /redoc → Same as /docs
+  [FAIL] ReDoc accessible without authentication
+
+GET /metrics → Exposes:
+  - Python version (3.13.2), implementation (CPython)
+  - Process memory usage, CPU time, open file descriptors
+  - Database connection count
+  - HTTP request counts and durations
+  - LLM inference duration
+  [FAIL] Prometheus metrics exposed without authentication
+  [FAIL] Reveals infrastructure details (Python version, memory, CPU)
+
+ERROR RESPONSES:
+  - 500 errors include exception details: detail=str(e)
+  [WARN] Could leak DB connection strings, file paths, or internal state
+  - Validation errors properly formatted (no stack traces)
+
+APPROVAL DATA:
+  - GET /agent/approvals returns tool names, arguments, actor IDs
+  [FAIL] Business data (deal transitions, tool args) visible without auth
+
+HEADERS:
+  - server: uvicorn (reveals server software)
+  - x-request-id: UUID (useful for correlation, not sensitive)
+  - x-response-time: timing info
+
+SECRETS CHECK:
+  - JWT_SECRET_KEY: Not exposed in any response
+  - DATABASE_URL: Not exposed (but could leak via 500 error detail)
+  - DASHBOARD_SERVICE_TOKEN: Not exposed
+  - LANGFUSE keys: Not exposed
+  [PASS] No secrets found in normal responses

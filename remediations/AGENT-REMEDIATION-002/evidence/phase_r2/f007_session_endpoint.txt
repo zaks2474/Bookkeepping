@@ -1,0 +1,22 @@
+=== R2.1: F-007 Session Endpoint ===
+Date: Tue Feb  3 04:52 UTC 2026
+
+--- Status ---
+/agent/sessions returns 404
+
+--- Analysis ---
+Checked agent.py router endpoints:
+- /invoke
+- /approvals/{approval_id}:approve
+- /approvals/{approval_id}:reject
+- /approvals
+- /approvals/{approval_id}
+- /threads/{thread_id}/state
+- /invoke/stream
+
+There is NO /sessions endpoint defined. This endpoint was likely referenced
+in the forensic audit but does not exist as a feature.
+
+--- Disposition ---
+DEFERRED: Endpoint does not exist as a feature. If needed, would require
+feature implementation (out of scope for remediation).

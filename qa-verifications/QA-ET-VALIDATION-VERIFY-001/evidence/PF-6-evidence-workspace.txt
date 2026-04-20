@@ -1,0 +1,13 @@
+=== PF-6 EVIDENCE WORKSPACE ===
+EVIDENCE_DIR_EXISTS=YES
+EVIDENCE_WRITABLE=YES
+total 40
+drwxr-xr-x 2 zaks zaks 4096 Feb 14 21:58 .
+drwxr-xr-x 3 zaks zaks 4096 Feb 14 21:57 ..
+-rw-r--r-- 1 zaks zaks    0 Feb 14 21:58 .write-test
+-rw-r--r-- 1 zaks zaks  913 Feb 14 21:57 PF-1-source-mission-integrity.txt
+-rw-r--r-- 1 zaks zaks 5419 Feb 14 21:57 PF-2-checkpoint-status.txt
+-rw-r--r-- 1 zaks zaks 5194 Feb 14 21:57 PF-3-validation-baseline.txt
+-rw-r--r-- 1 zaks zaks 1051 Feb 14 21:58 PF-4-service-health.txt
+-rw-r--r-- 1 zaks zaks  511 Feb 14 21:58 PF-5-p0-artifacts.txt
+-rw-r--r-- 1 zaks zaks   78 Feb 14 21:58 PF-6-evidence-workspace.txt

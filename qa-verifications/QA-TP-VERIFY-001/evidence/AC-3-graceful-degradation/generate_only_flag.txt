@@ -1,0 +1,4 @@
+=== A3.1 ===
+16:#   --generate-only                     Force generate-only mode (no CLI execution)
+587:      --generate-only) force_generate_only="true"; shift ;;
+1030:      echo "  --generate-only                          Force generate-only mode"

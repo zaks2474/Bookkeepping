@@ -1,0 +1,9 @@
+Ghost knowledge tab present in DealBrain.tsx:
+- Line 8: Shows ghost knowledge in component description
+- Line 35: IconGhost2 import
+- Line 55-56: confirmGhostFact, dismissGhostFact imports
+- Line 71: 'ghost' tab in BrainTab type
+- Line 79: Ghost tab definition
+- Line 171-182: handleConfirmGhost/handleDismissGhost handlers
+- Line 237: ghost_facts.length counted
+RESULT: PASS

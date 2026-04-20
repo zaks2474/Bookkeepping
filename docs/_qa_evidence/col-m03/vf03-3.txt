@@ -1,0 +1,2 @@
+        messages, has_more = await chat_repository.get_messages(
+            "has_more": has_more,

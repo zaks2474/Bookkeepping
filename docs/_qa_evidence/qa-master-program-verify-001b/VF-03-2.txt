@@ -1,0 +1,25 @@
+6: * Displays per-deal sentiment trend with visual coaching signals.
+23:import { getSentimentTrend, type SentimentTrend } from '@/lib/api';
+31:  improving: {
+38:  declining: {
+45:  neutral: {
+52:  volatile: {
+73:  const [trend, setTrend] = useState<SentimentTrend | null>(null);
+79:    getSentimentTrend(dealId).then((data) => {
+88:  if (!loading && (!trend || trend.data_points === 0)) return null;
+90:  const trendConfig = trend ? TREND_CONFIG[trend.trend] : TREND_CONFIG.neutral;
+91:  const TrendIcon = trendConfig.icon;
+92:  const mood = trend ? scoreToMood(trend.current_score) : scoreToMood(0);
+109:        ) : trend ? (
+111:            {/* Current score + trend */}
+115:                  {formatScore(trend.current_score)}
+119:                  className={`text-[10px] gap-0.5 ${trendConfig.bg} ${trendConfig.color} ${trendConfig.border}`}
+122:                  {trendConfig.label}
+126:                {trend.data_points} turn{trend.data_points !== 1 ? 's' : ''}
+133:                <span>Low: {formatScore(trend.min_score)}</span>
+134:                <span>Avg: {formatScore(trend.average_score)}</span>
+135:                <span>High: {formatScore(trend.max_score)}</span>
+141:                    width: `${Math.max(5, ((trend.current_score + 1) / 2) * 100)}%`,
+148:            {trend.trend === 'declining' && (
+150:                Sentiment is trending down. Consider adjusting tone or addressing concerns.
+153:            {trend.trend === 'volatile' && (

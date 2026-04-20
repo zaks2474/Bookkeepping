@@ -1,0 +1,41 @@
+=== V2: RUN TWICE STABILITY CHECK ===
+--- RUN 1 ---
+  PASS: .claude/commands/infra-check.md exists
+-- Check 4: Makefile Targets --
+  PASS: All required Makefile targets present
+-- Check 5: topology.env Sourcing (C4) --
+  PASS: All scripts source topology.env
+-- Check 6: No Hardcoded DB Users (C1) --
+  PASS: No hardcoded DB users in scripts
+-- Check 7: CI Workflows --
+  PASS: Both CI workflows present
+
+ENFORCEMENT GATE AUDIT PASSED: All mechanisms active (7/7)
+
+══════════════════════════════════════════════════════════════
+  FULL SYSTEM VALIDATION COMPLETE (V5 — Hybrid Guardrail)
+══════════════════════════════════════════════════════════════
+Run 1 exit: 0
+Git dirty files after run 1: 40
+
+--- RUN 2 ---
+  PASS: .claude/commands/infra-check.md exists
+-- Check 4: Makefile Targets --
+  PASS: All required Makefile targets present
+-- Check 5: topology.env Sourcing (C4) --
+  PASS: All scripts source topology.env
+-- Check 6: No Hardcoded DB Users (C1) --
+  PASS: No hardcoded DB users in scripts
+-- Check 7: CI Workflows --
+  PASS: Both CI workflows present
+
+ENFORCEMENT GATE AUDIT PASSED: All mechanisms active (7/7)
+
+══════════════════════════════════════════════════════════════
+  FULL SYSTEM VALIDATION COMPLETE (V5 — Hybrid Guardrail)
+══════════════════════════════════════════════════════════════
+Run 2 exit: 0
+Git dirty files after run 2: 40
+
+=== STABILITY VERDICT ===
+✅ STABLE: Both runs exit 0

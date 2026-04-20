@@ -1,0 +1,30 @@
+65:    actor_id: str,
+76:        actor_id: ID of the actor triggering the event
+84:        actor_id=actor_id,
+121:                actor_id="system",
+164:            actor_id=invoke_request.actor_id,
+173:            actor_id=invoke_request.actor_id,
+189:                    requested_by=invoke_request.actor_id,
+210:            actor_id=invoke_request.actor_id,
+245:    # F-001/F-002: With service token auth, trust the actor_id from the request
+247:    actor_id = action_request.actor_id
+256:            if pre_check and actor_id and pre_check.actor_id != actor_id:
+294:                            actor_id=actor_id,
+323:                actor_id=actor_id,
+333:                actor_id=actor_id,
+357:                approval.resolved_by = actor_id
+389:                actor_id=actor_id,
+434:                approval.resolved_by = actor_id
+441:                    actor_id=actor_id,
+450:                    actor_id=actor_id,
+453:                    payload={"resolved_by": actor_id},
+460:                actor_id=actor_id,
+495:                    actor_id=actor_id,
+547:    # F-001/F-002: With service token auth, trust the actor_id from the request
+548:    actor_id = action_request.actor_id
+554:            if pre_check and actor_id and pre_check.actor_id != actor_id:
+572:                    "resolved_by": actor_id,
+594:                actor_id=actor_id,
+607:                actor_id=actor_id,
+647:    actor_id: Optional[str] = None,
+654:        actor_id: Optional filter by actor ID

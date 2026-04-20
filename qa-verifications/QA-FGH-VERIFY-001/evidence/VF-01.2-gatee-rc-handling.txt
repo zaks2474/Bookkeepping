@@ -1,0 +1,17 @@
+=== VF-01.2 GATE E RC HANDLING ===
+21:    exit 2
+25:    exit 2
+32:    exit 2
+36:    exit 2
+46:    exit 2
+52:  else
+54:    exit 2
+57:  GATE_E_RC=$?
+58:  if [ "$GATE_E_RC" -eq 0 ]; then
+62:    exit 2
+63:  elif [ "$GATE_E_RC" -eq 1 ]; then
+66:  else
+68:    echo "ERROR: Gate E scanner error (exit $GATE_E_RC). Fail closed."
+70:    exit 2
+74:    exit 2
+78:else

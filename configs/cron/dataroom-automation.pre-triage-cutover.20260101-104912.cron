@@ -1,0 +1,62 @@
+# DataRoom Intelligence Platform - Automated Tasks
+# Install with: sudo cp /home/zaks/scripts/cron/dataroom-automation.cron /etc/cron.d/dataroom-automation
+# Or add to user crontab: crontab -e
+
+# Environment variables for SharePoint (uncomment and set these)
+# SHAREPOINT_CLIENT_ID=your-client-id
+# SHAREPOINT_CLIENT_SECRET=your-client-secret
+# SHAREPOINT_AUTH_METHOD=app
+
+# PATH for scripts
+PATH=/usr/local/bin:/usr/bin:/bin
+
+# ============================================================
+# SharePoint Sync - Every 15 minutes
+# ============================================================
+*/15 * * * * zaks bash /home/zaks/scripts/run_sharepoint_sync.sh
+
+# ============================================================
+# RAG Indexing - Every 30 minutes
+# ============================================================
+*/30 * * * * zaks bash /home/zaks/scripts/run_rag_index.sh
+
+# ============================================================
+# OpenWebUI Chat Export - Daily at 2 AM
+# ============================================================
+0 2 * * * zaks python3 /home/zaks/scripts/export_openwebui_chats.py >> /home/zaks/logs/openwebui_export.log 2>&1
+
+# ============================================================
+# DataRoom Backup - Daily at 3 AM
+# ============================================================
+0 3 * * * zaks /home/zaks/scripts/backup_dataroom.sh >> /home/zaks/logs/backup_cron.log 2>&1
+
+# ============================================================
+# Permission Fix - Daily at 4 AM (ensure files stay accessible)
+# ============================================================
+# 0 4 * * * zaks /home/zaks/scripts/fix_dataroom_permissions.sh >> /home/zaks/logs/permissions_cron.log 2>&1
+
+# ============================================================
+# SharePoint Health Check - Hourly
+# ============================================================
+# 0 * * * * zaks /home/zaks/scripts/check_sharepoint_sync_health.sh >> /home/zaks/logs/health_check.log 2>&1
+
+# ============================================================
+# Dashboard Report - Daily at 8 AM (email or log)
+# ============================================================
+# 0 8 * * * zaks /home/zaks/scripts/dataroom_dashboard.sh >> /home/zaks/logs/dashboard_$(date +\%Y\%m\%d).log 2>&1
+
+# ============================================================
+# Deferred Actions Processor - Hourly
+# Processes due deal follow-ups, reviews, and scheduled actions
+# ============================================================
+0 * * * * zaks python3 /home/zaks/scripts/process_deferred_actions.py >> /home/zaks/logs/deferred_actions_cron.log 2>&1
+
+# ============================================================
+# Email-to-DataRoom Sync - Every 15 minutes
+# Syncs acquisition-related emails to DataRoom folders
+# ============================================================
+# DISABLED - Legacy script replaced by new pipeline
+# */15 * * * * zaks python3 /home/zaks/scripts/sync_acquisition_emails.py >> /home/zaks/logs/email_sync_cron.log 2>&1
+# NEW: Use email_ingestion pipeline (make ingest)
+5 6-21 * * * zaks cd /home/zaks/scripts/email_ingestion && make ingest >> /home/zaks/logs/email_sync.log 2>&1
+5 22,2 * * * zaks cd /home/zaks/scripts/email_ingestion && make ingest >> /home/zaks/logs/email_sync.log 2>&1

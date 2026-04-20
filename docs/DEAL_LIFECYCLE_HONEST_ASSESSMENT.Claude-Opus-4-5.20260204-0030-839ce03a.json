@@ -1,0 +1,283 @@
+{
+  "agent_identity": {
+    "agent_name": "Claude-Opus-4-5",
+    "agent_version": "claude-opus-4-5-20251101",
+    "run_id": "20260204-0030-839ce03a",
+    "repo_revision": "a09538f04ed278c32ad6f2a037069b353bf5f797",
+    "date_time": "2026-02-04T00:30:00Z"
+  },
+  "deal_model": {
+    "tables": [
+      {
+        "name": "zakops.deals",
+        "purpose": "Primary deal entity storage",
+        "key_columns": ["deal_id", "canonical_name", "stage", "status", "deleted", "created_at", "updated_at"]
+      },
+      {
+        "name": "zakops.deal_events",
+        "purpose": "Immutable audit trail of deal changes",
+        "key_columns": ["id", "deal_id", "event_type", "actor", "payload", "idempotency_key", "created_at"]
+      },
+      {
+        "name": "zakops.deal_aliases",
+        "purpose": "Alternative deal identifiers",
+        "key_columns": ["id", "deal_id", "alias", "alias_type"]
+      },
+      {
+        "name": "zakops.actions",
+        "purpose": "Workflow tasks linked to deals",
+        "key_columns": ["action_id", "deal_id", "action_type", "status", "requires_approval"]
+      },
+      {
+        "name": "zakops.quarantine_items",
+        "purpose": "Email quarantine for triage",
+        "key_columns": ["id", "deal_id", "sender", "subject", "status"]
+      }
+    ],
+    "fields": {
+      "deal_id": {
+        "format": "DL-XXXX",
+        "generator": "zakops.next_deal_id()",
+        "example": "DL-0001"
+      },
+      "stage": {
+        "type": "enum",
+        "values": ["inbound", "screening", "qualified", "loi", "diligence", "closing", "portfolio", "junk", "archived"],
+        "constraint": "chk_deals_stage"
+      },
+      "status": {
+        "type": "string",
+        "default": "active",
+        "values": ["active", "stalled"]
+      }
+    },
+    "source_of_truth": "PostgreSQL zakops.deals table via Backend API (8091)"
+  },
+  "states": [
+    {"name": "inbound", "description": "New opportunity, not yet reviewed", "terminal": false},
+    {"name": "screening", "description": "Initial evaluation in progress", "terminal": false},
+    {"name": "qualified", "description": "Passed screening, active pursuit", "terminal": false},
+    {"name": "loi", "description": "Letter of Intent phase", "terminal": false},
+    {"name": "diligence", "description": "Due diligence in progress", "terminal": false},
+    {"name": "closing", "description": "Final paperwork", "terminal": false},
+    {"name": "portfolio", "description": "Acquired - terminal success", "terminal": true},
+    {"name": "junk", "description": "Rejected - can resurrect", "terminal": false},
+    {"name": "archived", "description": "Final terminal state", "terminal": true}
+  ],
+  "transitions": [
+    {"from": "inbound", "to": "screening", "trigger": "user_action", "entrypoint_ref": "workflow.py:STAGE_TRANSITIONS"},
+    {"from": "inbound", "to": "junk", "trigger": "user_action", "entrypoint_ref": "workflow.py:STAGE_TRANSITIONS"},
+    {"from": "inbound", "to": "archived", "trigger": "user_action", "entrypoint_ref": "workflow.py:STAGE_TRANSITIONS"},
+    {"from": "screening", "to": "qualified", "trigger": "user_action", "entrypoint_ref": "workflow.py:STAGE_TRANSITIONS"},
+    {"from": "screening", "to": "junk", "trigger": "user_action", "entrypoint_ref": "workflow.py:STAGE_TRANSITIONS"},
+    {"from": "screening", "to": "archived", "trigger": "user_action", "entrypoint_ref": "workflow.py:STAGE_TRANSITIONS"},
+    {"from": "qualified", "to": "loi", "trigger": "user_action", "entrypoint_ref": "workflow.py:STAGE_TRANSITIONS"},
+    {"from": "qualified", "to": "junk", "trigger": "user_action", "entrypoint_ref": "workflow.py:STAGE_TRANSITIONS"},
+    {"from": "qualified", "to": "archived", "trigger": "user_action", "entrypoint_ref": "workflow.py:STAGE_TRANSITIONS"},
+    {"from": "loi", "to": "diligence", "trigger": "user_action", "entrypoint_ref": "workflow.py:STAGE_TRANSITIONS"},
+    {"from": "loi", "to": "qualified", "trigger": "regression", "entrypoint_ref": "workflow.py:STAGE_TRANSITIONS"},
+    {"from": "loi", "to": "junk", "trigger": "user_action", "entrypoint_ref": "workflow.py:STAGE_TRANSITIONS"},
+    {"from": "loi", "to": "archived", "trigger": "user_action", "entrypoint_ref": "workflow.py:STAGE_TRANSITIONS"},
+    {"from": "diligence", "to": "closing", "trigger": "user_action", "entrypoint_ref": "workflow.py:STAGE_TRANSITIONS"},
+    {"from": "diligence", "to": "loi", "trigger": "regression", "entrypoint_ref": "workflow.py:STAGE_TRANSITIONS"},
+    {"from": "diligence", "to": "junk", "trigger": "user_action", "entrypoint_ref": "workflow.py:STAGE_TRANSITIONS"},
+    {"from": "diligence", "to": "archived", "trigger": "user_action", "entrypoint_ref": "workflow.py:STAGE_TRANSITIONS"},
+    {"from": "closing", "to": "portfolio", "trigger": "user_action", "entrypoint_ref": "workflow.py:STAGE_TRANSITIONS"},
+    {"from": "closing", "to": "diligence", "trigger": "regression", "entrypoint_ref": "workflow.py:STAGE_TRANSITIONS"},
+    {"from": "closing", "to": "junk", "trigger": "user_action", "entrypoint_ref": "workflow.py:STAGE_TRANSITIONS"},
+    {"from": "closing", "to": "archived", "trigger": "user_action", "entrypoint_ref": "workflow.py:STAGE_TRANSITIONS"},
+    {"from": "portfolio", "to": "archived", "trigger": "user_action", "entrypoint_ref": "workflow.py:STAGE_TRANSITIONS"},
+    {"from": "junk", "to": "inbound", "trigger": "resurrection", "entrypoint_ref": "workflow.py:STAGE_TRANSITIONS"},
+    {"from": "junk", "to": "archived", "trigger": "user_action", "entrypoint_ref": "workflow.py:STAGE_TRANSITIONS"}
+  ],
+  "scenarios": [
+    {
+      "name": "manual_deal_creation",
+      "expected": "POST /api/deals creates deal in database",
+      "implemented_status": "WORKING",
+      "evidence_refs": ["src/api/orchestration/main.py", "db/init/001_base_tables.sql"]
+    },
+    {
+      "name": "dashboard_stage_transition",
+      "expected": "UI triggers POST /api/deals/{id}/transition",
+      "implemented_status": "WORKING",
+      "evidence_refs": ["apps/dashboard/src/app/deals/[id]/page.tsx", "routers/workflow.py"]
+    },
+    {
+      "name": "agent_transition_with_hitl",
+      "expected": "Agent tool triggers HITL approval, then executes",
+      "implemented_status": "WORKING",
+      "evidence_refs": ["apps/agent-api/app/core/langgraph/tools/deal_tools.py", "apps/agent-api/app/api/v1/agent.py"]
+    },
+    {
+      "name": "email_to_quarantine",
+      "expected": "Email ingestion creates quarantine items",
+      "implemented_status": "NOT_WORKING",
+      "evidence_refs": ["scripts/email_ingestion/stages/stage_4_persist.py"]
+    },
+    {
+      "name": "quarantine_to_deal",
+      "expected": "Approving quarantine item creates deal",
+      "implemented_status": "NOT_IMPLEMENTED",
+      "evidence_refs": ["src/api/orchestration/main.py"]
+    },
+    {
+      "name": "duplicate_deal_detection",
+      "expected": "Prevent duplicate deals for same company",
+      "implemented_status": "NOT_IMPLEMENTED",
+      "evidence_refs": []
+    },
+    {
+      "name": "split_brain_mitigation",
+      "expected": "Agent verifies backend state after transition",
+      "implemented_status": "WORKING",
+      "evidence_refs": ["apps/agent-api/app/core/langgraph/tools/deal_tools.py:191-221"]
+    },
+    {
+      "name": "idempotent_transitions",
+      "expected": "Same idempotency_key returns cached result",
+      "implemented_status": "WORKING",
+      "evidence_refs": ["src/core/deals/workflow.py:119-155"]
+    },
+    {
+      "name": "approval_expiry",
+      "expected": "Stale approvals expire automatically",
+      "implemented_status": "PARTIAL",
+      "evidence_refs": ["apps/agent-api/app/api/v1/agent.py"]
+    },
+    {
+      "name": "rag_deal_search",
+      "expected": "search_deals returns relevant deals",
+      "implemented_status": "NEEDS_VERIFICATION",
+      "evidence_refs": ["apps/agent-api/app/core/langgraph/tools/deal_tools.py:327-371"]
+    }
+  ],
+  "gaps": [
+    {
+      "id": "GAP-001",
+      "title": "Email ingestion pipeline is disabled in production",
+      "severity": "P0",
+      "evidence_refs": [
+        "No cron job in /etc/cron.d/",
+        "zakops.quarantine_items count = 0"
+      ],
+      "remediation_steps": [
+        "Enable cron job for email ingestion",
+        "Verify IMAP credentials",
+        "Test with --dry-run first",
+        "Monitor logs"
+      ]
+    },
+    {
+      "id": "GAP-002",
+      "title": "Quarantine approval does not create deal automatically",
+      "severity": "P1",
+      "evidence_refs": [
+        "POST /api/quarantine/{id}/process only updates status",
+        "CreateDealFromEmailExecutor exists but not wired"
+      ],
+      "remediation_steps": [
+        "Wire quarantine approve to trigger deal.create_from_email action",
+        "Or add Create Deal button to approval dialog"
+      ]
+    },
+    {
+      "id": "GAP-003",
+      "title": "Three disconnected deal registries (DB, JSON, DataRoom)",
+      "severity": "P1",
+      "evidence_refs": [
+        "Backend uses zakops.deals with DL-XXXX IDs",
+        "Email ingestion uses deal_registry.json with DEAL-YYYY-### IDs",
+        "DataRoom folders have arbitrary names"
+      ],
+      "remediation_steps": [
+        "Migrate to single source of truth",
+        "Deprecate deal_registry.json",
+        "Build sync mechanism"
+      ]
+    },
+    {
+      "id": "GAP-004",
+      "title": "Agent cannot create deals (no create_deal tool)",
+      "severity": "P2",
+      "evidence_refs": [
+        "deal_tools.py exports only: get_deal, search_deals, transition_deal"
+      ],
+      "remediation_steps": [
+        "Add create_deal tool with HITL requirement",
+        "Or keep as manual-only (policy decision)"
+      ]
+    },
+    {
+      "id": "GAP-005",
+      "title": "RAG search integration unverified",
+      "severity": "P2",
+      "evidence_refs": [
+        "search_deals calls http://host.docker.internal:8052/rag/query",
+        "RAG service status unknown"
+      ],
+      "remediation_steps": [
+        "Verify RAG service running",
+        "Index existing deals",
+        "Add health check"
+      ]
+    },
+    {
+      "id": "GAP-006",
+      "title": "No event correlation between agent and backend",
+      "severity": "P2",
+      "evidence_refs": [
+        "zakops.deal_events vs zakops_agent.audit_log are separate",
+        "No shared correlation_id"
+      ],
+      "remediation_steps": [
+        "Pass trace_id from agent to backend",
+        "Store correlation_id in both systems"
+      ]
+    },
+    {
+      "id": "GAP-007",
+      "title": "Dashboard has no authentication",
+      "severity": "P1",
+      "evidence_refs": [
+        "Next.js rewrites proxy directly to backend",
+        "No user session management"
+      ],
+      "remediation_steps": [
+        "Add authentication middleware",
+        "Implement RBAC"
+      ]
+    },
+    {
+      "id": "GAP-008",
+      "title": "No approval expiry background job",
+      "severity": "P3",
+      "evidence_refs": [
+        "expires_at field exists but only checked on access",
+        "No background job to expire stale approvals"
+      ],
+      "remediation_steps": [
+        "Add background job to expire old approvals",
+        "Run every 5 minutes"
+      ]
+    }
+  ],
+  "comparison_to_prior": {
+    "new_findings": [
+      "Full code trace of No-Illusions Gate (F-003 remediation)",
+      "Exact idempotency window: 24 hours via deal_events lookup",
+      "Dashboard authentication gap identified",
+      "Agent tool limitations detailed with HITL requirements"
+    ],
+    "conflicts": [],
+    "confirmations": [
+      "Core deal CRUD works",
+      "Stage transitions validated at code and DB level",
+      "HITL approval flow operational",
+      "Email ingestion pipeline exists but disabled",
+      "Quarantine to deal is multi-step manual",
+      "Three disconnected data stores",
+      "Dashboard shows partial picture"
+    ]
+  }
+}

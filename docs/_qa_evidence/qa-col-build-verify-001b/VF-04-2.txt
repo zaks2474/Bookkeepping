@@ -1,0 +1,16 @@
+44:import { IconTrendingUp, IconTrendingDown, IconMinus as IconTrendFlat } from '@tabler/icons-react';
+69:  if (score >= 70) {
+70:    return { color: 'text-green-500', bg: 'bg-green-500/10 border-green-500/20', label: `${Math.round(score)}`, Icon: IconTrendingUp };
+72:  if (score >= 40) {
+73:    return { color: 'text-yellow-500', bg: 'bg-yellow-500/10 border-yellow-500/20', label: `${Math.round(score)}`, Icon: IconTrendFlat };
+75:  return { color: 'text-red-500', bg: 'bg-red-500/10 border-red-500/20', label: `${Math.round(score)}`, Icon: IconTrendingDown };
+83:  HIGH: { label: 'High Priority', className: 'bg-red-500/10 text-red-500 border-red-500/20' },
+84:  MEDIUM: { label: 'Medium', className: 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20' },
+126:      case 'green':
+127:        return 'bg-green-500/10 text-green-500 border-green-500/20';
+128:      case 'yellow':
+129:        return 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20';
+316:                ? 'bg-green-500/10 text-green-500 border-green-500/20'
+318:                ? 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20'
+319:                : 'bg-red-500/10 text-red-500 border-red-500/20'
+328:          <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">

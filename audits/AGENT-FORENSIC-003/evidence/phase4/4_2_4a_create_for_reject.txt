@@ -1,0 +1,24 @@
+=== CHECK 4.2.4a: Create approval for rejection ===
+Thread ID: forensic-003-reject-1770145722
+Timestamp: 2026-02-03T13:08:42-06:00
+
+{
+    "thread_id": "forensic-003-reject-1770145722",
+    "status": "awaiting_approval",
+    "content": null,
+    "pending_approval": {
+        "approval_id": "4d05f27e-9caf-4be8-8375-5b70ea8c568d",
+        "tool": "transition_deal",
+        "args": {
+            "deal_id": "DL-CHAOS",
+            "from_stage": "screening",
+            "to_stage": "qualified",
+            "reason": null
+        },
+        "permission_tier": "CRITICAL",
+        "requested_by": "forensic-audit-user",
+        "requested_at": "2026-02-03T19:08:43.931735Z"
+    },
+    "actions_taken": [],
+    "error": null
+}

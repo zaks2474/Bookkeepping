@@ -1,0 +1,62 @@
+=== V-L3.5: Deals Page Audit ===
+Date: 2026-02-09T04:54:20Z
+
+Found deals pages: /home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx
+
+--- File: /home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx ---
+
+>> STATUSES matches:
+58:const STATUSES = ['active', 'archived', 'junk', 'merged'];
+365:                    {STATUSES.map((status) => (
+
+>> status filter matches:
+86:  const statusFilterRaw = searchParams.get('status') || 'active';
+91:  const statusFilter = statusFilterRaw || ALL_FILTER;
+103:      if (statusFilterRaw) params.status = statusFilterRaw;
+116:  }, [stageFilterRaw, statusFilterRaw]);
+359:                <Select value={statusFilter} onValueChange={(v) => updateFilter('status', v)}>
+374:                {(stageFilter !== ALL_FILTER || statusFilter !== 'active' || searchQuery) && (
+
+>> archived matches:
+50:import { archiveDeal, bulkArchiveDeals, getDeals, type Deal } from '@/lib/api';
+58:const STATUSES = ['active', 'archived', 'junk', 'merged'];
+231:        await archiveDeal(deleteTargetIds[0], { operator });
+233:        await bulkArchiveDeals(deleteTargetIds, { operator });
+245:          ? 'Deal deleted (archived)'
+246:          : `Deleted (archived) ${deleteTargetIds.length} deals`
+610:              This hides the deal from the Deals list (soft delete / archive). It does not delete files, events, or audit history.
+
+>> delete matches:
+76:  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+77:  const [deleteTargetIds, setDeleteTargetIds] = useState<string[]>([]);
+125:      params.delete(key);
+135:      params.delete('view');
+210:  const openDeleteDialog = (dealIds: string[]) => {
+211:    setDeleteTargetIds(dealIds);
+212:    setDeleteDialogOpen(true);
+215:  const confirmDelete = async () => {
+216:    if (deleteTargetIds.length === 0) {
+217:      setDeleteDialogOpen(false);
+230:      if (deleteTargetIds.length === 1) {
+231:        await archiveDeal(deleteTargetIds[0], { operator });
+233:        await bulkArchiveDeals(deleteTargetIds, { operator });
+236:      setDeals(prev => prev.filter(d => !deleteTargetIds.includes(d.deal_id)));
+239:        for (const id of deleteTargetIds) next.delete(id);
+244:        deleteTargetIds.length === 1
+245:          ? 'Deal deleted (archived)'
+246:          : `Deleted (archived) ${deleteTargetIds.length} deals`
+249:      toast.error(err instanceof Error ? err.message : 'Delete failed');
+253:      setDeleteDialogOpen(false);
+254:      setDeleteTargetIds([]);
+402:                  onClick={() => openDeleteDialog(Array.from(selectedDealIds))}
+406:                  Delete ({selectedDealIds.size})
+456:                                  for (const d of sortedDeals) next.delete(d.deal_id);
+532:                              if (next.has(deal.deal_id)) next.delete(deal.deal_id);
+585:                          onClick={() => openDeleteDialog([deal.deal_id])}
+586:                          aria-label={`Delete deal ${deal.deal_id}`}
+603:      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+607:              {deleteTargetIds.length === 1 ? 'Delete deal?' : `Delete ${deleteTargetIds.length} deals?`}
+610:              This hides the deal from the Deals list (soft delete / archive). It does not delete files, events, or audit history.
+619:                confirmDelete();
+623:              {deleting ? 'Deleting…' : 'Delete'}
+

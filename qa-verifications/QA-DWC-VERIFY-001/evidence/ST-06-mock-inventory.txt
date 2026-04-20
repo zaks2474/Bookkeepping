@@ -1,0 +1,12 @@
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/events/route.ts:4: * Thread-based streaming is not yet implemented.
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/events/route.ts:5: * Returns 501 until agent thread infrastructure is available.
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/events/route.ts:16:    { status: 501, headers: { 'Content-Type': 'application/json' } }
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/agent/activity/route.ts:162:    { status: 501 }
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/session/[sessionId]/route.ts:7: * Note: This is a placeholder - full implementation requires backend support.
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/session/[sessionId]/route.ts:21:    note: 'Session persistence not yet implemented in orchestration API',
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/execute-proposal/route.ts:7: * Note: This is a placeholder - full implementation requires backend chat orchestrator.
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/execute-proposal/route.ts:19:        message: 'The chat proposal execution feature is not yet integrated with the orchestration API.',
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/execute-proposal/route.ts:24:      { status: 501 }
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/bulk/archive/route.ts:68:    // Backend not available - use mock implementation
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/completed-count/route.ts:52:    // Backend not available - use mock implementation
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/[id]/archive/route.ts:54:    // Backend not available - use mock implementation

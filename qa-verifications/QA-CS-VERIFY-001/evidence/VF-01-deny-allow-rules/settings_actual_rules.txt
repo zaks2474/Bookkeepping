@@ -1,0 +1,18 @@
+DENY_COUNT=12
+  DENY: Edit(*/api-types.generated.ts)
+  DENY: Edit(*/agent-api-types.generated.ts)
+  DENY: Edit(*/backend_models.py)
+  DENY: Edit(*/rag_models.py)
+  DENY: Edit(.env)
+  DENY: Edit(.env.*)
+  DENY: Edit(*/.env)
+  DENY: Edit(*/.env.*)
+  DENY: Write(*/api-types.generated.ts)
+  DENY: Write(*/agent-api-types.generated.ts)
+  DENY: Write(*/backend_models.py)
+  DENY: Write(*/rag_models.py)
+ALLOW_COUNT=4
+  ALLOW: Bash(make sync-*)
+  ALLOW: Bash(make validate-*)
+  ALLOW: Bash(make infra-*)
+  ALLOW: Bash(make update-*)

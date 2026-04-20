@@ -1,0 +1,11 @@
+graph.py line 1310: asyncio.create_task(
+  self._post_turn_enrichment(
+    deal_id=deal_id, thread_id=thread_id,
+    turn_number=turn_number, user_message=message,
+    assistant_message=response_text,
+  )
+)
+---
+_post_turn_enrichment (line 989) calls trigger_brain_extraction (line 1009)
+This is fire-and-forget via create_task at line 1310.
+VERDICT: PASS

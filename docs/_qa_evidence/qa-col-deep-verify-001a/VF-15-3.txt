@@ -1,0 +1,5 @@
+graph.py line 418: asyncio.create_task(cost_repository.record_cost(...))
+Also line 700: asyncio.create_task(cost_repository.record_cost(...))
+---
+Cost recording is fire-and-forget in both invoke paths
+VERDICT: PASS

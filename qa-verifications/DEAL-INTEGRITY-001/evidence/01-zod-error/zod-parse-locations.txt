@@ -1,0 +1,88 @@
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:106:const StoredMessageSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:118:const StoredSessionSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:72:export const DealSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:90:export const DealDetailSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:97:  broker: z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:103:  company_info: z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:107:  metadata: z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:116:  state_machine: z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:134:export const ActionSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:150:export const EventSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:165:export const QuarantineItemSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:191:export const QuarantineHealthSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:201:export const QuarantinePreviewSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:230:export const DealMaterialsSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:242:export const AlertSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:254:export const ClassificationMetricsSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:265:export const CheckpointSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:275:export const PipelineStageSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:277:  deals: z.array(z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:292:const DealsResponseSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:297:const ActionsResponseSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:302:const EventsResponseSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:308:const QuarantineResponseSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:313:const AlertsResponseSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:320:const PipelineResponseSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:440:  const parsed = DealsResponseSchema.safeParse(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:510:    const parsed = DealDetailSchema.safeParse(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:562:  const parsed = EventsResponseSchema.safeParse(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:662:  const parsed = ActionsResponseSchema.safeParse(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:680:  const parsed = ActionsResponseSchema.safeParse(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:698:  const parsed = QuarantineResponseSchema.safeParse(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:717:    const parsed = QuarantineHealthSchema.safeParse(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:769:  const parsed = QuarantineResponseSchema.safeParse(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:788:    const parsed = QuarantinePreviewSchema.safeParse(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:901:    const parsed = DealMaterialsSchema.safeParse(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:918:  const parsed = AlertsResponseSchema.safeParse(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:937:    const parsed = ClassificationMetricsSchema.safeParse(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:957:    const parsed = CheckpointsResponseSchema.safeParse(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:980:    const parsed = PipelineResponseSchema.safeParse(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1237:            const parsedData = JSON.parse(currentData);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1458:const KineticArtifactSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1469:const KineticActionSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1484:  error: z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1504:const KineticActionsResponseSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1509:const CapabilitySchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1515:  input_schema: z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1520:  output_artifacts: z.array(z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1530:  examples: z.array(z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1537:const CapabilitiesResponseSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1544:const ActionMetricsSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1596:    const parsed = KineticActionsResponseSchema.safeParse(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1641:    const parsed = KineticActionSchema.safeParse(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1755:    const parsed = CapabilitiesResponseSchema.safeParse(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1779:    const parsed = ActionMetricsSchema.safeParse(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1878:const AgentActivityEventSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1888:const AgentActivityStatsSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1895:const AgentLastActivitySchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1903:const AgentCurrentRunSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1913:const AgentRecentRunSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1926:const AgentActivityResponseSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1945:    const parsed = AgentActivityResponseSchema.safeParse(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/chat/session.ts:28:    const parsed: StoredSession = JSON.parse(raw);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/chat/session.ts:41:      try { session = JSON.parse(existing); } catch { /* ignore */ }
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/chat/session.ts:70:          const parsed: StoredSession = JSON.parse(e.newValue);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent/providers/local.ts:196:              const data = JSON.parse(line.slice(6));
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/settings/provider-settings.ts:87:      const parsed = JSON.parse(stored) as Partial<ProviderSettings>;
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/storage-utils.ts:38:      parsed = JSON.parse(raw);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/storage-utils.ts:60:    const result = schema.safeParse(parsed);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/schemas/approval.ts:25:export const PendingApprovalSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/schemas/approval.ts:37:export const ApprovalListResponseSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/schemas/approval.ts:45:export const ActionTakenSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/schemas/approval.ts:53:export const ApprovalActionResponseSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/schemas/approval.ts:65:export const ThreadStateResponseSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/schemas/approval.ts:78:  const result = ApprovalListResponseSchema.safeParse(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/schemas/approval.ts:91:  const result = ApprovalActionResponseSchema.safeParse(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/parsers.ts:11:const sortingItemSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/parsers.ts:28:        const parsed = JSON.parse(value);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/parsers.ts:29:        const result = z.array(sortingItemSchema).safeParse(parsed);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/parsers.ts:52:const filterItemSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/parsers.ts:74:        const parsed = JSON.parse(value);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/parsers.ts:75:        const result = z.array(filterItemSchema).safeParse(parsed);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-client.ts:461:        const data = JSON.parse(event.data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/use-realtime-events.ts:272:                  data: JSON.parse(currentEvent.data),
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/use-realtime-events.ts:489:          const data = JSON.parse(event.data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/useOnboardingState.ts:120:          const parsed: PersistedOnboarding = JSON.parse(stored);
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/forms/demo-form.tsx:24:const demoFormSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/ApprovalCheckpoint.tsx:330:                    setModifiedInputs(JSON.parse(e.target.value));
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/layout/user-nav.tsx:99:        const parsed = JSON.parse(stored);

@@ -1,0 +1,30 @@
+=== Zod Runtime Enforcement Verification ===
+
+1. CaseFileEnvelopeSchema (line 669-674)
+   - Fields: deal_id, version, generated_at, data
+   - safeParse at line 681
+   - Failure: console.warn + return null (line 683-684) ✓
+   - 404: return null (line 688-690) ✓
+
+2. DealEnrichmentSchema (line 713-738)
+   - Fields: deal_id, display_name, broker, aliases, materials, etc.
+   - safeParse at line 761
+   - Failure: console.warn + return null (line 763-764) ✓
+   - 404: return null (line 768-770) ✓
+
+3. DelegatedTaskSchema (line 1194) + DealTasksResponseSchema (line 1223)
+   - Fields: tasks array + count number
+   - safeParse at line 1231
+   - Failure: console.warn + return { tasks: [], count: 0 } (line 1233-1234) ✓
+   - catch: return { tasks: [], count: 0 } (line 1237-1239) ✓
+
+4. SentimentTrendSchema (line 2700-2708)
+   - Fields: deal_id, current_score, average_score, trend, data_points, min_score, max_score
+   - safeParse at line 2715
+   - Failure: console.warn + return null (line 2717-2718) ✓
+   - catch: return null (line 2721-2723) ✓
+
+ALL 4 schemas: console.warn (NOT console.error) ✓
+ALL fallback values match completion report claims ✓
+
+VERDICT: PASS

@@ -1,0 +1,11 @@
+{
+  "attempts": 2,
+  "exit_codes": [
+  1
+],
+  "flake_suspected": false,
+  "final_exit_code": 1,
+  "gate_cmd": "./verify.sh",
+  "retry_max": 0,
+  "retry_mode": "on_fail"
+}

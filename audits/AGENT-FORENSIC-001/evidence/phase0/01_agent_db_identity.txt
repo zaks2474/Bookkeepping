@@ -1,0 +1,30 @@
+=== STEP 0.2: Agent DB Identity ===
+                                                    List of databases
+     Name     | Owner | Encoding | Locale Provider |  Collate   |   Ctype    | ICU Locale | ICU Rules | Access privileges 
+--------------+-------+----------+-----------------+------------+------------+------------+-----------+-------------------
+ postgres     | agent | UTF8     | libc            | en_US.utf8 | en_US.utf8 |            |           | 
+ template0    | agent | UTF8     | libc            | en_US.utf8 | en_US.utf8 |            |           | =c/agent         +
+              |       |          |                 |            |            |            |           | agent=CTc/agent
+ template1    | agent | UTF8     | libc            | en_US.utf8 | en_US.utf8 |            |           | =c/agent         +
+              |       |          |                 |            |            |            |           | agent=CTc/agent
+ zakops_agent | agent | UTF8     | libc            | en_US.utf8 | en_US.utf8 |            |           | 
+(4 rows)
+
+ current_database | current_user 
+------------------+--------------
+ zakops_agent     | agent
+(1 row)
+
+       tablename       
+-----------------------
+ approvals
+ audit_log
+ checkpoint_blobs
+ checkpoint_migrations
+ checkpoint_writes
+ checkpoints
+ session
+ tool_executions
+ user
+(9 rows)
+

@@ -1,0 +1,8 @@
+25:class CitationCheck:
+35:class CitationAuditResult:
+41:    checks: list[CitationCheck] = field(default_factory=list)
+54:) -> CitationAuditResult:
+62:        CitationAuditResult with per-citation checks and overall quality.
+65:    result = CitationAuditResult()
+88:            result.checks.append(CitationCheck(
+110:        result.checks.append(CitationCheck(

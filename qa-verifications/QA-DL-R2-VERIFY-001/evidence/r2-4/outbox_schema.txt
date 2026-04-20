@@ -1,0 +1,20 @@
+   column_name   |        data_type         | is_nullable 
+-----------------+--------------------------+-------------
+ id              | uuid                     | NO
+ correlation_id  | uuid                     | NO
+ aggregate_type  | character varying        | NO
+ aggregate_id    | character varying        | NO
+ event_type      | character varying        | NO
+ schema_version  | integer                  | NO
+ event_data      | jsonb                    | NO
+ trace_id        | uuid                     | YES
+ status          | character varying        | NO
+ attempts        | integer                  | YES
+ max_attempts    | integer                  | YES
+ last_attempt_at | timestamp with time zone | YES
+ next_attempt_at | timestamp with time zone | YES
+ delivered_at    | timestamp with time zone | YES
+ error_message   | text                     | YES
+ created_at      | timestamp with time zone | NO
+(16 rows)
+

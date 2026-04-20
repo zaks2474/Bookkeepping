@@ -1,0 +1,30 @@
+=== QA-0.3: RT-DB-SOT SPLIT-BRAIN PROOF ===
+5-Step Canary Test Per D-FINAL-01
+
+--- STEP 1: Postgres Container Inventory ---
+zakops-backend-postgres-1        postgres:15-alpine                   Created
+zakops-postgres-1                postgres:15-alpine                   Up 15 minutes (healthy)
+Total Postgres containers: 2
+
+--- STEP 2: Service DB Configurations ---
+Backend container DATABASE_URL:
+DATABASE_URL=postgresql://zakops:zakops_dev@postgres:5432/zakops
+Agent container DATABASE_URL:
+DATABASE_URL=postgresql://agent:agent_secure_pass_123@db:5432/zakops_agent
+
+--- STEP 3: Canary Deal Creation ---
+Creating canary: CANARY-RT-SOT-1770190003
+Response: {"deal_id":"DL-0042","canonical_name":"CANARY-RT-SOT-1770190003","display_name":null,"folder_path":null,"stage":"inbound","status":"active","identifiers":{},"company_info":{},"broker":{},"metadata":{},"created_at":"2026-02-04T07:26:43.777638Z","updated_at":"2026-02-04T07:26:43.777638Z","days_since_update":null,"action_count":null,"alias_count":null}
+Canary ID: DL-0042
+
+--- STEP 4: JSON Registry Check ---
+PASS: JSON registry file does not exist
+
+--- STEP 5: SQLite Check ---
+PASS: SQLite file does not exist
+
+--- STEP 6: Postgres Verification ---
+ DL-0042 | CANARY-RT-SOT-1770190003 | inbound
+PASS: Canary IS in Postgres
+
+=== RT-DB-SOT VERDICT: PASS ===

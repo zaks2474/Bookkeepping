@@ -1,0 +1,6 @@
+EXISTS: apps/agent-api/migrations/029_legal_hold.sql
+EXISTS: apps/agent-api/app/services/reflexion.py
+EXISTS: apps/agent-api/app/services/fatigue_sentinel.py
+EXISTS: apps/agent-api/app/services/spaced_repetition.py
+EXISTS: apps/agent-api/app/services/sentiment_coach.py
+EXISTS: apps/agent-api/app/core/langgraph/plan_execute.py

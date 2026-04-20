@@ -1,0 +1,41 @@
+                                         Table "zakops.delegated_tasks"
+        Column         |           Type           | Collation | Nullable |               Default                
+-----------------------+--------------------------+-----------+----------+--------------------------------------
+ id                    | uuid                     |           | not null | gen_random_uuid()
+ deal_id               | character varying(50)    |           |          | 
+ task_type             | character varying(100)   |           | not null | 
+ status                | character varying(30)    |           | not null | 'pending'::character varying
+ priority              | character varying(20)    |           | not null | 'medium'::character varying
+ title                 | character varying(500)   |           | not null | 
+ description           | text                     |           |          | 
+ context               | jsonb                    |           | not null | '{}'::jsonb
+ result                | jsonb                    |           |          | 
+ feedback              | text                     |           |          | 
+ assigned_to           | character varying(255)   |           |          | 'langsmith_agent'::character varying
+ created_by            | character varying(255)   |           | not null | 'operator'::character varying
+ correlation_id        | character varying(100)   |           |          | 
+ max_attempts          | integer                  |           | not null | 3
+ attempt_count         | integer                  |           | not null | 0
+ last_error            | text                     |           |          | 
+ requires_confirmation | boolean                  |           | not null | false
+ confirmed_by          | character varying(255)   |           |          | 
+ confirmed_at          | timestamp with time zone |           |          | 
+ created_at            | timestamp with time zone |           | not null | now()
+ updated_at            | timestamp with time zone |           | not null | now()
+ queued_at             | timestamp with time zone |           |          | 
+ started_at            | timestamp with time zone |           |          | 
+ resolved_at           | timestamp with time zone |           |          | 
+Indexes:
+    "delegated_tasks_pkey" PRIMARY KEY, btree (id)
+    "idx_dt_assigned_to" btree (assigned_to) WHERE status::text = ANY (ARRAY['pending'::character varying, 'queued'::character varying, 'executing'::character varying]::text[])
+    "idx_dt_correlation_id" btree (correlation_id) WHERE correlation_id IS NOT NULL
+    "idx_dt_deal_id" btree (deal_id)
+    "idx_dt_status" btree (status)
+Check constraints:
+    "delegated_tasks_priority_check" CHECK (priority::text = ANY (ARRAY['low'::character varying, 'medium'::character varying, 'high'::character varying, 'critical'::character varying]::text[]))
+    "delegated_tasks_status_check" CHECK (status::text = ANY (ARRAY['pending'::character varying, 'queued'::character varying, 'executing'::character varying, 'completed'::character varying, 'failed'::character varying, 'dead_letter'::character varying]::text[]))
+Foreign-key constraints:
+    "delegated_tasks_deal_id_fkey" FOREIGN KEY (deal_id) REFERENCES deals(deal_id) ON DELETE SET NULL
+Triggers:
+    trg_delegated_tasks_updated_at BEFORE UPDATE ON delegated_tasks FOR EACH ROW EXECUTE FUNCTION update_delegated_tasks_updated_at()
+

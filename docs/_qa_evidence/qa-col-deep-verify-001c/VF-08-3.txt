@@ -1,0 +1,6 @@
+=== Index on legal_hold_locks ===
+Found in: /home/zaks/zakops-agent-api/apps/agent-api/migrations/029_legal_hold.sql
+Line 19-20: CREATE INDEX IF NOT EXISTS idx_legal_hold_locks_thread ON legal_hold_locks (thread_id);
+Line 21-22: CREATE INDEX IF NOT EXISTS idx_legal_hold_locks_active ON legal_hold_locks (thread_id) WHERE released_at IS NULL;
+Line 36-37: CREATE INDEX IF NOT EXISTS idx_legal_hold_log_thread ON legal_hold_log (thread_id);
+RESULT: PASS — Partial index exists (idx_legal_hold_locks_active WHERE released_at IS NULL)

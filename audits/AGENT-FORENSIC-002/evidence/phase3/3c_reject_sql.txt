@@ -1,0 +1,19 @@
+=== STEP 3.13 — Rejection SQL Proof ===
+Date: Tue Feb  3 02:14:25 UTC 2026
+
+--- deal_events for DL-0020 ---
+                  id                  | deal_id |  event_type   | event_source |  actor  |                                     payload                                      |          created_at           | idempotency_key | sequence_number | actor_id | actor_type | causation_id | event_version | aggregate_type | aggregate_id | schema_version | validation_mode 
+--------------------------------------+---------+---------------+--------------+---------+----------------------------------------------------------------------------------+-------------------------------+-----------------+-----------------+----------+------------+--------------+---------------+----------------+--------------+----------------+-----------------
+ 1ddf9cdb-6334-49c3-861c-bd06726d1bdd | DL-0020 | deal_created  | api          | ui_user | {"canonical_name": "Seed Deal Alpha"}                                            | 2026-02-02 16:07:49.461949+00 |                 |              24 |          | system     |              |             1 |                |              | 1.0.0          | strict
+ cc67ca18-ae9e-4d5d-9673-65e9aada370d | DL-0020 | stage_changed | workflow     | system  | {"reason": "", "to_stage": "screening", "trace_id": "", "from_stage": "inbound"} | 2026-02-02 16:07:49.478219+00 |                 |              25 |          | system     |              |             1 |                |              | 1.0.0          | strict
+(2 rows)
+
+
+--- Current DL-0020 stage ---
+ deal_id |   stage   
+---------+-----------
+ DL-0020 | qualified
+(1 row)
+
+
+FINDING: No transition event should exist after the rejection in step 3.6

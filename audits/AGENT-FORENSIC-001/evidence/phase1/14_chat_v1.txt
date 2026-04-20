@@ -1,0 +1,43 @@
+=== STEP 1.5: Chat V1 ===
+--- Chat (POST /api/v1/chatbot/chat) using session token ---
+HTTP/1.1 200 OK
+date: Mon, 02 Feb 2026 22:14:46 GMT
+server: uvicorn
+content-length: 116
+content-type: application/json
+x-request-id: fe8c1585
+x-response-time: 0.904s
+
+{"messages":[{"role":"user","content":"Hello"},{"role":"assistant","content":"Hello! How can I assist you today?"}]}
+--- Streaming (POST /api/v1/chatbot/chat/stream) using session token ---
+HTTP/1.1 200 OK
+date: Mon, 02 Feb 2026 22:14:47 GMT
+server: uvicorn
+content-type: text/event-stream; charset=utf-8
+x-request-id: 14d91692
+x-response-time: 0.006s
+Transfer-Encoding: chunked
+
+data: {"content": "LangchainCallbackHandler.__init__() got an unexpected keyword argument 'environment'", "done": true}
+
+
+--- Messages GET (GET /api/v1/chatbot/messages) ---
+HTTP/1.1 200 OK
+date: Mon, 02 Feb 2026 22:14:47 GMT
+server: uvicorn
+content-length: 116
+content-type: application/json
+x-request-id: 973c23ec
+x-response-time: 0.006s
+
+{"messages":[{"role":"user","content":"Hello"},{"role":"assistant","content":"Hello! How can I assist you today?"}]}
+--- Messages DELETE (DELETE /api/v1/chatbot/messages) ---
+HTTP/1.1 200 OK
+date: Mon, 02 Feb 2026 22:14:47 GMT
+server: uvicorn
+content-length: 47
+content-type: application/json
+x-request-id: 90312494
+x-response-time: 0.011s
+
+{"message":"Chat history cleared successfully"}

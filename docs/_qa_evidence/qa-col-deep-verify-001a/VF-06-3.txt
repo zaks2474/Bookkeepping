@@ -1,0 +1,9 @@
+Line 243: async def extract_from_turn(self, deal_id, thread_id, turn, user_message, assistant_message) -> dict:
+---
+Called by outbox worker when processing brain_extract events.
+  1. Gets or creates brain (line 256)
+  2. Records history snapshot (lines 260-266)
+  3. Keyword extraction (line 269)
+  4. Ghost knowledge detection (lines 274-284)
+  5. Momentum recompute (lines 287-291)
+VERDICT: PASS

@@ -1,0 +1,15 @@
+70:from app.core.langgraph.tools.schemas import ToolResult
+263:        R3 REMEDIATION [P1.1/P1.2]: Added try/except and ToolResult schema.
+287:                    content=ToolResult.error_result(
+312:                            content=ToolResult.error_result(
+336:                                    content=ToolResult.error_result(
+349:                                content=ToolResult.error_result(
+363:                        content=ToolResult.error_result(
+376:                    result = ToolResult.error_result(
+385:                    # Convert legacy JSON string responses to ToolResult
+387:                        result = ToolResult.from_legacy(raw_result)
+393:                                result = ToolResult.success_result(raw_result)
+395:                                result = ToolResult.error_result(
+400:                            result = ToolResult.success_result(raw_result)
+402:                        result = ToolResult.success_result({"result": str(raw_result)})
+418:                result = ToolResult.error_result(

@@ -1,0 +1,14 @@
+67:    "inbound", "screening", "qualified", "loi",
+75:    "screening": frozenset(["qualified", "junk", "archived"]),
+76:    "qualified": frozenset(["loi", "junk", "archived"]),
+77:    "loi": frozenset(["diligence", "junk", "archived"]),
+120:    to_stage: str = Field(..., description="Target stage to transition the deal to. Valid: inbound, screening, qualified, loi, diligence, closing, portfolio, junk, archived")
+147:    stage: str = Field(default="inbound", description="Initial stage for the deal. Valid: inbound, screening, qualified, loi, diligence, closing, portfolio, junk, archived")
+413:                    "stage": "qualified",  # Fixed: was "qualification"
+526:                "results": [{"id": "deal-001", "title": "Sample Deal", "stage": "loi"}],
+806:    "screening": 14,   # Should be qualified/rejected within 2 weeks
+807:    "qualified": 21,   # Should progress to LOI within 3 weeks
+808:    "loi": 30,         # Should be signed within a month
+912:        if stage in ["qualified", "loi", "diligence", "closing"]:
+916:    if stage in ["loi", "diligence", "closing", "portfolio"]:
+937:    if stage == "loi":

@@ -1,0 +1,40 @@
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/chatbot.py:36:from app.services.proposal_service import proposal_service
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/chatbot.py:449:    proposal_id: str
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/chatbot.py:454:@router.post("/proposals/execute")
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/chatbot.py:455:async def execute_proposal(
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/chatbot.py:460:    """Execute or reject a chat proposal.
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/chatbot.py:462:    COL-DESIGN-SPEC-V2 Section 15.2: POST /api/v1/chatbot/proposals/execute
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/chatbot.py:466:        result = await proposal_service.execute(
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/chatbot.py:469:            proposal_id=body.proposal_id,
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/chatbot.py:482:            "execute_proposal_failed",
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/chatbot.py:483:            proposal_id=body.proposal_id,
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/chatbot.py:487:        raise HTTPException(status_code=500, detail="Failed to execute proposal")
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:4:Handles proposal execution, status tracking, and the correct_brain_summary handler.
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:5:Wires approved proposals to their respective backend operations.
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:7:POST /api/v1/chatbot/proposals/execute
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:8:  Body: { proposal_id, message_id, thread_id, action, approved_by, reject_reason? }
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:9:  Response: { success, result, proposal }
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:35:    """Executes and tracks chat proposals."""
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:41:        proposal_id: str,
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:46:        """Execute or reject a proposal.
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:49:            thread_id: Thread containing the proposal
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:50:            message_id: Message containing the proposal in its JSONB
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:51:            proposal_id: Unique proposal identifier
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:57:            Dict with success, result, and updated proposal
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:59:        # 1. Load the proposal with FOR UPDATE lock
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:60:        proposal = await self._get_proposal(message_id, proposal_id)
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:61:        if not proposal:
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:62:            return {"success": False, "error": f"Proposal {proposal_id} not found"}
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:64:        current_status = proposal.get("status", "pending_approval")
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:75:                message_id, proposal_id, "rejected",
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:78:            logger.info("proposal_rejected", proposal_id=proposal_id, by=user_id)
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:79:            return {"success": True, "action": "rejected", "proposal_id": proposal_id}
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:82:        await self._update_status(message_id, proposal_id, "approved", by=user_id)
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:85:        proposal_type = proposal.get("type", "unknown")
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:86:        handler_name = PROPOSAL_HANDLERS.get(proposal_type)
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:90:                message_id, proposal_id, "failed",
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:91:                by="system", extra={"error": f"No handler for type '{proposal_type}'"},
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:93:            return {"success": False, "error": f"No handler for proposal type '{proposal_type}'"}
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:97:            result = await handler(proposal, user_id)
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:100:                message_id, proposal_id, "executed",
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:105:                "proposal_executed",

@@ -1,0 +1,71 @@
+=== VF-03.5 RUNTIME SCRIPT EXECUTION ===
+=== Rule Frontmatter Validation ===
+
+Checking: design-system.md
+  PASS: Valid frontmatter with dashboard path coverage
+Checking: accessibility.md
+  PASS: Valid frontmatter with dashboard path coverage
+Checking: component-patterns.md
+  PASS: Valid frontmatter with dashboard path coverage
+
+--- General frontmatter structure check ---
+  OK: accessibility.md has valid frontmatter structure
+  OK: agent-tools.md has valid frontmatter structure
+  INFO: backend-api.md has no frontmatter (non-scoped rule)
+  OK: component-patterns.md has valid frontmatter structure
+  OK: contract-surfaces.md has valid frontmatter structure
+  INFO: dashboard-types.md has no frontmatter (non-scoped rule)
+  OK: design-system.md has valid frontmatter structure
+
+Rule Frontmatter Validation: PASS
+=== Frontend Governance Anchor Validation ===
+
+--- design-system.md governance sections ---
+  PASS: Skill Preload
+  PASS: Responsive Breakpoint
+  PASS: Z-Index
+  PASS: Dark Mode
+  PASS: Animation Performance
+  PASS: State Management
+  PASS: Anti-convergence
+  PASS: Data Fetching
+  PASS: Error Handling
+  PASS: CSS Architecture
+  PASS: Import Discipline
+
+--- accessibility.md governance sections ---
+  PASS: Semantic Structure
+  PASS: Keyboard Navigation
+  PASS: Color Contrast
+  PASS: ARIA
+  PASS: Reduced Motion
+
+--- component-patterns.md governance sections ---
+  PASS: Server vs Client
+  PASS: Loading.*Empty.*Error
+  PASS: Suspense
+  PASS: State Ownership
+  PASS: Composability
+
+--- Port 8090 drift check ---
+  PASS: No port 8090 references in governance rules
+
+Frontend Governance Validation: PASS
+=== Gate E: Raw httpx Client Usage Check ===
+Scanner: grep
+PASS: No raw httpx client usage in deal_tools.py
+=== Stop Hook Contract Validation (local-only) ===
+Check 1: Multi-path project detection
+  PASS: Three detection paths present (env-override, git-rev-parse, known-path-fallback)
+Check 2: Explicit skip reason
+  PASS: Explicit skip messages present
+Check 3: Gate labels
+  PASS: Gate A label present
+  PASS: Gate B label present
+  PASS: Gate E label present
+Check 4: Time budget
+  PASS: Time budget checks present (3)
+Check 5: Gate E scanner fallback
+  PASS: rg->grep fallback present
+
+Stop Hook Contract Validation: PASS

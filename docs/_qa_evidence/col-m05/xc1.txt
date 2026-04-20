@@ -1,0 +1,5 @@
+    Reads/writes to zakops.deal_brain and related tables.
+            "SELECT * FROM zakops.deal_brain WHERE deal_id = $1",
+            INSERT INTO zakops.deal_brain (deal_id)
+        query = f"UPDATE zakops.deal_brain SET {', '.join(set_parts)} WHERE deal_id = ${len(params)}"
+            INSERT INTO zakops.deal_brain_history

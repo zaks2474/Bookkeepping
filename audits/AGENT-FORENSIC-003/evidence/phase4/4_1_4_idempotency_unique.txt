@@ -1,0 +1,11 @@
+=== CHECK 4.1.4: Verify idempotency_key uniqueness ===
+Timestamp: 2026-02-03T13:08:02-06:00
+
+Query: idempotency_key duplicates (should return 0 rows)
+
+time="2026-02-03T13:08:02-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-03T13:08:02-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+ idempotency_key | count 
+-----------------+-------
+(0 rows)
+

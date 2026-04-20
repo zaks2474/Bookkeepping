@@ -1,0 +1,6 @@
+=== DROP-C4: PG-002 (/dashboard STAGE_ORDER, client-side counting) ===
+VERDICT: ADDRESSED
+Evidence: V-L3.3 confirms all pipeline views use server-side counts via
+pipelineData?.stages[stage]?.count ?? 0 (no client-side .filter().length).
+V-L3.2 confirms zero hardcoded stage arrays remain.
+The PG-002 gap has been resolved.

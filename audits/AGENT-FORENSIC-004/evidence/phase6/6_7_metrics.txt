@@ -1,0 +1,169 @@
+================================================================================
+AGENT-FORENSIC-004 - Phase 6 Check 6.7: Metrics Collection
+================================================================================
+Date: 2026-02-03
+Auditor: Claude Opus 4.5 (Automated)
+Status: PASS
+================================================================================
+
+1. METRICS IMPLEMENTATION
+-------------------------
+Source: /home/zaks/zakops-agent-api/apps/agent-api/app/core/metrics.py
+
+Prometheus metrics library used with the following metrics defined:
+
+1.1 HTTP Request Metrics:
+```python
+http_requests_total = Counter(
+    "http_requests_total",
+    "Total number of HTTP requests",
+    ["method", "endpoint", "status"]
+)
+
+http_request_duration_seconds = Histogram(
+    "http_request_duration_seconds",
+    "HTTP request duration in seconds",
+    ["method", "endpoint"]
+)
+```
+
+1.2 Database Metrics:
+```python
+db_connections = Gauge(
+    "db_connections",
+    "Number of active database connections"
+)
+```
+
+1.3 Business Metrics:
+```python
+orders_processed = Counter(
+    "orders_processed_total",
+    "Total number of orders processed"
+)
+```
+
+1.4 LLM Inference Metrics:
+```python
+llm_inference_duration_seconds = Histogram(
+    "llm_inference_duration_seconds",
+    "Time spent processing LLM inference",
+    ["model"],
+    buckets=[0.1, 0.3, 0.5, 1.0, 2.0, 5.0]
+)
+
+llm_stream_duration_seconds = Histogram(
+    "llm_stream_duration_seconds",
+    "Time spent processing LLM stream inference",
+    ["model"],
+    buckets=[0.1, 0.5, 1.0, 2.0, 5.0, 10.0]
+)
+```
+
+2. METRICS ENDPOINT ACCESS CONTROL
+----------------------------------
+From metrics.py (Lines 45-60):
+```python
+def setup_metrics(app):
+    # Only expose /metrics in development or when explicitly enabled (UF-005)
+    if settings.ENVIRONMENT == Environment.DEVELOPMENT or \
+       os.getenv("ENABLE_API_DOCS", "false").lower() == "true":
+        app.add_route(
+            "/metrics",
+            lambda _: Response(generate_latest(), media_type=CONTENT_TYPE_LATEST),
+            methods=["GET"],
+        )
+```
+
+Security feature (UF-005):
+- /metrics endpoint ONLY available in development
+- Production requires explicit ENABLE_API_DOCS=true
+- Prevents accidental metrics exposure
+
+3. LIVE METRICS TEST
+--------------------
+Request: curl -s http://localhost:8095/metrics
+
+Response (excerpt):
+```
+# HELP python_gc_objects_collected_total Objects collected during gc
+# TYPE python_gc_objects_collected_total counter
+python_gc_objects_collected_total{generation="0"} 17290.0
+
+# HELP python_info Python platform information
+# TYPE python_info gauge
+python_info{implementation="CPython",major="3",minor="13",patchlevel="2"} 1.0
+
+# HELP process_virtual_memory_bytes Virtual memory size in bytes.
+# TYPE process_virtual_memory_bytes gauge
+process_virtual_memory_bytes 2.456707072e+09
+
+# HELP process_resident_memory_bytes Resident memory size in bytes.
+# TYPE process_resident_memory_bytes gauge
+process_resident_memory_bytes 2.71495168e+08
+
+# HELP db_connections Number of active database connections
+# TYPE db_connections gauge
+db_connections 0.0
+
+# HELP llm_inference_duration_seconds Time spent processing LLM inference
+# TYPE llm_inference_duration_seconds histogram
+llm_inference_duration_seconds_bucket{le="0.1",model="Qwen/Qwen2.5-32B-Instruct-AWQ"} 0.0
+llm_inference_duration_seconds_bucket{le="0.3",model="Qwen/Qwen2.5-32B-Instruct-AWQ"} 0.0
+llm_inference_duration_seconds_bucket{le="0.5",model="Qwen/Qwen2.5-32B-Instruct-AWQ"} 0.0
+llm_inference_duration_seconds_bucket{le="1.0",model="Qwen/Qwen2.5-32B-Instruct-AWQ"} 1.0
+llm_inference_duration_seconds_bucket{le="2.0",model="Qwen/Qwen2.5-32B-Instruct-AWQ"} 13.0
+llm_inference_duration_seconds_bucket{le="5.0",model="Qwen/Qwen2.5-32B-Instruct-AWQ"} 17.0
+llm_inference_duration_seconds_bucket{le="+Inf",model="Qwen/Qwen2.5-32B-Instruct-AWQ"} 18.0
+llm_inference_duration_seconds_count{model="Qwen/Qwen2.5-32B-Instruct-AWQ"} 18.0
+llm_inference_duration_seconds_sum{model="Qwen/Qwen2.5-32B-Instruct-AWQ"} 49.13
+```
+
+4. SENSITIVE DATA CHECK
+-----------------------
+Metrics exposed - NO SENSITIVE DATA:
+- python_gc_* - Garbage collection stats
+- python_info - Python version info
+- process_* - Memory, CPU, FDs (operational metrics)
+- http_requests_total - Request counts by method/endpoint/status
+- http_request_duration_seconds - Latency histograms
+- db_connections - Connection count
+- llm_inference_duration_seconds - Model inference timing
+- orders_processed_total - Business counter
+
+NO sensitive data found:
+- No user IDs
+- No session tokens
+- No request content
+- No PII
+- No credentials
+- No internal paths
+
+Labels used:
+- method: HTTP method (GET, POST, etc.)
+- endpoint: URL path
+- status: HTTP status code
+- model: LLM model name
+- generation: GC generation
+
+5. PROMETHEUS INTEGRATION
+-------------------------
+From docker-compose.yml (Lines 61-75):
+```yaml
+prometheus:
+  image: prom/prometheus:latest
+  container_name: zakops-agent-prometheus
+  ports:
+    - "9091:9090"
+  volumes:
+    - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+```
+
+Prometheus configured to scrape the /metrics endpoint.
+
+RESULT: PASS
+- Metrics collection: IMPLEMENTED with prometheus_client
+- Metrics types: Counters, Gauges, Histograms
+- LLM metrics: Inference duration tracked by model
+- Access control: /metrics disabled in production by default
+- Sensitive data: NONE exposed in metrics

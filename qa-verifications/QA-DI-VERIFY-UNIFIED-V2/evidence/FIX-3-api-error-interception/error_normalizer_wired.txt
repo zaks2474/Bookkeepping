@@ -1,0 +1,8 @@
+=== F3.1: error-normalizer wired in ===
+12:import { normalizeError } from './error-normalizer';
+18:function isErrorPayload(data: unknown): boolean {
+414:        const normalized = normalizeError(parsed, response.status);
+427:    if (isErrorPayload(data)) {
+428:      const normalized = normalizeError(data, response.status);
+References: 5
+VERDICT: PASS

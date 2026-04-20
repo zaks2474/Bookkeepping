@@ -1,0 +1,62 @@
+=== R0.7 DASHBOARD ENDPOINT REALISM SWEEP ===
+--- MOCK/PLACEHOLDER PATTERNS ---
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/[id]/archive/route.ts:57:    // Backend not available - use mock implementation
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/[id]/route.ts:56:    // Backend not available - use mock implementation
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/completed-count/route.ts:44:      const mockCounts: Record<string, number> = {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/completed-count/route.ts:49:      const count = mockCounts[age] || 0;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/completed-count/route.ts:61:    // Backend not available - use mock implementation
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/completed-count/route.ts:62:    const mockCounts: Record<string, number> = {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/completed-count/route.ts:67:    const count = mockCounts[age] || 0;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/bulk/archive/route.ts:71:    // Backend not available - use mock implementation
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/bulk/delete/route.ts:71:    // Backend not available - use mock implementation
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/clear-completed/route.ts:65:      const mockCounts: Record<string, number> = {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/clear-completed/route.ts:70:      const count = mockCounts[age] || 0;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/clear-completed/route.ts:87:    // Backend not available - use mock implementation
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/clear-completed/route.ts:88:    const mockCounts: Record<string, number> = {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/clear-completed/route.ts:93:    const count = mockCounts[age] || 0;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/execute-proposal/route.ts:7: * Note: This is a placeholder - full implementation requires backend chat orchestrator.
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/session/[sessionId]/route.ts:7: * Note: This is a placeholder - full implementation requires backend support.
+
+--- ALL DASHBOARD API ROUTES ---
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/[id]/archive/route.ts
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/[id]/route.ts
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/bulk/archive/route.ts
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/bulk/delete/route.ts
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/clear-completed/route.ts
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/completed-count/route.ts
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/quarantine/[actionId]/preview/route.ts
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/quarantine/route.ts
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/agent/activity/route.ts
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/alerts/route.ts
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/complete/route.ts
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/execute-proposal/route.ts
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/route.ts
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/session/[sessionId]/route.ts
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/checkpoints/route.ts
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/deferred-actions/due/route.ts
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/deferred-actions/route.ts
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/events/route.ts
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/pipeline/route.ts
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/quarantine/health/route.ts
+
+--- ROUTE PROBE RESULTS ---
+Probing: /api/actions/[id]/archive → 
+Probing: /api/actions/[id] → 
+Probing: /api/actions/bulk/archive → 405
+Probing: /api/actions/bulk/delete → 405
+Probing: /api/actions/clear-completed → 405
+Probing: /api/actions/completed-count → 200
+Probing: /api/actions/quarantine/[actionId]/preview → 
+Probing: /api/actions/quarantine → 200
+Probing: /api/agent/activity → 200
+Probing: /api/alerts → 200
+Probing: /api/chat/complete → 405
+Probing: /api/chat/execute-proposal → 405
+Probing: /api/chat → 200
+Probing: /api/chat/session/[sessionId] → 
+Probing: /api/checkpoints → 200
+Probing: /api/deferred-actions/due → 200
+Probing: /api/deferred-actions → 200
+Probing: /api/events → 501
+Probing: /api/pipeline → 200
+Probing: /api/quarantine/health → 200

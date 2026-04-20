@@ -1,0 +1,14 @@
+38:                - facts_override: Modified brain facts
+39:                - stage_override: Alternative deal stage
+51:        # 2. Build modified snapshot
+52:        modified_snapshot = dict(snapshot)
+53:        self._apply_modifications(modified_snapshot, modified_inputs)
+56:        counterfactual_result = await self._execute_counterfactual(modified_snapshot)
+126:    def _apply_modifications(
+142:        if "facts_override" in modified_inputs:
+144:            facts_str = json.dumps(modified_inputs["facts_override"], indent=2)
+150:        if "stage_override" in modified_inputs:
+152:            new_stage = modified_inputs["stage_override"]
+158:        """Execute the modified snapshot through the LLM."""
+235:        if "facts_override" in modified_inputs:
+237:        if "stage_override" in modified_inputs:

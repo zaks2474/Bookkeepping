@@ -1,0 +1,61 @@
+{
+  "test_suite": "Agent API",
+  "timestamp": "2026-01-26T10:01:56.138140",
+  "tests": [
+    {
+      "id": "2.1.1",
+      "name": "Health Check",
+      "passed": true,
+      "timestamp": "2026-01-26T10:01:56.142958",
+      "details": {
+        "response": {
+          "status": "healthy",
+          "version": "1.0.0",
+          "environment": "development",
+          "components": {
+            "api": "healthy",
+            "database": "healthy"
+          },
+          "timestamp": "2026-01-26T16:01:56.142255"
+        }
+      }
+    },
+    {
+      "id": "2.1.2",
+      "name": "Discover Endpoints",
+      "passed": true,
+      "timestamp": "2026-01-26T10:01:56.152093",
+      "details": {
+        "endpoints_found": [
+          "/api/v1/agent/invoke:405",
+          "/docs:405",
+          "/docs:200"
+        ]
+      }
+    },
+    {
+      "id": "2.1.3",
+      "name": "Agent Invoke (/api/v1/agent/invoke)",
+      "passed": true,
+      "timestamp": "2026-01-26T10:01:57.998997",
+      "details": {
+        "endpoint": "/api/v1/agent/invoke",
+        "status_code": 200,
+        "response_length": 162
+      }
+    },
+    {
+      "id": "2.1.4",
+      "name": "Agent Activity",
+      "passed": false,
+      "timestamp": "2026-01-26T10:01:58.003758",
+      "details": {
+        "error": "No activity endpoint found"
+      }
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "total": 4
+  }
+}

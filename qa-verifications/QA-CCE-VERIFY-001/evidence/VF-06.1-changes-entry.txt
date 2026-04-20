@@ -1,0 +1,12 @@
+=== VF-06.1 CHANGES ENTRY ===
+3:## 2026-02-11 — CLAUDE-CODE-ENHANCE-001: Five Session-Surviving Feature Additions
+7:1. `ENABLE_TOOL_SEARCH=auto:5` — lazy-loads MCP tools to reduce context consumption
+8:2. `PreCompact` hook (`pre-compact.sh`) — saves session snapshot before compaction
+9:3. `TaskCompleted` hook (`task-completed.sh`) — enforces quality gates (CRLF, ownership, tsc) on task close
+10:4. `alwaysThinkingEnabled=true` — enables extended thinking by default
+11:5. `SessionStart` compact matcher (`compact-recovery.sh`) — re-injects context after compaction
+17:- `/home/zaks/.claude/hooks/pre-compact.sh`
+18:- `/home/zaks/.claude/hooks/task-completed.sh`
+19:- `/home/zaks/.claude/hooks/compact-recovery.sh`
+28:- pre-compact dry-run produces snapshot, compact-recovery produces valid JSON
+29:- task-completed blocks on CRLF with exit 2

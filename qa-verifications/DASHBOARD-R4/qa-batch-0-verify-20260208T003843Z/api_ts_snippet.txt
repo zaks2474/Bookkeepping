@@ -1,0 +1,61 @@
+
+async function apiFetch<T>(
+  endpoint: string,
+  options: RequestInit = {}
+): Promise<T> {
+  const url = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+
+  // R2-2.3: Add Idempotency-Key header for write operations
+  const headers: HeadersInit = {
+    'Content-Type': 'application/json',
+    ...options.headers,
+  };
+
+  // Auto-generate idempotency key for write methods
+  const method = options.method?.toUpperCase() || 'GET';
+  const isWrite = ['POST', 'PUT', 'PATCH', 'DELETE'].includes(method);
+  if (['POST', 'PUT', 'PATCH'].includes(method)) {
+    // Only add if not already provided
+    const existingHeaders = options.headers as Record<string, string> | undefined;
+    if (!existingHeaders?.['Idempotency-Key'] && !existingHeaders?.['idempotency-key']) {
+      (headers as Record<string, string>)['Idempotency-Key'] = crypto.randomUUID();
+    }
+  }
+
+  // REC-005: Add X-API-Key for write operations on server side only
+  // This avoids leaking secrets to client-side bundles
+  if (isWrite && typeof window === 'undefined' && process.env.ZAKOPS_API_KEY) {
+    (headers as Record<string, string>)['X-API-Key'] = process.env.ZAKOPS_API_KEY;
+  }
+
+  try {
+    const response = await fetch(url, {
+      ...options,
+      headers,
+      cache: 'no-store',
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.text();
+      throw new ApiError(
+        `API request failed: ${errorBody}`,
+        response.status,
+        endpoint
+      );
+    }
+
+    return response.json();
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw new ApiError(
+      `Network error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      0,
+      endpoint
+    );
+  }
+}
+
+// ============================================================================
+// Normalized API Functions - Always return arrays where expected

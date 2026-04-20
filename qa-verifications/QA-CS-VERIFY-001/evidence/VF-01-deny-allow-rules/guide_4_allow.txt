@@ -1,0 +1,2 @@
+=== V1.4 ===
+396:> **Note:** 12 deny rules (4 Edit generated + 4 Edit .env variants + 4 Write generated) and 4 allow rules. The Write denies prevent file creation that bypasses Edit blocks. The `update-*` allow enables `make update-spec` and `make update-agent-spec` without prompts.

@@ -1,0 +1,11 @@
+10:  Response: { original, counterfactual, divergence }
+42:            Dict with original, counterfactual, and divergence sections
+58:        # 4. Compare divergence
+62:        divergence = self._analyze_divergence(
+73:            divergence_level=divergence.get("overall_divergence", "unknown"),
+88:            "divergence": divergence,
+118:                        "divergence": result.get("divergence", {}),
+207:    def _analyze_divergence(
+220:        # Classify divergence
+231:        # Identify what likely caused the divergence
+241:            "overall_divergence": overall,

@@ -1,0 +1,5 @@
+=== PF-5 PHASE-0 ARTIFACT PRESENCE ===
+-rw-r--r-- 1 zaks zaks 1579 Feb 14 21:19 /home/zaks/zakops-backend/db/migrations/032_feature_flags.sql
+-rw-r--r-- 1 zaks zaks 3738 Feb 14 21:23 /home/zaks/bookkeeping/docs/KEY-ROTATION-RUNBOOK.md
+-rw-r--r-- 1 root root 46483 Feb 14 21:53 /home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py
+59:| G0-12 | langsmith_live absent during shadow pilot | DEFERRED — SSE transport returns 200 without auth (handled by FastMCP internal handler); deferred to Phase 7 |

@@ -1,0 +1,28 @@
+#!/usr/bin/env python3
+"""
+ZakOps Agent Bridge - MCP Server (FastMCP)
+==========================================
+True MCP server for LangSmith Agent Builder integration.
+
+Architecture:
+- LangSmith Agent Builder (cloud) -> Cloudflare Tunnel -> This MCP Server (local)
+- Server proxies to: Deal Lifecycle API (:8091), RAG API (:8052), DataRoom filesystem
+
+Transport: SSE (Server-Sent Events)
+Endpoint: /sse
+Port: 9100
+
+Security:
+---
+API_KEY = os.getenv("ZAKOPS_BRIDGE_API_KEY", "")
+
+# Backend services
+DEAL_API_URL = os.getenv("ZAKOPS_DEAL_API_URL", "http://localhost:8091")
+RAG_API_URL = os.getenv("ZAKOPS_RAG_API_URL", "http://localhost:8052")
+
+# Backend API key (for X-API-Key header on write calls to backend)
+BACKEND_API_KEY = os.getenv("ZAKOPS_API_KEY", "")
+
+# Filesystem paths
+DATAROOM_ROOT = Path(os.getenv("DATAROOM_ROOT", "/home/zaks/DataRoom"))
+PIPELINE_PATH = DATAROOM_ROOT / "00-PIPELINE" / "Inbound"

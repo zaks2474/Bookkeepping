@@ -1,0 +1,42 @@
+{"detail":"Insufficient permissions"}
+HTTP_CODE: 403    # F-001/F-002: With service token auth, trust the actor_id from the request
+    # The dashboard is a trusted internal service that passes the UI user's identity
+    actor_id = action_request.actor_id
+
+    try:
+        with database_service.get_session_maker() as db:
+            # Reclaim any stale approvals first (crash recovery)
+            await _reclaim_stale_approvals(db)
+
+            # UF-003: Ownership check — verify request actor matches approval actor
+            pre_check = db.get(Approval, approval_id)
+            if pre_check and actor_id and pre_check.actor_id != actor_id:
+                raise HTTPException(status_code=403, detail="Insufficient permissions")
+
+            # ATOMIC CLAIM: Single UPDATE with WHERE status='pending'
+            # Only one concurrent caller can win this race
+            result = db.exec(
+                text("""
+                    UPDATE approvals
+                    SET status = 'claimed',
+                        claimed_at = :claimed_at
+                    WHERE id = :approval_id
+                      AND status = 'pending'
+                      AND (expires_at IS NULL OR expires_at > :now)
+                    RETURNING id, thread_id, checkpoint_id, tool_name, tool_args, idempotency_key
+                """),
+                params={
+                    "approval_id": approval_id,
+                    "claimed_at": datetime.now(UTC),
+                    "now": datetime.now(UTC),
+                }
+            )
+            claimed = result.fetchone()
+
+            if not claimed:
+                # Check why claim failed
+                approval = db.get(Approval, approval_id)
+                if not approval:
+                    raise HTTPException(status_code=404, detail="Approval not found")
+                if approval.status == ApprovalStatus.EXPIRED or (
+                    approval.expires_at and datetime.now(UTC) > approval.expires_at

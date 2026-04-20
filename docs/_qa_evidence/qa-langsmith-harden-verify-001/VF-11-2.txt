@@ -1,0 +1,6 @@
+842-  source_type?: string;
+845-    const searchParams = new URLSearchParams();
+846-    if (params?.limit != null) searchParams.set('limit', String(params.limit));
+847-    if (params?.offset != null) searchParams.set('offset', String(params.offset));
+848-    if (params?.source_type) searchParams.set('source_type', params.source_type);
+849-    const query = searchParams.toString();

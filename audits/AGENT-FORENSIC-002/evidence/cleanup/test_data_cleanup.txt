@@ -1,0 +1,47 @@
+=== TEST DATA CLEANUP — AGENT-FORENSIC-002 V2 (Updated) ===
+Date: 2026-02-03
+Auditor: Claude Code (Opus 4.5)
+
+Threads observed during Phase 2-3 (f002-*):
+  f002-canary-001
+  f002-ckpt-001
+  f002-corr-001
+  f002-crossref-002
+  f002-err-001
+  f002-err-002
+  f002-err-003
+  f002-hitl-001
+  f002-inject-001
+  f002-llm-001
+  f002-llm-002
+  f002-path-a-001
+  f002-path-b-001
+  f002-path-c-001
+  f002-path-e-001
+  f002-race-001
+  f002-restart-001
+  f002-stream-001
+  f002-stream-002
+  f002-tool-ddg-001
+  f002-tool-get-001
+  f002-tool-search-001
+  f002-xss-001
+  f002-xss-002
+
+Deal state changes (backend SQL):
+  DL-0020 final: qualified (UNCHANGED)
+  DL-0037 final: inbound (UNCHANGED)
+
+Agent DB counts (no net delta observed):
+  approvals: 6
+  tool_executions: 3
+  audit_log: 13
+  checkpoints: 392
+
+Test users:
+  No new user registrations confirmed (registration/login attempts in 3.16 failed JSON validation).
+
+Cleanup action: LEFT IN PLACE
+Reason: All test data is f002-* prefixed and provides forensic evidence. No production deal stages were modified.
+
+=== END CLEANUP ===

@@ -1,0 +1,11 @@
+apps/agent-api/app/core/langgraph/graph.py:85:from app.services.brain_extraction import trigger_brain_extraction
+apps/agent-api/app/core/langgraph/graph.py:1168:                        trigger_brain_extraction(
+apps/agent-api/app/core/langgraph/graph.py:1177:                    logger.debug("brain_extraction_trigger_failed", error=str(brain_err))
+apps/agent-api/app/services/brain_extraction.py:261:            "brain_extraction_sent",
+apps/agent-api/app/services/brain_extraction.py:275:            "brain_extraction_send_failed",
+apps/agent-api/app/services/brain_extraction.py:284:async def trigger_brain_extraction(
+apps/agent-api/app/services/chat_repository.py:494:    async def enqueue_brain_extraction(
+apps/agent-api/app/services/chat_repository.py:502:        """Queue a brain extraction event for the outbox worker."""
+apps/agent-api/app/services/chat_repository.py:507:                    VALUES ('brain_extract', :payload, 'zakops')
+apps/agent-api/app/services/chat_repository.py:521:                "brain_extraction_enqueued",
+apps/agent-api/app/schemas/sse_events.py:48:    """After brain extraction."""

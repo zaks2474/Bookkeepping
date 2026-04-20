@@ -1,0 +1,14 @@
+=== CHECK 4.2.2: Double-approve (must be rejected) ===
+Approval ID: b652bc7f-39b4-4da3-8692-da2ac76267be
+Timestamp: 2026-02-03T13:08:33-06:00
+
+{"detail":"Approval already resolved (status: approved)"}
+HTTP_CODE: 409
+=== Tool executions count ===
+time="2026-02-03T13:08:33-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-03T13:08:33-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+ count 
+-------
+     1
+(1 row)
+

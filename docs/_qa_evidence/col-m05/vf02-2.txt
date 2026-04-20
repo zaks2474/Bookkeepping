@@ -1,0 +1,6 @@
+    async def add_facts(self, deal_id: str, new_facts: list[dict]) -> dict:
+        for fact in new_facts:
+        new_facts = self._keyword_extract_facts(user_message, assistant_message)
+        if new_facts:
+            brain = await self.add_facts(deal_id, new_facts)
+            facts_added=len(new_facts),

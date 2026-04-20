@@ -1,0 +1,91 @@
+=== CHECK 6.A.1 — Golden Path: Agent Invoke ===
+Timestamp: 2026-02-03T16:53:46-06:00
+Golden Thread: rt-3plane-golden-1770159226
+Golden Deal: DL-0002
+
+--- Step 1: Agent Invoke ---
+{
+    "thread_id": "rt-3plane-golden-1770159226",
+    "status": "awaiting_approval",
+    "content": null,
+    "pending_approval": {
+        "approval_id": "a28064fe-a076-4d2a-886d-31129f1cca95",
+        "tool": "transition_deal",
+        "args": {
+            "deal_id": "DL-0002",
+            "from_stage": "inbound",
+            "to_stage": "screening",
+            "reason": null
+        },
+        "permission_tier": "CRITICAL",
+        "requested_by": "forensic-004",
+        "requested_at": "2026-02-03T22:53:48.345292Z"
+    },
+    "actions_taken": [],
+    "error": null
+}
+
+--- Step 2: Approve ---
+{
+    "thread_id": "rt-3plane-golden-1770159226",
+    "status": "completed",
+    "content": "I encountered an issue while trying to move deal DL-0002 to the screening stage. It appears that the deal could not be found (HTTP 404). Please verify the deal ID and try again.",
+    "pending_approval": null,
+    "actions_taken": [
+        {
+            "tool": "transition_deal",
+            "result": {
+                "ok": false,
+                "error": "Could not fetch deal DL-0002: HTTP 404",
+                "backend_status": 404
+            }
+        }
+    ],
+    "error": "Tool execution did not complete"
+}
+=== CHECK 6.A.1 — Golden Path (v2 with valid deal) ===
+
+Timestamp: 2026-02-03T16:54:12-06:00
+Golden Thread v2: rt-3plane-v2-1770159252
+Golden Deal: DL-QA003
+
+--- Step 1 v2: Agent Invoke ---
+{
+    "thread_id": "rt-3plane-v2-1770159252",
+    "status": "awaiting_approval",
+    "content": null,
+    "pending_approval": {
+        "approval_id": "8efb63e2-40a6-4559-98e2-ba650151a562",
+        "tool": "transition_deal",
+        "args": {
+            "deal_id": "DL-QA003",
+            "from_stage": "inbound",
+            "to_stage": "screening",
+            "reason": null
+        },
+        "permission_tier": "CRITICAL",
+        "requested_by": "forensic-004",
+        "requested_at": "2026-02-03T22:54:14.369714Z"
+    },
+    "actions_taken": [],
+    "error": null
+}
+
+--- Step 2 v2: Approve (8efb63e2-40a6-4559-98e2-ba650151a562) ---
+{
+    "thread_id": "rt-3plane-v2-1770159252",
+    "status": "completed",
+    "content": "It seems that deal DL-QA003 is already in the &#x27;screening&#x27; stage. No action was taken to move it since it&#x27;s already at the requested stage. Is there anything else you would like to do with this deal?",
+    "pending_approval": null,
+    "actions_taken": [
+        {
+            "tool": "transition_deal",
+            "result": {
+                "ok": false,
+                "error": "Deal DL-QA003 is already at stage 'screening'",
+                "current_stage": "screening"
+            }
+        }
+    ],
+    "error": "Tool execution did not complete"
+}

@@ -1,0 +1,187 @@
+{
+  "meta": {
+    "agent_name": "opus",
+    "run_id": "run001",
+    "timestamp": "2026-02-04T16:30:00Z",
+    "repo_revision": "3173c36f714f13524f3d81375483484887a6ac99",
+    "mission": "ROUND2-CONTRARIAN-V2 Strategic 5-Layer Contract Audit"
+  },
+  "verdict": "LAYER 4-5 CONTRACT DRIFT DETECTED",
+  "total_score": 30,
+  "max_score": 50,
+  "percentage": 60,
+  "layer_scores": {
+    "layer_1_postgresql": {"score": 8, "max": 10, "status": "PASS"},
+    "layer_2_sql_queries": {"score": 7, "max": 10, "status": "PASS"},
+    "layer_3_pydantic": {"score": 6, "max": 10, "status": "PARTIAL"},
+    "layer_4_zod": {"score": 4, "max": 10, "status": "CRITICAL_DRIFT"},
+    "layer_5_react": {"score": 5, "max": 10, "status": "PARTIAL"}
+  },
+  "critical_findings": [
+    {
+      "id": "CF-001",
+      "title": "ActionStatus enum mismatch",
+      "layer": 4,
+      "severity": "P0",
+      "description": "Zod expects RUNNING/QUEUED/REJECTED but backend uses PROCESSING and lacks others"
+    },
+    {
+      "id": "CF-002",
+      "title": "ActionSchema phantom fields",
+      "layer": 4,
+      "severity": "P1",
+      "description": "Zod expects 28 fields, backend returns 15 — 13 fields always undefined"
+    },
+    {
+      "id": "CF-003",
+      "title": "QuarantineItemSchema phantom fields",
+      "layer": 4,
+      "severity": "P1",
+      "description": "11 fields Zod expects that backend never returns"
+    },
+    {
+      "id": "CF-004",
+      "title": "Silent validation failures",
+      "layer": 5,
+      "severity": "P1",
+      "description": "24 safeParse calls return [] on failure — users see empty data"
+    },
+    {
+      "id": "CF-005",
+      "title": "Defensive .passthrough() everywhere",
+      "layer": 4,
+      "severity": "P2",
+      "description": "All 47 Zod schemas use .passthrough() masking drift"
+    }
+  ],
+  "upgrade_register": [
+    {
+      "id": "ZK-UPG-0001",
+      "priority": "P0",
+      "title": "Fix ActionStatus Enum Mismatch",
+      "layers": [3, 4],
+      "action": "Align RUNNING/PROCESSING naming between Zod and Pydantic"
+    },
+    {
+      "id": "ZK-UPG-0002",
+      "priority": "P1",
+      "title": "Trim ActionSchema to Reality",
+      "layers": [4],
+      "action": "Remove 13 phantom fields from ActionSchema or expand ActionResponse"
+    },
+    {
+      "id": "ZK-UPG-0003",
+      "priority": "P1",
+      "title": "Trim QuarantineItemSchema",
+      "layers": [4],
+      "action": "Remove 11 phantom fields from QuarantineItemSchema"
+    },
+    {
+      "id": "ZK-UPG-0004",
+      "priority": "P1",
+      "title": "Replace Silent Failures with User Errors",
+      "layers": [5],
+      "action": "Instead of returning [] on safeParse failure, show user-visible error"
+    },
+    {
+      "id": "ZK-UPG-0005",
+      "priority": "P2",
+      "title": "Add ActionSource Values to Backend",
+      "layers": [3],
+      "action": "Add 'agent' and 'api' to ActionSource literal type"
+    },
+    {
+      "id": "ZK-UPG-0006",
+      "priority": "P2",
+      "title": "Remove .passthrough() Crutch",
+      "layers": [4],
+      "action": "Once schemas aligned, remove .passthrough() for strict validation"
+    },
+    {
+      "id": "ZK-UPG-0007",
+      "priority": "P2",
+      "title": "Add canonical_name Unique Constraint",
+      "layers": [1],
+      "action": "ALTER TABLE deals ADD CONSTRAINT deals_canonical_name_unique"
+    },
+    {
+      "id": "ZK-UPG-0008",
+      "priority": "P3",
+      "title": "Remove sys.path Hack",
+      "layers": [2],
+      "action": "Use proper relative imports in diligence_request_docs.py"
+    }
+  ],
+  "schema_inventory": {
+    "zod_schemas": {
+      "api-schemas.ts": 47,
+      "approval.ts": 7,
+      "total": 54
+    },
+    "pydantic_models": {
+      "main.py": 12,
+      "engine/models.py": 8,
+      "routers": 25,
+      "total": 45
+    },
+    "safeParse_calls": {
+      "api.ts": 19,
+      "parsers.ts": 2,
+      "approval.ts": 2,
+      "storage-utils.ts": 1,
+      "total": 24
+    }
+  },
+  "enum_mismatches": {
+    "ActionStatus": {
+      "zod_only": ["QUEUED", "RUNNING", "REJECTED"],
+      "pydantic_only": ["PROCESSING"],
+      "common": ["PENDING_APPROVAL", "READY", "COMPLETED", "FAILED", "CANCELLED"]
+    },
+    "ActionSource": {
+      "zod_only": ["agent", "api"],
+      "pydantic_only": [],
+      "common": ["chat", "ui", "system"]
+    }
+  },
+  "top_10_next_actions": [
+    "Fix ActionStatus enum — align RUNNING vs PROCESSING",
+    "Trim ActionSchema from 28 to 15 fields (or expand backend)",
+    "Trim QuarantineItemSchema — remove 11 phantom fields",
+    "Replace return [] with toast/error on safeParse failure",
+    "Add ActionSource values 'agent' and 'api' to backend",
+    "Remove .passthrough() from all Zod schemas after alignment",
+    "Add unique constraint on deals.canonical_name",
+    "Remove sys.path hack from diligence_request_docs.py",
+    "Run browser console capture to detect live ZodErrors",
+    "Create contract-sync CI check (Zod vs Pydantic field count)"
+  ],
+  "top_10_contrarian_upgrades": [
+    "ZK-UPG-0001: ActionStatus enum is silently breaking status display",
+    "ZK-UPG-0002: 13 fields in ActionSchema never arrive from backend",
+    "ZK-UPG-0003: QuarantineItemSchema expects data that doesn't exist",
+    "ZK-UPG-0004: Users see empty lists when validation fails silently",
+    "ZK-UPG-0005: ActionSource enum is incomplete in backend",
+    "ZK-UPG-0006: .passthrough() is a crutch hiding real contract drift",
+    "ZK-UPG-0007: Duplicate canonical_names can still be created",
+    "ZK-UPG-0008: sys.path manipulation is fragile import pattern",
+    "INSIGHT: Layers 4-5 were never tested in previous QA rounds",
+    "INSIGHT: CONTRACT-AUDIT-V1 and QA-CA-V1 were never executed"
+  ],
+  "what_we_would_do_differently": [
+    "Generate Zod schemas FROM Pydantic models (single source of truth)",
+    "Fail loudly on schema mismatch instead of .passthrough()",
+    "Add contract-sync CI that compares field counts Zod vs Pydantic",
+    "Show user-visible errors on validation failure, not empty arrays",
+    "Use strict Zod schemas without .passthrough() from day one",
+    "Include Layer 4-5 testing in every QA verification round",
+    "Create shared enum definitions between frontend and backend",
+    "Require browser console capture as part of QA acceptance",
+    "Document every Pydantic→Zod field mapping explicitly",
+    "Run E2E tests that verify actual response shapes, not just HTTP 200"
+  ],
+  "files": {
+    "report": "/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_ROUND2_CONTRARIAN_PLAN.opus.run001.md",
+    "json": "/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_ROUND2_CONTRARIAN_PLAN.opus.run001.json"
+  }
+}

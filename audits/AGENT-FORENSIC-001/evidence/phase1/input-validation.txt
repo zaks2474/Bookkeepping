@@ -1,0 +1,36 @@
+AGENT-FORENSIC-001 Phase 1 — Step 1.6: Input Validation
+=========================================================
+Date: 2026-02-02
+
+LIVE TEST RESULTS:
+
+Test                                    | Endpoint                  | Result | Notes
+----------------------------------------|---------------------------|--------|------
+Empty body                              | POST /agent/invoke        | 422    | PASS — Pydantic validates required fields
+XSS in message <script>alert(1)</script>| POST /agent/invoke        | 500    | WARN — accepted then failed in LLM call
+SQL injection in approval_id path       | GET /agent/approvals/1' OR 1=1 -- | 404 | PASS — treated as string, not found
+Null bytes in message (\u0000)          | POST /agent/invoke        | 500    | WARN — accepted, failed in LLM processing
+Oversized body (1.1MB message)          | POST /agent/invoke        | 422    | PASS — rejected (likely body size limit)
+
+CODE ANALYSIS:
+
+Auth inputs:
+[PASS] Email: sanitize_email() validates format with regex
+[PASS] Password: validate_password_strength() enforces complexity
+[PASS] Token: sanitize_string() applied before use
+[PASS] Session IDs: sanitize_string() applied
+[PASS] Session names: sanitize_string() applied
+
+Agent inputs:
+[FAIL] actor_id: No sanitization — passed directly to DB and logs
+[FAIL] message: No sanitization — passed directly to LLM
+[FAIL] thread_id: No sanitization — passed to LLM graph config
+[FAIL] metadata: No sanitization — passed to LLM config
+[WARN] approval_id: Path parameter, used in db.get() (safe) and text() SQL (parameterized)
+
+Chatbot inputs:
+[WARN] ChatRequest.messages: Pydantic schema validation but no content sanitization
+       — message content goes directly to LLM
+
+Sanitization utilities exist (utils/sanitization.py, core/security/output_validation.py)
+but are ONLY used in auth flows, NOT in agent or chatbot flows.

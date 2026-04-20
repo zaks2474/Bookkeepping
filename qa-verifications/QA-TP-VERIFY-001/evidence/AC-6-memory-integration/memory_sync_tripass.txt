@@ -1,0 +1,11 @@
+=== A6.7 (corrected) ===
+57:    tripass_runs)
+58:      local runs_dir="/home/zaks/bookkeeping/docs/_tripass_runs"
+60:        ls -d "$runs_dir"/TP-* 2>/dev/null | wc -l | tr -d ' '
+65:    tripass_latest)
+66:      local ptr="/home/zaks/bookkeeping/docs/TRIPASS_LATEST_RUN.md"
+68:        grep -oP 'Latest Run ID:\*\* \K\S+' "$ptr" 2>/dev/null || echo "none"
+105:TRIPASS_RUNS=$(gather_fact tripass_runs)
+106:TRIPASS_LATEST=$(gather_fact tripass_latest)
+157:tripass: ${TRIPASS_RUNS} runs (latest: ${TRIPASS_LATEST})
+VERDICT: PASS — memory-sync.sh gathers tripass_runs count and tripass_latest run ID

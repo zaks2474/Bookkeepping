@@ -1,0 +1,15 @@
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:436:        return deal.model_dump_json()
+/home/zaks/zakops-agent-api/apps/agent-api/app/utils/graph.py:100:            normalized.append(Message.model_validate(message))
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/backend_client.py:113:                return DealResponse.model_validate(response.json())
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/backend_client.py:167:                deals = [DealResponse.model_validate(d) for d in deals_raw]
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/backend_client.py:209:                return TransitionResponse.model_validate(response.json())
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/backend_client.py:235:                return DealResponse.model_validate(response.json())
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/backend_client.py:270:                return [DealEvent.model_validate(e) for e in events_raw]
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/backend_client.py:317:                return AddNoteResponse.model_validate(response.json())
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/llm.py:488:            return schema.model_validate_json(content)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/tools/base.py:641:                    input_args.model_validate({key_: tool_input})
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/tools/base.py:664:                result = input_args.model_validate(tool_input)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/utils/pydantic.py:472:# "model_dump", "model_dump_json", "model_extra", "model_fields",
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/utils/pydantic.py:474:# "model_post_init", "model_rebuild", "model_validate", "model_validate_json",
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/utils/pydantic.py:475:# "model_validate_strings"
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/utils/function_calling.py:636:                "arguments": tool_call.model_dump_json(),

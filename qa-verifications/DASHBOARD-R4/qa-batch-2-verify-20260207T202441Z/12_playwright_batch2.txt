@@ -1,0 +1,13 @@
+
+Running 8 tests using 1 worker
+
+  ✓  1 [chromium] › tests/e2e/deal-routing-create.spec.ts:4:7 › deal routing and create › navigate to /deals/new shows create form (1.2s)
+  ✓  2 [chromium] › tests/e2e/deal-routing-create.spec.ts:12:7 › deal routing and create › /deals/new form creates deal and redirects (1.4s)
+  ✓  3 [chromium] › tests/e2e/deal-routing-create.spec.ts:21:7 › deal routing and create › /deals/GLOBAL shows invalid ID page (1.2s)
+  ✓  4 [chromium] › tests/e2e/quarantine-actions.spec.ts:4:7 › Quarantine & Actions — Batch 2 Verification › quarantine page loads and shows items (3.2s)
+  ✓  5 [chromium] › tests/e2e/quarantine-actions.spec.ts:15:7 › Quarantine & Actions — Batch 2 Verification › quarantine item selection loads preview (3.2s)
+  ✓  6 [chromium] › tests/e2e/quarantine-actions.spec.ts:38:7 › Quarantine & Actions — Batch 2 Verification › actions page loads and shows capabilities (3.2s)
+  ✓  7 [chromium] › tests/e2e/quarantine-actions.spec.ts:48:7 › Quarantine & Actions — Batch 2 Verification › actions clear-completed button exists (3.1s)
+  ✓  8 [chromium] › tests/e2e/smoke.spec.ts:3:5 › smoke: dashboard loads (1.2s)
+
+  8 passed (18.6s)

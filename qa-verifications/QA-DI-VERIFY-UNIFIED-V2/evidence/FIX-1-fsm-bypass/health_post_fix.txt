@@ -1,0 +1,28 @@
+=== F1.5: Backend healthy ===
+{
+    "status": "healthy",
+    "timestamp": "2026-02-09T16:58:12.489511",
+    "version": "1.0.0",
+    "database": {
+        "dbname": "zakops",
+        "user": "zakops",
+        "host": "172.23.0.3",
+        "port": 5432
+    },
+    "components": {
+        "sse_streaming": "not_implemented",
+        "outbox_worker": "placeholder (0 actions processed)"
+    },
+    "not_implemented": {
+        "sse_events": "501 \u2014 real-time event streaming planned for future release",
+        "execute_proposal": "501 \u2014 chat proposal execution planned for future release",
+        "actions_capabilities": "501 \u2014 action capability definitions planned for future release",
+        "actions_metrics": "501 \u2014 action metrics aggregation planned for future release"
+    },
+    "mocked": {
+        "agent_activity": "Returns empty state \u2014 agent activity tracking not yet connected",
+        "chat_sessions": "Returns empty state \u2014 chat session persistence not yet implemented"
+    }
+}
+HTTP: 200
+VERDICT: PASS

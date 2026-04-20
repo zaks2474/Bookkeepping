@@ -1,0 +1,26 @@
+=== XC-1 AC SET RECONCILIATION ===
+699:### AC-1: Deals Board Reliability
+702:### AC-2: Export Action Integrity
+705:### AC-3: Onboarding Step Order Integrity
+708:### AC-4: Onboarding Entry Consistency
+711:### AC-5: Quarantine Input Determinism
+714:### AC-6: Dashboard Layout Symmetry
+717:### AC-7: Refresh Notification Quality
+720:### AC-8: Ask Agent Drawer Quality
+723:### AC-9: Chat Information Architecture
+726:### AC-10: Settings Navigation and Structure
+729:### AC-11: No Regressions
+732:### AC-12: Bookkeeping Complete
+--- completion ---
+13:| AC-1 | Deals Board Reliability | PASS | DealBoard.tsx lines 142-143: defensive normalization handles both array and wrapped `{deals: Deal[]}` shapes |
+14:| AC-2 | Export Action Integrity | PASS | `api/settings/data/export/route.ts`: deterministic success/degraded path with error taxonomy |
+15:| AC-3 | Onboarding Step Order Integrity | PASS | `useOnboardingState.ts` line 155: `viewStep` starts at 0, canonical sequence enforced |
+16:| AC-4 | Onboarding Entry Consistency | PASS | Hook defaults to Welcome (step 0); resume requires explicit `resumeFromBackend()` call |
+17:| AC-5 | Quarantine Input Determinism | PASS | `quarantine/page.tsx`: localStorage read once on mount, write only after successful action |
+18:| AC-6 | Dashboard Layout Symmetry | PASS | `dashboard/page.tsx`: scroll container with `overflow-y-auto`, balanced grid layout |
+19:| AC-7 | Refresh Notification Quality | PASS | `dashboard/page.tsx`: `fetchData(source)` — only `source='manual'` shows toast |
+20:| AC-8 | Ask Agent Drawer Quality | PASS | `AgentDrawer.tsx`: redesigned with avatars, QuickAction buttons, "Full chat" link, auto-scroll |
+21:| AC-9 | Chat Information Architecture | PASS | `chat/page.tsx`: ChatHistoryRail, session archive, history toggle, improved provider selector |
+22:| AC-10 | Settings Navigation and Structure | PASS | `settings/page.tsx`: `overflow-y-auto` scroll container, "Back to Dashboard" link |
+23:| AC-11 | No Regressions | PASS | `make validate-local` PASS, `tsc --noEmit` PASS, 36/36 new unit tests PASS, 12 e2e tests written |
+24:| AC-12 | Bookkeeping Complete | PASS | This file + CHANGES.md updated |

@@ -1,0 +1,20 @@
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/agent.py:966:class ActivityEvent(BaseModel):
+/home/zaks/zakops-agent-api/apps/agent-api/app/schemas/backend_models.py:125:class DealEvent(BaseModel):
+/home/zaks/zakops-agent-api/apps/agent-api/app/schemas/backend_models.py:251:class EventResponse(BaseModel):
+/home/zaks/zakops-agent-api/apps/agent-api/app/schemas/backend_models.py:259:class EventsListResponse(BaseModel):
+/home/zaks/zakops-agent-api/apps/agent-api/app/schemas/sse_events.py:16:class SSEEvent(BaseModel):
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/typing_extensions.py:1532:        This supports generic types, Callable, Tuple, Union, Literal, Final, ClassVar
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/typing_extensions.py:4401:        if type_ in (Any, LiteralString, NoReturn, Never, Self, TypeAlias):
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/asgiref/typing.py:67:    type: Literal["http"]
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/asgiref/typing.py:84:    type: Literal["websocket"]
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/asgiref/typing.py:101:    type: Literal["lifespan"]
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/asgiref/typing.py:111:    type: Literal["http.request"]
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/asgiref/typing.py:117:    type: Literal["http.response.debug"]
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/asgiref/typing.py:122:    type: Literal["http.response.start"]
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/asgiref/typing.py:129:    type: Literal["http.response.body"]
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/asgiref/typing.py:135:    type: Literal["http.response.trailers"]
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/asgiref/typing.py:141:    type: Literal["http.response.pathsend"]
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/asgiref/typing.py:146:    type: Literal["http.response.push"]
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/asgiref/typing.py:152:    type: Literal["http.disconnect"]
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/asgiref/typing.py:156:    type: Literal["websocket.connect"]
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/asgiref/typing.py:160:    type: Literal["websocket.accept"]

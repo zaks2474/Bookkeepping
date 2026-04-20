@@ -1,0 +1,452 @@
+=== CONTEXT 0: DECISION LOCK (authoritative, immutable) ===
+Path /home/zaks/bookkeeping/docs/DECISION-LOCK-FILE.md
+=== CONTEXT 1: APPROVED ARCHITECTURE (authoritative) ===
+Path /home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v2.md
+
+=== INPUT T1: LLM #1 Scaffold Research Output ===
+ZakOps “Prebuilt Agent Scaffold” Research Report — v1.0
+1. Executive Summary
+Recommendation: The "Production Chassis" Strategy
+After reviewing 12+ repositories, we determined that no single repo perfectly matches every ZakOps
+constraint out-of-the-box (specifically combining production FastAPI structure with complex HITL
+patterns).
+We recommend forking `wassim249/fastapi-langgraph-agent-production-ready-template` as the primary
+chassis.
+This repository is the closest "Tier 1" match for ZakOps because it solves the "boring but hard"
+infrastructure problems (JWT auth, Docker networking, structured logging, Langfuse integration, and
+Postgres connection pooling) that usually take weeks to stabilize. It effectively gives us the Agent
+API (:8095) shell immediately.
+However, it is missing advanced Human-in-the-Loop (HITL) patterns.
+To fix this, we will graft the interrupt/resume logic from `esurovtsev/langgraph-hitl-fastapi-demo`.
+Top 3 Candidate Scaffolds
+1.  `wassim249/fastapi-langgraph-agent-production-ready-template` (Primary Recommendation)
+*  Why: Best architectural match. Native FastAPI + LangGraph + Postgres + Langfuse. It assumes a
+"server" model rather than a "script" model, matching our service boundary requirements.
+*  Gap: HITL endpoints need to be added manually.
+2.  `esurovtsev/langgraph-hitl-fastapi-demo`
+*  Why: Best HITL implementation. Explicitly shows how to pause a FastAPI thread, store state, and
+resume with user input.
+*  Gap: Lacks production hardening (Auth, Docker, Logging) and is more of a "demo" than a "scaffold."
+3.  `langchain-ai/langgraph-example` (Official)
+*  Why: The "Pure" reference. Good for verifying correctness of graph logic.
+*  Gap: Minimalist. No Auth, no Docker, no DB connection pooling logic. Too much work to "productize."
+---
+2. Requirements-to-Scaffold Matching Matrix
+┌─────────────────────┬───────────────────────────┬───────────────────┬────────────────────────┐
+│ Feature             │ wassim249 (Production ... │ esurovtsev (HI... │ langgraph-example (... │
+├─────────────────────┼───────────────────────────┼───────────────────┼────────────────────────┤
+│ LangGraph Native    │ 5                         │ 5                 │ 5                      │
+│ **Postgres Persi... │ 5 (pgvector ready)        │ 3 (Basic)         │ 4 (Memory/Sqlite de... │
+│ **HITL (Interrup... │ 1 (Missing)               │ 5 (Excellent)     │ 2 (Basic console only) │
+│ **FastAPI Servic... │ 5 (Full App)              │ 4 (Simple App)    │ 2 (Script focus)       │
+│ **Observability ... │ 5 (Native)                │ 0 (None)          │ 1 (LangSmith only)     │
+│ Security (JWT/RBAC) │ 5 (Implemented)           │ 0 (None)          │ 0 (None)               │
+│ Docker/Local-First  │ 5 (Compose ready)         │ 2 (Manual)        │ 1 (Manual)             │
+│ Tool Validation     │ 4 (Pydantic)              │ 3 (Basic)         │ 3 (Basic)              │
+│ TOTAL SCORE         │ 35                        │ 22                │ 18                     │
+│ Verdict             │ FORK THIS                 │ REFERENCE THIS    │ IGNORE                 │
+└─────────────────────┴───────────────────────────┴───────────────────┴────────────────────────┘
+---
+3. Candidate Deep Dives
+Candidate A: wassim249/fastapi-langgraph-agent-production-ready-template
+*  Repo: https://github.com/wassim249/fastapi-langgraph-agent-production-ready-template
+*  License: MIT (Permissive)
+*  Architecture: FastAPI application structured with routers, services, and core. Uses dependency
+injection for DB sessions.
+*  Activity: Active in late 2024/2025.
+Matches ZakOps:
+*  Postgres: Already uses asyncpg and SQLAlchemy, compatible with PostgresSaver.
+*  Observability: Native Langfuse integration code in core/observability.py.
+*  Auth: JWT-based authentication flow (Login/Register/Me) ready to adapt to RBAC.
+*  Docker: Clean docker-compose.yml that spins up API + DB + Grafana.
+Missing / Gaps:
+*  Ports: Defaults to :8000 (needs move to :8095).
+*  vLLM: No existing service in Docker Compose.
+*  HITL: No endpoints for GET /threads/{id}/state or POST /threads/{id}/resume.
+ZakOps Delta Plan (Effort: Medium):
+1.  Ports: Change uvicorn port to 8095.
+2.  vLLM: Add vllm service to docker-compose.yml (serving Qwen2.5 on :8000).
+3.  Graph: Replace app/core/langgraph/graph.py with ZakOps Supervisor graph.
+4.  Checkpointer: In main.py, replace the default graph compilation with:
+1     checkpointer = AsyncPostgresSaver.from_conn_string(DB_URI)
+2     app = workflow.compile(checkpointer=checkpointer)
+5.  Tools: Delete app/core/langgraph/tools.py and replace with ZakOps HybridToolGateway.
+---
+Candidate B: esurovtsev/langgraph-hitl-fastapi-demo
+*  Repo: https://github.com/esurovtsev/langgraph-hitl-fastapi-demo
+*  License: MIT
+*  Architecture: Simple FastAPI file showing the "Interrupt" pattern.
+Matches ZakOps:
+*  HITL Pattern: Explicitly implements the interrupt_before=["human_approval"] logic.
+*  Resume Endpoint: Shows exactly how to call graph.invoke(..., Command(resume="approved")).
+Missing:
+*  Everything else (Auth, Docker, Logging, Config).
+Usage: Do not fork. Open this code in a separate tab and copy the resume_workflow endpoint logic into
+Candidate A.
+---
+4. The Shortlist & Fork Plan
+Selection: Fork `wassim249/fastapi-langgraph-agent-production-ready-template`.
+Fork Plan Checklist
+Step 1: Initialization
+-  [ ] Fork repo to zakops-agent-api.
+-  [ ] Update docker-compose.yml:
+-  [ ] Rename service api to agent-api.
+-  [ ] Map port 8095:8095.
+-  [ ] Add vllm service (image: vllm/vllm-openai, command: serve Qwen2.5-32B, port: 8000).
+-  [ ] Add mcp-server service (if not running on host network).
+Step 2: Core Surgery
+-  [ ] Delete: app/api/v1/chatbot.py (Too simple).
+-  [ ] Delete: app/core/langgraph/tools.py (Example tools).
+-  [ ] Modify: app/core/config.py to add VLLM_BASE_URL="http://vllm:8000/v1".
+-  [ ] Modify: app/main.py to initialize AsyncPostgresSaver.
+Step 3: Grafting HITL (The Critical Path)
+-  [ ] Create app/api/v1/agent.py.
+-  [ ] Add endpoint POST /thread/{thread_id}/run (Starts run).
+-  [ ] Add endpoint GET /thread/{thread_id}/state (Checks if paused).
+-  [ ] Add endpoint POST /thread/{thread_id}/resume (Sends approval).
+-  Reference `esurovtsev` code for the `Command(resume=...)` payload construction.
+Step 4: Integration Verification (First Demo)
+-  [ ] Start system: docker-compose up.
+-  [ ] Send Request to :8095/v1/agent/run with payload {"query": "Draft email to Deal X, but ask
+approval"}.
+-  [ ] Verify Agent pauses. Status should be interrupted.
+-  [ ] Send Request to :8095/v1/agent/resume with {"action": "approve"}.
+-  [ ] Verify Agent completes execution.
+-  [ ] Verify Trace appears in local Langfuse (:3000).
+---
+5. No-Go List
+*  `langchain-ai/langgraph-example`: Too basic. "Hello World" level code. No auth or DB pooling.
+*  `langchain-ai/langserve`: While powerful, it abstracts away too much of the API layer. We need
+custom RBAC and complex endpoints (interrupt/resume) that are harder to hack into LangServe's
+auto-generated routes.
+*  `brandonroberts/fastapi-langgraph`: Good, but less "production-ready" features (logging, metrics)
+than wassim249.
+*  Any `Next.js` full-stack template: We already have a Next.js frontend. We only need the Python
+Server scaffold.
+---
+6. Open Questions / Gaps
+1.  `AsyncPostgresSaver` Migration: The template uses SQLAlchemy for its app DB. We need to ensure
+AsyncPostgresSaver (which often uses raw asyncpg) plays nicely with the template's existing dependency
+ injection or if we need a separate connection pool for the Graph.
+*  Validation: In Phase 1, just instantiate a fresh AsyncPostgresSaver connection string; optimize
+pooling in Phase 2.
+2.  Streaming: The template supports streaming, but LangGraph streaming syntax (astream_events) is
+complex.
+*  Validation: Ensure the vLLM service correctly streams tokens through the LangGraph nodes to the
+FastAPI client.
+Ready to Execute? The wassim249 repo is a safe, high-quality starting point that saves ~2 weeks of
+boilerplate setup.
+
+=== INPUT T2: LLM #2 Scaffold Research Output ===
+
+Path /home/zaks/bookkeeping/docs/PREBUILT-AGENT-SCAFFOLD-RESEARCH-v1.md
+
+# ZakOps / SACS AIOps 3.0 — Ultimate Master Document                                                                                                                                                        **Version:** 2.1.0                                                                                    **Date:** 2026-01-22                                                                                  **Status:** APPROVED FOR IMPLEMENTATION                                                               **Classification:** Internal Technical Architecture                                                   **Authors:** Principal Architect, ZakOps Engineering                                                                                                                                                        ---                                                                                                                                                                                                         ## 1. Title + Version                                                                                                                                                                                       **ZakOps Deal Lifecycle Agent System — Ultimate Master Document v2.1**                                                                                                                                      This document synthesizes research inputs A, B, C and synthesis outputs S1, S2, S3 into a single authoritative design specification for the ZakOps AI Agent System. All contradictions have been resolved per the Issue Ledger; unresolved items are marked as "Open Decision" with validation tests.                                                                                                                   ---                                                                                                                                                                                                         ## 2. Executive Summary                                                                                                                                                                                     ### What We Are Building                                                                                                                                                                                    ZakOps Agent is a **production-grade, locally-hosted AI agent system** for Deal Lifecycle Management serving as the intelligence layer for SACS AIOps 3.0. The agent orchestrates:
+
+- Deal intake and triage
+- Document analysis and structured extraction
+- Pipeline transitions with approval gating
+- Action planning with idempotency                                                                    - Communication drafting                                                                              - Quarantine management                                                                                                                                                                                     All processing runs primarily on a single RTX 5090 workstation (32GB VRAM) with optional cloud escalation for complex reasoning tasks.                                                                                                                                                                            ### Why This Architecture                                                                                                                                                                                   1. **Local-First Control**: Runs entirely on local hardware without mandatory internet dependency, avoiding brittleness experienced with LangSmith Agent Builder's MCP tool-binding limitations. Evidence Note: [A][C][S1][S3] + Project Context.                                                                                                                                                                       2. **Production-Grade Reliability**: LangGraph state machine with PostgreSQL checkpointing ensures zero lost work across crashes. Evidence Note: [A][B][C] consensus.                                                                                                                                             3. **Competitive Performance**: Local 32B model provides tool-calling quality sufficient for deal workflows at zero marginal inference cost. Evidence Note: [A][B][S1][S2].                                                                                                                                       @@@                                                                                                  
+
+
+=== INPUT T3: LLM #3 Scaffold Research Output ===
+
+• ## 1) Executive Summary (Top 3 candidates; ranked)
+
+  Ground truth used: /home/zaks/bookkeeping/docs/DECISION-LOCK-FILE.md and /home/zaks/bookkeeping/
+  docs/ZakOps-Ultimate-Master-Document-v2.md.
+
+  ### #1 — wassim249/fastapi-langgraph-agent-production-ready-template (MIT)
+
+  https://github.com/wassim249/fastapi-langgraph-agent-production-ready-template
+  Why it fits ZakOps: It is already a “production-ready” FastAPI + LangGraph scaffold with durable
+  Postgres checkpointing, SSE streaming, JWT auth, pgvector Postgres in docker-compose, and Langfuse
+  plumbing. Verified in code: AsyncPostgresSaver (app/core/langgraph/graph.py), streaming endpoint
+  (app/api/v1/chatbot.py), pgvector compose (docker-compose.yml), JWT middleware (app/core/
+  middleware.py).
+  Why I recommend forking first: Small, template-shaped codebase that’s easy to prune and rewire to
+  ZakOps’ locked service boundary and endpoints.
+
+  ### #2 — JoshuaC215/agent-service-toolkit (MIT)
+
+  https://github.com/JoshuaC215/agent-service-toolkit
+  Why it fits ZakOps: Mature “agent server toolkit” with FastAPI service, streaming,
+  AsyncPostgresSaver + AsyncPostgresStore, and importantly MCP integration using streamable-http
+  (matches ZakOps MCP server transport) — verified in code: src/memory/postgres.py and src/agents/
+  github_mcp_agent/github_mcp_agent.py. Also has tests and pre-commit.
+  Why not #1: Auth model is an AUTH_SECRET bearer key by default (not JWT/RBAC), and the repo is more
+  “toolkit” than “minimal scaffold,” so pruning is required.
+
+  ### #3 — ibbybuilds/aegra (Apache-2.0)
+
+  https://github.com/ibbybuilds/aegra
+  Why it fits ZakOps: A LangGraph “platform-style” FastAPI backend with AsyncPostgresSaver,
+  interrupt_before support, and a fairly complete SSE streaming + replay/event store layer — verified
+  in code: src/agent_server/core/database.py, src/agent_server/api/runs.py, src/agent_server/services/
+  streaming_service.py. Includes Langfuse dependency and integration docs.
+  Why not #1: More “platform” than “agent service,” and ports default to 8000 (conflicts with ZakOps
+  vLLM :8000). Expect more adaptation to map its abstractions onto ZakOps’ /agent/* contract.
+
+  ———
+
+  ## 2) Requirements-to-Scaffold Matching Matrix (0–5 scoring)
+
+  Scoring rubric (per row):
+
+  - 5 = present + aligned out-of-box
+  - 3 = present but requires non-trivial adaptation
+  - 1 = mostly absent / only partial patterns
+  - 0 = incompatible / missing
+
+  | Candidate | LangGraph | PostgresSaver | HITL interrupt/resume | Tools + schema validation |
+  FastAPI boundary | Streaming UX | Observability hooks | Local-first + compose | Security readiness |
+  Maturity | Total |
+  |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+  | wassim249/fastapi-langgraph-agent-production-ready-template | 5 | 5 | 1 | 3 | 5 | 4 | 3 | 4 | 3 |
+  3 | 36 |
+  | JoshuaC215/agent-service-toolkit | 5 | 4 | 3 | 4 | 5 | 4 | 2 | 3 | 2 | 5 | 37 |
+  | ibbybuilds/aegra | 4 | 5 | 4 | 3 | 5 | 5 | 3 | 3 | 2 | 4 | 38 |
+  | langchain-ai/opengpts | 4 | 4 | 1 | 3 | 5 | 4 | 1 | 3 | 4 | 4 | 33 |
+  | NicholasGoh/fastapi-mcp-langgraph-template | 4 | 4 | 1 | 3 | 4 | 4 | 2 | 2 | 0 | 2 | 26 |
+  | langchain-ai/react-agent (template) | 3 | 0 | 0 | 2 | 0 | 0 | 2 | 1 | 0 | 3 | 11 |
+  | Yonom/assistant-ui-langgraph-fastapi (demo) | 3 | 0 | 0 | 2 | 3 | 4 | 1 | 1 | 0 | 1 | 15 |
+  | google-gemini/gemini-fullstack-langgraph-quickstart | 3 | 0 | 0 | 2 | 3 | 3 | 0 | 2 | 0 | 3 | 16 |
+
+  Notes on why totals differ:
+
+  - aegra scores highest overall mainly due to streaming/replay infrastructure; agent-service-toolkit
+    is strongest on maturity + MCP; wassim249 is the cleanest “template-shaped” base with pgvector
+    compose.
+
+  ———
+
+  ## 3) Candidate Deep Dives (Top ~6)
+
+  ### A) wassim249/fastapi-langgraph-agent-production-ready-template — https://github.com/wassim249/
+  fastapi-langgraph-agent-production-ready-template
+
+  - License: MIT (LICENSE)
+  - Last commit (verified locally): 2025-12-31 (git log -1 in clone)
+  - Activity signals: 1868⭐, 13 open issues (GitHub API)
+  - Architecture summary: Single FastAPI service with a simple LangGraph chat workflow; Postgres
+    persistence via AsyncPostgresSaver; SSE streaming; monitoring via Prometheus/Grafana; JWT auth
+    middleware.
+  - What matches ZakOps
+      - LangGraph + Postgres checkpointing (app/core/langgraph/graph.py)
+      - Streaming endpoint (app/api/v1/chatbot.py uses StreamingResponse with text/event-stream)
+      - Postgres + pgvector compose baseline (docker-compose.yml uses pgvector/pgvector:pg16)
+      - JWT auth present (middleware + auth endpoints; see app/api/v1/auth.py, app/core/middleware.py)
+      - Langfuse dependency + callback handler used in graph config (app/core/langgraph/graph.py)
+  - What’s missing
+      - ZakOps canonical HTTP surface (/agent/invoke, /agent/approvals/*) — currently chat-centric
+        endpoints
+      - Approval-gated WRITE/CRITICAL tools + durable approval resume state machine
+      - Idempotency + tool execution audit log tables/patterns
+      - Deterministic routing via LiteLLM and cloud egress policy enforcement
+      - BGE-M3 embeddings + pgvector retrieval surface (it uses mem0 with OpenAI provider defaults)
+  - ZakOps Delta Plan (exact)
+      - Ports/endpoints: change service port from 8000 to 8095 (compose + uvicorn), add /agent/invoke
+        + /agent/approvals/{id}:approve|reject per MDv2 contract.
+      - Model/inference: replace app/services/llm.py (OpenAI GPT registry) with OpenAI-compatible
+        client pointed at LiteLLM/vLLM (http://localhost:8000/v1) using Qwen2.5-32B; validate tool
+        calling against vLLM --tool-call-parser hermes.
+      - Tool registry: replace duckduckgo_search_tool with ZakOps direct tools (Deal API :8090,
+        RAG :8052) + MCP adapter for :9100 streamable-http; add permission tiers READ/WRITE/CRITICAL.
+      - Approvals: implement approval gate node + DB table; wire LangGraph
+        interrupt_before=["approval_gate"]; add resume endpoints.
+      - Tracing: keep Langfuse but wrap callbacks to enforce “no raw content” (store hashes/lengths
+        only) per lock file.
+  - Effort: M (good base, but you will replace LLM/memory/tool layers)
+  - Main risks
+      - Port conflicts (template uses 8000 for app; ZakOps vLLM is 8000; template Grafana uses 3000
+        which conflicts with OpenWebUI)
+      - Default long-term memory uses OpenAI providers (mem0 config) which violates local-first unless
+        replaced
+  - Mitigation: hard-disable internet tools; swap default compose ports; add CI contract tests early.
+
+  ### B) JoshuaC215/agent-service-toolkit — https://github.com/JoshuaC215/agent-service-toolkit
+
+  - License: MIT (LICENSE)
+  - Last commit: 2025-12-16
+  - Activity: 4033⭐, tests present, active maintenance signals
+  - Architecture summary: FastAPI agent service + client + Streamlit UI; supports multiple agents;
+    persistence via Postgres saver/store; streaming endpoints; optional Langfuse; includes MCP agent
+    support.
+  - What matches ZakOps
+      - FastAPI service with streaming (src/service/service.py)
+      - Durable checkpointing via AsyncPostgresSaver (src/memory/postgres.py)
+      - Interrupt/resume pattern (LangGraph interrupt; see src/agents/interrupt_agent.py + resume
+        handling in service)
+      - MCP integration with streamable_http transport (verified in src/agents/github_mcp_agent/
+        github_mcp_agent.py)
+  - What’s missing
+      - JWT/RBAC auth baseline (uses bearer AUTH_SECRET key)
+      - Approval gate semantics for CRITICAL tools
+      - ZakOps endpoint contract /agent/invoke + approval endpoints
+      - Langfuse + OTel “no raw content” policy enforcement
+  - ZakOps Delta Plan
+      - Ports: change service from 8080 → 8095 (compose.yaml + service settings).
+      - Auth: replace verify_bearer with JWT validation (required claims per lock file: sub, role,
+        exp, iss, aud), add X-API-Key fallback.
+      - Tools: adapt its tool abstraction to enforce permission tiers and idempotency; add MCP client
+        pointing to existing MCP :9100.
+      - Graph: swap default agents for ZakOps Deal Lifecycle graph (router/planner/executor/
+        approval_gate).
+      - Compose: change Postgres image to pgvector/pgvector:pg16 (to align Phase 1 retrieval) and add
+        Langfuse service if you want “batteries included.”
+  - Effort: M (more pruning; but strong building blocks)
+  - Main risks
+      - Larger surface area (multiple agents/providers/UI) → higher drift risk unless aggressively
+        pruned
+  - Mitigation: fork and immediately delete non-ZakOps agents/UI; enforce MDv2 contract tests.
+
+  ### C) ibbybuilds/aegra — https://github.com/ibbybuilds/aegra
+
+  - License: Apache-2.0
+  - Last commit: 2026-01-22 (very recent)
+  - Activity: 532⭐, 26 open issues
+  - Architecture summary: A LangGraph “backend platform” with FastAPI, Postgres persistence, streaming
+    orchestration, and configurable auth hooks; runs graphs from a graphs/ directory and exposes a run
+    API with interrupt options.
+  - What matches ZakOps
+      - AsyncPostgresSaver integrated in server (src/agent_server/core/database.py)
+      - Explicit support for interrupt_before in request model and API (src/agent_server/models/
+        runs.py, src/agent_server/api/runs.py)
+      - Streaming orchestration with replay (src/agent_server/services/streaming_service.py)
+      - Langfuse dependency and integration docs (docs/langfuse-usage.md)
+  - What’s missing
+      - ZakOps-specific service boundary + endpoints (it’s “platform API” shaped)
+      - JWT/RBAC implementation (auth is noop/custom placeholder in auth.py)
+      - LiteLLM routing + egress policy + idempotent tool gateway
+  - ZakOps Delta Plan
+      - Run server on :8095 (compose/env) and either:
+          - Option 1: wrap Aegra’s run API behind ZakOps /agent/* contract, or
+          - Option 2: extract its streaming/replay components and embed into a simpler ZakOps FastAPI
+            server.
+      - Implement JWT + RBAC in auth.py (replace placeholder).
+      - Ensure Postgres version/image matches ZakOps stack (compose uses postgres:18 by default).
+  - Effort: L if you keep platform API; M if you extract/reuse parts
+  - Main risks: abstraction mismatch (platform API vs ZakOps domain API) → drift
+  - Mitigation: only adopt if you explicitly want “run management + replay” as first-class.
+
+  ### D) langchain-ai/opengpts — https://github.com/langchain-ai/opengpts
+
+  - License: MIT
+  - Last commit: 2025-06-26
+  - Architecture summary: Fullstack app built on LangGraph + LangServe with Postgres checkpointing;
+    SSE streaming; includes JWT auth modes; integrates with LangSmith.
+  - What matches ZakOps
+      - FastAPI server (backend/app/server.py)
+      - AsyncPostgresSaver (backend/app/checkpoint.py)
+      - SSE streaming endpoints (backend/app/api/runs.py, backend/app/stream.py)
+      - JWT auth options (backend/app/auth/*)
+  - What’s missing
+      - Langfuse/OTel observability path (it’s LangSmith-oriented)
+      - ZakOps domain boundaries/tools/approvals
+  - ZakOps Delta Plan: strip frontend + LangSmith feedback endpoints; swap to Langfuse; map to ZakOps
+    endpoints; point LLM client to vLLM/LiteLLM.
+  - Effort: L (bigger refactor)
+  - Main risks: removing LangSmith assumptions without breaking UX/workflows.
+
+  ### E) NicholasGoh/fastapi-mcp-langgraph-template — https://github.com/NicholasGoh/fastapi-mcp-
+  langgraph-template
+
+  - License: MIT
+  - Last commit: 2025-06-13
+  - Architecture summary: FastAPI + LangGraph + MCP-centric template with SSE streaming;
+    AsyncPostgresSaver is wired into the graph streaming router.
+  - What matches ZakOps
+      - AsyncPostgresSaver (backend/api/core/agent/persistence.py)
+      - SSE streaming of graph events (backend/api/routers/llms.py)
+      - MCP client/server examples (but MCP uses SSE transport in this repo)
+      - Langfuse callback handler dependency (backend/api/core/dependencies.py)
+  - What’s missing
+      - Auth (none found in backend code)
+      - MCP transport alignment (ZakOps MCP is streamable-http, not SSE)
+      - Docker compose doesn’t include Postgres (core compose is API+nginx+mcp)
+  - Effort: M–L
+  - Use case: good reference for “MCP-first template,” but not closest fit.
+
+  ### F) docker/compose-for-agents — https://github.com/docker/compose-for-agents
+
+  - License: Apache-2.0 + MIT dual files
+  - Architecture summary: A collection of compose-based examples (includes a LangGraph example
+    under ./langgraph/).
+  - Usefulness to ZakOps: not a scaffold to fork for the agent service, but useful for “how to compose
+    open-source agents” patterns and port/layout ideas.
+  - Effort: S (reference only)
+
+  ———
+
+  ## 4) The Shortlist (what to actually fork)
+
+  ### Recommended fork #1: wassim249/fastapi-langgraph-agent-production-ready-template
+
+  Why: closest “production-ready FastAPI + LangGraph + PostgresSaver + pgvector compose” starting
+  point, and easiest to reshape to ZakOps without inheriting a lot of unrelated agents/UI.
+
+  Fork Plan checklist
+
+  - Fork repo and immediately apply ZakOps port plan:
+      - Agent API :8095 (compose + uvicorn)
+      - Keep vLLM on :8000 separate
+      - Avoid OpenWebUI port collisions (move Grafana off :3000)
+  - Replace the “chatbot” API with ZakOps canonical contract:
+      - POST /agent/invoke
+      - POST /agent/approvals/{id}:approve|reject
+  - Remove/disable internet tools:
+      - delete/disable DuckDuckGo tool module
+  - Swap LLM integration:
+      - use OpenAI-compatible base URL for vLLM/LiteLLM
+      - add tool-call conformance tests for Hermes parser
+  - Implement tool gateway + permissions + idempotency:
+      - direct Deal API client (:8090)
+      - direct RAG client (:8052)
+      - MCP client (streamable-http to :9100)
+  - Add first approval-gated demo scenario (end-to-end):
+      - “Transition deal stage” request triggers CRITICAL tool → returns awaiting_approval with
+        approval_id → approving resumes graph → calls Deal API transition endpoint → audit log
+        written.
+
+  ### Recommended fork #2 (backup / reference): JoshuaC215/agent-service-toolkit
+
+  Why: best reference for MCP streamable-http integration + interrupt/resume patterns + tests; viable
+  alternative base if you want more batteries-included.
+
+  ———
+
+  ## 5) No-Go List (considered, rejected, why)
+
+  - google-gemini/gemini-fullstack-langgraph-quickstart — strong fullstack starter, but Gemini/cloud-
+    first assumptions and no verified PostgresSaver in code; higher migration cost to local-first
+    Qwen/vLLM.
+  - Yonom/assistant-ui-langgraph-fastapi — useful streaming UI demo, but no durable checkpointing and
+    clearly demo-oriented.
+  - langchain-ai/react-agent / langchain-ai/retrieval-agent-template — good official graph templates,
+    but not an “agent service scaffold” (no FastAPI boundary / no PostgresSaver wiring).
+
+  ———
+
+  ## 6) Open Questions / Gaps (explicit + fast validation)
+
+  1. Tool-calling reliability with vLLM hermes parser across chosen scaffold
+
+  - Validate by running 5-tool-call prompt suite against http://localhost:8000/v1 using
+    langchain_openai.ChatOpenAI(..., base_url=...); acceptance: 5/5 correct tool name + JSON args
+    parse.
+
+  2. Langfuse “no raw content” compliance
+
+  - None of the candidate repos enforce the lock-file rule out-of-box.
+  - Validate by running a PII canary prompt and inspecting Langfuse spans; acceptance: no raw prompt/
+    response stored (hash+length only).
+
+  3. Best place to implement approvals
+
+  - Decision: implement approvals as first-class ZakOps tables + endpoints (MDv2) vs adopting a
+    platform “runs API” (Aegra/OpenGPTs).
+  - Validate by building a minimal approval gate PoC and verifying crash recovery + resume with
+    PostgresSaver.
+
+  If you want, I can turn this into a fork-ready “ZakOps adapter checklist” per candidate (file-by-
+  file edits and deletions) anchored directly to the MDv2 endpoint schemas.

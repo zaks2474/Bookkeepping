@@ -1,0 +1,6 @@
+    rendered_system_prompt  TEXT NOT NULL,
+    evidence_context        TEXT,
+    evidence_hash           VARCHAR(64),
+    post_trim_messages      JSONB NOT NULL,
+    rolling_summary         TEXT,
+    injection_scan_result   JSONB,

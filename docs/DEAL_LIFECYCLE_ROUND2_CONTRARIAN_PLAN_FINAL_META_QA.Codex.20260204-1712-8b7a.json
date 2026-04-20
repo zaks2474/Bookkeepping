@@ -1,0 +1,40 @@
+{
+  "agent_identity": {
+    "agent_name": "Codex",
+    "run_id": "20260204-1712-8b7a",
+    "date_time": "2026-02-04T17:39:26+00:00",
+    "repo_revision": "559a5d1f5c6d22adfd90fd767191dcd421f8732a"
+  },
+  "status": "FAIL",
+  "gates": {
+    "gate_1_no_drop": {
+      "status": "PASS",
+      "evidence": "Coverage matrix includes all 22 V2 IDs"
+    },
+    "gate_2_execution_readiness": {
+      "status": "FAIL",
+      "evidence": "No owner/owner-type fields in plan"
+    },
+    "gate_3_verification_rigor": {
+      "status": "PASS"
+    },
+    "gate_4_decisions_made": {
+      "status": "PASS"
+    },
+    "gate_5_contrarian_upgrades": {
+      "status": "PASS"
+    }
+  },
+  "coverage_proof": {
+    "total_v2_issues": 22,
+    "total_mapped": 22,
+    "missing_issue_ids": [],
+    "duplicate_issue_ids": [],
+    "ambiguous_mappings": []
+  },
+  "patch_instructions": [
+    "Add Owner field to each phase",
+    "Add Owner column to Coverage Matrix",
+    "Add Acceptance Criteria block per phase"
+  ]
+}

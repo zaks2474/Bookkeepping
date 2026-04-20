@@ -1,0 +1,3 @@
+=== A8.6 ===
+71:- **Recommended:** `frontend-design` plugin at `/mnt/skills/public/frontend-design/SKILL.md`
+73:  - **Installation:** The plugin is a skill file managed by the Claude Code runtime. If not present, design-mode runs will execute normally but with reduced capability for frontend-specific analysis. The orchestrator logs a warning in MASTER_LOG.md when the plugin is unavailable

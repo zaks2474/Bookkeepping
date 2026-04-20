@@ -1,0 +1,2 @@
+    Returns 409 Conflict if thread is under legal hold.
+            raise HTTPException(status_code=409, detail=str(ve))

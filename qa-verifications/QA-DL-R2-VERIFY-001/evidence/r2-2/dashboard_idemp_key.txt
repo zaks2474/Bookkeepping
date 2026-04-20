@@ -1,0 +1,3 @@
+225:  options?: UseMutationOptions<StageTransitionResponse, Error, { dealId: string; data: StageTransitionRequest; idempotencyKey?: string }>
+229:    mutationFn: ({ dealId, data, idempotencyKey }: { dealId: string; data: StageTransitionRequest; idempotencyKey?: string }) =>
+233:        headers: idempotencyKey ? { 'X-Idempotency-Key': idempotencyKey } : {},

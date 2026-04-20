@@ -1,0 +1,59 @@
+=== R0.6 DB SOURCE OF TRUTH ASSERTION ===
+--- AGENT API DB IDENTITY ---
+ db_host | db_port |   db_name    | db_user |                     pg_version                     
+---------+---------+--------------+---------+----------------------------------------------------
+         |         | zakops_agent | agent   | PostgreSQL 16.11 (Debian 16.11-1.pgdg12+1) on x86_
+(1 row)
+
+--- BACKEND API DB IDENTITY ---
+ db_host | db_port | db_name | db_user |                     pg_version                     
+---------+---------+---------+---------+----------------------------------------------------
+         |         | zakops  | zakops  | PostgreSQL 15.15 on x86_64-pc-linux-musl, compiled
+(1 row)
+
+--- ALL POSTGRES CONTAINERS (docker ps) ---
+NAMES                       STATUS                  PORTS
+zakops-backend-postgres-1   Up 4 hours (healthy)    
+zakops-agent-db             Up 34 hours (healthy)   5432/tcp
+rag-db                      Up 34 hours             0.0.0.0:5434->5432/tcp, [::]:5434->5432/tcp
+docker-postgres-1           Created                 
+zakops-postgres-1           Up 28 hours (healthy)   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp
+--- CONTAINER INSPECT (agent db) ---
+{
+    "com.docker.compose.config-hash": "25b9d6275628594332b60cad0fe26eaaed17219a070eddbed9251116fefa84fa",
+    "com.docker.compose.container-number": "1",
+    "com.docker.compose.depends_on": "",
+    "com.docker.compose.image": "sha256:0a07c4114ba6d1d04effcce3385e9f5ce305eb02e56a3d35948a415a52f193ec",
+    "com.docker.compose.oneoff": "False",
+    "com.docker.compose.project": "agent-api",
+    "com.docker.compose.project.config_files": "/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml",
+    "com.docker.compose.project.working_dir": "/home/zaks/zakops-agent-api/apps/agent-api",
+    "com.docker.compose.service": "db",
+    "com.docker.compose.version": "2.40.3"
+}
+--- CONTAINER INSPECT (backend postgres) ---
+{
+    "com.docker.compose.config-hash": "87a6be0b9f990dd503acebfed970ad2426943fa787eec991f402c8747d69bde3",
+    "com.docker.compose.container-number": "1",
+    "com.docker.compose.depends_on": "",
+    "com.docker.compose.image": "sha256:2e7b888f221193cddee9ce554d3311dc8be197a5d0c904fe30f5f568e0f99851",
+    "com.docker.compose.oneoff": "False",
+    "com.docker.compose.project": "zakops-backend",
+    "com.docker.compose.project.config_files": "/home/zaks/zakops-backend/docker-compose.yml",
+    "com.docker.compose.project.working_dir": "/home/zaks/zakops-backend",
+    "com.docker.compose.replace": "postgres-1",
+    "com.docker.compose.service": "postgres",
+    "com.docker.compose.version": "2.40.3"
+}
+--- FINGERPRINT: Agent DB has 'approvals' table? ---
+ approvals_count 
+-----------------
+              42
+(1 row)
+
+--- FINGERPRINT: Backend DB has 'deals' table? ---
+ deals_count 
+-------------
+           4
+(1 row)
+

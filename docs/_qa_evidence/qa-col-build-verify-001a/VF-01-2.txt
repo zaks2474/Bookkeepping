@@ -1,0 +1,5 @@
+85:from app.services.brain_extraction import trigger_brain_extraction
+1000:        Orchestrates brain extraction, drift detection, and citation auditing.
+1009:                await trigger_brain_extraction(
+1017:                logger.debug("brain_extraction_failed", error=str(brain_err))
+1309:            # COL-V2 post-turn enrichment: brain extraction + drift detection + citation audit

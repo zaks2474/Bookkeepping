@@ -1,0 +1,37 @@
+D-8 _validate_user_id returns False on invalid, no raise
+        - UUID format or alphanumeric with hyphens/underscores
+        - Max 255 characters
+        - No path traversal characters
+
+        Args:
+            user_id: The user ID to validate
+
+        Returns:
+            bool: True if valid, False otherwise
+        """
+        import re
+
+        if not user_id or not isinstance(user_id, str):
+            return False
+
+        # Max length check
+        if len(user_id) > 255:
+            return False
+
+        # Block path traversal and special characters
+        if any(char in user_id for char in ['..', '/', '\\', '\x00', '\n', '\r']):
+            return False
+
+        # Allow UUIDs or alphanumeric with hyphens/underscores
+        uuid_pattern = r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+        alphanum_pattern = r'^[a-zA-Z0-9_-]+$'
+
+        if re.match(uuid_pattern, user_id, re.IGNORECASE) or re.match(alphanum_pattern, user_id):
+            return True
+
+        logger.warning(
+            "invalid_user_id_format",
+            user_id_preview=user_id[:20] if len(user_id) > 20 else user_id,
+            reason="failed_validation_pattern"
+        )
+        return False

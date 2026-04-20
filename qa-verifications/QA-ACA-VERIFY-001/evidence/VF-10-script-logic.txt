@@ -1,0 +1,27 @@
+=== VF-10: Sync Script Logic Verification ===
+
+File: tools/infra/sync-agent-configs.sh (238 lines)
+
+1. Canonical source path: .claude/rules/contract-surfaces.md ✓
+2. set -euo pipefail (strict mode) ✓
+3. Canonical count extraction: grep -oP '## The \K\d+(?= Contract)' ✓
+4. Surface parsing: regex matches "### Surface N: Name" ✓
+5. Command extraction priority:
+   a. **Command:** line with backtick-quoted value (line 64) ✓
+   b. **Validation:** prefer `make ...` (line 68) ✓
+   c. **Validation:** fallback to construct `make validate-surface${N}` (line 73) ✓
+   This is the bug fix described in completion report ✓
+6. Parsed count vs heading count validation (line 86) ✓
+7. Two table generators: standard (3-col) and gemini (5-col) ✓
+8. Format detection: checks if filename contains "GEMINI.md" (line 171) ✓
+9. AWK replacement between markers (lines 184-202) ✓
+10. Post-replace validation: non-empty + markers preserved (lines 205-216) ✓
+11. Heading count update via sed (lines 222-223) ✓
+12. Error counting and exit code (lines 232-234) ✓
+
+WSL SAFETY:
+- Ownership: root:root (SHOULD BE zaks:zaks) ✗
+- Permissions: 755 (executable) ✓
+- Line endings: LF (runs without bash\r errors) ✓
+
+VERDICT: PASS (logic), MINOR (ownership)

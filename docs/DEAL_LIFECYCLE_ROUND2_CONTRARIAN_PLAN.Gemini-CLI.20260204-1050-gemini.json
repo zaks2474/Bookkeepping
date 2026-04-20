@@ -1,0 +1,66 @@
+{
+  "agent_identity": {
+    "agent_name": "Gemini-CLI",
+    "run_id": "20260204-1050-gemini",
+    "date_time": "2026-02-04T10:50:00Z",
+    "repo_revision": "unknown",
+    "dashboard_zod_errors_checked": true
+  },
+  "scorecard": {
+    "architecture": 7,
+    "data_integrity": 8,
+    "api_contracts": 8,
+    "client_integration": 3,
+    "observability": 6,
+    "security": 7,
+    "ux_correctness": 5,
+    "email_ingestion": 8,
+    "rag_knowledge": 4,
+    "ops_excellence": 6
+  },
+  "critical_findings": [
+    {
+      "id": "CF-001",
+      "title": "Duplicate Zod Schemas",
+      "description": "api-client.ts defines a 'dumbed down' DealSchema that ignores data defined in api-schemas.ts and sent by backend."
+    },
+    {
+      "id": "CF-002",
+      "title": "Data Loss at UI Boundary",
+      "description": "Broker object flattened to string; Metadata and Company Info ignored by client."
+    },
+    {
+      "id": "CF-003",
+      "title": "Idempotency Gap",
+      "description": "Backend Create Deal endpoint lacks idempotency check."
+    }
+  ],
+  "upgrades": [
+    {
+      "id": "ZK-UPG-0001",
+      "title": "Unified Generated Client",
+      "priority": "P0"
+    },
+    {
+      "id": "ZK-UPG-0002",
+      "title": "Idempotency-Key on Writes",
+      "priority": "P1"
+    },
+    {
+      "id": "ZK-UPG-0003",
+      "title": "Transactional Outbox",
+      "priority": "P1"
+    },
+    {
+      "id": "ZK-UPG-0004",
+      "title": "Frontend Contract Testing",
+      "priority": "P2"
+    }
+  ],
+  "execution_plan": [
+    "Phase R2-1: Schema Unification Refactor",
+    "Phase R2-2: Idempotency Implementation",
+    "Phase R2-3: Data Visibility Restoration",
+    "Phase R2-4: CI Contract Gate"
+  ]
+}

@@ -1,0 +1,2 @@
+1629:async def get_pipeline_summary(pool: asyncpg.Pool = Depends(get_db)):
+1642:async def get_pipeline_stats(pool: asyncpg.Pool = Depends(get_db)):

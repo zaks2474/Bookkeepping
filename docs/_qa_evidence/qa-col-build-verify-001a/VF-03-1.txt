@@ -1,0 +1,6 @@
+515:_ADMIN_USER_IDS = set(os.getenv("ADMIN_USER_IDS", "").split(",")) - {""}
+518:def _require_admin(session) -> None:
+520:    if _ADMIN_USER_IDS and session.user_id not in _ADMIN_USER_IDS:
+530:    _require_admin(session)
+544:    _require_admin(session)
+564:    _require_admin(session)

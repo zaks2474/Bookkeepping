@@ -1,0 +1,4 @@
+94:  const statusFilterRaw = searchParams.get('status') || 'active';
+99:  const statusFilter = statusFilterRaw || ALL_FILTER;
+111:      if (statusFilterRaw) params.status = statusFilterRaw;
+124:  }, [stageFilterRaw, statusFilterRaw]);

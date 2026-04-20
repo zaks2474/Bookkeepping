@@ -1,0 +1,19 @@
+=== QA-3.2: T2.2 Folder Scaffolding ===
+--- TEST 1: folder_path column ---
+ column_name 
+-------------
+ folder_path
+(1 row)
+
+
+--- TEST 2: Scaffolding code ---
+/home/zaks/zakops-backend/src/api/orchestration/main.py:516:        SELECT d.deal_id, d.canonical_name, d.display_name, d.folder_path, d.stage
+/home/zaks/zakops-backend/src/api/orchestration/main.py:561:                deal_id, canonical_name, display_name, folder_path,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:571:            deal.folder_path,
+/home/zaks/zakops-backend/src/actions/executors/communication_send_email.py:258:        if ctx.deal and str((ctx.deal or {}).get("folder_path") or "").strip():
+/home/zaks/zakops-backend/src/actions/executors/deal_dedupe_and_place_materials.py:137:        if ctx.deal and str((ctx.deal or {}).get("folder_path") or "").strip():
+/home/zaks/zakops-backend/src/actions/executors/deal_dedupe_and_place_materials.py:138:            deal_folder = str((ctx.deal or {}).get("folder_path") or "").strip()
+/home/zaks/zakops-backend/src/actions/executors/deal_dedupe_and_place_materials.py:146:                    message="deal folder_path missing (ctx.deal.folder_path or inputs.deal_path required)",
+/home/zaks/zakops-backend/src/actions/executors/deal_dedupe_and_place_materials.py:212:            dest_dir.mkdir(parents=True, exist_ok=True)
+/home/zaks/zakops-backend/src/actions/executors/deal_append_email_materials.py:154:    dest_dir.mkdir(parents=True, exist_ok=True)
+/home/zaks/zakops-backend/src/actions/executors/deal_append_email_materials.py:229:        deal_folder = str(getattr(deal_obj, "folder_path", "") or "").strip() if deal_obj else ""

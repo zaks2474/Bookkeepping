@@ -1,0 +1,141 @@
+export const ActionStatusSchema = z.enum([
+  'pending',
+  'pending_approval',
+  'queued',
+  'ready',
+  'running',
+  'completed',
+  'failed',
+  'cancelled',
+  'rejected',
+]);
+--
+  nda_status: NdaStatusSchema.optional(),
+  cim_received: z.boolean().optional(),
+  junk_reason: z.string().nullable().optional(),
+}).passthrough();
+
+// FIX: Changed to .nullable().optional() to handle backend null values
+export const AuditEntrySchema = z.object({
+  action: z.string(),
+  by: z.string(),
+  at: z.string(),
+  notes: z.string().nullable().optional(),
+--
+  status: DealStatusSchema,
+  identifiers: DealIdentifiersSchema.or(z.record(z.unknown())).optional(),
+  company_info: CompanyInfoSchema.or(z.record(z.unknown())).optional(),
+  broker: BrokerInfoSchema.or(z.record(z.unknown())).optional(),
+  metadata: DealMetadataSchema.or(z.record(z.unknown())).optional(),
+  email_thread_ids: z.array(z.string()).optional().default([]),
+  created_at: z.string(),
+  updated_at: z.string(),
+  days_since_update: z.number().nullable().optional(),
+  action_count: z.number().nullable().optional(),
+  alias_count: z.number().nullable().optional(),
+--
+  status: DealStatusSchema.optional(),
+  identifiers: DealIdentifiersSchema.partial().optional(),
+  company_info: CompanyInfoSchema.partial().optional(),
+  broker: BrokerInfoSchema.partial().optional(),
+  metadata: DealMetadataSchema.partial().optional(),
+});
+
+export const DealUpdateSchema = z.object({
+  canonical_name: z.string().min(1).optional(),
+  display_name: z.string().optional(),
+  folder_path: z.string().optional(),
+--
+  status: DealStatusSchema.optional(),
+  identifiers: DealIdentifiersSchema.partial().optional(),
+  company_info: CompanyInfoSchema.partial().optional(),
+  broker: BrokerInfoSchema.partial().optional(),
+  metadata: DealMetadataSchema.partial().optional(),
+});
+
+// FIX: Changed to .nullable().optional() to handle backend null values
+export const DealEventSchema = z.object({
+  id: z.string(),
+  deal_id: z.string().nullable().optional(),
+--
+  status: ActionStatusSchema,
+  created_at: z.string(),
+  updated_at: z.string(),
+  risk_level: RiskLevelSchema,
+  requires_human_review: z.boolean(),
+  inputs: z.record(z.unknown()),
+  outputs: z.record(z.unknown()),
+  // Optional fields (exist in backend but may be null)
+  deal_id: z.string().nullable().optional(),
+  summary: z.string().nullable().optional(),
+  deal_name: z.string().nullable().optional(),
+--
+  status: QuarantineStatusSchema.optional(),
+  processed_at: z.string().nullable().optional(),
+  processed_by: z.string().nullable().optional(),
+  processing_result: z.string().nullable().optional(),
+  created_deal_id: z.string().nullable().optional(),
+  created_at: z.string().optional(),
+  updated_at: z.string().optional(),
+  sender_name: z.string().nullable().optional(),
+  sender_company: z.string().nullable().optional(),
+  is_broker: z.boolean().nullable().optional(),
+}).passthrough();
+--
+export type ActionStatus = z.infer<typeof ActionStatusSchema>;
+export type RiskLevel = z.infer<typeof RiskLevelSchema>;
+export type ActionSource = z.infer<typeof ActionSourceSchema>;
+export type QuarantineClassification = z.infer<typeof QuarantineClassificationSchema>;
+export type QuarantineStatus = z.infer<typeof QuarantineStatusSchema>;
+export type SenderType = z.infer<typeof SenderTypeSchema>;
+export type Deal = z.infer<typeof DealSchema>;
+export type DealCreate = z.infer<typeof DealCreateSchema>;
+export type DealUpdate = z.infer<typeof DealUpdateSchema>;
+export type DealEvent = z.infer<typeof DealEventSchema>;
+export type DealAlias = z.infer<typeof DealAliasSchema>;
+--
+    status: RunStatusSchema,
+    error: z.string().optional(),
+    duration_ms: z.number().optional(),
+  }),
+});
+
+export const AgentToolCallEventSchema = AgentEventBaseSchema.extend({
+  event_type: AgentToolEventTypeSchema,
+  data: z.object({
+    tool_call_id: z.string(),
+    tool_name: z.string(),
+--
+  status: ToolCallStatusSchema,
+  requires_approval: z.boolean(),
+  approved_by: z.string().nullable(),
+  approved_at: z.string().nullable(),
+  started_at: z.string().nullable(),
+  completed_at: z.string().nullable(),
+  error: z.string().nullable(),
+  created_at: z.string(),
+});
+
+export const AgentThreadSchema = z.object({
+--
+  status: ThreadStatusSchema,
+  metadata: z.record(z.unknown()),
+  created_at: z.string(),
+  updated_at: z.string(),
+});
+
+export const AgentRunSchema = z.object({
+  run_id: z.string(),
+  thread_id: z.string(),
+  assistant_id: z.string(),
+  status: RunStatusSchema,
+  started_at: z.string().nullable(),
+  completed_at: z.string().nullable(),
+  error: z.string().nullable(),
+  tool_calls: z.array(AgentToolCallSchema),
+  metadata: z.record(z.unknown()),
+  created_at: z.string(),
+  updated_at: z.string(),
+});
+
+export const ToolManifestEntrySchema = z.object({

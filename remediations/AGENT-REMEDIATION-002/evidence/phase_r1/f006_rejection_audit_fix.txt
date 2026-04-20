@@ -1,0 +1,30 @@
+=== R1.3: F-006 Rejection Audit Trail Fix ===
+Date: Tue Feb  3 04:50 UTC 2026
+
+--- Before ---
+Rejection audit log entry had:
+- thread_id: NULL (extracted AFTER audit log write)
+- payload: {"reason": "..."}
+
+--- Root Cause ---
+In app/api/v1/agent.py reject_action(), the audit log was written with
+thread_id=None before extracting thread_id from the RETURNING clause.
+
+--- Fix ---
+Reordered code to:
+1. Extract values from RETURNING clause FIRST
+2. Then write audit log with proper thread_id and tool_name
+
+Code change:
+- _, thread_id, checkpoint_id, tool_name = rejected  # MOVED BEFORE audit log
+- _write_audit_log(..., thread_id=thread_id, payload={..., "tool_name": tool_name})
+
+--- After ---
+Rejection audit log now has:
+    event_type     |   thread_id   | actor_id  |                              payload                               
+-------------------+---------------+-----------+--------------------------------------------------------------------
+ approval_rejected | f006-test-001 | test-user | {"reason": "F-006 test rejection", "tool_name": "transition_deal"}
+
+--- Verification ---
+Triggered HITL approval, rejected it, audit log now has proper thread_id and tool_name.
+PASS

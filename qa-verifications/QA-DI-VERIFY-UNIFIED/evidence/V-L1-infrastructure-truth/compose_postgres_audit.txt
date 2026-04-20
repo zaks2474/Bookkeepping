@@ -1,0 +1,46 @@
+=== MONOREPO: /home/zaks/zakops-agent-api ===
+(none found)
+
+=== BACKEND: /home/zaks/zakops-backend ===
+--- /home/zaks/zakops-backend/docker-compose.yml ---
+13:  postgres:
+14:    image: postgres:15-alpine
+16:      POSTGRES_USER: ${POSTGRES_USER:-zakops}
+17:      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-zakops_dev}
+18:      POSTGRES_DB: ${POSTGRES_DB:-zakops}
+20:      - "${POSTGRES_PORT:-5432}:5432"
+22:      - zakops_postgres_data:/var/lib/postgresql/data
+25:      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-zakops} -d ${POSTGRES_DB:-zakops}"]
+65:      DATABASE_URL: postgresql://${POSTGRES_USER:-zakops}:${POSTGRES_PASSWORD:-zakops_dev}@postgres:5432/${POSTGRES_DB:-zakops}
+66:      DATABASE_BACKEND: postgresql
+81:      postgres:
+106:      DATABASE_URL: postgresql://${POSTGRES_USER:-zakops}:${POSTGRES_PASSWORD:-zakops_dev}@postgres:5432/${POSTGRES_DB:-zakops}
+107:      DATABASE_BACKEND: postgresql
+136:      DATABASE_URL: postgresql://${POSTGRES_USER:-zakops}:${POSTGRES_PASSWORD:-zakops_dev}@postgres:5432/${POSTGRES_DB:-zakops}
+145:      postgres:
+161:  zakops_postgres_data:
+162:    name: zakops_postgres_data
+
+=== ZAKS-LLM: /home/zaks/Zaks-llm ===
+--- /home/zaks/Zaks-llm/docker-compose.yml ---
+98:      - POSTGRES_URL=postgresql://postgres:crawl4aipass@rag-db:5432/crawlrag
+
+--- /home/zaks/Zaks-llm/docker-compose.temporal.yml ---
+4:  temporal-postgresql:
+5:    image: postgres:16-alpine
+6:    container_name: temporal-postgresql
+8:      - POSTGRES_PASSWORD=temporal
+9:      - POSTGRES_USER=temporal
+10:      - POSTGRES_DB=temporal
+12:      - temporal-postgres-data:/var/lib/postgresql/data
+21:      - temporal-postgresql
+23:      - DB=postgres12
+25:      - POSTGRES_USER=temporal
+26:      - POSTGRES_PWD=temporal
+27:      - POSTGRES_SEEDS=temporal-postgresql
+56:  temporal-postgres-data:
+
+--- /home/zaks/Zaks-llm/docker-compose.deal-engine.yml ---
+4:# All deal data lives in the canonical database: zakops-backend-postgres-1 on port 5432
+5:# DSN: postgresql://zakops:zakops_dev@localhost:5432/zakops
+

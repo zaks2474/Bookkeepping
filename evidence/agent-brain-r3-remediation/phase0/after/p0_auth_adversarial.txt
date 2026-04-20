@@ -1,0 +1,21 @@
+=== P0.4 ADVERSARIAL TEST - OWNERSHIP CHECK ===
+
+Test: Try to approve another user's approval with a different actor_id
+
+Setup:
+- Approval c654db6b-6e33-4376-a2cb-4150d5d88de0 was created by "test-user-r3"
+- Attacker tries to approve it as "attacker-user"
+
+Request:
+POST /agent/approvals/c654db6b-6e33-4376-a2cb-4150d5d88de0:approve
+actor_id: "attacker-user"
+
+Response:
+HTTP 403 Forbidden
+{"detail":"Insufficient permissions"}
+
+VERDICT: PASS - Ownership check blocked cross-user access
+The existing code at agent.py:256-257 correctly prevents impersonation of OTHER users' approvals.
+
+Note: Full impersonation prevention (preventing fake actor_id on invoke) requires 
+architecture changes documented in p0_auth_flow_after.txt

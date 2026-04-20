@@ -1,0 +1,38 @@
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:401:                prompt_version=prompt_info.version,
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:445:                    prompt_version=prompt_info.version,
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:458:                prompt_version=prompt_info.version,
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:707:                                prompt_version=prompt_info.version,
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:869:                                prompt_version=prompt_info.version,
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/prompts/__init__.py:37:def _extract_prompt_version(content: str) -> str:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/prompts/__init__.py:67:            version=_extract_prompt_version(raw_content),
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/tracing.py:265:    prompt_version: Optional[str] = None,
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/tracing.py:272:        with trace_agent_turn(thread_id, user_id, correlation_id, prompt_version) as span:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/tracing.py:282:        "prompt_version": prompt_version,
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/tracing.py:328:    prompt_version: Optional[str] = None,
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/tracing.py:344:        "prompt_version": prompt_version,
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/agent.py:250:            prompt_version=prompt_info.version,
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/snapshot_writer.py:62:    prompt_version: str | None = None
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/snapshot_writer.py:121:                        prompt_version, prompt_hash, latency_ms,
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/snapshot_writer.py:167:                    snapshot.prompt_version,
+/home/zaks/zakops-agent-api/apps/agent-api/app/models/decision_ledger.py:42:        prompt_version: Version of the system prompt used
+/home/zaks/zakops-agent-api/apps/agent-api/app/models/decision_ledger.py:82:    prompt_version: Optional[str] = Field(default=None)
+/home/zaks/zakops-agent-api/apps/agent-api/app/models/decision_ledger.py:162:        prompt_version: Optional[str] = None,
+/home/zaks/zakops-agent-api/apps/agent-api/app/models/decision_ledger.py:189:            prompt_version: Version of system prompt
+/home/zaks/zakops-agent-api/apps/agent-api/app/models/decision_ledger.py:216:            prompt_version=prompt_version,
+/home/zaks/zakops-agent-api/apps/agent-api/app/models/decision_ledger.py:251:        prompt_version: Optional[str] = None,
+/home/zaks/zakops-agent-api/apps/agent-api/app/models/decision_ledger.py:279:            prompt_version=prompt_version,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langfuse/_client/client.py:3451:        updated_prompt = self.api.prompt_version.update(
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langfuse/api/resources/prompt_version/client.py:67:        client.prompt_version.update(
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langfuse/api/resources/prompt_version/client.py:157:            await client.prompt_version.update(
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langfuse/api/resources/commons/types/observations_view.py:19:    prompt_version: typing.Optional[int] = pydantic_v1.Field(
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langfuse/api/resources/ingestion/types/update_generation_body.py:32:    prompt_version: typing.Optional[int] = pydantic_v1.Field(
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langfuse/api/resources/ingestion/types/create_generation_body.py:32:    prompt_version: typing.Optional[int] = pydantic_v1.Field(
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langfuse/api/resources/__init__.py:21:    prompt_version,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langfuse/api/resources/__init__.py:505:    "prompt_version",
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langfuse/api/client.py:42:from .resources.prompt_version.client import (
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langfuse/api/client.py:146:        self.prompt_version = PromptVersionClient(client_wrapper=self._client_wrapper)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langfuse/api/client.py:255:        self.prompt_version = AsyncPromptVersionClient(
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langfuse/api/__init__.py:238:    prompt_version,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langfuse/api/__init__.py:484:    "prompt_version",
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langfuse/_utils/__init__.py:20:        return {"prompt_version": prompt.version, "prompt_name": prompt.name}
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langfuse/_utils/__init__.py:22:    return {"prompt_version": None, "prompt_name": None}

@@ -1,0 +1,1 @@
+                    raise PermissionError(f"Thread {thread_id} not authorized for user {user_id}")

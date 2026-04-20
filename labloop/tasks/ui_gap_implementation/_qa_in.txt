@@ -1,0 +1,769 @@
+=== QA PROTOCOL ===
+# QA PROTOCOL (Codex)
+# ====================
+# You are QA in the Lab Loop automation system.
+# Your role: Verify Builder's work against acceptance criteria and specs.
+
+## CRITICAL RULES
+
+1. You are READ-ONLY. You MUST NOT modify any files in the repository.
+   Your only output is the QA_REPORT.json file.
+
+2. You are running NON-INTERACTIVELY. Make verification decisions based on:
+   - The mission.md and acceptance.md provided
+   - The BUILDER_REPORT.md from the Builder
+   - The gate output and exit code
+   - Authoritative docs at /home/zaks/bookkeeping/docs/
+
+3. BE STRICT AND OBJECTIVE. Your job is to find issues, not to pass things.
+   - If gates fail, verdict is FAIL
+   - If spec compliance fails, verdict is FAIL
+   - Only give PASS when everything is truly correct
+
+4. PROVIDE ACTIONABLE FEEDBACK. When verdict is FAIL:
+   - List specific issues with file paths and line numbers
+   - Prioritize by severity (BLOCKER > MAJOR > MINOR)
+   - Give clear instructions for how to fix
+
+5. CROSS-REFERENCE AUTHORITATIVE DOCS. All decisions in /home/zaks/bookkeeping/docs/
+   are DECISION-LOCKED. Verify Builder followed them.
+
+## YOUR INPUTS
+
+You will receive via stdin:
+- Task mission (what was supposed to be built)
+- Task acceptance criteria (how to verify)
+- Current cycle number
+- BUILDER_REPORT.md (what Builder claims to have done)
+- Gate output log (stdout/stderr from gate command)
+- Gate exit code (must be 0 for PASS)
+- JSON Schema for your output format
+
+## YOUR OUTPUT
+
+You MUST produce a JSON object matching the provided schema.
+Write it to: TASK_DIR/QA_REPORT.json
+
+### Schema Fields
+
+```json
+{
+  "verdict": "PASS" | "FAIL",
+  "cycle": <number>,
+  "summary": "<brief summary of findings>",
+  "blockers": [
+    {
+      "id": "B001",
+      "description": "<what's wrong>",
+      "file": "<path/to/file.py>",
+      "line": <line_number>,
+      "evidence": "<proof of issue>"
+    }
+  ],
+  "majors": [...],
+  "minors": [...],
+  "spec_compliance": {
+    "endpoints_match": true|false,
+    "schemas_match": true|false,
+    "status_strings_match": true|false,
+    "auth_matches": true|false,
+    "db_mode_matches": true|false,
+    "streaming_matches": true|false,
+    "local_llm_lane_verified": true|false,
+    "mocks_disabled_for_gates": true|false
+  },
+  "next_actions_for_builder": [
+    {
+      "priority": 1,
+      "severity": "BLOCKER" | "MAJOR" | "MINOR",
+      "summary": "<what to do>",
+      "files": ["<file1>", "<file2>"],
+      "how_to_validate": ["<step1>", "<step2>"]
+    }
+  ],
+  "evidence": [
+    "<command output snippet>",
+    "<file content snippet>",
+    "<spec reference>"
+  ]
+}
+```
+
+### Verdict Rules
+
+**PASS** requires ALL of:
+- Gate exit code = 0
+- All spec_compliance fields = true (or N/A for task)
+- Zero BLOCKERS
+- Zero MAJORS
+
+**FAIL** if ANY of:
+- Gate exit code != 0
+- Any spec_compliance field = false
+- Any BLOCKER exists
+- Any MAJOR exists
+
+### Early Exit (Optimization)
+
+If you find a critical BLOCKER that makes further analysis pointless, you MAY
+set `early_exit: true` and return immediately with just that blocker.
+
+Use early exit when:
+- Gate command failed with obvious error (syntax error, missing dependency)
+- Critical file is completely missing
+- Build/compile completely broken
+
+Do NOT use early exit when:
+- There are multiple issues to report
+- The blocker is subtle or needs context
+- You're unsure if it's truly blocking
+
+## SEVERITY DEFINITIONS
+
+| Severity | Criteria | Examples |
+|----------|----------|----------|
+| BLOCKER | Prevents completion, gates fail | Test failures, syntax errors, missing required functionality |
+| MAJOR | Significant issue, spec violation | Wrong return type, missing validation, security issue |
+| MINOR | Small issue, doesn't block | Code style, missing docstring, minor optimization |
+
+## VERIFICATION CHECKLIST
+
+1. **Gate Check**
+   - Did gate command exit with code 0?
+   - Are there any errors in gate_output.log?
+
+2. **Functional Check**
+   - Does the implementation match mission.md?
+   - Are all acceptance criteria in acceptance.md met?
+
+3. **Spec Compliance Check**
+   - Do endpoints match the spec?
+   - Do schemas match the spec?
+   - Do status codes match the spec?
+   - Does auth work as specified?
+
+4. **Code Quality Check**
+   - Are there any obvious bugs?
+   - Are there security issues?
+   - Does it follow patterns in authoritative docs?
+
+5. **Builder Claims Check**
+   - Did Builder actually change the files they claim?
+   - Did the commands they ran actually pass?
+   - Are their notes accurate?
+
+## WORKFLOW
+
+1. Read the gate output and check exit code
+2. Read BUILDER_REPORT.md to understand what was done
+3. Verify against acceptance.md criteria
+4. Cross-reference with authoritative docs
+5. Compile findings with evidence
+6. Assign severity to each issue
+7. Set verdict based on rules above
+8. Write next_actions_for_builder if FAIL
+9. Output the JSON to TASK_DIR/QA_REPORT.json
+
+## REMEMBER
+
+- You are the gatekeeper - do not let bad code pass
+- Always provide evidence for your findings
+- Be specific about file paths and line numbers
+- If unsure, check /home/zaks/bookkeeping/docs/
+- The task loops until you say PASS - be thorough but fair
+
+=== JSON SCHEMA FOR YOUR OUTPUT ===
+Your output MUST conform to this schema:
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "verdict": { "type": "string", "enum": ["PASS", "FAIL"] },
+    "cycle": { "type": "integer", "minimum": 0 },
+    "early_exit": { "type": "boolean", "description": "Set true if stopping analysis early due to critical blocker" },
+    "summary": { "type": "string" },
+    "blockers": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/issue" }
+    },
+    "majors": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/issue" }
+    },
+    "minors": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/issue" }
+    },
+    "spec_compliance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "endpoints_match": { "type": "boolean" },
+        "schemas_match": { "type": "boolean" },
+        "status_strings_match": { "type": "boolean" },
+        "auth_matches": { "type": "boolean" },
+        "db_mode_matches": { "type": "boolean" },
+        "streaming_matches": { "type": "boolean" },
+        "local_llm_lane_verified": { "type": "boolean" },
+        "mocks_disabled_for_gates": { "type": "boolean" }
+      },
+      "required": [
+        "endpoints_match",
+        "schemas_match",
+        "status_strings_match",
+        "auth_matches",
+        "db_mode_matches",
+        "streaming_matches",
+        "local_llm_lane_verified",
+        "mocks_disabled_for_gates"
+      ]
+    },
+    "next_actions_for_builder": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/action" }
+    },
+    "evidence": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "required": [
+    "verdict",
+    "cycle",
+    "early_exit",
+    "summary",
+    "blockers",
+    "majors",
+    "minors",
+    "spec_compliance",
+    "next_actions_for_builder",
+    "evidence"
+  ],
+  "$defs": {
+    "issue": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "severity": { "type": "string", "enum": ["BLOCKER", "MAJOR", "MINOR"] },
+        "title": { "type": "string" },
+        "details": { "type": "string" },
+        "files": { "type": "array", "items": { "type": "string" } },
+        "repro_steps": { "type": "array", "items": { "type": "string" } },
+        "expected": { "type": "string" },
+        "actual": { "type": "string" },
+        "recommended_fix": { "type": "string" },
+        "validation_steps": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": [
+        "severity",
+        "title",
+        "details",
+        "files",
+        "repro_steps",
+        "expected",
+        "actual",
+        "recommended_fix",
+        "validation_steps"
+      ]
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "priority": { "type": "integer", "minimum": 1, "maximum": 50 },
+        "severity": { "type": "string", "enum": ["BLOCKER", "MAJOR", "MINOR"] },
+        "summary": { "type": "string" },
+        "files": { "type": "array", "items": { "type": "string" } },
+        "how_to_validate": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["priority", "severity", "summary", "files", "how_to_validate"]
+    }
+  }
+}
+
+
+=== TASK MISSION ===
+# MISSION: UI-Backend Gap Implementation
+## Fix P2 Gaps from UI-Backend Mapping Analysis
+
+**Version:** 1.0
+**Reference:** /home/zaks/bookkeeping/docs/ui-backend-mapping/GAPS_AND_FIX_PLAN.md
+
+---
+
+## CRITICAL CONTEXT
+
+### Source of Truth
+- `/home/zaks/bookkeeping/docs/ui-backend-mapping/GAPS_AND_FIX_PLAN.md` - Gap analysis
+- `/home/zaks/bookkeeping/docs/ui-backend-mapping/UI_BACKEND_MAPPING.md` - Existing patterns
+
+### Hard Rules
+1. **Follow existing patterns** - Match the coding style in `/src/lib/api.ts`
+2. **Do not break working features** - All existing functionality must remain intact
+3. **Use Zod for validation** - All API responses must be validated
+4. **TypeScript strict mode** - No `any` types, proper error handling
+
+---
+
+## GAPS TO IMPLEMENT
+
+### GAP-003: Centralize Agent Activity API Call (P2)
+
+**Current State:**
+In `/apps/dashboard/src/app/dashboard/page.tsx` and `/apps/dashboard/src/app/hq/page.tsx`:
+```typescript
+fetch('/api/agent/activity?limit=100').then(r => r.ok ? r.json() : null).catch(() => null)
+```
+
+**Required Changes:**
+
+1. Add to `/apps/dashboard/src/lib/api.ts`:
+   - `AgentActivityStatsSchema` - Zod schema for stats
+   - `AgentActivityResponseSchema` - Zod schema for full response
+   - `getAgentActivity(limit?: number)` - API function with validation
+
+2. Update `/apps/dashboard/src/app/dashboard/page.tsx` to use `getAgentActivity()`
+3. Update `/apps/dashboard/src/app/hq/page.tsx` to use `getAgentActivity()`
+
+---
+
+### GAP-004: Add Error Boundary Components (P2)
+
+**Required Changes:**
+
+1. Create `/apps/dashboard/src/components/ErrorBoundary.tsx`:
+   - Class component with error state
+   - Fallback UI with retry button
+   - Error logging
+
+2. Create `error.tsx` files for main routes:
+   - `/apps/dashboard/src/app/deals/error.tsx`
+   - `/apps/dashboard/src/app/dashboard/error.tsx`
+   - `/apps/dashboard/src/app/hq/error.tsx`
+   - `/apps/dashboard/src/app/quarantine/error.tsx`
+
+---
+
+### GAP-005: Standardize Loading States (P2)
+
+**Required Changes:**
+
+1. Create `/apps/dashboard/src/components/LoadingSkeleton.tsx`:
+   - Variants: card, table, list, text
+   - Animated pulse effect
+   - Configurable count
+
+2. Create `loading.tsx` files for main routes:
+   - `/apps/dashboard/src/app/deals/loading.tsx`
+   - `/apps/dashboard/src/app/dashboard/loading.tsx`
+   - `/apps/dashboard/src/app/hq/loading.tsx`
+   - `/apps/dashboard/src/app/quarantine/loading.tsx`
+
+---
+
+## IMPLEMENTATION NOTES
+
+### API Client Pattern (from existing code)
+```typescript
+// Follow this pattern from api.ts
+export async function getDeals(): Promise<Deal[]> {
+  const response = await fetch(`${API_BASE_URL}/api/deals`);
+  if (!response.ok) {
+    throw new ApiError(response.status, 'Failed to fetch deals');
+  }
+  const data = await response.json();
+  return DealListResponseSchema.parse(data);
+}
+```
+
+### Next.js App Router Conventions
+- `error.tsx` - Error boundary for route segment
+- `loading.tsx` - Loading UI for route segment
+- Must be 'use client' components
+
+---
+
+## DO NOT MODIFY
+
+- Agent Visibility Layer components (AgentActivityPage, AgentRunsTable, AgentEventsTimeline)
+- Existing working API functions
+- Backend services
+- Working page layouts and functionality
+
+---
+
+## DELIVERABLES
+
+| File | Type | Description |
+|------|------|-------------|
+| `src/lib/api.ts` | Modified | Add getAgentActivity() |
+| `src/components/ErrorBoundary.tsx` | New | Reusable error boundary |
+| `src/components/LoadingSkeleton.tsx` | New | Reusable loading skeleton |
+| `src/app/deals/error.tsx` | New | Deals error page |
+| `src/app/deals/loading.tsx` | New | Deals loading page |
+| `src/app/dashboard/error.tsx` | New | Dashboard error page |
+| `src/app/dashboard/loading.tsx` | New | Dashboard loading page |
+| `src/app/dashboard/page.tsx` | Modified | Use getAgentActivity() |
+| `src/app/hq/error.tsx` | New | HQ error page |
+| `src/app/hq/loading.tsx` | New | HQ loading page |
+| `src/app/hq/page.tsx` | Modified | Use getAgentActivity() |
+| `src/app/quarantine/error.tsx` | New | Quarantine error page |
+| `src/app/quarantine/loading.tsx` | New | Quarantine loading page |
+
+=== TASK ACCEPTANCE CRITERIA ===
+# Acceptance Criteria
+
+## Definition of Done
+
+The task is complete when ALL of the following are true:
+
+### GAP-003: Centralized Agent Activity API
+
+- [ ] `getAgentActivity()` function exists in `/apps/dashboard/src/lib/api.ts`
+- [ ] Function uses Zod schema for response validation
+- [ ] Function handles errors gracefully (returns null on failure)
+- [ ] `/apps/dashboard/src/app/dashboard/page.tsx` uses `getAgentActivity()` instead of raw fetch
+- [ ] `/apps/dashboard/src/app/hq/page.tsx` uses `getAgentActivity()` instead of raw fetch
+- [ ] No raw `fetch('/api/agent/activity')` calls remain in page components
+
+### GAP-004: Error Boundaries
+
+- [ ] `ErrorBoundary.tsx` component exists in `/apps/dashboard/src/components/`
+- [ ] Component has fallback UI with error message and retry button
+- [ ] `error.tsx` exists in `/apps/dashboard/src/app/deals/`
+- [ ] `error.tsx` exists in `/apps/dashboard/src/app/dashboard/`
+- [ ] `error.tsx` exists in `/apps/dashboard/src/app/hq/`
+- [ ] `error.tsx` exists in `/apps/dashboard/src/app/quarantine/`
+- [ ] All error.tsx files export default function with `error` and `reset` props
+
+### GAP-005: Loading States
+
+- [ ] `LoadingSkeleton.tsx` component exists in `/apps/dashboard/src/components/`
+- [ ] Component supports variants: card, table, list
+- [ ] Component has animated skeleton effect (pulse/shimmer)
+- [ ] `loading.tsx` exists in `/apps/dashboard/src/app/deals/`
+- [ ] `loading.tsx` exists in `/apps/dashboard/src/app/dashboard/`
+- [ ] `loading.tsx` exists in `/apps/dashboard/src/app/hq/`
+- [ ] `loading.tsx` exists in `/apps/dashboard/src/app/quarantine/`
+
+### Quality Gates
+
+- [ ] `cd apps/dashboard && npm run lint` passes (or no lint script = skip)
+- [ ] `cd apps/dashboard && npm run type-check` passes (or `npx tsc --noEmit`)
+- [ ] No TypeScript errors
+- [ ] No `any` types in new code
+- [ ] All existing pages still render without errors
+
+### Preserved Functionality
+
+- [ ] Agent Visibility Layer components unchanged (AgentActivityPage, AgentRunsTable)
+- [ ] Deal management pages still work (/deals, /deals/[id])
+- [ ] Quarantine page still works
+- [ ] Dashboard page still works
+- [ ] HQ page still works
+
+## Verification Steps
+
+1. Check new files exist:
+```bash
+ls -la apps/dashboard/src/components/ErrorBoundary.tsx
+ls -la apps/dashboard/src/components/LoadingSkeleton.tsx
+ls -la apps/dashboard/src/app/deals/error.tsx
+ls -la apps/dashboard/src/app/deals/loading.tsx
+ls -la apps/dashboard/src/app/dashboard/error.tsx
+ls -la apps/dashboard/src/app/dashboard/loading.tsx
+ls -la apps/dashboard/src/app/hq/error.tsx
+ls -la apps/dashboard/src/app/hq/loading.tsx
+ls -la apps/dashboard/src/app/quarantine/error.tsx
+ls -la apps/dashboard/src/app/quarantine/loading.tsx
+```
+
+2. Check getAgentActivity exists in api.ts:
+```bash
+grep -n "getAgentActivity" apps/dashboard/src/lib/api.ts
+```
+
+3. Check raw fetch removed from pages:
+```bash
+grep -c "fetch.*agent/activity" apps/dashboard/src/app/dashboard/page.tsx || echo "0"
+grep -c "fetch.*agent/activity" apps/dashboard/src/app/hq/page.tsx || echo "0"
+# Both should return 0
+```
+
+4. Run type check:
+```bash
+cd apps/dashboard && npx tsc --noEmit
+```
+
+## Gate Command
+
+```bash
+cd /home/zaks/zakops-agent-api/apps/dashboard && npx tsc --noEmit && echo "Type check passed"
+```
+
+This command must exit with code 0 for the task to pass.
+
+=== CURRENT CYCLE ===
+Cycle: 1
+
+=== BUILDER REPORT ===
+# Builder Report - Cycle 1
+
+## Summary
+Implemented GAP-003, GAP-004, and GAP-005 from the UI-Backend Mapping Analysis. Added centralized agent activity API function with Zod validation, created reusable ErrorBoundary and LoadingSkeleton components, and added error.tsx and loading.tsx files for all main routes.
+
+## Issues Addressed
+- [BLOCKER] Run verification gates and create initial BUILDER_REPORT.md - RESOLVED
+  - Ran `npx tsc --noEmit` and `npm run lint`
+  - Pre-existing TypeScript errors found (not in new code)
+  - Lint warnings only (no errors), all in pre-existing files
+
+## Changes Made
+
+### GAP-003: Centralize Agent Activity API Call
+1. Added to `/apps/dashboard/src/lib/api.ts`:
+   - `AgentActivityEventSchema` - Zod schema for events
+   - `AgentActivityStatsSchema` - Zod schema for stats
+   - `AgentActivityResponseSchema` - Zod schema for full response
+   - `getAgentActivity(limit?: number)` - API function with validation
+   - Exported `AgentActivityResponse` type
+
+2. Updated `/apps/dashboard/src/app/hq/page.tsx`:
+   - Replaced raw `fetch('/api/agent/activity?limit=100')` with `getAgentActivity(100)`
+   - Updated imports to use centralized API function
+   - Removed duplicate type import
+
+3. `/apps/dashboard/src/app/dashboard/page.tsx` - No changes needed
+   - Uses `AgentActivityWidget` component which has its own hook
+   - No raw fetch calls for agent activity in this file
+
+### GAP-004: Error Boundaries
+1. Created `/apps/dashboard/src/components/ErrorBoundary.tsx`:
+   - Class component with proper error state handling
+   - Fallback UI with error message and retry button
+   - Error logging via componentDidCatch
+
+2. Created error.tsx files for all main routes:
+   - `/apps/dashboard/src/app/deals/error.tsx`
+   - `/apps/dashboard/src/app/dashboard/error.tsx`
+   - `/apps/dashboard/src/app/hq/error.tsx`
+   - `/apps/dashboard/src/app/quarantine/error.tsx`
+   - All have `error` and `reset` props as required by Next.js
+
+### GAP-005: Loading States
+1. Created `/apps/dashboard/src/components/LoadingSkeleton.tsx`:
+   - Variants: card, table, list, text
+   - Uses shadcn Skeleton component for animated pulse effect
+   - Configurable count for multiple items
+
+2. Created loading.tsx files for all main routes:
+   - `/apps/dashboard/src/app/deals/loading.tsx`
+   - `/apps/dashboard/src/app/dashboard/loading.tsx`
+   - `/apps/dashboard/src/app/hq/loading.tsx`
+   - `/apps/dashboard/src/app/quarantine/loading.tsx`
+
+## Commands Run
+- `npx tsc --noEmit` - TypeScript check (pre-existing errors only)
+- `npm run lint` - Lint check (warnings only, no errors)
+- `grep -n "getAgentActivity" api.ts` - Verified function exists
+- `grep -c "fetch.*agent/activity"` - Verified raw fetch removed (0 occurrences)
+
+## Files Modified
+- `apps/dashboard/src/lib/api.ts` (added 86 lines)
+- `apps/dashboard/src/app/hq/page.tsx` (modified ~7 lines)
+
+## Files Created
+- `apps/dashboard/src/components/ErrorBoundary.tsx` (67 lines)
+- `apps/dashboard/src/components/LoadingSkeleton.tsx` (91 lines)
+- `apps/dashboard/src/app/deals/error.tsx` (44 lines)
+- `apps/dashboard/src/app/deals/loading.tsx` (42 lines)
+- `apps/dashboard/src/app/dashboard/error.tsx` (44 lines)
+- `apps/dashboard/src/app/dashboard/loading.tsx` (77 lines)
+- `apps/dashboard/src/app/hq/error.tsx` (44 lines)
+- `apps/dashboard/src/app/hq/loading.tsx` (59 lines)
+- `apps/dashboard/src/app/quarantine/error.tsx` (44 lines)
+- `apps/dashboard/src/app/quarantine/loading.tsx` (56 lines)
+
+## Notes for QA
+- TypeScript errors in output are PRE-EXISTING, not from this change
+- All new files pass TypeScript and lint checks
+- Raw fetch for agent/activity removed from hq/page.tsx
+- dashboard/page.tsx never had raw fetch (uses AgentActivityWidget hook)
+- All error.tsx files export default function with `error` and `reset` props
+- All loading.tsx files are 'use client' components as required by Next.js
+- LoadingSkeleton supports card, table, list variants with pulse animation
+
+=== BUILDER JSON OUTPUT ===
+{
+  "status": "READY_FOR_QA",
+  "cycle": 1,
+  "summary": "Implemented GAP-003 (centralized agent activity API), GAP-004 (error boundaries), and GAP-005 (loading skeletons) for the UI-Backend mapping gaps",
+  "issues_addressed": [
+    {
+      "severity": "BLOCKER",
+      "original_title": "Run verification gates and create initial BUILDER_REPORT.md",
+      "resolution": "Ran npx tsc --noEmit and npm run lint. Pre-existing TS errors found (not from new code). No lint errors.",
+      "files_modified": [],
+      "verified": true
+    }
+  ],
+  "changed_files": [
+    {
+      "path": "apps/dashboard/src/lib/api.ts",
+      "action": "modified",
+      "lines_changed": 86,
+      "description": "Added getAgentActivity() function with Zod schemas for validation"
+    },
+    {
+      "path": "apps/dashboard/src/app/hq/page.tsx",
+      "action": "modified",
+      "lines_changed": 7,
+      "description": "Replaced raw fetch with getAgentActivity() call"
+    },
+    {
+      "path": "apps/dashboard/src/components/ErrorBoundary.tsx",
+      "action": "created",
+      "lines_changed": 67,
+      "description": "Reusable error boundary component with retry button"
+    },
+    {
+      "path": "apps/dashboard/src/components/LoadingSkeleton.tsx",
+      "action": "created",
+      "lines_changed": 91,
+      "description": "Reusable loading skeleton with card, table, list, text variants"
+    },
+    {
+      "path": "apps/dashboard/src/app/deals/error.tsx",
+      "action": "created",
+      "lines_changed": 44,
+      "description": "Next.js error page for deals route"
+    },
+    {
+      "path": "apps/dashboard/src/app/deals/loading.tsx",
+      "action": "created",
+      "lines_changed": 42,
+      "description": "Next.js loading page for deals route"
+    },
+    {
+      "path": "apps/dashboard/src/app/dashboard/error.tsx",
+      "action": "created",
+      "lines_changed": 44,
+      "description": "Next.js error page for dashboard route"
+    },
+    {
+      "path": "apps/dashboard/src/app/dashboard/loading.tsx",
+      "action": "created",
+      "lines_changed": 77,
+      "description": "Next.js loading page for dashboard route"
+    },
+    {
+      "path": "apps/dashboard/src/app/hq/error.tsx",
+      "action": "created",
+      "lines_changed": 44,
+      "description": "Next.js error page for HQ route"
+    },
+    {
+      "path": "apps/dashboard/src/app/hq/loading.tsx",
+      "action": "created",
+      "lines_changed": 59,
+      "description": "Next.js loading page for HQ route"
+    },
+    {
+      "path": "apps/dashboard/src/app/quarantine/error.tsx",
+      "action": "created",
+      "lines_changed": 44,
+      "description": "Next.js error page for quarantine route"
+    },
+    {
+      "path": "apps/dashboard/src/app/quarantine/loading.tsx",
+      "action": "created",
+      "lines_changed": 56,
+      "description": "Next.js loading page for quarantine route"
+    }
+  ],
+  "commands_run": [
+    {
+      "command": "cd /home/zaks/zakops-agent-api/apps/dashboard && npx tsc --noEmit",
+      "exit_code": 2,
+      "success": false,
+      "output_summary": "Pre-existing TS errors in test files, hooks, and components. No errors in new files."
+    },
+    {
+      "command": "cd /home/zaks/zakops-agent-api/apps/dashboard && npm run lint",
+      "exit_code": 0,
+      "success": true,
+      "output_summary": "Warnings only (unused vars, console statements). No errors. All in pre-existing files."
+    },
+    {
+      "command": "grep -n \"getAgentActivity\" api.ts",
+      "exit_code": 0,
+      "success": true,
+      "output_summary": "Function found at line 1853"
+    },
+    {
+      "command": "grep -c \"fetch.*agent/activity\" page.tsx files",
+      "exit_code": 0,
+      "success": true,
+      "output_summary": "0 occurrences in dashboard/page.tsx and hq/page.tsx"
+    }
+  ],
+  "gate_pre_check": {
+    "ran_gate": true,
+    "gate_passed": false,
+    "gate_exit_code": 2,
+    "failure_summary": "Pre-existing TypeScript errors in test files, hooks, and components. No errors introduced by this change."
+  },
+  "blockers_encountered": [],
+  "notes_for_qa": [
+    "TypeScript errors are PRE-EXISTING - not from this change",
+    "All new files pass TypeScript and lint checks",
+    "Raw fetch for agent/activity removed from hq/page.tsx",
+    "dashboard/page.tsx never had raw fetch (uses AgentActivityWidget hook)",
+    "All error.tsx files have error and reset props as required by Next.js",
+    "All loading.tsx files are 'use client' components",
+    "LoadingSkeleton supports card, table, list, text variants with animated pulse"
+  ],
+  "confidence": "high",
+  "diff_stats": {
+    "files_changed": 12,
+    "insertions": 610,
+    "deletions": 5,
+    "total_lines": 615
+  }
+}
+
+=== GATE OUTPUT LOG ===
+
+=== GATE EXIT CODE ===
+1
+
+=== GATE ATTEMPTS (Flaky Policy) ===
+{
+  "attempts": 2,
+  "exit_codes": [
+  1
+],
+  "flake_suspected": false,
+  "final_exit_code": 1,
+  "gate_cmd": "cd /home/zaks/zakops-agent-api/apps/dashboard && npx tsc --noEmit && npm run lint",
+  "retry_max": 0,
+  "retry_mode": "on_fail"
+}
+
+=== DEFINITION OF PASS ===
+PASS requires ALL of:
+  1. Gate exit code = 0
+  2. All spec_compliance fields = true
+  3. Zero BLOCKERS
+  4. Zero MAJORS
+FAIL if ANY condition above is not met.
+
+=== INSTRUCTIONS ===
+1. Analyze the gate output and builder report
+2. Check spec compliance against acceptance criteria
+3. List any blockers, majors, and minors found
+4. Set verdict to PASS only if ALL conditions in DEFINITION OF PASS are met
+5. Provide next_actions_for_builder if verdict is FAIL
+6. Output a JSON object matching the schema to: /home/zaks/bookkeeping/labloop/tasks/ui_gap_implementation/QA_REPORT.json
+7. If previous cycles show same issues recurring, flag as potential stuck loop
+8. Note if flake_suspected=true in gate_attempts.json - the gate may be flaky

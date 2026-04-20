@@ -1,0 +1,5 @@
+SKIP REVIEW
+- SKIP-001 Langfuse live trace: not executed (Langfuse unhealthy/unconfigured). Covered by rt_f_langfuse_absent.txt.
+- SKIP-002 Email ingestion E2E: not executed (no IMAP). Not required for this mission.
+- SKIP-003 RAG live search: not executed (RAG REST optional). Fallback verified in v4_3_rag_fallback.txt.
+All skips are within allowlist.

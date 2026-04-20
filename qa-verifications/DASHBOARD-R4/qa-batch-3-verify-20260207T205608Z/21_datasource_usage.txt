@@ -1,0 +1,15 @@
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:71:  dataSource?: string;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:81:  cache_source?: string;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:451:      let dataSource: string | undefined;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:496:            data_source?: string;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:511:          dataSource = doneData.data_source;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:565:                dataSource,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1054:        {!isUser && message.dataSource && !message.isStreaming && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1057:              Source: {message.dataSource === 'backend_api' ? 'DB' : message.dataSource}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1085:                      {cite.source}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1279:          {evidence.sources_queried.map((source) => (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1280:            <Badge key={source} variant='secondary' className='text-xs'>
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1281:              {source}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1618:              {timing.cache_source && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1620:                  <span className='text-muted-foreground'>Source:</span>
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1621:                  <span>{timing.cache_source}</span>

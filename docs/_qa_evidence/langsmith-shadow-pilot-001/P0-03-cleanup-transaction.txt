@@ -1,0 +1,52 @@
+BEGIN
+       label       
+-------------------
+ PRE-DELETE COUNTS
+(1 row)
+
+        tbl         | count 
+--------------------+-------
+ deals              |    58
+ quarantine_items   |     1
+ deal_events        |   159
+ deal_transitions   |     0
+ actions            |     0
+ deal_brain         |     0
+ deal_brain_history |     0
+ deal_entity_graph  |     0
+ deal_aliases       |     1
+ deal_access        |     0
+ decision_outcomes  |     0
+ artifacts          |     0
+ email_threads      |     0
+ outbox             |    21
+(14 rows)
+
+DELETE 0
+DELETE 0
+DELETE 0
+DELETE 0
+DELETE 159
+DELETE 1
+DELETE 0
+DELETE 0
+DELETE 0
+DELETE 0
+DELETE 0
+DELETE 1
+DELETE 21
+DELETE 58
+       label        
+--------------------
+ POST-DELETE COUNTS
+(1 row)
+
+       tbl        | count 
+------------------+-------
+ deals            |     0
+ quarantine_items |     0
+ deal_events      |     0
+ deal_transitions |     0
+(4 rows)
+
+COMMIT

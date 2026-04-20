@@ -1,0 +1,8 @@
+85:                    FROM zakops.idempotency_keys
+127:                        UPDATE zakops.idempotency_keys
+136:                        INSERT INTO zakops.idempotency_keys (idempotency_key, request_hash, endpoint, method, is_processing, processing_started_at)
+181:                        UPDATE zakops.idempotency_keys
+203:                            "UPDATE zakops.idempotency_keys SET is_processing = FALSE WHERE idempotency_key = $1",
+213:                        "UPDATE zakops.idempotency_keys SET is_processing = FALSE WHERE idempotency_key = $1",
+235:                "DELETE FROM zakops.idempotency_keys WHERE expires_at < NOW()"
+UNQUALIFIED_SQL_COUNT=0

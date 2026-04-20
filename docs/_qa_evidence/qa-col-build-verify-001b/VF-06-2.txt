@@ -1,0 +1,15 @@
+7: * Each toast has "Confirm" and "Dismiss" action buttons that call
+31:  /** Callback to confirm a ghost fact */
+32:  onConfirm: (dealId: string, factKey: string) => Promise<void>;
+33:  /** Callback to dismiss a ghost fact */
+34:  onDismiss: (dealId: string, factKey: string) => Promise<void>;
+39:export function useGhostKnowledgeToast({ onConfirm, onDismiss }: GhostKnowledgeToastProps) {
+61:                  onDismiss(event.deal_id, flag.key).catch(() => {
+62:                    toast.error('Failed to dismiss ghost knowledge');
+64:                  toast.dismiss();
+68:                Dismiss
+73:                  onConfirm(event.deal_id, flag.key).catch(() => {
+74:                    toast.error('Failed to confirm ghost knowledge');
+76:                  toast.dismiss();
+80:                Confirm
+91:    [onConfirm, onDismiss],

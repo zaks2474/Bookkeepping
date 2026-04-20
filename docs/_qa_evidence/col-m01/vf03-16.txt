@@ -1,0 +1,1 @@
+CREATE INDEX IF NOT EXISTS idx_threads_active ON chat_threads(user_id, last_active DESC) WHERE deleted = FALSE;

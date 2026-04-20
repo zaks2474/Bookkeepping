@@ -1,0 +1,6 @@
+308:# CHECK 13: Surface 17 — Dashboard API Route Coverage
+312:echo "--- Surface 17: Dashboard API Route Coverage ---"
+314:SURFACE17_SCRIPT="$REPO_ROOT/tools/infra/validate-surface17.sh"
+317:    echo "  PASS: Surface 17: Dashboard API route coverage check passed"
+319:    echo "  FAIL: Surface 17: Dashboard API route coverage check failed"
+323:  echo "  WARN: Surface 17: validate-surface17.sh not found — skipping"

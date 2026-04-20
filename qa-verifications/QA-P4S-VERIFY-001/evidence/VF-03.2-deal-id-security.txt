@@ -1,0 +1,10 @@
+=== VF-03.2 DEAL ID SECURITY ===
+OK: is_valid("DL-0086") = True (expected True)
+OK: is_valid("DL-IDEM2") = True (expected True)
+OK: is_valid("DL-abc123") = True (expected True)
+OK: is_valid("DL-'; DROP TABLE deals;--") = False (expected False)
+OK: is_valid("DL-../../../etc/passwd") = False (expected False)
+OK: is_valid("DL-<script>alert(1)</script>") = False (expected False)
+OK: is_valid("DL-foo bar") = False (expected False)
+OK: is_valid("DL-") = False (expected False)
+OK: is_valid("new") = False (expected False)

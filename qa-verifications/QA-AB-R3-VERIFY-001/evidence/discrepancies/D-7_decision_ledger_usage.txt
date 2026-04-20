@@ -1,0 +1,14 @@
+D-7 Decision ledger usage (rg)
+/home/zaks/zakops-agent-api/apps/agent-api/app/models/decision_ledger.py:27:class DecisionLedgerEntry(BaseModel, table=True):
+/home/zaks/zakops-agent-api/apps/agent-api/app/models/decision_ledger.py:133:class DecisionLedgerService:
+/home/zaks/zakops-agent-api/apps/agent-api/app/models/decision_ledger.py:177:    ) -> DecisionLedgerEntry:
+/home/zaks/zakops-agent-api/apps/agent-api/app/models/decision_ledger.py:206:            The created DecisionLedgerEntry
+/home/zaks/zakops-agent-api/apps/agent-api/app/models/decision_ledger.py:208:        entry = DecisionLedgerEntry(
+
+D-7 decision_ledger table present
+            List of relations
+ Schema |      Name       | Type  | Owner 
+--------+-----------------+-------+-------
+ public | decision_ledger | table | agent
+(1 row)
+

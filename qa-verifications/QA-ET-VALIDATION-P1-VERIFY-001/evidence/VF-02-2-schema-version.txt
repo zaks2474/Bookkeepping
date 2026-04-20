@@ -1,0 +1,50 @@
+=== VF-02.2 SCHEMA VERSION ENFORCEMENT ===
+228:    rejected_by: str = "ui_user"
+231:    @field_validator('rejected_by')
+233:    def sanitize_rejected_by(cls, v):
+234:        return _sanitize_name(v, "rejected_by") if v else "ui_user"
+260:    schema_version: str | None = None
+282:      schema_version, correlation_id, email_body_snippet, source_message_id)
+311:    schema_version: str | None = None
+335:    @field_validator("schema_version")
+337:    def validate_schema_version(cls, v: str | None) -> str | None:
+339:            raise ValueError(f"Unknown schema_version '{v}'. Allowed: {sorted(ALLOWED_SCHEMA_VERSIONS)}")
+346:# P1-02: Schema version allowlist — reject unknown versions to prevent silent drift
+347:ALLOWED_SCHEMA_VERSIONS = {"1.0.0"}
+351:    "email_subject", "sender", "classification", "schema_version",
+357:    action: str = Field(..., pattern="^(approve|reject|escalate)$")
+361:    reason: str | None = None  # Required for reject, optional for escalate
+374:    """P2-08: Bulk approve/reject with per-item validation."""
+376:    action: str = Field(..., pattern="^(approve|reject)$")
+378:    reason: str | None = None  # Required for reject
+455:            service_version=os.getenv("APP_VERSION", "1.0.0"),
+560:    version="1.0.0",
+1336:@app.post("/api/actions/{action_id}/reject")
+1337:async def reject_action(
+1339:    rejection: ActionReject,
+1359:            SET status = 'rejected',
+1365:                "action": "rejected",
+1366:                "by": rejection.rejected_by,
+1368:                "reason": rejection.reason
+1372:    return {"status": "rejected", "action_id": action_id}
+1500:    status: str | None = Query("pending", description="Filter by status (pending, approved, rejected, escalated)"),
+1597:            q.schema_version,
+1658:            q.schema_version,
+1731:                "message": f"source_type '{source_type}' is not allowed",
+1745:        if not item.schema_version:
+1746:            missing.append("schema_version")
+1793:               q.schema_version, q.source_type, q.version,
+1820:                 urgency, source_thread_id, schema_version, tool_version,
+1840:                      schema_version, source_type, version,
+1858:            item.source_thread_id, item.schema_version, item.tool_version,
+1977:    """P2-08: Bulk approve/reject quarantine items with per-item validation.
+1980:    # P2-06: Enforce reject reason for bulk reject
+1981:    if body.action == 'reject' and not body.reason:
+1984:            detail="Reject reason is required for bulk reject."
+2013:                new_status = 'approved' if body.action == 'approve' else 'rejected'
+2053:                    processing_meta['reject_reason'] = body.reason
+2081:    """Process a quarantine item (approve or reject).
+2086:    # P2-06: Enforce reject reason requirement
+2087:    if process.action == 'reject' and not (process.reason or process.notes):
+2145:            new_status = 'approved' if process.action == 'approve' else 'rejected'
+2278:                processing_meta['reject_reason'] = process.reason

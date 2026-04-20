@@ -1,0 +1,4 @@
+=== VF-05.1 CI GATE E SCRIPT WIRING ===
+41:              - 'tools/infra/validate-gatee-scan.sh'
+278:      - name: Gate E — Raw httpx client usage (CI-HARDENING-001: script-based with fallback)
+279:        run: bash tools/infra/validate-gatee-scan.sh

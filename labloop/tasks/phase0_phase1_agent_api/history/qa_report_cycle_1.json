@@ -1,0 +1,12 @@
+{
+  "verdict": "FAIL",
+  "cycle": 1,
+  "early_exit": true,
+  "summary": "All QA agents failed - primary: codex, fallback: gemini",
+  "blockers": [{"severity": "BLOCKER", "title": "QA system failure", "details": "Both Codex and Gemini failed to produce valid output. Check logs in history/"}],
+  "majors": [],
+  "minors": [],
+  "spec_compliance": {},
+  "next_actions_for_builder": [{"priority": 1, "severity": "BLOCKER", "summary": "Investigate QA agent failures"}],
+  "evidence": []
+}

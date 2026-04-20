@@ -1,0 +1,23 @@
+=== NC-4: ZOD CEILING GATE NEGATIVE CONTROL (CORRECTED) ===
+
+ESLint bans 'zod' imports outside whitelisted files.
+Whitelisted: src/lib/validators/**, src/types/api.ts, src/lib/parsers.ts, src/lib/schemas/**, src/lib/storage-utils.ts, src/lib/api.ts, src/app/chat/page.tsx, src/components/forms/**
+NC-4 tests: importing zod in a NON-whitelisted file (format.ts)
+
+Target file: /home/zaks/zakops-agent-api/apps/dashboard/src/lib/format.ts
+Added zod import to non-whitelisted file
+Running ESLint on sabotaged file (MUST FAIL)...
+
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/format.ts
+  20:1  error  'zod' import is restricted from being used by a pattern. Zod is only allowed in approved validation modules (src/lib/validators/*, src/types/api.ts, src/lib/parsers.ts). Move your schema to a validator module  no-restricted-imports
+
+✖ 1 problem (1 error, 0 warnings)
+
+
+ESLint exit code: 1 (expected: non-zero)
+PASS: ESLint correctly caught the banned zod import in non-whitelisted file
+
+Running ESLint after revert...
+After revert ESLint exit: 0
+
+=== NC-4 COMPLETE ===

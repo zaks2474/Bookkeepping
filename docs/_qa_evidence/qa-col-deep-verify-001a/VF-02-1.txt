@@ -1,0 +1,8 @@
+File: /home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py
+---
+create_thread method: line 58
+---
+FOUND: thread_ownership reference in create_thread
+  Line 81-91: INSERT INTO thread_ownership (thread_id, user_id, deal_id)
+  VALUES (:thread_id, :user_id, :deal_id)
+VERDICT: PASS

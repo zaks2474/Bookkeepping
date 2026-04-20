@@ -1,0 +1,66 @@
+=== STEP 2.0: Discovery & Pre-Flight ===
+--- Endpoint discovery (OpenAPI or probe) ---
+OpenAPI: 0 endpoints discovered
+--- Backend health endpoint probe ---
+  :8091/health -> HTTP 200
+  :8091/health/ready -> HTTP 200
+  :8091/health/live -> HTTP 200
+  :8091/api/deals -> HTTP 200
+  :8091/api/pipeline/summary -> HTTP 200
+--- RAG endpoint probe ---
+  :8052/health -> HTTP 404
+  :8052/rag/query -> HTTP 405
+  :8052/ -> HTTP 200
+  :8052/docs -> HTTP 200
+--- Dynamic deal discovery ---
+DL-0037|inbound|?
+DL-0036|inbound|?
+DL-0020|qualified|?
+Selected DEAL_ID_1=DL-0037 (stage=inbound)
+Selected DEAL_ID_2=DL-0036
+--- LLM health ---
+{
+    "object": "list",
+    "data": [
+        {
+            "id": "Qwen/Qwen2.5-32B-Instruct-AWQ",
+            "object": "model",
+            "created": 1770086887,
+            "owned_by": "vllm",
+            "root": "Qwen/Qwen2.5-32B-Instruct-AWQ",
+            "parent": null,
+            "max_model_len": 25000,
+            "permission": [
+                {
+                    "id": "modelperm-9a11a04f7f471510",
+                    "object": "model_permission",
+                    "created": 1770086887,
+                    "allow_create_engine": false,
+                    "allow_sampling": true,
+                    "allow_logprobs": true,
+                    "allow_search_indices": false,
+                    "allow_view": true,
+                    "allow_fine_tuning": false,
+                    "organization": "*",
+                    "group": null,
+                    "is_blocking": false
+                }
+            ]
+        }
+    ]
+}
+--- Baseline Agent DB counts ---
+time="2026-02-02T20:48:07-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-02T20:48:07-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+       tbl       | count 
+-----------------+-------
+ approvals       |     6
+ audit_log       |    13
+ checkpoints     |   392
+ tool_executions |     3
+(4 rows)
+
+--- Capture DEAL_API_URL + VLLM_BASE_URL ---
+http://host.docker.internal:8091
+http://host.docker.internal:8000/v1
+IF LLM DOWN or NO DEALS -> STOP per mission (override requested: continue with BLOCKED status).

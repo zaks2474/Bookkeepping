@@ -1,0 +1,24 @@
+root         235  0.0  0.0 107012 17664 ?        Ssl  Jan16   0:00 /usr/bin/python3 /usr/share/unattended-upgrades/unattended-upgrade-shutdown --wait-for-signal
+root       41414  0.0  0.5 25317972 193884 pts/2 Tl   Jan16   0:00 node /home/zaks/zakops-dashboard/node_modules/.bin/next build
+zaks      107095  0.1  0.3 894780 125980 ?       Ssl  Jan16  20:46 /usr/bin/python3 /home/zaks/scripts/deal_lifecycle_api.py --host 127.0.0.1 --port 8090
+zaks      142990  0.1  0.0 657100 19544 ?        Sl   Jan16  15:13 /usr/bin/python3 /home/zaks/.local/bin/litellm --config /home/zaks/litellm_config.yaml --port 4000 --host 0.0.0.0
+zaks      337544  0.0  0.2 306516 71120 ?        Ss   19:34   0:13 /usr/bin/python3 /home/zaks/scripts/actions_runner.py --runner-name=kinetic_actions --lease-seconds=30 --poll-seconds=2.0 --action-lock-seconds=300
+zaks      478864  0.2  0.6 2348900 226084 ?      Ssl  21:22   0:18 python -m src.crawl4ai_mcp
+root      479169  0.1  0.1 145968 61940 ?        Ssl  21:22   0:12 /usr/local/bin/python3.12 /usr/local/bin/uvicorn src.api.rag_rest_api:app --host 0.0.0.0 --port 8080
+zaks      479236  0.0  0.2 1124464 72436 ?       Sl   21:22   0:00 /usr/local/lib/python3.12/site-packages/playwright/driver/node /usr/local/lib/python3.12/site-packages/playwright/driver/package/cli.js run-driver
+zaks      479411  0.0  0.2 1058148 71976 ?       Sl   21:22   0:00 /usr/local/lib/python3.12/site-packages/playwright/driver/node /usr/local/lib/python3.12/site-packages/playwright/driver/package/cli.js run-driver
+root      479870  0.4  3.3 11113240 1095344 ?    Ssl  21:23   0:29 /usr/bin/python3 /usr/local/bin/vllm serve --model Qwen/Qwen2.5-32B-Instruct-AWQ --quantization awq --dtype auto --max-model-len 25000 --gpu-memory-utilization 0.90 --enable-auto-tool-choice --tool-call-parser hermes --enforce-eager
+root      480060  0.4  2.4 6198452 795940 ?      Ssl  21:23   0:32 /usr/local/bin/python3 -m uvicorn open_webui.main:app --host 0.0.0.0 --port 8080 --forwarded-allow-ips * --workers 1
+root      480794  0.0  0.0  17080 11712 ?        S    21:23   0:00 /usr/bin/python3 -c from multiprocessing.resource_tracker import main;main(39)
+zaks      487882  0.1  0.3 451444 116464 ?       Ssl  21:26   0:12 /usr/local/bin/python3.11 /usr/local/bin/uvicorn src.api.orchestration.main:app --host 0.0.0.0 --port 8091
+zaks      497451  0.3  0.8 2333580 273724 ?      Ssl  21:31   0:20 /app/.venv/bin/python3 /app/.venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000
+root      593459  0.0  0.0   4884  3264 ?        Ss   23:21   0:00 /bin/bash -c -l source /root/.claude/shell-snapshots/snapshot-bash-1769283641056-drk6u4.sh && shopt -u extglob 2>/dev/null || true && eval 'echo "" echo "=== 0.8 Creating Pre-Decommission Manifest ===" MANIFEST_DIR="/home/zaks/bookkeeping/decommission_$(date +%Y%m%d_%H%M%S)" mkdir -p "$MANIFEST_DIR"  # Save current state docker ps -a > "$MANIFEST_DIR/docker_containers.txt" docker volume ls > "$MANIFEST_DIR/docker_volumes.txt" docker network ls > "$MANIFEST_DIR/docker_networks.txt" ss -tlnp > "$MANIFEST_DIR/listening_ports.txt" ps aux | grep -E "python|node|uvicorn" > "$MANIFEST_DIR/processes.txt"  echo "Manifest saved to: $MANIFEST_DIR" ls -la "$MANIFEST_DIR"  # Export for later phases echo "$MANIFEST_DIR" > /tmp/manifest_dir.txt' \< /dev/null && pwd -P >| /tmp/claude-3ef6-cwd
+root      593524  0.0  0.0   4092  1728 ?        S    23:21   0:00 grep -E python|node|uvicorn
+root     1191917  0.0  0.4 22357280 154488 pts/8 Sl+  Jan23   0:01 node /root/.npm-global/bin/gemini --resume --yolo
+root     1191939  0.0  1.8 33321716 607096 pts/8 Sl+  Jan23   1:36 /usr/bin/node /root/.npm-global/bin/gemini --resume --yolo
+root     1194189  0.0  0.1 760080 42240 pts/4    Sl+  Jan23   0:00 node /root/.npm-global/bin/codex resume --yolo
+root     1194200  0.0  0.2 161820 70108 pts/4    Sl+  Jan23   2:25 /root/.npm-global/lib/node_modules/@openai/codex/vendor/x86_64-unknown-linux-musl/codex/codex resume --yolo
+zaks     1505167  0.1  0.1 358444 50096 ?        Ssl  Jan19   8:54 /usr/bin/python3 -c import uvicorn; uvicorn.run('main:app', host='0.0.0.0', port=9200)
+root     2481526  0.0  0.3 1070536 98480 pts/9   Sl+  Jan24   0:00 node /root/.npm/_npx/952459504b2da320/node_modules/.bin/gmail-mcp
+zaks     3184414  1.3  0.2 276400 87484 ?        Ssl  Jan22  77:22 /usr/bin/python3 /home/zaks/zakops-backend/mcp_server/server_v3.py
+root     3196620  0.0  0.3 1070572 101588 pts/10 Sl+  Jan24   0:01 node /root/.npm/_npx/952459504b2da320/node_modules/.bin/gmail-mcp

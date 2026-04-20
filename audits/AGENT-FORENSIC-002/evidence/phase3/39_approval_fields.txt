@@ -1,0 +1,22 @@
+=== STEP 3.10: Approval Record Completeness ===
+time="2026-02-02T21:01:04-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-02T21:01:04-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+                  id                  |    thread_id     |            checkpoint_id             |    tool_name    |                                                       tool_args                                                       |     actor_id     |  status  |                                          idempotency_key                                          |          expires_at           |          created_at           
+--------------------------------------+------------------+--------------------------------------+-----------------+-----------------------------------------------------------------------------------------------------------------------+------------------+----------+---------------------------------------------------------------------------------------------------+-------------------------------+-------------------------------
+ 1d17d04c-e2c1-4b03-ac81-96f6dcbd06d4 | f002-race-001    | 1f100a62-889b-62ba-8001-4b9e9666f468 | transition_deal | {"deal_id": "DL-0020", "from_stage": "initial_contact", "to_stage": "negotiation"}                                    | forensic-auditor | approved | f002-race-001:transition_deal:13c6e9da68891f398d04b38dae6a9a87e28a63e19d9690d74f934e6b0e3ad173    | 2026-02-03 03:15:06.996489+00 | 2026-02-03 02:15:06.996583+00
+ ea82a675-2efc-4b7e-9d1b-5739df66a8ae | f002-restart-001 | 1f100a61-913b-6926-8001-68df350a3db3 | transition_deal | {"deal_id": "DL-0037", "from_stage": "unknown", "to_stage": "due_diligence", "reason": null}                          | forensic-auditor | approved | f002-restart-001:transition_deal:6fede0b9cce1cb249ba6f4d818e1ec1f91c3677b2680f4e4e4fb6763a1fcadc2 | 2026-02-03 03:14:41.058043+00 | 2026-02-03 02:14:41.05817+00
+ 8ee0aa7a-7139-4efe-a7ba-7c0946488b4f | f002-path-e-001  | 1f100a5e-45ae-66de-8001-bf2627c9f520 | transition_deal | {"deal_id": "DL-0020", "from_stage": "initial_contact", "to_stage": "negotiation", "reason": null}                    | forensic-auditor | rejected | f002-path-e-001:transition_deal:19bb10f6df0c17b3a2c1c31a59abdcd4be7f18f4896aa8543f589f7fadb172a6  | 2026-02-03 03:13:12.609712+00 | 2026-02-03 02:13:12.609845+00
+ 4b466371-a1f1-45d0-aff0-53da812af541 | f002-path-c-001  | 1f100a55-2843-6e8d-8001-286ccd726ebc | transition_deal | {"deal_id": "DL-0020", "from_stage": "proposal", "to_stage": "due_diligence", "reason": null}                         | forensic-auditor | approved | f002-path-c-001:transition_deal:9b4e0d13ea8218569ae15607ec43706433585eae3788b7c5a51e737690576c8d  | 2026-02-03 03:09:07.931621+00 | 2026-02-03 02:09:07.931737+00
+ 0a8b039c-6e53-4f1c-a731-b0243fb8c6b4 | f002-err-002     | 1f100a53-cbbb-6ad6-8001-3206105eea35 | transition_deal | {"deal_id": "DL-0020", "from_stage": "current", "to_stage": "closed_won", "reason": "Immediate transition requested"} | forensic-auditor | pending  | f002-err-002:transition_deal:d85ea7cfb135a7907be394e5b6925d63f1d00e9d21272f88cdefd5238e33840c     | 2026-02-03 03:08:31.385549+00 | 2026-02-03 02:08:31.385664+00
+ 18f3a017-ec93-4222-abf1-52b8121e80ae | f002-hitl-001    | 1f100a4f-d92e-6ba2-8001-5dc8936dfc34 | transition_deal | {"deal_id": "DL-0020", "from_stage": "unknown", "to_stage": "due_diligence", "reason": null}                          | forensic-auditor | pending  | f002-hitl-001:transition_deal:a2cb7e61a65487804951a793125a55f7b70a024bced2697b5f9e27fe0b76ac9d    | 2026-02-03 03:06:45.418829+00 | 2026-02-03 02:06:45.419004+00
+(6 rows)
+
+FIELD CHECKLIST:
+  id: UUID format? [Y/N]
+  thread_id: matches request? [Y/N]
+  tool_name: transition_deal? [Y/N]
+  tool_args: contains deal + stage? [Y/N]
+  status: pending/approved/rejected? [Y/N]
+  idempotency_key: unique per approval? [Y/N]
+  expires_at: set? [Y/N]
+  NO NULL required fields? [Y/N]

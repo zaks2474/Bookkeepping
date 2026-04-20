@@ -1,0 +1,33 @@
+=== INDEPENDENT anyOf NULLABLE ANALYSIS ===
+
+Total nullable anyOf fields found: 90
+  ActionApprove.notes
+  ActionResponse.deal_id
+  ActionResponse.summary
+  ActionResponse.deal_name
+  ActionResponse.deal_stage
+  ActionSearchResponse.next_cursor
+  ActionSearchResult.deal_id
+  ActionSearchResult.title
+  AgentRunResponse.completed_at
+  AgentRunResponse.result
+  AgentRunResponse.error
+  DealCreate.display_name
+  DealCreate.folder_path
+  DealCreate.identifiers
+  DealCreate.company_info
+  DealCreate.broker
+  DealCreate.metadata
+  DealEvent.source
+  DealEvent.actor
+  DealEvent.details
+  DealResponse.display_name
+  DealResponse.folder_path
+  DealResponse.days_since_update
+  DealResponse.action_count
+  DealResponse.alias_count
+  DealSearchResponse.next_cursor
+  DealSearchResponse.total
+  DealSearchResponse.offset
+  DealSearchResult.company_name
+  DealSearchResult.updated_at

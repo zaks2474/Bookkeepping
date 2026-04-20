@@ -1,0 +1,32 @@
+[
+    {
+        "stage": "inbound",
+        "count": 21,
+        "avg_days_in_stage": 2.2
+    },
+    {
+        "stage": "screening",
+        "count": 7,
+        "avg_days_in_stage": 4.0
+    },
+    {
+        "stage": "qualified",
+        "count": 1,
+        "avg_days_in_stage": 4.0
+    },
+    {
+        "stage": "loi",
+        "count": 1,
+        "avg_days_in_stage": 4.0
+    },
+    {
+        "stage": "diligence",
+        "count": 1,
+        "avg_days_in_stage": 4.0
+    },
+    {
+        "stage": "archived",
+        "count": 6,
+        "avg_days_in_stage": 2.0
+    }
+]

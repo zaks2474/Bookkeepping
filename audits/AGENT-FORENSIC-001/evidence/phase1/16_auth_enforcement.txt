@@ -1,0 +1,40 @@
+=== STEP 1.7: Auth Enforcement ===
+/agent/invoke (no auth): 200
+/agent/invoke (wrong token): 200
+/api/v1/auth/sessions (no JWT): 401
+/api/v1/auth/sessions (bad JWT): 422
+
+=== STEP 1.7b: Additional Auth Enforcement Checks ===
+-- /api/v1/auth/session (POST) --
+no JWT: 401
+bad JWT: 422
+valid JWT: 200
+-- /api/v1/chatbot/chat --
+no auth: 401
+bad JWT: 401
+session token: 401
+-- /api/v1/chatbot/chat/stream --
+no auth: 401
+bad JWT: 401
+session token: 401
+-- /api/v1/chatbot/messages (GET) --
+no auth: 401
+bad JWT: 422
+session token: 404
+-- /api/v1/chatbot/messages (DELETE) --
+no auth: 401
+bad JWT: 422
+session token: 404
+-- /agent/approvals (GET) --
+no auth: 200
+service token: 200
+-- /agent/threads/{thread_id}/state (GET) --
+no auth: 200
+service token: 200
+-- /api/v1/agent/invoke (POST) --
+no auth: 200
+JWT: 200
+
+=== STEP 1.7c: Wrong Token Checks ===
+/agent/approvals (wrong token): 200
+/agent/threads/{thread_id}/state (wrong token): 200

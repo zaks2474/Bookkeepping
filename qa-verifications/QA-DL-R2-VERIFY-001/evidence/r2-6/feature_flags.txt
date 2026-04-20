@@ -1,0 +1,4 @@
+102:    if os.getenv("FOLDER_SCAFFOLDING_ENABLED", "false").lower() == "true":
+105:    # R2-7: RAG indexing (enabled by default, disable with RAG_AUTO_INDEX_ENABLED=false)
+106:    if os.getenv("RAG_AUTO_INDEX_ENABLED", "true").lower() == "true":
+234:if os.getenv("EVENT_HANDLERS_ENABLED", "true").lower() == "true":

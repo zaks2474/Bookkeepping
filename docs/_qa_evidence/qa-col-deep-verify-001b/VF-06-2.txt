@@ -1,0 +1,13 @@
+87:    async def get_daily_spend(self, user_id: Optional[str] = None) -> float:
+102:    async def get_monthly_spend(self, deal_id: str) -> float:
+115:    async def get_avg_daily_cost(self, deal_id: str, days: int = 7) -> float:
+116:        """Get average daily cost over last N days for a deal."""
+190:                "monthly_spend": float,
+201:                "monthly_spend": 0,
+206:        monthly_spend = await self.get_monthly_spend(deal_id)
+208:        utilization = monthly_spend / monthly_limit if monthly_limit > 0 else 0
+210:        if budget["hard_cap"] and monthly_spend >= monthly_limit:
+214:                spend=monthly_spend,
+220:                "monthly_spend": monthly_spend,
+236:                "monthly_spend": monthly_spend,
+244:            "monthly_spend": monthly_spend,

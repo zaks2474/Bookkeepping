@@ -1,0 +1,8 @@
+Line 33: const USER_ID = process.env.ZAKOPS_USER_ID || 'zak';
+Line 77: response.headers.set('X-User-Id', USER_ID);
+Line 99: 'X-User-Id': USER_ID,
+---
+Set in BOTH paths:
+  1. handledByRoutes pass-through (line 77)
+  2. Backend proxy headers (line 99)
+VERDICT: PASS

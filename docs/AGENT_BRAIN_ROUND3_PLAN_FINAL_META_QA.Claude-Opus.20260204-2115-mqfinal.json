@@ -1,0 +1,88 @@
+{
+  "agent_identity": {
+    "agent_name": "Claude-Opus",
+    "run_id": "20260204-2115-mqfinal",
+    "date_time": "2026-02-04T21:15:00Z",
+    "repo_revision": "3173c36f714f13524f3d81375483484887a6ac99"
+  },
+  "status": "PASS",
+  "audited_plan": {
+    "path": "/home/zaks/bookkeeping/docs/AGENT_BRAIN_ROUND3_PLAN_FINAL.md",
+    "json_path": "/home/zaks/bookkeeping/docs/AGENT_BRAIN_ROUND3_PLAN_FINAL.json",
+    "agent": "Codex",
+    "run_id": "20260204-2004-4b2f4e"
+  },
+  "gate_results": {
+    "gate_1_no_drop_coverage": {
+      "status": "PASS",
+      "evidence": "Coverage matrix includes all 25 ZK-BRAIN-ISSUE IDs (0001-0025)",
+      "notes": "No issues missing; no duplicates; no ambiguous mappings"
+    },
+    "gate_2_p0_p1_risk_closure": {
+      "status": "PASS",
+      "evidence": "Phase 0 addresses HITL, grounding, auth; Phase 1 addresses ToolResult, try/except, idempotency",
+      "notes": "All P0/P1 issues have concrete tasks + verification methods"
+    },
+    "gate_3_verification_rigor": {
+      "status": "PASS",
+      "evidence": "Gate A (unit tests), Gate D (idempotency), Gate G (CI eval + adversarial suite)",
+      "notes": "Prompt injection, RAG outage, malformed tool calls explicitly tested"
+    },
+    "gate_4_observability_traceability": {
+      "status": "PASS",
+      "evidence": "Phase 2 mandates correlation_id, Langfuse/OTel, prompt versioning",
+      "notes": "Ship criteria: traces for >=95% of requests"
+    },
+    "gate_5_memory_rag_quality": {
+      "status": "PASS",
+      "evidence": "Phase 3 includes deal-scoped memory, DealContext, RAG provenance, SQL fallback",
+      "notes": "Memory isolation and fallback explicitly addressed"
+    }
+  },
+  "coverage_proof": {
+    "total_brain_issues": 25,
+    "total_mapped": 25,
+    "missing_issue_ids": [],
+    "duplicate_issue_ids": [],
+    "ambiguous_mappings": []
+  },
+  "issue_mapping": [
+    {"id": "ZK-BRAIN-ISSUE-0001", "phase": "Phase 0", "task": "HITL enforcement", "mapped": true},
+    {"id": "ZK-BRAIN-ISSUE-0002", "phase": "Phase 0", "task": "Grounding guard", "mapped": true},
+    {"id": "ZK-BRAIN-ISSUE-0003", "phase": "Phase 2", "task": "Langfuse config", "mapped": true},
+    {"id": "ZK-BRAIN-ISSUE-0004", "phase": "Phase 0", "task": "actor_id verification", "mapped": true},
+    {"id": "ZK-BRAIN-ISSUE-0005", "phase": "Phase 3", "task": "Enable long-term memory", "mapped": true},
+    {"id": "ZK-BRAIN-ISSUE-0006", "phase": "Phase 3", "task": "Deal-scoped memory", "mapped": true},
+    {"id": "ZK-BRAIN-ISSUE-0007", "phase": "Phase 4", "task": "M&A prompt", "mapped": true},
+    {"id": "ZK-BRAIN-ISSUE-0008", "phase": "Phase 1", "task": "Tool call budget", "mapped": true},
+    {"id": "ZK-BRAIN-ISSUE-0009", "phase": "Phase 2", "task": "Prompt versioning", "mapped": true},
+    {"id": "ZK-BRAIN-ISSUE-0010", "phase": "Phase 4", "task": "CI gate for evals", "mapped": true},
+    {"id": "ZK-BRAIN-ISSUE-0011", "phase": "Phase 2", "task": "Correlation_id propagation", "mapped": true},
+    {"id": "ZK-BRAIN-ISSUE-0012", "phase": "Phase 1", "task": "Idempotency keys", "mapped": true},
+    {"id": "ZK-BRAIN-ISSUE-0013", "phase": "Phase 1", "task": "ToolResult schema", "mapped": true},
+    {"id": "ZK-BRAIN-ISSUE-0014", "phase": "Phase 3", "task": "Configurable mem0 provider", "mapped": true},
+    {"id": "ZK-BRAIN-ISSUE-0015", "phase": "Phase 1", "task": "Tool try/except", "mapped": true},
+    {"id": "ZK-BRAIN-ISSUE-0016", "phase": "Phase 3", "task": "RAG provenance + fallback", "mapped": true},
+    {"id": "ZK-BRAIN-ISSUE-0017", "phase": "Phase 2", "task": "Decision ledger", "mapped": true},
+    {"id": "ZK-BRAIN-ISSUE-0018", "phase": "Phase 2", "task": "Dynamic tool list", "mapped": true},
+    {"id": "ZK-BRAIN-ISSUE-0019", "phase": "Phase 2", "task": "Response logging", "mapped": true},
+    {"id": "ZK-BRAIN-ISSUE-0020", "phase": "Phase 4", "task": "Expand golden traces", "mapped": true},
+    {"id": "ZK-BRAIN-ISSUE-0021", "phase": "Phase 4", "task": "Stage transition rules", "mapped": true},
+    {"id": "ZK-BRAIN-ISSUE-0022", "phase": "Phase 1", "task": "Fix dev mocks", "mapped": true},
+    {"id": "ZK-BRAIN-ISSUE-0023", "phase": "Phase 4", "task": "Deal health scoring", "mapped": true},
+    {"id": "ZK-BRAIN-ISSUE-0024", "phase": "Phase 4", "task": "Next-step recommendations", "mapped": true},
+    {"id": "ZK-BRAIN-ISSUE-0025", "phase": "Phase 2", "task": "Reasoning capture", "mapped": true}
+  ],
+  "standard_alignment": {
+    "grounded": true,
+    "safe_hitl": true,
+    "correct_reliable": true,
+    "observable": true,
+    "provider_agnostic": true,
+    "deal_aware": true,
+    "production_evaluable": true
+  },
+  "patch_instructions": null,
+  "report_path": "/home/zaks/bookkeeping/docs/AGENT_BRAIN_ROUND3_PLAN_FINAL_META_QA.Claude-Opus.20260204-2115-mqfinal.md",
+  "json_path": "/home/zaks/bookkeeping/docs/AGENT_BRAIN_ROUND3_PLAN_FINAL_META_QA.Claude-Opus.20260204-2115-mqfinal.json"
+}

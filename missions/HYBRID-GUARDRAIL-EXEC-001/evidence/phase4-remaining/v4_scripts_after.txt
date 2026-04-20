@@ -1,0 +1,34 @@
+=== V4 SCRIPTS AFTER (V5 Slim) ===
+  tools/infra/db-assertion.sh:          57 lines  (was 283, slimmed 80%)
+  tools/infra/discover-topology.sh:    107 lines  (was 426, slimmed 75%)
+  tools/infra/generate-manifest.sh:    156 lines  (kept)
+  tools/infra/generate-preflight.sh:    79 lines  (new in Phase 2)
+  tools/infra/manifest-age-gate.sh:     72 lines  (kept)
+  tools/infra/migration-assertion.sh:   56 lines  (was 200, slimmed 72%)
+  tools/infra/redact.sh:                13 lines  (kept)
+  tools/infra/scan-evidence-secrets.sh:  65 lines  (kept)
+  tools/infra/validate-enforcement.sh: 205 lines  (kept, updated checks)
+  tools/validation/rag-routing-proof.sh: 157 lines  (kept)
+TOTAL: 967 lines
+
+=== DELETED SCRIPTS (Phase 4) ===
+  schema-diff.sh:              650 lines → DELETED (codegen replaces)
+  detect-phantom-endpoints.sh: 204 lines → DELETED (types replace)
+  dashboard-network-capture.sh: 302 lines → DELETED (typecheck + smoke)
+  sse-validation.sh:           161 lines → DELETED (SSE not implemented)
+
+=== ARCHIVED SCRIPTS (Phase 4) ===
+  extract-contracts.sh:    222 lines → ARCHIVED (codegen pipeline replaces schema diffing)
+  openapi-discovery.sh:    109 lines → ARCHIVED (sync-types handles OpenAPI fetch)
+  capture-auth-state.sh:    65 lines → ARCHIVED (one-time utility)
+
+=== SLIMMED SCRIPTS ===
+  discover-topology.sh: 426 → 107 lines (-75%)
+  db-assertion.sh:      283 →  57 lines (-80%)
+  migration-assertion.sh: 200 → 56 lines (-72%)
+
+=== SUMMARY ===
+Before (all tools/ scripts):    3,369 lines
+After:                            967 lines
+Reduction:                       2,402 lines (71% reduction)
+Target (<1,000):                  PASS

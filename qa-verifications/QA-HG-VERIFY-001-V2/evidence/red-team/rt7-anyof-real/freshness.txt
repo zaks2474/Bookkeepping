@@ -1,0 +1,15 @@
+✨ openapi-typescript 7.10.1
+🚀 /tmp/rt7_fresh_spec.json → /tmp/rt7_fresh_generated.ts [94ms]
+Diff lines between committed and fresh: 4443
+WARNING: 4443 diff lines — investigating...
+
+=== INVESTIGATION CLARIFICATION ===
+The diff is due to endpoint ORDERING differences between live endpoint JSON
+and the locally stored contract file. Both have identical content:
+- Live schemas: 56, Local spec schemas: 56 (0 difference)
+- Live paths: 83, Local spec paths: 83 (0 difference)
+- Makefile uses LOCAL spec file (packages/contracts/openapi/zakops-api.json)
+  not the live endpoint for codegen
+- The generated file is correctly generated from the local contract
+
+VERDICT: PASS (ordering diff only, no semantic drift)

@@ -1,0 +1,20 @@
+5:have continuous session durations exceeding safe thresholds.
+16:# Configurable thresholds (B3-10)
+23:    """Warning emitted when fatigue thresholds are exceeded."""
+25:    warning_type: str  # "decision_count" or "session_duration"
+40:        decision_threshold: int = DEFAULT_DECISION_THRESHOLD,
+44:        self.decision_threshold = decision_threshold
+70:        Returns FatigueWarning if thresholds exceeded, None otherwise.
+85:        # Check decision count threshold
+86:        if len(recent_decisions) >= self.decision_threshold:
+87:            warning = FatigueWarning(
+89:                warning_type="decision_count",
+94:            logger.warning(
+97:                warning_type="decision_count",
+101:            return warning
+103:        # Check session duration threshold
+106:            warning = FatigueWarning(
+108:                warning_type="session_duration",
+113:            logger.warning(
+116:                warning_type="session_duration",
+119:            return warning

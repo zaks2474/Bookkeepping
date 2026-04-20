@@ -1,0 +1,26 @@
+61:    def from_legacy(cls, json_string: str) -> "ToolResult":
+62:        """Convert legacy JSON string response to ToolResult.
+75:            # Case 1: Has explicit "ok" field - legacy format
+82:                        metadata={"legacy_data": data}
+89:                    metadata={"legacy_data": data}
+61:    def from_legacy(cls, json_string: str) -> "ToolResult":
+62-        """Convert legacy JSON string response to ToolResult.
+63-
+64-        Handles multiple formats:
+65-        1. Legacy format: {"ok": bool, "error"?: str, ...other fields}
+66-        2. Direct data (e.g., deal objects): {"deal_id": ..., "stage": ..., ...}
+67-        3. Error only: {"error": "..."}
+68-
+69-        R4 REMEDIATION: Fixed to not treat valid data as errors when "ok" is missing.
+70-        """
+71-        import json
+72-        try:
+73-            data = json.loads(json_string)
+74-
+75-            # Case 1: Has explicit "ok" field - legacy format
+76-            if "ok" in data:
+77-                if data.get("ok"):
+78-                    return cls.success_result(data)
+79-                else:
+80-                    return cls.error_result(
+81-                        data.get("error", "Unknown error"),

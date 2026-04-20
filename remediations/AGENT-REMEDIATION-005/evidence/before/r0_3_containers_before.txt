@@ -1,0 +1,60 @@
+=== R0.3 CONTAINER INVENTORY ===
+zakops-backend-postgres-1        postgres:15-alpine                   Up 7 hours (healthy)            
+zakops-agent-db                  pgvector/pgvector:pg16               Up 37 hours (healthy)           5432/tcp
+rag-db                           pgvector/pgvector:pg17               Up 37 hours                     0.0.0.0:5434->5432/tcp, [::]:5434->5432/tcp
+zakops-postgres-1                postgres:15-alpine                   Up 32 hours (healthy)           0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp
+
+--- Container Labels ---
+=== zakops-backend-postgres-1 ===
+{
+    "com.docker.compose.config-hash": "87a6be0b9f990dd503acebfed970ad2426943fa787eec991f402c8747d69bde3",
+    "com.docker.compose.container-number": "1",
+    "com.docker.compose.depends_on": "",
+    "com.docker.compose.image": "sha256:2e7b888f221193cddee9ce554d3311dc8be197a5d0c904fe30f5f568e0f99851",
+    "com.docker.compose.oneoff": "False",
+    "com.docker.compose.project": "zakops-backend",
+    "com.docker.compose.project.config_files": "/home/zaks/zakops-backend/docker-compose.yml",
+    "com.docker.compose.project.working_dir": "/home/zaks/zakops-backend",
+    "com.docker.compose.replace": "postgres-1",
+    "com.docker.compose.service": "postgres",
+    "com.docker.compose.version": "2.40.3"
+}
+=== zakops-agent-db ===
+{
+    "com.docker.compose.config-hash": "25b9d6275628594332b60cad0fe26eaaed17219a070eddbed9251116fefa84fa",
+    "com.docker.compose.container-number": "1",
+    "com.docker.compose.depends_on": "",
+    "com.docker.compose.image": "sha256:0a07c4114ba6d1d04effcce3385e9f5ce305eb02e56a3d35948a415a52f193ec",
+    "com.docker.compose.oneoff": "False",
+    "com.docker.compose.project": "agent-api",
+    "com.docker.compose.project.config_files": "/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml",
+    "com.docker.compose.project.working_dir": "/home/zaks/zakops-agent-api/apps/agent-api",
+    "com.docker.compose.service": "db",
+    "com.docker.compose.version": "2.40.3"
+}
+=== rag-db ===
+{
+    "com.docker.compose.config-hash": "27daf436f16fda62447d0e68f7399bdf13f7813638a7f6e410d0c1f14a53c053",
+    "com.docker.compose.container-number": "1",
+    "com.docker.compose.depends_on": "",
+    "com.docker.compose.image": "sha256:1a5ea285a159bed991c74a9c4751b6eadc536b3c3263f3f95ec3865885a62b69",
+    "com.docker.compose.oneoff": "False",
+    "com.docker.compose.project": "crawl4ai-rag",
+    "com.docker.compose.project.config_files": "/root/mcp-servers/crawl4ai-rag/docker-compose.yml",
+    "com.docker.compose.project.working_dir": "/root/mcp-servers/crawl4ai-rag",
+    "com.docker.compose.service": "rag-db",
+    "com.docker.compose.version": "2.40.3"
+}
+=== zakops-postgres-1 ===
+{
+    "com.docker.compose.config-hash": "87a6be0b9f990dd503acebfed970ad2426943fa787eec991f402c8747d69bde3",
+    "com.docker.compose.container-number": "1",
+    "com.docker.compose.depends_on": "",
+    "com.docker.compose.image": "sha256:2e7b888f221193cddee9ce554d3311dc8be197a5d0c904fe30f5f568e0f99851",
+    "com.docker.compose.oneoff": "False",
+    "com.docker.compose.project": "zakops",
+    "com.docker.compose.project.config_files": "/home/zaks/zakops-backend/docker-compose.yml",
+    "com.docker.compose.project.working_dir": "/home/zaks/zakops-backend",
+    "com.docker.compose.service": "postgres",
+    "com.docker.compose.version": "2.40.3"
+}

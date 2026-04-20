@@ -1,0 +1,17 @@
+=== XC-5 COUNT SCRIPT VS AUTHORITATIVE COUNTS ===
+=== Four-Way Surface Count Consistency ===
+
+  Contract catalog: 14
+  CLAUDE.md header: 14 (table rows: 14)
+  Unified validator: 14 (invocations: 37)
+  Manifest entries: 14
+
+  PASS: All 4 sources agree: 14 surfaces
+
+Four-Way Count Consistency: PASS (1 pass, 0 fail)
+contract-surfaces.md= 14
+CLAUDE.md= 14
+validator_header= 14
+manifest_section= 14
+OVERALL= PASS
+EXIT=0

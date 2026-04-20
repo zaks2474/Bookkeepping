@@ -1,0 +1,20 @@
+=== V-L4.9: Error Boundaries Search ===
+Date: 2026-02-09T04:55:21Z
+
+--- ErrorBoundary component references ---
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ErrorBoundary.tsx:8:interface ErrorBoundaryProps {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ErrorBoundary.tsx:13:interface ErrorBoundaryState {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ErrorBoundary.tsx:22:export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ErrorBoundary.tsx:23:  constructor(props: ErrorBoundaryProps) {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ErrorBoundary.tsx:28:  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ErrorBoundary.tsx:32:  componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ErrorBoundary.tsx:34:    console.error('ErrorBoundary caught an error:', error, errorInfo);
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/ErrorBoundary.tsx:77:export default ErrorBoundary;
+
+--- error.tsx files (Next.js error boundaries) ---
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/error.tsx
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/error.tsx
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/error.tsx
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/error.tsx
+
+--- global-error.tsx ---

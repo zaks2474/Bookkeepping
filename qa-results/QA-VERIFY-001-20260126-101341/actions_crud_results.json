@@ -1,0 +1,129 @@
+{
+  "summary": {
+    "passed": 2,
+    "total": 5
+  },
+  "test_suite": "Backend Actions",
+  "tests": [
+    {
+      "details": {
+        "action_id": "ACT-QA-1769444030"
+      },
+      "id": "1.2.0",
+      "name": "Seed action row in DB",
+      "passed": true,
+      "timestamp_utc": "2026-01-26T16:13:50.745393+00:00"
+    },
+    {
+      "details": {
+        "request": {
+          "elapsed_ms": 7,
+          "method": "GET",
+          "ok": true,
+          "request_json": null,
+          "response_headers": {
+            "content-length": "181",
+            "content-type": "application/json",
+            "date": "Mon, 26 Jan 2026 16:13:50 GMT",
+            "server": "uvicorn"
+          },
+          "response_json": {
+            "error": {
+              "code": "INTERNAL_ERROR",
+              "details": null,
+              "message": "An internal error occurred",
+              "timestamp": "2026-01-26T16:13:50.750557Z",
+              "trace_id": "a715b9b5-71da-4795-ba70-18da01f6bb54"
+            }
+          },
+          "response_text": "{\"error\":{\"code\":\"INTERNAL_ERROR\",\"message\":\"An internal error occurred\",\"details\":null,\"trace_id\":\"a715b9b5-71da-4795-ba70-18da01f6bb54\",\"timestamp\":\"2026-01-26T16:13:50.750557Z\"}}",
+          "status_code": 500,
+          "url": "http://localhost:8091/api/actions"
+        }
+      },
+      "id": "1.2.1",
+      "name": "List actions (API)",
+      "passed": false,
+      "timestamp_utc": "2026-01-26T16:13:50.752536+00:00"
+    },
+    {
+      "details": {
+        "db_status": "pending",
+        "request": {
+          "elapsed_ms": 5,
+          "method": "GET",
+          "ok": true,
+          "request_json": null,
+          "response_headers": {
+            "content-length": "181",
+            "content-type": "application/json",
+            "date": "Mon, 26 Jan 2026 16:13:50 GMT",
+            "server": "uvicorn"
+          },
+          "response_json": {
+            "error": {
+              "code": "INTERNAL_ERROR",
+              "details": null,
+              "message": "An internal error occurred",
+              "timestamp": "2026-01-26T16:13:50.755791Z",
+              "trace_id": "5f32566c-9130-43f6-8114-4fe9ec7eebd7"
+            }
+          },
+          "response_text": "{\"error\":{\"code\":\"INTERNAL_ERROR\",\"message\":\"An internal error occurred\",\"details\":null,\"trace_id\":\"5f32566c-9130-43f6-8114-4fe9ec7eebd7\",\"timestamp\":\"2026-01-26T16:13:50.755791Z\"}}",
+          "status_code": 500,
+          "url": "http://localhost:8091/api/actions/ACT-QA-1769444030"
+        }
+      },
+      "id": "1.2.2",
+      "name": "Get action by id (API + DB)",
+      "passed": false,
+      "timestamp_utc": "2026-01-26T16:13:50.828150+00:00"
+    },
+    {
+      "details": {
+        "db_status_after": "pending",
+        "db_status_before": "pending",
+        "request": {
+          "elapsed_ms": 3,
+          "method": "POST",
+          "ok": true,
+          "request_json": {
+            "approved_by": "qa_verify_001",
+            "notes": "QA approval"
+          },
+          "response_headers": {
+            "content-length": "61",
+            "content-type": "application/json",
+            "date": "Mon, 26 Jan 2026 16:13:50 GMT",
+            "referrer-policy": "strict-origin-when-cross-origin",
+            "server": "uvicorn",
+            "x-content-type-options": "nosniff",
+            "x-frame-options": "DENY",
+            "x-trace-id": "0ed02597a7944e28ad045776d980b2d3",
+            "x-xss-protection": "1; mode=block"
+          },
+          "response_json": {
+            "detail": "Action is not pending approval (status: pending)"
+          },
+          "response_text": "{\"detail\":\"Action is not pending approval (status: pending)\"}",
+          "status_code": 400,
+          "url": "http://localhost:8091/api/actions/ACT-QA-1769444030/approve"
+        }
+      },
+      "id": "1.2.3",
+      "name": "Approve action (API + DB status change)",
+      "passed": false,
+      "timestamp_utc": "2026-01-26T16:13:50.887099+00:00"
+    },
+    {
+      "details": {
+        "status": "deleted"
+      },
+      "id": "1.2.4",
+      "name": "Cleanup seeded action (DB delete)",
+      "passed": true,
+      "timestamp_utc": "2026-01-26T16:13:50.954666+00:00"
+    }
+  ],
+  "timestamp_utc": "2026-01-26T16:13:50.954684+00:00"
+}

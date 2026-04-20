@@ -1,0 +1,56 @@
+                                   Table "zakops.quarantine_items"
+       Column        |           Type           | Collation | Nullable |           Default            
+---------------------+--------------------------+-----------+----------+------------------------------
+ id                  | uuid                     |           | not null | gen_random_uuid()
+ deal_id             | character varying(20)    |           |          | 
+ sender              | character varying(255)   |           |          | 
+ subject             | character varying(500)   |           |          | 
+ message_id          | character varying(500)   |           |          | 
+ body_preview        | text                     |           |          | 
+ raw_content         | jsonb                    |           |          | '{}'::jsonb
+ reason              | character varying(100)   |           |          | 
+ confidence          | double precision         |           |          | 
+ status              | character varying(50)    |           |          | 'pending'::character varying
+ reviewed_by         | uuid                     |           |          | 
+ reviewed_at         | timestamp with time zone |           |          | 
+ received_at         | timestamp with time zone |           |          | 
+ created_at          | timestamp with time zone |           | not null | now()
+ updated_at          | timestamp with time zone |           | not null | now()
+ correlation_id      | character varying(255)   |           |          | NULL::character varying
+ source_type         | character varying(50)    |           |          | 'email'::character varying
+ email_subject       | character varying(500)   |           |          | 
+ sender_name         | character varying(255)   |           |          | 
+ sender_domain       | character varying(255)   |           |          | 
+ sender_company      | character varying(255)   |           |          | 
+ broker_name         | character varying(255)   |           |          | 
+ email_body_snippet  | text                     |           |          | 
+ triage_summary      | text                     |           |          | 
+ source_thread_id    | character varying(255)   |           |          | 
+ schema_version      | character varying(20)    |           |          | 
+ tool_version        | character varying(20)    |           |          | 
+ prompt_version      | character varying(100)   |           |          | 
+ langsmith_run_id    | character varying(255)   |           |          | 
+ langsmith_trace_url | text                     |           |          | 
+ extraction_evidence | jsonb                    |           |          | '{}'::jsonb
+ field_confidences   | jsonb                    |           |          | '{}'::jsonb
+ attachments         | jsonb                    |           |          | '[]'::jsonb
+ company_name        | character varying(255)   |           |          | 
+ urgency             | character varying(20)    |           |          | 'normal'::character varying
+ version             | integer                  |           | not null | 1
+ escalation_priority | character varying(20)    |           |          | 
+ escalation_reason   | text                     |           |          | 
+Indexes:
+    "quarantine_items_pkey" PRIMARY KEY, btree (id)
+    "idx_qi_schema_version" btree (schema_version)
+    "idx_qi_source_thread_id" btree (source_thread_id) WHERE source_thread_id IS NOT NULL
+    "idx_qi_urgency" btree (urgency)
+    "idx_quarantine_correlation_id" btree (correlation_id) WHERE correlation_id IS NOT NULL
+    "idx_quarantine_items_deal_id" btree (deal_id)
+    "idx_quarantine_items_sender" btree (sender)
+    "idx_quarantine_items_status" btree (status)
+    "uq_quarantine_message_id" UNIQUE CONSTRAINT, btree (message_id)
+Check constraints:
+    "chk_quarantine_status" CHECK (status::text = ANY (ARRAY['pending'::character varying, 'approved'::character varying, 'rejected'::character varying, 'hidden'::character varying, 'escalated'::character varying]::text[]))
+Foreign-key constraints:
+    "quarantine_items_deal_id_fkey" FOREIGN KEY (deal_id) REFERENCES deals(deal_id) ON DELETE SET NULL
+

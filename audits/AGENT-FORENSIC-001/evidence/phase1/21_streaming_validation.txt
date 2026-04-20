@@ -1,0 +1,15 @@
+=== STEP 1.12: Streaming Validation (GPT 1.F) ===
+First line: event: start
+First token: .910574514s (< 5s = PASS)
+
+--- /agent/invoke/stream headers (for status) ---
+HTTP/1.1 200 OK
+date: Mon, 02 Feb 2026 22:19:30 GMT
+server: uvicorn
+cache-control: no-cache
+connection: keep-alive
+x-accel-buffering: no
+content-type: text/event-stream; charset=utf-8
+x-request-id: 5ff06705
+x-response-time: 0.001s
+Transfer-Encoding: chunked

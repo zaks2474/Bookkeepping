@@ -1,0 +1,6 @@
+=== VF-07.3 DASHBOARD TASK MANAGEMENT ===
+63:  retryKineticAction,
+240:      const result = await retryKineticAction(actionId);
+242:        toast.success('Action retry started');
+246:        const error = result.error || 'Failed to retry action';
+251:      const error = err instanceof Error ? err.message : 'Failed to retry action';

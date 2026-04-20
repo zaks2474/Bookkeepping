@@ -1,0 +1,14 @@
+=== mypy Version Pinning Analysis ===
+Date: 2026-02-06
+
+File: /home/zaks/zakops-agent-api/apps/agent-api/pyproject.toml
+
+In [project.optional-dependencies]:
+  dev = ["black", "isort", "flake8", "ruff", "mypy", "djlint==1.36.4"]
+
+mypy is listed as "mypy" with NO version pin.
+This means uv will resolve to the latest compatible version on each install.
+
+Risk: A new mypy release could change error counts, causing false CI failures
+or false passes. Recommend pinning to an exact version (e.g., "mypy==1.x.y")
+in a future hardening pass, but not changed in RT6 to avoid breakage.

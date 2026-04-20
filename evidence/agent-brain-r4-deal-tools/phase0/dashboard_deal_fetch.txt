@@ -1,0 +1,50 @@
+/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/e2e/TEST_PLAN.md:59:   - [ ] Deal appears in Pipeline page (`/deals`)
+/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/e2e/TEST_PLAN.md:77:   - Navigate to a deal (`/deals/{deal_id}`)
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:39:  getDeals,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:321:        const dealList = await getDeals({ status: 'active' });
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:565:                  href={`/deals/${event.dealId}`}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:598:                    <Link href={`/deals/${event.dealId}`} onClick={(e) => e.stopPropagation()}>
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:210:        router.push(`/deals/${encodeURIComponent(dealId)}`);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:6:  getDeals,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:39:        getDeals({ status: 'active' }),
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:324:          Endpoint: /api/deals/{dealId}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:327:          <Button onClick={() => router.push('/deals')} variant='outline'>
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:348:            <Button variant='ghost' size='sm' onClick={() => router.push('/deals')}>
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx:50:import { archiveDeal, bulkArchiveDeals, getDeals, type Deal } from '@/lib/api';
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx:51:import { DealBoard } from '@/components/deals/DealBoard';
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx:111:      const data = await getDeals(params);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx:134:    router.push(`/deals?${params.toString()}`);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx:146:    router.push(`/deals?${params.toString()}`);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx:383:                      router.push('/deals?status=active');
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx:525:                      onClick={() => router.push(`/deals/${deal.deal_id}`)}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/alerts/route.ts:17:      fetch(`${BACKEND_URL}/api/deals?status=active`),
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/alerts/route.ts:25:      const dealsList = Array.isArray(deals) ? deals : (deals.deals || []);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/alerts/route.ts:28:      const staleDeals = dealsList.filter((d: any) => d.days_since_update && d.days_since_update > 7);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/alerts/route.ts:40:      const highPriorityDeals = dealsList.filter((d: any) => d.priority === 'HIGHEST');
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/pipeline/route.ts:28:      fetch(`${BACKEND_URL}/api/deals`, {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/page.tsx:19:  getDeals,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/page.tsx:84:        getDeals({ status: 'active' }),
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/page.tsx:280:                <Link href='/deals'>
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/page.tsx:304:                      <Link key={deal.deal_id} href={`/deals/${deal.deal_id}`}>
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/ui-test/page.tsx:269:            <a href="/deals" className="text-primary hover:underline">
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/ui-test/page.tsx:270:              /deals
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/ui-test/page.tsx:272:            <a href="/deals/DEAL-2026-001" className="text-primary hover:underline">
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/ui-test/page.tsx:273:              /deals/DEAL-2026-001
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:419:export async function getDeals(params?: {
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:430:  const endpoint = `/api/deals${query ? `?${query}` : ''}`;
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:455:  return apiFetch(`/api/deals/${encodeURIComponent(dealId)}/archive`, {
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:471:  return apiFetch(`/api/deals/bulk-archive`, {
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:487:    const data = await apiFetch<unknown>(`/api/deals/${dealId}`);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:539:  const data = await apiFetch<unknown>(`/api/deals/${dealId}/events${query}`);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:558:    return await apiFetch<unknown>(`/api/deals/${dealId}/case-file`);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:616:    return await apiFetch<DealEnrichment>(`/api/deals/${dealId}/enrichment`);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:874:    const data = await apiFetch<unknown>(`/api/deals/${dealId}/materials`);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:981:  return apiFetch(`/api/deals/${dealId}/transition${qs ? `?${qs}` : ''}`, {
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:998:  return apiFetch(`/api/deals/${dealId}/notes`, {
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/routes.ts:15:    deal: `/deals/${id}`,                    // Detail page exists
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/routes.ts:30:  '/deals',
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/routes.ts:31:  '/deals/[id]',
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/routes.ts:47:  if (path.startsWith('/deals/') && path.split('/').length === 3) return true;
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-client.ts:142:    queryFn: () => apiFetch<Deal[]>(`/api/deals${buildQueryString(params)}`),
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-client.ts:154:    queryFn: () => apiFetch<Deal>(`/api/deals/${dealId}`),
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-client.ts:167:    queryFn: () => apiFetch<DealEvent[]>(`/api/deals/${dealId}/events?limit=${limit}`),

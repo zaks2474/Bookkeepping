@@ -1,0 +1,19 @@
+=== F3.2: apiFetch checks error shape ===
+    const data = await response.json();
+
+    // Intercept error payloads that sneak through as HTTP 200 (partial availability)
+    if (isErrorPayload(data)) {
+      const normalized = normalizeError(data, response.status);
+      throw new ApiError(
+        `API returned error payload: ${normalized.message}`,
+        response.status || 502,
+        endpoint
+      );
+    }
+
+    return data;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+Error payload guard calls: 2
+VERDICT: PASS

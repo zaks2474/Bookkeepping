@@ -1,0 +1,4 @@
+time="2026-02-03T18:22:35-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-03T18:22:35-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+PASS: trace_span correctly wired to local sink
+  Recorded spans: ['test.operation']

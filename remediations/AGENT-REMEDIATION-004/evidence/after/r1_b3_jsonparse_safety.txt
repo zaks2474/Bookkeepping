@@ -1,0 +1,154 @@
+=== /home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts ===
+        } else if (line.startsWith('data: ')) {
+          currentData = line.slice(6);
+        } else if (line === '' && currentEvent && currentData) {
+          // End of event, yield it
+          try {
+            const parsedData = JSON.parse(currentData);
+            yield {
+              type: currentEvent as ChatStreamEvent['type'],
+              data: parsedData,
+            };
+          } catch {
+
+=== /home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent/providers/local.ts ===
+        buffer = lines.pop() || '';
+
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            try {
+              const data = JSON.parse(line.slice(6));
+              yield {
+                content: data.content || data.token || '',
+                done: data.done || false,
+              };
+            } catch {
+
+=== /home/zaks/zakops-agent-api/apps/dashboard/src/lib/settings/provider-settings.ts ===
+  }
+
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      const parsed = JSON.parse(stored) as Partial<ProviderSettings>;
+      // Merge with defaults to ensure all fields exist
+      return {
+        ...DEFAULT_SETTINGS,
+        ...parsed,
+        local: { ...DEFAULT_SETTINGS.local, ...parsed.local },
+
+=== /home/zaks/zakops-agent-api/apps/dashboard/src/lib/storage-utils.ts ===
+    if (!raw) return options.fallback;
+
+    // Try to parse JSON
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(raw);
+    } catch {
+      console.warn(`[storage-utils] JSON parse failed for ${key}, quarantining`);
+      localStorage.removeItem(key);
+      return options.fallback;
+    }
+
+=== /home/zaks/zakops-agent-api/apps/dashboard/src/lib/parsers.ts ===
+    : null;
+
+  return createParser({
+    parse: (value) => {
+      try {
+        const parsed = JSON.parse(value);
+        const result = z.array(sortingItemSchema).safeParse(parsed);
+
+        if (!result.success) return null;
+
+        if (validKeys && result.data.some((item) => !validKeys.has(item.id))) {
+--
+    : null;
+
+  return createParser({
+    parse: (value) => {
+      try {
+        const parsed = JSON.parse(value);
+        const result = z.array(filterItemSchema).safeParse(parsed);
+
+        if (!result.success) return null;
+
+        if (validKeys && result.data.some((item) => !validKeys.has(item.id))) {
+
+=== /home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-client.ts ===
+  if (typeof window !== 'undefined' && enabled) {
+    const ws = new WebSocket(wsUrl);
+
+    ws.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        onMessage(data);
+      } catch {
+        console.error('Failed to parse WebSocket message');
+      }
+    };
+
+=== /home/zaks/zakops-agent-api/apps/dashboard/src/hooks/use-realtime-events.ts ===
+              // End of event
+              try {
+                const event: RealtimeEvent = {
+                  eventId: currentEvent.eventId || '',
+                  eventType: currentEvent.eventType,
+                  data: JSON.parse(currentEvent.data),
+                  timestamp: new Date(),
+                };
+
+                // Update last event ID
+                if (event.eventId && mountedRef.current) {
+--
+        onError?.(new Error('WebSocket error'));
+      };
+
+      ws.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          const eventType = data.type || data.event_type || 'message';
+
+          const realtimeEvent: RealtimeEvent = {
+            eventId: data.id || '',
+            eventType,
+
+=== /home/zaks/zakops-agent-api/apps/dashboard/src/hooks/useOnboardingState.ts ===
+
+      // Load progress if not complete
+      if (!complete && !skipped) {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+          const parsed: PersistedOnboarding = JSON.parse(stored);
+
+          // Version check for future migrations
+          if (parsed.version === CURRENT_VERSION) {
+            setCurrentStepInternal(parsed.currentStep);
+            setState(parsed.state);
+
+=== /home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/ApprovalCheckpoint.tsx ===
+                id="modified-inputs"
+                className="font-mono text-xs h-64"
+                value={JSON.stringify(modifiedInputs, null, 2)}
+                onChange={(e) => {
+                  try {
+                    setModifiedInputs(JSON.parse(e.target.value));
+                    setError(null);
+                  } catch {
+                    setError('Invalid JSON');
+                  }
+                }}
+
+=== /home/zaks/zakops-agent-api/apps/dashboard/src/components/layout/user-nav.tsx ===
+  // Load profile from localStorage (from onboarding)
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('zakops-onboarding-progress');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed.state?.profile) {
+          setProfile(parsed.state.profile);
+        }
+      }
+    } catch (error) {
+

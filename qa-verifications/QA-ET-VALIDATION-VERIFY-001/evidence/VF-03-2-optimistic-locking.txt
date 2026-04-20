@@ -1,0 +1,3 @@
+=== VF-03.2 OPTIMISTIC LOCKING ===
+/home/zaks/zakops-backend/src/api/orchestration/main.py:914:    If the alias exists for a different deal, returns 409 (conflict).
+/home/zaks/zakops-backend/src/api/orchestration/main.py:937:                    status_code=409,

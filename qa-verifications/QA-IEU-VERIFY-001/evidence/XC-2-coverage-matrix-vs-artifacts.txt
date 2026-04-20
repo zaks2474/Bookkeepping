@@ -1,0 +1,17 @@
+validate-performance-budget-schema.sh -> PASS
+validate-governance-anchor-schema.sh -> PASS
+validate-manifest-contract-section.sh -> PASS
+test-validate-gatee-scan.sh -> PASS
+test-validate-surfaces10-14.sh -> PASS
+validate-stop-hook-selftest.sh -> PASS
+validate-surfaces-new -> PASS
+validate-hook-contract -> PASS
+validate-enhancements -> PASS
+validate-ci-gatee-policy.sh -> PASS
+validate-surface-count-consistency.sh -> PASS
+scan-stale-surface-labels.sh -> PASS
+validate-claude-surface-table.sh -> PASS
+qa-scaffold.sh -> PASS
+check-ac-coverage.py -> PASS
+generate-reconciliation-table.py -> PASS
+OVERALL= PASS

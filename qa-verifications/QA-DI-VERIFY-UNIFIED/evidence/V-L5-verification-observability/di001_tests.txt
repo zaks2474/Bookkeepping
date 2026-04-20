@@ -1,0 +1,12 @@
+=== V-L5-DI001: Archive-Related Test Assertions ===
+Date: 2026-02-09T04:55:43Z
+
+--- Search for archive-related test assertions in monorepo ---
+(no matches in monorepo)
+
+--- Search for archive-related test assertions in backend ---
+(no matches in backend)
+
+--- Search for DI-ISSUE-001 references ---
+/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/deal-integrity.test.ts:119:// 1. Lifecycle Transition Tests (DI-ISSUE-001)
+/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/deal-integrity.test.ts:122:describe('DI-ISSUE-001: Lifecycle Transition Tests', () => {

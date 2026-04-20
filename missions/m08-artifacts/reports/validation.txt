@@ -1,0 +1,37 @@
+UI-MASTERPLAN-M08 Validation Transcript
+========================================
+Date: 2026-02-11
+
+== E2E Tests ==
+10 passed (46.1s)
+
+  [chromium] agent-activity-mobile-density.spec.ts
+    ✓ 375px: search and tabs visible above fold (4.1s)
+    ✓ 375px: refresh button reachable and within viewport (3.5s)
+    ✓ 768px: all activity tabs visible without clipping (4.4s)
+    ✓ 1280px: full desktop layout with Recent Runs section (3.7s)
+    ✓ page loads with title and status at all breakpoints (8.8s)
+
+  [chromium] hq-pipeline-legibility-and-controls.spec.ts
+    ✓ 375px: QuickStats labels fully readable (no destructive truncation) (5.6s)
+    ✓ 375px: pipeline stage badges readable (not truncated fragments) (3.6s)
+    ✓ 375px: tabs reachable and readable (3.6s)
+    ✓ 1280px: desktop layout unchanged (7-col pipeline, 4-col stats) (4.0s)
+    ✓ 768px: stats and stages readable at tablet width (3.7s)
+
+== make validate-local ==
+  Codegen check: PASS
+  ESLint: PASS
+  TypeScript (tsc --noEmit): PASS
+  Contract surfaces (14): PASS
+  Frontend governance: PASS
+  Gate E (httpx): PASS
+  Redocly ignores: 57/57 (at ceiling)
+  VERDICT: All local validations passed
+
+== npx tsc --noEmit (dashboard) ==
+  PASS (run via make validate-local)
+
+== Console Audit ==
+  No new console errors introduced by M08 changes.
+  Existing warnings (React hydration, API fetch timeouts) are pre-existing.

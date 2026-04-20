@@ -1,0 +1,51 @@
+AGENT-FORENSIC-001 Phase 1 — Step 1.4: Dashboard-to-Agent Proxy Analysis
+=========================================================================
+Date: 2026-02-02
+
+PROXY CHAIN:
+  Browser → Dashboard (port 3003) → Agent API (port 8095)
+
+HOW IT WORKS:
+1. Dashboard Next.js API route: /api/chat (apps/dashboard/src/app/api/chat/route.ts)
+2. Uses AgentProvider pattern (apps/dashboard/src/lib/agent/provider-service.ts)
+3. Default provider: LocalProvider (apps/dashboard/src/lib/agent/providers/local.ts)
+4. LocalProvider calls Agent API at http://localhost:8095
+
+SPECIFIC CALLS:
+  Dashboard /api/chat POST → LocalProvider.chat()
+    → POST http://localhost:8095/api/v1/chatbot/chat
+    Headers: Content-Type: application/json, X-Service-Token: {DASHBOARD_SERVICE_TOKEN}
+
+  Dashboard /api/chat POST (streaming) → LocalProvider.chatStream()
+    → POST http://localhost:8095/api/v1/chatbot/chat/stream
+    Same headers
+
+  Dashboard /api/chat GET (health) → LocalProvider.healthCheck()
+    → GET http://localhost:8095/health
+
+  Dashboard /api/chat POST (deal-scoped fallback) →
+    → POST http://localhost:8091/api/agent/invoke (Backend API)
+    Uses backendHeaders()
+
+AUTH CHAIN:
+  Dashboard → Agent API:
+    - X-Service-Token header (from env: DASHBOARD_SERVICE_TOKEN / AGENT_SERVICE_TOKEN / AGENT_LOCAL_API_KEY)
+    - Agent API validates this in get_session_or_service() (auth.py:162-215)
+    - If valid service token: creates synthetic Session(id="service-session", user_id=0)
+    - Falls back to Bearer JWT if no service token
+
+FALLBACK STRATEGY (in Dashboard /api/chat):
+  1. Try Agent Provider (LocalProvider → 8095)
+  2. If fails + deal_id present: try Backend API (8091)
+  3. If all fail: return static helpful response
+
+CONFIG:
+  AGENT_API_URL env vars: NEXT_PUBLIC_AGENT_API_URL, AGENT_API_URL → default http://localhost:8095
+  Service token env vars: AGENT_LOCAL_API_KEY, AGENT_SERVICE_TOKEN, DASHBOARD_SERVICE_TOKEN
+
+FINDINGS:
+[INFO] Clean proxy pattern with fallback strategy
+[WARN] Dashboard does NOT authenticate end users before proxying to Agent API
+       — relies on Agent API's auth (which is properly enforced for chatbot endpoints)
+[INFO] Service token comparison is constant-time? NO — uses simple == comparison (auth.py:184)
+       → Timing attack possible on service token

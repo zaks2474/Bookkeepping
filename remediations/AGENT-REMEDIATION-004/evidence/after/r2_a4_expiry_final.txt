@@ -1,0 +1,33 @@
+=== R2.A.4: Create approval with known deal ===
+{
+    "thread_id": "remediation-004-expiry3-1770152059",
+    "status": "awaiting_approval",
+    "content": null,
+    "pending_approval": {
+        "approval_id": "fd1e0d2c-31a2-4cf7-8f3e-3c33124306d6",
+        "tool": "transition_deal",
+        "args": {
+            "deal_id": "DL-CHAOS",
+            "from_stage": "qualified",
+            "to_stage": "screening"
+        },
+        "permission_tier": "CRITICAL",
+        "requested_by": "expiry-tester",
+        "requested_at": "2026-02-03T20:54:21.121529Z"
+    },
+    "actions_taken": [],
+    "error": null
+}
+
+Approval ID: fd1e0d2c-31a2-4cf7-8f3e-3c33124306d6
+=== Setting expires_at to past ===
+
+=== Attempting to approve expired approval ===
+{"detail":"Approval has expired"}
+HTTP_CODE: 410
+=== Final approval status ===
+ status  
+---------
+ expired
+(1 row)
+

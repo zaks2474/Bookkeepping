@@ -1,0 +1,251 @@
+- generic [active] [ref=e1]:
+  - region "Notifications alt+T"
+  - main [ref=e72]:
+    - generic [ref=e73]:
+      - generic [ref=e74]:
+        - button "Toggle Sidebar" [ref=e75]:
+          - img
+          - generic [ref=e76]: Toggle Sidebar
+        - navigation "breadcrumb" [ref=e77]:
+          - list [ref=e78]:
+            - link "Dashboard" [disabled] [ref=e79]
+      - generic [ref=e80]:
+        - button [ref=e205]:
+          - img
+        - button [ref=e86]:
+          - generic [ref=e88]:
+            - img
+        - button "Toggle theme" [ref=e89]:
+          - img
+          - generic [ref=e90]: Toggle theme
+    - generic [ref=e91]:
+      - generic [ref=e92]:
+        - generic [ref=e93]:
+          - heading "Dashboard" [level=1] [ref=e94]
+          - paragraph [ref=e95]: Deal pipeline overview and activity
+        - generic [ref=e96]:
+          - button "Approvals" [ref=e97]
+          - button "Refresh" [ref=e207]:
+            - img
+            - text: Refresh
+      - generic [ref=e209]:
+        - generic [ref=e210]:
+          - img [ref=e211]
+          - generic [ref=e214]: Today & Next Up
+          - generic [ref=e215]: 2 items
+        - generic [ref=e219]:
+          - link "Deal Idempotency Test Deal 2 screening - 8d stale" [ref=e220] [cursor=pointer]:
+            - /url: /deals/DL-IDEM2
+            - generic [ref=e222]:
+              - generic [ref=e223]:
+                - generic [ref=e224]:
+                  - img
+                  - text: Deal
+                - img [ref=e225]
+              - paragraph [ref=e227]: Idempotency Test Deal 2
+              - paragraph [ref=e228]: screening - 8d stale
+          - link "Deal Idempotency Test Deal screening - 8d stale" [ref=e229] [cursor=pointer]:
+            - /url: /deals/DL-IDEM
+            - generic [ref=e231]:
+              - generic [ref=e232]:
+                - generic [ref=e233]:
+                  - img
+                  - text: Deal
+                - img [ref=e234]
+              - paragraph [ref=e236]: Idempotency Test Deal
+              - paragraph [ref=e237]: screening - 8d stale
+      - generic [ref=e98]:
+        - generic [ref=e99]:
+          - generic [ref=e100]:
+            - generic [ref=e103]:
+              - generic [ref=e104]:
+                - img [ref=e105]
+                - text: Pipeline
+              - generic [ref=e109]: 9 active deals across 3 stages
+            - generic [ref=e111]:
+              - button "inbound 6" [ref=e238]:
+                - text: inbound
+                - generic [ref=e240]: "6"
+              - button "screening 2" [ref=e241]:
+                - text: screening
+                - generic [ref=e243]: "2"
+              - button "closing 1" [ref=e244]:
+                - text: closing
+                - generic [ref=e246]: "1"
+          - generic [ref=e118]:
+            - generic [ref=e120]:
+              - generic [ref=e121]:
+                - generic [ref=e122]:
+                  - img [ref=e123]
+                  - text: All Deals
+                - generic [ref=e127]: 9 deals
+              - link "View all" [ref=e128] [cursor=pointer]:
+                - /url: /deals
+                - button "View all" [ref=e129]:
+                  - text: View all
+                  - img
+            - generic [ref=e134]:
+              - link "Zaks Store test005 closing 0d ago" [ref=e247] [cursor=pointer]:
+                - /url: /deals/DL-0086
+                - generic [ref=e248]:
+                  - generic [ref=e249]:
+                    - paragraph [ref=e250]: Zaks Store test005
+                    - generic [ref=e252]: closing
+                  - generic [ref=e254]: 0d ago
+              - link "Zaks Store test inbound 3d ago" [ref=e255] [cursor=pointer]:
+                - /url: /deals/DL-0075
+                - generic [ref=e256]:
+                  - generic [ref=e257]:
+                    - paragraph [ref=e258]: Zaks Store test
+                    - generic [ref=e260]: inbound
+                  - generic [ref=e262]: 3d ago
+              - link "Idempotency Verified Deal inbound 6d ago" [ref=e385] [cursor=pointer]:
+                - /url: /deals/DL-0063
+                - generic [ref=e386]:
+                  - generic [ref=e387]:
+                    - paragraph [ref=e388]: Idempotency Verified Deal
+                    - generic [ref=e390]: inbound
+                  - generic [ref=e392]: 6d ago
+              - link "FINAL-DUP-TEST-1770191830 inbound 7d ago" [ref=e263] [cursor=pointer]:
+                - /url: /deals/DL-0055
+                - generic [ref=e264]:
+                  - generic [ref=e265]:
+                    - paragraph [ref=e266]: FINAL-DUP-TEST-1770191830
+                    - generic [ref=e268]: inbound
+                  - generic [ref=e270]: 7d ago
+              - link "REMEDIATION-TEST-1770191806 inbound 7d ago" [ref=e271] [cursor=pointer]:
+                - /url: /deals/DL-0053
+                - generic [ref=e272]:
+                  - generic [ref=e273]:
+                    - paragraph [ref=e274]: REMEDIATION-TEST-1770191806
+                    - generic [ref=e276]: inbound
+                  - generic [ref=e278]: 7d ago
+              - link "auth-test-1770190171 inbound 7d ago" [ref=e279] [cursor=pointer]:
+                - /url: /deals/DL-0045
+                - generic [ref=e280]:
+                  - generic [ref=e281]:
+                    - paragraph [ref=e282]: auth-test-1770190171
+                    - generic [ref=e284]: inbound
+                  - generic [ref=e286]: 7d ago
+              - link "CANARY-1770188139 inbound 7d ago" [ref=e287] [cursor=pointer]:
+                - /url: /deals/DL-0038
+                - generic [ref=e288]:
+                  - generic [ref=e289]:
+                    - paragraph [ref=e290]: CANARY-1770188139
+                    - generic [ref=e292]: inbound
+                  - generic [ref=e294]: 7d ago
+              - link "Idempotency Test Deal 2 screening 8d ago" [ref=e295] [cursor=pointer]:
+                - /url: /deals/DL-IDEM2
+                - generic [ref=e296]:
+                  - generic [ref=e297]:
+                    - paragraph [ref=e298]: Idempotency Test Deal 2
+                    - generic [ref=e300]: screening
+                  - generic [ref=e302]: 8d ago
+              - link "Idempotency Test Deal screening 8d ago" [ref=e303] [cursor=pointer]:
+                - /url: /deals/DL-IDEM
+                - generic [ref=e304]:
+                  - generic [ref=e305]:
+                    - paragraph [ref=e306]: Idempotency Test Deal
+                    - generic [ref=e308]: screening
+                  - generic [ref=e310]: 8d ago
+        - generic [ref=e140]:
+          - generic [ref=e141]:
+            - generic [ref=e143]:
+              - generic [ref=e144]:
+                - generic [ref=e145]:
+                  - img [ref=e146]
+                  - text: Agent Activity
+                - generic [ref=e150]: "Last: Approval granted"
+              - generic [ref=e152]:
+                - img
+                - text: Idle
+            - generic [ref=e153]:
+              - generic [ref=e157]:
+                - button "Approval granted 6 days ago" [ref=e311] [cursor=pointer]:
+                  - img [ref=e313]
+                  - generic [ref=e316]:
+                    - paragraph [ref=e317]: Approval granted
+                    - generic [ref=e319]: 6 days ago
+                - button "Tool execution completed 6 days ago" [ref=e320] [cursor=pointer]:
+                  - img [ref=e322]
+                  - generic [ref=e326]:
+                    - paragraph [ref=e327]: Tool execution completed
+                    - generic [ref=e329]: 6 days ago
+                - 'button "Tool execution started: create_deal 6 days ago" [ref=e330] [cursor=pointer]':
+                  - img [ref=e332]
+                  - generic [ref=e336]:
+                    - paragraph [ref=e337]: "Tool execution started: create_deal"
+                    - generic [ref=e339]: 6 days ago
+                - 'button "Approval processing started: create_deal 6 days ago" [ref=e340] [cursor=pointer]':
+                  - img [ref=e342]
+                  - generic [ref=e346]:
+                    - paragraph [ref=e347]: "Approval processing started: create_deal"
+                    - generic [ref=e349]: 6 days ago
+              - generic [ref=e161]:
+                - generic [ref=e350]:
+                  - generic [ref=e351]: 0 tools today
+                  - generic [ref=e352]: 0 deals analyzed
+                - generic [ref=e162]:
+                  - button "Ask Agent" [ref=e163]:
+                    - img
+                    - text: Ask Agent
+                  - link "View All" [ref=e164] [cursor=pointer]:
+                    - /url: /agent/activity
+                    - button "View All" [ref=e165]:
+                      - text: View All
+                      - img
+          - generic [ref=e166]:
+            - generic [ref=e168]:
+              - generic [ref=e169]:
+                - img [ref=e170]
+                - generic [ref=e173]: Execution Inbox
+                - generic [ref=e174]: "0"
+              - generic [ref=e175]:
+                - combobox [ref=e176]:
+                  - generic: Latest
+                  - img
+                - button [ref=e353]:
+                  - img
+            - generic [ref=e178]:
+              - tablist [ref=e179]:
+                - tab "All" [selected] [ref=e180]
+                - tab "Approvals" [ref=e181]:
+                  - img
+                  - text: Approvals
+                - tab "Ready" [ref=e182]:
+                  - img
+                  - text: Ready
+                - tab "Failed" [ref=e183]:
+                  - img
+                  - text: Failed
+                - tab "Quarantine" [ref=e184]
+              - tabpanel "All" [ref=e185]:
+                - generic [ref=e190]:
+                  - img [ref=e191]
+                  - paragraph [ref=e194]: No items in this category
+          - generic [ref=e195]:
+            - generic [ref=e197]:
+              - generic [ref=e198]:
+                - img [ref=e199]
+                - text: Quarantine
+              - link "View all" [ref=e201] [cursor=pointer]:
+                - /url: /quarantine
+                - button "View all" [ref=e202]
+            - generic [ref=e354]:
+              - generic [ref=e355]:
+                - generic [ref=e356]: Status
+                - generic [ref=e357]: healthy
+              - generic [ref=e358]:
+                - generic [ref=e359]: Pending
+                - generic [ref=e360]: "0"
+          - generic [ref=e361]:
+            - generic [ref=e363]:
+              - img [ref=e364]
+              - text: Alerts
+              - generic [ref=e366]: "1"
+            - generic [ref=e372]:
+              - paragraph [ref=e373]: stale_deals
+              - paragraph [ref=e374]: 2 deal(s) have not been updated in over 7 days
+  - button "Open Next.js Dev Tools" [ref=e380] [cursor=pointer]:
+    - img [ref=e381]
+  - alert [ref=e384]

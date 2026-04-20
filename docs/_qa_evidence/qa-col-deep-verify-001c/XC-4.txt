@@ -1,0 +1,28 @@
+=== Backend brain router ===
+75:@router.get("/{deal_id}/brain", response_model=BrainResponse)
+103:@router.post("/{deal_id}/brain/facts")
+116:@router.delete("/{deal_id}/brain/facts/{fact_key}")
+126:@router.post("/{deal_id}/brain/ghost/confirm")
+157:@router.post("/{deal_id}/brain/ghost/dismiss")
+171:@router.put("/{deal_id}/brain/summary")
+179:@router.get("/{deal_id}/brain/history")
+189:@router.get("/{deal_id}/brain/momentum")
+215:@router.get("/{deal_id}/brain/stall")
+224:@router.get("/{deal_id}/memo")
+241:@router.get("/{deal_id}/brain/challenge")
+257:@router.get("/{deal_id}/anomalies")
+273:@router.get("/briefing", tags=["ambient"])
+291:@router.get("/pipeline/heatmap", tags=["ambient"])
+=== Dashboard API client brain functions ===
+2098:export async function getDealBrain(dealId: string): Promise<DealBrain | null> {
+2108:export async function addBrainFact(
+2122:export async function removeBrainFact(
+2164:export async function updateBrainSummary(
+2188:export async function getDealMomentum(
+2215:export async function getStallPrediction(dealId: string): Promise<StallPrediction | null> {
+2318:export async function getDealChallenge(dealId: string): Promise<DevilsAdvocateResult | null> {
+2342:export async function getDealAnomalies(dealId: string): Promise<DealAnomalyResult | null> {
+2366:export async function getMorningBriefing(hours = 18): Promise<MorningBriefing | null> {
+2390:export async function getPipelineHeatmap(): Promise<PipelineHeatmap | null> {
+2409:export async function getSentimentTrend(dealId: string): Promise<SentimentTrend | null> {
+RESULT: Dashboard API client functions align with backend brain router endpoints

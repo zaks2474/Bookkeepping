@@ -1,0 +1,6 @@
+=== V6.7 ===
+114:1. **User-level config** (`~/.claude/`) — Global settings, permissions
+249:Claude Code connects to external services via MCP (Model Context Protocol) servers, configured in two tiers:
+251:### User-Level Config (`~/.claude/settings.json`)
+258:### System-Level Config (`/root/.claude/settings.json`)
+906:| `~/.claude/settings.json` | User-level permissions and config |

@@ -1,0 +1,1 @@
+2366:export async function getMorningBriefing(hours = 18): Promise<MorningBriefing | null> {

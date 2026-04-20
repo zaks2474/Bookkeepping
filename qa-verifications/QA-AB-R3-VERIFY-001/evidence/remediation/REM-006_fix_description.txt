@@ -1,0 +1,3 @@
+REM-006: Add build_graph export for import check
+- Issue: vreg_5 import check fails: build_graph not exported in app.core.langgraph.graph.
+- Fix: Add async build_graph() helper in graph.py that returns LangGraphAgent().create_graph().

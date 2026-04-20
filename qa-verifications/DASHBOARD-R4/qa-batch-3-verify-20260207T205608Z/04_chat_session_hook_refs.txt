@@ -1,0 +1,3 @@
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:102:const STORAGE_KEY = 'zakops-chat-session';
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/AgentDrawer.tsx:29:import { useChatSession } from '@/lib/chat/session';
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/AgentDrawer.tsx:169:  const { messages, isStreaming, sendMessage: sendSharedMessage, refreshFromStorage } = useChatSession();

@@ -1,0 +1,45 @@
+431:async def _search_deals_fallback(query: str, limit: int) -> str:
+462:        logger.error("search_deals_fallback_failed", error=str(e))
+473:    R3 REMEDIATION [P3.4]: Added provenance tracking and fallback to backend API.
+508:                # RAG returned error - try fallback
+510:                    "rag_rest_error_fallback",
+514:                return await _search_deals_fallback(query, limit)
+517:        # R3 REMEDIATION [P3.4]: Circuit breaker - fallback to backend API
+519:            "rag_rest_unavailable_fallback",
+534:        # Try fallback to backend API
+535:        return await _search_deals_fallback(query, limit)
+539:        # Try fallback before giving up
+541:            return await _search_deals_fallback(query, limit)
+    except Exception as e:
+        logger.error("get_deal_error", error=str(e))
+        return f"Error getting deal: {str(e)}"
+
+
+async def _search_deals_fallback(query: str, limit: int) -> str:
+    """R3 REMEDIATION [P3.4]: Fallback to backend API when RAG is unavailable.
+
+    Searches deals directly via the backend /api/deals endpoint.
+    """
+    headers = _get_backend_headers()
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.get(
+                f"{DEAL_API_URL}/api/deals",
+                headers=headers,
+                params={"q": query, "limit": limit},
+            )
+
+            if response.status_code == 200:
+                data = response.json()
+431:async def _search_deals_fallback(query: str, limit: int) -> str:
+462:        logger.error("search_deals_fallback_failed", error=str(e))
+473:    R3 REMEDIATION [P3.4]: Added provenance tracking and fallback to backend API.
+508:                # RAG returned error - try fallback
+510:                    "rag_rest_error_fallback",
+514:                return await _search_deals_fallback(query, limit)
+517:        # R3 REMEDIATION [P3.4]: Circuit breaker - fallback to backend API
+519:            "rag_rest_unavailable_fallback",
+534:        # Try fallback to backend API
+535:        return await _search_deals_fallback(query, limit)
+539:        # Try fallback before giving up
+541:            return await _search_deals_fallback(query, limit)

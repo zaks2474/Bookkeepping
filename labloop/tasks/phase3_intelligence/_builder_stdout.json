@@ -1,0 +1,60 @@
+Now I need to output the final JSON conforming to the BUILDER OUTPUT SCHEMA.
+
+```json
+{
+  "status": "READY_FOR_QA",
+  "cycle": 1,
+  "summary": "Implemented Phase 3 Intelligence capabilities: RAG REST contract, tool accuracy eval (96% >= 95%), retrieval eval (recall@5 100% >= 80%), no-split-brain scan (PASSED), and RAG REST client integration. All gates pass.",
+  "issues_addressed": [
+    {
+      "severity": "BLOCKER",
+      "original_title": "Run verification gates and create initial BUILDER_REPORT.md",
+      "resolution": "Implemented all Phase 3 gates (P3-RAG-PROBE-001, P3-EVAL-001, P3-EVAL-002, P3-NO-SPLITBRAIN-001) and ran full gate verification with ./scripts/bring_up_tests.sh",
+      "files_modified": ["scripts/phase0_phase1_gates.sh", "app/services/rag_rest.py", "evals/tool_accuracy_eval.py", "evals/retrieval_eval.py", "scripts/no_split_brain_scan.sh"],
+      "verified": true
+    }
+  ],
+  "changed_files": [
+    {"path": "app/services/rag_rest.py", "action": "created", "lines_changed": 175, "description": "RAG REST client module for exclusive retrieval path"},
+    {"path": "evals/tool_accuracy_eval.py", "action": "created", "lines_changed": 295, "description": "Tool accuracy evaluation harness"},
+    {"path": "evals/retrieval_eval.py", "action": "created", "lines_changed": 285, "description": "Retrieval evaluation harness with recall@5 metric"},
+    {"path": "evals/datasets/tool_accuracy/v1/prompts.json", "action": "created", "lines_changed": 350, "description": "50-prompt dataset for tool accuracy testing"},
+    {"path": "evals/datasets/retrieval/v1/queries.json", "action": "created", "lines_changed": 100, "description": "10-query labeled dataset for retrieval eval"},
+    {"path": "scripts/no_split_brain_scan.sh", "action": "created", "lines_changed": 115, "description": "Static scan for direct pgvector queries"},
+    {"path": "scripts/phase0_phase1_gates.sh", "action": "modified", "lines_changed": 197, "description": "Added Phase 3 gate definitions"},
+    {"path": "gate_artifacts/rag_rest_contract.json", "action": "created", "lines_changed": 85, "description": "RAG REST API contract"},
+    {"path": "gate_artifacts/tool_accuracy_eval.json", "action": "created", "lines_changed": 25, "description": "Tool accuracy eval results"},
+    {"path": "gate_artifacts/retrieval_eval_results.json", "action": "created", "lines_changed": 108, "description": "Retrieval eval results"},
+    {"path": "gate_artifacts/eval_dataset_manifest.json", "action": "created", "lines_changed": 35, "description": "Eval dataset manifest"},
+    {"path": "gate_artifacts/no_split_brain_retrieval_scan.log", "action": "created", "lines_changed": 40, "description": "Split-brain scan results"}
+  ],
+  "commands_run": [
+    {"command": "curl -s http://localhost:8052/", "exit_code": 0, "success": true, "output_summary": "RAG REST API info retrieved"},
+    {"command": "python3 -m evals.tool_accuracy_eval", "exit_code": 0, "success": true, "output_summary": "Tool accuracy: 96% (PASSED >= 95%)"},
+    {"command": "python3 -m evals.retrieval_eval", "exit_code": 0, "success": true, "output_summary": "Retrieval recall@5: 100% (PASSED >= 80%)"},
+    {"command": "bash scripts/no_split_brain_scan.sh", "exit_code": 0, "success": true, "output_summary": "NO_SPLIT_BRAIN: PASSED"},
+    {"command": "./scripts/bring_up_tests.sh", "exit_code": 0, "success": true, "output_summary": "ALL GATES COMPLETED"}
+  ],
+  "gate_pre_check": {
+    "ran_gate": true,
+    "gate_passed": true,
+    "gate_exit_code": 0
+  },
+  "blockers_encountered": [],
+  "notes_for_qa": [
+    "Tool accuracy at 96% exceeds 95% threshold",
+    "Retrieval recall@5 at 100% exceeds 80% threshold",
+    "No-split-brain scan passed with 0 violations",
+    "RAG REST client integrated at app/services/rag_rest.py",
+    "All Phase 0 and Phase 1 artifacts still PASS",
+    "All baseline invariants (BL-01 to BL-14) still PASS"
+  ],
+  "confidence": "high",
+  "diff_stats": {
+    "files_changed": 12,
+    "insertions": 1785,
+    "deletions": 0,
+    "total_lines": 1785
+  }
+}
+```

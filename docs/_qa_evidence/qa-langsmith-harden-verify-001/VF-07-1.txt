@@ -1,0 +1,8 @@
+1501:    Returns 201 for newly created items, 200 for dedup hits (existing message_id).
+1502:    This distinction allows callers to measure injection vs deduplication rates.
+1531:        existing = await conn.fetchrow(
+1535:        if existing:
+1536:            # Return existing item with 200 (dedup hit, not a new creation)
+1579:        # fetch the existing record that won the race — this is a dedup hit
+Lines 1529-1535: Dedup check via SELECT id FROM zakops.quarantine_items WHERE message_id = $1
+Returns 200 for dedup hits (line 1551)

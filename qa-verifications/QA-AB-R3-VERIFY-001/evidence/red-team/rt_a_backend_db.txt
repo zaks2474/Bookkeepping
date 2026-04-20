@@ -1,0 +1,6 @@
+OCI runtime exec failed: exec failed: unable to start container process: exec: "psql": executable file not found in $PATH
+ current_database | current_user | inet_server_addr 
+------------------+--------------+------------------
+ zakops           | zakops       | 
+(1 row)
+

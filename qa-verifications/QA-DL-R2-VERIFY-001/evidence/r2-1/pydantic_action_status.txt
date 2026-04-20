@@ -1,0 +1,21 @@
+class ActionStatus(str, Enum):
+    """Action statuses."""
+    PENDING_APPROVAL = "pending_approval"
+    QUEUED = "queued"
+    READY = "ready"
+    RUNNING = "running"
+    REJECTED = "rejected"
+    COMPLETED = "completed"
+    FAILED = "failed"
+    CANCELLED = "cancelled"
+
+
+class ActionExecutor:
+    """
+    Executes approved actions.
+    """
+
+    async def execute(
+        self,
+        action_id: str,
+        trace_id: str | None = None

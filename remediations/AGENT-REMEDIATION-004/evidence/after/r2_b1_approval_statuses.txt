@@ -1,0 +1,19 @@
+=== R2.B.1: All approval statuses in DB ===
+  status  | count 
+----------+-------
+ approved |    31
+ expired  |     8
+ rejected |     5
+(3 rows)
+
+
+=== Approvals with execution failure (Option A semantics) ===
+                  id                  | approval_status | execution_success |                                            result_preview                                            
+--------------------------------------+-----------------+-------------------+------------------------------------------------------------------------------------------------------
+ 8310b494-3403-49b9-a799-c299574f0410 | approved        | f                 | {"ok": false, "error": "Could not fetch deal DL-0002: HTTP 404", "backend_status": 404}
+ 84585039-b99a-4ef5-8a14-7f295f0a122c | approved        | f                 | {"ok": false, "error": "Could not fetch deal DL-0001: HTTP 404", "backend_status": 404}
+ f6996d6e-f17d-45f4-b9ac-1abc07c5a4d4 | approved        | f                 | {"ok": false, "error": "Backend rejected transition: HTTP 401 - {\"error\":\"unauthorized\",\"messag
+ e9feac7c-d56a-47e2-be27-1bdfd58c84eb | approved        | f                 | {"ok": false, "error": "Backend rejected transition: HTTP 401 - {\"error\":\"unauthorized\",\"messag
+ e5ae1001-82e0-4636-b204-8fb036ac6511 | approved        | f                 | {"ok": false, "error": "Backend rejected transition: HTTP 400 - {\"error\":{\"code\":\"VALIDATION_ER
+(5 rows)
+

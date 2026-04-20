@@ -1,0 +1,52 @@
+=== PF-3 VALIDATION BASELINE (EXIT CODES) ===
+MAKE_VALIDATE_LOCAL_EXIT=0
+  PASS: Skill Preload
+  PASS: Responsive Breakpoint
+  PASS: Z-Index
+  PASS: Dark Mode
+  PASS: Animation Performance
+  PASS: State Management
+  PASS: Anti-convergence
+  PASS: Data Fetching
+  PASS: Error Handling
+  PASS: CSS Architecture
+  PASS: Import Discipline
+
+--- accessibility.md governance sections ---
+  PASS: Semantic Structure
+  PASS: Keyboard Navigation
+  PASS: Color Contrast
+  PASS: ARIA
+  PASS: Reduced Motion
+
+--- component-patterns.md governance sections ---
+  PASS: Server vs Client
+  PASS: Loading.*Empty.*Error
+  PASS: Suspense
+  PASS: State Ownership
+  PASS: Composability
+
+--- Port 8090 drift check ---
+  PASS: No port 8090 references in governance rules
+
+Frontend Governance Validation: PASS
+=== Gate E: Raw httpx Client Usage Check ===
+Scanner: rg
+PASS: No raw httpx client usage in deal_tools.py
+[32mFrontend governance validation passed[0m
+[36m=== Local Validation (Offline) ===[0m
+cd /home/zaks/zakops-agent-api/apps/dashboard && npx tsc --noEmit
+make[1]: Entering directory '/home/zaks/zakops-agent-api'
+Redocly ignores: 57 (ceiling: 57)
+make[1]: Leaving directory '/home/zaks/zakops-agent-api'
+[32mAll local validations passed[0m
+NPX_TSC_EXIT=1
+
+[41m                                                                               [0m
+[41m[37m                This is not the tsc command you are looking for                [0m
+[41m                                                                               [0m
+
+To get access to the TypeScript compiler, [34mtsc[0m, from the command line either:
+
+- Use [1mnpm install typescript[0m to first add TypeScript to your project [1mbefore[0m using npx
+- Use [1myarn[0m to avoid accidentally running code from un-installed packages

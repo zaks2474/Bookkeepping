@@ -1,0 +1,18 @@
+legal_hold: 4 occurrence(s)
+legal_hold_reason: 1 occurrence(s)
+legal_hold_set_by: 1 occurrence(s)
+legal_hold_set_at: 1 occurrence(s)
+compliance_tier: 1 occurrence(s)
+scope_type: 2 occurrence(s)
+---
+scope_type CHECK constraint:
+    CONSTRAINT chk_scope CHECK (scope_type IN ('global', 'deal', 'document')),
+    CONSTRAINT chk_delete CHECK (
+        (deleted = FALSE AND deleted_at IS NULL) OR
+---
+delete CHECK constraint:
+    CONSTRAINT chk_delete CHECK (
+        (deleted = FALSE AND deleted_at IS NULL) OR
+        (deleted = TRUE AND deleted_at IS NOT NULL)
+    )
+);

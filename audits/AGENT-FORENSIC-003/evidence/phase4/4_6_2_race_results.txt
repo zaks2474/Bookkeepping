@@ -1,0 +1,32 @@
+=== CHECK 4.6.2: Concurrent Approve/Reject Race Condition ===
+Timestamp: 2026-02-03T13:12:49-06:00
+Approval ID: 505b8aeb-66aa-47ad-b19d-845c8e0551d4
+Thread ID: forensic-003-race-1770145817
+
+NOTE: UF-003 Ownership check requires actor_id to match approval creator
+Original actor: forensic-tester (approval was created with this actor)
+
+=== Firing concurrent approve AND reject with matching actor_id ===
+Start time: 2026-02-03T13:12:49-06:00
+
+Race results:
+{"detail":"Cannot reject approval (status: claimed)"}
+REJECT_HTTP_CODE: 409
+{"thread_id":"forensic-003-race-1770145817","status":"completed","content":"It seems there was an issue with transitioning the deal DL-CHAOS directly to the &quot;loi&quot; stage. According to the response, the deal is currently in the &quot;screening&quot; stage, and the only valid transitions from this stage are to &quot;qualified,&quot; &quot;junk,&quot; or &quot;archived.&quot; \n\nTo proceed with the race condition testing, we would first need to move the deal to the &quot;qualified&quot; stage before attempting to transition it to &quot;loi.&quot;\n\nWould you like to attempt transitioning the deal to &quot;qualified&quot; first?","pending_approval":null,"actions_taken":[{"tool":"transition_deal","result":{"ok":false,"error":"Backend rejected transition: HTTP 400 - {\"detail\":\"Invalid transition: screening -> loi. Valid transitions: ['qualified', 'junk', 'archived']\"}","backend_status":400}}],"error":"Tool execution did not complete"}
+APPROVE_HTTP_CODE: 200
+
+End time: 2026-02-03T13:12:52-06:00
+
+=== Database Status Query ===
+ERROR:  operator does not exist: character varying = uuid
+LINE 4: WHERE id = '505b8aeb-66aa-47ad-b19d-845c8e0551d4'::uuid;
+                 ^
+HINT:  No operator matches the given name and argument types. You might need to add explicit type casts.
+
+=== Analysis ===
+HTTP 200 (success) count: 1
+HTTP 409 (conflict) count: 1
+Expected: 1x success, 1x conflict (race protection working)
+
+=== Database Status Query (fixed) ===
+ 505b8aeb-66aa-47ad-b19d-845c8e0551d4 | approved | forensic-tester | 2026-02-03 19:12:52.886936+00

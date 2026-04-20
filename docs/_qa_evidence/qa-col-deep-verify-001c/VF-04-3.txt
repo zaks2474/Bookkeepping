@@ -1,0 +1,10 @@
+52:from ...core.outbox.writer import OutboxWriter, is_outbox_enabled
+680:        # R2-4: Write to outbox for reliable side-effects (folder scaffolding, RAG indexing)
+681:        if is_outbox_enabled():
+682:            outbox = OutboxWriter()
+683:            await outbox.write(
+1814:                # F-6: Emit outbox event so downstream consumers are notified
+1816:                outbox_correlation = item.get('correlation_id') or str(uuid.uuid4())
+1819:                    INSERT INTO zakops.outbox
+1831:                    outbox_correlation if isinstance(outbox_correlation, str) else str(outbox_correlation),
+---workflow.py---

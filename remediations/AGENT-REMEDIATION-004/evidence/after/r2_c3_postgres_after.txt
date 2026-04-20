@@ -1,0 +1,52 @@
+=== R2.C: Postgres Container Assessment ===
+
+REQUIRED CONTAINERS (DO NOT REMOVE):
+1. zakops-agent-db (pgvector/pgvector:pg16)
+   - Purpose: Agent API database (zakops_agent)
+   - Project: agent-api
+   - Status: HEALTHY
+   
+2. zakops-postgres-1 (postgres:15-alpine)
+   - Purpose: Main backend database (zakops)
+   - Project: zakops (from zakops-backend/docker-compose.yml)
+   - Status: HEALTHY
+   - Note: Has 20 deals, 7 active connections
+   
+3. rag-db (pgvector/pgvector:pg17)
+   - Purpose: RAG REST API database (crawlrag)
+   - Project: crawl4ai-rag
+   - Status: HEALTHY
+
+DUPLICATE/STALE CONTAINERS:
+4. zakops-backend-postgres-1 (postgres:15-alpine)
+   - Purpose: DUPLICATE backend database
+   - Project: zakops-backend (different project name)
+   - Status: HEALTHY but only 4 deals, 1 connection
+   - Assessment: May be from a different docker-compose run
+   - Action: DOCUMENT (do not remove without verification)
+   
+5. docker-postgres-1 (postgres:16-alpine)
+   - Purpose: From old deployments/docker config
+   - Project: docker
+   - Status: Created (never started)
+   - Action: SAFE TO REMOVE
+
+FINDING RESOLUTION:
+- F003-P2-003 identified 4 postgres containers when 2 expected
+- Actual count: 5 containers (3 required, 1 duplicate, 1 stale)
+- The "duplicate" zakops-backend-postgres-1 may be needed for isolation
+- The stale docker-postgres-1 can be safely removed
+
+RECOMMENDATION:
+1. Remove docker-postgres-1 (confirmed stale)
+2. Leave zakops-backend-postgres-1 (needs investigation)
+3. Document the database topology
+
+=== Removing stale container: docker-postgres-1 ===
+docker-postgres-1
+
+=== After cleanup ===
+zakops-backend-postgres-1        Up 4 hours (healthy)
+zakops-agent-db                  Up 34 hours (healthy)
+rag-db                           Up 34 hours
+zakops-postgres-1                Up 29 hours (healthy)

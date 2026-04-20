@@ -1,0 +1,4 @@
+3:Rolling summarization every 5 turns + recall memory builder.
+23:def should_summarize(turn_number: int, last_summarized_turn: int) -> bool:
+26:    Trigger: every 5 turns AND at least 5 new turns since last summary.
+235:    if not should_summarize(current_turn, last_turn):

@@ -1,0 +1,4 @@
+Line 5: import { parseAsInteger, parseAsString, useQueryState } from 'nuqs';
+Lines 83-91: 7 useQueryState hooks (view, stage, status, q, sortBy, sortOrder, page)
+Line 195: REC-022 sort persistence via nuqs
+PASS: Full nuqs adoption

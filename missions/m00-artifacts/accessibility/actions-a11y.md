@@ -1,0 +1,89 @@
+- generic [active] [ref=e1]:
+  - region "Notifications alt+T"
+  - main [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - button "Toggle Sidebar" [ref=e6]:
+          - img
+          - generic [ref=e7]: Toggle Sidebar
+        - navigation "breadcrumb" [ref=e8]:
+          - list [ref=e9]:
+            - link "Actions" [disabled] [ref=e10]
+      - generic [ref=e11]:
+        - button [ref=e125]:
+          - img
+        - button [ref=e12]:
+          - generic [ref=e14]:
+            - img
+        - button "Toggle theme" [ref=e15]:
+          - img
+          - generic [ref=e16]: Toggle theme
+    - generic [ref=e17]:
+      - generic [ref=e18]:
+        - generic [ref=e19]:
+          - heading "Actions Command Center" [level=1] [ref=e20]:
+            - img [ref=e21]
+            - text: Actions Command Center
+          - paragraph [ref=e23]: Manage, approve, and execute workflow actions
+        - generic [ref=e24]:
+          - button "Clear" [ref=e25]:
+            - img
+            - text: Clear
+            - img
+          - button "Refresh" [ref=e127]:
+            - img
+            - text: Refresh
+          - button "New Action" [ref=e128]:
+            - img
+            - text: New Action
+      - generic [ref=e129]:
+        - button "Pending Approval 0" [ref=e130]:
+          - generic [ref=e131]:
+            - generic [ref=e132]: Pending Approval
+            - generic [ref=e133]: "0"
+        - button "Processing 0" [ref=e134]:
+          - generic [ref=e135]:
+            - generic [ref=e136]: Processing
+            - generic [ref=e137]: "0"
+        - button "24h Success Rate -" [ref=e138]:
+          - generic [ref=e139]:
+            - generic [ref=e140]: 24h Success Rate
+            - generic [ref=e141]: "-"
+        - button "Failed (24h) 0" [ref=e142]:
+          - generic [ref=e143]:
+            - generic [ref=e144]: Failed (24h)
+            - generic [ref=e145]: "0"
+      - generic [ref=e26]:
+        - generic [ref=e27]:
+          - img [ref=e28]
+          - textbox "Search actions..." [ref=e31]
+        - combobox [ref=e32]:
+          - img
+          - generic: All types
+          - img
+      - generic [ref=e36]:
+        - tablist [ref=e37]:
+          - tab "All" [selected] [ref=e38]:
+            - img
+            - text: All
+          - tab "Pending Approval" [ref=e39]:
+            - img
+            - text: Pending Approval
+          - tab "Ready" [ref=e40]:
+            - img
+            - text: Ready
+          - tab "Processing" [ref=e41]:
+            - img
+            - text: Processing
+          - tab "Completed" [ref=e42]:
+            - img
+            - text: Completed
+          - tab "Failed" [ref=e43]:
+            - img
+            - text: Failed
+        - generic [ref=e45]:
+          - img [ref=e146]
+          - paragraph [ref=e148]: No actions found
+  - button "Open Next.js Dev Tools" [ref=e160] [cursor=pointer]:
+    - img [ref=e161]
+  - alert [ref=e164]

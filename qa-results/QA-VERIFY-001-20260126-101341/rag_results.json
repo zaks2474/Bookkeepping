@@ -1,0 +1,32 @@
+{
+  "summary": {
+    "passed": 2,
+    "total": 2
+  },
+  "test_suite": "Phase 3 \u2014 RAG API",
+  "tests": [
+    {
+      "details": {
+        "artifact": "rag_endpoint_probe.json"
+      },
+      "id": "3.0",
+      "name": "RAG endpoint probe (OpenAPI reachability)",
+      "passed": true,
+      "timestamp_utc": "2026-01-26T16:13:53.577491+00:00"
+    },
+    {
+      "details": {
+        "artifact": "rag_api_results.json",
+        "summary": {
+          "passed": 3,
+          "total": 3
+        }
+      },
+      "id": "3.1",
+      "name": "RAG API functional tests executed",
+      "passed": true,
+      "timestamp_utc": "2026-01-26T16:13:55.378423+00:00"
+    }
+  ],
+  "timestamp_utc": "2026-01-26T16:13:55.378435+00:00"
+}

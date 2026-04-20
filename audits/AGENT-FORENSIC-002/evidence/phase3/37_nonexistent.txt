@@ -1,0 +1,8 @@
+=== STEP 3.8: Non-Existent Approval ===
+{
+    "detail": "Not Found"
+}
+{
+    "detail": "Authentication required"
+}
+PASS = 404 or meaningful error. FAIL = 500 or unhandled crash.

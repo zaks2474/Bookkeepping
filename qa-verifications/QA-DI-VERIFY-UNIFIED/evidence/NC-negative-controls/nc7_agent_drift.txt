@@ -1,0 +1,23 @@
+================================================================================
+NC-7: AGENT TYPE DRIFT — Sabotage agent-api-types.generated.ts
+================================================================================
+Timestamp: 2026-02-08
+
+STEPS:
+1. Appended "// NC-7 SABOTAGE" to apps/dashboard/src/lib/agent-api-types.generated.ts
+2. Ran: make sync-agent-types
+3. Checked: grep -c "NC-7 SABOTAGE" → 0
+
+Output from make sync-agent-types:
+  === Sync Agent Types ===
+  cd apps/dashboard && npx openapi-typescript ../../packages/contracts/openapi/agent-api.json -o src/lib/agent-api-types.generated.ts
+  openapi-typescript 7.10.1
+  ../../packages/contracts/openapi/agent-api.json → src/lib/agent-api-types.generated.ts [55.1ms]
+  Agent API types regenerated from committed spec
+
+SABOTAGE LINE COUNT AFTER SYNC: 0
+
+CLEANUP: File is .gitignored (git checkout failed, but sync already overwrote the sabotage).
+
+VERDICT: PASS — make sync-agent-types completely regenerates the file from the committed
+agent OpenAPI spec, destroying any manual edits/sabotage. The codegen pipeline is authoritative.

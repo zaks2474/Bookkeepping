@@ -1,0 +1,16 @@
+=== Activity source files ===
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/layout.tsx
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/agent/activity/route.ts
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/agent-activity.ts
+=== Mock/hardcoded patterns ===
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:181:    if (!data?.recent) return [];
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:206:    if (!data?.recentRuns) return [];
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:262:            {status === 'idle' && <IconClock className="h-3 w-3" />}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:329:            placeholder="Search activity..."
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/agent/activity/route.ts:19:    status: 'idle' as AgentStatus,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/agent/activity/route.ts:21:    recent: [],
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/agent/activity/route.ts:29:    recentRuns: [],
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/agent-activity.ts:12:export type AgentStatus = 'idle' | 'working' | 'waiting_approval';
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/agent-activity.ts:105:  recent: AgentActivityEvent[];
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/agent-activity.ts:114:  recentRuns: AgentRecentRun[];

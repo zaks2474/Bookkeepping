@@ -1,0 +1,134 @@
+#!/usr/bin/env bash
+# Stop Hook — Run validation when session ends (V5PP)
+
+echo "=== Session End Validation (Fast Tier) ==="
+
+# Only run if in a recognized project
+MONOREPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || echo "")
+if [ -n "$MONOREPO_ROOT" ] && [ -f "$MONOREPO_ROOT/Makefile" ] && grep -q "validate-fast" "$MONOREPO_ROOT/Makefile" 2>/dev/null; then
+  cd "$MONOREPO_ROOT"
+
+  START_TS=$(date +%s)
+
+  # Gate A — Fast offline validation (TypeScript + offline checks only)
+  echo "Gate A: validate-fast"
+  if ! timeout 12 make validate-fast 2>&1; then
+    export MEMORY_VALIDATE_RESULT="FAILED"
+    echo "ERROR: Gate A failed. Blocking stop hook."
+    exit 2
+  fi
+  if [ $(( $(date +%s) - START_TS )) -gt 15 ]; then
+    export MEMORY_VALIDATE_RESULT="FAILED"
+    echo "ERROR: Stop hook exceeded 15s budget after Gate A."
+    exit 2
+  fi
+
+  # Gate B — Contract surfaces
+  echo "Gate B: validate-contract-surfaces"
+  if ! timeout 6 bash tools/infra/validate-contract-surfaces.sh 2>&1; then
+    export MEMORY_VALIDATE_RESULT="FAILED"
+    echo "ERROR: Gate B failed. Blocking stop hook."
+    exit 2
+  fi
+  if [ $(( $(date +%s) - START_TS )) -gt 15 ]; then
+    export MEMORY_VALIDATE_RESULT="FAILED"
+    echo "ERROR: Stop hook exceeded 15s budget after Gate B."
+    exit 2
+  fi
+
+  # Gate E — Raw httpx client usage in deal_tools.py (must be 0)
+  echo "Gate E: raw httpx client usage check"
+  if rg -n "httpx\\.(AsyncClient|get|post|put|patch|delete)" apps/agent-api/app/core/langgraph/tools/deal_tools.py; then
+    export MEMORY_VALIDATE_RESULT="FAILED"
+    echo "ERROR: Gate E failed (raw httpx client usage found). Blocking stop hook."
+    exit 2
+  fi
+  if [ $(( $(date +%s) - START_TS )) -gt 15 ]; then
+    export MEMORY_VALIDATE_RESULT="FAILED"
+    echo "ERROR: Stop hook exceeded 15s budget after Gate E."
+    exit 2
+  fi
+
+  export MEMORY_VALIDATE_RESULT="passed"
+else
+  echo "Not in a recognized project — skipping validation."
+  export MEMORY_VALIDATE_RESULT="skipped"
+fi
+
+# ── Memory Sync (non-fatal, 10s timeout) ──
+MEMORY_SYNC="/home/zaks/.claude/hooks/memory-sync.sh"
+if [ -f "$MEMORY_SYNC" ] && [ -x "$MEMORY_SYNC" ]; then
+  echo "Running memory-sync..."
+  timeout 10 bash "$MEMORY_SYNC" 2>&1 || {
+    echo "WARNING: memory-sync failed (non-fatal)."
+  }
+fi
+
+exit 0
+#!/usr/bin/env bash
+# Stop Hook — Run validation when session ends (V5PP)
+
+echo "=== Session End Validation (Fast Tier) ==="
+
+# Only run if in a recognized project
+MONOREPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || echo "")
+if [ -n "$MONOREPO_ROOT" ] && [ -f "$MONOREPO_ROOT/Makefile" ] && grep -q "validate-fast" "$MONOREPO_ROOT/Makefile" 2>/dev/null; then
+  cd "$MONOREPO_ROOT"
+
+  START_TS=$(date +%s)
+
+  # Gate A — Fast offline validation (TypeScript + offline checks only)
+  echo "Gate A: validate-fast"
+  if ! timeout 12 make validate-fast 2>&1; then
+    export MEMORY_VALIDATE_RESULT="FAILED"
+    echo "ERROR: Gate A failed. Blocking stop hook."
+    exit 2
+  fi
+  if [ $(( $(date +%s) - START_TS )) -gt 15 ]; then
+    export MEMORY_VALIDATE_RESULT="FAILED"
+    echo "ERROR: Stop hook exceeded 15s budget after Gate A."
+    exit 2
+  fi
+
+  # Gate B — Contract surfaces
+  echo "Gate B: validate-contract-surfaces"
+  if ! timeout 6 bash tools/infra/validate-contract-surfaces.sh 2>&1; then
+    export MEMORY_VALIDATE_RESULT="FAILED"
+    echo "ERROR: Gate B failed. Blocking stop hook."
+    exit 2
+  fi
+  if [ $(( $(date +%s) - START_TS )) -gt 15 ]; then
+    export MEMORY_VALIDATE_RESULT="FAILED"
+    echo "ERROR: Stop hook exceeded 15s budget after Gate B."
+    exit 2
+  fi
+
+  # Gate E — Raw httpx client usage in deal_tools.py (must be 0)
+  echo "Gate E: raw httpx client usage check"
+  if rg -n "httpx\\.(AsyncClient|get|post|put|patch|delete)" apps/agent-api/app/core/langgraph/tools/deal_tools.py; then
+    export MEMORY_VALIDATE_RESULT="FAILED"
+    echo "ERROR: Gate E failed (raw httpx client usage found). Blocking stop hook."
+    exit 2
+  fi
+  if [ $(( $(date +%s) - START_TS )) -gt 15 ]; then
+    export MEMORY_VALIDATE_RESULT="FAILED"
+    echo "ERROR: Stop hook exceeded 15s budget after Gate E."
+    exit 2
+  fi
+
+  export MEMORY_VALIDATE_RESULT="passed"
+else
+  echo "Not in a recognized project — skipping validation."
+  export MEMORY_VALIDATE_RESULT="skipped"
+fi
+
+# ── Memory Sync (non-fatal, 10s timeout) ──
+MEMORY_SYNC="/home/zaks/.claude/hooks/memory-sync.sh"
+if [ -f "$MEMORY_SYNC" ] && [ -x "$MEMORY_SYNC" ]; then
+  echo "Running memory-sync..."
+  timeout 10 bash "$MEMORY_SYNC" 2>&1 || {
+    echo "WARNING: memory-sync failed (non-fatal)."
+  }
+fi
+
+exit 0

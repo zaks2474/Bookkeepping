@@ -1,0 +1,42 @@
+=== B2 PROOF: backendHeaders presence in all 9 previously-flagged routes ===
+
+--- actions/quarantine/route.ts ---
+2:import { backendUrl, backendHeaders } from '@/lib/backend-fetch';
+26:      headers: backendHeaders(),
+57:      headers: backendHeaders(),
+
+--- actions/quarantine/[actionId]/preview/route.ts ---
+2:import { backendUrl, backendHeaders } from '@/lib/backend-fetch';
+18:      headers: backendHeaders(),
+
+--- actions/completed-count/route.ts ---
+10:import { backendUrl, backendHeaders } from '@/lib/backend-fetch';
+29:        headers: backendHeaders(),
+
+--- alerts/route.ts ---
+2:import { backendUrl, backendHeaders } from '@/lib/backend-fetch';
+15:    const hdrs = backendHeaders();
+
+--- deferred-actions/route.ts ---
+2:import { backendUrl, backendHeaders } from '@/lib/backend-fetch';
+16:      headers: backendHeaders(),
+
+--- deferred-actions/due/route.ts ---
+2:import { backendUrl, backendHeaders } from '@/lib/backend-fetch';
+14:      headers: backendHeaders(),
+
+--- quarantine/health/route.ts ---
+2:import { backendUrl, backendHeaders } from '@/lib/backend-fetch';
+14:      headers: backendHeaders(),
+
+--- checkpoints/route.ts ---
+9:import { backendUrl, backendHeaders } from '@/lib/backend-fetch';
+16:      headers: backendHeaders(),
+
+--- pipeline/route.ts ---
+11:import { backendUrl, backendHeaders } from '@/lib/backend-fetch';
+22:    const hdrs = backendHeaders();
+
+=== Summary ===
+Routes WITH backendHeaders: 15 / 20 total
+Routes WITHOUT any auth (stubs only): 3

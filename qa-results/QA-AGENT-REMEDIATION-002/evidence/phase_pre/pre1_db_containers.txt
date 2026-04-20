@@ -1,0 +1,14 @@
+=== PRE-1.1: Postgres Container Inventory ===
+NAMES     STATUS    PORTS
+zakops-backend-postgres-1        postgres:15-alpine                   Up 14 hours (healthy)
+zakops-agent-db                  pgvector/pgvector:pg16               Up 19 hours (healthy)
+rag-db                           pgvector/pgvector:pg17               Up 19 hours
+docker-postgres-1                postgres:16-alpine                   Created
+zakops-postgres-1                postgres:15-alpine                   Up 14 hours (healthy)
+--- Running Postgres count: 0 (expect 2) ---
+=== PRE-1.1 (REVISED): Postgres Container Inventory ===
+zakops-backend-postgres-1        postgres:15-alpine                   Up 14 hours (healthy)                      
+zakops-agent-db                  pgvector/pgvector:pg16               Up 19 hours (healthy)                      5432/tcp
+rag-db                           pgvector/pgvector:pg17               Up 19 hours                                0.0.0.0:5434->5432/tcp, [::]:5434->5432/tcp
+zakops-postgres-1                postgres:15-alpine                   Up 14 hours (healthy)                      0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp
+--- Running postgres-like count: 2 ---

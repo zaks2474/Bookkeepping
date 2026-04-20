@@ -1,0 +1,16 @@
+=== QA-4.3: T3.4 Duplicate Detection ===
+--- TEST 1: Unique constraint on deals ---
+ indexname  |                               indexdef                               
+------------+----------------------------------------------------------------------
+ deals_pkey | CREATE UNIQUE INDEX deals_pkey ON zakops.deals USING btree (deal_id)
+(1 row)
+
+
+--- TEST 2: Live duplicate test ---
+Creating first: QA006-DUP-1770190144
+{"deal_id":"DL-0043","canonical_name":"QA006-DUP-1770190144","display_name":null,"folder_path":null,"stage":"inbound","status":"active","identifiers":{},"company_info":{},"broker":{},"metadata":{},"created_at":"2026-02-04T07:29:04.726594Z","updated_at":"2026-02-04T07:29:04.726594Z","days_since_update":null,"action_count":null,"alias_count":null}
+Creating duplicate:
+{"deal_id":"DL-0044","canonical_name":"QA006-DUP-1770190144","display_name":null,"folder_path":null,"stage":"inbound","status":"active","identifiers":{},"company_info":{},"broker":{},"metadata":{},"created_at":"2026-02-04T07:29:04.738863Z","updated_at":"2026-02-04T07:29:04.738863Z","days_since_update":null,"action_count":null,"alias_count":null}
+HTTP_CODE:200
+
+=== QA-4.3 VERDICT: CHECK ===

@@ -1,0 +1,9 @@
+=== VF-03.3 TASK HARNESS ===
+-rwxr-xr-x 1 zaks zaks 3399 Feb 11 13:03 /home/zaks/bookkeeping/scripts/tests/test-task-completed-fixture-mode.sh
+=== test-task-completed-fixture-mode ===
+STEP 1: Clean fixture → PASS (exit 0)
+STEP 2: All 4 GATE_RESULT markers present
+STEP 3: CRLF fixture → crlf:FAIL, overall:FAIL (exit 2)
+STEP 4: Root-owned fixture → ownership:FAIL, overall:FAIL (exit 2)
+STEP 5: Nonexistent target → graceful PASS (exit 0)
+=== ALL CHECKS PASS ===

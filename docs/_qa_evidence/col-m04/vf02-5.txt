@@ -1,0 +1,5 @@
+    facts                 JSONB DEFAULT '[]'::jsonb,
+    risks                 JSONB DEFAULT '[]'::jsonb,
+    decisions             JSONB DEFAULT '[]'::jsonb,
+    assumptions           JSONB DEFAULT '[]'::jsonb,
+    open_items            JSONB DEFAULT '[]'::jsonb,

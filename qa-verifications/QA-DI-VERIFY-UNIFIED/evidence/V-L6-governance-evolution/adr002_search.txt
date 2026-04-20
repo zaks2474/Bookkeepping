@@ -1,0 +1,39 @@
+=== V-L6: ADR-002 Search ===
+Date: 2026-02-09T04:56:24Z
+
+--- Monorepo search ---
+
+--- Evidence root search ---
+
+--- Content references in monorepo ---
+(no references)
+
+--- Content references in bookkeeping ---
+/home/zaks/bookkeeping/CHANGES.md:10:2026-02-08: **DEAL-INTEGRITY-UNIFIED Layer 6 — Governance Documents Created**: Authored 5 governance documents for the DEAL-INTEGRITY-UNIFIED mission Layer 6. **(1) ADR-002:** Canonical Database decision record — documents the split-brain PostgreSQL incident (ports 5432 vs 5435, 49 vs 51 deals), establishes single canonical DB on zakops-backend-postgres-1:5432, defines startup DSN verification gate and health endpoint DB identity reporting. **(2) ADR-003:** Stage Configuration Authority — establishes `execution-contracts.ts` as the single source of truth for all frontend stage data (PIPELINE_STAGES, TERMINAL_STAGES, ALL_STAGES_ORDERED, colors, labels), replacing 8+ scattered hardcoded arrays. **(3) RUNBOOK-add-deal-stage:** 9-step procedure for adding a new deal stage across frontend types, execution-contracts, backend DB CHECK constraint, transition function, lifecycle trigger, type sync, validation, UI verification, and tests. **(4) innovation-roadmap:** Prioritized catalogue of mission innovations — P1: server-side aggregation (done), React error boundaries, automated parity tests; P2: Option C single lifecycle_state column, Grafana monitoring, load testing; P3: WebSocket real-time updates, deal analytics dashboard. **(5) change-protocol:** PR checklist triggered when deal state files are modified (transition_deal_state, execution-contracts.ts, deals schema, archive/restore endpoints) — requires ADR review, stage config consistency, make sync-all-types, make validate-local, backend tests, smoke test, manual UI verification. **Files created:** `layer-6/ADR-002-canonical-database.md`, `layer-6/ADR-003-stage-configuration-authority.md`, `layer-6/RUNBOOK-add-deal-stage.md`, `layer-6/innovation-roadmap.md`, `layer-6/change-protocol.md` (all under `/home/zaks/bookkeeping/qa-verifications/DEAL-INTEGRITY-UNIFIED/`).
+/home/zaks/bookkeeping/qa-verifications/DEAL-INTEGRITY-UNIFIED/final-verification.md:150:- `layer-6/ADR-002-canonical-database.md`
+/home/zaks/bookkeeping/qa-verifications/DEAL-INTEGRITY-UNIFIED/layer-6/ADR-002-canonical-database.md:1:# ADR-002: Canonical Database — Single Source of Truth
+/home/zaks/bookkeeping/qa-verifications/DEAL-INTEGRITY-UNIFIED/layer-6/completion-report.md:14:| L6-2 | PASS | ADR-002 at `layer-6/ADR-002-canonical-database.md` — documents split-brain resolution, canonical DSN, startup gate, compose lockdown |
+/home/zaks/bookkeeping/qa-verifications/DEAL-INTEGRITY-UNIFIED/layer-6/completion-report.md:27:2. **ADR-002: Canonical Database**
+/home/zaks/bookkeeping/qa-verifications/DEAL-INTEGRITY-UNIFIED/layer-6/completion-report.md:59:- `layer-6/ADR-002-canonical-database.md`
+/home/zaks/bookkeeping/qa-verifications/DEAL-INTEGRITY-UNIFIED/layer-6/ADR-003-stage-configuration-authority.md:79:- `ADR-002-canonical-database.md` — the DB where stages are enforced
+/home/zaks/bookkeeping/qa-verifications/DEAL-INTEGRITY-UNIFIED/layer-6/RUNBOOK-add-deal-stage.md:14:- Canonical database running on port 5432 (see ADR-002)
+/home/zaks/bookkeeping/qa-verifications/DEAL-INTEGRITY-UNIFIED/layer-6/change-protocol.md:8:| Authority   | ADR-002, ADR-003               |
+/home/zaks/bookkeeping/qa-verifications/DEAL-INTEGRITY-UNIFIED/layer-6/change-protocol.md:43:- [ ] Confirm the change is consistent with **ADR-002** (canonical database).
+/home/zaks/bookkeeping/qa-verifications/DEAL-INTEGRITY-UNIFIED/layer-6/change-protocol.md:112:**ADR compliance:** [ADR-002: Yes/No] [ADR-003: Yes/No]
+/home/zaks/bookkeeping/qa-verifications/QA-DI-VERIFY-UNIFIED/evidence/V-L2-data-model-integrity/V-L2.1-ADR-001.md:11:- `/home/zaks/bookkeeping/qa-verifications/DEAL-INTEGRITY-UNIFIED/layer-6/ADR-002-canonical-database.md`
+/home/zaks/bookkeeping/qa-verifications/QA-DI-VERIFY-UNIFIED/evidence/UNIFIED-SUMMARY.md:32:| V-L6.2 | PASS | ADR-002: Canonical Database (88 lines) |
+/home/zaks/bookkeeping/qa-verifications/QA-DI-VERIFY-UNIFIED/evidence/FINAL-verification/final_report.txt:112:V-L6.2:  PASS  ADR-002: Canonical Database (88 lines)
+/home/zaks/bookkeeping/qa-verifications/QA-DI-VERIFY-UNIFIED/evidence/RT-red-team/RT-report.md:209:| ADR-002 | 88 | 0 |
+/home/zaks/bookkeeping/qa-verifications/QA-DI-VERIFY-UNIFIED/evidence/RT-red-team/RT-report.md:266:- **ADR-002**: Documents the discovery of a rogue container on port 5435 with divergent data
+/home/zaks/bookkeeping/qa-verifications/QA-DI-VERIFY-UNIFIED/evidence/V-L6-governance-evolution/V-L6-report.md:30:### V-L6.2: ADR-002 Exists (Canonical Database) — PASS
+/home/zaks/bookkeeping/qa-verifications/QA-DI-VERIFY-UNIFIED/evidence/V-L6-governance-evolution/V-L6-report.md:32:File: `layer-6/ADR-002-canonical-database.md` (88 lines)
+/home/zaks/bookkeeping/qa-verifications/QA-DI-VERIFY-UNIFIED/evidence/V-L6-governance-evolution/V-L6-report.md:99:| V-L6.2 | **PASS** — ADR-002 exists with canonical DB |
+/home/zaks/bookkeeping/qa-verifications/QA-DI-VERIFY-UNIFIED/evidence/V-L1-infrastructure-truth/V-L1.10-canonical-dsn-documented.md:15:4. **ADR-002-canonical-database.md** exists at `/home/zaks/bookkeeping/qa-verifications/DEAL-INTEGRITY-UNIFIED/layer-6/`
+/home/zaks/bookkeeping/qa-verifications/QA-DI-VERIFY-UNIFIED/evidence/D-drops-audit/drop_m1.txt:2:--- /home/zaks/bookkeeping/qa-verifications/DEAL-INTEGRITY-UNIFIED/layer-6/ADR-002-canonical-database.md ---
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:852:# V-L6.2: ADR-002 — Canonical Database
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:853:find "$MONOREPO" "$EVIDENCE_ROOT" -name "ADR-002*" -o -name "adr-002*" 2>/dev/null \
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:888:| V-L6.2 | ADR-002 exists (Canonical DB) | file present | adr002_search.txt | **REMEDIATE IF MISSING** |
+/home/zaks/bookkeeping/docs/CANONICAL-DATABASE.md:40:See ADR-002 for the full rationale.
+/home/zaks/bookkeeping/docs/MISSION-DEAL-INTEGRITY-UNIFIED.md:805:2. **ADR-002: Single Canonical Database.** Document:
+/home/zaks/bookkeeping/docs/MISSION-DEAL-INTEGRITY-UNIFIED.md:865:| GATE L6-2 | ADR-002 (Canonical Database) exists and accurately describes the Layer 1 implementation | ADR file reviewed for accuracy |
+(no references)

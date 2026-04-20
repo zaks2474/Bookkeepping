@@ -1,0 +1,11 @@
+=== P0-1: ZK-ISSUE-0001 Split-Brain Data ===
+Status: VERIFIED in Phase 0 (RT-DB-SOT canary test)
+
+Evidence:
+- Canary deal created via API: DL-0039
+- Verified in Postgres: EXISTS
+- Verified JSON registry: DOES NOT EXIST
+- Verified SQLite: DOES NOT EXIST
+
+Verdict: PASS - Postgres is sole source of truth
+=== P0-1 VERDICT: PASS ===

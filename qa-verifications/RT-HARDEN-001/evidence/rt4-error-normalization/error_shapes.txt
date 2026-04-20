@@ -1,0 +1,14 @@
+=== ERROR SHAPE INVENTORY ===
+
+Shape 1 (FastAPI default): {"detail": "..."}
+  Source: error-404.json
+
+Shape 2 (Auth middleware): {"error": "unauthorized", "message": "..."}
+  Source: error-401.json
+
+Shape 3 (Structured): {"error": {"code": "...", "message": "...", "details": [...]}}
+  Source: error-validation-400.json, error-500.json
+
+error-normalizer.ts created at: src/lib/error-normalizer.ts
+error-422.json renamed to: error-validation-400.json
+Backend error unification tracked in: docs/debt-ledger.md (deadline: 2026-03-08)

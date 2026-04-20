@@ -1,7 +1,7 @@
 == Docker images ==
 WARNING: This output is designed for human readability. For machine-readable output, please use --format.
 IMAGE                                         ID             DISK USAGE   CONTENT SIZE   EXTRA
-agent-api-agent-api:latest                    0255d8a8b91b       1.78GB          393MB   U    
+agent-api-agent-api:latest                    16a4d84201e6       1.78GB          393MB        
 alpine:latest                                 25109184c71b         13MB         3.86MB        
 chromadb/chroma:latest                        70c20dbcb64e        750MB          154MB        
 curlimages/curl:latest                        d94d07ba9e7d       36.1MB         10.8MB        
@@ -18,7 +18,7 @@ nvidia/cuda:12.2.0-runtime-ubuntu22.04        739e0bde7baf       3.17GB         
 pgvector/pgvector:pg16                        0a07c4114ba6        723MB          185MB   U    
 pgvector/pgvector:pg17                        1a5ea285a159        626MB          158MB   U    
 postgres:15-alpine                            2e7b888f2211        392MB          109MB   U    
-postgres:16-alpine                            23e88eb049fd        395MB          110MB   U    
+postgres:16-alpine                            23e88eb049fd        395MB          110MB        
 prom/prometheus:v2.50.1                       bc1794e85c9e        358MB          101MB   U    
 redis:7-alpine                                ee64a64eaab6       60.7MB         17.2MB   U    
 stickerdaniel/linkedin-mcp-server:latest      c437eb638f80       1.75GB          477MB        
@@ -26,10 +26,11 @@ temporalio/auto-setup:1.25.2                  b1edc1e20002        620MB         
 temporalio/ui:2.34.0                          cb17ea423d76        163MB         48.1MB        
 vllm/vllm-openai:latest                       d623253f2ba2       28.7GB         8.94GB   U    
 zakops-agent-api-agent-api:latest             f26f9f2141f9       1.78GB          393MB        
-zakops-backend-backend:latest                 688a94b62990       2.01GB          421MB   U    
-zakops-backend-outbox-worker:latest           963381725a01       2.01GB          421MB   U    
-zakops-backend:latest                         ee7fee434d9c          2GB          417MB        
-zakops-outbox-worker:latest                   36a8bc3e1b9d        1.9GB          391MB        
+zakops-agent-api:latest                       ffff6d1de775       1.76GB          389MB   U    
+zakops-backend-backend:latest                 acbbdb65008f       2.01GB          419MB        
+zakops-backend-outbox-worker:latest           d4081c094e23          2GB          419MB        
+zakops-backend:latest                         86cdb7371a45       1.17GB          259MB   U    
+zakops-outbox-worker:latest                   36a8bc3e1b9d        1.9GB          391MB   U    
 zaks-llm-desktop-commander:latest             1c30f72f28a6        236MB         57.3MB        
 zaks-llm-google-workspace-mcp:latest          523763c4b5bb        679MB          136MB        
 zaks-llm-mcp-browser-use:latest               de153c88940f       13.1GB         4.15GB        

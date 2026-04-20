@@ -1,0 +1,15 @@
+user_identity_map definition (lines 17-27):
+  CREATE TABLE IF NOT EXISTS user_identity_map (
+    canonical_id    VARCHAR(255) PRIMARY KEY,
+    email           VARCHAR(255) UNIQUE,
+    display_name    VARCHAR(255),
+    auth_provider   VARCHAR(50) DEFAULT 'local',
+    external_ids    JSONB DEFAULT '{}'::jsonb,
+    role            VARCHAR(20) DEFAULT 'VIEWER',
+    created_at      TIMESTAMPTZ DEFAULT NOW(),
+    last_seen       TIMESTAMPTZ DEFAULT NOW(),
+    CONSTRAINT chk_role CHECK (role IN ('VIEWER', 'OPERATOR', 'APPROVER', 'ADMIN'))
+  );
+---
+canonical_id as PK: YES — VARCHAR(255) PRIMARY KEY
+VERDICT: PASS

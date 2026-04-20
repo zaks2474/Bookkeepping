@@ -1,0 +1,45 @@
+=== AUTO-COLLECTED EVIDENCE (Cycle 3) ===
+Timestamp: 2026-02-04T05:52:21Z
+
+--- git status ---
+
+--- Recent changes (git diff --stat) ---
+ db/migrations/024_correlation_id.sql            |   30 +
+ src/actions/executors/deal_create_from_email.py |  262 +-
+ src/api/deal_lifecycle/__init__.py              |    0
+ src/api/deal_lifecycle/main.py                  | 3869 -----------------------
+ src/api/orchestration/main.py                   |  209 ++
+ src/api/orchestration/routers/actions.py        |   88 +
+ 6 files changed, 490 insertions(+), 3968 deletions(-)
+
+--- Directory listing (top-level) ---
+total 196
+drwxr-xr-x 18 zaks zaks  4096 Feb  3 21:00 .
+drwxrwx--- 50 zaks zaks  4096 Feb  3 22:39 ..
+drwxr-xr-x  2 zaks zaks  4096 Feb  1 18:35 .claude
+-rw-r--r--  1 root root  5338 Feb  2 08:39 .env
+-rw-r--r--  1 zaks zaks  6279 Feb  1 18:41 .env.example
+drwxr-xr-x  8 zaks zaks  4096 Feb  3 23:52 .git
+drwxr-xr-x  3 zaks zaks  4096 Jan 19 15:07 .github
+-rw-r--r--  1 zaks zaks   426 Jan 19 01:54 .gitignore
+drwxr-xr-x  3 zaks zaks  4096 Jan 19 15:09 .pytest_cache
+drwxr-xr-x  3 root root  4096 Jan 24 13:05 .ruff_cache
+-rw-r--r--  1 zaks zaks  1843 Feb  1 19:32 CLAUDE.md
+-rw-r--r--  1 root root 10595 Feb  2 13:17 CONTRACT_AUDIT_V1_REPORT.md
+-rw-r--r--  1 zaks zaks  1312 Jan 20 13:24 Dockerfile
+-rw-r--r--  1 root root  7196 Feb  2 13:44 QA_CA_V1_VERIFICATION_REPORT.md
+-rw-r--r--  1 root root 13297 Feb  2 08:01 QA_V3_VERIFICATION_REPORT.md
+-rw-r--r--  1 root root 15209 Feb  2 09:34 QA_V4_VERIFICATION_REPORT.md
+-rw-r--r--  1 root root  6764 Feb  2 10:29 QA_V5_VERIFICATION_REPORT.md
+-rw-r--r--  1 root root  7157 Feb  1 19:41 README.md
+-rw-r--r--  1 root root  3526 Feb  2 07:04 REMEDIATION_V3_PROGRESS.md
+-rw-r--r--  1 root root  3618 Feb  2 09:04 REMEDIATION_V4_PROGRESS.md
+-rw-r--r--  1 root root  2435 Feb  2 10:08 REMEDIATION_V5_PROGRESS.md
+drwxr-xr-x  3 zaks zaks  4096 Jan 19 15:27 audit
+drwxr-xr-x  5 zaks zaks  4096 Jan 20 23:00 db
+-rw-r--r--  1 root root  5097 Feb  2 08:39 docker-compose.yml
+drwxr-xr-x  2 zaks zaks  4096 Jan 20 19:02 docs
+drwxr-xr-x  4 root root  4096 Jan 24 12:44 gate_artifacts
+drwxr-xr-x  4 zaks zaks  4096 Jan 19 15:52 infra
+drwxr-xr-x  3 zaks zaks  4096 Feb  2 09:00 mcp_server
+-rw-r--r--  1 root root  1503 Jan 24 13:28 pyproject.toml

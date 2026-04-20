@@ -1,0 +1,5 @@
+Line 10: import hashlib
+Line 41: hashed = hashlib.sha256(payload.encode()).hexdigest()[:16]
+Line 42: binary = bin(int(hashed, 16))[2:].zfill(64)
+Also uses zero-width unicode chars for invisible encoding (lines 22-25)
+VERDICT: PASS — sha256 cryptographic hashing confirmed

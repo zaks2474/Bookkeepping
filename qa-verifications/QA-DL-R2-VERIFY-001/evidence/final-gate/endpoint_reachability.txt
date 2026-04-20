@@ -1,0 +1,6 @@
+Testing endpoints
+/health/metrics: 200
+/api/deals/DL-0007/transitions: 200
+/api/deals/DL-0007/notes: 200
+/api/admin/retention/stats: 200
+/api/admin/retention/cleanup?dry_run=true: 200

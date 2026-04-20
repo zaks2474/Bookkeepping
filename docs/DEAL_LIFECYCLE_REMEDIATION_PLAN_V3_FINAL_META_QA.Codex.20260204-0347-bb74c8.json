@@ -1,0 +1,119 @@
+{
+  "agent_identity": {
+    "agent_name": "Codex",
+    "run_id": "20260204-0347-bb74c8",
+    "date_time": "2026-02-04T03:47:50Z",
+    "repo_revision": "unknown"
+  },
+  "status": "FAIL",
+  "gate_results": [
+    {
+      "gate": "GATE 0",
+      "status": "PASS",
+      "evidence": "Final plan exists, includes No-Drop Coverage Matrix, references V2 in Source Documents."
+    },
+    {
+      "gate": "GATE 1",
+      "status": "PASS",
+      "evidence": "Coverage matrix table lists all 22 ZK-ISSUE IDs once each."
+    },
+    {
+      "gate": "GATE 2",
+      "status": "FAIL",
+      "evidence": "Tasks T1.3, T1.9, and T4.4 list N/A for Files without NEEDS VERIFICATION guidance."
+    },
+    {
+      "gate": "GATE 3",
+      "status": "FAIL",
+      "evidence": "No explicit code health gate or lint/typecheck/unit test commands in plan."
+    },
+    {
+      "gate": "GATE 4",
+      "status": "PASS",
+      "evidence": "D-FINAL-01..07 explicitly decide SoT, stages, agent boundaries, HITL, ingestion, RAG, auth."
+    },
+    {
+      "gate": "GATE 5",
+      "status": "PASS",
+      "evidence": "Legacy decommission includes delete list, rg proof, CI guard, and CHANGES.md strategy."
+    },
+    {
+      "gate": "GATE 6",
+      "status": "PASS",
+      "evidence": "Plan targets unified deal truth, agent/UI parity, ingestion + RAG, and HITL actions."
+    }
+  ],
+  "coverage": {
+    "total_v2_issues": 22,
+    "total_mapped_issues": 22,
+    "missing_issue_ids": [],
+    "duplicate_issue_ids": [],
+    "ambiguous_mappings": []
+  },
+  "risks": [
+    {
+      "risk": "Migration validation gaps (ID mapping errors)",
+      "detection": "Migration report mismatch and sampled field diffs",
+      "mitigation": "id_map + field-by-field validation",
+      "rollback": "Restore JSON/SQLite writes and rerun migration"
+    },
+    {
+      "risk": "Legacy writers still active post-cutover",
+      "detection": "File hash changes or CI guard hit",
+      "mitigation": "Read-only permissions + rg guard",
+      "rollback": "Disable writers and restore backups"
+    },
+    {
+      "risk": "Quarantine approve non-atomic",
+      "detection": "Approved items without deal_id",
+      "mitigation": "Transactional approve + idempotency",
+      "rollback": "Revert to manual 2-step"
+    },
+    {
+      "risk": "Folder scaffolding drift",
+      "detection": "Missing folder_path or filesystem mismatch",
+      "mitigation": "Store folder_path + retry queue",
+      "rollback": "Disable auto-scaffold + repair script"
+    },
+    {
+      "risk": "Contract drift (UI/API)",
+      "detection": "404/422 spike",
+      "mitigation": "OpenAPI-generated clients",
+      "rollback": "Restore compatibility endpoints"
+    },
+    {
+      "risk": "Auth rollout breaks workflows",
+      "detection": "401/403 spike",
+      "mitigation": "Staged rollout + feature flag",
+      "rollback": "Disable auth requirement"
+    },
+    {
+      "risk": "Email ingestion duplicates",
+      "detection": "Duplicate quarantine items",
+      "mitigation": "Idempotency table",
+      "rollback": "Disable cron/dry-run only"
+    },
+    {
+      "risk": "RAG staleness",
+      "detection": "last_indexed_at lag > SLA",
+      "mitigation": "Reindex queue + reconciliation",
+      "rollback": "Disable search_deals or return explicit error"
+    },
+    {
+      "risk": "HITL expiry race",
+      "detection": "Approvals executed after expiry",
+      "mitigation": "TTL check at execution",
+      "rollback": "Disable auto-expiry job"
+    },
+    {
+      "risk": "Legacy deletion breaks hidden dependency",
+      "detection": "Runtime errors referencing removed modules",
+      "mitigation": "Staged deprecation + monitoring",
+      "rollback": "Restore from git"
+    }
+  ],
+  "patch_instructions": [
+    "Add explicit script/command paths or NEEDS VERIFICATION guidance for tasks with N/A Files (T1.3, T1.9, T4.4).",
+    "Add a Code Health gate in PART 5 with lint/typecheck/unit test commands and pass criteria/evidence artifacts."
+  ]
+}

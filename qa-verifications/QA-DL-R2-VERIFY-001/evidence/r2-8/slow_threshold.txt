@@ -1,0 +1,7 @@
+8:Logs slow requests and errors for alerting.
+25:SLOW_REQUEST_THRESHOLD_MS = float(os.getenv("SLOW_REQUEST_THRESHOLD_MS", "1000"))
+36:    - Flags slow requests (configurable threshold)
+58:        duration_ms = (time.perf_counter() - start_time) * 1000
+85:            # Client errors - log at WARNING
+90:        elif duration_ms > SLOW_REQUEST_THRESHOLD_MS:
+91:            # Slow requests - log at WARNING

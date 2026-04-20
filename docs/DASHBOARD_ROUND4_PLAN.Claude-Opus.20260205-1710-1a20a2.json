@@ -1,0 +1,116 @@
+{
+  "agent_identity": {
+    "agent_name": "Claude-Opus",
+    "run_id": "20260205-1710-1a20a2",
+    "date_time": "2026-02-05T17:10:00Z",
+    "dashboard_revision": "b96b33c5",
+    "backend_revision": "2a68de17"
+  },
+  "forensic_report": "DASHBOARD_ROUND4_FORENSIC.Claude-Opus.20260205-1710-1a20a2.md",
+  "phases": [
+    {
+      "phase": 0,
+      "name": "Critical Path Unblock",
+      "issues": ["DL-001", "DL-002", "DL-003", "DL-004"],
+      "tasks": ["P0-T1", "P0-T2", "P0-T3", "P0-T4", "P0-T5"],
+      "gate": "Gate P0: All 4 P0 issues closed with verification artifacts"
+    },
+    {
+      "phase": 1,
+      "name": "API Contract Alignment",
+      "issues": ["DL-005", "DL-006", "DL-007", "DL-008", "DL-009", "DL-010"],
+      "tasks": ["P1-T1", "P1-T2", "P1-T3", "P1-T4", "P1-T5", "P1-T6"],
+      "gate": "Gate P1: All P1 endpoints return 2xx; no 405/404 errors in CI"
+    },
+    {
+      "phase": 2,
+      "name": "UX Hardening & Technical Debt",
+      "issues": ["DL-011", "DL-012", "DL-013", "DL-014", "DL-015"],
+      "tasks": ["P2-T1", "P2-T2", "P2-T3", "P2-T4", "P2-T5"],
+      "gate": "Gate P2: All P2 issues closed; mock code removed from production bundle"
+    },
+    {
+      "phase": 3,
+      "name": "Polish & Observability",
+      "issues": ["DL-016", "DL-017"],
+      "tasks": ["P3-T1", "P3-T2", "P3-T3", "P3-T4"],
+      "gate": "Gate P3: All issues closed; observability active"
+    }
+  ],
+  "hard_gates": {
+    "gate_a": {
+      "name": "Contract Verification",
+      "description": "Every UI button/action has verified backend endpoint",
+      "proof": "openapi.json matches frontend api.ts calls",
+      "blocks": "Phase 1 exit"
+    },
+    "gate_b": {
+      "name": "No Dead UI",
+      "description": "No buttons that trigger errors or do nothing",
+      "proof": "E2E test suite covers every button",
+      "blocks": "Phase 2 exit"
+    },
+    "gate_c": {
+      "name": "E2E Coverage",
+      "description": "All P0/P1 workflows have passing E2E tests",
+      "proof": "CI green with E2E job",
+      "blocks": "Ship"
+    },
+    "gate_d": {
+      "name": "Observability",
+      "description": "All API calls traceable end-to-end",
+      "proof": "Sample trace from UI click to backend log",
+      "blocks": "Production deploy"
+    }
+  },
+  "coverage_matrix": {
+    "total_issues": 17,
+    "total_tasks": 19,
+    "mapped_issues": 17,
+    "coverage_percent": 100
+  },
+  "builder_missions": [
+    {
+      "mission": 1,
+      "name": "Deal Routing Fix",
+      "issues": ["DL-001"],
+      "acceptance": ["/deals/new renders create form", "/deals/GLOBAL renders global view"]
+    },
+    {
+      "mission": 2,
+      "name": "Backend Contract Completion",
+      "issues": ["DL-005", "DL-006", "DL-007"],
+      "acceptance": ["All endpoints return 2xx", "OpenAPI spec documents all parameters"]
+    },
+    {
+      "mission": 3,
+      "name": "Settings Completeness",
+      "issues": ["DL-004", "DL-010", "DL-012", "DL-013"],
+      "acceptance": ["Settings page has 5 tabs", "All settings persist across sessions"]
+    },
+    {
+      "mission": 4,
+      "name": "Chat Markdown Rendering",
+      "issues": ["DL-008"],
+      "acceptance": ["**bold** renders as bold", "Code blocks have syntax highlighting"]
+    },
+    {
+      "mission": 5,
+      "name": "Onboarding Backend Integration",
+      "issues": ["DL-003", "DL-011", "DL-014"],
+      "acceptance": ["Onboarding state saves to database", "Capability cards lead to functional configuration"]
+    }
+  ],
+  "ship_criteria": {
+    "p0_closed": "4/4",
+    "p1_closed": "6/6",
+    "e2e_passing": "100%",
+    "no_405_404": "0 errors",
+    "no_dead_buttons": "0",
+    "mock_code_removed": "0",
+    "observability_active": true,
+    "settings_complete": "5 sections"
+  },
+  "report_path": "/home/zaks/bookkeeping/docs/DASHBOARD_ROUND4_PLAN.Claude-Opus.20260205-1710-1a20a2.md",
+  "json_path": "/home/zaks/bookkeeping/docs/DASHBOARD_ROUND4_PLAN.Claude-Opus.20260205-1710-1a20a2.json"
+}

@@ -1,0 +1,5 @@
+=== VF-04.1 MAKE TARGET DEFINITION ===
+455:validate-frontend-governance: ## Validate frontend governance rules, anchors, and Gate E scan (CI-HARDENING-001)
+457:	@bash tools/infra/validate-rule-frontmatter.sh
+458:	@bash tools/infra/validate-frontend-governance.sh
+459:	@bash tools/infra/validate-gatee-scan.sh

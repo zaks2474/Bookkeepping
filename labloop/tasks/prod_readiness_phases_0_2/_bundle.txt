@@ -1,0 +1,555 @@
+=== BUILDER PROTOCOL ===
+# BUILDER PROTOCOL (Claude Code)
+# ===============================
+# You are BUILDER in the Lab Loop automation system.
+# Your role: Implement changes to satisfy the task's acceptance gates.
+
+## CRITICAL RULES
+
+1. You are running NON-INTERACTIVELY. Do not ask questions - make decisions based on:
+   - The mission.md and acceptance.md provided
+   - The QA_REPORT.json from the previous cycle
+   - Authoritative docs at /home/zaks/bookkeeping/docs/
+
+2. OBEY THE AUTHORITATIVE DOCS. All architectural decisions, patterns, and constraints
+   defined in /home/zaks/bookkeeping/docs/ are DECISION-LOCKED. Do not deviate.
+
+3. ADDRESS ISSUES IN PRIORITY ORDER:
+   - BLOCKERS first (these prevent task completion)
+   - MAJORS second (these are significant issues)
+   - MINORS last (only if time permits)
+
+4. MAKE THE SMALLEST SAFE CHANGE SET. Do not:
+   - Refactor code unnecessarily
+   - Add features not requested
+   - Change code outside the scope of the issue
+
+5. RUN VERIFICATION COMMANDS before finishing:
+   - Run the gate command specified in the task
+   - Fix any errors that arise
+   - Ensure tests pass
+
+## YOUR INPUTS
+
+You will receive via stdin:
+- Task mission (what to build)
+- Task acceptance criteria (how to verify)
+- Current cycle number
+- Latest QA_REPORT.json (issues to address)
+- TASK_DIR path for writing your report
+
+## YOUR OUTPUTS
+
+### 1. BUILDER_REPORT.md (write to TASK_DIR)
+
+Human-readable markdown report containing:
+- Summary of changes made
+- Issues addressed from QA report
+- Commands run and their results
+- Any blockers encountered
+- Files modified
+
+Example:
+```markdown
+# Builder Report - Cycle 3
+
+## Summary
+Fixed authentication bug and added missing test coverage.
+
+## Issues Addressed
+- [BLOCKER] Fixed JWT validation in auth.py:142
+- [MAJOR] Added test for edge case in test_auth.py
+
+## Commands Run
+- `pytest tests/` - PASSED (42 tests)
+- `ruff check .` - PASSED (no issues)
+
+## Files Modified
+- src/auth.py (lines 140-150)
+- tests/test_auth.py (added new test)
+
+## Notes for QA
+- JWT expiry now correctly validated
+- Test coverage increased to 85%
+```
+
+### 2. STDOUT JSON (final output)
+
+Your FINAL output to stdout MUST be a single JSON object:
+
+```json
+{
+  "status": "READY_FOR_QA",
+  "changed_files": [
+    "src/auth.py",
+    "tests/test_auth.py"
+  ],
+  "commands_run": [
+    "pytest tests/",
+    "ruff check ."
+  ],
+  "notes_for_QA": [
+    "Fixed JWT validation bug",
+    "Added edge case test",
+    "All tests passing"
+  ]
+}
+```
+
+## WORKFLOW
+
+1. Read the QA report and identify all issues to address
+2. Read relevant source files in REPO_DIR
+3. Implement fixes for each issue (BLOCKERS first)
+4. Run the gate command to verify
+5. If gates fail, fix and retry
+6. Write BUILDER_REPORT.md to TASK_DIR
+7. Output the JSON summary to stdout
+
+## REMEMBER
+
+- You cannot ask questions - make the best decision based on available info
+- If unsure, check /home/zaks/bookkeeping/docs/ for guidance
+- The task is NOT done until QA says PASS - focus on fixing issues
+- Do not output anything after the JSON - it must be parseable
+
+=== BUILDER OUTPUT SCHEMA ===
+Your final JSON output MUST conform to this schema:
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Lab Loop Builder Report",
+  "description": "Schema-enforced output from Builder agent to eliminate drift and ensure machine-verifiable reports",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": ["READY_FOR_QA", "BLOCKED", "ERROR"],
+      "description": "READY_FOR_QA = changes made, run QA. BLOCKED = cannot proceed without human input. ERROR = unexpected failure."
+    },
+    "cycle": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Current cycle number"
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 10,
+      "description": "Brief description of what was done this cycle"
+    },
+    "issues_addressed": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/addressed_issue" },
+      "description": "Issues from QA report that were addressed"
+    },
+    "changed_files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "path": { "type": "string" },
+          "action": { "type": "string", "enum": ["created", "modified", "deleted"] },
+          "lines_changed": { "type": "integer", "minimum": 0 },
+          "description": { "type": "string" }
+        },
+        "required": ["path", "action"]
+      },
+      "description": "Files modified during this cycle with details"
+    },
+    "commands_run": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "command": { "type": "string" },
+          "exit_code": { "type": "integer" },
+          "success": { "type": "boolean" },
+          "output_summary": { "type": "string", "maxLength": 500 }
+        },
+        "required": ["command", "exit_code", "success"]
+      },
+      "description": "Commands executed with their results"
+    },
+    "gate_pre_check": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ran_gate": { "type": "boolean" },
+        "gate_passed": { "type": "boolean" },
+        "gate_exit_code": { "type": "integer" },
+        "failure_summary": { "type": "string" }
+      },
+      "required": ["ran_gate"],
+      "description": "Did Builder run the gate command before finishing?"
+    },
+    "blockers_encountered": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "type": { "type": "string", "enum": ["missing_info", "unclear_requirement", "external_dependency", "permission", "other"] },
+          "description": { "type": "string" },
+          "suggested_resolution": { "type": "string" }
+        },
+        "required": ["type", "description"]
+      },
+      "description": "Blockers that prevented full completion"
+    },
+    "notes_for_qa": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Important notes for QA to consider during verification"
+    },
+    "confidence": {
+      "type": "string",
+      "enum": ["high", "medium", "low"],
+      "description": "Builder's confidence that changes will pass QA"
+    },
+    "diff_stats": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "files_changed": { "type": "integer", "minimum": 0 },
+        "insertions": { "type": "integer", "minimum": 0 },
+        "deletions": { "type": "integer", "minimum": 0 },
+        "total_lines": { "type": "integer", "minimum": 0 }
+      },
+      "description": "Git diff statistics for this cycle"
+    }
+  },
+  "required": [
+    "status",
+    "cycle",
+    "summary",
+    "issues_addressed",
+    "changed_files",
+    "commands_run",
+    "gate_pre_check",
+    "notes_for_qa"
+  ],
+  "$defs": {
+    "addressed_issue": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "severity": { "type": "string", "enum": ["BLOCKER", "MAJOR", "MINOR"] },
+        "original_title": { "type": "string" },
+        "resolution": { "type": "string" },
+        "files_modified": { "type": "array", "items": { "type": "string" } },
+        "verified": { "type": "boolean", "description": "Did Builder verify the fix works?" }
+      },
+      "required": ["severity", "original_title", "resolution", "verified"]
+    }
+  }
+}
+
+=== TASK MISSION ===
+# MISSION: ZakOps Production Readiness — Phases 0–2
+## SLOs/Risk → Agent Validation → Trust UX
+
+**Version:** 2.0 (Enhanced)
+**Reference:** /home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md
+
+---
+
+## CRITICAL CONTEXT
+
+### What This Mission Produces
+
+| Phase | Primary Output | Gate |
+|-------|----------------|------|
+| **0** | SLO definitions + risk register | Documents validate |
+| **1** | Agent evaluation framework | Golden traces pass, tool accuracy ≥95% |
+| **2** | Trust UX + audit visibility | Components exist, gates pass |
+
+### Hard Rules
+
+1. **Don't break existing functionality** — Run existing tests before AND after changes
+2. **CI must be fast** — Evals use mocked agent responses in CI, real agent locally
+3. **Start small, structure for scale** — 10 golden traces now, schema supports 100
+4. **Every gate must be deterministic** — No flaky tests, no network dependencies in CI
+5. **Document limitations** — If something is deferred, create a TODO with clear scope
+
+---
+
+## PHASE 0: SLOs + RISK MODEL
+
+### Required Directories
+```
+mkdir -p docs/slos docs/risk tools/quality artifacts/quality
+```
+
+### Required Files
+
+1. **docs/slos/SLO_DEFINITIONS.md** - SLO documentation with:
+   - API SLOs: Availability 99.5%, Latency P95 500ms, P99 2000ms
+   - Agent SLOs: Availability 99.0%, Latency P95 5000ms, Tool Accuracy 95%
+
+2. **docs/slos/slo_config.yaml** - Machine-readable SLO config with:
+   - At least 6 SLO definitions
+   - Error budget thresholds (green/yellow/orange/red)
+
+3. **docs/slos/ERROR_BUDGET_POLICY.md** - Error budget policy with threshold states
+
+4. **docs/risk/RISK_REGISTER.md** - NIST AI RMF-aligned risk register with:
+   - At least 12 documented risks
+   - Categories: Validity, Safety, Security, Privacy, Transparency
+   - Each risk: ID, description, likelihood, impact, mitigation, owner, status
+
+5. **docs/risk/NIST_AI_RMF_MAPPING.md** - Framework alignment documentation
+
+6. **tools/quality/slo_validate.py** - SLO config validator (outputs to artifacts/quality/slo_validation.json)
+7. **tools/quality/risk_validate.py** - Risk register validator (outputs to artifacts/quality/risk_validation.json)
+8. **tools/gates/phase0_slo_gate.sh** - SLO validation gate
+9. **tools/gates/phase0_risk_gate.sh** - Risk validation gate
+
+---
+
+## PHASE 1: AGENT INTELLIGENCE VALIDATION
+
+### Required Directories
+```
+mkdir -p apps/agent-api/evals/golden_traces
+mkdir -p apps/agent-api/evals/datasets/tool_selection/v1
+mkdir -p apps/agent-api/tests/security
+mkdir -p artifacts/evals
+```
+
+### Required Files
+
+1. **apps/agent-api/evals/golden_trace.schema.json** - Schema for golden traces
+
+2. **apps/agent-api/evals/golden_traces/GT-001.json through GT-010.json** - 10 golden traces:
+   - GT-001: Basic deal query
+   - GT-002: Deal transition (requires approval)
+   - GT-003: List deals query
+   - GT-004: Deal value query
+   - GT-005: Invalid deal ID handling
+   - GT-006: Ambiguous request
+   - GT-007: Create deal request
+   - GT-008: Stage transition to closed_won (requires approval)
+   - GT-009: Search deals by filter
+   - GT-010: No tool needed (general question)
+
+3. **apps/agent-api/evals/golden_trace_runner.py** - Runner with CI/local modes
+   - CI mode: uses mock_response from trace files
+   - Local mode: calls real agent at localhost:8095
+
+4. **apps/agent-api/evals/datasets/tool_selection/v1/cases.json** - 20+ tool selection test cases
+
+5. **apps/agent-api/tests/security/test_owasp_llm_top10.py** - OWASP LLM security tests
+
+6. **tools/gates/golden_trace_gate.sh** - Golden trace gate (100% pass required)
+7. **tools/gates/owasp_llm_gate.sh** - OWASP LLM gate
+
+8. **docs/agent/GOLDEN_TRACE_GUIDE.md** - Documentation for adding traces
+
+---
+
+## PHASE 2: TRUST UX + AUDIT
+
+### Required Directories
+```
+mkdir -p apps/dashboard/src/components/approvals
+mkdir -p apps/dashboard/src/components/audit
+mkdir -p docs/ux
+```
+
+### Required Files
+
+1. **apps/dashboard/src/components/approvals/ApprovalCard.tsx** - Approval card with:
+   - WHAT action display
+   - DEAL context
+   - WHY approval needed
+   - CHANGES preview (diff)
+   - Approve/Reject buttons
+
+2. **apps/dashboard/src/components/audit/AuditLogViewer.tsx** - Audit viewer with:
+   - Timeline view
+   - Actor filter
+   - Action filter
+   - Request ID visible and copyable
+   - Export JSON/CSV
+
+3. **docs/ux/TRUST_UX_CHECKLIST.md** - Trust UX completion checklist
+
+4. **tools/gates/phase2_trust_ux_gate.sh** - Trust UX component gate
+
+---
+
+## MAKEFILE UPDATES
+
+Add these targets to the root Makefile:
+
+```makefile
+# Production Readiness Phases
+.PHONY: phase0 phase1 phase2
+
+phase0: slo-validate risk-validate
+	@echo "Phase 0 complete"
+
+phase1: golden-traces owasp-tests
+	@echo "Phase 1 complete"
+
+phase2: trust-ux-check
+	@echo "Phase 2 complete"
+
+slo-validate:
+	@python3 tools/quality/slo_validate.py
+
+risk-validate:
+	@python3 tools/quality/risk_validate.py
+
+golden-traces:
+	@CI=true python -m apps.agent_api.evals.golden_trace_runner
+
+owasp-tests:
+	@cd apps/agent-api && CI=true python -m pytest tests/security/ -v
+
+trust-ux-check:
+	@bash tools/gates/phase2_trust_ux_gate.sh
+```
+
+---
+
+## DISCOVERY FIRST
+
+Before implementing, run discovery to understand current state:
+
+```bash
+cd /home/zaks/zakops-agent-api
+git checkout -b feat/prod-readiness-phases-0-2
+
+# Check structure
+find . -maxdepth 3 -type d -not -path '*/node_modules/*' -not -path '*/.git/*' | head -50
+ls -la apps/agent-api/evals/ 2>/dev/null || echo "No evals dir yet"
+ls -la apps/dashboard/src/components/ 2>/dev/null
+```
+
+---
+
+## REFERENCE
+
+Full implementation details in:
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md
+
+=== TASK ACCEPTANCE CRITERIA ===
+# Acceptance Criteria
+
+## Definition of Done
+
+The task is complete when ALL of the following are true:
+
+### Phase 0: SLOs + Risk Model
+
+- [ ] `docs/slos/SLO_DEFINITIONS.md` exists with API and Agent SLOs documented
+- [ ] `docs/slos/slo_config.yaml` exists with ≥6 SLO definitions and error budget thresholds
+- [ ] `docs/slos/ERROR_BUDGET_POLICY.md` exists with threshold states
+- [ ] `docs/risk/RISK_REGISTER.md` exists with ≥12 documented risks (NIST AI RMF aligned)
+- [ ] `docs/risk/NIST_AI_RMF_MAPPING.md` exists with framework alignment
+- [ ] `tools/quality/slo_validate.py` exists and runs successfully
+- [ ] `tools/quality/risk_validate.py` exists and runs successfully
+- [ ] `tools/gates/phase0_slo_gate.sh` exists and is executable
+- [ ] `tools/gates/phase0_risk_gate.sh` exists and is executable
+- [ ] `artifacts/quality/slo_validation.json` shows `passed: true`
+- [ ] `artifacts/quality/risk_validation.json` shows `passed: true`
+
+### Phase 1: Agent Intelligence Validation
+
+- [ ] `apps/agent-api/evals/golden_trace.schema.json` exists with valid JSON schema
+- [ ] Golden traces GT-001 through GT-010 exist in `apps/agent-api/evals/golden_traces/`
+- [ ] `apps/agent-api/evals/golden_trace_runner.py` exists with CI/local modes
+- [ ] `apps/agent-api/evals/datasets/tool_selection/v1/cases.json` exists with ≥20 test cases
+- [ ] `apps/agent-api/tests/security/test_owasp_llm_top10.py` exists
+- [ ] `tools/gates/golden_trace_gate.sh` exists and is executable
+- [ ] `tools/gates/owasp_llm_gate.sh` exists and is executable
+- [ ] `docs/agent/GOLDEN_TRACE_GUIDE.md` exists
+- [ ] Golden trace runner passes 100% in CI mode
+- [ ] OWASP LLM security tests pass
+
+### Phase 2: Trust UX + Audit
+
+- [ ] `apps/dashboard/src/components/approvals/ApprovalCard.tsx` exists with required features
+- [ ] `apps/dashboard/src/components/audit/AuditLogViewer.tsx` exists with required features
+- [ ] `docs/ux/TRUST_UX_CHECKLIST.md` exists
+- [ ] `tools/gates/phase2_trust_ux_gate.sh` exists and is executable
+
+### Makefile Integration
+
+- [ ] Root Makefile has `phase0`, `phase1`, `phase2` targets
+- [ ] `make phase0` runs successfully (slo-validate + risk-validate)
+- [ ] `make phase1` runs successfully (golden-traces + owasp-tests)
+- [ ] `make phase2` runs successfully (trust-ux-check)
+
+### Quality Gates
+
+- [ ] All existing tests still pass (no regressions)
+- [ ] No linting errors in new Python files
+- [ ] All shell scripts pass shellcheck
+
+## Verification Steps
+
+1. Run `make phase0` - should exit 0
+2. Run `make phase1` - should exit 0
+3. Run `make phase2` - should exit 0
+4. Verify artifact files exist and show passing status
+
+## Gate Command
+
+```bash
+make phase0 && make phase1 && make phase2
+```
+
+This command must exit with code 0 for the task to pass.
+
+=== CURRENT CYCLE ===
+Cycle: 1
+
+=== LATEST QA REPORT (JSON) ===
+{
+  "verdict": "FAIL",
+  "cycle": 0,
+  "summary": "Initial seeded QA report. Builder should run gates and implement fixes.",
+  "blockers": [],
+  "majors": [],
+  "minors": [],
+  "spec_compliance": {
+    "endpoints_match": false,
+    "schemas_match": false,
+    "status_strings_match": false,
+    "auth_matches": false,
+    "db_mode_matches": false,
+    "streaming_matches": false,
+    "local_llm_lane_verified": false,
+    "mocks_disabled_for_gates": false
+  },
+  "next_actions_for_builder": [
+    {
+      "priority": 1,
+      "severity": "BLOCKER",
+      "summary": "Run verification gates and create initial BUILDER_REPORT.md",
+      "files": [],
+      "how_to_validate": ["Run gate command and check exit code is 0"]
+    }
+  ],
+  "evidence": []
+}
+
+=== TASK DIRECTORY ===
+TASK_DIR=/home/zaks/bookkeeping/labloop/tasks/prod_readiness_phases_0_2
+
+=== SAFETY CONSTRAINTS ===
+MAX_FILES_PER_CYCLE=20
+MAX_LINES_PER_CYCLE=1000
+Protected paths: .env, secrets/**, credentials/**, *.pem, *.key
+
+=== INSTRUCTIONS ===
+1. Read the QA report above and address the issues
+2. Make changes to fix blockers first, then majors, then minors
+3. VERIFY your fix by running the gate command: make phase0 phase1 phase2
+4. Write your report to: /home/zaks/bookkeeping/labloop/tasks/prod_readiness_phases_0_2/BUILDER_REPORT.md
+5. Output ONLY a JSON object matching the BUILDER OUTPUT SCHEMA above
+6. Include all required fields: status, cycle, summary, issues_addressed, changed_files, commands_run, gate_pre_check, notes_for_qa

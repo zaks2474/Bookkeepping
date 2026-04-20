@@ -1,0 +1,24 @@
+=== R1.REG.1: Create approval ===
+{
+    "thread_id": "remediation-004-reg-1770151885",
+    "status": "awaiting_approval",
+    "content": null,
+    "pending_approval": {
+        "approval_id": "86ca0a1c-938e-4aa1-8a13-b34642321a39",
+        "tool": "transition_deal",
+        "args": {
+            "deal_id": "DEAL-001",
+            "from_stage": "inbound",
+            "to_stage": "screening",
+            "reason": null
+        },
+        "permission_tier": "CRITICAL",
+        "requested_by": "reg-tester",
+        "requested_at": "2026-02-03T20:51:27.242661Z"
+    },
+    "actions_taken": [],
+    "error": null
+}
+
+Pending approval ID: 86ca0a1c-938e-4aa1-8a13-b34642321a39
+Thread: remediation-004-reg-1770151885

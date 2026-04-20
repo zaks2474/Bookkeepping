@@ -1,0 +1,9 @@
+AC_ROWS=8
+| AC-1 | Port drift eliminated (8091) | **PASS** | `P0-02` (before: 8090), `P2-05` (after: 8091), `P1-gate-A1` (healthy) |
+| AC-2 | Auth forwarding on all write calls | **PASS** | `P2-04-write-call-audit.txt` (2/2 backend POSTs have X-API-Key) |
+| AC-3 | Shadow injection tool exists | **PASS** | `P5-02-final-tools.txt` (13 tools, zakops_inject_quarantine present) |
+| AC-4 | Dedup behavior correct | **PASS** | `P3-gate-A3` (201) then `P3-gate-A4` (200) |
+| AC-5 | Tool discovery through tunnel | **PASS** | `P4-01-tunnel-discovery.txt` (13 tools via zakops-bridge.zaksops.com) |
+| AC-6 | Transport investigation complete | **PASS** | `P4-02-transport-investigation.txt` (SSE primary, streamable-http one-line switch) |
+| AC-7 | No regressions | **PASS** | `P5-01` (all healthy), `P5-02` (13 tools), all 12 original tools present |
+| AC-8 | Bookkeeping | **PASS** | CHANGES.md updated, this report written |

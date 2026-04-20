@@ -1,0 +1,10 @@
+84:from app.services.summarizer import build_recall_memory, maybe_summarize_after_turn
+1155:            # COL-V2 S5.3: Trigger rolling summarization (fire-and-forget)
+1159:                    maybe_summarize_after_turn(thread_id, turn_number)
+1162:                logger.debug("summarization_trigger_failed", error=str(sum_err))
+1404:            # COL-V2 S5.3: Trigger rolling summarization (fire-and-forget)
+1407:                asyncio.create_task(maybe_summarize_after_turn(session_id, turn_count * 2))
+1409:                logger.debug("summarization_trigger_failed", error=str(sum_err))
+1484:                # COL-V2 S5.3: Trigger rolling summarization (fire-and-forget)
+1487:                    asyncio.create_task(maybe_summarize_after_turn(session_id, turn_count * 2))
+1489:                    logger.debug("summarization_trigger_failed", error=str(sum_err))

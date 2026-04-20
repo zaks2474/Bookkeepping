@@ -1,0 +1,12 @@
+/home/zaks/zakops-backend/db/migrations/029_quarantine_hardening_rollback.sql
+/home/zaks/zakops-backend/db/migrations/029_quarantine_hardening.sql
+=== /home/zaks/zakops-backend/db/migrations/029_quarantine_hardening_rollback.sql ===
+9:ALTER TABLE zakops.quarantine_items DROP CONSTRAINT IF EXISTS chk_quarantine_status;
+10:ALTER TABLE zakops.quarantine_items DROP CONSTRAINT IF EXISTS uq_quarantine_message_id;
+=== /home/zaks/zakops-backend/db/migrations/029_quarantine_hardening.sql ===
+6:--   1. UNIQUE constraint on message_id (DB-level dedup safety net)
+7:--   2. CHECK constraint on status (closed enum)
+16:-- 1. Unique constraint on message_id (allows multiple NULLs — Postgres default)
+18:    ADD CONSTRAINT uq_quarantine_message_id UNIQUE (message_id);
+20:-- 2. Status CHECK constraint (closed enum of valid values)
+22:    ADD CONSTRAINT chk_quarantine_status

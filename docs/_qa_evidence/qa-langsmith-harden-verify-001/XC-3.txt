@@ -1,0 +1,18 @@
+=== Contract codes ===
+| **201 Created** | New quarantine item created |
+| **200 OK** | Dedup hit -- item with same `message_id` already exists |
+| **400 Bad Request** | Invalid payload |
+| **401 Unauthorized** | Missing or invalid `X-API-Key` |
+| **429 Too Many Requests** | Rate limit exceeded |
+| **503 Service Not Configured** | `ZAKOPS_API_KEY` not set (fail-closed) |
+=== Code ===
+main.py:
+  1551: response.status_code = 200  (dedup hit)
+  1598: response.status_code = 201  (new creation)
+  400: HTTPException(status_code=400, ...) in multiple handlers
+apikey.py:
+  43: status_code=503 (key not configured, fail-closed)
+  52: status_code=401 (invalid key)
+security.py:
+  170: status_code=429 (rate limit exceeded)
+VERDICT: All 6 codes (200, 201, 400, 401, 429, 503) have code paths. PASS.

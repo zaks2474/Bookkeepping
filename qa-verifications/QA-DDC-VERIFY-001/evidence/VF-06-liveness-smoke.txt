@@ -1,0 +1,39 @@
+=== VF-06: Liveness + Smoke Upgrades (Phase 6) ===
+
+=== validate-endpoint-liveness.sh ===
+
+1. ENDPOINTS array (lines 18-35): 16 probes total ✓
+   - New: /api/pipeline/summary (line 30) ✓
+   - 15 existing probes preserved ✓
+
+2. Deal sub-resource probes (lines 131-180)
+   - Pre-flight deal_id fetch (lines 133-143) ✓
+   - Fallback for paginated response shape (lines 140-142) ✓
+   - Skip with INFO if no deals (line 146) ✓
+   - Pipeline summary shape check: jq '.[0].stage' (line 152) ✓
+   - Loop: for sub_path in case-file enrichment materials (line 162) ✓
+   - Shape check: jq '.deal_id' (line 166) ✓
+   - Accepts 200+deal_id OR 404 as PASS (lines 168-176) ✓
+
+3. WSL safety: zaks:zaks, rwxr-xr-x, LF ✓
+
+=== smoke-test.sh ===
+
+1. Pipeline summary assertion (lines 125-136)
+   - Checks stage field: jq '.[0].stage' (line 129) ✓
+   - Checks count field: jq '.[0].count' (line 130) ✓
+   - PASS when both present (line 133) ✓
+   - WARN if missing (may have no active deals) ✓
+
+2. Deal sub-resource assertions (lines 141-159)
+   - Sample deal_id fetch with paginated fallback ✓
+   - Skip with WARN if no active deals ✓
+   - Loop: for sub in case-file enrichment materials (line 151) ✓
+   - Accepts 200 or 404 as PASS (line 154) ✓
+
+3. Existing smoke checks preserved (lines 33-120) ✓
+   - Dashboard, Deals, Actions, Quarantine, Chat, Agent Activity, etc. ✓
+
+4. WSL safety: zaks:zaks, rwxr-xr-x, LF ✓
+
+VERDICT: PASS — 16 liveness probes, shape-validated sub-resources, smoke enhanced

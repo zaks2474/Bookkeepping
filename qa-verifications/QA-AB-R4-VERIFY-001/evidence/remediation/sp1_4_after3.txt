@@ -1,0 +1,21 @@
+============================================================
+R3 REMEDIATION [P2.4]: Prompt Tool List Validation
+============================================================
+Loading environment: Environment.DEVELOPMENT
+Loaded environment from /home/zaks/zakops-agent-api/apps/agent-api/.env.development
+Traceback (most recent call last):
+  File "/home/zaks/zakops-agent-api/apps/agent-api/scripts/validate_prompt_tools.py", line 128, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/zaks/zakops-agent-api/apps/agent-api/scripts/validate_prompt_tools.py", line 104, in main
+    tools = get_tool_list_from_registry()
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zaks/zakops-agent-api/apps/agent-api/app/core/prompts/__init__.py", line 97, in get_tool_list_from_registry
+    from app.core.langgraph.tools import tools
+  File "/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/__init__.py", line 15, in <module>
+    from .deal_tools import (
+  File "/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py", line 25, in <module>
+    from app.core.logging import logger
+  File "/home/zaks/zakops-agent-api/apps/agent-api/app/core/logging.py", line 26, in <module>
+    import structlog
+ModuleNotFoundError: No module named 'structlog'

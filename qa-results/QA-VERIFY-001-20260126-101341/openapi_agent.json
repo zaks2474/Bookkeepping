@@ -1,0 +1,1683 @@
+{
+  "components": {
+    "schemas": {
+      "ActionTaken": {
+        "description": "Record of an action taken by the agent.",
+        "properties": {
+          "result": {
+            "additionalProperties": true,
+            "description": "Tool result",
+            "title": "Result",
+            "type": "object"
+          },
+          "tool": {
+            "description": "Tool name",
+            "title": "Tool",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tool"
+        ],
+        "title": "ActionTaken",
+        "type": "object"
+      },
+      "AgentInvokeRequest": {
+        "description": "MDv2 request format for agent invocation.\n\nAttributes:\n    actor_id: Identifier for the calling user/system\n    message: The user's message/instruction\n    thread_id: Optional thread ID for conversation continuity\n    metadata: Optional metadata for tracing/logging",
+        "properties": {
+          "actor_id": {
+            "description": "Identifier for the calling user/system",
+            "title": "Actor Id",
+            "type": "string"
+          },
+          "message": {
+            "description": "The user's message/instruction",
+            "maxLength": 10000,
+            "minLength": 1,
+            "title": "Message",
+            "type": "string"
+          },
+          "metadata": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Optional metadata",
+            "title": "Metadata"
+          },
+          "thread_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Thread ID for conversation continuity",
+            "title": "Thread Id"
+          }
+        },
+        "required": [
+          "actor_id",
+          "message"
+        ],
+        "title": "AgentInvokeRequest",
+        "type": "object"
+      },
+      "AgentInvokeResponse": {
+        "description": "MDv2 response format for agent invocation.\n\nSpec-compliant schema with:\n    thread_id: Thread ID for this conversation\n    status: Response status (completed, awaiting_approval, error)\n    content: The agent's response message (optional)\n    pending_approval: Approval information if HITL is triggered\n    actions_taken: List of actions completed\n    error: Error message if status is error",
+        "properties": {
+          "actions_taken": {
+            "description": "Actions completed by agent",
+            "items": {
+              "$ref": "#/components/schemas/ActionTaken"
+            },
+            "title": "Actions Taken",
+            "type": "array"
+          },
+          "content": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Agent's response message",
+            "title": "Content"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Error message if status is error",
+            "title": "Error"
+          },
+          "pending_approval": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PendingApproval"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Pending approval if HITL triggered"
+          },
+          "status": {
+            "description": "Response status",
+            "enum": [
+              "completed",
+              "awaiting_approval",
+              "error"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "thread_id": {
+            "description": "Thread ID for this conversation",
+            "title": "Thread Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "thread_id",
+          "status"
+        ],
+        "title": "AgentInvokeResponse",
+        "type": "object"
+      },
+      "ApprovalActionRequest": {
+        "description": "Request for approving or rejecting an action.\n\nAttributes:\n    actor_id: ID of the user performing the action\n    reason: Optional reason (required for rejection)",
+        "properties": {
+          "actor_id": {
+            "description": "ID of the user performing the action",
+            "title": "Actor Id",
+            "type": "string"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Reason for the action (required for rejection)",
+            "title": "Reason"
+          }
+        },
+        "required": [
+          "actor_id"
+        ],
+        "title": "ApprovalActionRequest",
+        "type": "object"
+      },
+      "ApprovalListResponse": {
+        "description": "Response for listing pending approvals.\n\nAttributes:\n    approvals: List of pending approvals\n    total: Total count of pending approvals",
+        "properties": {
+          "approvals": {
+            "description": "List of pending approvals",
+            "items": {
+              "$ref": "#/components/schemas/PendingApproval"
+            },
+            "title": "Approvals",
+            "type": "array"
+          },
+          "total": {
+            "description": "Total count",
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "approvals",
+          "total"
+        ],
+        "title": "ApprovalListResponse",
+        "type": "object"
+      },
+      "Body_login_api_v1_auth_login_post": {
+        "properties": {
+          "grant_type": {
+            "default": "password",
+            "title": "Grant Type",
+            "type": "string"
+          },
+          "password": {
+            "title": "Password",
+            "type": "string"
+          },
+          "username": {
+            "title": "Username",
+            "type": "string"
+          }
+        },
+        "required": [
+          "username",
+          "password"
+        ],
+        "title": "Body_login_api_v1_auth_login_post",
+        "type": "object"
+      },
+      "Body_update_session_name_api_v1_auth_session__session_id__name_patch": {
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "Body_update_session_name_api_v1_auth_session__session_id__name_patch",
+        "type": "object"
+      },
+      "ChatRequest": {
+        "description": "Request model for chat endpoint.\n\nAttributes:\n    messages: List of messages in the conversation.",
+        "properties": {
+          "messages": {
+            "description": "List of messages in the conversation",
+            "items": {
+              "$ref": "#/components/schemas/Message"
+            },
+            "minItems": 1,
+            "title": "Messages",
+            "type": "array"
+          }
+        },
+        "required": [
+          "messages"
+        ],
+        "title": "ChatRequest",
+        "type": "object"
+      },
+      "ChatResponse": {
+        "description": "Response model for chat endpoint.\n\nAttributes:\n    messages: List of messages in the conversation.",
+        "properties": {
+          "messages": {
+            "description": "List of messages in the conversation",
+            "items": {
+              "$ref": "#/components/schemas/Message"
+            },
+            "title": "Messages",
+            "type": "array"
+          }
+        },
+        "required": [
+          "messages"
+        ],
+        "title": "ChatResponse",
+        "type": "object"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "Message": {
+        "description": "Message model for chat endpoint.\n\nAttributes:\n    role: The role of the message sender (user or assistant).\n    content: The content of the message.",
+        "properties": {
+          "content": {
+            "description": "The content of the message",
+            "maxLength": 3000,
+            "minLength": 1,
+            "title": "Content",
+            "type": "string"
+          },
+          "role": {
+            "description": "The role of the message sender",
+            "enum": [
+              "user",
+              "assistant",
+              "system"
+            ],
+            "title": "Role",
+            "type": "string"
+          }
+        },
+        "required": [
+          "role",
+          "content"
+        ],
+        "title": "Message",
+        "type": "object"
+      },
+      "PendingApproval": {
+        "description": "Pending approval information returned in invoke response.\n\nMDv2 Spec Compliant Schema:\n    approval_id: Unique identifier for the approval request\n    tool: Name of the tool requiring approval\n    args: Arguments that will be passed to the tool\n    permission_tier: Permission level (CRITICAL for HITL tools)\n    requested_by: Actor who requested this action\n    requested_at: When the approval was requested",
+        "properties": {
+          "approval_id": {
+            "description": "Unique identifier for the approval",
+            "title": "Approval Id",
+            "type": "string"
+          },
+          "args": {
+            "additionalProperties": true,
+            "description": "Arguments for the tool",
+            "title": "Args",
+            "type": "object"
+          },
+          "permission_tier": {
+            "default": "CRITICAL",
+            "description": "Permission tier of the tool",
+            "enum": [
+              "READ",
+              "WRITE",
+              "CRITICAL"
+            ],
+            "title": "Permission Tier",
+            "type": "string"
+          },
+          "requested_at": {
+            "description": "When the approval was requested",
+            "format": "date-time",
+            "title": "Requested At",
+            "type": "string"
+          },
+          "requested_by": {
+            "description": "Actor who requested this action",
+            "title": "Requested By",
+            "type": "string"
+          },
+          "tool": {
+            "description": "Name of the tool requiring approval",
+            "title": "Tool",
+            "type": "string"
+          }
+        },
+        "required": [
+          "approval_id",
+          "tool",
+          "args",
+          "requested_by",
+          "requested_at"
+        ],
+        "title": "PendingApproval",
+        "type": "object"
+      },
+      "SessionResponse": {
+        "description": "Response model for session creation.\n\nAttributes:\n    session_id: The unique identifier for the chat session\n    name: Name of the session (defaults to empty string)\n    token: The authentication token for the session",
+        "properties": {
+          "name": {
+            "default": "",
+            "description": "Name of the session",
+            "maxLength": 100,
+            "title": "Name",
+            "type": "string"
+          },
+          "session_id": {
+            "description": "The unique identifier for the chat session",
+            "title": "Session Id",
+            "type": "string"
+          },
+          "token": {
+            "$ref": "#/components/schemas/Token",
+            "description": "The authentication token for the session"
+          }
+        },
+        "required": [
+          "session_id",
+          "token"
+        ],
+        "title": "SessionResponse",
+        "type": "object"
+      },
+      "ThreadStateResponse": {
+        "description": "Thread state response per MDv2 spec.",
+        "properties": {
+          "pending_approval": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PendingApproval"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "thread_id": {
+            "title": "Thread Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "thread_id",
+          "status"
+        ],
+        "title": "ThreadStateResponse",
+        "type": "object"
+      },
+      "Token": {
+        "description": "Token model for authentication.\n\nAttributes:\n    access_token: The JWT access token.\n    token_type: The type of token (always \"bearer\").\n    expires_at: The token expiration timestamp.",
+        "properties": {
+          "access_token": {
+            "description": "The JWT access token",
+            "title": "Access Token",
+            "type": "string"
+          },
+          "expires_at": {
+            "description": "The token expiration timestamp",
+            "format": "date-time",
+            "title": "Expires At",
+            "type": "string"
+          },
+          "token_type": {
+            "default": "bearer",
+            "description": "The type of token",
+            "title": "Token Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "access_token",
+          "expires_at"
+        ],
+        "title": "Token",
+        "type": "object"
+      },
+      "TokenResponse": {
+        "description": "Response model for login endpoint.\n\nAttributes:\n    access_token: The JWT access token\n    token_type: The type of token (always \"bearer\")\n    expires_at: When the token expires",
+        "properties": {
+          "access_token": {
+            "description": "The JWT access token",
+            "title": "Access Token",
+            "type": "string"
+          },
+          "expires_at": {
+            "description": "When the token expires",
+            "format": "date-time",
+            "title": "Expires At",
+            "type": "string"
+          },
+          "token_type": {
+            "default": "bearer",
+            "description": "The type of token",
+            "title": "Token Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "access_token",
+          "expires_at"
+        ],
+        "title": "TokenResponse",
+        "type": "object"
+      },
+      "UserCreate": {
+        "description": "Request model for user registration.\n\nAttributes:\n    email: User's email address\n    password: User's password",
+        "properties": {
+          "email": {
+            "description": "User's email address",
+            "format": "email",
+            "title": "Email",
+            "type": "string"
+          },
+          "password": {
+            "description": "User's password",
+            "format": "password",
+            "maxLength": 64,
+            "minLength": 8,
+            "title": "Password",
+            "type": "string",
+            "writeOnly": true
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ],
+        "title": "UserCreate",
+        "type": "object"
+      },
+      "UserResponse": {
+        "description": "Response model for user operations.\n\nAttributes:\n    id: User's ID\n    email: User's email address\n    token: Authentication token",
+        "properties": {
+          "email": {
+            "description": "User's email address",
+            "title": "Email",
+            "type": "string"
+          },
+          "id": {
+            "description": "User's ID",
+            "title": "Id",
+            "type": "integer"
+          },
+          "token": {
+            "$ref": "#/components/schemas/Token",
+            "description": "Authentication token"
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "token"
+        ],
+        "title": "UserResponse",
+        "type": "object"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "HTTPBearer": {
+        "scheme": "bearer",
+        "type": "http"
+      }
+    }
+  },
+  "info": {
+    "description": "A production-ready FastAPI template with LangGraph and Langfuse integration",
+    "title": "ZakOps Agent API",
+    "version": "1.0.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/": {
+      "get": {
+        "description": "Root endpoint returning basic API information.",
+        "operationId": "root__get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Root"
+      }
+    },
+    "/agent/approvals": {
+      "get": {
+        "description": "List pending approvals.\n\nArgs:\n    request: The FastAPI request object\n    actor_id: Optional filter by actor ID\n\nReturns:\n    ApprovalListResponse: List of pending approvals",
+        "operationId": "list_pending_approvals_agent_approvals_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "actor_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Actor Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApprovalListResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Pending Approvals",
+        "tags": [
+          "agent"
+        ]
+      }
+    },
+    "/agent/approvals/{approval_id}": {
+      "get": {
+        "description": "Get a specific approval by ID.\n\nArgs:\n    request: The FastAPI request object\n    approval_id: The approval ID\n\nReturns:\n    PendingApproval: The approval details",
+        "operationId": "get_approval_agent_approvals__approval_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "approval_id",
+            "required": true,
+            "schema": {
+              "title": "Approval Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PendingApproval"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Approval",
+        "tags": [
+          "agent"
+        ]
+      }
+    },
+    "/agent/approvals/{approval_id}:approve": {
+      "post": {
+        "description": "Approve a pending action and resume the agent.\n\nUses atomic conditional update (WHERE status='pending') to ensure\nonly one caller can claim the approval under concurrent requests.\n\nReturns MDv2-compliant AgentInvokeResponse with status=\"completed\"\nafter successful execution.\n\nArgs:\n    request: The FastAPI request object\n    approval_id: The approval ID to approve\n    action_request: The approval action request\n    user: Authenticated user (when JWT enforcement is enabled)\n\nReturns:\n    AgentInvokeResponse: MDv2-compliant response with completed status\n\nRaises:\n    HTTPException: 404 if not found, 409 if already claimed/resolved",
+        "operationId": "approve_action_agent_approvals__approval_id__approve_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "approval_id",
+            "required": true,
+            "schema": {
+              "title": "Approval Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApprovalActionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentInvokeResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Approve Action",
+        "tags": [
+          "agent"
+        ]
+      }
+    },
+    "/agent/approvals/{approval_id}:reject": {
+      "post": {
+        "description": "Reject a pending action.\n\nUses atomic conditional update to prevent race conditions.\nReturns MDv2-compliant AgentInvokeResponse.\n\nArgs:\n    request: The FastAPI request object\n    approval_id: The approval ID to reject\n    action_request: The rejection request (reason recommended)\n    user: Authenticated user (when JWT enforcement is enabled)\n\nReturns:\n    AgentInvokeResponse: MDv2-compliant response indicating rejection",
+        "operationId": "reject_action_agent_approvals__approval_id__reject_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "approval_id",
+            "required": true,
+            "schema": {
+              "title": "Approval Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApprovalActionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentInvokeResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Reject Action",
+        "tags": [
+          "agent"
+        ]
+      }
+    },
+    "/agent/invoke": {
+      "post": {
+        "description": "Invoke the agent with a message.\n\nThis endpoint processes user messages through the LangGraph agent.\nIf the agent attempts to use a tool that requires approval (HITL),\nit will return a pending_approval response instead of completing.\n\nSPIKE: Only transition_deal triggers HITL.\n\nArgs:\n    request: The FastAPI request object\n    invoke_request: The MDv2 invoke request\n\nReturns:\n    AgentInvokeResponse: The agent response or pending approval",
+        "operationId": "invoke_agent_agent_invoke_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AgentInvokeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentInvokeResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Invoke Agent",
+        "tags": [
+          "agent"
+        ]
+      }
+    },
+    "/agent/invoke/stream": {
+      "post": {
+        "description": "Stream agent invocation responses via SSE.\n\nThis endpoint processes user messages through the LangGraph agent\nand streams incremental responses as Server-Sent Events.\n\nSPIKE STATUS: Basic implementation - returns events for start/content/end.\nFull streaming integration with LangGraph pending Phase 2.\n\nArgs:\n    request: The FastAPI request object\n    invoke_request: The MDv2 invoke request\n\nReturns:\n    StreamingResponse: SSE stream of agent events",
+        "operationId": "invoke_agent_stream_agent_invoke_stream_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AgentInvokeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Invoke Agent Stream",
+        "tags": [
+          "agent"
+        ]
+      }
+    },
+    "/agent/threads/{thread_id}/state": {
+      "get": {
+        "description": "Get the current state of a thread.\n\nUsed to check if a thread has pending approvals or has completed.\n\nArgs:\n    request: The FastAPI request object\n    thread_id: The thread ID to check\n\nReturns:\n    ThreadStateResponse: Current thread state",
+        "operationId": "get_thread_state_agent_threads__thread_id__state_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "thread_id",
+            "required": true,
+            "schema": {
+              "title": "Thread Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ThreadStateResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Thread State",
+        "tags": [
+          "agent"
+        ]
+      }
+    },
+    "/api/v1/agent/approvals": {
+      "get": {
+        "description": "List pending approvals.\n\nArgs:\n    request: The FastAPI request object\n    actor_id: Optional filter by actor ID\n\nReturns:\n    ApprovalListResponse: List of pending approvals",
+        "operationId": "list_pending_approvals_api_v1_agent_approvals_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "actor_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Actor Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApprovalListResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Pending Approvals",
+        "tags": [
+          "agent"
+        ]
+      }
+    },
+    "/api/v1/agent/approvals/{approval_id}": {
+      "get": {
+        "description": "Get a specific approval by ID.\n\nArgs:\n    request: The FastAPI request object\n    approval_id: The approval ID\n\nReturns:\n    PendingApproval: The approval details",
+        "operationId": "get_approval_api_v1_agent_approvals__approval_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "approval_id",
+            "required": true,
+            "schema": {
+              "title": "Approval Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PendingApproval"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Approval",
+        "tags": [
+          "agent"
+        ]
+      }
+    },
+    "/api/v1/agent/approvals/{approval_id}:approve": {
+      "post": {
+        "description": "Approve a pending action and resume the agent.\n\nUses atomic conditional update (WHERE status='pending') to ensure\nonly one caller can claim the approval under concurrent requests.\n\nReturns MDv2-compliant AgentInvokeResponse with status=\"completed\"\nafter successful execution.\n\nArgs:\n    request: The FastAPI request object\n    approval_id: The approval ID to approve\n    action_request: The approval action request\n    user: Authenticated user (when JWT enforcement is enabled)\n\nReturns:\n    AgentInvokeResponse: MDv2-compliant response with completed status\n\nRaises:\n    HTTPException: 404 if not found, 409 if already claimed/resolved",
+        "operationId": "approve_action_api_v1_agent_approvals__approval_id__approve_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "approval_id",
+            "required": true,
+            "schema": {
+              "title": "Approval Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApprovalActionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentInvokeResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Approve Action",
+        "tags": [
+          "agent"
+        ]
+      }
+    },
+    "/api/v1/agent/approvals/{approval_id}:reject": {
+      "post": {
+        "description": "Reject a pending action.\n\nUses atomic conditional update to prevent race conditions.\nReturns MDv2-compliant AgentInvokeResponse.\n\nArgs:\n    request: The FastAPI request object\n    approval_id: The approval ID to reject\n    action_request: The rejection request (reason recommended)\n    user: Authenticated user (when JWT enforcement is enabled)\n\nReturns:\n    AgentInvokeResponse: MDv2-compliant response indicating rejection",
+        "operationId": "reject_action_api_v1_agent_approvals__approval_id__reject_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "approval_id",
+            "required": true,
+            "schema": {
+              "title": "Approval Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApprovalActionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentInvokeResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Reject Action",
+        "tags": [
+          "agent"
+        ]
+      }
+    },
+    "/api/v1/agent/invoke": {
+      "post": {
+        "description": "Invoke the agent with a message.\n\nThis endpoint processes user messages through the LangGraph agent.\nIf the agent attempts to use a tool that requires approval (HITL),\nit will return a pending_approval response instead of completing.\n\nSPIKE: Only transition_deal triggers HITL.\n\nArgs:\n    request: The FastAPI request object\n    invoke_request: The MDv2 invoke request\n\nReturns:\n    AgentInvokeResponse: The agent response or pending approval",
+        "operationId": "invoke_agent_api_v1_agent_invoke_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AgentInvokeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentInvokeResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Invoke Agent",
+        "tags": [
+          "agent"
+        ]
+      }
+    },
+    "/api/v1/agent/invoke/stream": {
+      "post": {
+        "description": "Stream agent invocation responses via SSE.\n\nThis endpoint processes user messages through the LangGraph agent\nand streams incremental responses as Server-Sent Events.\n\nSPIKE STATUS: Basic implementation - returns events for start/content/end.\nFull streaming integration with LangGraph pending Phase 2.\n\nArgs:\n    request: The FastAPI request object\n    invoke_request: The MDv2 invoke request\n\nReturns:\n    StreamingResponse: SSE stream of agent events",
+        "operationId": "invoke_agent_stream_api_v1_agent_invoke_stream_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AgentInvokeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Invoke Agent Stream",
+        "tags": [
+          "agent"
+        ]
+      }
+    },
+    "/api/v1/agent/threads/{thread_id}/state": {
+      "get": {
+        "description": "Get the current state of a thread.\n\nUsed to check if a thread has pending approvals or has completed.\n\nArgs:\n    request: The FastAPI request object\n    thread_id: The thread ID to check\n\nReturns:\n    ThreadStateResponse: Current thread state",
+        "operationId": "get_thread_state_api_v1_agent_threads__thread_id__state_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "thread_id",
+            "required": true,
+            "schema": {
+              "title": "Thread Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ThreadStateResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Thread State",
+        "tags": [
+          "agent"
+        ]
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "description": "Login a user.\n\nArgs:\n    request: The FastAPI request object for rate limiting.\n    username: User's email\n    password: User's password\n    grant_type: Must be \"password\"\n\nReturns:\n    TokenResponse: Access token information\n\nRaises:\n    HTTPException: If credentials are invalid",
+        "operationId": "login_api_v1_auth_login_post",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_login_api_v1_auth_login_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Login",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/register": {
+      "post": {
+        "description": "Register a new user.\n\nArgs:\n    request: The FastAPI request object for rate limiting.\n    user_data: User registration data\n\nReturns:\n    UserResponse: The created user info",
+        "operationId": "register_user_api_v1_auth_register_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Register User",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/session": {
+      "post": {
+        "description": "Create a new chat session for the authenticated user.\n\nArgs:\n    user: The authenticated user\n\nReturns:\n    SessionResponse: The session ID, name, and access token",
+        "operationId": "create_session_api_v1_auth_session_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Session",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/session/{session_id}": {
+      "delete": {
+        "description": "Delete a session for the authenticated user.\n\nArgs:\n    session_id: The ID of the session to delete\n    current_session: The current session from auth\n\nReturns:\n    None",
+        "operationId": "delete_session_api_v1_auth_session__session_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "session_id",
+            "required": true,
+            "schema": {
+              "title": "Session Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Delete Session",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/session/{session_id}/name": {
+      "patch": {
+        "description": "Update a session's name.\n\nArgs:\n    session_id: The ID of the session to update\n    name: The new name for the session\n    current_session: The current session from auth\n\nReturns:\n    SessionResponse: The updated session information",
+        "operationId": "update_session_name_api_v1_auth_session__session_id__name_patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "session_id",
+            "required": true,
+            "schema": {
+              "title": "Session Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_update_session_name_api_v1_auth_session__session_id__name_patch"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Session Name",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/sessions": {
+      "get": {
+        "description": "Get all session IDs for the authenticated user.\n\nArgs:\n    user: The authenticated user\n\nReturns:\n    List[SessionResponse]: List of session IDs",
+        "operationId": "get_user_sessions_api_v1_auth_sessions_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/SessionResponse"
+                  },
+                  "title": "Response Get User Sessions Api V1 Auth Sessions Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get User Sessions",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/chatbot/chat": {
+      "post": {
+        "description": "Process a chat request using LangGraph.\n\nArgs:\n    request: The FastAPI request object for rate limiting.\n    chat_request: The chat request containing messages.\n    session: The current session from the auth token.\n\nReturns:\n    ChatResponse: The processed chat response.\n\nRaises:\n    HTTPException: If there's an error processing the request.",
+        "operationId": "chat_api_v1_chatbot_chat_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Chat",
+        "tags": [
+          "chatbot"
+        ]
+      }
+    },
+    "/api/v1/chatbot/chat/stream": {
+      "post": {
+        "description": "Process a chat request using LangGraph with streaming response.\n\nArgs:\n    request: The FastAPI request object for rate limiting.\n    chat_request: The chat request containing messages.\n    session: The current session from the auth token.\n\nReturns:\n    StreamingResponse: A streaming response of the chat completion.\n\nRaises:\n    HTTPException: If there's an error processing the request.",
+        "operationId": "chat_stream_api_v1_chatbot_chat_stream_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Chat Stream",
+        "tags": [
+          "chatbot"
+        ]
+      }
+    },
+    "/api/v1/chatbot/messages": {
+      "delete": {
+        "description": "Clear all messages for a session.\n\nArgs:\n    request: The FastAPI request object for rate limiting.\n    session: The current session from the auth token.\n\nReturns:\n    dict: A message indicating the chat history was cleared.",
+        "operationId": "clear_chat_history_api_v1_chatbot_messages_delete",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Clear Chat History",
+        "tags": [
+          "chatbot"
+        ]
+      },
+      "get": {
+        "description": "Get all messages for a session.\n\nArgs:\n    request: The FastAPI request object for rate limiting.\n    session: The current session from the auth token.\n\nReturns:\n    ChatResponse: All messages in the session.\n\nRaises:\n    HTTPException: If there's an error retrieving the messages.",
+        "operationId": "get_session_messages_api_v1_chatbot_messages_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Session Messages",
+        "tags": [
+          "chatbot"
+        ]
+      }
+    },
+    "/api/v1/health": {
+      "get": {
+        "description": "Health check endpoint.\n\nReturns:\n    dict: Health status information.",
+        "operationId": "health_check_api_v1_health_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Health Check"
+      }
+    },
+    "/health": {
+      "get": {
+        "description": "Health check endpoint with environment-specific information.\n\nReturns:\n    Dict[str, Any]: Health status information",
+        "operationId": "health_check_health_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Health Check Health Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Health Check"
+      }
+    }
+  }
+}

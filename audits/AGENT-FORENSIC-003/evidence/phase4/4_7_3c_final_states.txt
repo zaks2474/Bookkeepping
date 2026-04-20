@@ -1,0 +1,21 @@
+=== CHECK 4.7.3c: Final states - Multi-Approval Isolation Verification ===
+Timestamp: 2026-02-03T13:17:48-06:00
+
+=== Final state of both approvals ===
+                  id                  |            thread_id            |  status  | target_stage  |          resolved_at          | resolved_by  |                   rejection_reason                    
+--------------------------------------+---------------------------------+----------+---------------+-------------------------------+--------------+-------------------------------------------------------
+ 3d52c78e-780f-4d30-b30d-871ad8d29671 | forensic-003-multi-a-1770146198 | approved | Qualification | 2026-02-03 19:17:31.618645+00 | multi-test-a | 
+ 3f1a9e2d-7697-44cc-885c-d3e88f84ede7 | forensic-003-multi-b-1770146198 | rejected | LOI           | 2026-02-03 19:17:37.727792+00 | multi-test-b | Multi-approval isolation test - intentional rejection
+(2 rows)
+
+
+=== ISOLATION VERIFICATION ===
+
+ Thread A (Approval): approved at 2026-02-03 19:17:31.618645+00
+
+ Thread B (Rejection): rejected at 2026-02-03 19:17:37.727792+00
+
+
+=== Isolation Check Results ===
+ PASS: Approvals are properly isolated - Thread A approved, Thread B rejected
+

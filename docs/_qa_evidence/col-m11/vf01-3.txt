@@ -1,0 +1,5 @@
+apps/agent-api/app/services/cost_repository.py:129:    async def get_deal_cost_summary(self, deal_id: str) -> Optional[dict]:
+apps/agent-api/app/services/cost_repository.py:130:        """Get cost summary for a deal from the view."""
+apps/agent-api/app/services/cost_repository.py:134:                    SELECT * FROM deal_cost_summary
+apps/agent-api/migrations/004_chat_canonical_store_rollback.sql:14:DROP VIEW IF EXISTS deal_cost_summary;
+apps/agent-api/migrations/004_chat_canonical_store.sql:196:CREATE OR REPLACE VIEW deal_cost_summary AS

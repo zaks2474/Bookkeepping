@@ -1,0 +1,15 @@
+  PASS: rag-api.json — 7053 bytes (limit: 51200)
+
+--- Check 4: Dashboard Bundle Size ---
+  INFO: Static directory size: 248 MB (dev limit: 300 MB)
+  PASS: Dashboard static within dev budget
+  INFO: main-app.js: 7599321 bytes (limit: 2097152)
+  WARN: main-app.js exceeds 2 MB limit (advisory)
+
+--- Check 5: Budget Section Completeness ---
+  Budget sections: 4/4 present
+  PASS: All required budget sections present
+
+================================
+PASS: SURFACE 14 PERFORMANCE BUDGET CONTRACT (1 warning(s))
+[32mSurface 14 validation passed[0m

@@ -1,0 +1,17 @@
+=== XC-2 FINDING RECONCILIATION INTEGRITY ===
+4:**Status:** COMPLETE — All 12 Acceptance Criteria PASS
+11:| AC | Description | Status | Evidence |
+32:| F-01 | Dashboard layout imbalance | Added scroll container with `overflow-y-auto` to dashboard page |
+33:| F-02 | Ask Agent drawer weak UX | Redesigned drawer: icon header, user/agent avatars, QuickAction empty state, "Full chat" link |
+34:| F-03 | Auto-refresh toast spam | `fetchData()` accepts `source` param; only `'manual'` triggers toast |
+35:| F-04 | Board view runtime crash | Defensive normalization: `Array.isArray(rawDeals) ? rawDeals : (rawDeals?.deals ?? [])` |
+36:| F-05 | Quarantine ghost input | localStorage persistence moved from onChange to post-action only |
+37:| F-06 | Chat lacks history rail | New `ChatHistoryRail` component + `chat-history.ts` session archive utility |
+38:| F-07 | Agent Activity is benchmark | Applied Agent Activity patterns: `bg-primary/10` icons, `group-hover` transitions, `cn()` utility |
+39:| F-08 | Onboarding step order | `viewStep` hardcoded to 0; explicit `resumeFromBackend()` for resume |
+40:| F-09 | Settings scroll/structure | Wrapped in `overflow-y-auto` container with `min-h-0` |
+41:| F-10 | Settings lacks return path | Added "Back to Dashboard" link with `IconArrowLeft` |
+56:| `tests/e2e/dashboard-worldclass-remediation.spec.ts` | 12 e2e tests covering F-01..F-10 |
+74:## Validation Evidence
+89:| Phase | Description | Complexity | Status |
+91:| 0 | Discovery and Baseline Evidence | M | COMPLETE |

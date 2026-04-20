@@ -1,0 +1,15 @@
+4: * GhostKnowledgeToast — COL-V2 S14.7
+6: * Listens for ghost_knowledge_flags SSE event and shows toast notifications.
+7: * Each toast has "Confirm" and "Dismiss" action buttons that call
+12:import { toast } from 'sonner';
+30:interface GhostKnowledgeToastProps {
+39:export function useGhostKnowledgeToast({ onConfirm, onDismiss }: GhostKnowledgeToastProps) {
+40:  const showGhostToast = useCallback(
+43:        toast(
+62:                    toast.error('Failed to dismiss ghost knowledge');
+64:                  toast.dismiss();
+74:                    toast.error('Failed to confirm ghost knowledge');
+76:                  toast.dismiss();
+86:            className: 'ghost-knowledge-toast',
+94:  return { showGhostToast };
+98:export default useGhostKnowledgeToast;

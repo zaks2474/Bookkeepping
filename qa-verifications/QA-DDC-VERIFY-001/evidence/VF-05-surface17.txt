@@ -1,0 +1,30 @@
+=== VF-05: Surface 17 Enforcement (Phase 5) ===
+
+File: /home/zaks/zakops-agent-api/tools/infra/validate-surface17.sh
+
+1. Manifest entry count
+   - Lines 35-86: manifest array definition
+   - Total entries: 44 (was 43 before mission) ✓
+   - New entry at line 64: /api/agent/sentiment/{dealId}|GET|agent/sentiment/[dealId]/route.ts ✓
+
+2. PROXY_PASS_EXCEPTIONS (lines 194-197)
+   - /api/actions — proxies to backend GET /api/actions (main.py:1196) ✓
+   - /api/quarantine — proxies to backend GET /api/quarantine (main.py:1502) ✓
+   - Exceptions produce info() not fail() ✓
+
+3. Drift detection severity
+   - Lines 253-267: exception handling logic
+   - Line 264: fail "Uncovered endpoint in api.ts: $path (no route handler found)" ✓
+   - Upgraded from WARN to FAIL ✓
+   - PROXY_PASS_EXCEPTIONS checked first (lines 256-262) → info() ✓
+
+4. Dynamic segment handling
+   - Line 244: loop over "id actionId sessionId dealId" parameter names ✓
+   - [dealId] routes correctly detected ✓
+
+5. WSL safety
+   - Owner: zaks:zaks (not root) ✓
+   - Permissions: rwxr-xr-x (executable) ✓
+   - Line endings: LF (Unix), no CRLF ✓
+
+VERDICT: PASS — 44/44 manifest, PROXY_PASS_EXCEPTIONS correct, drift=FAIL

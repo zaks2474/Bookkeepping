@@ -1,0 +1,32 @@
+=== QA-1.4: T0.6-T0.8 Correlation ID (ZK-ISSUE-0011) ===
+--- TEST 1: Correlation ID middleware in backend ---
+--- TEST 2: DB column exists ---
+  column_name   
+----------------
+ correlation_id
+(1 row)
+
+--- TEST 3: Live API response headers ---
+x-trace-id: 85d2d289b4944f2fb3a81f0bfb225373
+--- TEST 4: trace_id in responses ---
+{"success":true,"event_id":"8d981dc0-e875-4c69-84c0-a163e70745bb"}--- TEST 5: Check if correlation passed to DB ---
+ correlation_id 
+----------------
+ 
+(1 row)
+
+
+--- TEST 6: TraceMiddleware analysis ---
+File: src/api/shared/middleware/trace.py
+- X-Trace-ID: Generated if not provided (line 65)
+- X-Correlation-ID: Extracted from header (line 69)
+- Added to request.state (lines 73-74)
+- Added to response headers (lines 80-82)
+
+--- ANALYSIS ---
+Middleware: PASS - X-Correlation-ID extracted and added to request.state
+DB Column: PASS - correlation_id column exists in deal_events
+DB Propagation: FAIL - add_deal_note endpoint does NOT insert correlation_id
+Response Header: PARTIAL - only X-Trace-ID returned, not X-Correlation-ID
+
+=== QA-1.4 VERDICT: PARTIAL (T0.6 middleware exists, T0.7/T0.8 not propagating to DB) ===

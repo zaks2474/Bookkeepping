@@ -1,0 +1,8 @@
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/psycopg/types/datetime.py:660:            days = days + 30 * months + 365 * years
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/psycopg/types/datetime.py:663:            days = days - 30 * months - 365 * years
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:259:-- QA gate anchor: create_monthly_partitions(p_table TEXT, p_months_ahead INTEGER DEFAULT 3)
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:262:    p_months_ahead INTEGER DEFAULT 3
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:270:    FOR v_i IN 0..p_months_ahead LOOP
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:287:-- Create initial partitions (current month + 3 months ahead)
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:288:SELECT create_monthly_partitions('turn_snapshots', 3);
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:289:SELECT create_monthly_partitions('cost_ledger', 3);

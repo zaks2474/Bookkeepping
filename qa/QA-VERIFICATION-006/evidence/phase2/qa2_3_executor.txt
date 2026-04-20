@@ -1,0 +1,16 @@
+=== QA-2.3: T1.4+T1.5 Executor + sys.path ===
+--- TEST 1: sys.path scan ---
+/home/zaks/zakops-backend/src/actions/executors/diligence_request_docs.py:106:        sys.path.insert(0, "/home/zaks/scripts")
+/home/zaks/zakops-backend/src/actions/codex/plan_spec.py:331:    sys.path.insert(0, "/home/zaks/scripts")
+/home/zaks/zakops-backend/src/actions/tests/test_e2e_actions.py:17:sys.path.insert(0, "/home/zaks/scripts")
+
+--- TEST 2: Executor imports ---
+/home/zaks/zakops-backend/src/actions/executors/communication_draft_email.py
+/home/zaks/zakops-backend/src/actions/executors/deal_enrich_materials.py
+/home/zaks/zakops-backend/src/actions/executors/diligence_request_docs.py
+/home/zaks/zakops-backend/src/actions/executors/deal_backfill_sender_history.py
+/home/zaks/zakops-backend/src/actions/executors/email_triage_review_email.py
+/home/zaks/zakops-backend/src/actions/executors/rag_reindex_deal.py
+/home/zaks/zakops-backend/src/actions/executors/deal_create_from_email.py
+/home/zaks/zakops-backend/src/actions/executors/deal_append_email_materials.py
+/home/zaks/zakops-backend/src/actions/executors/deal_dedupe_and_place_materials.py

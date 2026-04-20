@@ -1,0 +1,31 @@
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1155:  return apiFetch('/api/chat/complete', {
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1170:export async function* streamChatMessage(
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1176:  const response = await fetch('/api/chat', {
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1203:      '/api/chat'
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1273:  return apiFetch('/api/chat/execute-proposal', {
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1306:    return await apiFetch(`/api/chat/session/${sessionId}`);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-types.generated.ts:685:    "/api/chat/execute-proposal": {
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-types.generated.ts:711:    "/api/chat/session/{session_id}": {
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/settings/provider-settings.ts:146:        const response = await fetch('/api/chat', { method: 'GET' });
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent-api-types.generated.ts:703:    "/api/v1/chatbot/chat": {
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent-api-types.generated.ts:727:        post: operations["chat_api_v1_chatbot_chat_post"];
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent-api-types.generated.ts:734:    "/api/v1/chatbot/chat/stream": {
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent-api-types.generated.ts:758:        post: operations["chat_stream_api_v1_chatbot_chat_stream_post"];
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent-api-types.generated.ts:765:    "/api/v1/chatbot/messages": {
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent-api-types.generated.ts:786:        get: operations["get_session_messages_api_v1_chatbot_messages_get"];
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent-api-types.generated.ts:800:        delete: operations["clear_chat_history_api_v1_chatbot_messages_delete"];
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent-api-types.generated.ts:2077:    chat_api_v1_chatbot_chat_post: {
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent-api-types.generated.ts:2112:    chat_stream_api_v1_chatbot_chat_stream_post: {
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent-api-types.generated.ts:2147:    get_session_messages_api_v1_chatbot_messages_get: {
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent-api-types.generated.ts:2167:    clear_chat_history_api_v1_chatbot_messages_delete: {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/complete/route.ts:7: * POST /api/chat/complete
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/complete/route.ts:10: * Proxies to Agent API's chatbot endpoint.
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/complete/route.ts:30:    const response = await fetch(`${AGENT_API_URL}/api/v1/chatbot/chat`, {
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent/providers/local.ts:78:        `${this.config.url}/api/v1/chatbot/chat`,
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent/providers/local.ts:151:        `${this.config.url}/api/v1/chatbot/chat/stream`,
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/chat/session.ts:4:import { streamChatMessage, type ChatScope, type ChatStreamEvent } from '@/lib/api';
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/chat/session.ts:121:      for await (const event of streamChatMessage(content, chatScope)) {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/execute-proposal/route.ts:4: * POST /api/chat/execute-proposal
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/route.ts:10: * POST /api/chat
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/route.ts:270: * GET /api/chat
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/session/[sessionId]/route.ts:4: * GET /api/chat/session/{sessionId}

@@ -1,0 +1,6 @@
+=== VF-04.3 DEDUP PRIMITIVE PRESENCE ===
+287:    # Alternate dedup key from bridge (mapped to message_id at boundary)
+1691:    Returns 201 for newly created items, 200 for dedup hits (existing message_id).
+1692:    This distinction allows callers to measure injection vs deduplication rates.
+1801:        # Deduplicate by message_id
+1866:        # fetch the existing record that won the race — this is a dedup hit

@@ -1,0 +1,25 @@
+=== ST-4 MIGRATION DRIFT ===
+018_7_launch_readiness.sql
+018_advanced_agent.sql
+022_email_integration.sql
+023_stage_check_constraint.sql
+024_correlation_id.sql
+025_deal_lifecycle_fsm.sql
+026_user_preferences.sql
+027_onboarding_state.sql
+028_deal_brain.sql
+028_deal_brain_rollback.sql
+029_quarantine_hardening.sql
+029_quarantine_hardening_rollback.sql
+030_email_config.sql
+030_email_config_rollback.sql
+031_deal_transitions_ledger.sql
+031_deal_transitions_ledger_rollback.sql
+032_feature_flags.sql
+032_feature_flags_rollback.sql
+033_quarantine_schema_v2.sql
+033_quarantine_schema_v2_rollback.sql
+/home/zaks/zakops-backend/db/migrations/032_feature_flags_rollback.sql:1:-- 032_feature_flags_rollback.sql
+/home/zaks/zakops-backend/db/migrations/033_quarantine_schema_v2.sql:5:-- Rollback: 033_quarantine_schema_v2_rollback.sql
+/home/zaks/zakops-backend/db/migrations/033_quarantine_schema_v2_rollback.sql:2:-- Removes all columns added by 033_quarantine_schema_v2.sql
+/home/zaks/zakops-backend/db/migrations/032_feature_flags.sql:1:-- 032_feature_flags.sql

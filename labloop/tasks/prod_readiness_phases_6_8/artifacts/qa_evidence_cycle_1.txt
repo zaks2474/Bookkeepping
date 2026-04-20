@@ -1,0 +1,81 @@
+=== AUTO-COLLECTED EVIDENCE (Cycle 1) ===
+Timestamp: 2026-01-25T16:17:34Z
+
+--- git status ---
+ M Makefile
+?? .test_venv/
+?? apps/agent-api/tests/security/test_pii_redaction.py
+?? apps/backend/tests/security/test_tenant_isolation.py
+?? artifacts/docs/
+?? artifacts/observability/
+?? docs/api/
+?? docs/demos/
+?? docs/docs_checklist.yaml
+?? docs/observability/
+?? docs/training/
+?? docs/troubleshooting/
+?? docs/user/
+?? ops/observability/grafana/dashboards/zakops_overview.json
+?? ops/observability/prometheus/alerts/
+?? packages/observability/
+?? packages/security/
+?? tools/demos/
+?? tools/gates/phase6_observability_gate.sh
+?? tools/gates/phase7_data_governance_gate.sh
+?? tools/gates/phase8_documentation_gate.sh
+?? tools/quality/alert_rules_validate.py
+?? tools/quality/data_policy_validate.py
+?? tools/quality/docs_validate.py
+?? tools/quality/generate_slo_alerts.py
+?? tools/synthetic/
+
+--- Recent changes (git diff --stat) ---
+ Makefile                                           |  69 +++
+ apps/agent-api/app/core/middleware/__init__.py     |   0
+ apps/agent-api/app/core/middleware/rate_limiter.py | 155 +++++++
+ .../app/core/security/output_validation.py         | 246 ++++++++++
+ apps/agent-api/app/core/security/rbac_coverage.py  | 265 +++++++++++
+ apps/agent-api/app/core/telemetry/__init__.py      |   0
+ apps/agent-api/app/core/telemetry/cost_tracking.py | 339 ++++++++++++++
+ .../evals/datasets/tool_selection/v1/cases.json    | 139 ++++++
+ apps/agent-api/evals/golden_trace.schema.json      | 216 +++++++++
+ apps/agent-api/evals/golden_trace_runner.py        | 379 +++++++++++++++
+ apps/agent-api/evals/golden_traces/GT-001.json     |  40 ++
+ apps/agent-api/evals/golden_traces/GT-002.json     |  45 ++
+ apps/agent-api/evals/golden_traces/GT-003.json     |  39 ++
+ apps/agent-api/evals/golden_traces/GT-004.json     |  41 ++
+ apps/agent-api/evals/golden_traces/GT-005.json     |  40 ++
+ apps/agent-api/evals/golden_traces/GT-006.json     |  26 ++
+ apps/agent-api/evals/golden_traces/GT-007.json     |  43 ++
+ apps/agent-api/evals/golden_traces/GT-008.json     |  45 ++
+ apps/agent-api/evals/golden_traces/GT-009.json     |  42 ++
+ apps/agent-api/evals/golden_traces/GT-010.json     |  26 ++
+ apps/agent-api/tests/__init__.py                   |   1 +
+ apps/agent-api/tests/security/__init__.py          |   1 +
+ .../tests/security/test_output_sanitization.py     | 237 ++++++++++
+ .../tests/security/test_owasp_llm_top10.py         | 309 +++++++++++++
+ apps/agent-api/tests/security/test_rate_limits.py  | 215 +++++++++
+ .../agent-api/tests/security/test_rbac_coverage.py | 279 +++++++++++
+ apps/agent-api/tests/test_cost_tracking.py         | 315 +++++++++++++
+ apps/backend/tests/security/__init__.py            |   0
+ .../backend/tests/security/test_owasp_api_top10.py | 233 ++++++++++
+ .../src/components/audit/AuditLogViewer.tsx        | 509 +++++++++++++++++++++
+
+--- Directory listing (top-level) ---
+total 72
+drwxr-xr-x 12 zaks zaks 4096 Jan 25 10:16 .
+drwxrwx--- 45 zaks zaks 4096 Jan 23 18:09 ..
+drwxr-xr-x  8 zaks zaks 4096 Jan 25 10:17 .git
+drwxr-xr-x  3 zaks zaks 4096 Jan 22 23:19 .github
+-rw-r--r--  1 root root 2890 Jan 24 23:20 .gitignore
+drwxr-xr-x  5 root root 4096 Jan 25 02:12 .test_venv
+-rw-r--r--  1 zaks zaks 1075 Jan 22 23:19 LICENSE
+-rw-r--r--  1 root root 8620 Jan 25 10:16 Makefile
+-rw-r--r--  1 root root 2521 Jan 25 00:44 README.md
+drwxr-xr-x  5 root root 4096 Jan 24 23:18 apps
+drwxr-xr-x 12 root root 4096 Jan 25 10:06 artifacts
+drwxr-xr-x  3 root root 4096 Jan 24 23:15 deployments
+drwxr-xr-x 19 zaks zaks 4096 Jan 25 10:12 docs
+drwxr-xr-x  5 root root 4096 Jan 25 02:44 ops
+drwxr-xr-x  5 root root 4096 Jan 25 10:06 packages
+drwxr-xr-x  9 root root 4096 Jan 25 10:06 tools

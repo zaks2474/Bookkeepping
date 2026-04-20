@@ -1,0 +1,2 @@
+        """Queue a brain extraction event for the outbox worker."""
+                    INSERT INTO cross_db_outbox (event_type, payload, target_db)

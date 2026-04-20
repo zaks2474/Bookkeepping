@@ -1,0 +1,10 @@
+=== QA-3.1: T2.1 Quarantine→Deal ===
+--- TEST 1: Quarantine approval wiring ---
+
+--- TEST 2: /process endpoint logic ---
+1221:async def process_quarantine(
+1222-    item_id: str,
+1223-    process: QuarantineProcess,
+1224-    pool: asyncpg.Pool = Depends(get_db)
+1225-):
+1226-    """Process a quarantine item (approve or reject)."""

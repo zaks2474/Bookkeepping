@@ -1,0 +1,20 @@
+4:All retrieval operations MUST go through RAG REST - no direct pgvector queries.
+123:    Direct pgvector queries are prohibited per Decision Lock.
+245:        dense_weight: float = 0.5,
+246:        sparse_weight: float = 0.5,
+249:        """COL-V2 A-1: Hybrid dense+sparse retrieval with RRF fusion.
+251:        Combines pgvector semantic search with PostgreSQL full-text BM25 search.
+257:            dense_weight: Weight for dense (semantic) results in RRF
+258:            sparse_weight: Weight for sparse (BM25) results in RRF
+272:                "dense_weight": dense_weight,
+273:                "sparse_weight": sparse_weight,
+301:                dense_count=data.get("dense_count", 0),
+302:                sparse_count=data.get("sparse_count", 0),
+319:            # Fall back to standard dense-only query
+320:            logger.info("falling_back_to_dense_query", query_preview=query[:50])
+332:        hypothetical document as the embedding query. This improves retrieval
+335:        Falls back to standard dense query if LLM is unavailable.
+352:            logger.debug("hyde_generation_failed_fallback_to_dense", error=str(llm_err))
+355:        # Step 2: Use the hypothesis as the query embedding
+405:            Stats including total_chunks, unique_urls, embedding info
+464:        hybrid: If True, use hybrid dense+sparse retrieval (COL-V2 A-1)

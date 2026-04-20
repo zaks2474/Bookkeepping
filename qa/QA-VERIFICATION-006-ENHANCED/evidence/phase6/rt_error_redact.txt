@@ -1,0 +1,7 @@
+=== RT-ERROR-REDACT: Error Redaction ===
+--- TEST 1: 404 error response ---
+{"detail":"Deal NONEXISTENT-DEAL-XYZ not found"}
+--- TEST 2: Check for secrets in error (should be none) ---
+PASS: No secrets in error response
+
+=== RT-ERROR-REDACT VERDICT: PASS ===

@@ -1,0 +1,3 @@
+    momentum_score        FLOAT,
+    momentum_updated_at   TIMESTAMPTZ,
+    momentum_components   JSONB,

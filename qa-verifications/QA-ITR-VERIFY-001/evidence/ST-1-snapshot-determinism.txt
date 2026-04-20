@@ -1,0 +1,22 @@
+=== ST-1 SNAPSHOT DETERMINISM ===
+[36m=== Infrastructure Snapshot ===[0m
+=== GENERATING INFRASTRUCTURE MANIFEST ===
+Timestamp: 2026-02-10T17:22:51Z
+  DB schema: 812 columns captured
+  Manifest generated: INFRASTRUCTURE_MANIFEST.md
+[32mManifest generated: /home/zaks/zakops-agent-api/INFRASTRUCTURE_MANIFEST.md[0m
+run1=PASS
+[36m=== Infrastructure Snapshot ===[0m
+=== GENERATING INFRASTRUCTURE MANIFEST ===
+Timestamp: 2026-02-10T17:23:03Z
+  DB schema: 812 columns captured
+  Manifest generated: INFRASTRUCTURE_MANIFEST.md
+[32mManifest generated: /home/zaks/zakops-agent-api/INFRASTRUCTURE_MANIFEST.md[0m
+run2=PASS
+[36m=== Infrastructure Snapshot ===[0m
+=== GENERATING INFRASTRUCTURE MANIFEST ===
+Timestamp: 2026-02-10T17:23:14Z
+  DB schema: 812 columns captured
+  Manifest generated: INFRASTRUCTURE_MANIFEST.md
+[32mManifest generated: /home/zaks/zakops-agent-api/INFRASTRUCTURE_MANIFEST.md[0m
+run3=PASS

@@ -1,0 +1,33 @@
+=== QA-1.2: UF-002 Confused Deputy Testing ===
+Testing authentication mechanism confusion.
+Expected: JWT-protected endpoints must reject service tokens, service endpoints must reject JWTs.
+
+Step 1: Finding service token configuration...
+DASHBOARD_SERVICE_TOKEN=k-bG0Us8LHBso4S4OnjqVOXkCNR_C8smNqtflzukWpo
+
+---
+
+TEST 1: Send X-Service-Token to JWT-protected /api/v1/agent/invoke (must get 401)
+{"detail":"Authentication required"}
+HTTP 401
+
+---
+
+TEST 2: Send X-Service-Token to JWT-protected /api/v1/agent/approvals (must get 401)
+{"detail":"Authentication required"}
+HTTP 401
+
+---
+
+TEST 3: Send fake JWT to JWT-protected endpoint
+{"detail":"Authentication required"}
+HTTP 401
+
+---
+
+TEST 4: Send BOTH service token AND JWT simultaneously
+{"detail":"Authentication required"}
+HTTP 401
+
+---
+

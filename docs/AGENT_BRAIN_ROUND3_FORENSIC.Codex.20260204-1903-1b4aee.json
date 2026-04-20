@@ -1,0 +1,554 @@
+{
+  "agent_identity": {
+    "agent_name": "Codex",
+    "run_id": "20260204-1903-1b4aee",
+    "date_time": "2026-02-04T19:03:47Z",
+    "repo_revision": "559a5d1f5c6d22adfd90fd767191dcd421f8732a"
+  },
+  "report_path": "/home/zaks/bookkeeping/docs/AGENT_BRAIN_ROUND3_FORENSIC.Codex.20260204-1903-1b4aee.md",
+  "architecture": {
+    "graph": {
+      "file": "/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py",
+      "nodes": [
+        {
+          "name": "chat",
+          "purpose": "LLM call and tool routing"
+        },
+        {
+          "name": "tool_call",
+          "purpose": "executes non-HITL tools"
+        },
+        {
+          "name": "approval_gate",
+          "purpose": "HITL interrupt/resume"
+        },
+        {
+          "name": "execute_approved_tools",
+          "purpose": "executes approved tools"
+        }
+      ],
+      "edges": [
+        "chat -> tool_call (tool_calls and no HITL tools)",
+        "chat -> approval_gate (tool_calls and HITL tool)",
+        "chat -> END (no tool calls)",
+        "tool_call -> chat",
+        "approval_gate -> execute_approved_tools (approved)",
+        "approval_gate -> END (rejected)",
+        "execute_approved_tools -> chat"
+      ],
+      "checkpointing": "AsyncPostgresSaver using settings.DATABASE_URL (checkpoints tables)"
+    },
+    "prompt": {
+      "file": "/home/zaks/zakops-agent-api/apps/agent-api/app/core/prompts/system.md",
+      "versioning": "none",
+      "notes": "generic system prompt; minimal M&A domain guidance"
+    },
+    "memory": {
+      "short_term": "LangGraph state with prepare_messages token trimming",
+      "long_term": "mem0 AsyncMemory with pgvector; disabled by default via DISABLE_LONG_TERM_MEMORY",
+      "deal_scoped": "not implemented"
+    },
+    "rag": {
+      "tool": "search_deals (RAG REST)",
+      "provenance": "none",
+      "freshness": "none"
+    },
+    "hitl": {
+      "requires_approval": [
+        "transition_deal"
+      ],
+      "approval_state_machine": "pending -> claimed -> approved/rejected/expired",
+      "storage": "approvals table + audit_log"
+    },
+    "provider": {
+      "config_file": "/home/zaks/zakops-agent-api/apps/agent-api/app/core/config.py",
+      "llm_wrapper": "ChatOpenAI (vLLM base_url or OpenAI)",
+      "routing_policy": "defined but not used (core/routing.py)",
+      "mem0_provider": "openai (hard dependency)"
+    },
+    "observability": {
+      "logging": "structlog; LoggingContextMiddleware binds session_id only",
+      "tracing": "Langfuse optional; no correlation_id propagation"
+    }
+  },
+  "tools": [
+    {
+      "name": "duckduckgo_search",
+      "file": "/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/__init__.py",
+      "input_schema": "library-defined (query: str)",
+      "output_schema": "string/JSON results",
+      "side_effects": "external web request",
+      "idempotent": true,
+      "error_handling": "handle_tool_error=True (returns error string)"
+    },
+    {
+      "name": "search_deals",
+      "file": "/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py",
+      "input_schema": "SearchDealsInput(query: str, limit: int)",
+      "output_schema": "string (RAG response) or error string",
+      "side_effects": "POST to RAG REST",
+      "idempotent": true,
+      "error_handling": "returns error string; ConnectError raises in prod",
+      "evidence": "deal_tools.py:355-399"
+    },
+    {
+      "name": "get_deal",
+      "file": "/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py",
+      "input_schema": "GetDealInput(deal_id: str)",
+      "output_schema": "JSON string on 200; plain error string on 404/other",
+      "side_effects": "GET /api/deals/{id}",
+      "idempotent": true,
+      "error_handling": "returns plain error string; ConnectError raises in prod",
+      "evidence": "deal_tools.py:308-352"
+    },
+    {
+      "name": "transition_deal",
+      "file": "/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py",
+      "input_schema": "TransitionDealInput(deal_id, from_stage, to_stage, reason) extra=forbid",
+      "output_schema": "JSON string with ok/error/backend_status",
+      "side_effects": "POST /api/deals/{id}/transition; follow-up GET verification",
+      "idempotent": "tool_idempotency_key, but thread_id hardcoded 'agent'",
+      "error_handling": "JSON error string",
+      "evidence": "deal_tools.py:130-247"
+    },
+    {
+      "name": "create_deal",
+      "file": "/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py",
+      "input_schema": "CreateDealInput extra=forbid",
+      "output_schema": "JSON string with ok/deal_id/error",
+      "side_effects": "POST /api/deals",
+      "idempotent": false,
+      "error_handling": "JSON error string",
+      "evidence": "deal_tools.py:405-552"
+    },
+    {
+      "name": "add_note",
+      "file": "/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py",
+      "input_schema": "AddNoteInput",
+      "output_schema": "JSON string with ok/event_id/error",
+      "side_effects": "POST /api/deals/{id}/notes",
+      "idempotent": false,
+      "error_handling": "JSON error string",
+      "evidence": "deal_tools.py:554-589"
+    }
+  ],
+  "findings": {
+    "p0": [
+      {
+        "finding": "HITL not enforced for create_deal (prompt says HITL, code does not)",
+        "evidence": [
+          "schemas/agent.py:167-172",
+          "deal_tools.py:405-552"
+        ],
+        "impact": "Agent can create deals without approval"
+      },
+      {
+        "finding": "Actor identity unverified for service-token requests",
+        "evidence": [
+          "api/v1/agent.py"
+        ],
+        "impact": "Impersonation risk; broken audit and authorization"
+      }
+    ],
+    "p1": [
+      {
+        "finding": "Non-idempotent write tools (create_deal, add_note)",
+        "evidence": [
+          "deal_tools.py:487-589"
+        ],
+        "impact": "Duplicate records on retries"
+      },
+      {
+        "finding": "Tool output schemas inconsistent (get_deal returns plain error strings)",
+        "evidence": [
+          "deal_tools.py:325-330"
+        ],
+        "impact": "LLM misinterprets tool errors"
+      },
+      {
+        "finding": "Correlation IDs not propagated",
+        "evidence": [
+          "core/middleware.py"
+        ],
+        "impact": "No end-to-end traceability"
+      }
+    ],
+    "p2": [
+      {
+        "finding": "Long-term memory disabled; no deal-scoped memory",
+        "evidence": [
+          "graph.py:75-77"
+        ],
+        "impact": "Loss of persistent deal context"
+      },
+      {
+        "finding": "mem0 uses OpenAI even in local-vLLM deployments",
+        "evidence": [
+          "graph.py:119-123"
+        ],
+        "impact": "Hidden cloud dependency"
+      },
+      {
+        "finding": "Tool error handling inconsistent; _tool_call lacks try/except",
+        "evidence": [
+          "graph.py:144-165"
+        ],
+        "impact": "Tool exceptions can crash run"
+      },
+      {
+        "finding": "RAG retrieval lacks provenance and freshness",
+        "evidence": [
+          "deal_tools.py:355-399"
+        ],
+        "impact": "Stale or ungrounded info"
+      }
+    ],
+    "p3": [
+      {
+        "finding": "Dev mock uses invalid stage name",
+        "evidence": [
+          "deal_tools.py:335-339"
+        ],
+        "impact": "Test/dev drift"
+      },
+      {
+        "finding": "Prompt lacks M&A domain context and versioning",
+        "evidence": [
+          "core/prompts/system.md"
+        ],
+        "impact": "Weak deal intelligence; instruction drift"
+      }
+    ]
+  },
+  "failure_modes": [
+    {
+      "id": 1,
+      "risk": "create_deal executed without HITL",
+      "likelihood": "High",
+      "impact": "High",
+      "evidence": "schemas/agent.py:167-172"
+    },
+    {
+      "id": 2,
+      "risk": "Duplicate deals/notes from retries",
+      "likelihood": "Medium",
+      "impact": "High",
+      "evidence": "deal_tools.py:487-589"
+    },
+    {
+      "id": 3,
+      "risk": "LLM answers without grounding",
+      "likelihood": "High",
+      "impact": "Medium",
+      "evidence": "core/prompts/system.md"
+    },
+    {
+      "id": 4,
+      "risk": "Tool errors crash run",
+      "likelihood": "Medium",
+      "impact": "High",
+      "evidence": "graph.py:144-165"
+    },
+    {
+      "id": 5,
+      "risk": "Actor impersonation via service token",
+      "likelihood": "Medium",
+      "impact": "High",
+      "evidence": "api/v1/agent.py"
+    },
+    {
+      "id": 6,
+      "risk": "RAG outage causes agent failure",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "evidence": "deal_tools.py:383-399"
+    },
+    {
+      "id": 7,
+      "risk": "Stale approvals persist",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "evidence": "api/v1/agent.py"
+    },
+    {
+      "id": 8,
+      "risk": "Approval replay attempts",
+      "likelihood": "Low",
+      "impact": "Medium",
+      "evidence": "api/v1/agent.py"
+    },
+    {
+      "id": 9,
+      "risk": "Tool schema mismatch leads to bad calls",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "evidence": "deal_tools.py"
+    },
+    {
+      "id": 10,
+      "risk": "Invalid stage mock data",
+      "likelihood": "Medium",
+      "impact": "Low",
+      "evidence": "deal_tools.py:335-339"
+    },
+    {
+      "id": 11,
+      "risk": "Provider fallback not policy-driven",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "evidence": "core/routing.py"
+    },
+    {
+      "id": 12,
+      "risk": "mem0 uses OpenAI in local-only",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "evidence": "graph.py:119-123"
+    },
+    {
+      "id": 13,
+      "risk": "No tool call budget -> loop",
+      "likelihood": "Low",
+      "impact": "High",
+      "evidence": "graph.py"
+    },
+    {
+      "id": 14,
+      "risk": "Missing deal-scoped memory",
+      "likelihood": "High",
+      "impact": "Medium",
+      "evidence": "graph.py:75-120"
+    },
+    {
+      "id": 15,
+      "risk": "No decision ledger for non-HITL",
+      "likelihood": "High",
+      "impact": "Medium",
+      "evidence": "models/approval.py"
+    },
+    {
+      "id": 16,
+      "risk": "Web search tool adds unverified info",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "evidence": "tools/__init__.py"
+    },
+    {
+      "id": 17,
+      "risk": "Error strings not structured",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "evidence": "deal_tools.py:325-330"
+    },
+    {
+      "id": 18,
+      "risk": "No correlation IDs in logs",
+      "likelihood": "High",
+      "impact": "Medium",
+      "evidence": "core/middleware.py"
+    },
+    {
+      "id": 19,
+      "risk": "Missing M&A domain reasoning",
+      "likelihood": "High",
+      "impact": "Medium",
+      "evidence": "core/prompts/system.md"
+    },
+    {
+      "id": 20,
+      "risk": "Multiple HITL tool calls dropped",
+      "likelihood": "Low",
+      "impact": "Medium",
+      "evidence": "langgraph/invoke_with_hitl"
+    },
+    {
+      "id": 21,
+      "risk": "HITL concurrency race",
+      "likelihood": "Low",
+      "impact": "Medium",
+      "evidence": "api/v1/agent.py"
+    },
+    {
+      "id": 22,
+      "risk": "Tool execution results not sanitized",
+      "likelihood": "Low",
+      "impact": "Medium",
+      "evidence": "core/security/output_validation.py"
+    },
+    {
+      "id": 23,
+      "risk": "DATABASE_URL misconfig",
+      "likelihood": "Medium",
+      "impact": "High",
+      "evidence": "core/config.py"
+    },
+    {
+      "id": 24,
+      "risk": "Streaming errors not correlated",
+      "likelihood": "Medium",
+      "impact": "Low",
+      "evidence": "chatbot.py"
+    },
+    {
+      "id": 25,
+      "risk": "Prompt drift not versioned",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "evidence": "core/prompts/system.md"
+    }
+  ],
+  "implementation_plan": {
+    "phases": [
+      {
+        "phase": "A",
+        "scope": "P0",
+        "items": [
+          "Add create_deal to HITL_TOOLS and enforce requires_approval",
+          "Validate actor_id against auth claims for service-token requests",
+          "Add idempotency_key to create_deal/add_note payloads"
+        ]
+      },
+      {
+        "phase": "B",
+        "scope": "P1",
+        "items": [
+          "Implement ToolResult schema and wrap tool outputs",
+          "Add try/except in _tool_call",
+          "Add correlation_id middleware and forward to backend"
+        ]
+      },
+      {
+        "phase": "C",
+        "scope": "P2",
+        "items": [
+          "Implement DealContext loader and inject before response",
+          "Add deal-scoped memory and RAG provenance/freshness",
+          "Enable routing policy for provider selection"
+        ]
+      },
+      {
+        "phase": "D",
+        "scope": "P2",
+        "items": [
+          "Decision ledger for tool actions",
+          "Expand golden traces and eval suite"
+        ]
+      }
+    ],
+    "dependency_graph": [
+      "HITL enforcement -> idempotency -> ToolResult -> DealContext -> decision ledger",
+      "Idempotency -> correlation_id propagation -> decision ledger",
+      "ToolResult -> tool error handling -> DealContext"
+    ]
+  },
+  "verification_plan": {
+    "golden_trace_ci": "CI=true python3 apps/agent-api/evals/golden_trace_runner.py",
+    "golden_trace_local": "python3 apps/agent-api/evals/golden_trace_runner.py (agent at localhost:8095)",
+    "targets": {
+      "tool_accuracy": ">=95%",
+      "hitl_compliance": "100%",
+      "p95_latency_tool_free": "<=3s"
+    },
+    "adversarial": [
+      "prompt injection",
+      "auth bypass",
+      "repeated tool calls",
+      "RAG down"
+    ]
+  },
+  "decision_ledger": {
+    "table": "decision_ledger",
+    "fields": [
+      "decision_id",
+      "timestamp",
+      "trace_id",
+      "thread_id",
+      "user_id",
+      "deal_id",
+      "tool_name",
+      "tool_args_hash",
+      "tool_result",
+      "hitl_required",
+      "approval_id",
+      "outcome"
+    ]
+  },
+  "scorecard": [
+    {
+      "category": "Grounding and truthfulness",
+      "current": 4,
+      "target": 9,
+      "delta_plan": "Mandatory get_deal/search_deals before answers; ToolResult enforcement",
+      "proof_plan": "Golden traces require tool calls; adversarial tests show 0 hallucinations"
+    },
+    {
+      "category": "Tool reliability",
+      "current": 5,
+      "target": 9,
+      "delta_plan": "Idempotency keys, tool budget, structured errors",
+      "proof_plan": "Unit tests show double-call safe; error returns success=false"
+    },
+    {
+      "category": "Prompt/system instruction quality",
+      "current": 3,
+      "target": 8,
+      "delta_plan": "M&A domain prompt + HITL rules + prompt versioning",
+      "proof_plan": "Prompt hash logged; scenario tests show stage-aware suggestions"
+    },
+    {
+      "category": "Memory/RAG correctness",
+      "current": 2,
+      "target": 8,
+      "delta_plan": "Deal-scoped memory + provenance + freshness",
+      "proof_plan": "RAG results include citations and timestamps"
+    },
+    {
+      "category": "HITL correctness",
+      "current": 5,
+      "target": 9,
+      "delta_plan": "HITL coverage for create_deal/add_note; expiry job",
+      "proof_plan": "Golden traces 100% HITL compliance; audit log entries"
+    },
+    {
+      "category": "Observability/tracing",
+      "current": 4,
+      "target": 9,
+      "delta_plan": "Correlation IDs + decision ledger + OTel spans",
+      "proof_plan": "Trace shows UI->agent->backend; decision ledger row per tool"
+    },
+    {
+      "category": "Security/permissions",
+      "current": 4,
+      "target": 9,
+      "delta_plan": "actor_id verification + tenant scoping",
+      "proof_plan": "Impersonation tests fail with 403"
+    },
+    {
+      "category": "Provider abstraction",
+      "current": 5,
+      "target": 8,
+      "delta_plan": "Routing policy + fallback; optional mem0 provider",
+      "proof_plan": "Config-only provider swap passes golden traces"
+    },
+    {
+      "category": "Stage-aware reasoning",
+      "current": 3,
+      "target": 8,
+      "delta_plan": "DealContext object + stage-aware templates",
+      "proof_plan": "Scenario tests verify allowed transitions"
+    },
+    {
+      "category": "Evals and regression gates",
+      "current": 6,
+      "target": 9,
+      "delta_plan": "Expand golden traces + CI gate",
+      "proof_plan": "CI blocks on <95% tool accuracy or HITL misses"
+    }
+  ],
+  "not_found": [
+    "QA_VERIFICATION_006_REPORT.md not found in /home/zaks/bookkeeping/docs or /mnt/data",
+    "AGENT_BRAIN_ROUND3_FORENSIC.md prior artifact not found",
+    "AGENT_FORENSIC_001_REPORT.md prior artifact not found",
+    "ZAKOPS_AGENT_API_FORENSIC_PLAN.md prior artifact not found"
+  ]
+}

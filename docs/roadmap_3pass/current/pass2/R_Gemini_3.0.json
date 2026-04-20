@@ -1,0 +1,45 @@
+{
+  "model_id": "Gemini 3.0",
+  "timestamp_utc": "2026-01-23T12:05:00Z",
+  "stop_ship": [
+    {
+      "id": "SS-01",
+      "issue": "Ambiguous PII redaction (Logs vs Checkpoints)",
+      "required_fix": "Split requirements: Encrypt Checkpoints (AES-GCM), Hash Logs (SHA256)"
+    },
+    {
+      "id": "SS-02",
+      "issue": "Missing Cloud Egress Kill Switch",
+      "required_fix": "Add LITELLM_MODE=local_only enforcement in Phase 1"
+    }
+  ],
+  "contradictions": [
+    {
+      "id": "C-01",
+      "between": ["S_Gemini 3.0.md", "General Knowledge"],
+      "resolution_rule": "Decision Lock (Postgres Queue) supersedes performance optimization"
+    }
+  ],
+  "missing": [
+    {
+      "id": "M-01",
+      "gap": "DB Extension Permissions",
+      "impact": "Deployment Failure",
+      "fix": "Add init.sql superuser step for pgvector"
+    },
+    {
+      "id": "M-02",
+      "gap": "Tool Schema Versioning",
+      "impact": "State Corruption",
+      "fix": "Add Tool Registry hash check on startup"
+    }
+  ],
+  "gate_problems": [
+    {
+      "id": "G-01",
+      "gate": "run_pii_canary.sh",
+      "problem": "Grepping logs insufficient",
+      "fix": "Grep SQL dump or raw DB files"
+    }
+  ]
+}

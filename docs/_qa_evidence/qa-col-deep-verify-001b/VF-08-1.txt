@@ -1,0 +1,30 @@
+27:@dataclass
+28:class TurnSnapshot:
+=== Field count ===
+Field count: 26
+  thread_id:
+  turn_number:
+  user_id:
+  rendered_system_prompt:
+  evidence_context:
+  evidence_hash:
+  post_trim_messages:
+  rolling_summary:
+  injection_scan_result:
+  model_name:
+  provider:
+  temperature:
+  max_completion_tokens:
+  tool_definitions:
+  raw_completion:
+  proposals_extracted:
+  citations_extracted:
+  completion_tokens:
+  prompt_tokens:
+  total_tokens:
+  critique_result:
+  prompt_version:
+  prompt_hash:
+  latency_ms:
+  routing_decision:
+  routing_reason:

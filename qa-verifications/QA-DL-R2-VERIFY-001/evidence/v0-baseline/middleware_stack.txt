@@ -1,0 +1,18 @@
+21:from fastapi.middleware.cors import CORSMiddleware
+34:from ..shared.middleware import (
+379:# CORS middleware
+380:app.add_middleware(
+388:# Phase 5: API Stabilization - Error handlers and trace middleware
+390:app.add_middleware(TraceMiddleware)
+392:# R2-8: Metrics middleware for request timing and monitoring
+393:app.add_middleware(MetricsMiddleware)
+395:# Phase 15: OpenTelemetry tracing middleware
+396:app.add_middleware(TracingMiddleware)
+398:# Phase 7: Authentication middleware (after trace, before routes)
+399:app.add_middleware(AuthMiddleware)
+402:app.add_middleware(APIKeyMiddleware)
+405:app.add_middleware(TransitionCooldownMiddleware)
+408:app.add_middleware(IdempotencyMiddleware, db_pool_getter=lambda: db_pool)
+439:# Phase 13: Security middleware
+440:app.add_middleware(SecurityMiddleware)
+446:@app.middleware("http")

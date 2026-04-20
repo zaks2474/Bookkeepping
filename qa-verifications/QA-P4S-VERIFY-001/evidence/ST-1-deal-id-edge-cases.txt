@@ -1,0 +1,13 @@
+=== ST-1 DEAL ID EDGE CASES ===
+OK: "DL-0" (single digit) = True (expected True)
+OK: "DL-9999999999" (very long numeric) = True (expected True)
+OK: "DL-ABCdef123" (mixed case alpha) = True (expected True)
+OK: "DL-" (empty suffix) = False (expected False)
+OK: "dl-0086" (lowercase prefix) = True (expected True)
+OK: "DL-foo/bar" (path separator) = False (expected False)
+OK: "DL-foo%20bar" (URL encoded space) = False (expected False)
+OK: "../../../etc/passwd" (path traversal) = False (expected False)
+OK: "DL-<img onerror=alert(1)>" (XSS payload) = False (expected False)
+OK: "DL-'; DROP TABLE--" (SQL injection) = False (expected False)
+OK: "DL-null" (literal null string) = True (expected True)
+OK: "00000000-0000-0000-0000-000000000000" (nil UUID) = True (expected True)

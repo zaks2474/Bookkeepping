@@ -1,0 +1,13 @@
+*/10 * * * * /home/zaks/bookkeeping/capture.sh >> /home/zaks/bookkeeping/logs/cron.log 2>&1
+@reboot /home/zaks/bookkeeping/scripts/post_move.sh
+0,30 * * * * /home/zaks/bookkeeping/scripts/openwebui_sync.sh >> /home/zaks/bookkeeping/logs/openwebui-sync.log 2>&1
+
+# DataRoom Intelligence Platform Automation
+# RAG Indexing - Every 30 minutes
+*/30 * * * * python3 /home/zaks/scripts/index_dataroom_to_rag.py >> /home/zaks/logs/rag_index.log 2>&1
+
+# SharePoint Sync - Every 15 minutes (using Graph API script)
+*/15 * * * * python3 /home/zaks/scripts/sync_sharepoint.py >> /home/zaks/logs/sharepoint_sync.log 2>&1
+
+# Email-to-DataRoom Automation - Every 12 hours (6am and 6pm)
+0 6,18 * * * python3 /home/zaks/scripts/sync_acquisition_emails.py >> /home/zaks/logs/email_sync.log 2>&1

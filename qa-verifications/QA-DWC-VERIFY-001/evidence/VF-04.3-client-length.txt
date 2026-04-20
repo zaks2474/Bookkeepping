@@ -1,0 +1,23 @@
+160:            className={pendingApprovals.length > 0 ? 'border-amber-500' : ''}
+163:            {pendingApprovals.length > 0 && (
+165:                {pendingApprovals.length}
+212:                      <>{pipelineData?.total_active ?? deals.length} active deal{(pipelineData?.total_active ?? deals.length) !== 1 ? 's' : ''}{pipelineData ? ` across ${STAGE_ORDER.filter(s => stageCounts[s] > 0).length} stage${STAGE_ORDER.filter(s => stageCounts[s] > 0).length !== 1 ? 's' : ''}` : ''}</>
+295:                ) : filteredDeals.length === 0 ? (
+332:                    {filteredDeals.length > 10 && (
+334:                        +{filteredDeals.length - 10} more deals
+396:          {alerts.length > 0 && (
+402:                  <Badge variant='destructive'>{alerts.length}</Badge>
+201:  const totalPages = Math.max(1, Math.ceil(sortedDeals.length / PAGE_SIZE));
+224:    if (deleteTargetIds.length === 0) {
+238:      if (deleteTargetIds.length === 1) {
+252:        deleteTargetIds.length === 1
+254:          : `Deleted (archived) ${deleteTargetIds.length} deals`
+438:          ) : paginatedDeals.length === 0 ? (
+451:                        const selectedVisible = paginatedDeals.filter(d => selectedDealIds.has(d.deal_id)).length;
+452:                        const allVisibleSelected = paginatedDeals.length > 0 && selectedVisible === paginatedDeals.length;
+453:                        const someVisibleSelected = selectedVisible > 0 && selectedVisible < paginatedDeals.length;
+611:          {!loading && sortedDeals.length > PAGE_SIZE && (
+614:                Showing {(safePage - 1) * PAGE_SIZE + 1}–{Math.min(safePage * PAGE_SIZE, sortedDeals.length)} of {sortedDeals.length}
+650:              {deleteTargetIds.length === 1 ? 'Delete deal?' : `Delete ${deleteTargetIds.length} deals?`}
+---CLASSIFICATION---
+All .length uses are conditional/iteration (>0 checks, filters, slice). pipelineData?.total_active is preferred for display counts with deals.length as fallback. No VIOLATION.

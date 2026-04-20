@@ -1,0 +1,3 @@
+VERDICT: FAIL
+Reason: Backend uses zakops DB (zakops-postgres) while agent uses zakops_agent DB (zakops-agent-db). Separate Postgres containers exist (zakops-postgres, zakops-agent-db, rag-db). Split-brain risk remains unless explicitly justified.
+Evidence: rt_a_backend_db.txt, rt_a_agent_db.txt, rt_a_db_containers.txt

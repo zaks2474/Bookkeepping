@@ -1,0 +1,25 @@
+=== QA-1.5: T0.9 RAG Health ===
+--- TEST 1: RAG service status ---
+{
+    "name": "RAG REST API",
+    "version": "2.0.0",
+    "status": "running",
+    "database_connected": true,
+    "endpoints": [
+        "POST /rag/query - Search the knowledge base",
+        "POST /rag/add - Add content directly",
+        "GET /rag/sources - List available sources",
+        "GET /rag/stats - Get database statistics",
+        "DELETE /rag/url?url=<url> - Delete content by URL"
+    ]
+}
+
+--- TEST 2: RAG stats ---
+{
+    "total_chunks": 1746,
+    "unique_urls": 62,
+    "embedding_model": "bge-m3",
+    "embedding_dim": 1024
+}
+
+=== QA-1.5 VERDICT: PASS (RAG running, database_connected=true) ===

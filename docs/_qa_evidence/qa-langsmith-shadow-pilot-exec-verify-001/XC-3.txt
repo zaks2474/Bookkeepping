@@ -1,0 +1,10 @@
+=== Injection contract check ===
+| **400 Bad Request** | Invalid payload or unrecognized `source_type` (must be one of: `email`, `email_sync`, `langsmith_shadow`, `langsmith_live`, `manual`) |
+### Priority
+1. Request body `source_type` field (highest priority)
+- **API**: `GET /api/quarantine?source_type=langsmith_shadow` — filters items by source type
+## Request Body
+=== Seed injection used body source_type ===
+message_id=seed-test-langsmith-shadow-001
+status=pending
+source_type was in body (contract compliant)

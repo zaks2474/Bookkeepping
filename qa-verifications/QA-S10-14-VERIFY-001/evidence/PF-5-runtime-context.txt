@@ -1,0 +1,130 @@
+=== PF-5 RUNTIME CONTEXT ===
+fix/full-remediation-001
+ M .claude/commands/contract-checker.md
+ M .claude/rules/backend-api.md
+ M .claude/rules/contract-surfaces.md
+ M CLAUDE.md
+ M INFRASTRUCTURE_MANIFEST.md
+ M Makefile
+ M apps/agent-api/.env.example
+ M apps/agent-api/WHAT_CHANGED.md
+ M apps/agent-api/app/core/langgraph/graph.py
+ M apps/agent-api/app/core/langgraph/tools/deal_tools.py
+ M apps/agent-api/app/core/resilience.py
+ M apps/agent-api/app/core/telemetry/cost_tracking.py
+ M apps/agent-api/app/schemas/backend_models.py
+ M apps/agent-api/app/services/llm.py
+ M apps/agent-api/app/services/rag_rest.py
+ M apps/agent-api/docker-compose.yml
+ M apps/agent-api/evals/datasets/tool_accuracy/v1/prompts.json
+ M apps/agent-api/evals/datasets/tool_selection/v1/cases.json
+ M apps/agent-api/evals/golden_traces/GT-001.json
+ M apps/agent-api/evals/golden_traces/GT-002.json
+ M apps/agent-api/evals/golden_traces/GT-003.json
+ M apps/agent-api/evals/golden_traces/GT-007.json
+ M apps/agent-api/evals/golden_traces/GT-008.json
+ M apps/agent-api/evals/golden_traces/GT-009.json
+ M apps/agent-api/evals/golden_traces/GT-016.json
+ M apps/agent-api/evals/golden_traces/GT-018.json
+ M apps/agent-api/evals/golden_traces/GT-022.json
+ M apps/agent-api/evals/golden_traces/GT-023.json
+ M apps/agent-api/evals/golden_traces/GT-029.json
+ M apps/agent-api/tests/security/test_owasp_llm_top10.py
+ M apps/dashboard/.eslintrc.json
+ M apps/dashboard/Makefile
+ M apps/dashboard/README.md
+ M apps/dashboard/audit/risk-assessment.md
+ M apps/dashboard/src/app/actions/page.tsx
+ M apps/dashboard/src/app/api/actions/[id]/archive/route.ts
+ M apps/dashboard/src/app/api/actions/[id]/execute/route.ts
+ M apps/dashboard/src/app/api/actions/[id]/route.ts
+ M apps/dashboard/src/app/api/actions/bulk/archive/route.ts
+ M apps/dashboard/src/app/api/actions/bulk/delete/route.ts
+ M apps/dashboard/src/app/api/actions/clear-completed/route.ts
+ M apps/dashboard/src/app/api/actions/completed-count/route.ts
+ M apps/dashboard/src/app/api/actions/quarantine/[actionId]/preview/route.ts
+ M apps/dashboard/src/app/api/actions/quarantine/route.ts
+ M apps/dashboard/src/app/api/agent/activity/route.ts
+ M apps/dashboard/src/app/api/alerts/route.ts
+ M apps/dashboard/src/app/api/chat/complete/route.ts
+ M apps/dashboard/src/app/api/chat/execute-proposal/route.ts
+ M apps/dashboard/src/app/api/chat/route.ts
+ M apps/dashboard/src/app/api/checkpoints/route.ts
+ M apps/dashboard/src/app/api/deferred-actions/due/route.ts
+ M apps/dashboard/src/app/api/deferred-actions/route.ts
+ M apps/dashboard/src/app/api/pipeline/route.ts
+ M apps/dashboard/src/app/api/quarantine/[id]/delete/route.ts
+ M apps/dashboard/src/app/api/quarantine/[id]/process/route.ts
+ M apps/dashboard/src/app/api/quarantine/health/route.ts
+ M apps/dashboard/src/app/chat/page.tsx
+ M apps/dashboard/src/app/dashboard/page.tsx
+ M apps/dashboard/src/app/deals/[id]/page.tsx
+ M apps/dashboard/src/app/deals/page.tsx
+ M apps/dashboard/src/app/globals.css
+ M apps/dashboard/src/app/hq/page.tsx
+ M apps/dashboard/src/app/onboarding/page.tsx
+ M apps/dashboard/src/app/settings/page.tsx
+ M apps/dashboard/src/components/actions/ActionQueue.tsx
+ M apps/dashboard/src/components/deals/DealBoard.tsx
+ M apps/dashboard/src/components/global-search.tsx
+ M apps/dashboard/src/hooks/use-realtime-events.ts
+ M apps/dashboard/src/hooks/useOnboardingState.ts
+ M apps/dashboard/src/lib/agent/providers/local.ts
+ M apps/dashboard/src/lib/api-client.ts
+ M apps/dashboard/src/lib/api.ts
+ M apps/dashboard/src/lib/backend-fetch.ts
+ M apps/dashboard/src/lib/settings/provider-settings.ts
+ M apps/dashboard/src/middleware.ts
+ M apps/dashboard/tests/deals-bulk-delete.spec.ts
+ M deployments/docker/docker-compose.yml
+ M packages/contracts/openapi/zakops-api.json
+ M tools/business/weekly_summary.py
+ M tools/infra/validate-contract-surfaces.sh
+?? .claude/CONSTRAINT_REGISTRY.md
+?? .claude/commands/before-task.md
+?? .claude/commands/prune-allows.md
+?? .claude/commands/tripass.md
+?? .claude/rules/design-system.md
+?? "Exit: "
+?? apps/dashboard/src/app/actions/error.tsx
+?? apps/dashboard/src/app/agent/activity/error.tsx
+?? apps/dashboard/src/app/api/onboarding/
+?? apps/dashboard/src/app/api/settings/
+?? apps/dashboard/src/app/api/user/
+?? apps/dashboard/src/app/chat/error.tsx
+?? apps/dashboard/src/app/deals/[id]/error.tsx
+?? apps/dashboard/src/app/deals/new/error.tsx
+?? apps/dashboard/src/app/error.tsx
+?? apps/dashboard/src/app/onboarding/error.tsx
+?? apps/dashboard/src/app/settings/error.tsx
+?? apps/dashboard/src/app/ui-test/error.tsx
+?? apps/dashboard/src/components/onboarding/OnboardingBanner.tsx
+?? apps/dashboard/src/components/settings/
+?? apps/dashboard/src/hooks/useUserPreferences.ts
+?? apps/dashboard/src/types/design-system-manifest.ts
+?? apps/dashboard/tests/e2e/backend-up.spec.ts
+?? apps/dashboard/tests/e2e/graceful-degradation.spec.ts
+?? apps/dashboard/tests/e2e/no-dead-ui.spec.ts
+?? apps/dashboard/tests/e2e/phase-coverage.spec.ts
+?? echo
+?? tools/infra/prune-allows.py
+?? tools/infra/validate-api-contract.sh
+?? tools/infra/validate-surface10.sh
+?? tools/infra/validate-surface11.sh
+?? tools/infra/validate-surface12.sh
+?? tools/infra/validate-surface13.sh
+?? tools/infra/validate-surface14.sh
+?? tools/infra/validate-surface9.sh
+?? tools/tripass/
+NAMES                            STATUS
+zakops-backend-backend-1         Up 5 hours (healthy)
+zakops-backend-redis-1           Up 37 hours (healthy)
+zakops-backend-postgres-1        Up 4 days (healthy)
+zakops-backend-outbox-worker-1   Up 5 days (healthy)
+zakops-agent-api                 Up 2 days (healthy)
+zakops-agent-db                  Up 6 days (healthy)
+zakops-backend-langfuse-1        Up 5 days (unhealthy)
+openwebui                        Up 8 days (healthy)
+vllm-qwen                        Up 8 days
+rag-rest-api                     Up 7 days
+rag-db                           Up 8 days

@@ -1,0 +1,6 @@
+=== CHECK 4.3.2: HITL_APPROVAL_TIMEOUT_SECONDS Configuration ===
+Timestamp: 2026-02-03T13:09:39-06:00
+Command: grep -i HITL_APPROVAL_TIMEOUT|APPROVAL_TIMEOUT|approval.*timeout in .env* and config.py
+
+/home/zaks/zakops-agent-api/apps/agent-api/.env.development:HITL_APPROVAL_TIMEOUT_SECONDS=3600
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/config.py:        self.HITL_APPROVAL_TIMEOUT_SECONDS = int(os.getenv("HITL_APPROVAL_TIMEOUT_SECONDS", "3600"))

@@ -1,0 +1,5 @@
+56:REGISTRY_PATH = str(DATAROOM_ROOT / ".deal-registry" / "deal_registry.json")
+57:CASE_FILES_DIR = DATAROOM_ROOT / ".deal-registry" / "case_files"
+92:    path = CASE_FILES_DIR / f"{deal_id}.json"
+757:        registry = DealRegistry(REGISTRY_PATH)
+STALE_CONSTANT_COUNT=4

@@ -1,0 +1,6 @@
+=== GDPR purge error handling ===
+Line 44-45: Empty user_id returns error report
+Line 124-127: Per-thread deletion errors caught, logged, added to report.errors
+Line 129-131: Top-level exception caught, logged
+Line 133: completed_at always set
+RESULT: PASS — Errors are caught per-thread and at top level

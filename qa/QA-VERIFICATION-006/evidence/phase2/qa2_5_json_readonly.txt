@@ -1,0 +1,30 @@
+=== QA-2.5: T1.7 JSON Read-Only ===
+--- TEST 1: File status ---
+ls: cannot access '/home/zaks/DataRoom/.deal-registry/deal_registry.json': No such file or directory
+total 16
+drwxrwxr-x  3 zaks zaks 4096 Jan 26 07:49 .
+drwxr-xr-x 19 zaks zaks 4096 Jan 26 00:00 ..
+-rw-rw-r--  1 zaks zaks   87 Jan 26 00:00 deferred_actions.json
+drwxr-xr-x  2 zaks zaks 4096 Jan 26 07:49 logs
+deal_registry.json DELETED — Postgres is sole SOT (PASS)
+
+--- TEST 2: Canary test ---
+{
+    "deal_id": "DL-0050",
+    "canonical_name": "SPLITBRAIN-CANARY-1770191513",
+    "display_name": null,
+    "folder_path": null,
+    "stage": "inbound",
+    "status": "active",
+    "identifiers": {},
+    "company_info": {},
+    "broker": {},
+    "metadata": {},
+    "created_at": "2026-02-04T07:51:53.730905Z",
+    "updated_at": "2026-02-04T07:51:53.730905Z",
+    "days_since_update": null,
+    "action_count": null,
+    "alias_count": null
+}
+--- After deal creation ---
+ls: cannot access '/home/zaks/DataRoom/.deal-registry/deal_registry.json': No such file or directory

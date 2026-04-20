@@ -1,0 +1,5 @@
+INSERT INTO zakops.schema_migrations (version, description, applied_at)
+CREATE TABLE IF NOT EXISTS zakops.deal_brain (
+    deal_id               VARCHAR(20) PRIMARY KEY REFERENCES zakops.deals(deal_id),
+CREATE TABLE IF NOT EXISTS zakops.deal_brain_history (
+    deal_id         VARCHAR(20) NOT NULL REFERENCES zakops.deals(deal_id),

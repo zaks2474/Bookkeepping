@@ -1,0 +1,54 @@
+=== 029 contents ===
+-- 029_quarantine_hardening.sql
+-- F-3: Quarantine dedup + schema hardening
+-- Part of SM-1 INTAKE-READY-001 (MASTER-PROGRAM-INTAKE-COL-V2-001)
+--
+-- Changes:
+--   1. UNIQUE constraint on message_id (DB-level dedup safety net)
+--   2. CHECK constraint on status (closed enum)
+--   3. Add correlation_id column (for LangSmith shadow-mode tracing)
+--   4. Add source_type column (distinguish email vs manual vs api)
+--   5. Index on correlation_id for trace lookups
+--
+-- Rollback: 029_quarantine_hardening_rollback.sql
+
+BEGIN;
+
+-- 1. Unique constraint on message_id (allows multiple NULLs — Postgres default)
+ALTER TABLE zakops.quarantine_items
+    ADD CONSTRAINT uq_quarantine_message_id UNIQUE (message_id);
+
+-- 2. Status CHECK constraint (closed enum of valid values)
+ALTER TABLE zakops.quarantine_items
+    ADD CONSTRAINT chk_quarantine_status
+    CHECK (status IN ('pending', 'approved', 'rejected', 'hidden'));
+
+-- 3. Correlation ID for external trace linkage (LangSmith run_id, etc.)
+ALTER TABLE zakops.quarantine_items
+    ADD COLUMN IF NOT EXISTS correlation_id VARCHAR(255) DEFAULT NULL;
+
+-- 4. Source type to distinguish ingestion channels
+ALTER TABLE zakops.quarantine_items
+    ADD COLUMN IF NOT EXISTS source_type VARCHAR(50) DEFAULT 'email';
+
+-- 5. Index for correlation_id lookups
+CREATE INDEX IF NOT EXISTS idx_quarantine_correlation_id
+    ON zakops.quarantine_items (correlation_id)
+    WHERE correlation_id IS NOT NULL;
+
+COMMIT;
+=== 030 contents ===
+-- 030_email_config.sql
+-- F-7: Add email_config JSONB column to user_preferences
+-- Part of SM-1 INTAKE-READY-001 Phase 3
+--
+-- Stores email integration configuration (provider, address, status)
+-- Rollback: 030_email_config_rollback.sql
+
+BEGIN;
+
+ALTER TABLE zakops.user_preferences
+    ADD COLUMN IF NOT EXISTS email_config JSONB DEFAULT NULL;
+
+COMMIT;
+MIGRATION REVIEW COMPLETE

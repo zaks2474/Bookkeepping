@@ -1,0 +1,8 @@
+VF-08.4 Evidence: UUID fallback for legacy items
+
+Line 1830: outbox_correlation = item.get('correlation_id') or str(uuid.uuid4())
+  -> Falls back to str(uuid.uuid4()) when item has no correlation_id (legacy items)
+
+Line 1785: 'correlation_id': str(item.get('correlation_id') or '')
+Line 1808: str(item.get('correlation_id') or '')
+  -> Falls back to empty string for deal_events insertion

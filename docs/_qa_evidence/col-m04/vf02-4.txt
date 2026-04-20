@@ -1,0 +1,3 @@
+    summary               TEXT,
+    summary_model         VARCHAR(100),
+    summary_confidence    FLOAT DEFAULT 1.0,

@@ -1,0 +1,7 @@
+=== ST-6: stop.sh awareness ===
+56:TRIPASS_LOCK="/tmp/tripass.lock"
+57:if [ -f "$TRIPASS_LOCK" ]; then
+58:  TRIPASS_RUN_ID=$(cat "$TRIPASS_LOCK" 2>/dev/null)
+59:  echo "WARNING: TriPass run in progress: ${TRIPASS_RUN_ID}"
+66:- **TriPass:** INTERRUPTED — run ${TRIPASS_RUN_ID} was active when session ended\\
+

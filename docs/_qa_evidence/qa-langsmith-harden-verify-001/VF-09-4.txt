@@ -1,0 +1,6 @@
+100-  }, [sourceTypeFilter]);
+101-
+102-  // Restore operator name from localStorage only on mount (not on every keystroke)
+103:  useEffect(() => {
+104-    try {
+105-      const saved = window.localStorage.getItem('zakops_operator_name');

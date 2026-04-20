@@ -1,0 +1,41 @@
+R4 RT2 FIX EVIDENCE
+===================
+Date: 2026-02-05
+
+RT2.2 CORRELATION PROOF - FIXED
+-------------------------------
+Agent correlation_id propagates to backend logs.
+
+Agent Log (tool_call_executed):
+  correlation_id=c383cf80-ed87-47a9-8321-10e297a02919
+
+Backend Log (metrics middleware):
+  {"correlation_id": "c383cf80-ed87-47a9-8321-10e297a02919", "path": "/api/deals"}
+
+FIX: Updated /src/api/shared/middleware/metrics.py to:
+1. Import get_correlation_id from trace module
+2. Read correlation_id from request.state (set by TraceMiddleware) after call_next()
+3. Log at INFO level when correlation_id is present
+
+RT2.3 NO-MOCK GATE - FIXED
+--------------------------
+Removed all mock fallback code from deal_tools.py.
+
+Before: 15 mock/stub references including fake deal data returns
+After: 0 mock references
+
+Tools modified:
+- transition_deal: ConnectError now returns clean error, no mock
+- get_deal: ConnectError now returns clean error, no mock
+- create_deal: ConnectError now returns clean error, no mock
+- add_note: ConnectError now returns clean error, no mock
+- get_deal_health: ConnectError now returns clean error, no mock
+
+Removed:
+- ALLOW_TOOL_MOCKS environment variable
+- All "mock": True response flags
+- All fake deal data returns
+
+VERIFICATION:
+$ grep -E "ALLOW_TOOL_MOCKS|mock.*True" deal_tools.py
+(no matches)

@@ -1,0 +1,17 @@
+=== CHECK 4.6.1: Create Fresh Approval for Race Testing ===
+Timestamp: 2026-02-03T13:10:17-06:00
+Deal ID: DL-CHAOS
+Thread ID: forensic-003-race-1770145817
+
+POST /agent/invoke Response:
+{"thread_id":"forensic-003-race-1770145817","status":"awaiting_approval","content":null,"pending_approval":{"approval_id":"505b8aeb-66aa-47ad-b19d-845c8e0551d4","tool":"transition_deal","args":{"deal_id":"DL-CHAOS","from_stage":"screening","to_stage":"loi","reason":"Race condition testing"},"permission_tier":"CRITICAL","requested_by":"forensic-tester","requested_at":"2026-02-03T19:10:19.842981Z"},"actions_taken":[],"error":null}
+HTTP_CODE: 200
+
+
+=== Approval Successfully Created ===
+Approval ID: 505b8aeb-66aa-47ad-b19d-845c8e0551d4
+Tool: transition_deal
+Permission Tier: CRITICAL
+Requested by: forensic-tester
+
+Note: This approval was used for CHECK 4.6.2 race condition testing.

@@ -1,0 +1,26 @@
+=== R2.A.4: Before listing (stale pending approvals) ===
+ expired_pending_count 
+-----------------------
+                     7
+(1 row)
+
+
+=== Triggering lazy expiry via /agent/approvals ===
+{
+    "approvals": [],
+    "total": 0
+}
+
+=== After listing (expired pending approvals should be 0) ===
+ expired_pending_count 
+-----------------------
+                     0
+(1 row)
+
+
+=== Approvals with status='expired' ===
+ expired_count 
+---------------
+             7
+(1 row)
+

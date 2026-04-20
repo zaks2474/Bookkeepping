@@ -1,0 +1,58 @@
+=== VF-01.3 COMPAT + INDEX ===
+/home/zaks/zakops-backend/db/migrations/033_quarantine_schema_v2.sql:47:    ADD COLUMN IF NOT EXISTS version INTEGER NOT NULL DEFAULT 1;
+/home/zaks/zakops-backend/db/migrations/033_quarantine_schema_v2.sql:49:-- Note: `subject` column (VARCHAR 500) is preserved for backward compat with email_sync flow.
+/home/zaks/zakops-backend/db/migrations/033_quarantine_schema_v2.sql:51:-- Queries should use COALESCE(email_subject, subject) for transitional rendering.
+/home/zaks/zakops-backend/db/migrations/033_quarantine_schema_v2.sql:54:CREATE INDEX IF NOT EXISTS idx_qi_source_thread_id
+/home/zaks/zakops-backend/db/migrations/033_quarantine_schema_v2.sql:58:CREATE INDEX IF NOT EXISTS idx_qi_schema_version
+/home/zaks/zakops-backend/src/api/orchestration/main.py:240:    # P1-03: display_subject = COALESCE(email_subject, subject) for transitional rendering
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1224:            COALESCE(a.agent_type, 'agent') AS capability_id,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1226:            COALESCE(a.title, a.action_type) AS title,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1232:            COALESCE(a.agent_config->>'risk_level', 'medium') AS risk_level,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1233:            COALESCE(a.requires_approval, false) AS requires_human_review,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1234:            COALESCE(a.agent_config, '{{}}'::jsonb) AS inputs,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1235:            COALESCE(a.result, '{{}}'::jsonb) AS outputs,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1268:            COALESCE(a.agent_type, 'agent') AS capability_id,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1270:            COALESCE(a.title, a.action_type) AS title,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1276:            COALESCE(a.agent_config->>'risk_level', 'medium') AS risk_level,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1277:            COALESCE(a.requires_approval, false) AS requires_human_review,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1278:            COALESCE(a.agent_config, '{{}}'::jsonb) AS inputs,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1279:            COALESCE(a.result, '{{}}'::jsonb) AS outputs,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1523:        conditions.append(f"COALESCE(q.raw_content->>'classification', 'unknown') = ${param_idx}")
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1533:        conditions.append(f"UPPER(COALESCE(q.urgency, q.raw_content->>'urgency', 'normal')) = ${param_idx}")
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1538:        conditions.append(f"COALESCE(q.confidence, 0) >= ${param_idx}")
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1543:        conditions.append(f"COALESCE(q.confidence, 0) <= ${param_idx}")
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1555:                CASE UPPER(COALESCE(q.urgency, q.raw_content->>'urgency', 'normal'))
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1561:            order_clause = f"COALESCE(q.confidence, 0) {sort_dir}, q.created_at DESC"
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1563:            order_clause = f"COALESCE(q.received_at, q.created_at) {sort_dir}"
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1569:            CASE UPPER(COALESCE(q.urgency, q.raw_content->>'urgency', 'normal'))
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1579:            COALESCE(q.email_subject, q.subject) AS display_subject,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1582:            COALESCE(q.sender_name, sp.name) AS sender_name,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1583:            COALESCE(q.sender_domain, sp.domain, NULLIF(split_part(q.sender, '@', 2), '')) AS sender_domain,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1584:            COALESCE(q.sender_company, sp.metadata->>'company') AS sender_company,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1586:            COALESCE(q.raw_content->>'classification', 'unknown') AS classification,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1587:            UPPER(COALESCE(q.urgency, q.raw_content->>'urgency', 'normal')) AS urgency,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1589:            COALESCE(q.company_name, q.raw_content->>'company_name') AS company_name,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1590:            COALESCE(q.broker_name, q.raw_content->>'broker_name') AS broker_name,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1640:            COALESCE(q.email_subject, q.subject) AS display_subject,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1643:            COALESCE(q.sender_name, sp.name) AS sender_name,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1644:            COALESCE(q.sender_domain, sp.domain, NULLIF(split_part(q.sender, '@', 2), '')) AS sender_domain,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1645:            COALESCE(q.sender_company, sp.metadata->>'company') AS sender_company,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1647:            COALESCE(q.raw_content->>'classification', 'unknown') AS classification,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1648:            UPPER(COALESCE(q.urgency, q.raw_content->>'urgency', 'normal')) AS urgency,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1650:            COALESCE(q.company_name, q.raw_content->>'company_name') AS company_name,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1651:            COALESCE(q.broker_name, q.raw_content->>'broker_name') AS broker_name,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1784:               COALESCE(q.email_subject, q.subject) AS display_subject,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1787:               COALESCE(q.raw_content->>'classification', 'unknown') AS classification,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1788:               UPPER(COALESCE(q.urgency, q.raw_content->>'urgency', 'normal')) AS urgency,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1789:               q.confidence, COALESCE(q.company_name, q.raw_content->>'company_name') AS company_name,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1790:               COALESCE(q.broker_name, q.raw_content->>'broker_name') AS broker_name,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1832:                      COALESCE(email_subject, subject) AS display_subject,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1835:                      COALESCE(raw_content->>'classification', 'unknown') AS classification,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1836:                      UPPER(COALESCE(urgency, raw_content->>'urgency', 'normal')) AS urgency,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1902:                raw_content = COALESCE(raw_content, '{}'::jsonb) || jsonb_build_object(
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1955:                    raw_content = COALESCE(raw_content, '{}'::jsonb) || jsonb_build_object(
+/home/zaks/zakops-backend/src/api/orchestration/main.py:2058:                    SET status = $2, reviewed_at = NOW(), deal_id = COALESCE($3, deal_id),
+/home/zaks/zakops-backend/src/api/orchestration/main.py:2059:                        version = version + 1, raw_content = COALESCE(raw_content, '{}'::jsonb) || $4::jsonb,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:2132:                        raw_content = COALESCE(raw_content, '{}'::jsonb) || $2::jsonb
+/home/zaks/zakops-backend/src/api/orchestration/main.py:2292:                    deal_id = COALESCE($5, deal_id),
+/home/zaks/zakops-backend/src/api/orchestration/main.py:2294:                    raw_content = COALESCE(raw_content, '{}'::jsonb) || $6::jsonb,

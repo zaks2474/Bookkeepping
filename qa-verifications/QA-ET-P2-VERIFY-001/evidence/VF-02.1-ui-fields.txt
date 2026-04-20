@@ -1,0 +1,14 @@
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:  { value: 'confidence', label: 'Confidence' },
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:                    const senderDisplay = item.sender_name || item.sender || item.from || 'Unknown sender';
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:                              {item.confidence != null && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:                                <ConfidenceIndicator score={item.confidence} size='sm' />
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:                    From: {selectedItem.sender_name || selectedItem.sender || selectedItem.from || 'Unknown'}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:            {selectedItem?.confidence != null && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:                <ConfidenceIndicator score={selectedItem.confidence} size='lg' showLabel showScore />
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:                  {selectedItem?.triage_summary && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:                      {selectedItem.triage_summary}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:                  {/* Field confidences */}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:                  {selectedItem?.field_confidences && Object.keys(selectedItem.field_confidences).length > 0 && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:                          {Object.entries(selectedItem.field_confidences).map(([field, score]) => (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:                {selectedItem.confidence != null && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:                  <ConfidenceIndicator score={selectedItem.confidence} size='md' showLabel showScore />

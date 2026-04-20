@@ -1,0 +1,4 @@
+security.py:
+170:            status_code=429,
+172:            headers={"Retry-After": "60", "X-RateLimit-Remaining": str(remaining)}
+main.py: (no 429/Retry-After inline — handled by check_rate_limit which raises HTTPException)

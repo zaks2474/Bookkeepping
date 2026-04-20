@@ -1,0 +1,9 @@
+legal_hold check: True (line 193: if getattr(thread, 'legal_hold', False))
+409 status code: True (line 194-196: raise ValueError('409 Conflict: legal_hold prevents soft delete...'))
+Conflict reference: True
+  Lines 190-196 (method body):
+    async def soft_delete_thread(self, thread_id: str, user_id: str) -> None:
+        thread = await self.get_thread(thread_id, user_id)
+        if getattr(thread, 'legal_hold', False):
+            raise ValueError('409 Conflict: legal_hold prevents soft delete for thread ...')
+VERDICT: PASS

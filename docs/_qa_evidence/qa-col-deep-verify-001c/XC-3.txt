@@ -1,0 +1,4 @@
+=== Retention Policy Tiers Match Spec ===
+Spec S11.4: default(30d), deal_scoped(90d), legal_hold(365d), compliance(forever)
+Code (retention_policy.py): default=30, deal_scoped=90, legal_hold=365, compliance=None(forever)
+RESULT: PASS — Code tiers exactly match spec

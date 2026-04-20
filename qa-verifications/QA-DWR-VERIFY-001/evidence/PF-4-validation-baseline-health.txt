@@ -1,0 +1,5 @@
+=== PF-4 VALIDATION BASELINE HEALTH ===
+make validate-local: PASS
+npm run type-check: PASS
+npm run test: 5 mission test files PASS (36 tests), 2 pre-existing live-dependent files FAIL (deal-integrity.test.ts needs running backend, integration.test.tsx needs NEXT_PUBLIC_API_URL)
+INFO: Pre-existing live-test failures are out-of-scope. Mission-scoped tests all PASS.

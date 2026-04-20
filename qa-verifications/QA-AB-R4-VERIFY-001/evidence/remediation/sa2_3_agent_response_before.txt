@@ -1,0 +1,10 @@
+=== AGENT RESPONSE STRUCTURE ===
+{
+  "detail": "Validation error",
+  "errors": [
+    {
+      "field": "actor_id",
+      "message": "Field required"
+    }
+  ]
+}

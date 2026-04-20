@@ -1,0 +1,18 @@
+=== VF-05: Idempotency (AC-4) ===
+
+Procedure:
+1. Copied all 3 files to /tmp/*-before.md
+2. Ran: bash tools/infra/sync-agent-configs.sh
+3. Compared before vs after with diff
+
+Results:
+  OK: /home/zaks/.codex/AGENTS.md (standard format, 17 surfaces)
+  OK: /home/zaks/zakops-agent-api/.agents/AGENTS.md (standard format, 17 surfaces)
+  OK: /home/zaks/zakops-agent-api/GEMINI.md (gemini format, 17 surfaces)
+  Synced 3 file(s), surface count: 17
+  EXIT: 0
+  CODEX: IDENTICAL
+  AGENTS: IDENTICAL
+  GEMINI: IDENTICAL
+
+VERDICT: PASS — Second run produces zero file changes

@@ -1,0 +1,56 @@
+     1	"""
+     2	API Key Middleware — REMEDIATION-V4 [F-003] + LANGSMITH-INTAKE-HARDEN-001
+     3	
+     4	Requires X-API-Key header on all write endpoints (POST/PUT/DELETE/PATCH).
+     5	GET/OPTIONS/HEAD remain open.
+     6	
+     7	Injection paths (/api/quarantine*) are FAIL-CLOSED: if ZAKOPS_API_KEY is not
+     8	configured, these paths return 503 instead of silently allowing access.
+     9	Other paths degrade gracefully when the key is unset.
+    10	"""
+    11	
+    12	import os
+    13	from collections.abc import Callable
+    14	
+    15	from fastapi import Request, Response
+    16	from fastapi.responses import JSONResponse
+    17	from starlette.middleware.base import BaseHTTPMiddleware
+    18	
+    19	WRITE_METHODS = {"POST", "PUT", "DELETE", "PATCH"}
+    20	
+    21	# Paths that must NEVER be accessible without auth, even if ZAKOPS_API_KEY is unset
+    22	INJECTION_PATHS = ("/api/quarantine",)
+    23	
+    24	
+    25	class APIKeyMiddleware(BaseHTTPMiddleware):
+    26	    async def dispatch(self, request: Request, call_next: Callable) -> Response:
+    27	        expected_key = os.getenv("ZAKOPS_API_KEY", "")
+    28	
+    29	        # Only enforce on write methods
+    30	        if request.method not in WRITE_METHODS:
+    31	            return await call_next(request)
+    32	
+    33	        # Allow health/docs/auth endpoints without key
+    34	        path = request.url.path
+    35	        if path in ("/health", "/docs", "/openapi.json", "/redoc") or path.startswith("/api/auth/"):
+    36	            return await call_next(request)
+    37	
+    38	        # Fail-closed: injection paths require auth even when key is not configured
+    39	        is_injection_path = any(path.startswith(p) for p in INJECTION_PATHS)
+    40	        if not expected_key:
+    41	            if is_injection_path:
+    42	                return JSONResponse(
+    43	                    status_code=503,
+    44	                    content={"error": "service_not_configured", "message": "API key not configured — injection path blocked"},
+    45	                )
+    46	            # Other paths: graceful degradation (skip auth)
+    47	            return await call_next(request)
+    48	
+    49	        provided_key = request.headers.get("X-API-Key", "")
+    50	        if provided_key != expected_key:
+    51	            return JSONResponse(
+    52	                status_code=401,
+    53	                content={"error": "unauthorized", "message": "Invalid or missing API key"},
+    54	            )
+    55	
+    56	        return await call_next(request)

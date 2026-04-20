@@ -1,0 +1,6 @@
+/home/zaks/zakops-agent-api/apps/agent-api/evals/evaluator.py:192:        last_24_hours = datetime.now() - timedelta(hours=24)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/pydantic_core/core_schema.py:1193:    assert v.validate_python(timedelta(hours=12)) == timedelta(hours=12)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/dateutil/tz/tz.py:1801:        curr_offset = (dt + datetime.timedelta(hours=24)).utcoffset()
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/dateutil/tz/tz.py:1802:        old_offset = (dt - datetime.timedelta(hours=24)).utcoffset()
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/local/tests/test_datetimes.py:29:            datetime(2021, 1, 1, 0, 0, 0, tzinfo=timezone(timedelta(hours=2))),
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/_core/tests/test_datetime.py:452:                     np.timedelta64(datetime.timedelta(hours=281)))

@@ -1,0 +1,25 @@
+253:async def list_quarantine() -> List[Dict[str, Any]]:
+255:    List all items in quarantine waiting for review.
+261:        List of quarantine items with subject, sender, received date, and reason.
+264:        - "What's in quarantine?" -> list_quarantine()
+265:        - "Show me pending emails" -> list_quarantine()
+268:        result = await backend_get("/api/quarantine")
+278:        logger.error(f"list_quarantine error: {e}")
+283:async def approve_quarantine(
+289:    Approve a quarantine item and convert it to a deal.
+292:        item_id: The unique identifier of the quarantine item
+293:        deal_name: Optional name for the new deal (uses quarantine subject if not provided)
+297:        The newly created deal from the approved quarantine item.
+300:        - "Approve quarantine item abc-123" -> approve_quarantine(item_id="abc-123")
+311:        return await backend_post(f"/api/quarantine/{item_id}/process", data)
+313:        logger.error(f"approve_quarantine error: {e}")
+318:async def reject_quarantine(
+323:    Reject a quarantine item (will not become a deal).
+326:        item_id: The unique identifier of the quarantine item
+333:        - "Reject quarantine item abc-123 as spam" -> reject_quarantine(item_id="abc-123", reason="spam")
+341:        return await backend_post(f"/api/quarantine/{item_id}/process", data)
+343:        logger.error(f"reject_quarantine error: {e}")
+448:        Summary including deal counts by stage, pending actions, quarantine count, and key metrics.
+463:        quarantine = await list_quarantine()
+476:            "quarantine_count": len(quarantine) if isinstance(quarantine, list) else 0,
+---

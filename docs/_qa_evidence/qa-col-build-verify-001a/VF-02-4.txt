@@ -1,0 +1,13 @@
+            f"Known compliance facts: {compliance_facts}\n"
+            f"Question: {query}\n"
+            f"Identify applicable regulations, compliance gaps, and required actions."
+        )
+
+        llm = llm_service.get_llm()
+--
+            "compliance": [
+                "compliance", "regulatory", "regulation", "legal", "policy",
+                "governance", "audit", "jurisdiction", "license", "permit",
+            ],
+        }
+

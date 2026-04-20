@@ -1,0 +1,15 @@
+LISTEN 0      2048        127.0.0.1:9100       0.0.0.0:*    users:(("python3",pid=2705503,fd=13))       
+BRIDGE_LISTENING=1
+{
+    "status": "healthy",
+    "timestamp": "2026-02-14T12:24:52.437915+00:00",
+    "checks": {
+        "bridge": "healthy",
+        "deal_api": "healthy",
+        "rag_api": "healthy",
+        "dataroom": "healthy"
+    },
+    "mcp_version": "fastmcp",
+    "transport": "sse",
+    "transport_switch": "Change transport='sse' to 'streamable-http' in create_app() for /mcp"
+}

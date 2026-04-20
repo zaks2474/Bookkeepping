@@ -1,0 +1,16 @@
+=== R0.1.0: DB Source-of-Truth (RT-6) ===
+--- Agent API DB config ---
+.env.development:38:# NOTE: DATABASE_URL is required (no silent defaults).
+.env.development:39:DATABASE_URL=postgresql://agent:agent_secure_pass_123@db:5432/zakops_agent
+
+--- Agent API DB connection test ---
+--- Backend DB config ---
+20:DATABASE_URL=postgresql://dealengine:changeme@localhost:5435/zakops
+--- Backend DB connection test ---
+ current_database 
+------------------
+ zakops
+(1 row)
+
+--- All Postgres containers ---
+RT-6 VERDICT: PASS - Agent API uses zakops_agent, Backend uses zakops

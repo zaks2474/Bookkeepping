@@ -1,0 +1,30 @@
+=== CHECK 4.9.4: Post-Chaos Approval Status ===
+Timestamp: 2026-02-03T13:18:54-06:00
+Approval ID: b407e12b-d18a-4291-841c-84eaa9a6b3bf
+
+Approval Record:
+{
+    "approval_id": "b407e12b-d18a-4291-841c-84eaa9a6b3bf",
+    "tool": "transition_deal",
+    "args": {
+        "deal_id": "DL-CHAOS",
+        "from_stage": "inbound",
+        "to_stage": "screening",
+        "reason": "chaos test"
+    },
+    "permission_tier": "CRITICAL",
+    "requested_by": "chaos-test",
+    "requested_at": "2026-02-03T19:17:23.022656Z"
+}
+
+Extracted Status: unknown
+RESULT: UNEXPECTED - Approval status is 'unknown'
+Checking approval status in agent DB...
+
+Database Record:
+ b407e12b-d18a-4291-841c-84eaa9a6b3bf | approved | 2026-02-03 19:18:01.689082+00 | 2026-02-03 19:18:03.72086+00
+
+Actual Status from DB: approved
+RESULT: INFO - Approval marked as 'approved' despite backend failure
+Note: The approval was processed but the tool execution failed gracefully.
+Critical: Deal state was NOT mutated (verified in 4.9.3c), so no data corruption.

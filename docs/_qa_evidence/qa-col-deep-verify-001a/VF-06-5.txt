@@ -1,0 +1,6 @@
+Line 174: async def upsert_entity(self, deal_id, entity_type, normalized_name, metadata)
+---
+Writes to: zakops.deal_entity_graph (line 185)
+ON CONFLICT (entity_type, normalized_name, deal_id) DO UPDATE SET occurrences = occurrences + 1
+Also: get_cross_deal_entities (line 196) for cross-deal entity discovery
+VERDICT: PASS

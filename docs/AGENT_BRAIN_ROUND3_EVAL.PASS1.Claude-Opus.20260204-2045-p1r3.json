@@ -1,0 +1,404 @@
+{
+  "agent_identity": {
+    "agent_name": "Claude-Opus",
+    "run_id": "20260204-2045-p1r3",
+    "date_time": "2026-02-04T20:45:00Z",
+    "repo_revision": "3173c36f714f13524f3d81375483484887a6ac99"
+  },
+  "pass_type": "PASS 1",
+  "purpose": "Known Brain Issues & Coverage Register",
+  "source_reports": [
+    {
+      "agent": "Claude-Opus-4.5",
+      "run_id": "20260204-1300-r3f01",
+      "report_path": "/home/zaks/bookkeeping/docs/AGENT_BRAIN_ROUND3_FORENSIC.Claude-Opus.20260204-1300-r3f01.md",
+      "json_path": "/home/zaks/bookkeeping/docs/AGENT_BRAIN_ROUND3_FORENSIC.Claude-Opus.20260204-1300-r3f01.json"
+    },
+    {
+      "agent": "Codex",
+      "run_id": "20260204-1903-1b4aee",
+      "report_path": "/home/zaks/bookkeeping/docs/AGENT_BRAIN_ROUND3_FORENSIC.Codex.20260204-1903-1b4aee.md",
+      "json_path": "/home/zaks/bookkeeping/docs/AGENT_BRAIN_ROUND3_FORENSIC.Codex.20260204-1903-1b4aee.json"
+    },
+    {
+      "agent": "Gemini-CLI",
+      "run_id": "20260204-1050-gemini",
+      "report_path": "/home/zaks/bookkeeping/docs/AGENT_BRAIN_ROUND3_FORENSIC.Gemini.20260204-1050-gemini.md",
+      "json_path": "/home/zaks/bookkeeping/docs/AGENT_BRAIN_ROUND3_FORENSIC.Gemini.20260204-1050-gemini.json"
+    }
+  ],
+  "summary_stats": {
+    "total_findings_extracted": 52,
+    "deduplicated_issues": 25,
+    "p0_count": 4,
+    "p1_count": 9,
+    "p2_count": 8,
+    "p3_count": 4,
+    "conflicts_identified": 4,
+    "unproven_items": 8
+  },
+  "issues_by_severity": {
+    "p0": [
+      "ZK-BRAIN-ISSUE-0001",
+      "ZK-BRAIN-ISSUE-0002",
+      "ZK-BRAIN-ISSUE-0003",
+      "ZK-BRAIN-ISSUE-0004"
+    ],
+    "p1": [
+      "ZK-BRAIN-ISSUE-0005",
+      "ZK-BRAIN-ISSUE-0006",
+      "ZK-BRAIN-ISSUE-0007",
+      "ZK-BRAIN-ISSUE-0008",
+      "ZK-BRAIN-ISSUE-0009",
+      "ZK-BRAIN-ISSUE-0010",
+      "ZK-BRAIN-ISSUE-0011",
+      "ZK-BRAIN-ISSUE-0012",
+      "ZK-BRAIN-ISSUE-0013"
+    ],
+    "p2": [
+      "ZK-BRAIN-ISSUE-0014",
+      "ZK-BRAIN-ISSUE-0015",
+      "ZK-BRAIN-ISSUE-0016",
+      "ZK-BRAIN-ISSUE-0017",
+      "ZK-BRAIN-ISSUE-0018",
+      "ZK-BRAIN-ISSUE-0019",
+      "ZK-BRAIN-ISSUE-0020",
+      "ZK-BRAIN-ISSUE-0021"
+    ],
+    "p3": [
+      "ZK-BRAIN-ISSUE-0022",
+      "ZK-BRAIN-ISSUE-0023",
+      "ZK-BRAIN-ISSUE-0024",
+      "ZK-BRAIN-ISSUE-0025"
+    ]
+  },
+  "issues": [
+    {
+      "id": "ZK-BRAIN-ISSUE-0001",
+      "title": "create_deal not in HITL_TOOLS despite being destructive",
+      "category": "HITL",
+      "severity": "P0",
+      "source_attribution": ["Claude-Opus:G-001", "Codex:P0-1"],
+      "evidence": ["schemas/agent.py:167-172", "deal_tools.py:405-552"],
+      "remediation": "Add create_deal to HITL_TOOLS frozenset in schemas/agent.py",
+      "verification_status": "PROVEN"
+    },
+    {
+      "id": "ZK-BRAIN-ISSUE-0002",
+      "title": "No grounding enforcement — agent can hallucinate deal details",
+      "category": "Grounding",
+      "severity": "P0",
+      "source_attribution": ["Claude-Opus:G-002", "Codex:P1-3", "Gemini:P1-1"],
+      "evidence": ["core/prompts/system.md"],
+      "remediation": "Add grounding enforcement to system prompt",
+      "verification_status": "PROVEN"
+    },
+    {
+      "id": "ZK-BRAIN-ISSUE-0003",
+      "title": "Langfuse tracing not configured in production",
+      "category": "Observability",
+      "severity": "P0",
+      "source_attribution": ["Claude-Opus:G-003"],
+      "evidence": [".env", "app/core/tracing.py"],
+      "remediation": "Configure Langfuse API keys in production",
+      "verification_status": "PROVEN"
+    },
+    {
+      "id": "ZK-BRAIN-ISSUE-0004",
+      "title": "Actor identity unverified for service-token requests",
+      "category": "Auth/Security",
+      "severity": "P0",
+      "source_attribution": ["Codex:P0-2"],
+      "evidence": ["api/v1/agent.py"],
+      "remediation": "Validate actor_id against auth claims",
+      "verification_status": "PROVEN"
+    },
+    {
+      "id": "ZK-BRAIN-ISSUE-0005",
+      "title": "Long-term memory disabled by default",
+      "category": "Memory/RAG",
+      "severity": "P1",
+      "source_attribution": ["Claude-Opus:G-009", "Codex:P2-6", "Gemini:P1-2"],
+      "evidence": ["graph.py:75-77", "config.py"],
+      "remediation": "Enable long-term memory in production",
+      "verification_status": "PROVEN"
+    },
+    {
+      "id": "ZK-BRAIN-ISSUE-0006",
+      "title": "No deal-scoped memory",
+      "category": "Memory/RAG",
+      "severity": "P1",
+      "source_attribution": ["Claude-Opus:G-010", "Codex:P2-6"],
+      "evidence": ["graph.py:103-126"],
+      "remediation": "Build deal-scoped memory architecture",
+      "verification_status": "PROVEN"
+    },
+    {
+      "id": "ZK-BRAIN-ISSUE-0007",
+      "title": "System prompt lacks M&A domain intelligence",
+      "category": "Prompt/Versioning",
+      "severity": "P1",
+      "source_attribution": ["Claude-Opus:G-004", "Codex:P3-11", "Gemini:implicit"],
+      "evidence": ["core/prompts/system.md"],
+      "remediation": "Rewrite prompt with M&A domain context",
+      "verification_status": "PROVEN"
+    },
+    {
+      "id": "ZK-BRAIN-ISSUE-0008",
+      "title": "No tool call budget enforcement (infinite loop risk)",
+      "category": "Tool Reliability",
+      "severity": "P1",
+      "source_attribution": ["Claude-Opus:G-005", "Codex:FM-13", "Gemini:FM-4"],
+      "evidence": ["graph.py"],
+      "remediation": "Add tool_call_count to GraphState with max 10",
+      "verification_status": "PROVEN"
+    },
+    {
+      "id": "ZK-BRAIN-ISSUE-0009",
+      "title": "No prompt versioning",
+      "category": "Prompt/Versioning",
+      "severity": "P1",
+      "source_attribution": ["Claude-Opus:G-006", "Codex:P3-11"],
+      "evidence": ["prompts/__init__.py"],
+      "remediation": "Add version tracking to prompts",
+      "verification_status": "PROVEN"
+    },
+    {
+      "id": "ZK-BRAIN-ISSUE-0010",
+      "title": "Evals have no CI gate (only 10 golden traces)",
+      "category": "Evals",
+      "severity": "P1",
+      "source_attribution": ["Claude-Opus:G-007", "Gemini:P3-6"],
+      "evidence": ["evals/golden_traces/", "evals/golden_trace_runner.py"],
+      "remediation": "Add CI gate blocking deployment on eval failure",
+      "verification_status": "PROVEN"
+    },
+    {
+      "id": "ZK-BRAIN-ISSUE-0011",
+      "title": "No correlation_id propagation across systems",
+      "category": "Observability",
+      "severity": "P1",
+      "source_attribution": ["Claude-Opus:G-008", "Codex:P1-5"],
+      "evidence": ["core/middleware.py"],
+      "remediation": "Add correlation_id middleware and forward to backend",
+      "verification_status": "PROVEN"
+    },
+    {
+      "id": "ZK-BRAIN-ISSUE-0012",
+      "title": "Non-idempotent write tools (create_deal, add_note)",
+      "category": "Tool Reliability",
+      "severity": "P1",
+      "source_attribution": ["Codex:P1-3"],
+      "evidence": ["deal_tools.py:487-589"],
+      "remediation": "Add idempotency keys to create_deal and add_note",
+      "verification_status": "PROVEN"
+    },
+    {
+      "id": "ZK-BRAIN-ISSUE-0013",
+      "title": "Tool output schemas inconsistent",
+      "category": "Schema",
+      "severity": "P1",
+      "source_attribution": ["Codex:P1-4"],
+      "evidence": ["deal_tools.py:325-330"],
+      "remediation": "Implement ToolResult schema for all tools",
+      "verification_status": "PROVEN"
+    },
+    {
+      "id": "ZK-BRAIN-ISSUE-0014",
+      "title": "mem0 uses OpenAI provider even in local-vLLM deployments",
+      "category": "Provider Config",
+      "severity": "P2",
+      "source_attribution": ["Codex:P2-7"],
+      "evidence": ["graph.py:119-123"],
+      "remediation": "Make mem0 provider configurable",
+      "verification_status": "PROVEN"
+    },
+    {
+      "id": "ZK-BRAIN-ISSUE-0015",
+      "title": "Tool error handling inconsistent; _tool_call lacks try/except",
+      "category": "Tool Reliability",
+      "severity": "P2",
+      "source_attribution": ["Codex:P2-8"],
+      "evidence": ["graph.py:144-165"],
+      "remediation": "Add try/except wrapper in _tool_call",
+      "verification_status": "PROVEN"
+    },
+    {
+      "id": "ZK-BRAIN-ISSUE-0016",
+      "title": "RAG retrieval lacks provenance and freshness",
+      "category": "Memory/RAG",
+      "severity": "P2",
+      "source_attribution": ["Claude-Opus:G-014", "Codex:P2-9", "Gemini:P2-3"],
+      "evidence": ["deal_tools.py:355-399"],
+      "remediation": "Add provenance and SQL fallback",
+      "verification_status": "PROVEN"
+    },
+    {
+      "id": "ZK-BRAIN-ISSUE-0017",
+      "title": "No decision ledger for non-HITL tool decisions",
+      "category": "Observability",
+      "severity": "P2",
+      "source_attribution": ["Gemini:P2-5", "Codex:FM-15"],
+      "evidence": ["models/approval.py"],
+      "remediation": "Create decisions table with reasoning capture",
+      "verification_status": "PROVEN"
+    },
+    {
+      "id": "ZK-BRAIN-ISSUE-0018",
+      "title": "Prompt drift (tool list hardcoded, not dynamic)",
+      "category": "Prompt/Versioning",
+      "severity": "P2",
+      "source_attribution": ["Gemini:P2-4"],
+      "evidence": ["core/prompts/system.md"],
+      "remediation": "Auto-generate tool list from registry",
+      "verification_status": "PROVEN"
+    },
+    {
+      "id": "ZK-BRAIN-ISSUE-0019",
+      "title": "No response logging",
+      "category": "Observability",
+      "severity": "P2",
+      "source_attribution": ["Claude-Opus:G-012"],
+      "evidence": ["agent.py"],
+      "remediation": "Log sanitized responses to audit trail",
+      "verification_status": "PROVEN"
+    },
+    {
+      "id": "ZK-BRAIN-ISSUE-0020",
+      "title": "Only 10 golden traces (insufficient eval coverage)",
+      "category": "Evals",
+      "severity": "P2",
+      "source_attribution": ["Claude-Opus:G-011"],
+      "evidence": ["evals/golden_traces/"],
+      "remediation": "Add 20+ more golden traces",
+      "verification_status": "PROVEN"
+    },
+    {
+      "id": "ZK-BRAIN-ISSUE-0021",
+      "title": "No stage transition rules in prompt",
+      "category": "Prompt/Versioning",
+      "severity": "P2",
+      "source_attribution": ["Claude-Opus:G-013"],
+      "evidence": ["core/prompts/system.md", "workflow.py:STAGE_TRANSITIONS"],
+      "remediation": "Add transition matrix to prompt",
+      "verification_status": "PROVEN"
+    },
+    {
+      "id": "ZK-BRAIN-ISSUE-0022",
+      "title": "Dev mock uses invalid stage name",
+      "category": "Evals",
+      "severity": "P3",
+      "source_attribution": ["Codex:P3-10"],
+      "evidence": ["deal_tools.py:335-339"],
+      "remediation": "Fix mock to use valid stage",
+      "verification_status": "PROVEN"
+    },
+    {
+      "id": "ZK-BRAIN-ISSUE-0023",
+      "title": "No deal health scoring",
+      "category": "Evals",
+      "severity": "P3",
+      "source_attribution": ["Claude-Opus:G-015", "Gemini:FM-6"],
+      "evidence": ["Feature not implemented"],
+      "remediation": "Implement deal health scoring system",
+      "verification_status": "NEEDS_IMPLEMENTATION"
+    },
+    {
+      "id": "ZK-BRAIN-ISSUE-0024",
+      "title": "No next-step recommendations",
+      "category": "Evals",
+      "severity": "P3",
+      "source_attribution": ["Claude-Opus:G-016"],
+      "evidence": ["Feature not implemented"],
+      "remediation": "Add stage-aware action templates",
+      "verification_status": "NEEDS_IMPLEMENTATION"
+    },
+    {
+      "id": "ZK-BRAIN-ISSUE-0025",
+      "title": "No LLM reasoning capture",
+      "category": "Observability",
+      "severity": "P3",
+      "source_attribution": ["Claude-Opus:G-017"],
+      "evidence": ["Not logged"],
+      "remediation": "Enable chain-of-thought logging",
+      "verification_status": "NEEDS_IMPLEMENTATION"
+    }
+  ],
+  "conflicts": [
+    {
+      "id": "CONFLICT-001",
+      "topic": "HITL Coverage Scope",
+      "positions": {
+        "Claude-Opus": "create_deal should be added to HITL_TOOLS",
+        "Codex": "create_deal AND add_note should be HITL",
+        "Gemini": "HITL architecture is robust (did not flag gap)"
+      },
+      "resolution_needed": "Decide which tools require HITL"
+    },
+    {
+      "id": "CONFLICT-002",
+      "topic": "Long-term Memory Approach",
+      "positions": {
+        "Claude-Opus": "Enable mem0 with deal-scoped retrieval",
+        "Codex": "Remove OpenAI dependency in mem0",
+        "Gemini": "Enable pgvector + add Forget tool"
+      },
+      "resolution_needed": "Decide memory architecture"
+    },
+    {
+      "id": "CONFLICT-003",
+      "topic": "RAG Failure Handling",
+      "positions": {
+        "Gemini": "Implement RAG Circuit Breaker with SQL fallback",
+        "Codex": "Fail-closed is correct"
+      },
+      "resolution_needed": "Graceful degradation vs fail-closed"
+    },
+    {
+      "id": "CONFLICT-004",
+      "topic": "Tool Reliability Scoring",
+      "positions": {
+        "Claude-Opus": "7/10",
+        "Codex": "5/10",
+        "Gemini": "9/10"
+      },
+      "resolution_needed": "Systematic tool testing to reconcile"
+    }
+  ],
+  "unproven_items": [
+    {
+      "item": "RAG service is running",
+      "verification": "curl http://localhost:8052/health"
+    },
+    {
+      "item": "Idempotency is restart-safe",
+      "verification": "Kill agent mid-execution, resume, verify no duplicates"
+    },
+    {
+      "item": "Stale approvals accumulate",
+      "verification": "SELECT COUNT(*) FROM approvals WHERE expires_at < NOW()"
+    },
+    {
+      "item": "Actor impersonation is exploitable",
+      "verification": "Call with fake actor_id"
+    },
+    {
+      "item": "Dashboard fails on Zod mismatch",
+      "verification": "Add field to backend response"
+    },
+    {
+      "item": "mem0 calls OpenAI in local mode",
+      "verification": "Set no OPENAI_API_KEY, enable memory"
+    },
+    {
+      "item": "Atomic claim prevents race conditions",
+      "verification": "Concurrent approval test"
+    },
+    {
+      "item": "10 golden traces pass currently",
+      "verification": "CI=true python3 evals/golden_trace_runner.py"
+    }
+  ],
+  "report_path": "/home/zaks/bookkeeping/docs/AGENT_BRAIN_ROUND3_EVAL.PASS1.Claude-Opus.20260204-2045-p1r3.md",
+  "json_path": "/home/zaks/bookkeeping/docs/AGENT_BRAIN_ROUND3_EVAL.PASS1.Claude-Opus.20260204-2045-p1r3.json"
+}

@@ -1,0 +1,9 @@
+=== AGENT RESPONSE STRUCTURE ===
+{
+  "thread_id": "qa-r4-schema-1770317497",
+  "status": "completed",
+  "content": "Here is a list of all your deals:\n\n- **Deal ID: DL-0013**\n  - **Canonical Name:** CrashTestCorp\n  - **Stage:** inbound\n  - **Status:** active\n\n- **Deal ID: DL-0007**\n  - **Canonical Name:** R2-4 Full Test Deal\n  - **Stage:** archived\n  - **Status:** active\n\n- **Deal ID: DL-0012**\n  - **Canonical Name:** qa-outbox-test-corp\n  - **Stage:** inbound\n  - **Status:** active\n\n- **Deal ID: DL-0011**\n  - **Canonical Name:** qa-no-key-test-corp\n  - **Stage:** inbound\n  - **Status:** active\n\n- **Deal ID: DL-0010**\n  - **Canonical Name:** qa-idempotency-test-corp\n  - **Stage:** inbound\n  - **Status:** active\n\n- **Deal ID: DL-0009**\n  - **Canonical Name:** R2-7 RAG Test Corp\n  - **Stage:** inbound\n  - **Status:** active\n\n- **Deal ID: DL-0008**\n  - **Canonical Name:** R2-6 Test Corp\n  - **Stage:** inbound\n  - **Status:** active\n\n- **Deal ID: DL-0006**\n  - **Canonical Name:** R2-4 Outbox Test Deal\n  - **Stage:** screening\n  - **Status:** active\n\n- **Deal ID: DL-0005**\n  - **Canonical Name:** Clean R2-3a Test: Auto Deal Creation\n  - **Stage:** inbound\n  - **Status:** active\n\n- **Deal ID: DL-0004**\n  - **Canonical Name:** FINAL R2-3a Test: Auto Deal Creation\n  - **Stage:** inbound\n  - **Status:** active\n\nIn total, you have 10 deals in your pipeline. The breakdown by stage is as follows:\n- **inbound:** 8 deals\n- **archived:** 1 deal\n- **screening:** 1 deal\n\nIf you need more detailed information about any specific deal, feel free to ask!",
+  "pending_approval": null,
+  "actions_taken": [],
+  "error": null
+}

@@ -1,0 +1,4 @@
+ZK-ISSUE-0016 (IdempotencyMiddleware): evidence r2-2/idempotency_first_post.json + r2-2/idempotency_second_post.json + r2-2/idempotency_table_latest.txt
+ZK-ISSUE-0018 (ActionStatus alignment): evidence r2-1/db_action_statuses.txt + r2-1/pydantic_action_status.txt + r2-1/ts_action_status.txt + r2-1/zod_action_status.txt
+ZK-ISSUE-0003 (Quarantine -> deal creation): evidence r2-3/approval_code_path.txt + r2-3/quarantine_items.txt
+ZK-ISSUE-0002 (Email ingestion enabled): evidence r2-3/email_timer_status.txt + r2-3/email_service_port.txt

@@ -1,0 +1,11 @@
+@router.post("/admin/replay")
+async def replay_turn(
+    body: ReplayRequest,
+    session: Session = Depends(get_current_session),
+):
+    """COL-V2 S6.4: Replay a historical turn and compare with original."""
+    _require_admin(session)
+    from app.services.replay_service import replay_service
+    result = await replay_service.replay(body.thread_id, body.turn_number)
+    if "error" in result:
+        raise HTTPException(status_code=404, detail=result["error"])

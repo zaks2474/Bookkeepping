@@ -1,0 +1,25 @@
+Checking for spec section references in service docstrings:
+canary_tokens.py: COL-DESIGN-SPEC-V2, QW-3.
+Part of: COL-DESIGN-SPEC-V2, QW-3 (Layer 4 of S7.3)
+injection_guard.py: Layer 1 of the COL-V2 Four-Layer Defense (S7.3-L1).
+Part of: COL-DESIGN-SPEC-V2, Section 7.3
+session_tracker.py: Layer 3 of COL-V2 security pipeline (S7.3): lock down a session after
+chat_repository.py: """Canonical chat data access layer.
+Part of: COL-DESIGN-SPEC-V2, Section 3.6
+snapshot_writer.py: COL-V2 S6: Turn Snapshot Writer
+sse_events.py: COL-DESIGN-SPEC-V2, Section 3.10 / GAP-L2 fix.
+Part of: COL-DESIGN-SPEC-V2, Section 3.10
+---
+Backend services:
+bottleneck_heatmap.py: COL-V2 S13.6 [F-3]: Bottleneck Heatmap
+devils_advocate.py: COL-V2 S19.5 [B-6]: Devil's Advocate Agent
+actions.py: - Add initiator_type column ('user', 'agent', 'system')
+ghost_knowledge_detector.py: COL-V2 QW-1: Ghost Knowledge Detection
+anomaly_detector.py: COL-V2 S21.3 [H-3]: Anomaly-Driven Deal Alerts
+momentum_calculator.py: COL-V2 QW-2: Deal Momentum Score Calculator
+living_memo_generator.py: COL-V2 S12.4 [J-1]: Living Deal Memo Generator
+tools.py: from collections.abc import Callable
+langsmith_client.py: from collections.abc import AsyncIterator
+deal_brain_service.py: Part of: COL-DESIGN-SPEC-V2, Section 4
+stall_predictor.py: COL-V2 F-2: Deal Stall Predictor
+morning_briefing.py: COL-V2 S21.1 [H-1]: Morning Deal Briefing Generator

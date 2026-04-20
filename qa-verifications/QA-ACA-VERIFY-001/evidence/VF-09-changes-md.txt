@@ -1,0 +1,14 @@
+=== VF-09: CHANGES.md Entry (AC-9) ===
+
+Entry at line 3: "## 2026-02-15 — AGENT-CONFIG-AUTOSYNC-001 (Permanent Agent Config Sync Automation)"
+
+Content verified:
+- What: Built permanent automation ✓
+- Why: 3x drift history (9→14, 14→16, 14→17) ✓
+- Deliverables: markers, sync script, Makefile, stop hook, CHECK 7 ✓
+- Files modified: 7 listed ✓
+- Files created: 3 listed ✓
+- Verification: 6 gates PASS ✓
+- AC: 9/9 PASS ✓
+
+VERDICT: PASS — Complete entry with deliverables, files, and verification

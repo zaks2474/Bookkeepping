@@ -1,0 +1,14 @@
+=== VF-04.2 DRAG CONFIRMATION ===
+--- Check window.confirm in handleDragEnd ---
+184:    if (!window.confirm(`Move "${dealName}" from ${fromLabel} to ${toLabel}?`)) {
+22:  DEAL_STAGE_LABELS,
+33:  label: DEAL_STAGE_LABELS[id],
+182:    const fromLabel = DEAL_STAGE_LABELS[deal.stage as DealStage] || deal.stage;
+183:    const toLabel = DEAL_STAGE_LABELS[newStage] || newStage;
+--- Confirmation should show deal name and stage labels ---
+--- Additional verification: dealName, fromLabel, toLabel ---
+181:    const dealName = deal.display_name || deal.canonical_name || deal.deal_id;
+182:    const fromLabel = DEAL_STAGE_LABELS[deal.stage as DealStage] || deal.stage;
+183:    const toLabel = DEAL_STAGE_LABELS[newStage] || newStage;
+184:    if (!window.confirm(`Move "${dealName}" from ${fromLabel} to ${toLabel}?`)) {
+VERDICT: PASS

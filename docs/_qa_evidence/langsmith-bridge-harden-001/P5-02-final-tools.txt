@@ -1,0 +1,16 @@
+TOOL_COUNT: 13
+  - zakops_list_deals
+  - zakops_get_deal
+  - zakops_update_deal_profile
+  - zakops_write_deal_artifact
+  - zakops_list_deal_artifacts
+  - zakops_list_quarantine
+  - zakops_inject_quarantine
+  - zakops_create_action
+  - zakops_get_action
+  - zakops_list_actions
+  - zakops_approve_quarantine
+  - rag_query_local
+  - rag_reindex_deal
+
+VERDICT: PASS (expected 13)

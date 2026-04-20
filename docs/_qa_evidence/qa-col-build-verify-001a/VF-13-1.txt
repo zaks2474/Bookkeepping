@@ -1,0 +1,3 @@
+86:from app.services.cost_repository import cost_repository
+418:                asyncio.create_task(cost_repository.record_cost(
+700:                        asyncio.create_task(cost_repository.record_cost(

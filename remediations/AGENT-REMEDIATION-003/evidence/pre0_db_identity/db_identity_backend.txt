@@ -1,0 +1,19 @@
+=== PRE-0.1: Backend DB Identity ===
+--- Backend: Runtime DB Identity ---
+ current_database | current_user | inet_server_addr | inet_server_port |   pg_postmaster_start_time    
+------------------+--------------+------------------+------------------+-------------------------------
+ zakops           | zakops       |                  |                  | 2026-02-02 16:19:54.814442+00
+(1 row)
+
+--- Backend: Data Directory ---
+      data_directory      
+--------------------------
+ /var/lib/postgresql/data
+(1 row)
+
+--- Backend: deals table exists ---
+ deal_count 
+------------
+          3
+(1 row)
+

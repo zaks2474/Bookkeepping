@@ -1,0 +1,25 @@
+=== ARCH-4: Autonomous vs Generate-Only ===
+--- ARCH-4.1: Autonomous mode logic ---
+217:run_agent_claude() {
+249:run_agent_gemini() {
+271:run_agent_codex() {
+678:    run_agent_claude "$run_dir/01_pass1/claude_prompt.md" "$run_dir/01_pass1/claude_report.md" "$repos" &
+682:    run_agent_gemini "$run_dir/01_pass1/gemini_prompt.md" "$run_dir/01_pass1/gemini_report.md" &
+686:    run_agent_codex "$run_dir/01_pass1/codex_prompt.md" "$run_dir/01_pass1/codex_report.md" "$repos" &
+771:    run_agent_claude "$run_dir/02_pass2/claude_prompt.md" "$run_dir/02_pass2/claude_review.md" "$repos" &
+775:    run_agent_gemini "$run_dir/02_pass2/gemini_prompt.md" "$run_dir/02_pass2/gemini_review.md" &
+779:    run_agent_codex "$run_dir/02_pass2/codex_prompt.md" "$run_dir/02_pass2/codex_review.md" "$repos" &
+853:    run_agent_claude "$p3_prompt" "$run_dir/FINAL_MASTER.md" "$repos" || true
+
+--- ARCH-4.2: Generate-only mode logic ---
+16:#   --generate-only                     Force generate-only mode (no CLI execution)
+579:  local force_generate_only="false"
+587:      --generate-only) force_generate_only="true"; shift ;;
+640:  if [ "$force_generate_only" = "true" ]; then
+642:    log_warn "Force generate-only mode — no agents will be executed"
+644:    [ -z "$CLAUDE_CLI" ] && claude_exec="false" && log_warn "Claude CLI not available — generate-only for Claude"
+645:    [ -z "$GEMINI_CLI" ] && gemini_exec="false" && log_warn "Gemini CLI not available — generate-only for Gemini"
+646:    [ -z "$CODEX_CLI" ] && codex_exec="false" && log_warn "Codex CLI not available — generate-only for Codex"
+695:  # For generate-only agents, create placeholder reports
+706:This report was generated in generate-only mode.
+

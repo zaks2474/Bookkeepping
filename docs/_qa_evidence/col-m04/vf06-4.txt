@@ -1,0 +1,1 @@
+    CONSTRAINT chk_deal_role CHECK (role IN ('viewer', 'operator', 'approver', 'admin'))

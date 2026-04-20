@@ -1,0 +1,24 @@
+=== R1.1: F-004 LLM Stage Taxonomy Redesign (RT-2) ===
+Date: Tue Feb  3 04:47 UTC 2026
+
+--- Code Changes ---
+File: app/core/prompts/system.md
+
+Added section on deal management tools with:
+1. Valid stage enum: inbound, screening, qualified, loi, diligence, closing, portfolio, junk, archived
+2. Common mistakes to avoid:
+   - NEVER use "due_diligence" — correct is "diligence"
+   - NEVER use "closed_won" or "closed_lost" — use "portfolio"
+   - NEVER use "negotiation" or "proposal"
+3. transition_deal instructions:
+   - Tool fetches current stage automatically
+   - Only specify deal_id and target stage
+   - HITL approval required
+
+File: app/core/langgraph/tools/deal_tools.py (from F-003)
+- VALID_STAGES frozenset with enum validation
+- Tool validates to_stage BEFORE creating approval (RT-8)
+- Tool fetches ground truth from backend (RT-2)
+- Tool rejects invalid stage names with helpful error
+
+Combined with F-003 fixes, F-004 is addressed.

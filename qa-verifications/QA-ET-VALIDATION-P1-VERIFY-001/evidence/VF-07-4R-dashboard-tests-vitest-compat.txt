@@ -1,0 +1,42 @@
+=== VF-07.4R DASHBOARD VALIDATION (VITEST-COMPAT) ===
+
+> zakops-dashboard@1.0.0 test
+> vitest run
+
+
+ RUN  v4.0.17 /home/zaks/zakops-agent-api/apps/dashboard
+
+ ❯ src/__tests__/deal-integrity.test.ts (18 tests | 8 failed | 1 skipped) 353ms
+     × GET /api/deals?status=active returns deals (count > 0) 26ms
+     × POST /api/deals/{id}/archive removes deal from active list 8ms
+     × POST /api/deals/{id}/restore returns deal to active list 6ms
+     ✓ GET /api/pipeline/summary returns an array of stage counts 1ms
+     × GET /api/deals?status=active returns deals array 1ms
+     × sum(pipeline stage counts) == active deals count 1ms
+     × per-stage counts agree between pipeline summary and deals list 0ms
+     ✓ GET /health returns database identity with dbname=zakops 2ms
+     ✓ GET /health includes database connection details 3ms
+     ✓ GET /health includes version and timestamp 2ms
+     ✓ GET /health returns 200 2ms
+     × GET /api/deals returns 200 8ms
+     ✓ GET /api/pipeline/summary returns 200 6ms
+     × GET /api/deals?status=active returns 200 6ms
+     ↓ GET /api/actions/kinetic returns non-500 (DEFERRED: DI-ISSUE-009)
+     ✓ no orphaned archived/deleted state violations exist 98ms
+     ✓ all active deals have a non-archived stage 75ms
+     ✓ all archived deals have stage=archived 79ms
+ ✓ src/__tests__/chat-responsive-toolbar.test.tsx (11 tests) 3ms
+ ✓ src/__tests__/chat-interaction-closure.test.tsx (13 tests) 3ms
+ ✓ src/__tests__/quarantine-input-state.test.tsx (8 tests) 4ms
+ ✓ src/__tests__/dashboard-refresh-toast.test.tsx (5 tests) 44ms
+ ❯ src/__tests__/e2e/integration.test.tsx (0 test)
+ ✓ src/__tests__/settings-export-route.test.ts (9 tests) 7ms
+ ↓ src/lib/agent/__tests__/toolGateway.test.ts (35 tests | 35 skipped)
+ ✓ src/__tests__/deals-board-shape.test.ts (5 tests) 12ms
+ ✓ src/__tests__/onboarding-sequence.test.tsx (9 tests) 23ms
+
+ Test Files  2 failed | 7 passed | 1 skipped (10)
+      Tests  8 failed | 69 passed | 36 skipped (113)
+   Start at  22:06:12
+   Duration  948ms (transform 505ms, setup 160ms, import 749ms, tests 450ms, environment 5.47s)
+

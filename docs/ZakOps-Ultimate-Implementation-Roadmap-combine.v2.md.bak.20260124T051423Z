@@ -1,0 +1,864 @@
+# ZakOps — Ultimate Implementation Roadmap (combine.v2)
+ 
+- **Version:** v2.0
+- **Timestamp (UTC):** 2026-01-24T05:07:26Z
+- **Readiness statement:** Executable only when **phase gates PASS** and required **artifacts exist** (objective evidence; no “approved/execution-ready” claims).
+ 
+## Authority & conflict resolution
+ 
+If any sources conflict, resolve in this order:
+1) `/home/zaks/bookkeeping/docs/DECISION-LOCK-FILE.md` (hard constraints)
+2) `/home/zaks/bookkeeping/docs/hitl_spike/QA_REPORT.md` (observed reality + proven gates + known risks)
+3) `/home/zaks/bookkeeping/docs/ZakOps-Scaffold-Master-Plan-v2.md` (implementation mechanics, service topology, contracts)
+4) `/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v2.md` (broader architecture; subordinate to locks/QA)
+5) Pass 1 syntheses (`S_*.md`) and Pass 2 critiques (`R_*.md`) as supporting material only
+ 
+When Document A vs Document B disagree, choose using this ranking:
+(1) correctness/feasibility (2) completeness (3) safety/reliability/security (4) clarity (5) performance/scale (6) future-proofing.
+All such choices are recorded in **Appendix → Decision Log** with acceptance checks.
+ 
+## One canonical gate entrypoint (global)
+ 
+Single source of truth for gates (no scattered scripts in the roadmap):
+ 
+```bash
+cd /home/zaks/zakops-agent-api && ./scripts/bring_up_tests.sh
+```
+ 
+- Any “sub-gate” referenced in this roadmap MUST be implemented as a step inside `./scripts/bring_up_tests.sh`.
+- Every sub-gate MUST emit deterministic artifacts under `/home/zaks/zakops-agent-api/gate_artifacts/` and must fail the run with a non-zero exit code when a phase requires it to PASS.
+ 
+## Canonical terminology (global)
+ 
+- **Canonical Agent API prefix:** `/agent/*`  
+  - Versioned aliases may exist (`/api/v1/agent/*`) but are not canonical and must not be used for acceptance unless explicitly permitted by the contract probe.
+- **Canonical approval status string:** `awaiting_approval`  
+  - Other status strings are non-compliant unless explicitly added to the contract snapshot.
+- **Canonical completion status string:** `completed`
+- **Canonical failure status string:** `error`
+ 
+## Canonical artifact root (global)
+ 
+- **Artifact directory:** `/home/zaks/zakops-agent-api/gate_artifacts/`
+- Every phase must define an explicit artifact set (filenames + PASS markers) that `bring_up_tests.sh` produces.
+ 
+---
+ 
+# Executive Summary
+ 
+ZakOps is a **local-first Deal Lifecycle OS** whose “brain” is the **Agent API**. We will execute a phased program using Lab Loop (Builder+QA+Infra) with hard gates.
+ 
+What we build and prove, in order:
+1) Preserve and lock the **HITL spike invariants** as non-regressable gates.
+2) Lock **contracts** (API base paths, status strings, tool names, artifact naming) to prevent drift.
+3) Close **Stop‑Ship security risks** (plaintext at rest / raw content leakage) with **enforceable gates** and fail-closed behavior for production exposure.
+4) Prove **real-service E2E** with mocks disabled (Deal API + vLLM).
+5) Add intelligence (RAG REST only) and measurable evals (tool accuracy / retrieval recall).
+6) Add optional integrations (MCP) and controlled hybrid routing (LiteLLM) with egress/budget enforcement.
+7) Harden reliability (queue/DLQ, chaos, audit immutability), formal QA/red-team, and then production ops/runbooks.
+ 
+---
+ 
+# Baseline & Proven Invariants (HITL spike)
+ 
+Baseline is “green” only when the gate pack passes:
+ 
+```bash
+cd /home/zaks/zakops-agent-api && ./scripts/bring_up_tests.sh
+```
+ 
+## Baseline invariants (must never regress)
+ 
+These are proven by `/home/zaks/bookkeeping/docs/hitl_spike/QA_REPORT.md` and the current gate pack implementation (`scripts/bring_up_tests.sh`).
+ 
+| Gate ID | Description | Evidence artifact | PASS marker / check |
+|---|---|---|---|
+| BL-01 | Health endpoint | `gate_artifacts/health.json` | HTTP 200 recorded |
+| BL-02 | HITL invoke triggers approval | `gate_artifacts/invoke_hitl.json` | `status == "awaiting_approval"` |
+| BL-03 | Approval persisted pre-interrupt | `gate_artifacts/db_invariants.sql.out` | approval row exists pre-interrupt |
+| BL-04 | Approve completes workflow | `gate_artifacts/approve.json` | HTTP 200 and `status == "completed"` |
+| BL-05 | Idempotency rejects duplicate | `gate_artifacts/approve_again.json` | HTTP 409 (no double exec) |
+| BL-06 | Concurrency N=20 | `gate_artifacts/concurrent_approves.log` | 1×200, rest 409; `RESULT: PASSED` present |
+| BL-07 | Kill -9 recovery | `gate_artifacts/checkpoint_kill9_test.log` | contains `RESULT: PASSED` |
+| BL-08 | Tool validation | `gate_artifacts/tool_call_validation_test.log` | JSON `status == "PASSED"` |
+| BL-09 | Dependency license report | `gate_artifacts/dependency_licenses.json` | file exists; copyleft findings empty/absent |
+| BL-10 | Audit log evidence present | `gate_artifacts/db_invariants.sql.out` | audit events exist |
+| BL-11 | Mock safety sanity | `gate_artifacts/mock_safety_test.log` | PASS marker present |
+| BL-12 | Streaming (basic) | `gate_artifacts/streaming_test.log` | contains `STATUS=PASSED` |
+| BL-13 | HITL scope is constrained | `gate_artifacts/hitl_scope_test.log` | JSON `status == "PASSED"` |
+| BL-14 | Auth negative suite (enforced) | `gate_artifacts/auth_negative_tests.json` | all tests passed; correct 401/403 semantics |
+ 
+## Baseline Stop‑Ship risk
+ 
+QA flags a Major risk (Stop‑Ship for production exposure):
+- **Plaintext at rest risk remains** (checkpoint blobs and persisted tool args/results may contain raw content).  
+This roadmap makes that risk a P0 gate in Phase 1 (not prose).
+ 
+---
+ 
+# Hard Constraints (non-negotiable)
+ 
+## Service boundaries / ports (locked)
+ 
+From `/home/zaks/bookkeeping/docs/DECISION-LOCK-FILE.md`:
+ 
+- Agent API: **:8095**
+- Deal API (existing): **:8090**
+- vLLM: **:8000**
+- RAG REST: **:8052**
+- MCP server: **:9100**
+- Langfuse (self-hosted): **:3001**
+- Cloudflare tunnel routes to **Agent API :8095** (NOT Deal API :8090)
+ 
+## Model serving (locked)
+ 
+- Model: `Qwen2.5-32B-Instruct-AWQ`
+- Inference: vLLM, OpenAI-compatible, `--tool-call-parser hermes`
+- Context window: max 32,768 tokens
+- Upgrade trigger: Qwen3-32B only if ≥5% accuracy improvement on 50-prompt eval
+ 
+## Orchestration (locked)
+ 
+- Orchestration: LangGraph
+- Checkpointing: PostgresSaver
+- HITL pattern: `interrupt_before=["approval_gate"]`
+- Crash recovery: kill -9 gate required
+- Max iterations: 10 per workflow
+ 
+## Tool execution safety (locked)
+ 
+- Pattern: Hybrid MCP + Direct tools
+- Required direct tools: `list_deals`, `get_deal`, `transition_deal`, `check_health`
+- Permission tiers: READ / WRITE / CRITICAL
+- Idempotency for WRITE/CRITICAL: claim-first insert-before-execute
+- Pydantic validation on all tool calls
+- Tool calls logged to audit_log
+ 
+## Storage + queue + retrieval (locked)
+ 
+- Storage: Postgres + pgvector
+- Queue: Postgres SKIP LOCKED; backoff 30s × 2^attempt; max attempts=3; DLQ required
+- Queue targets: queue depth warn >50; critical >100; P95 claim latency <100ms under load
+- Retrieval:
+  - Embeddings: BGE-M3 (1024)
+  - Quality DoD: recall@5 ≥ 0.8
+  - Single retrieval path (no split-brain)
+ 
+### Retrieval rule (Agent API specific; must not drift)
+ 
+From `/home/zaks/bookkeeping/docs/ZakOps-Scaffold-Master-Plan-v2.md`:
+- Agent API retrieval is **exclusively via RAG REST :8052**.
+- Agent API must not query pgvector directly.
+ 
+## Observability (locked)
+ 
+- Langfuse self-hosted + OpenTelemetry
+- Never log raw prompts/responses (hash + length only)
+- Retention: 30 days
+ 
+## Security / RBAC (locked)
+ 
+- Auth: JWT primary + API key fallback (`X-API-Key`)
+- JWT HS256 required claims: `sub`, `role`, `exp`, `iss`, `aud`
+- Issuer: `zakops-auth`; Audience: `zakops-agent`
+- Roles: VIEWER / OPERATOR / APPROVER / ADMIN
+- Default deny
+- API keys stored as SHA256 hash
+- All auth attempts logged
+ 
+## Container networking constraint (authoritative)
+ 
+From `/home/zaks/bookkeeping/docs/ZakOps-Scaffold-Master-Plan-v2.md`:
+- In container mode, **never use `localhost`** to reach host services.
+- Use `host.docker.internal` for host-services mode (Deal API, vLLM, MCP, RAG REST, Langfuse).
+ 
+---
+ 
+# Unified Phase Plan (0–8)
+ 
+This roadmap uses the unified phase index requested. A mapping to Decision Lock “Phase 1/2/3” checklists is included in Appendix → Decision Log.
+ 
+## Phase 0 — Foundations & Alignment (Baseline preservation + contract locking)
+ 
+### Entry criteria
+- Access to `/home/zaks/zakops-agent-api`
+- Able to run the baseline gate pack once: `cd /home/zaks/zakops-agent-api && ./scripts/bring_up_tests.sh` (exit 0)
+ 
+### Objective
+- Freeze the HITL spike as non-regressable baseline.
+- Lock contracts early to prevent drift in endpoints, status strings, tool names, and artifact naming.
+ 
+### Scope IN
+- Baseline pack remains green (BL-01..BL-14).
+- Create/lock a **Contract Lock Pack** (written artifacts, generated by `bring_up_tests.sh`):
+  - Canonical Agent API base path and endpoints
+  - Canonical status strings (`awaiting_approval`, `completed`, `error`)
+  - Tool names and permission tiers (READ/WRITE/CRITICAL)
+  - Artifact directory and required filenames
+- Add `PORTS.md` as authoritative (if missing) and implement lints:
+  - `PORTS.md` presence + expected port values
+  - Env “no localhost in container mode” lint
+- Standardize artifact bundling:
+  - `bring_up_tests.sh` must produce a phase bundle zip containing gate artifacts plus the active Builder/QA reports paths (if provided as env vars).
+ 
+### Scope OUT
+- No new features beyond contract/lint/bundling.
+ 
+### Deliverables
+- Repo docs:
+  - `/home/zaks/zakops-agent-api/PORTS.md` (authoritative ports)
+  - `/home/zaks/zakops-agent-api/docs/contracts/CONTRACTS.md` (human-readable contract summary)
+- Gate artifacts (must be produced by `bring_up_tests.sh`):
+  - `gate_artifacts/contract_snapshot.json` (Agent API endpoints + statuses + schema keys)
+  - `gate_artifacts/ports_md_lint.log` (PASS marker)
+  - `gate_artifacts/env_no_localhost_lint.log` (PASS marker)
+  - `gate_artifacts/artifact_bundle.zip` (or timestamped bundle; naming locked in contracts)
+ 
+### Dependencies
+- None beyond baseline.
+ 
+### Risks & mitigations
+- Risk: API/status naming drift causes silent client breakage.  
+  - Mitigation: contract snapshot gate fails on drift; schema snapshots are versioned.
+- Risk: “paper gates” reintroduced.  
+  - Mitigation: contract explicitly bans scattered commands; only bring_up_tests.sh is the gate runner.
+ 
+### Acceptance gate (single command)
+```bash
+cd /home/zaks/zakops-agent-api && ./scripts/bring_up_tests.sh
+```
+ 
+### Exit criteria / DoD
+- Baseline BL-01..BL-14 still PASS.
+- New Phase 0 artifacts exist and contain PASS markers:
+  - `contract_snapshot.json` present and validates canonical `/agent/*` endpoints and `awaiting_approval` status string.
+  - `ports_md_lint.log` contains `PORTS_MD_LINT: PASSED`
+  - `env_no_localhost_lint.log` contains `ENV_NO_LOCALHOST: PASSED`
+  - artifact bundle exists and includes the baseline artifacts.
+ 
+### Rollback plan (Phase 0 changes)
+- Revert contract snapshot expectations to match Decision Lock + QA report only (no project-specific drift).
+ 
+---
+ 
+## Phase 1 — Core Infrastructure & Architecture (MVP wiring + observability + stop-ship closure)
+ 
+### Entry criteria
+- Phase 0 PASS (baseline + contracts locked).
+ 
+### Objective
+- Close Stop‑Ship security risks with enforceable gates:
+  - plaintext at rest
+  - raw content leakage
+- Deploy observability that meets Decision Lock (self-hosted Langfuse :3001) and prove trace coverage.
+ 
+### Scope IN
+1) **At-rest protection** (checkpoint + workflow persistence) with rollback:\n
+   - Implement `SecurePostgresSaver` (AES-256-GCM) or equivalent wrapper that encrypts checkpoint payloads.\n
+   - Encryption scope MUST include both:\n
+     - `checkpoint_blobs` (payload blobs)\n
+     - `checkpoint_writes` (channel values)\n
+   - Key management v1:\n
+     - `CHECKPOINT_ENCRYPTION_KEY` env var\n
+     - no default value\n
+     - format validation (32 bytes / 256-bit)\n
+     - **fail start** in production exposure mode if key missing/invalid\n
+2) **Crypto migration plan**:\n
+   - Backfill/re-encrypt existing plaintext rows.\n
+   - Include rollback strategy (restore DB backup; disable encryption wrapper only if data loss risk is controlled).\n
+3) **No-raw-content enforcement** as gates (not prose):\n
+   - Deterministic canary injection.\n
+   - Deterministic scans across:\n
+     - docker logs\n
+     - Langfuse trace exports\n
+     - DB sample rows from relevant tables\n
+   - Explicit exclusions list (IDs allowed; raw user/doc text forbidden).\n
+   - Fail-closed behavior for production exposure.\n
+4) **Langfuse self-hosted** spec + verification:\n
+   - Provide compose or infra method to run Langfuse at :3001.\n
+   - Gate must verify:\n
+     - `GET http://localhost:3001/api/public/health` returns 2xx\n
+     - At least one trace is created for a defined workflow\n
+     - No raw content appears in the trace export\n
+5) **Resilience contract** for external services (tool gateway):\n
+   - Define and implement timeouts/retries/backoff/circuit breakers for Deal API, RAG REST, MCP.\n
+   - Record config snapshot as an artifact.\n
+ 
+### Scope OUT
+- Real-service E2E deal transition validation (Phase 2).
+- RAG integration and evals (Phase 3).
+- MCP expansion + routing policies (Phase 4).
+- Queue/DLQ (Phase 5).
+ 
+### Deliverables
+- Code (agent repo):\n
+  - Encryption wrapper + key validation + backfill tooling\n
+  - Raw-content redaction boundary (logs/traces) + scanners\n
+  - Langfuse self-host deployment artifacts (compose/instructions)\n
+  - External service resilience configuration\n
+- Docs:\n
+  - `/home/zaks/zakops-agent-api/docs/security/AT_REST_PROTECTION.md`\n
+  - `/home/zaks/zakops-agent-api/docs/observability/LANGFUSE_SELF_HOST.md`\n
+  - `/home/zaks/zakops-agent-api/docs/runbooks/KEY_ROTATION.md` (manual until Vault)\n
+ 
+### Dependencies
+- Infra support to run Langfuse self-hosted on :3001.\n
+- DB backup capability before applying crypto/backfill migrations.\n
+ 
+### Risks & mitigations
+- Risk: encryption breaks PostgresSaver semantics (crash recovery / resume fails).\n
+  - Mitigation: run BL-07 kill‑9 gate and BL-06 concurrency gate after enabling encryption; Phase 1 FAIL if regression.\n
+- Risk: “redaction reduces debuggability”.\n
+  - Mitigation: log structured metadata (IDs, hashes, lengths) + allow explicit local-only secure debug mode guarded by env var and blocked in production exposure mode.\n
+ 
+### Acceptance gate (single command)
+```bash
+cd /home/zaks/zakops-agent-api && ./scripts/bring_up_tests.sh
+```
+ 
+### Exit criteria / DoD (objective, testable)
+- Baseline BL-01..BL-14 PASS.\n
+- New Phase 1 artifacts exist and PASS:\n
+  - `gate_artifacts/encryption_verify.log` contains `ENCRYPTION_VERIFY: PASSED`\n
+  - `gate_artifacts/kill9_encrypted.log` contains `KILL9_ENCRYPTED: PASSED`\n
+  - `gate_artifacts/pii_canary_report.json` contains `PII_CANARY: PASSED`\n
+  - `gate_artifacts/raw_content_scan.log` contains `RAW_CONTENT_SCAN: PASSED`\n
+  - `gate_artifacts/langfuse_selfhost_gate.log` contains `LANGFUSE_SELFHOST: PASSED`\n
+  - `gate_artifacts/resilience_config_snapshot.json` exists\n
+- Production exposure fail-closed behavior validated:\n
+  - If `PRODUCTION_EXPOSURE=true` and `CHECKPOINT_ENCRYPTION_KEY` missing/invalid → agent refuses to start (captured as an artifact).\n
+ 
+### Rollback plan (Phase 1 crypto changes)
+- Precondition: DB backup taken and recorded.\n
+- Rollback path:\n
+  - Stop agent\n
+  - Restore DB backup\n
+  - Revert encryption wrapper changes\n
+  - Re-run baseline gate pack\n
+ 
+---
+ 
+## Phase 2 — MVP Build (real-service E2E + UI/API contract proof + disable mocks)
+ 
+### Entry criteria
+- Phase 1 PASS (security/observability/at-rest controls proven).\n
+- Deal API reachable.\n
+- vLLM reachable.\n
+ 
+### Objective
+- Prove the MVP works end-to-end against real services with mocks disabled.\n
+- Prove UI can consume streaming + approvals without drifting contracts.\n
+ 
+### Scope IN
+1) **Contract probes (stop guessing routes)**\n
+   - Implement a contract probe gate that resolves:\n
+     - Deal API base path (`/deals` vs `/api/v1/deals`) and minimal schema\n
+     - Agent API canonical prefix (`/agent/*`) and schema/status strings\n
+   - Gate writes JSON artifacts and also writes a generated `repro_commands.sh` with placeholders.\n
+2) **Disable mocks for MVP acceptance**\n
+   - Enforce `ALLOW_TOOL_MOCKS=false` (or equivalent) and fail if any mock path is exercised.\n
+   - Gate emits `mocks_disabled_check.log`.\n
+3) **Direct tools wired to Deal API** (MVP-critical)\n
+   - `list_deals`, `get_deal`, `transition_deal`, `check_health` executed via tool gateway.\n
+4) **E2E HITL lifecycle path**\n
+   - invoke → `awaiting_approval` → approve → `completed` → Deal API state changed\n
+   - Must record exactly-once semantics in `tool_executions`.\n
+5) **Frontend integration (ZakOps Next.js)**\n
+   - UI uses canonical `/agent/*` endpoints.\n
+   - UI supports:\n
+     - invoke\n
+     - stream\n
+     - list approvals\n
+     - approve/reject\n
+   - Add an automated smoke flow (Playwright or equivalent) OR, if not possible, a minimal scripted check that captures HTTP traces as artifacts.\n
+6) **Cloudflare routing constraint**\n
+   - Cloudflare tunnel routes only to :8095. Add a config lint gate to ensure it does not expose :8090.\n
+ 
+### Scope OUT
+- RAG integration (Phase 3).\n
+- MCP expansion (Phase 4).\n
+- Queue/DLQ (Phase 5).\n
+ 
+### Dependencies
+- Deal API auth semantics may differ; must be discovered by contract probe.\n
+ 
+### Risks & mitigations
+- Risk: auth mismatch between Agent API and Deal API.\n
+  - Mitigation: Deal API auth probe + explicit adapter design documented.\n
+- Risk: UI builds against unstable contract.\n
+  - Mitigation: Phase 0 contract lock pack + Phase 2 contract probe gate; UI tests fail on drift.\n
+ 
+### Acceptance gate (single command)
+```bash
+cd /home/zaks/zakops-agent-api && ./scripts/bring_up_tests.sh
+```
+ 
+### Exit criteria / DoD
+- Phase 1 artifacts remain PASS.\n
+- New Phase 2 artifacts exist and PASS:\n
+  - `gate_artifacts/agent_api_contract.json`\n
+  - `gate_artifacts/deal_api_contract.json`\n
+  - `gate_artifacts/repro_commands.sh`\n
+  - `gate_artifacts/mocks_disabled_check.log` contains `MOCKS_DISABLED: PASSED`\n
+  - `gate_artifacts/deal_api_e2e_transition.json` contains `E2E_TRANSITION: PASSED`\n
+  - `gate_artifacts/ui_smoke_test.log` contains `UI_SMOKE: PASSED` (or `ui_smoke_trace.json`)\n
+  - `gate_artifacts/cloudflare_route_lint.log` contains `CLOUDFLARE_ROUTE_LINT: PASSED`\n+- E2E requires real Deal API state verification (captured in `deal_api_e2e_transition.json`).\n
+ 
+### Rollback plan
+- If tool wiring breaks production invariants, revert wiring changes and re-run baseline gates.\n
+ 
+---
+ 
+## Phase 3 — Intelligence / Agent Capabilities (RAG integration + eval harness + tool accuracy)
+ 
+### Entry criteria
+- Phase 2 PASS (real-service MVP stable; mocks disabled).\n
+- RAG REST reachable.\n
+ 
+### Objective
+- Add retrieval and “agent intelligence” under measurable evals.\n
+ 
+### Scope IN
+1) **RAG REST contract probe + lock**\n
+   - Discover and lock RAG REST endpoints/schema via probe (including OpenAPI if available).\n
+   - Write `rag_rest_contract.json` and update contract lock pack.\n
+2) **RAG integration rule**\n
+   - All retrieval via RAG REST only.\n
+   - Add a static scan gate to fail if Agent queries pgvector directly.\n
+3) **Eval dataset management**\n
+   - Define dataset storage path and versioning:\n
+     - `evals/datasets/<name>/<version>/...`\n
+   - Add `eval_dataset_manifest.json` describing provenance, size, allowed data (no secrets).\n
+4) **Tool accuracy eval (≥95% on 50 prompts)**\n
+   - Define “tool accuracy” precisely:\n
+     - correct tool selection\n
+     - schema-valid args\n
+     - expected side effect (when applicable)\n
+     - idempotency behavior (no duplicate exec)\n
+   - Output `tool_accuracy_eval.json` with per-tool breakdown and error taxonomy.\n
+5) **Retrieval eval (recall@5 ≥ 0.80)**\n
+   - Output `retrieval_eval_results.json` including dataset version and latency stats.\n
+6) **Reranker rubric**\n
+   - Adopt reranker only if MRR uplift ≥10% AND within latency budget; record decision.\n
+ 
+### Scope OUT
+- Hybrid routing (Phase 4).\n
+- Queue/DLQ (Phase 5).\n
+ 
+### Dependencies
+- Stable eval datasets and ability to run eval harness locally.\n
+ 
+### Risks & mitigations
+- Risk: evals not representative.\n
+  - Mitigation: define coverage requirements; expand dataset via controlled change process; keep historical trend artifacts.\n
+ 
+### Acceptance gate (single command)
+```bash
+cd /home/zaks/zakops-agent-api && ./scripts/bring_up_tests.sh
+```
+ 
+### Exit criteria / DoD
+- New Phase 3 artifacts exist and PASS:\n
+  - `gate_artifacts/rag_rest_contract.json`\n
+  - `gate_artifacts/eval_dataset_manifest.json`\n
+  - `gate_artifacts/tool_accuracy_eval.json` meets ≥95% threshold\n
+  - `gate_artifacts/retrieval_eval_results.json` meets recall@5 ≥0.80\n
+  - `gate_artifacts/no_split_brain_retrieval_scan.log` contains `NO_SPLIT_BRAIN: PASSED`\n
+ 
+---
+ 
+## Phase 4 — Tooling + Integrations (MCP optional, routing policies, cost controls)
+ 
+### Entry criteria
+- Phase 3 PASS for routing/cost work.\n
+- Phase 2 PASS is sufficient for MCP-only work.\n
+ 
+### Objective
+- Add optional integrations safely without compromising core reliability.\n
+ 
+### Scope IN
+1) **MCP client (optional; never core-critical)**\n
+   - Implement MCP client contract:\n
+     - initialize\n
+     - tools/list\n
+     - tools/call\n
+   - Error normalization and tool namespace mapping rules.\n
+   - Conformance test emits `mcp_conformance.json`.\n
+2) **Hybrid routing policies (LiteLLM) + cost controls**\n
+   - Enforce blocked-field policy for cloud egress.\n
+   - Enforce explicit allow conditions.\n
+   - Implement daily budget cap $50 and cost accounting per day and per thread.\n
+   - Emit `routing_policy_tests.json`, `cost_report.json`, `policy_config_snapshot.json`.\n
+3) **Local-handling rate measurement**\n
+   - Measure ≥80% tasks handled locally on a defined workflow set.\n
+   - Emit `local_percent_report.json`.\n
+ 
+### Scope OUT
+- Queue/DLQ + chaos/soak (Phase 5).\n
+ 
+### Risks & mitigations
+- Risk: accidental cloud exfiltration.\n
+  - Mitigation: default deny; blocked-field tests; canary tokens; fail closed.\n
+ 
+### Acceptance gate (single command)
+```bash
+cd /home/zaks/zakops-agent-api && ./scripts/bring_up_tests.sh
+```
+ 
+### Exit criteria / DoD
+- MCP conformance PASS (if MCP enabled): `gate_artifacts/mcp_conformance.json`.\n
+- Routing policies PASS: `gate_artifacts/routing_policy_tests.json`.\n
+- Budget enforcement PASS: `gate_artifacts/cost_report.json`.\n
+- Local handling rate ≥80% recorded: `gate_artifacts/local_percent_report.json`.\n
+ 
+---
+ 
+## Phase 5 — Hardening, Security, Reliability (queue/DLQ, chaos, audit immutability, key mgmt)
+ 
+### Entry criteria
+- Phase 2 PASS minimum.\n
+- Prefer Phase 3 PASS for richer workloads.\n
+ 
+### Objective
+- Make reliability claims provable: durable background execution, chaos resilience, audit immutability, secrets hygiene.\n
+ 
+### Scope IN
+1) **Queue + DLQ (Postgres SKIP LOCKED)**\n
+   - Implement schema + worker loop + retry policy per Decision Lock.\n
+   - Load test under defined profile; record P95 claim latency.\n
+2) **Chaos hardening**\n
+   - kill -9 mid-workflow and resume.\n
+   - concurrency headroom test (N=50) is additive evidence; baseline N=20 remains mandatory.\n
+3) **Audit immutability**\n
+   - Enforce at DB level: UPDATE/DELETE denied.\n
+   - Gate proves immutability.\n
+4) **Secrets hygiene / unsafe defaults**\n
+   - No default JWT secret accepted in production exposure mode.\n
+   - No enabling mocks in production exposure mode.\n
+   - Gate fails closed if defaults detected.\n
+5) **Rate limiting + request size limits (Agent API)**\n
+   - Required before external exposure (Cloudflare).\n
+ 
+### Dependencies
+- DB migrations require backup + rollback plan.\n
+ 
+### Acceptance gate (single command)
+```bash
+cd /home/zaks/zakops-agent-api && ./scripts/bring_up_tests.sh
+```
+ 
+### Exit criteria / DoD
+- Queue artifacts PASS:\n
+  - `gate_artifacts/queue_worker_smoke.log` contains `QUEUE_WORKER_SMOKE: PASSED`\n
+  - `gate_artifacts/queue_load_test.json` records P95 claim latency <100ms under defined load\n
+- Chaos artifacts PASS:\n
+  - `gate_artifacts/chaos_kill9.log` contains `CHAOS_KILL9: PASSED`\n
+  - `gate_artifacts/concurrency_n50.log` contains `CONCURRENCY_N50: PASSED` (additive)\n
+- Audit immutability PASS:\n
+  - `gate_artifacts/audit_immutability_test.log` contains `AUDIT_IMMUTABILITY: PASSED`\n
+- Secrets hygiene PASS:\n
+  - `gate_artifacts/secrets_hygiene_lint.log` contains `SECRETS_HYGIENE: PASSED`\n
+- Rate limiting PASS:\n
+  - `gate_artifacts/rate_limit_test.log` contains `RATE_LIMIT: PASSED`\n
+ 
+### Rollback plan (schema changes)\n
+- Pre-migration DB backup.\n
+- Migration scripts must support rollback or restore procedure.\n
+ 
+---
+ 
+## Phase 6 — Evaluation, Red‑Team, QA (formal evals, adversarial, regression CI)
+ 
+### Entry criteria
+- Phase 3 PASS minimum.\n
+- Prefer Phase 5 PASS for reliability/security posture.\n
+ 
+### Objective
+- Formalize QA and red-team so correctness and safety do not regress.\n
+ 
+### Scope IN
+1) **CI gate runner**\n
+   - Run `./scripts/bring_up_tests.sh` in CI mode.\n
+   - Retain artifacts and publish summary.\n
+2) **Adversarial suites**\n
+   - Prompt injection attempts\n
+   - Tool-arg manipulation\n
+   - Role escalation attempts\n
+   - Data exfil attempts (cloud routing)\n
+3) **Regression tracking**\n
+   - Store eval trends (tool accuracy + retrieval metrics + latency).\n
+ 
+### Acceptance gate (single command)
+```bash
+cd /home/zaks/zakops-agent-api && ./scripts/bring_up_tests.sh
+```
+ 
+### Exit criteria / DoD
+- CI artifacts exist:\n
+  - `gate_artifacts/ci_gate_run.log` contains `CI_GATES: PASSED`\n
+- Red-team suite PASS:\n
+  - `gate_artifacts/redteam_report.json` contains `REDTEAM: PASSED`\n
+- Eval trend artifacts updated:\n
+  - `gate_artifacts/eval_trend.csv` (or JSON) updated with new run.\n
+ 
+---
+ 
+## Phase 7 — Deployment, Monitoring, Operations (backups, rollbacks, runbooks, incident response)
+ 
+### Entry criteria
+- Phase 5 PASS minimum.\n
+- Prefer Phase 6 PASS.\n
+ 
+### Objective
+- Make production exposure safe and operable with runbooks, backups, monitoring, and release gates.\n
+ 
+### Scope IN
+- Runbooks:\n
+  - startup/shutdown\n
+  - key rotation\n
+  - backup/restore\n
+  - stuck approval triage\n
+  - suspected double execution triage\n
+- Monitoring spec:\n
+  - required metrics\n
+  - alert thresholds\n
+  - dashboards\n
+- Backup/restore drill (must be executed and logged).\n
+- Release readiness Go/No-Go checklist defined and enforced.\n
+ 
+### Acceptance gate (single command)
+```bash
+cd /home/zaks/zakops-agent-api && ./scripts/bring_up_tests.sh
+```
+ 
+### Exit criteria / DoD
+- `gate_artifacts/backup_restore_drill.log` contains `BACKUP_RESTORE: PASSED`\n
+- `gate_artifacts/monitoring_smoke.log` contains `MONITORING_SMOKE: PASSED`\n
+- `gate_artifacts/release_readiness_check.json` contains `RELEASE_READY: PASSED`\n
+ 
+---
+ 
+## Phase 8 — Scaling, Optimization, Continuous Improvement (perf, throughput, migration triggers, continuous gates)
+ 
+### Entry criteria
+- Phase 7 PASS.\n
+ 
+### Objective
+- Optimize only after safety/correctness is stable; measure everything; enforce migration triggers.\n
+ 
+### Scope IN
+- Benchmark suite (record hardware signature):\n
+  - vLLM tok/s baseline\n
+  - Agent API latency P50/P95\n
+  - tool call latency P95\n
+  - retrieval latency P95\n
+  - queue throughput\n
+- Migration trigger monitoring:\n
+  - pgvector → Qdrant triggers\n
+  - Postgres queue → Redis triggers\n
+  - model upgrade trigger\n
+- Continuous cadence:\n
+  - weekly eval refresh\n
+  - monthly red-team rerun\n
+  - quarterly restore drill\n
+ 
+### Acceptance gate (single command)
+```bash
+cd /home/zaks/zakops-agent-api && ./scripts/bring_up_tests.sh
+```
+ 
+### Exit criteria / DoD
+- `gate_artifacts/benchmarks.json` contains `BENCHMARKS: PASSED`\n
+- `gate_artifacts/migration_trigger_status.json` present and correctly computed\n
+- `gate_artifacts/ci_cadence_schedule.md` present\n
+ 
+---
+ 
+# Work Breakdown (MECE backlog)
+ 
+All tasks must be Lab Loop compatible. Every task lists:
+- Owner role (Builder/QA/Infra/Security)
+- Repo/path
+- Acceptance criteria
+- Gate cmd (always canonical)
+- Artifacts emitted
+ 
+## Backlog table
+ 
+| task_id | Phase | Owner | Repo/Path | Acceptance criteria (objective) | Gate cmd | Artifacts emitted (deterministic) |
+|---|---:|---|---|---|---|---|
+| P0-CONTRACT-001 | 0 | QA | `scripts/bring_up_tests.sh` | Contract probe implemented; contract snapshot validates `/agent/*` + status strings | `cd /home/zaks/zakops-agent-api && ./scripts/bring_up_tests.sh` | `contract_snapshot.json`, `agent_api_contract.json` |
+| P0-PORTS-001 | 0 | Builder | `PORTS.md` + `scripts/bring_up_tests.sh` | PORTS.md exists; lint passes; ports match Decision Lock | (canonical) | `ports_md_lint.log` |
+| P0-ENV-001 | 0 | Builder | env files + `scripts/bring_up_tests.sh` | No `localhost` in container-mode env; uses `host.docker.internal` | (canonical) | `env_no_localhost_lint.log` |
+| P0-BUNDLE-001 | 0 | QA | `scripts/bring_up_tests.sh` | Artifact bundle zip created per run | (canonical) | `artifact_bundle.zip` |
+| P1-ENC-001 | 1 | Builder | saver wrapper + DB | AES-256-GCM at-rest protection implemented (blobs + writes) | (canonical) | `encryption_verify.log`, `kill9_encrypted.log` |
+| P1-KEY-001 | 1 | Security | config | No default key; production exposure fails closed | (canonical) | `secrets_hygiene_lint.log` |
+| P1-RAW-001 | 1 | Security | logging/tracing | Raw content scanners pass; canary absent | (canonical) | `pii_canary_report.json`, `raw_content_scan.log` |
+| P1-LANGFUSE-001 | 1 | Infra | Langfuse stack | Self-hosted :3001 healthy and traces visible | (canonical) | `langfuse_selfhost_gate.log` |
+| P2-DEAL-PROBE-001 | 2 | QA | contract probe | Deal API base path + schema locked | (canonical) | `deal_api_contract.json`, `repro_commands.sh` |
+| P2-MOCKS-001 | 2 | QA | tool gateway | Mocks disabled and verified | (canonical) | `mocks_disabled_check.log` |
+| P2-E2E-001 | 2 | QA | e2e test | HITL transition changes Deal API state; exactly-once proven | (canonical) | `deal_api_e2e_transition.json` |
+| P2-UI-001 | 2 | Builder | Next.js repo (TBD) | UI smoke flow passes against canonical endpoints | (canonical) | `ui_smoke_test.log` |
+| P3-RAG-PROBE-001 | 3 | QA | RAG probe | RAG REST contract locked | (canonical) | `rag_rest_contract.json` |
+| P3-EVAL-001 | 3 | QA | eval harness | tool accuracy ≥95% on 50 prompts | (canonical) | `tool_accuracy_eval.json`, `eval_dataset_manifest.json` |
+| P3-EVAL-002 | 3 | QA | eval harness | recall@5 ≥0.80 | (canonical) | `retrieval_eval_results.json` |
+| P4-MCP-001 | 4 | Builder | MCP client | MCP conformance PASS; errors normalized | (canonical) | `mcp_conformance.json` |
+| P4-ROUTE-001 | 4 | Security | routing policy | blocked-field + allow-conditions enforced | (canonical) | `routing_policy_tests.json`, `policy_config_snapshot.json` |
+| P4-COST-001 | 4 | QA | cost accounting | daily budget enforced; report emitted | (canonical) | `cost_report.json`, `local_percent_report.json` |
+| P5-QUEUE-001 | 5 | Builder | queue worker | SKIP LOCKED worker + DLQ works | (canonical) | `queue_worker_smoke.log`, `queue_load_test.json` |
+| P5-AUDIT-001 | 5 | Security | DB migrations | audit_log immutability enforced and tested | (canonical) | `audit_immutability_test.log` |
+| P6-REDTEAM-001 | 6 | Security | red-team suite | adversarial suite PASS; artifacts stored | (canonical) | `redteam_report.json` |
+| P6-CI-001 | 6 | Infra | CI config | CI runs gate pack and retains artifacts | (canonical) | `ci_gate_run.log` |
+| P7-OPS-001 | 7 | Infra | runbooks | runbooks complete and linted | (canonical) | `runbook_lint.log` |
+| P7-BACKUP-001 | 7 | Infra | backups | restore drill PASS | (canonical) | `backup_restore_drill.log` |
+| P8-BENCH-001 | 8 | QA | benchmarks | baseline benchmarks recorded | (canonical) | `benchmarks.json`, `migration_trigger_status.json` |
+ 
+---
+ 
+# Testing & Eval Strategy (global)
+ 
+## Regression\n
+- Run baseline gate pack (`bring_up_tests.sh`) for every phase and in CI.\n
+- Any drift in contracts (endpoints/status strings/tool names/artifacts) must fail immediately.\n
+ 
+## Reliability/chaos\n
+- kill -9 recovery is a permanent gate.\n
+- concurrency N=20 remains mandatory baseline; N=50 is additive headroom evidence.\n
+ 
+## Security\n
+- Auth negative suite must remain stable (401 vs 403 semantics).\n
+- No-raw-content and at-rest protection must be enforced as gates, not manual checks.\n
+ 
+## Quality evals\n
+- Tool accuracy ≥95% on 50 prompts (Phase 3).\n
+- Retrieval recall@5 ≥0.80 (Phase 3).\n
+ 
+---
+ 
+# Release Readiness Gate (Go/No-Go)
+ 
+No production exposure (including Cloudflare external exposure or real confidential deal data) is allowed unless:\n
+1) Phase 2 PASS (MVP E2E real-service, mocks disabled)\n
+2) Phase 1 PASS (at-rest protection + no-raw-content gates + Langfuse self-hosted)\n
+3) Phase 5 PASS (queue + audit immutability + secrets hygiene + rate limiting)\n
+4) Phase 6 PASS (CI gates + red-team)\n
+5) Phase 7 PASS (runbooks + backup/restore drill)\n
+\n
+Required evidence bundle:\n
+- Baseline artifacts (BL-01..BL-14)\n
+- `encryption_verify.log`, `raw_content_scan.log`, `pii_canary_report.json`\n
+- `deal_api_e2e_transition.json`, `mocks_disabled_check.log`\n
+- `audit_immutability_test.log`, `queue_load_test.json`\n
+- `redteam_report.json`, `ci_gate_run.log`\n
+- `backup_restore_drill.log`, `monitoring_smoke.log`\n
+\n
+Sign-off roles:\n
+- Builder (implementation readiness)\n
+- QA (gate evidence)\n
+- Security (privacy/egress/audit)\n
+- Infra (ops/runbooks/backup)\n
+ 
+---
+ 
+# Appendix
+ 
+## Evidence Index (major claims → source)\n
+- Baseline invariants and artifacts: `/home/zaks/bookkeeping/docs/hitl_spike/QA_REPORT.md`\n
+- Locked constraints (ports, model, orchestration, queue, security, routing, retrieval): `/home/zaks/bookkeeping/docs/DECISION-LOCK-FILE.md`\n
+- Host-services mode and “no localhost” rule; retrieval via RAG REST only; PORTS.md authoritative: `/home/zaks/bookkeeping/docs/ZakOps-Scaffold-Master-Plan-v2.md`\n
+- Tool-to-Deal-API mapping (expected target; still contract-probed for base path): `/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v2.md` (Agent tool mapping table)\n
+- Pass 2 stop-ship findings used to eliminate “paper gates” and enforce key management + checkpoint_writes scope: `/home/zaks/bookkeeping/docs/roadmap_3pass/current/pass2/R_*.md`\n
+ 
+## Decision Log (A vs B and other conflicts)\n
+1) **Gate runner**: single entrypoint `bring_up_tests.sh` (B + Pass2 critiques) over multiple scattered scripts (A).\n
+   - Acceptance: all required gates run through one command and emit deterministic artifacts.\n
+2) **Status string**: `awaiting_approval` (QA reality) over any `pending_approval` variant.\n
+   - Acceptance: contract snapshot asserts status string; drift fails.\n
+3) **Agent API prefix**: `/agent/*` canonical (QA reality) with `/api/v1/agent/*` as alias only.\n
+   - Acceptance: contract snapshot asserts `/agent/*` endpoints exist.\n
+4) **Langfuse**: self-hosted :3001 required for completion (Decision Lock) over “cloud fallback as compliant” (older drafts).\n
+   - Acceptance: langfuse selfhost gate PASS required.\n
+5) **Retrieval**: RAG REST only for Agent API (Scaffold Plan) over any implication of direct pgvector access.\n
+   - Acceptance: static scan gate for direct DB retrieval + runtime contract.\n
+6) **Concurrency thresholds**: keep N=20 as mandatory baseline (QA reality); allow N=50 as additive headroom evidence (not a replacement).\n
+   - Acceptance: both artifacts present when Phase 5 is complete.\n
+ 
+## Gate Artifact Index (filename → produced by → PASS marker)\n
+\n
+Baseline artifacts (already produced today by bring_up_tests.sh):\n
+- `health.json` → health gate → HTTP 200 recorded\n
+- `invoke_hitl.json` → HITL invoke gate → `status == \"awaiting_approval\"`\n
+- `approve.json` → approve gate → `status == \"completed\"`\n
+- `approve_again.json` → idempotency gate → HTTP 409\n
+- `db_invariants.sql.out` → DB invariant gate → contains invariants\n
+- `checkpoint_kill9_test.log` → kill -9 gate → contains `RESULT: PASSED`\n
+- `concurrent_approves.log` → concurrency gate → contains `RESULT: PASSED`\n
+- `tool_call_validation_test.log` → schema gate → JSON `status == \"PASSED\"`\n
+- `dependency_licenses.json` → license gate → file exists; violations flagged\n
+- `mock_safety_test.log` → mock safety gate → contains PASS marker\n
+- `streaming_test.log` → streaming gate → contains `STATUS=PASSED`\n
+- `hitl_scope_test.log` → scope gate → JSON `status == \"PASSED\"`\n
+- `auth_negative_tests.json` → auth gate → all tests passed\n
+- `run.log` → final summary → contains `ALL GATES PASSED - HITL Spike verified!`\n
+\n
+Planned additions (must be implemented inside bring_up_tests.sh; phase-gated):\n
+- `contract_snapshot.json` → contract lock pack → `CONTRACT_SNAPSHOT: PASSED`\n
+- `agent_api_contract.json` → agent API probe → schema/status checks\n
+- `ports_md_lint.log` → ports lint → `PORTS_MD_LINT: PASSED`\n
+- `env_no_localhost_lint.log` → env lint → `ENV_NO_LOCALHOST: PASSED`\n
+- `artifact_bundle.zip` → bundler → `BUNDLE: CREATED`\n
+- `encryption_verify.log` → encryption verify → `ENCRYPTION_VERIFY: PASSED`\n
+- `kill9_encrypted.log` → encrypted kill-9 → `KILL9_ENCRYPTED: PASSED`\n
+- `pii_canary_report.json` → canary → `PII_CANARY: PASSED`\n
+- `raw_content_scan.log` → raw scan → `RAW_CONTENT_SCAN: PASSED`\n
+- `langfuse_selfhost_gate.log` → langfuse gate → `LANGFUSE_SELFHOST: PASSED`\n
+- `resilience_config_snapshot.json` → resilience snapshot\n
+- `deal_api_contract.json` → deal API contract\n
+- `repro_commands.sh` → generated repro\n
+- `mocks_disabled_check.log` → mocks enforcement → `MOCKS_DISABLED: PASSED`\n
+- `deal_api_e2e_transition.json` → E2E proof → `E2E_TRANSITION: PASSED`\n
+- `ui_smoke_test.log` → UI smoke → `UI_SMOKE: PASSED`\n
+- `cloudflare_route_lint.log` → Cloudflare lint → `CLOUDFLARE_ROUTE_LINT: PASSED`\n
+- `rag_rest_contract.json` → RAG contract\n
+- `eval_dataset_manifest.json` → dataset manifest\n
+- `tool_accuracy_eval.json` → tool eval\n
+- `retrieval_eval_results.json` → retrieval eval\n
+- `no_split_brain_retrieval_scan.log` → scan → `NO_SPLIT_BRAIN: PASSED`\n
+- `mcp_conformance.json` → MCP conformance\n
+- `routing_policy_tests.json` → routing tests\n
+- `policy_config_snapshot.json` → policy snapshot\n
+- `cost_report.json` → cost report\n
+- `local_percent_report.json` → local% report\n
+- `queue_worker_smoke.log` → queue smoke\n
+- `queue_load_test.json` → queue load\n
+- `audit_immutability_test.log` → audit immutability\n
+- `secrets_hygiene_lint.log` → secrets lint\n
+- `rate_limit_test.log` → rate limit\n
+- `ci_gate_run.log` → CI summary\n
+- `redteam_report.json` → red-team report\n
+- `backup_restore_drill.log` → drill\n
+- `monitoring_smoke.log` → monitoring\n
+- `release_readiness_check.json` → Go/No-Go summary\n
+- `benchmarks.json` → benchmarks\n
+- `migration_trigger_status.json` → triggers\n
+\n
+## Quality Audit\n
+\n
+Grades (A–F):\n
+- Completeness: A-\n
+- Correctness (locks + QA reality): A-\n
+- Novelty/edge-of-tech: B (intentionally conservative; safety-first)\n
+- Engineering feasibility: A-\n
+- Clarity: A-\n
+\n
+Top 10 remaining weaknesses (and fixes):\n
+1) Next.js repo path is not pinned → locate repo and replace “TBD” with exact path; add UI gate.\n
+2) Deal API base path uncertainty → contract probe must lock it; update tool gateway accordingly.\n
+3) At-rest protection details may require iteration → treat kill‑9 + concurrency as absolute regressions; fail fast.\n
+4) Trace export scanning may be brittle → standardize Langfuse export endpoint and scope.\n
+5) Rate limiting design needs concrete choice → implement in Agent API middleware; add gate.\n
+6) CI environment parity vs host-services mode → define CI all-in-compose mode and gate.\n
+7) Eval datasets risk containing sensitive data → enforce dataset policy lint.\n
+8) Migration trigger computation needs canonical counters → define where counts/latency come from.\n
+9) Budget/cost tracking depends on provider metadata → standardize cost accounting schema.\n
+10) Runbooks may drift from reality → runbook lint gate + periodic drills.\n

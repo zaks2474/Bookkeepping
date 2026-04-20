@@ -1,0 +1,29 @@
+=== XC-6 COMPLETION CHANGES CONSISTENCY ===
+13:| AC-3 | Machine-readable gate markers | `task-completed.sh` emits `GATE_RESULT:crlf|ownership|typescript|overall:PASS|FAIL` | PASS |
+14:| AC-4 | Configurable snapshot retention | `pre-compact.sh` uses `${SNAPSHOT_RETENTION:-10}`; default behavior preserved | PASS |
+16:| AC-6 | Hook contract validator | `bookkeeping/scripts/validate-claude-hook-config.py` validates 6 events, semantics, paths, exit codes (12 checks) | PASS |
+19:| AC-9 | `make qa-cce-verify` implemented | Makefile target wired to `run-qa-cce-verify.sh`; 5/5 checks PASS | PASS |
+28:| `~/.claude/hooks/pre-compact.sh` | Added `SNAPSHOT_RETENTION` env var (default 10) | P1 |
+29:| `~/.claude/hooks/task-completed.sh` | Added `TASK_COMPLETED_TARGETS` fixture mode + `GATE_RESULT:*` markers | P1 |
+31:| `zakops-agent-api/Makefile` | Added `qa-cce-verify` target | P2 |
+39:| `bookkeeping/scripts/validate-claude-hook-config.py` | Hook contract validator (ENH-2) | P2 |
+42:| `bookkeeping/scripts/run-qa-cce-verify.sh` | Combined QA runner (ENH-1) | P2 |
+52:| ENH-1 | CLOSED | `make qa-cce-verify` target + `run-qa-cce-verify.sh` runner |
+53:| ENH-2 | CLOSED | `validate-claude-hook-config.py` — 12 checks, validates 6 events + contracts |
+56:| ENH-5 | CLOSED | `GATE_RESULT:*` lines in `task-completed.sh` (4 markers per run) |
+57:| ENH-7 | CLOSED | `SNAPSHOT_RETENTION` env var in `pre-compact.sh` (default 10) |
+65:make qa-cce-verify → 5/5 PASS, VERDICT: ALL PASS
+3:## 2026-02-11 — CLAUDE-CODE-ENHANCE-002: Slimmed Hook Infrastructure Hardening
+9:- ENH-1: `make qa-cce-verify` target + combined runner script
+10:- ENH-2: Hook contract validator (`validate-claude-hook-config.py`, 12 checks)
+12:- ENH-4: Deterministic fixture mode in `task-completed.sh` (`TASK_COMPLETED_TARGETS`)
+13:- ENH-5: Machine-readable `GATE_RESULT:*` markers in `task-completed.sh`
+14:- ENH-7: Configurable snapshot retention in `pre-compact.sh` (`SNAPSHOT_RETENTION`, default 10)
+19:- `~/.claude/hooks/task-completed.sh` — fixture mode + gate markers
+21:- `zakops-agent-api/Makefile` — added `qa-cce-verify` target
+24:- `bookkeeping/docs/CLAUDE-CODE-ENHANCE-002-BASELINE.md`
+25:- `bookkeeping/docs/CLAUDE-CODE-ENHANCE-002-COMPLETION.md`
+26:- `bookkeeping/mission-checkpoints/CLAUDE-CODE-ENHANCE-002.md`
+27:- `bookkeeping/scripts/validate-claude-hook-config.py`
+30:- `bookkeeping/scripts/run-qa-cce-verify.sh`
+32:**Verification:** `make qa-cce-verify` → 5/5 PASS

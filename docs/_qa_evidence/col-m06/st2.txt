@@ -1,0 +1,2 @@
+        if re.search(pattern, content, re.IGNORECASE):
+        sanitized = re.sub(pattern, "[FILTERED]", sanitized, flags=re.IGNORECASE)

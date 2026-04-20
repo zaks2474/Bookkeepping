@@ -1,0 +1,13 @@
+=== PRE-0.3: Cross-Contamination Check ===
+--- Backend DB (zakops): approvals table should NOT exist ---
+ERROR:  relation "approvals" does not exist
+LINE 1: SELECT COUNT(*) FROM approvals;
+RESULT: PASS (no cross-contamination)
+
+--- Agent DB (zakops_agent): deals table should NOT exist ---
+ERROR:  relation "deals" does not exist
+LINE 1: SELECT COUNT(*) FROM deals;
+RESULT: PASS (no cross-contamination)
+
+=== PRE-0.3 VERDICT: PASS ===
+Each database contains only its own tables.

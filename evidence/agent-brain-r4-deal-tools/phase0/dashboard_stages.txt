@@ -1,0 +1,30 @@
+/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/e2e/TEST_PLAN.md:60:   - [ ] Deal stage is "inbound"
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:15:import type { PipelineStats, DealStage } from '@/types/api';
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:18:const PIPELINE_STAGES: DealStage[] = [
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:66:  }, {} as Record<DealStage, number>);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/ui-test/page.tsx:52:    stage: 'screening',
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent/toolRegistry.ts:90:          deal: { name: 'TechWidget Inc', stage: 'screening' },
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-schemas.ts:12:export const DealStageSchema = z.enum([
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-schemas.ts:131:  stage: DealStageSchema,
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-schemas.ts:149:  stage: DealStageSchema.optional(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-schemas.ts:161:  stage: DealStageSchema.optional(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-schemas.ts:210:  deal_stage: DealStageSchema.nullable().optional(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-schemas.ts:296:  stage: DealStageSchema,
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-schemas.ts:306:  deals_by_stage: z.record(DealStageSchema, z.number()),
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-schemas.ts:313:export type DealStage = z.infer<typeof DealStageSchema>;
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-schemas.ts:479:  allowed_deal_stages: z.array(DealStageSchema).optional(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api.ts:10:export type DealStage =
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api.ts:71:  stage: DealStage;
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api.ts:89:  stage?: DealStage;
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api.ts:101:  stage?: DealStage;
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api.ts:179:  deal_stage?: DealStage;
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api.ts:291:  stage: DealStage;
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api.ts:301:  deals_by_stage: Record<DealStage, number>;
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api.ts:309:  new_stage: DealStage;
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api.ts:316:  from_stage: DealStage;
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api.ts:317:  to_stage: DealStage;
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api.ts:323:  stage: DealStage;
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api.ts:338:  stage?: DealStage;
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/events.ts:104:export interface DealStageChangedEvent extends BaseEvent {
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/events.ts:412:  | DealStageChangedEvent
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/events.ts:509:  | DealStageChangedEvent

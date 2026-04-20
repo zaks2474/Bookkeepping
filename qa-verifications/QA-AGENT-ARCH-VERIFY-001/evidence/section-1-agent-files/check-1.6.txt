@@ -1,0 +1,12 @@
+=== CHECK 1.6: Skill Preloads ===
+contract-guardian:
+  PASS contract-guardian references verification-standards
+  PASS contract-guardian references api-conventions
+arch-reviewer:
+  PASS arch-reviewer references api-conventions
+  PASS arch-reviewer references security-and-data
+  PASS arch-reviewer references project-context
+test-engineer:
+  PASS test-engineer references verification-standards
+  PASS test-engineer references debugging-playbook
+CHECK 1.6: PASS

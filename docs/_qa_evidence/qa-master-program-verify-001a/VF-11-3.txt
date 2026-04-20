@@ -1,0 +1,6 @@
+272:    source_type: str | None = None  # manual, email_sync, langsmith_shadow, langsmith_production
+1503:    # P4-07: source_type from body takes priority, then header, then default
+1504:    source_type = item.source_type or request.headers.get("X-Source-Type") or "email"
+1548:                 correlation_id, source_type)
+1564:            correlation_id, source_type,
+1770:                        'source_type': item.get('source_type', 'email'),

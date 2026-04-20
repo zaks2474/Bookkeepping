@@ -1,0 +1,2 @@
+218:def _get_deal_from_db(deal_id: str) -> dict[str, Any] | None:
+448:    deal_record = _get_deal_from_db(deal_id)

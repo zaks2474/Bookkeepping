@@ -1,0 +1,7 @@
+=== ST-3 CACHE BEHAVIOR ===
+staleTime=30000ms (30.0s)
+gcTime=600000ms (600.0s)
+refetchOnMount=true
+refetchOnWindowFocus=false
+retry=1
+gcTime_gt_staleTime=True

@@ -1,0 +1,6 @@
+=== VF-08.2 KEY ROTATION + REDACTION ===
+/home/zaks/bookkeeping/docs/KEY-ROTATION-RUNBOOK.md:145:Key rotations should be logged:
+/home/zaks/bookkeeping/docs/KEY-ROTATION-RUNBOOK.md:148:  >> /home/zaks/bookkeeping/logs/key-rotation.log
+/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py:189:            # Log all headers for debugging (mask values)
+/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py:215:                          f"Got: {token[:8]}...{token[-4:] if len(token)>8 else ''} "
+/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py:243:        # Capture headers (redact sensitive values)

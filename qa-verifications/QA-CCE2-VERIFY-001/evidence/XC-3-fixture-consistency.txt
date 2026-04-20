@@ -1,0 +1,26 @@
+=== XC-3 FIXTURE CONSISTENCY ===
+5:# Fixture mode: set TASK_COMPLETED_TARGETS to a comma-separated list of files
+18:if [ -n "${TASK_COMPLETED_TARGETS:-}" ]; then
+20:  IFS=',' read -ra TARGET_FILES <<< "$TASK_COMPLETED_TARGETS"
+87:if [ "${#TS_CANDIDATES[@]}" -gt 0 ] && [ -z "${TASK_COMPLETED_TARGETS:-}" ]; then
+2:# Test harness for task-completed.sh fixture mode (ENH-4 + ENH-5).
+4:# Creates controlled fixtures to verify:
+15:TMPDIR=$(mktemp -d /tmp/test-tc-fixture-XXXX)
+18:echo "=== test-task-completed-fixture-mode ==="
+27:OUTPUT=$(TASK_COMPLETED_TARGETS="$CLEAN_FILE" bash "$SCRIPT" 2>&1) || RC=$?
+29:echo "$OUTPUT" | grep -q "GATE_RESULT:overall:PASS" || { echo "FAIL: Clean fixture did not produce overall:PASS"; echo "$OUTPUT"; exit 1; }
+30:[ "$RC" -eq 0 ] || { echo "FAIL: Clean fixture exit code=$RC, expected 0"; exit 1; }
+31:echo "STEP 1: Clean fixture → PASS (exit 0)"
+46:OUTPUT=$(TASK_COMPLETED_TARGETS="$CRLF_FILE" bash "$SCRIPT" 2>&1) || RC=$?
+48:echo "$OUTPUT" | grep -q "GATE_RESULT:crlf:FAIL" || { echo "FAIL: CRLF fixture did not produce crlf:FAIL"; echo "$OUTPUT"; exit 1; }
+49:echo "$OUTPUT" | grep -q "GATE_RESULT:overall:FAIL" || { echo "FAIL: CRLF fixture did not produce overall:FAIL"; echo "$OUTPUT"; exit 1; }
+50:[ "$RC" -eq 2 ] || { echo "FAIL: CRLF fixture exit code=$RC, expected 2"; exit 1; }
+51:echo "STEP 3: CRLF fixture → crlf:FAIL, overall:FAIL (exit 2)"
+60:OUTPUT=$(TASK_COMPLETED_TARGETS="$ROOT_FILE" bash "$SCRIPT" 2>&1) || RC=$?
+62:echo "$OUTPUT" | grep -q "GATE_RESULT:ownership:FAIL" || { echo "FAIL: Root fixture did not produce ownership:FAIL"; echo "$OUTPUT"; exit 1; }
+63:echo "$OUTPUT" | grep -q "GATE_RESULT:overall:FAIL" || { echo "FAIL: Root fixture did not produce overall:FAIL"; echo "$OUTPUT"; exit 1; }
+64:[ "$RC" -eq 2 ] || { echo "FAIL: Root fixture exit code=$RC, expected 2"; exit 1; }
+65:echo "STEP 4: Root-owned fixture → ownership:FAIL, overall:FAIL (exit 2)"
+69:OUTPUT=$(TASK_COMPLETED_TARGETS="/tmp/nonexistent-file-xyz.sh" bash "$SCRIPT" 2>&1) || RC=$?
+71:echo "$OUTPUT" | grep -q "GATE_RESULT:overall:PASS" || { echo "FAIL: Nonexistent fixture did not produce overall:PASS"; echo "$OUTPUT"; exit 1; }
+72:[ "$RC" -eq 0 ] || { echo "FAIL: Nonexistent fixture exit code=$RC, expected 0"; exit 1; }

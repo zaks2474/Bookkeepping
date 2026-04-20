@@ -1,0 +1,5 @@
+/api/actions/quarantine ['get']
+/api/quarantine ['get', 'post']
+/api/quarantine/health ['get']
+/api/quarantine/{item_id} ['get']
+/api/quarantine/{item_id}/process ['post']

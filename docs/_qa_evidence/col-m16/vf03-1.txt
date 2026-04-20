@@ -1,0 +1,3 @@
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/chatbot.py:416:@router.post("/threads/{thread_id}/attach")
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/chatbot.py:425:    COL-DESIGN-SPEC-V2 Section 12.3: POST /api/v1/chatbot/threads/{id}/attach
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/chatbot.py:441:        raise HTTPException(status_code=500, detail="Failed to attach transcript")

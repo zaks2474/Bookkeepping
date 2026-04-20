@@ -1,0 +1,15 @@
+=== QA-6.2: T6.1-T6.5 Legacy Decommission Verification ===
+--- TEST 1: Port 8090 must be DEAD ---
+PASS: Port 8090 is not listening
+--- TEST 2: Dashboard code references to 8090 ---
+References to 8090: 0
+--- TEST 3: Environment variables ---
+# API URLs
+# Backend API URL (deal lifecycle, actions, quarantine)
+NEXT_PUBLIC_API_URL=http://localhost:8091
+API_URL=http://localhost:8091
+BACKEND_URL=http://localhost:8091
+--- TEST 4: No legacy containers ---
+No legacy containers found
+
+=== QA-6.2 VERDICT: PASS ===

@@ -1,0 +1,20 @@
+apps/agent-api/app/utils/graph.py:144:            message_count=len(messages),
+apps/agent-api/app/utils/graph.py:161:                message_count=len(messages),
+apps/agent-api/app/api/v1/chatbot.py:66:            message_count=len(chat_request.messages),
+apps/agent-api/app/api/v1/chatbot.py:103:            message_count=len(chat_request.messages),
+apps/agent-api/app/api/v1/chatbot.py:336:async def update_thread(
+apps/agent-api/app/api/v1/chatbot.py:348:        thread = await chat_repository.update_thread(
+apps/agent-api/app/api/v1/chatbot.py:356:        logger.error("update_thread_failed", thread_id=thread_id, error=str(e), exc_info=True)
+apps/agent-api/app/services/chat_repository.py:154:    async def update_thread(
+apps/agent-api/app/services/chat_repository.py:187:            logger.info("thread_updated", thread_id=thread_id, fields=list(updates.keys()))
+apps/agent-api/app/services/export_service.py:218:                            "message_count": len(export["content"].split("### Turn")) - 1,
+apps/agent-api/app/services/llm.py:316:            logger.debug("llm_call_successful", message_count=len(messages))
+apps/agent-api/app/schemas/backend_models.py:210:    message_count: Annotated[int, Field(title="Message Count")]
+apps/agent-api/app/schemas/sse_events.py:41:    event_type: str = "thread_updated"
+apps/agent-api/app/schemas/sse_events.py:135:    "thread_updated": ThreadUpdatedEvent,
+apps/agent-api/.venv/lib/python3.13/site-packages/langgraph_sdk/schema.py:132:ThreadSortBy = Literal["thread_id", "status", "created_at", "updated_at"]
+apps/agent-api/.venv/lib/python3.13/site-packages/langgraph_sdk/schema.py:138:    "cron_id", "assistant_id", "thread_id", "created_at", "updated_at", "next_run_date"
+apps/agent-api/.venv/lib/python3.13/site-packages/langgraph_sdk/schema.py:266:    """The last time the thread was updated."""
+apps/agent-api/.venv/lib/python3.13/site-packages/langgraph_sdk/auth/types.py:955:            """Type for thread update parameters."""
+apps/agent-api/.venv/lib/python3.13/site-packages/langgraph_sdk/auth/__init__.py:159:            @auth.on(resources=["threads", "runs"], actions=["create", "update"])
+apps/agent-api/.venv/lib/python3.13/site-packages/langgraph_sdk/auth/__init__.py:592:        @auth.on(resources=["threads", "runs"], actions=["create", "update"])

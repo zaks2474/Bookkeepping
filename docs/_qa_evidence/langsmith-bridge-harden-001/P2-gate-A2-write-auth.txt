@@ -1,0 +1,21 @@
+SESSION: /messages/?session_id=a858cdb0fdf0470f90a5a1164d794421
+
+TOOL CALL RESPONSE (id=2):
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"error\":\"Failed to create action: HTTP 405\"}"
+      }
+    ],
+    "structuredContent": {
+      "error": "Failed to create action: HTTP 405"
+    },
+    "isError": false
+  }
+}
+
+VERDICT: PASS — Auth forwarded successfully

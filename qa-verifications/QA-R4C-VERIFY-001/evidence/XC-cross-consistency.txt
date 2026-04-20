@@ -1,0 +1,78 @@
+=== XC-1 SOURCE CLAIMS VS EVIDENCE ===
+25:### Phase 1: Settings Redesign (Batch 4)
+35:### Phase 2: Onboarding Redesign (Batch 5)
+43:### Phase 3: Quality Hardening (Batch 6)
+55:### Phase 4: UX Polish (Batch 7)
+64:### Phase 5: Page Audits (Batch 8)
+70:### Phase 6: E2E & CI Gates (Batch 9)
+144:| Phase completion reports | PASS — batch-4 through batch-9 evidence dirs |
+/home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4
+/home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/batch-0
+/home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/batch-0/evidence
+/home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/batch-1
+/home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/batch-1/evidence
+/home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/batch-2
+/home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/batch-2/evidence
+/home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/batch-3
+/home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/batch-3/evidence
+/home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/batch-9
+/home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/qa-batch-0-verify-20260207T190453Z
+/home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/qa-batch-0-verify-20260208T003814Z
+/home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/qa-batch-0-verify-20260208T003843Z
+/home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/qa-batch-0-verify-20260208T005218Z
+/home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/qa-batch-0-verify-20260208T010253Z
+/home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/qa-batch-1-verify-20260207T193423Z
+/home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/qa-batch-1-verify-20260207T194402Z
+/home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/qa-batch-1-verify-20260207T195206Z
+/home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/qa-batch-2-verify-20260207T202441Z
+/home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/qa-batch-3-verify-20260207T205608Z
+
+=== XC-2 AC TO VF COVERAGE ===
+AC-1 -> VF-01
+AC-2 -> VF-02
+AC-3 -> VF-03
+AC-4 -> VF-04
+AC-5 -> VF-05
+AC-6 -> VF-06
+AC-7 -> VF-07
+AC-8 -> VF-08
+
+=== XC-3 FOUR-WAY SURFACE POST ===
+contract_surfaces_md= 14
+claude_rows= 14
+validator_declared= 14
+manifest_entries= 14
+
+=== XC-4 GOVERNANCE RULE COVERAGE ===
+-rw-r--r-- 1 root root 7672 Feb 10 12:29 /home/zaks/zakops-agent-api/.claude/rules/design-system.md
+-rw-r--r-- 1 zaks zaks 2162 Feb 10 12:28 /home/zaks/zakops-agent-api/.claude/rules/accessibility.md
+-rw-r--r-- 1 zaks zaks 2794 Feb 10 12:28 /home/zaks/zakops-agent-api/.claude/rules/component-patterns.md
+/home/zaks/zakops-agent-api/tools/infra/validate-surface9.sh:31:  | grep -v "execution-contracts\|design-system-manifest\|node_modules\|__tests__" || true)
+/home/zaks/zakops-agent-api/tools/infra/validate-surface9.sh:61:if [ -f "$DASHBOARD_SRC/types/design-system-manifest.ts" ]; then
+/home/zaks/zakops-agent-api/tools/infra/validate-surface9.sh:64:  echo "  FAIL: design-system-manifest.ts not found"
+/home/zaks/zakops-agent-api/tools/infra/validate-surface9.sh:70:if [ -f "/home/zaks/zakops-agent-api/.claude/rules/design-system.md" ]; then
+/home/zaks/zakops-agent-api/tools/infra/validate-surface9.sh:73:  echo "  FAIL: .claude/rules/design-system.md not found"
+/home/zaks/zakops-agent-api/tools/infra/validate-surface9.sh:81:for RULE_FILE in accessibility.md component-patterns.md; do
+/home/zaks/zakops-agent-api/tools/infra/validate-surface9.sh:101:DS_RULE="$RULES_DIR/design-system.md"
+/home/zaks/zakops-agent-api/tools/infra/validate-surface9.sh:120:  echo "  FAIL: Anti-convergence policy not found in design-system.md"
+/home/zaks/zakops-agent-api/tools/infra/validate-frontend-governance.sh:18:# ── Check 1: design-system.md required section anchors ──
+/home/zaks/zakops-agent-api/tools/infra/validate-frontend-governance.sh:19:echo "--- design-system.md governance sections ---"
+/home/zaks/zakops-agent-api/tools/infra/validate-frontend-governance.sh:20:DS_RULE="$RULES_DIR/design-system.md"
+/home/zaks/zakops-agent-api/tools/infra/validate-frontend-governance.sh:22:  echo "  FAIL: design-system.md not found"
+/home/zaks/zakops-agent-api/tools/infra/validate-frontend-governance.sh:48:# ── Check 2: accessibility.md required anchors ──
+/home/zaks/zakops-agent-api/tools/infra/validate-frontend-governance.sh:50:echo "--- accessibility.md governance sections ---"
+/home/zaks/zakops-agent-api/tools/infra/validate-frontend-governance.sh:51:A11Y_RULE="$RULES_DIR/accessibility.md"
+/home/zaks/zakops-agent-api/tools/infra/validate-frontend-governance.sh:53:  echo "  FAIL: accessibility.md not found"
+/home/zaks/zakops-agent-api/tools/infra/validate-frontend-governance.sh:73:# ── Check 3: component-patterns.md required anchors ──
+/home/zaks/zakops-agent-api/tools/infra/validate-frontend-governance.sh:75:echo "--- component-patterns.md governance sections ---"
+/home/zaks/zakops-agent-api/tools/infra/validate-frontend-governance.sh:76:CP_RULE="$RULES_DIR/component-patterns.md"
+/home/zaks/zakops-agent-api/tools/infra/validate-frontend-governance.sh:78:  echo "  FAIL: component-patterns.md not found"
+
+=== XC-5 R4 GATE ASSETS VS CI/MAKE ===
+-rwxr-xr-x 1 zaks zaks 3807 Feb 10 07:08 /home/zaks/zakops-agent-api/tools/infra/validate-api-contract.sh
+-rw-r--r-- 1 zaks zaks 4274 Feb 10 07:08 /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/no-dead-ui.spec.ts
+-rw-r--r-- 1 zaks zaks 6683 Feb 10 07:09 /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/phase-coverage.spec.ts
+INFO: R4 gate assets not yet wired into Makefile/CI — classified as ENH-1
+
+=== XC-6 LEGACY CLAIM DRIFT ===
+/home/zaks/bookkeeping/docs/QA-R4C-VERIFY-001.md:932:  rg -n '9 contract surfaces|all 9|Surface 9 only baseline|old standard' /home/zaks/bookkeeping/docs/QA-R4C-VERIFY-001.md /home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/MISSION-COMPLETION-REPORT.md || true

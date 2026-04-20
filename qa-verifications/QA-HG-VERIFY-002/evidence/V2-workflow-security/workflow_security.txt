@@ -1,0 +1,19 @@
+=== Workflow Security ===
+Bot exists: YES
+
+--- WS-1: Permissions ---
+INFO: No permissions block — read-only by default for scheduled workflows
+WS-1: N/A (read-only bot, does not modify files)
+
+--- WS-2: Anti-Loop / Concurrency ---
+INFO: No concurrency guard — bot is read-only and idempotent
+PASS: Has workflow_dispatch (manual trigger)
+
+--- WS-3: Branch Constraints ---
+  schedule:
+    - cron: '0 6 * * *'  # Daily at 6am UTC
+WS-3 PASS: Runs on schedule only (no push/PR trigger)
+
+--- WS-4: PR Safety ---
+PASS: No direct push to main detected
+Date: 2026-02-06T17:38:43-06:00

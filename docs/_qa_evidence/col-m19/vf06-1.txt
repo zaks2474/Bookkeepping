@@ -1,0 +1,15 @@
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/callbacks/whylabs_callback.py:16:    sentiment: bool = False,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/callbacks/whylabs_callback.py:23:        sentiment: Whether to import the langkit.sentiment module. Defaults to False.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/callbacks/whylabs_callback.py:33:    if sentiment:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/callbacks/whylabs_callback.py:34:        guard_import("langkit.sentiment")
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/callbacks/whylabs_callback.py:64:      - sentiment analysis
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/callbacks/whylabs_callback.py:81:        sentiment (bool): Whether to enable sentiment analysis. Defaults to False.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/callbacks/whylabs_callback.py:125:        sentiment: bool = False,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/callbacks/whylabs_callback.py:142:            sentiment (bool): If True will initialize a model to perform
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/callbacks/whylabs_callback.py:143:                sentiment analysis compound score. Defaults to False and will not gather
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/callbacks/whylabs_callback.py:155:        import_langkit(sentiment=sentiment, toxicity=toxicity, themes=themes)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/callbacks/fiddler_callback.py:247:                enrichment="sentiment",
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/utilities/alpha_vantage.py:52:    def _get_market_news_sentiment(self, symbol: str) -> Dict[str, Any]:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/utilities/alpha_vantage.py:53:        """Make a request to the AlphaVantage API to get market news sentiment for a
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langfuse/experiment.py:155:        def sentiment_evaluator(*, input, output, **kwargs):
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langfuse/experiment.py:156:            sentiment = analyze_sentiment(output)  # Returns "positive", "negative", or "neutral"

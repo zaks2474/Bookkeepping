@@ -1,0 +1,3 @@
+Line 46: def _clamp(value, lo=0.0, hi=100.0): return max(lo, min(hi, value))
+Line 172: score = round(_clamp(score), 1)
+VERDICT: PASS — score clamped to 0-100

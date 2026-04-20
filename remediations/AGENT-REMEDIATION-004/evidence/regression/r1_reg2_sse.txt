@@ -1,0 +1,10 @@
+=== R1.REG.2: SSE Contract ===
+event: start
+data: {"thread_id": "reg-sse-001"}
+
+event: content
+data: {"content": "Hello! How can I assist you today?"}
+
+event: end
+data: {"status": "completed", "thread_id": "reg-sse-001"}
+

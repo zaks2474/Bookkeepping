@@ -1,0 +1,25 @@
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/node_registry.py:57:            context: Dict with deal_id, brain, messages, etc.
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/node_registry.py:78:        deal_brain = context.get("brain", {})
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/node_registry.py:79:        facts = deal_brain.get("facts", [])
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/node_registry.py:117:        deal_brain = context.get("brain", {})
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/node_registry.py:118:        risks = deal_brain.get("risks", [])
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/node_registry.py:150:        deal_brain = context.get("brain", {})
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/node_registry.py:151:        facts = deal_brain.get("facts", [])
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/node_registry.py:152:        decisions = deal_brain.get("decisions", [])
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:85:from app.services.brain_extraction import trigger_brain_extraction
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:1168:                        trigger_brain_extraction(
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:1176:                except Exception as brain_err:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:1177:                    logger.debug("brain_extraction_trigger_failed", error=str(brain_err))
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/security/injection_guard.py:117:    deal_brain: str = "",
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/security/injection_guard.py:131:    if deal_brain:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/security/injection_guard.py:133:            f"\n<deal_brain>\n{deal_brain}\n</deal_brain>"
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:4:Handles proposal execution, status tracking, and the correct_brain_summary handler.
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:27:    "correct_brain_summary": "_handle_correct_brain_summary",
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:235:    async def _handle_correct_brain_summary(self, proposal: dict, user_id: str) -> dict:
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:236:        """COL-V2 S15.4 [GAP-M10]: Handle brain summary correction."""
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:243:            # Get current brain
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:244:            brain_resp = await client.get(
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:245:                f"{settings.BACKEND_URL}/api/deals/{deal_id}/brain",
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:247:            brain_resp.raise_for_status()
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:248:            old_brain = brain_resp.json()
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:250:            # Regenerate summary by requesting brain service to re-summarize

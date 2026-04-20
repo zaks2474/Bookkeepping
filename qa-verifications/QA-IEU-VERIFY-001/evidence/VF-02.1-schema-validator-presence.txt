@@ -1,0 +1,7 @@
+=== VF-02.1 SCHEMA + VALIDATOR PRESENCE ===
+-rw-r--r-- 1 zaks zaks 1814 Feb 10 16:09 /home/zaks/zakops-agent-api/tools/infra/schemas/governance-anchor-contract.schema.json
+-rw-r--r-- 1 zaks zaks 1066 Feb 10 16:09 /home/zaks/zakops-agent-api/tools/infra/schemas/manifest-contract-surfaces.schema.json
+-rw-r--r-- 1 zaks zaks 1424 Feb 10 16:09 /home/zaks/zakops-agent-api/tools/infra/schemas/performance-budget.schema.json
+-rwxr-xr-x 1 zaks zaks 3545 Feb 10 16:10 /home/zaks/zakops-agent-api/tools/infra/validate-governance-anchor-schema.sh
+-rwxr-xr-x 1 zaks zaks 3438 Feb 10 16:10 /home/zaks/zakops-agent-api/tools/infra/validate-manifest-contract-section.sh
+-rwxr-xr-x 1 zaks zaks 3030 Feb 10 16:10 /home/zaks/zakops-agent-api/tools/infra/validate-performance-budget-schema.sh

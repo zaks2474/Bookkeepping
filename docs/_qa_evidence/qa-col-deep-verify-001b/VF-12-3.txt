@@ -1,0 +1,4 @@
+15:from typing import Any, Optional, Protocol, runtime_checkable
+31:# ── Node Protocol ─────────────────────────────────────────
+34:class SpecialistNode(Protocol):
+35:    """Protocol for specialist capability nodes."""

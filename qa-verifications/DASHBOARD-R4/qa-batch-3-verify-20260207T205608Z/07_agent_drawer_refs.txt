@@ -1,0 +1,28 @@
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/dashboard/AgentActivityWidget.tsx:30:import { useAskAgent } from '@/components/agent/AgentDrawer';
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/onboarding/steps/AgentDemoStep.tsx:30:import { useAskAgent } from '@/components/agent/AgentDrawer';
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/AgentDrawer.tsx:2: * AgentDrawer Component
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/AgentDrawer.tsx:35:interface AgentDrawerContext {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/AgentDrawer.tsx:41:interface AgentDrawerState {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/AgentDrawer.tsx:43:  context: AgentDrawerContext | null;
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/AgentDrawer.tsx:46:interface AgentDrawerContextValue {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/AgentDrawer.tsx:47:  state: AgentDrawerState;
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/AgentDrawer.tsx:48:  open: (context?: AgentDrawerContext) => void;
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/AgentDrawer.tsx:56:const AgentDrawerContext = createContext<AgentDrawerContextValue | null>(null);
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/AgentDrawer.tsx:62:export function AgentDrawerProvider({ children }: { children: ReactNode }) {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/AgentDrawer.tsx:63:  const [state, setState] = useState<AgentDrawerState>({
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/AgentDrawer.tsx:68:  const open = useCallback((context?: AgentDrawerContext) => {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/AgentDrawer.tsx:77:    <AgentDrawerContext.Provider value={{ state, open, close }}>
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/AgentDrawer.tsx:79:      <AgentDrawerComponent />
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/AgentDrawer.tsx:80:    </AgentDrawerContext.Provider>
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/AgentDrawer.tsx:101:  const ctx = useContext(AgentDrawerContext);
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/AgentDrawer.tsx:103:    throw new Error('useAskAgent must be used within AgentDrawerProvider');
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/AgentDrawer.tsx:111:export function useCloseAgentDrawer() {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/AgentDrawer.tsx:112:  const ctx = useContext(AgentDrawerContext);
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/AgentDrawer.tsx:114:    throw new Error('useCloseAgentDrawer must be used within AgentDrawerProvider');
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/AgentDrawer.tsx:123:function AgentDrawerComponent() {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/AgentDrawer.tsx:124:  const ctx = useContext(AgentDrawerContext);
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealAgentPanel.tsx:30:import { useAskAgent } from '@/components/agent/AgentDrawer';
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/layout/AgentStatusIndicator.tsx:27:import { useAskAgent } from '@/components/agent/AgentDrawer';
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/layout/providers.tsx:6:import { AgentDrawerProvider } from '@/components/agent/AgentDrawer';
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/layout/providers.tsx:32:        <AgentDrawerProvider>
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/layout/providers.tsx:34:        </AgentDrawerProvider>

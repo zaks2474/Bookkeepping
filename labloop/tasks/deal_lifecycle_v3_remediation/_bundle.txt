@@ -1,0 +1,854 @@
+=== BUILDER PROTOCOL ===
+# BUILDER PROTOCOL (Claude Code)
+# ===============================
+# You are BUILDER in the Lab Loop automation system.
+# Your role: Implement changes to satisfy the task's acceptance gates.
+
+## CRITICAL RULES
+
+1. You are running NON-INTERACTIVELY. Do not ask questions - make decisions based on:
+   - The mission.md and acceptance.md provided
+   - The QA_REPORT.json from the previous cycle
+   - Authoritative docs at /home/zaks/bookkeeping/docs/
+
+2. OBEY THE AUTHORITATIVE DOCS. All architectural decisions, patterns, and constraints
+   defined in /home/zaks/bookkeeping/docs/ are DECISION-LOCKED. Do not deviate.
+
+3. ADDRESS ISSUES IN PRIORITY ORDER:
+   - BLOCKERS first (these prevent task completion)
+   - MAJORS second (these are significant issues)
+   - MINORS last (only if time permits)
+
+4. MAKE THE SMALLEST SAFE CHANGE SET. Do not:
+   - Refactor code unnecessarily
+   - Add features not requested
+   - Change code outside the scope of the issue
+
+5. RUN VERIFICATION COMMANDS before finishing:
+   - Run the gate command specified in the task
+   - Fix any errors that arise
+   - Ensure tests pass
+
+## YOUR INPUTS
+
+You will receive via stdin:
+- Task mission (what to build)
+- Task acceptance criteria (how to verify)
+- Current cycle number
+- Latest QA_REPORT.json (issues to address)
+- TASK_DIR path for writing your report
+
+## YOUR OUTPUTS
+
+### 1. BUILDER_REPORT.md (write to TASK_DIR)
+
+Human-readable markdown report containing:
+- Summary of changes made
+- Issues addressed from QA report
+- Commands run and their results
+- Any blockers encountered
+- Files modified
+
+Example:
+```markdown
+# Builder Report - Cycle 3
+
+## Summary
+Fixed authentication bug and added missing test coverage.
+
+## Issues Addressed
+- [BLOCKER] Fixed JWT validation in auth.py:142
+- [MAJOR] Added test for edge case in test_auth.py
+
+## Commands Run
+- `pytest tests/` - PASSED (42 tests)
+- `ruff check .` - PASSED (no issues)
+
+## Files Modified
+- src/auth.py (lines 140-150)
+- tests/test_auth.py (added new test)
+
+## Notes for QA
+- JWT expiry now correctly validated
+- Test coverage increased to 85%
+```
+
+### 2. STDOUT JSON (final output)
+
+Your FINAL output to stdout MUST be a single JSON object:
+
+```json
+{
+  "status": "READY_FOR_QA",
+  "changed_files": [
+    "src/auth.py",
+    "tests/test_auth.py"
+  ],
+  "commands_run": [
+    "pytest tests/",
+    "ruff check ."
+  ],
+  "notes_for_QA": [
+    "Fixed JWT validation bug",
+    "Added edge case test",
+    "All tests passing"
+  ]
+}
+```
+
+## WORKFLOW
+
+1. Read the QA report and identify all issues to address
+2. Read relevant source files in REPO_DIR
+3. Implement fixes for each issue (BLOCKERS first)
+4. Run the gate command to verify
+5. If gates fail, fix and retry
+6. Write BUILDER_REPORT.md to TASK_DIR
+7. Output the JSON summary to stdout
+
+## REMEMBER
+
+- You cannot ask questions - make the best decision based on available info
+- If unsure, check /home/zaks/bookkeeping/docs/ for guidance
+- The task is NOT done until QA says PASS - focus on fixing issues
+- Do not output anything after the JSON - it must be parseable
+
+=== BUILDER OUTPUT SCHEMA ===
+Your final JSON output MUST conform to this schema:
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Lab Loop Builder Report",
+  "description": "Schema-enforced output from Builder agent to eliminate drift and ensure machine-verifiable reports",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": ["READY_FOR_QA", "BLOCKED", "ERROR"],
+      "description": "READY_FOR_QA = changes made, run QA. BLOCKED = cannot proceed without human input. ERROR = unexpected failure."
+    },
+    "cycle": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Current cycle number"
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 10,
+      "description": "Brief description of what was done this cycle"
+    },
+    "issues_addressed": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/addressed_issue" },
+      "description": "Issues from QA report that were addressed"
+    },
+    "changed_files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "path": { "type": "string" },
+          "action": { "type": "string", "enum": ["created", "modified", "deleted"] },
+          "lines_changed": { "type": "integer", "minimum": 0 },
+          "description": { "type": "string" }
+        },
+        "required": ["path", "action"]
+      },
+      "description": "Files modified during this cycle with details"
+    },
+    "commands_run": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "command": { "type": "string" },
+          "exit_code": { "type": "integer" },
+          "success": { "type": "boolean" },
+          "output_summary": { "type": "string", "maxLength": 500 }
+        },
+        "required": ["command", "exit_code", "success"]
+      },
+      "description": "Commands executed with their results"
+    },
+    "gate_pre_check": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ran_gate": { "type": "boolean" },
+        "gate_passed": { "type": "boolean" },
+        "gate_exit_code": { "type": "integer" },
+        "failure_summary": { "type": "string" }
+      },
+      "required": ["ran_gate"],
+      "description": "Did Builder run the gate command before finishing?"
+    },
+    "blockers_encountered": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "type": { "type": "string", "enum": ["missing_info", "unclear_requirement", "external_dependency", "permission", "other"] },
+          "description": { "type": "string" },
+          "suggested_resolution": { "type": "string" }
+        },
+        "required": ["type", "description"]
+      },
+      "description": "Blockers that prevented full completion"
+    },
+    "notes_for_qa": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Important notes for QA to consider during verification"
+    },
+    "confidence": {
+      "type": "string",
+      "enum": ["high", "medium", "low"],
+      "description": "Builder's confidence that changes will pass QA"
+    },
+    "diff_stats": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "files_changed": { "type": "integer", "minimum": 0 },
+        "insertions": { "type": "integer", "minimum": 0 },
+        "deletions": { "type": "integer", "minimum": 0 },
+        "total_lines": { "type": "integer", "minimum": 0 }
+      },
+      "description": "Git diff statistics for this cycle"
+    }
+  },
+  "required": [
+    "status",
+    "cycle",
+    "summary",
+    "issues_addressed",
+    "changed_files",
+    "commands_run",
+    "gate_pre_check",
+    "notes_for_qa"
+  ],
+  "$defs": {
+    "addressed_issue": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "severity": { "type": "string", "enum": ["BLOCKER", "MAJOR", "MINOR"] },
+        "original_title": { "type": "string" },
+        "resolution": { "type": "string" },
+        "files_modified": { "type": "array", "items": { "type": "string" } },
+        "verified": { "type": "boolean", "description": "Did Builder verify the fix works?" }
+      },
+      "required": ["severity", "original_title", "resolution", "verified"]
+    }
+  }
+}
+
+=== TASK MISSION ===
+# Mission: DEAL LIFECYCLE V3 FULL REMEDIATION (All Phases)
+
+## Objective
+
+Implement the **complete DEAL_LIFECYCLE_REMEDIATION_PLAN_V3_FINAL** covering all 22 issues across 7 phases (69 tasks total), eliminating the split-brain architecture and establishing PostgreSQL as the single source of truth.
+
+**Source Plan:** `/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3_FINAL.md`
+
+## Critical Context
+
+The ZakOps system has a **split-brain architecture** that must be eliminated:
+- PostgreSQL `zakops.deals` is used by Dashboard/API (DL-XXXX IDs)
+- JSON `deal_registry.json` is used by email ingestion/executors (DEAL-YYYY-### IDs)
+- These never sync, causing data inconsistency
+
+**22 issues documented:** 2 P0, 6 P1, 11 P2, 3 P3
+
+## Locked Decisions (DO NOT DEVIATE)
+
+1. **D-FINAL-01:** PostgreSQL `zakops.deals` is the SOLE source of truth
+2. **D-FINAL-02:** Keep 9-stage canonical model (inbound, screening, qualified, loi, diligence, closing, portfolio, junk, archived)
+3. **D-FINAL-03:** Agent calls backend HTTP APIs ONLY (no direct DB)
+4. **D-FINAL-04:** Email ingestion POSTs to `/api/quarantine`
+5. **D-FINAL-05:** Central RAG service with deal_id keying
+6. **D-FINAL-06:** Mirror HITL approvals to backend with correlation_id
+7. **D-FINAL-07:** API key for services; user JWT in Phase 5; correlation_id in Phase 0
+
+---
+
+## PHASE 0: Stop the Bleeding
+
+**Issues:** ZK-ISSUE-0006, 0007, 0010, 0011, 0012, 0018
+
+| Task | Description | File |
+|------|-------------|------|
+| T0.1 | Fix Dashboard quarantine endpoint `/resolve` → `/process` | `apps/dashboard/src/lib/api.ts` |
+| T0.2 | Fix Dashboard notes endpoint path | `apps/dashboard/src/lib/api.ts` |
+| T0.3 | Add `/api/deals/{id}/notes` endpoint | `zakops-backend/src/api/orchestration/main.py` |
+| T0.4 | DELETE deal_state_machine.py | `/home/zaks/scripts/deal_state_machine.py` |
+| T0.5 | Update DB default stage `lead` → `inbound` | `db/migrations/` |
+| T0.6 | Add correlation_id generation in Dashboard | `apps/dashboard/src/middleware.ts` |
+| T0.7 | Add correlation_id reading in backend | `zakops-backend/src/api/orchestration/main.py` |
+| T0.8 | Add correlation_id column to deal_events | `db/migrations/` |
+| T0.9 | Verify RAG health, document | `SERVICE-CATALOG.md` |
+| T0.10 | Add health check aggregator | `zakops-backend/src/api/orchestration/routers/health.py` |
+| T0.11 | Fix Zod schemas with `.passthrough()` | `apps/dashboard/src/lib/schemas.ts` |
+| T0.12 | Add schema validation logging | `apps/dashboard/src/lib/api.ts` |
+
+---
+
+## PHASE 1: Data Truth Unification
+
+**Issues:** ZK-ISSUE-0001 (P0), 0008, 0014
+
+| Task | Description | File |
+|------|-------------|------|
+| T1.1 | Create id_map table for legacy ID mapping | `db/migrations/xxx_id_map.sql` |
+| T1.2 | Create migration script JSON→Postgres | `scripts/migrations/migrate_json_to_postgres.py` |
+| T1.3 | Run migration dry-run with validation | N/A |
+| T1.4 | Refactor CreateDealFromEmailExecutor to use backend API | `zakops-backend/src/actions/executors/deal_create_from_email.py` |
+| T1.5 | Remove sys.path hack from executor | Same file |
+| T1.6 | Migrate action engine SQLite→Postgres | `zakops-backend/src/actions/engine/store.py` |
+| T1.7 | Make deal_registry.json read-only | Filesystem |
+| T1.8 | Add CI guard blocking legacy writes | `.github/workflows/ci.yml` |
+| T1.9 | Run production migration | N/A |
+
+---
+
+## PHASE 2: Contract Alignment
+
+**Issues:** ZK-ISSUE-0003 (P1), 0004, 0013, 0022
+
+| Task | Description | File |
+|------|-------------|------|
+| T2.1 | Wire quarantine approval → deal creation (atomic) | `zakops-backend/src/api/orchestration/main.py` |
+| T2.2 | Add folder scaffolding hook to POST /api/deals | New service |
+| T2.3 | Add idempotency guard on quarantine approval | Same |
+| T2.4 | Implement /api/actions/capabilities | `zakops-backend/src/api/orchestration/routers/actions.py` |
+| T2.5 | Implement /api/actions/metrics | Same |
+| T2.6 | Add /api/deals/{id}/archive endpoint | `zakops-backend/src/api/orchestration/main.py` |
+| T2.7 | Add /api/deals/{id}/restore endpoint | Same |
+| T2.8 | Sync OpenAPI spec | `openapi.yaml` |
+| T2.9 | Generate API client from OpenAPI | `apps/dashboard/src/lib/generated/` |
+
+---
+
+## PHASE 3: Deal Lifecycle Correctness
+
+**Issues:** ZK-ISSUE-0009, 0015, 0016
+
+| Task | Description | File |
+|------|-------------|------|
+| T3.1 | Add create_deal agent tool with HITL | `apps/agent-api/app/core/langgraph/tools/deal_tools.py` |
+| T3.2 | Add add_note agent tool | Same |
+| T3.3 | Pass X-Correlation-ID in all tool calls | Same + HTTP client |
+| T3.4 | Add duplicate detection to POST /api/deals | `zakops-backend/src/api/orchestration/main.py` |
+| T3.5 | Add background job for approval expiry | `apps/agent-api/app/jobs/expire_approvals.py` |
+| T3.6 | Add optimistic locking on approval | `apps/agent-api/app/services/approval.py` |
+| T3.7 | Mirror approvals to backend approval_audit | `db/migrations/xxx_approval_audit.sql` |
+
+---
+
+## PHASE 4: Deal Knowledge System
+
+**Issues:** ZK-ISSUE-0002 (P0), 0019, 0020, 0021
+
+| Task | Description | File |
+|------|-------------|------|
+| T4.1 | Refactor email ingestion Stage 4 → POST /api/quarantine | `scripts/email_ingestion/stage_4_persist.py` |
+| T4.2 | Add idempotency key table | `db/migrations/xxx_ingestion_idempotency.sql` |
+| T4.3 | Add attachment scanning | Ingestion service |
+| T4.4 | Test email ingestion dry-run | N/A |
+| T4.5 | Enable email ingestion cron | `/etc/cron.d/dataroom-automation` |
+| T4.6 | Wire deal_append_email_materials executor | `zakops-backend/src/actions/executors/deal_append_email_materials.py` |
+| T4.7 | Wire deal_enrich_materials executor | `zakops-backend/src/actions/executors/deal_enrich_materials.py` |
+| T4.8 | Wire rag_reindex_deal executor | `zakops-backend/src/actions/executors/rag_reindex_deal.py` |
+| T4.9 | Add last_indexed_at + content_hash columns | Migration |
+| T4.10 | Add deal indexing hook on create/update | Deal service |
+| T4.11 | Add RAG reindex retry queue | `zakops-backend/src/services/queue.py` |
+| T4.12 | Implement SSE endpoint | `routers/events.py` |
+| T4.13 | Add deal age tracking field | Migration |
+| T4.14 | Add basic scheduled reminders | Scheduler service |
+
+---
+
+## PHASE 5: Hardening
+
+**Issues:** ZK-ISSUE-0005 (P1), 0017
+
+| Task | Description | File |
+|------|-------------|------|
+| T5.1 | Add user authentication to Dashboard | `apps/dashboard/src/` |
+| T5.2 | Add auth middleware | `middleware.ts` |
+| T5.3 | Pass user ID in backend requests | API client |
+| T5.4 | Add user attribution to deal_events | Event service |
+| T5.5 | Define retention policy document | `/home/zaks/bookkeeping/docs/RETENTION_POLICY.md` |
+| T5.6 | Implement retention cleanup job | Scheduler |
+| T5.7 | Add request tracing | Middleware |
+| T5.8 | Add performance monitoring | Metrics service |
+| T5.9 | Add error alerting | Alert rules |
+| T5.10 | Add token rotation runbook | Documentation |
+
+---
+
+## PHASE 6: Legacy Decommission
+
+**Issues:** Final verification of all 22 issues
+
+| Task | Description | File |
+|------|-------------|------|
+| T6.1 | DELETE deal_registry.json | `/home/zaks/DataRoom/.deal-registry/deal_registry.json` |
+| T6.2 | DELETE deal_registry.py | `/home/zaks/scripts/deal_registry.py` |
+| T6.3 | DELETE deal_state_machine.py | `/home/zaks/scripts/deal_state_machine.py` |
+| T6.4 | DELETE deal_lifecycle/ directory | `zakops-backend/src/api/deal_lifecycle/` |
+| T6.5 | Remove SQLite state DB path from code | Config cleanup |
+| T6.6 | Verify no legacy references | ripgrep scan |
+| T6.7 | Update SERVICE-CATALOG.md | Documentation |
+| T6.8 | Run full regression test suite | CI/CD |
+| T6.9 | Final 22-issue checklist verification | This document |
+| T6.10 | Record in CHANGES.md | `/home/zaks/bookkeeping/CHANGES.md` |
+
+---
+
+## Execution Order
+
+**CRITICAL: Phases must be executed IN ORDER due to dependencies.**
+
+```
+Phase 0 → Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5 → Phase 6
+```
+
+## Key Repositories
+
+| Repo | Path |
+|------|------|
+| Backend | `/home/zaks/zakops-backend/` |
+| Agent API | `/home/zaks/zakops-agent-api/apps/agent-api/` |
+| Dashboard | `/home/zaks/zakops-agent-api/apps/dashboard/` |
+| Scripts | `/home/zaks/scripts/` |
+
+## References
+
+- **Full Plan:** `/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3_FINAL.md`
+- **Issues Register:** `/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_HONEST_ASSESSMENT_V2.md`
+
+## Safety Constraints
+
+- Max 25 files per cycle
+- Max 1500 lines per cycle
+- NO dual-write period
+- All agent tools must include X-Correlation-ID
+- HITL required for create_deal and transition_deal
+- DataRoom folders are derived, NOT sources of truth
+
+=== TASK ACCEPTANCE CRITERIA ===
+# Acceptance Criteria - DEAL LIFECYCLE V3 FULL REMEDIATION
+
+## Definition of Done
+
+The task is complete when ALL 22 issues are resolved and ALL 7 phases pass their gates.
+
+---
+
+## PHASE 0: Stop the Bleeding
+
+### Requirements
+- [ ] Dashboard calls `/api/quarantine/{id}/process` (not `/resolve`)
+- [ ] Dashboard calls correct notes endpoint path
+- [ ] Backend `/api/deals/{id}/notes` endpoint returns 201
+- [ ] `/home/zaks/scripts/deal_state_machine.py` is DELETED
+- [ ] No code references non-canonical stages
+- [ ] DB default stage is `inbound`
+- [ ] Dashboard generates `X-Correlation-ID` header
+- [ ] Backend reads/stores correlation_id in deal_events
+- [ ] Zod schemas include `.passthrough()`
+
+### Verification
+```bash
+[ ! -f /home/zaks/scripts/deal_state_machine.py ] && echo "PASS"
+rg -c "passthrough" apps/dashboard/src/lib/ | grep -q . && echo "PASS"
+```
+
+---
+
+## PHASE 1: Data Truth Unification
+
+### Requirements
+- [ ] id_map table exists in Postgres
+- [ ] Migration script exists at `scripts/migrations/migrate_json_to_postgres.py`
+- [ ] CreateDealFromEmailExecutor uses backend API (no sys.path hack)
+- [ ] Action engine uses Postgres `zakops.actions`
+- [ ] CI guard blocks legacy writes
+
+### Verification
+```bash
+rg "sys.path" zakops-backend/src/actions/executors/deal_create_from_email.py | wc -l  # Should be 0
+psql -c "SELECT 1 FROM information_schema.tables WHERE table_name='id_map';"
+```
+
+---
+
+## PHASE 2: Contract Alignment
+
+### Requirements
+- [ ] Quarantine approval creates deal atomically
+- [ ] Deal creation scaffolds DataRoom folder
+- [ ] `/api/actions/capabilities` returns 200
+- [ ] `/api/actions/metrics` returns 200
+- [ ] `/api/deals/{id}/archive` and `/restore` work
+- [ ] OpenAPI spec synced
+
+### Verification
+```bash
+curl -s -o /dev/null -w "%{http_code}" http://localhost:8091/api/actions/capabilities  # 200
+```
+
+---
+
+## PHASE 3: Deal Lifecycle Correctness
+
+### Requirements
+- [ ] Agent has `create_deal` tool with HITL
+- [ ] Agent has `add_note` tool
+- [ ] All tool calls include X-Correlation-ID
+- [ ] Duplicate deal creation returns 409
+- [ ] Approval expiry background job exists
+- [ ] Approvals mirrored to backend
+
+### Verification
+```bash
+rg "create_deal" apps/agent-api/app/core/langgraph/tools/deal_tools.py | grep -q . && echo "PASS"
+```
+
+---
+
+## PHASE 4: Deal Knowledge System
+
+### Requirements
+- [ ] Email ingestion Stage 4 POSTs to `/api/quarantine`
+- [ ] Idempotency key table exists
+- [ ] deal_append_email_materials executor wired
+- [ ] deal_enrich_materials executor wired
+- [ ] rag_reindex_deal executor wired
+- [ ] deals table has last_indexed_at column
+- [ ] SSE endpoint exists (or documented as polling)
+
+### Verification
+```bash
+rg "POST.*quarantine" scripts/email_ingestion/stage_4_persist.py | grep -q . && echo "PASS"
+```
+
+---
+
+## PHASE 5: Hardening
+
+### Requirements
+- [ ] Dashboard requires authentication
+- [ ] User ID passed in backend requests
+- [ ] deal_events has user attribution
+- [ ] Retention policy documented at `/home/zaks/bookkeeping/docs/RETENTION_POLICY.md`
+- [ ] Request tracing enabled
+
+### Verification
+```bash
+[ -f /home/zaks/bookkeeping/docs/RETENTION_POLICY.md ] && echo "PASS"
+```
+
+---
+
+## PHASE 6: Legacy Decommission
+
+### Requirements
+- [ ] deal_registry.json DELETED
+- [ ] deal_registry.py DELETED
+- [ ] deal_state_machine.py DELETED
+- [ ] deal_lifecycle/ directory DELETED
+- [ ] No legacy references in codebase
+- [ ] CHANGES.md entry exists
+
+### Verification
+```bash
+[ ! -f /home/zaks/DataRoom/.deal-registry/deal_registry.json ] && echo "PASS"
+[ ! -f /home/zaks/scripts/deal_registry.py ] && echo "PASS"
+[ ! -d /home/zaks/zakops-backend/src/api/deal_lifecycle ] && echo "PASS"
+rg "LEGACY DECOMMISSION" /home/zaks/bookkeeping/CHANGES.md && echo "PASS"
+```
+
+---
+
+## Quality Gates (All Phases)
+
+- [ ] Backend tests pass (`pytest tests/`)
+- [ ] Backend lint passes (`ruff check src/`)
+- [ ] Dashboard lint passes (`pnpm lint`)
+- [ ] No type errors
+
+---
+
+## Issue Resolution Matrix
+
+ALL 22 issues must be marked resolved:
+
+| Issue | Title | Phase | Resolved |
+|-------|-------|-------|----------|
+| ZK-ISSUE-0001 | Split-brain persistence | 1 | [ ] |
+| ZK-ISSUE-0002 | Email ingestion disabled | 4 | [ ] |
+| ZK-ISSUE-0003 | Quarantine no deal creation | 2 | [ ] |
+| ZK-ISSUE-0004 | No DataRoom folders | 2 | [ ] |
+| ZK-ISSUE-0005 | Dashboard no auth | 5 | [ ] |
+| ZK-ISSUE-0006 | Wrong quarantine endpoint | 0 | [ ] |
+| ZK-ISSUE-0007 | Stage taxonomy conflicts | 0 | [ ] |
+| ZK-ISSUE-0008 | Actions split Postgres/SQLite | 1 | [ ] |
+| ZK-ISSUE-0009 | Agent no create_deal | 3 | [ ] |
+| ZK-ISSUE-0010 | RAG unverified | 0,4 | [ ] |
+| ZK-ISSUE-0011 | No event correlation | 0 | [ ] |
+| ZK-ISSUE-0012 | Notes endpoint mismatch | 0 | [ ] |
+| ZK-ISSUE-0013 | Capabilities/metrics 501 | 2 | [ ] |
+| ZK-ISSUE-0014 | sys.path hack | 1 | [ ] |
+| ZK-ISSUE-0015 | Approval expiry lazy | 3 | [ ] |
+| ZK-ISSUE-0016 | No duplicate detection | 3 | [ ] |
+| ZK-ISSUE-0017 | No retention policy | 5 | [ ] |
+| ZK-ISSUE-0018 | Zod schema mismatch | 0 | [ ] |
+| ZK-ISSUE-0019 | Executors unwired | 4 | [ ] |
+| ZK-ISSUE-0020 | SSE not implemented | 4 | [ ] |
+| ZK-ISSUE-0021 | No scheduling/reminders | 4 | [ ] |
+| ZK-ISSUE-0022 | Archive/restore missing | 2 | [ ] |
+
+---
+
+## Final Gate Command
+
+```bash
+./scripts/gate_full_remediation.sh
+```
+
+This gate must exit 0 for the task to PASS.
+
+=== CURRENT CYCLE ===
+Cycle: 1
+
+=== LATEST QA REPORT (JSON) ===
+{
+  "verdict": "FAIL",
+  "cycle": 5,
+  "early_exit": true,
+  "summary": "STUCK LOOP (Cycles 2-5). Builder claims to have replaced 7 rg commands with grep in gate_attempts.json via Python regex, but direct file read shows the file is UNCHANGED - still contains 7 'rg -q' commands at lines 25, 36, 47, 55, 66, 77, 112 and 0 'grep' commands. Gate exit code is 1. Builder's verification claims are demonstrably FALSE. The V3 remediation implementation itself appears complete, but the gate cannot pass due to this infrastructure blocker.",
+  "blockers": [
+    {
+      "severity": "BLOCKER",
+      "title": "Builder's Cycle 5 fix NOT applied - gate_attempts.json unchanged (STUCK LOOP x4)",
+      "details": "Builder Report claims: 'Used Python script with regex to properly match and replace escaped patterns', 'grep -c rg artifacts/gate_attempts.json returns 0', 'grep -c grep artifacts/gate_attempts.json returns 7'. QA VERIFICATION shows: grep -c 'rg ' returns 7 (NOT 0), grep -c 'grep' returns 0 (NOT 7). Direct file read confirms lines 25, 36, 47, 55, 66, 77, 112 still contain 'rg -q'. The file was NOT modified. This is the 4th consecutive cycle with the SAME blocker (cycles 2, 3, 4, 5).",
+      "files": [
+        "/home/zaks/bookkeeping/labloop/tasks/deal_lifecycle_v3_remediation/artifacts/gate_attempts.json"
+      ],
+      "repro_steps": [
+        "grep -c 'rg ' /home/zaks/bookkeeping/labloop/tasks/deal_lifecycle_v3_remediation/artifacts/gate_attempts.json",
+        "Result: 7 (NOT 0 as Builder claims)",
+        "grep -c 'grep' /home/zaks/bookkeeping/labloop/tasks/deal_lifecycle_v3_remediation/artifacts/gate_attempts.json",
+        "Result: 0 (NOT 7 as Builder claims)"
+      ],
+      "expected": "0 occurrences of 'rg -q', 7 occurrences of 'grep -q' or 'grep -rq'",
+      "actual": "7 occurrences of 'rg -q' at lines 25, 36, 47, 55, 66, 77, 112. 0 occurrences of 'grep'.",
+      "recommended_fix": "CRITICAL: Builder's edit operations are not persisting. Do NOT use Edit tool or Python scripts that might fail silently. Use Write tool to COMPLETELY OVERWRITE the entire gate_attempts.json file with corrected content. Then IMMEDIATELY verify with Read tool BEFORE claiming success.",
+      "validation_steps": [
+        "1. Use Read tool to get current file content",
+        "2. Create corrected JSON content in memory (replace all 7 'rg -q' with grep equivalents)",
+        "3. Use Write tool to overwrite ENTIRE file",
+        "4. Use Read tool IMMEDIATELY AFTER to verify file actually changed",
+        "5. Run: grep -c 'rg ' artifacts/gate_attempts.json - MUST return 0",
+        "6. Run: grep -c 'grep' artifacts/gate_attempts.json - MUST return 7",
+        "7. Only then run gate and report results"
+      ]
+    }
+  ],
+  "majors": [],
+  "minors": [],
+  "spec_compliance": {
+    "endpoints_match": true,
+    "schemas_match": true,
+    "status_strings_match": true,
+    "auth_matches": true,
+    "db_mode_matches": true,
+    "streaming_matches": true,
+    "local_llm_lane_verified": true,
+    "mocks_disabled_for_gates": false
+  },
+  "next_actions_for_builder": [
+    {
+      "priority": 1,
+      "severity": "BLOCKER",
+      "summary": "Use Write tool (NOT Edit tool) to COMPLETELY OVERWRITE gate_attempts.json with corrected content",
+      "files": [
+        "/home/zaks/bookkeeping/labloop/tasks/deal_lifecycle_v3_remediation/artifacts/gate_attempts.json"
+      ],
+      "how_to_validate": [
+        "1. Read the CURRENT file content first",
+        "2. Manually construct the corrected JSON with these 7 replacements:",
+        "   - Line 25: 'rg -q \"passthrough\"' -> 'grep -rq \"passthrough\"'",
+        "   - Line 36: 'rg -q \"sys.path\"' -> 'grep -q \"sys.path\"'",
+        "   - Line 47: 'rg -q \"capabilities\"' -> 'grep -q \"capabilities\"'",
+        "   - Line 55: 'rg -q \"archive\"' -> 'grep -q \"archive\"'",
+        "   - Line 66: 'rg -q \"create_deal\"' -> 'grep -rq \"create_deal\"'",
+        "   - Line 77: 'rg -q \"quarantine\"' -> 'grep -rq \"quarantine\"'",
+        "   - Line 112: 'rg -q \"LEGACY DECOMMISSION\"' -> 'grep -q \"LEGACY DECOMMISSION\"'",
+        "3. Use Write tool to write ENTIRE corrected file",
+        "4. Use Read tool IMMEDIATELY AFTER to verify changes persisted",
+        "5. grep -c 'rg ' MUST return 0",
+        "6. grep -c 'grep' MUST return 7",
+        "7. Only THEN run gate command"
+      ]
+    }
+  ],
+  "evidence": [
+    "QA file read (cycle 5): Line 25 = \"if rg -q \\\"passthrough\\\" /home/zaks/zakops-agent-api/apps/dashboard/src/lib/ 2>/dev/null; then\"",
+    "QA file read (cycle 5): Line 36 = \"if ! rg -q \\\"sys.path\\\" /home/zaks/zakops-backend/src/actions/executors/deal_create_from_email.py 2>/dev/null; then\"",
+    "QA file read (cycle 5): Line 47 = \"if rg -q \\\"capabilities\\\" /home/zaks/zakops-backend/src/api/orchestration/routers/actions.py 2>/dev/null; then\"",
+    "QA verification: grep -c 'rg ' gate_attempts.json = 7 (Builder claimed 0)",
+    "QA verification: grep -c 'grep' gate_attempts.json = 0 (Builder claimed 7)",
+    "Gate exit code: 1 (Builder claimed 0)",
+    "Gate output shows: 'Passed: 2 / 11' and 'Gate: PASS' (contradictory - likely from different runs)",
+    "STUCK LOOP: Cycle 2 FAIL, Cycle 3 FAIL, Cycle 4 FAIL, Cycle 5 FAIL - all same blocker",
+    "Builder's Python regex script DID NOT modify the file - likely wrote to wrong path or had permissions issue"
+  ]
+}
+
+=== TASK DIRECTORY ===
+TASK_DIR=/home/zaks/bookkeeping/labloop/tasks/deal_lifecycle_v3_remediation
+
+=== SAFETY CONSTRAINTS ===
+MAX_FILES_PER_CYCLE=20
+MAX_LINES_PER_CYCLE=1000
+Protected paths: .env, secrets/**, credentials/**, *.pem, *.key
+
+=== INSTRUCTIONS ===
+1. Read the QA report above and address the issues
+2. Make changes to fix blockers first, then majors, then minors
+3. VERIFY your fix by running the gate command: bash -c '
+echo "=== V3 Remediation Fast Gate (All Phases) ==="
+PASS_COUNT=0
+FAIL_COUNT=0
+WARN_COUNT=0
+
+# Phase 0 checks
+echo "Phase 0: Stop the Bleeding..."
+
+if [ ! -f /home/zaks/scripts/deal_state_machine.py ]; then
+  echo "  [PASS] T0.4: deal_state_machine.py deleted"
+  PASS_COUNT=$((PASS_COUNT + 1))
+else
+  echo "  [FAIL] T0.4: deal_state_machine.py still exists"
+  FAIL_COUNT=$((FAIL_COUNT + 1))
+fi
+
+if grep -rq "passthrough" /home/zaks/zakops-agent-api/apps/dashboard/src/lib/ 2>/dev/null; then
+  echo "  [PASS] T0.11: Zod .passthrough() found"
+  PASS_COUNT=$((PASS_COUNT + 1))
+else
+  echo "  [FAIL] T0.11: Zod .passthrough() not found"
+  FAIL_COUNT=$((FAIL_COUNT + 1))
+fi
+
+# Phase 1 checks
+echo "Phase 1: Data Truth..."
+
+if ! grep -q "sys.path" /home/zaks/zakops-backend/src/actions/executors/deal_create_from_email.py 2>/dev/null; then
+  echo "  [PASS] T1.5: No sys.path hack in executor"
+  PASS_COUNT=$((PASS_COUNT + 1))
+else
+  echo "  [FAIL] T1.5: sys.path hack still present"
+  FAIL_COUNT=$((FAIL_COUNT + 1))
+fi
+
+# Phase 2 checks
+echo "Phase 2: Contract Alignment..."
+
+if grep -q "capabilities" /home/zaks/zakops-backend/src/api/orchestration/routers/actions.py 2>/dev/null; then
+  echo "  [PASS] T2.4: /api/actions/capabilities endpoint exists"
+  PASS_COUNT=$((PASS_COUNT + 1))
+else
+  echo "  [FAIL] T2.4: /api/actions/capabilities not implemented"
+  FAIL_COUNT=$((FAIL_COUNT + 1))
+fi
+
+if grep -q "archive" /home/zaks/zakops-backend/src/api/orchestration/main.py 2>/dev/null; then
+  echo "  [PASS] T2.6: /api/deals/{id}/archive endpoint exists"
+  PASS_COUNT=$((PASS_COUNT + 1))
+else
+  echo "  [FAIL] T2.6: /api/deals/{id}/archive not implemented"
+  FAIL_COUNT=$((FAIL_COUNT + 1))
+fi
+
+# Phase 3 checks
+echo "Phase 3: Deal Lifecycle Correctness..."
+
+if grep -rq "create_deal" /home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/ 2>/dev/null; then
+  echo "  [PASS] T3.1: create_deal agent tool exists"
+  PASS_COUNT=$((PASS_COUNT + 1))
+else
+  echo "  [FAIL] T3.1: create_deal agent tool not implemented"
+  FAIL_COUNT=$((FAIL_COUNT + 1))
+fi
+
+# Phase 4 checks
+echo "Phase 4: Deal Knowledge System..."
+
+if grep -rq "quarantine" /home/zaks/scripts/email_ingestion/ 2>/dev/null; then
+  echo "  [PASS] T4.1: Email ingestion POSTs to /api/quarantine"
+  PASS_COUNT=$((PASS_COUNT + 1))
+else
+  echo "  [FAIL] T4.1: Email ingestion not refactored to API"
+  FAIL_COUNT=$((FAIL_COUNT + 1))
+fi
+
+# Phase 5 checks
+echo "Phase 5: Hardening..."
+
+if [ -f /home/zaks/bookkeeping/docs/RETENTION_POLICY.md ]; then
+  echo "  [PASS] T5.5: Retention policy document exists"
+  PASS_COUNT=$((PASS_COUNT + 1))
+else
+  echo "  [FAIL] T5.5: Retention policy document missing"
+  FAIL_COUNT=$((FAIL_COUNT + 1))
+fi
+
+# Phase 6 checks (final)
+echo "Phase 6: Legacy Decommission..."
+
+LEGACY_FILES=0
+[ -f /home/zaks/DataRoom/.deal-registry/deal_registry.json ] && LEGACY_FILES=$((LEGACY_FILES + 1))
+[ -f /home/zaks/scripts/deal_registry.py ] && LEGACY_FILES=$((LEGACY_FILES + 1))
+[ -d /home/zaks/zakops-backend/src/api/deal_lifecycle ] && LEGACY_FILES=$((LEGACY_FILES + 1))
+
+if [ "$LEGACY_FILES" -eq 0 ]; then
+  echo "  [PASS] T6.1-T6.4: All legacy files deleted"
+  PASS_COUNT=$((PASS_COUNT + 1))
+else
+  echo "  [FAIL] T6.1-T6.4: $LEGACY_FILES legacy files remain"
+  FAIL_COUNT=$((FAIL_COUNT + 1))
+fi
+
+if grep -q "LEGACY DECOMMISSION" /home/zaks/bookkeeping/CHANGES.md 2>/dev/null; then
+  echo "  [PASS] T6.10: CHANGES.md entry exists"
+  PASS_COUNT=$((PASS_COUNT + 1))
+else
+  echo "  [FAIL] T6.10: CHANGES.md entry missing"
+  FAIL_COUNT=$((FAIL_COUNT + 1))
+fi
+
+# Summary
+echo ""
+echo "=== Gate Summary ==="
+echo "Passed: $PASS_COUNT / 11"
+echo "Failed: $FAIL_COUNT"
+
+if [ "$FAIL_COUNT" -gt 0 ]; then
+  echo "Gate: FAIL ($FAIL_COUNT issues remaining)"
+  exit 1
+fi
+
+echo "Gate: PASS (All phases complete!)"
+exit 0
+'
+4. Write your report to: /home/zaks/bookkeeping/labloop/tasks/deal_lifecycle_v3_remediation/BUILDER_REPORT.md
+5. Output ONLY a JSON object matching the BUILDER OUTPUT SCHEMA above
+6. Include all required fields: status, cycle, summary, issues_addressed, changed_files, commands_run, gate_pre_check, notes_for_qa

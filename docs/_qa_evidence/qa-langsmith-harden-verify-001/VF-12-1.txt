@@ -1,0 +1,6 @@
+6:POST /api/quarantine
+17:| `X-API-Key` | **YES** | Must match `ZAKOPS_API_KEY` environment variable |
+21:- If `ZAKOPS_API_KEY` is **set**: requests without a valid `X-API-Key` header receive **401 Unauthorized**.
+22:- If `ZAKOPS_API_KEY` is **not set**: injection paths (`/api/quarantine*`) return **503 Service Not Configured**. The endpoint is never silently open.
+52:| **401 Unauthorized** | Missing or invalid `X-API-Key` |
+54:| **503 Service Not Configured** | `ZAKOPS_API_KEY` not set (fail-closed) |

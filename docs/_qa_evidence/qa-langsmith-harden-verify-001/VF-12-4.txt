@@ -1,0 +1,5 @@
+64:1. **Injection**: Caller sends `X-Correlation-ID` header (or omits for auto-generated UUID).
+65:2. **Storage**: `correlation_id` stored in `zakops.quarantine_items` row.
+66:3. **Approval**: When a quarantine item is approved and a deal is created, the **original** `correlation_id` from the quarantine row is forwarded to the `zakops.outbox` INSERT.
+67:4. **Fallback**: Legacy items without `correlation_id` fall back to `gen_random_uuid()` for the outbox event.
+69:This ensures end-to-end traceability from external injection through to downstream event consumers.

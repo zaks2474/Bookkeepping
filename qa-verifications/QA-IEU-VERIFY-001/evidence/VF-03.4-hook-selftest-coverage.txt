@@ -1,0 +1,35 @@
+=== VF-03.4 HOOK SELFTEST COVERAGE ===
+9:PASS=0
+10:FAIL=0
+13:pass() { echo "  PASS: $1"; PASS=$((PASS + 1)); }
+14:fail() { echo "  FAIL: $1"; FAIL=$((FAIL + 1)); }
+24:  echo "Stop Hook Self-Test: FAIL ($PASS pass, $FAIL fail)"
+33:# 2a: env-override branch
+35:  pass "Branch 1: env-override (MONOREPO_ROOT_OVERRIDE)"
+37:  fail "Branch 1: env-override missing"
+42:  pass "Branch 2: git-rev-parse"
+44:  fail "Branch 2: git-rev-parse missing"
+47:# 2c: known-path-fallback branch
+48:if grep -q "known-path-fallback\|KNOWN_MONOREPO" "$HOOK_FILE" 2>/dev/null; then
+49:  pass "Branch 3: known-path-fallback"
+51:  fail "Branch 3: known-path-fallback missing"
+78:GATES=("Gate A" "Gate B" "Gate E")
+97:# Check 6: Scanner fallback in Gate E
+99:echo "--- Gate E Scanner Fallback ---"
+101:  pass "Gate E: rg scanner check present"
+103:  fail "Gate E: rg scanner check missing"
+107:  pass "Gate E: grep fallback present"
+109:  fail "Gate E: grep fallback missing"
+121:# Check 8: Runtime test — env-override detection
+125:# Test env-override path with the actual monorepo
+131:    echo "env-override:$MONOREPO_ROOT"
+136:if echo "$DETECTION_OUTPUT" | grep -q "env-override:/home/zaks/zakops-agent-api"; then
+137:  pass "Runtime: env-override branch works"
+139:  warn "Runtime: env-override branch returned unexpected: $DETECTION_OUTPUT"
+142:# Test known-path-fallback
+149:    echo "known-path-fallback:$MONOREPO_ROOT"
+154:if echo "$FALLBACK_OUTPUT" | grep -q "known-path-fallback:/home/zaks/zakops-agent-api"; then
+155:  pass "Runtime: known-path-fallback branch works"
+157:  warn "Runtime: known-path-fallback returned unexpected: $FALLBACK_OUTPUT"
+161:echo "Stop Hook Self-Test: $([ "$FAIL" -eq 0 ] && echo "PASS" || echo "FAIL") ($PASS pass, $FAIL fail, $WARN warn)"
+162:exit "$FAIL"

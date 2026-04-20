@@ -1,0 +1,5 @@
+=== Contract ===
+| `injection_rate_limiter` | 120 requests/minute | `quarantine:{client_ip}` | **429 Too Many Requests** |
+=== Code ===
+injection_rate_limiter = RateLimiter(requests_per_minute=120)  # Quarantine injection -- higher to accommodate email-sync bursts
+VERDICT: Both say 120. PASS.

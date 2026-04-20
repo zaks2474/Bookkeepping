@@ -1,0 +1,305 @@
+=== VF-03.1 ZOD STRICTNESS ===
+CLEAN
+
+=== VF-03.2 ERROR BOUNDARY COVERAGE ===
+NO MATCHES
+
+=== VF-03.3 MOCK FALLBACK LEAKAGE ===
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/bulk/archive/route.ts:68:    // Backend not available - use mock implementation
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/completed-count/route.ts:35:      const mockCounts: Record<string, number> = {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/completed-count/route.ts:40:      const count = mockCounts[age] || 0;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/completed-count/route.ts:52:    // Backend not available - use mock implementation
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/completed-count/route.ts:53:    const mockCounts: Record<string, number> = {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/completed-count/route.ts:58:    const count = mockCounts[age] || 0;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/[id]/archive/route.ts:54:    // Backend not available - use mock implementation
+
+=== VF-03.4 CORRELATION ID ===
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:378:    'X-Correlation-ID': crypto.randomUUID(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/error-normalizer.ts:53:    base.correlationId = (meta.correlation_id as string) ?? (meta.trace_id as string);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/schemas/approval.ts:26:  approval_id: z.string().uuid(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-types.generated.ts:1200:         *     Returns events from the replay buffer, filtered by correlation_id and/or event_type.
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-types.generated.ts:2169:             * Format: uuid
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-types.generated.ts:2180:             * Format: uuid
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-types.generated.ts:2308:             * Format: uuid
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-types.generated.ts:2557:            correlation_id?: string | null;
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-types.generated.ts:2605:             * Format: uuid
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-types.generated.ts:3004:            correlation_id?: string | null;
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-types.generated.ts:3011:             * Format: uuid
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-types.generated.ts:3110:             * Format: uuid
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-types.generated.ts:3712:                correlation_id?: string | null;
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-types.generated.ts:3776:                correlation_id?: string | null;
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-types.generated.ts:4091:                "X-Correlation-ID"?: string | null;
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-types.generated.ts:5116:                /** @description Filter by correlation_id */
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-types.generated.ts:5117:                correlation_id?: string | null;
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-types.generated.ts:5155:                correlation_id?: string | null;
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-types.generated.ts:5206:                /** @description Filter by correlation_id (e.g., deal_id) */
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-types.generated.ts:5207:                correlation_id?: string | null;
+
+=== VF-03.5 ERROR ENVELOPE STANDARDIZATION ===
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/user/profile/route.ts:16:      return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/user/profile/route.ts:23:    return NextResponse.json(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/user/profile/route.ts:25:    return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/onboarding/route.ts:14:        return NextResponse.json({
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/onboarding/route.ts:26:      return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/onboarding/route.ts:33:    return NextResponse.json(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/onboarding/route.ts:36:    return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/onboarding/route.ts:58:      return NextResponse.json(errorData, { status: response.status });
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/onboarding/route.ts:62:    return NextResponse.json(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/onboarding/route.ts:65:    return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/onboarding/reset/route.ts:16:      return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/onboarding/reset/route.ts:23:    return NextResponse.json(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/onboarding/reset/route.ts:26:    return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/pipeline/route.ts:65:      return NextResponse.json({
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/pipeline/route.ts:97:      return NextResponse.json({
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/pipeline/route.ts:103:    return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/pipeline/route.ts:109:    return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/checkpoints/route.ts:18:      return NextResponse.json(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/checkpoints/route.ts:23:      return NextResponse.json([]);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/checkpoints/route.ts:28:    return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/checkpoints/route.ts:34:    return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/settings/email/route.ts:14:      return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/settings/email/route.ts:22:      return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/settings/email/route.ts:29:    return NextResponse.json(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/settings/email/route.ts:32:    return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/settings/email/route.ts:55:      return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/settings/email/route.ts:62:    return NextResponse.json(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/settings/email/route.ts:65:    return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/settings/email/route.ts:84:      return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/settings/email/route.ts:90:    return NextResponse.json({ success: true });
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/settings/email/route.ts:93:    return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/quarantine/health/route.ts:50:    return NextResponse.json({
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/quarantine/health/route.ts:58:    return NextResponse.json({
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/settings/email/test/route.ts:15:      return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/settings/email/test/route.ts:22:    return NextResponse.json(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/settings/email/test/route.ts:25:    return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/quarantine/[id]/delete/route.ts:31:    return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/settings/account/route.ts:17:      return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/settings/account/route.ts:23:    return NextResponse.json({ success: true });
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/settings/account/route.ts:26:    return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/quarantine/[id]/process/route.ts:33:    return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/settings/preferences/route.ts:15:        return NextResponse.json({
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/settings/preferences/route.ts:36:      return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/settings/preferences/route.ts:43:    return NextResponse.json(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/settings/preferences/route.ts:46:    return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/settings/preferences/route.ts:70:        return NextResponse.json(body);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/settings/preferences/route.ts:74:      return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/settings/preferences/route.ts:81:    return NextResponse.json(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/settings/preferences/route.ts:84:    return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/deferred-actions/due/route.ts:17:      return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/deferred-actions/due/route.ts:34:    return NextResponse.json(dueActions);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/deferred-actions/due/route.ts:37:    return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/deferred-actions/route.ts:18:      return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/deferred-actions/route.ts:25:    return NextResponse.json(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/deferred-actions/route.ts:28:    return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/complete/route.ts:40:      return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/complete/route.ts:50:    return NextResponse.json(data, { status: response.status });
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/complete/route.ts:54:    return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/route.ts:88:      return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/route.ts:270:    return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/route.ts:365:      return NextResponse.json({
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/route.ts:374:    return NextResponse.json({
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/route.ts:382:    return NextResponse.json({
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/execute-proposal/route.ts:16:    return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/execute-proposal/route.ts:29:    return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/alerts/route.ts:102:    return NextResponse.json(alerts);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/alerts/route.ts:105:    return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/session/[sessionId]/route.ts:17:  return NextResponse.json({
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/agent/activity/route.ts:76:      return NextResponse.json(getEmptyResponse());
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/agent/activity/route.ts:135:    return NextResponse.json(response);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/agent/activity/route.ts:139:    return NextResponse.json(getEmptyResponse());
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/agent/activity/route.ts:160:  return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/clear-completed/route.ts:28:    return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/bulk/delete/route.ts:28:    return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/bulk/archive/route.ts:23:    return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/bulk/archive/route.ts:32:    return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/bulk/archive/route.ts:47:      return NextResponse.json(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/bulk/archive/route.ts:54:      return NextResponse.json({
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/bulk/archive/route.ts:63:    return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/bulk/archive/route.ts:70:    return NextResponse.json({
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/completed-count/route.ts:17:    return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/completed-count/route.ts:29:      return NextResponse.json(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/completed-count/route.ts:42:      return NextResponse.json({ count, age });
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/completed-count/route.ts:47:    return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/completed-count/route.ts:60:    return NextResponse.json({ count, age });
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/quarantine/route.ts:50:      return NextResponse.json(quarantineItems);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/quarantine/route.ts:83:      return NextResponse.json(quarantineItems);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/quarantine/route.ts:88:    return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/quarantine/route.ts:94:    return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/quarantine/[actionId]/preview/route.ts:20:      return NextResponse.json({ error: 'not_found', message: 'Action not found' }, { status: 404 });
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/quarantine/[actionId]/preview/route.ts:46:    return NextResponse.json(preview);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/quarantine/[actionId]/preview/route.ts:49:    return NextResponse.json({ error: 'backend_unavailable', message: 'Failed to get preview' }, { status: 500 });
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/[id]/execute/route.ts:32:    return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/[id]/archive/route.ts:19:    return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/[id]/archive/route.ts:33:      return NextResponse.json(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/[id]/archive/route.ts:40:      return NextResponse.json({
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/[id]/archive/route.ts:49:    return NextResponse.json(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/[id]/archive/route.ts:56:    return NextResponse.json({
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/[id]/route.ts:28:    return NextResponse.json(
+
+=== VF-03.6 OPERATOR IDENTITY + PROFILE ENDPOINT ===
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:68:  const [operatorName, setOperatorName] = useState('');
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:98:      const saved = window.localStorage.getItem('zakops_operator_name');
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:107:      if (operatorName.trim()) {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:108:        window.localStorage.setItem('zakops_operator_name', operatorName.trim());
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:113:  }, [operatorName]);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:164:    if (!operatorName.trim()) {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:171:      const result = await approveQuarantineItem(itemId, operatorName.trim());
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:203:    if (!operatorName.trim()) {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:212:        rejectedBy: operatorName.trim(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:246:      const deletedBy = operatorName.trim() || 'operator';
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:507:                  value={operatorName}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx:257:        const saved = window.localStorage.getItem('zakops_operator_name');
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/user/profile/route.ts:5: * GET /api/user/profile
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/user/profile/route.ts:7: * Proxy to backend GET /api/user/profile.
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/user/profile/route.ts:13:    const res = await backendFetch('/api/user/profile');
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api/generated.ts:250:  // GET /api/auth/me
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api/generated.ts:445:  get_current_user_api_auth_me_get: '/api/auth/me',
+/home/zaks/zakops-backend/src/api/orchestration/routers/preferences.py:22:    """GET /api/user/profile — single-user identity."""
+
+=== VF-03.7 IDEMPOTENCY SAFETY ===
+/home/zaks/zakops-agent-api/apps/dashboard/src/middleware.ts:87:  // Forward idempotency key if present (write operations)
+/home/zaks/zakops-agent-api/apps/dashboard/src/middleware.ts:88:  const idempotencyKey = request.headers.get('X-Idempotency-Key');
+/home/zaks/zakops-agent-api/apps/dashboard/src/middleware.ts:89:  if (idempotencyKey) {
+/home/zaks/zakops-agent-api/apps/dashboard/src/middleware.ts:90:    headers['X-Idempotency-Key'] = idempotencyKey;
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/actions/action-card.tsx:226:        // Handle idempotency - already running/completed
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deals/DealBoard.tsx:183:    // Generate idempotency key
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deals/DealBoard.tsx:184:    const idempotencyKey = `transition-${draggableId}-${Date.now()}`;
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deals/DealBoard.tsx:193:        idempotencyKey,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:379:        // Handle idempotency - already running/completed
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/execution-contracts.ts:520: * Generate a stable idempotency key for actions.
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/execution-contracts.ts:537: * Simple string hash for idempotency keys.
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api.ts:190:  idempotency_key?: string | null;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:194:        // Don't show toast for idempotency cases
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:96:    idempotency_key: null,
+/home/zaks/zakops-backend/src/api/shared/openapi.py:105:| `CONFLICT` | 409 | Resource conflict |
+/home/zaks/zakops-backend/src/core/chat_orchestrator.py:1889:        - invalid_status_transition (409)
+/home/zaks/zakops-backend/src/core/chat_orchestrator.py:2186:                from actions.engine.models import ActionPayload, compute_idempotency_key
+/home/zaks/zakops-backend/src/core/chat_orchestrator.py:2190:                idempotency_key = compute_idempotency_key("create_action", proposal_id)
+/home/zaks/zakops-backend/src/core/chat_orchestrator.py:2203:                    idempotency_key=idempotency_key,
+/home/zaks/zakops-backend/src/core/chat_orchestrator.py:2358:                    from actions.engine.models import ActionPayload, compute_idempotency_key
+/home/zaks/zakops-backend/src/core/chat_orchestrator.py:2363:                    idem = compute_idempotency_key("request_docs", proposal_id)
+/home/zaks/zakops-backend/src/core/chat_orchestrator.py:2376:                        idempotency_key=idem,
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:4:Provides idempotent write operations via Idempotency-Key header.
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:5:- On POST/PUT/PATCH, checks for Idempotency-Key header
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:25:# How long idempotency keys are valid (24 hours)
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:28:# Methods that support idempotency
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:43:        Include `Idempotency-Key: <unique-key>` header on POST/PUT/PATCH requests.
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:56:        # Check for Idempotency-Key header
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:57:        idempotency_key = request.headers.get("Idempotency-Key") or request.headers.get("idempotency-key")
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:58:        logger.info(f"[IdempotencyMiddleware] {request.method} {request.url.path} - key={idempotency_key}")
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:59:        if not idempotency_key:
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:71:            # No database connection - proceed without idempotency
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:72:            logger.warning("[IdempotencyMiddleware] No pool, proceeding without idempotency")
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:85:                    FROM idempotency_keys
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:86:                    WHERE idempotency_key = $1 AND expires_at > NOW()
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:88:                    idempotency_key
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:94:                        # Request is being processed - return 409 Conflict
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:96:                            status_code=409,
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:99:                                "message": "Request with this idempotency key is currently being processed",
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:100:                                "idempotency_key": idempotency_key,
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:127:                        UPDATE idempotency_keys
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:129:                        WHERE idempotency_key = $1
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:131:                        idempotency_key
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:136:                        INSERT INTO idempotency_keys (idempotency_key, request_hash, endpoint, method, is_processing, processing_started_at)
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:138:                        ON CONFLICT (idempotency_key) DO UPDATE SET
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:142:                        idempotency_key,
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:148:            # Database error - log and proceed without idempotency
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:174:                        UPDATE idempotency_keys
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:176:                        WHERE idempotency_key = $3
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:180:                        idempotency_key
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:196:                            "UPDATE idempotency_keys SET is_processing = FALSE WHERE idempotency_key = $1",
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:197:                            idempotency_key
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:206:                        "UPDATE idempotency_keys SET is_processing = FALSE WHERE idempotency_key = $1",
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:207:                        idempotency_key
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:215:async def cleanup_expired_idempotency_keys(pool) -> int:
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:217:    Remove expired idempotency keys.
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:228:                "DELETE FROM idempotency_keys WHERE expires_at < NOW()"
+/home/zaks/zakops-backend/src/api/shared/middleware/__init__.py:25:from .idempotency import IdempotencyMiddleware, cleanup_expired_idempotency_keys
+/home/zaks/zakops-backend/src/api/shared/middleware/__init__.py:59:    "cleanup_expired_idempotency_keys",
+/home/zaks/zakops-backend/src/api/shared/error_codes.py:56:    ErrorCode.CONFLICT: 409,
+/home/zaks/zakops-backend/src/api/shared/error_codes.py:57:    ErrorCode.ACTION_ALREADY_APPROVED: 409,
+/home/zaks/zakops-backend/src/api/shared/error_codes.py:58:    ErrorCode.ACTION_ALREADY_REJECTED: 409,
+/home/zaks/zakops-backend/src/api/shared/exceptions.py:95:    HTTP Status: 409
+/home/zaks/zakops-backend/src/api/shared/routers/auth.py:152:            raise HTTPException(status_code=409, detail="Email already registered")
+/home/zaks/zakops-backend/src/api/orchestration/main.py:810:    If the alias exists for a different deal, returns 409 (conflict).
+/home/zaks/zakops-backend/src/api/orchestration/main.py:833:                    status_code=409,
+/home/zaks/zakops-backend/src/core/outbox/writer.py:62:        idempotency_key: str | None = None
+/home/zaks/zakops-backend/src/core/outbox/writer.py:73:            idempotency_key: Optional key for deduplication
+/home/zaks/zakops-backend/src/core/events/publisher.py:144:        idempotency_key = getattr(event, 'idempotency_key', None)
+/home/zaks/zakops-backend/src/core/events/publisher.py:146:        # Check idempotency if key provided
+/home/zaks/zakops-backend/src/core/events/publisher.py:147:        if idempotency_key:
+/home/zaks/zakops-backend/src/core/events/publisher.py:151:                WHERE idempotency_key = $1
+/home/zaks/zakops-backend/src/core/events/publisher.py:154:                idempotency_key
+/home/zaks/zakops-backend/src/core/events/publisher.py:157:                logger.debug(f"Idempotent event hit: {idempotency_key}")
+/home/zaks/zakops-backend/src/core/events/publisher.py:172:                payload, idempotency_key, created_at
+/home/zaks/zakops-backend/src/core/events/publisher.py:182:            idempotency_key,
+/home/zaks/zakops-backend/src/api/orchestration/routers/onboarding.py:146:                    status_code=409,
+/home/zaks/zakops-backend/src/api/orchestration/routers/onboarding.py:158:                status_code=409,
+/home/zaks/zakops-backend/src/core/agent/model_registry.py:63:        max_tokens=4096,
+/home/zaks/zakops-backend/src/core/events/schema.py:94:    idempotency_key: str | None = None
+/home/zaks/zakops-backend/src/core/events/schema.py:116:            "idempotency_key": self.idempotency_key,
+/home/zaks/zakops-backend/src/api/orchestration/routers/workflow.py:4:Endpoints for managing deal stage transitions with idempotency support.
+/home/zaks/zakops-backend/src/api/orchestration/routers/workflow.py:25:    idempotency_key: str | None = Field(
+/home/zaks/zakops-backend/src/api/orchestration/routers/workflow.py:70:    x_idempotency_key: str | None = Header(None, alias="X-Idempotency-Key"),
+/home/zaks/zakops-backend/src/api/orchestration/routers/workflow.py:77:        Provide X-Idempotency-Key header or idempotency_key in body.
+/home/zaks/zakops-backend/src/api/orchestration/routers/workflow.py:95:    # Prefer header over body for idempotency key
+/home/zaks/zakops-backend/src/api/orchestration/routers/workflow.py:96:    idempotency_key = x_idempotency_key or body.idempotency_key
+/home/zaks/zakops-backend/src/api/orchestration/routers/workflow.py:102:            idempotency_key=idempotency_key,
+/home/zaks/zakops-backend/src/core/retention/cleanup.py:42:    idempotency_hours: int = field(
+/home/zaks/zakops-backend/src/core/retention/cleanup.py:98:        await self._cleanup_idempotency_keys()
+/home/zaks/zakops-backend/src/core/retention/cleanup.py:110:    async def _cleanup_idempotency_keys(self):
+/home/zaks/zakops-backend/src/core/retention/cleanup.py:111:        """Clean up expired idempotency keys."""
+/home/zaks/zakops-backend/src/core/retention/cleanup.py:115:        cutoff = datetime.now(UTC) - timedelta(hours=self.config.idempotency_hours)
+/home/zaks/zakops-backend/src/core/retention/cleanup.py:122:                    SELECT COUNT(*) as count FROM zakops.idempotency_keys
+/home/zaks/zakops-backend/src/core/retention/cleanup.py:131:                    DELETE FROM zakops.idempotency_keys
+/home/zaks/zakops-backend/src/core/retention/cleanup.py:139:            logger.warning(f"[R2-10] idempotency_keys cleanup skipped: {e}")
+/home/zaks/zakops-backend/src/core/retention/cleanup.py:144:            table="idempotency_keys",
+/home/zaks/zakops-backend/src/core/retention/cleanup.py:150:        logger.info(f"[R2-10] idempotency_keys: {count} records {'would be' if self.config.dry_run else ''} deleted")
+/home/zaks/zakops-backend/src/core/retention/__init__.py:8:- Expired idempotency keys
+/home/zaks/zakops-backend/src/workers/actions_runner.py:36:    compute_idempotency_key,
+/home/zaks/zakops-backend/src/workers/actions_runner.py:109:    - Deduplicated by idempotency_key (ActionStore unique constraint).
+/home/zaks/zakops-backend/src/workers/actions_runner.py:187:        idem = str(raw.get("idempotency_key") or "").strip()
+/home/zaks/zakops-backend/src/workers/actions_runner.py:189:            idem = compute_idempotency_key(parent_action.action_id, action_type, json.dumps(child_inputs, sort_keys=True))
+/home/zaks/zakops-backend/src/workers/actions_runner.py:202:            idempotency_key=idem,
+/home/zaks/zakops-backend/src/core/deals/workflow.py:4:Manages deal stage transitions with validation, events, and idempotency.
+/home/zaks/zakops-backend/src/core/deals/workflow.py:109:        idempotency_key: str | None = None,
+/home/zaks/zakops-backend/src/core/deals/workflow.py:120:            idempotency_key: Unique key for safe retries (recommended)
+/home/zaks/zakops-backend/src/core/deals/workflow.py:132:            If idempotency_key matches a recent transition (24h),
+/home/zaks/zakops-backend/src/core/deals/workflow.py:137:        # Check idempotency first (before any locks)
+/home/zaks/zakops-backend/src/core/deals/workflow.py:138:        if idempotency_key:
+/home/zaks/zakops-backend/src/core/deals/workflow.py:144:                  AND idempotency_key = $2
+/home/zaks/zakops-backend/src/core/deals/workflow.py:150:                deal_id, idempotency_key
+/home/zaks/zakops-backend/src/core/deals/workflow.py:163:                    f"key={idempotency_key}, transition={details.get('from_stage')}->{details.get('to_stage')}"
+/home/zaks/zakops-backend/src/core/deals/workflow.py:233:                correlation_id, reason, idempotency_key, created_at
+/home/zaks/zakops-backend/src/core/deals/workflow.py:244:            idempotency_key,
+/home/zaks/zakops-backend/src/core/deals/workflow.py:277:        # Record in deal_events as stage change (with idempotency_key)
+/home/zaks/zakops-backend/src/core/deals/workflow.py:288:            (deal_id, event_type, event_source, actor, payload, created_at, idempotency_key)
+/home/zaks/zakops-backend/src/core/deals/workflow.py:295:            idempotency_key
+/home/zaks/zakops-backend/src/actions/executors/email_triage_review_email.py:698:            # Ensure the email is mapped to this deal (idempotency + routing) and capture thread_id.
+/home/zaks/zakops-backend/src/actions/executors/email_triage_review_email.py:752:                "idempotency_key": f"append_email_materials:{deal_id}:{message_id}",
+/home/zaks/zakops-backend/src/actions/executors/email_triage_review_email.py:796:                    "idempotency_key": f"backfill_sender_history:{deal_id}:{sender_email}:{int(lookback_days)}",
+/home/zaks/zakops-backend/src/actions/executors/deal_append_email_materials.py:447:                "idempotency_key": f"extract_email_artifacts:{message_id}",
+/home/zaks/zakops-backend/src/actions/executors/deal_append_email_materials.py:455:                "idempotency_key": f"enrich_materials:{message_id}",
+/home/zaks/zakops-backend/src/actions/executors/deal_append_email_materials.py:463:                "idempotency_key": f"dedupe_and_place_materials:{message_id}",
+/home/zaks/zakops-backend/src/actions/executors/deal_append_email_materials.py:471:                "idempotency_key": f"rag_reindex_deal:{message_id}",
+/home/zaks/zakops-backend/src/actions/executors/deal_backfill_sender_history.py:28:    compute_idempotency_key,
+/home/zaks/zakops-backend/src/actions/executors/deal_backfill_sender_history.py:620:    Best-effort idempotency check against the Email 3H triage state DB.
+/home/zaks/zakops-backend/src/actions/executors/deal_backfill_sender_history.py:696:        scan_key = compute_idempotency_key("sender_history_scan", deal_id, sender_email, str(lookback_days), str(max_messages), mode)
+/home/zaks/zakops-backend/src/actions/executors/deal_backfill_sender_history.py:1116:                            "idempotency_key": f"append_email_materials:{deal_id}:{mid}",
+/home/zaks/zakops-backend/src/actions/executors/deal_backfill_sender_history.py:1183:                            # Use the same idempotency key as the triage agent to avoid duplicates.
+/home/zaks/zakops-backend/src/actions/executors/deal_backfill_sender_history.py:1184:                            "idempotency_key": f"email_triage:{mid}:review_email",
+/home/zaks/zakops-backend/src/actions/tests/test_e2e_actions.py:45:from actions.engine.models import ActionPayload, compute_idempotency_key, safe_uuid
+/home/zaks/zakops-backend/src/actions/tests/test_e2e_actions.py:185:            idempotency_key=compute_idempotency_key("artifact_test", safe_uuid()),
+/home/zaks/zakops-backend/src/actions/tests/test_e2e_actions.py:223:            idempotency_key=compute_idempotency_key("gemini_test", safe_uuid()),
+/home/zaks/zakops-backend/src/actions/tests/test_e2e_actions.py:258:            idempotency_key=compute_idempotency_key("followup_test", safe_uuid()),
+/home/zaks/zakops-backend/src/actions/engine/models.py:32:def compute_idempotency_key(*parts: str) -> str:
+/home/zaks/zakops-backend/src/actions/engine/models.py:120:    idempotency_key: str = Field(min_length=1)
+/home/zaks/zakops-backend/src/actions/codex/plan_spec.py:335:    from actions.engine.models import ActionPayload, compute_idempotency_key
+/home/zaks/zakops-backend/src/actions/codex/plan_spec.py:378:        idempotency_key=compute_idempotency_key(
+/home/zaks/zakops-backend/src/actions/engine/store.py:62:  idempotency_key TEXT NOT NULL UNIQUE,
+/home/zaks/zakops-backend/src/actions/engine/store.py:214:            idempotency_key=row["idempotency_key"],
+/home/zaks/zakops-backend/src/actions/engine/store.py:338:        Create action with idempotency.
+/home/zaks/zakops-backend/src/actions/engine/store.py:350:                      idempotency_key, inputs, outputs, error, retry_count, max_retries, next_attempt_at
+/home/zaks/zakops-backend/src/actions/engine/store.py:370:                        action.idempotency_key,
+/home/zaks/zakops-backend/src/actions/engine/store.py:388:                    "SELECT * FROM actions WHERE idempotency_key=?",
+/home/zaks/zakops-backend/src/actions/engine/store.py:389:                    (action.idempotency_key,),

@@ -1,0 +1,18 @@
+=== V-L3.12: Parity Test ===
+Date: 2026-02-09T04:58:23Z
+
+--- API deals count ---
+API deals: 31
+
+--- Pipeline summary total (sum of stage counts) ---
+Pipeline total (sum of stages): 31
+  inbound: 21
+  screening: 7
+  qualified: 1
+  loi: 1
+  diligence: 1
+
+--- Parity Assessment ---
+API deals: 31
+Pipeline summary: 31
+PARITY: MATCH

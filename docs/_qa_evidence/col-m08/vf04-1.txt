@@ -1,0 +1,12 @@
+apps/agent-api/app/core/langgraph/graph.py:87:from app.core.security.tool_verification import verify_post_condition, has_post_condition
+apps/agent-api/app/core/langgraph/graph.py:684:                    if result.success and has_post_condition(tool_name):
+apps/agent-api/app/core/langgraph/graph.py:686:                            verification_error = await verify_post_condition(tool_name, tool_args, result)
+apps/agent-api/app/core/security/tool_verification.py:22:def register_post_condition(tool_name: str, check_fn: Callable) -> None:
+apps/agent-api/app/core/security/tool_verification.py:32:def has_post_condition(tool_name: str) -> bool:
+apps/agent-api/app/core/security/tool_verification.py:37:async def verify_post_condition(
+apps/agent-api/app/core/security/tool_verification.py:74:                "tool_post_condition_failed",
+apps/agent-api/app/core/security/tool_verification.py:80:        logger.debug("tool_post_condition_passed", tool_name=tool_name)
+apps/agent-api/app/core/security/tool_verification.py:85:            "tool_post_condition_error",
+apps/agent-api/app/core/security/tool_verification.py:133:register_post_condition("transition_deal", _verify_transition_deal)
+apps/agent-api/app/core/security/tool_verification.py:134:register_post_condition("create_deal", _verify_create_deal)
+apps/agent-api/app/core/security/tool_verification.py:135:register_post_condition("add_note", _verify_add_note)

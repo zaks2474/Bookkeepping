@@ -1,0 +1,123 @@
+=== VF-04.3 SURFACE14 SCRIPT + TARGET ===
+-rwxr-xr-x 1 zaks zaks 5766 Feb 10 11:50 /home/zaks/zakops-agent-api/tools/infra/validate-surface14.sh
+445:validate-surface14: ## Validate Surface 14 performance budget contract
+#!/usr/bin/env bash
+# validate-surface14.sh — Surface 14: Performance Budget Contract
+# Validates PERFORMANCE-BUDGET.md structure and runs offline baseline checks
+# Advisory mode by default; set STRICT=1 for CI enforcement
+# CI-safe: does NOT require running services (skips latency/payload checks)
+set -euo pipefail
+
+STRICT="${STRICT:-0}"
+FAILURES=0
+WARNINGS=0
+
+PERF_BUDGET="/home/zaks/bookkeeping/docs/PERFORMANCE-BUDGET.md"
+MONOREPO="/home/zaks/zakops-agent-api"
+
+echo "=== SURFACE 14: PERFORMANCE BUDGET CONTRACT ==="
+echo "Mode: $([ "$STRICT" = "1" ] && echo "STRICT" || echo "ADVISORY")"
+echo ""
+
+# ── CHECK 1: Source artifact exists and has thresholds ───────────────
+echo "--- Check 1: Source Artifact ---"
+if [ -f "$PERF_BUDGET" ]; then
+  LINES=$(wc -l < "$PERF_BUDGET")
+  echo "  PASS: PERFORMANCE-BUDGET.md exists ($LINES lines)"
+else
+  echo "  FAIL: PERFORMANCE-BUDGET.md not found at $PERF_BUDGET"
+  FAILURES=$((FAILURES+1))
+  echo ""
+  echo "================================"
+  echo "FAIL: $FAILURES CHECK(S) FAILED"
+  exit 1
+fi
+
+# ── CHECK 2: Budget document has measurable thresholds ───────────────
+echo ""
+echo "--- Check 2: Threshold Coverage ---"
+
+THRESHOLD_COUNT=$(grep -c '<[[:space:]]*[0-9]' "$PERF_BUDGET" 2>/dev/null) || THRESHOLD_COUNT=0
+TABLE_COUNT=$(grep -c '|.*|.*|' "$PERF_BUDGET" 2>/dev/null) || TABLE_COUNT=0
+
+if [ "$THRESHOLD_COUNT" -ge 5 ]; then
+  echo "  PASS: $THRESHOLD_COUNT measurable thresholds found (minimum 5)"
+else
+  echo "  FAIL: Only $THRESHOLD_COUNT thresholds found (need >= 5)"
+  FAILURES=$((FAILURES+1))
+fi
+
+if [ "$TABLE_COUNT" -ge 10 ]; then
+  echo "  PASS: $TABLE_COUNT table rows — structured budget tables present"
+else
+  echo "  WARN: Only $TABLE_COUNT table rows in budget doc"
+  WARNINGS=$((WARNINGS+1))
+fi
+
+# ── CHECK 3: OpenAPI spec sizes (offline, always available) ──────────
+echo ""
+echo "--- Check 3: OpenAPI Spec Size Budget ---"
+
+for spec_entry in \
+  "packages/contracts/openapi/zakops-api.json|zakops-api.json|512000" \
+  "packages/contracts/openapi/agent-api.json|agent-api.json|204800" \
+  "packages/contracts/openapi/rag-api.json|rag-api.json|51200"; do
+
+  file=$(echo "$spec_entry" | cut -d'|' -f1)
+  name=$(echo "$spec_entry" | cut -d'|' -f2)
+  limit=$(echo "$spec_entry" | cut -d'|' -f3)
+
+  if [ -f "$MONOREPO/$file" ]; then
+    size=$(wc -c < "$MONOREPO/$file")
+    if [ "$size" -le "$limit" ]; then
+      echo "  PASS: $name — ${size} bytes (limit: ${limit})"
+    else
+      if [ "$STRICT" = "1" ]; then
+        echo "  FAIL: $name — ${size} bytes exceeds limit ${limit}"
+        FAILURES=$((FAILURES+1))
+      else
+        echo "  WARN: $name — ${size} bytes exceeds limit ${limit} (advisory)"
+        WARNINGS=$((WARNINGS+1))
+      fi
+    fi
+  else
+    echo "  WARN: $name not found — skipping size check"
+    WARNINGS=$((WARNINGS+1))
+  fi
+done
+
+# ── CHECK 4: Dashboard static bundle size (offline when build exists) ─
+echo ""
+echo "--- Check 4: Dashboard Bundle Size ---"
+
+STATIC_DIR="$MONOREPO/apps/dashboard/.next/static"
+if [ -d "$STATIC_DIR" ]; then
+  STATIC_MB=$(du -sm "$STATIC_DIR" 2>/dev/null | cut -f1)
+  DEV_LIMIT=300
+  echo "  INFO: Static directory size: ${STATIC_MB} MB (dev limit: ${DEV_LIMIT} MB)"
+  if [ "$STATIC_MB" -le "$DEV_LIMIT" ]; then
+    echo "  PASS: Dashboard static within dev budget"
+  else
+    if [ "$STRICT" = "1" ]; then
+      echo "  FAIL: Dashboard static ${STATIC_MB} MB exceeds dev limit ${DEV_LIMIT} MB"
+      FAILURES=$((FAILURES+1))
+    else
+      echo "  WARN: Dashboard static ${STATIC_MB} MB exceeds dev limit (advisory)"
+      WARNINGS=$((WARNINGS+1))
+    fi
+  fi
+
+  # Main bundle check
+  MAIN_APP="$STATIC_DIR/chunks/main-app.js"
+  if [ -f "$MAIN_APP" ]; then
+    MAIN_SIZE=$(wc -c < "$MAIN_APP")
+    MAIN_LIMIT=2097152  # 2 MB
+    echo "  INFO: main-app.js: ${MAIN_SIZE} bytes (limit: ${MAIN_LIMIT})"
+    if [ "$MAIN_SIZE" -le "$MAIN_LIMIT" ]; then
+      echo "  PASS: main-app.js within budget"
+    else
+      if [ "$STRICT" = "1" ]; then
+        echo "  FAIL: main-app.js exceeds 2 MB limit"
+        FAILURES=$((FAILURES+1))
+      else
+        echo "  WARN: main-app.js exceeds 2 MB limit (advisory)"

@@ -1,0 +1,16 @@
+=== Tracker formula ===
+| **Target Precision** | >= 80% |
+Precision = TP / (TP + FP)
+- Target: Precision >= 80% (at least 4 out of 5 suggestions are valid)
+=== Decision packet criteria ===
+| **Target Met (>= 80%)?** | [ YES / NO ] |
+| **Sample Size Met (>= 20)?** | [ YES / NO ] |
+| Overall precision >= 80% | __________% | [ YES / NO ] |
+| Sample size >= 20 reviewed items | __________ items | [ YES / NO ] |
+- [ ] Overall precision >= 80%
+=== Tracker criteria ===
+| **Target Precision** | >= 80% |
+| **Minimum Sample Size** | 20 reviewed items (TP + FP >= 20) |
+- Target: Precision >= 80% (at least 4 out of 5 suggestions are valid)
+- Precision is only meaningful when TP + FP >= 20 (minimum sample size)
+- [ ] Sample size requirement met (TP + FP >= 20)

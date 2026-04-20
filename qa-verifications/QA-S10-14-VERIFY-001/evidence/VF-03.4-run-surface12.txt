@@ -1,0 +1,26 @@
+=== VF-03.4 RUN SURFACE12 ===
+[36m=== Surface 12 Validation ===[0m
+=== SURFACE 12: ERROR TAXONOMY CONTRACT ===
+
+--- Check 1: Source Artifact ---
+  PASS: ERROR-SHAPES.md exists (158 lines)
+
+--- Check 2: Shape Count ---
+  PASS: 6 error shapes documented (expected >= 6)
+
+--- Check 3: Source File Resolution ---
+  PASS: Shape 1 source — responses.py exists
+  PASS: Shape 1 source — error_codes.py exists
+  PASS: Shape 3 source — agent main.py exists
+  PASS: Shape 4 source — rate_limiter.py exists
+  PASS: Shape 6 source — middleware.ts exists
+
+--- Check 4: Dashboard Error Normalizer ---
+  PASS: error-normalizer.ts handles multiple shapes (detail=12, error=12 references)
+
+--- Check 5: ApiError Class ---
+  PASS: ApiError class present in api.ts (18 references)
+
+================================
+PASS: SURFACE 12 ERROR TAXONOMY CONTRACT (0 warning(s))
+[32mSurface 12 validation passed[0m

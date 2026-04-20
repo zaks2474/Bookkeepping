@@ -1,0 +1,56 @@
+    40	    }
+    41	    return num;
+    42	  }
+    43	  return null;
+    44	}
+    45	
+    46	// Schema for numeric fields that might arrive as strings
+    47	const coercedNumber = z.preprocess(coerceToNumber, z.number().nullable().optional());
+    48	
+    49	/**
+    50	 * Coerce broker field to string. Backend may return:
+    51	 * - string: broker name directly
+    52	 * - object: { name?: string, email?: string, ... }
+    53	 * - null/undefined
+    54	 * We extract the name for display purposes.
+    55	 */
+    56	function coerceBrokerToString(val: unknown): string | null {
+    57	  if (val === null || val === undefined) return null;
+    58	  if (typeof val === 'string') return val || null;
+    59	  if (typeof val === 'object' && val !== null) {
+    60	    const obj = val as Record<string, unknown>;
+    61	    // Extract name from broker object
+    62	    if (typeof obj.name === 'string' && obj.name) {
+    63	      return obj.name;
+    64	    }
+    65	    // Empty object {} returns null
+    66	    return null;
+    67	  }
+    68	  return null;
+    69	}
+    70	
+    71	// Deal schema
+    72	export const DealSchema = z.object({
+    73	  deal_id: z.string(),
+    74	  canonical_name: z.string().nullable(),
+    75	  display_name: z.string().optional().nullable(),
+    76	  stage: z.string(),
+    77	  status: z.string(),
+    78	  broker: z.preprocess(coerceBrokerToString, z.string().nullable().optional()),
+    79	  priority: z.string().nullable().optional(),
+    80	  updated_at: z.string().nullable().optional(),
+    81	  created_at: z.string().nullable().optional(),
+    82	  days_since_update: z.preprocess(coerceToNumber, z.number().optional()),
+    83	  folder_path: z.string().optional().nullable(),
+    84	});
+    85	
+    86	export type Deal = z.infer<typeof DealSchema>;
+    87	
+    88	// Deal detail schema (expanded)
+    89	export const DealDetailSchema = z.object({
+    90	  deal_id: z.string(),
+    91	  canonical_name: z.string().nullable(),
+    92	  display_name: z.string().nullable().optional(),
+    93	  folder_path: z.string().nullable().optional(),
+    94	  stage: z.string(),
+    95	  status: z.string(),

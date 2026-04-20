@@ -1,0 +1,2 @@
+2409:export async function getSentimentTrend(dealId: string): Promise<SentimentTrend | null> {
+2411:    return await apiFetch<SentimentTrend>(`/api/agent/api/v1/chatbot/sentiment/${dealId}`);

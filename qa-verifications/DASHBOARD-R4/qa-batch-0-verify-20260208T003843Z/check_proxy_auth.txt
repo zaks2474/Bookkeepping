@@ -1,0 +1,31 @@
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/events/route.ts:16:    { status: 501, headers: { 'Content-Type': 'application/json' } }
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/pipeline/route.ts:26:        headers: { 'Content-Type': 'application/json' },
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/pipeline/route.ts:30:        headers: { 'Content-Type': 'application/json' },
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/checkpoints/route.ts:17:      headers: {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/quarantine/health/route.ts:15:      headers: { 'Content-Type': 'application/json' },
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/complete/route.ts:21:    const headers: Record<string, string> = {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/complete/route.ts:27:      headers['X-Service-Token'] = AGENT_SERVICE_TOKEN;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/complete/route.ts:32:      headers,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/route.ts:3:import { backendHeaders } from '@/lib/backend-fetch';
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/route.ts:84:        headers: {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/route.ts:100:          headers: backendHeaders(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/route.ts:133:            headers: {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/route.ts:182:      headers: {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/route.ts:281:        headers: { 'Content-Type': 'application/json' },
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/agent/activity/route.ts:64:        headers: {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/clear-completed/route.ts:11:import { backendHeaders } from '@/lib/backend-fetch';
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/clear-completed/route.ts:52:      headers: backendHeaders(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/deferred-actions/due/route.ts:15:      headers: { 'Content-Type': 'application/json' },
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/quarantine/[actionId]/preview/route.ts:19:      headers: { 'Content-Type': 'application/json' },
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/deferred-actions/route.ts:17:      headers: { 'Content-Type': 'application/json' },
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/quarantine/route.ts:27:      headers: { 'Content-Type': 'application/json' },
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/quarantine/route.ts:58:      headers: { 'Content-Type': 'application/json' },
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/bulk/delete/route.ts:11:import { backendHeaders } from '@/lib/backend-fetch';
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/bulk/delete/route.ts:44:      headers: backendHeaders(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/[id]/route.ts:10:import { backendUrl, backendHeaders } from '@/lib/backend-fetch';
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/[id]/route.ts:31:      headers: backendHeaders(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/[id]/archive/route.ts:10:import { backendHeaders } from '@/lib/backend-fetch';
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/[id]/archive/route.ts:31:      headers: backendHeaders(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/completed-count/route.ts:30:        headers: {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/bulk/archive/route.ts:11:import { backendHeaders } from '@/lib/backend-fetch';
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/bulk/archive/route.ts:44:      headers: backendHeaders(),

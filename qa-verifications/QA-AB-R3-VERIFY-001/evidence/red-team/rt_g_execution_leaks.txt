@@ -1,0 +1,3 @@
+ERROR:  column "args" does not exist
+LINE 3:   WHERE args::text LIKE '%test@example.com%'
+                ^

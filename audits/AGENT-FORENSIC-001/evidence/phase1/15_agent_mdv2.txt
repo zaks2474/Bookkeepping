@@ -1,0 +1,21 @@
+=== STEP 1.6: Agent MDv2 ===
+--- /agent/invoke ---
+HTTP/1.1 200 OK
+date: Mon, 02 Feb 2026 22:15:04 GMT
+server: uvicorn
+content-length: 142
+content-type: application/json
+x-request-id: 63da3cc0
+x-response-time: 0.795s
+
+{"thread_id":"forensic-001-thread-001","status":"completed","content":"2+2 equals 4.","pending_approval":null,"actions_taken":[],"error":null}
+--- /agent/approvals ---
+HTTP/1.1 200 OK
+date: Mon, 02 Feb 2026 22:15:04 GMT
+server: uvicorn
+content-length: 26
+content-type: application/json
+x-request-id: 3a54715e
+x-response-time: 0.005s
+
+{"approvals":[],"total":0}

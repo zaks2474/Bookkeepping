@@ -1,0 +1,107 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "verdict": { "type": "string", "enum": ["PASS", "FAIL"] },
+    "cycle": { "type": "integer", "minimum": 0 },
+    "early_exit": { "type": "boolean", "description": "Set true if stopping analysis early due to critical blocker" },
+    "summary": { "type": "string" },
+    "blockers": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/issue" }
+    },
+    "majors": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/issue" }
+    },
+    "minors": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/issue" }
+    },
+    "spec_compliance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "endpoints_match": { "type": "boolean" },
+        "schemas_match": { "type": "boolean" },
+        "status_strings_match": { "type": "boolean" },
+        "auth_matches": { "type": "boolean" },
+        "db_mode_matches": { "type": "boolean" },
+        "streaming_matches": { "type": "boolean" },
+        "local_llm_lane_verified": { "type": "boolean" },
+        "mocks_disabled_for_gates": { "type": "boolean" }
+      },
+      "required": [
+        "endpoints_match",
+        "schemas_match",
+        "status_strings_match",
+        "auth_matches",
+        "db_mode_matches",
+        "streaming_matches",
+        "local_llm_lane_verified",
+        "mocks_disabled_for_gates"
+      ]
+    },
+    "next_actions_for_builder": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/action" }
+    },
+    "evidence": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "required": [
+    "verdict",
+    "cycle",
+    "early_exit",
+    "summary",
+    "blockers",
+    "majors",
+    "minors",
+    "spec_compliance",
+    "next_actions_for_builder",
+    "evidence"
+  ],
+  "$defs": {
+    "issue": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "severity": { "type": "string", "enum": ["BLOCKER", "MAJOR", "MINOR"] },
+        "title": { "type": "string" },
+        "details": { "type": "string" },
+        "files": { "type": "array", "items": { "type": "string" } },
+        "repro_steps": { "type": "array", "items": { "type": "string" } },
+        "expected": { "type": "string" },
+        "actual": { "type": "string" },
+        "recommended_fix": { "type": "string" },
+        "validation_steps": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": [
+        "severity",
+        "title",
+        "details",
+        "files",
+        "repro_steps",
+        "expected",
+        "actual",
+        "recommended_fix",
+        "validation_steps"
+      ]
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "priority": { "type": "integer", "minimum": 1, "maximum": 50 },
+        "severity": { "type": "string", "enum": ["BLOCKER", "MAJOR", "MINOR"] },
+        "summary": { "type": "string" },
+        "files": { "type": "array", "items": { "type": "string" } },
+        "how_to_validate": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["priority", "severity", "summary", "files", "how_to_validate"]
+    }
+  }
+}
+

@@ -1,0 +1,6 @@
+=== Modulo check in summarizer ===
+3:Rolling summarization every 5 turns + recall memory builder.
+26:    Trigger: every 5 turns AND at least 5 new turns since last summary.
+30:        and turn_number % SUMMARIZE_EVERY_N_TURNS == 0
+
+=== Verify NOT 3 or 10 ===

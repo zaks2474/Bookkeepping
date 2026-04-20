@@ -1,0 +1,50 @@
+=== ARCH-5: CLI Discovery ===
+--- ARCH-5.1: discover_clis function ---
+discover_clis() {
+  local context_dir="$1"
+  log "Discovering CLI tools..."
+
+  # Gemini
+  GEMINI_CLI=$(command -v gemini 2>/dev/null || echo "")
+  if [ -z "$GEMINI_CLI" ] && [ -x "/root/.npm-global/bin/gemini" ]; then
+    GEMINI_CLI="/root/.npm-global/bin/gemini"
+  fi
+
+  # Codex
+  CODEX_CLI=$(command -v codex 2>/dev/null || echo "")
+  if [ -z "$CODEX_CLI" ] && [ -x "/root/.npm-global/bin/codex" ]; then
+    CODEX_CLI="/root/.npm-global/bin/codex"
+  fi
+
+  # Claude
+  CLAUDE_CLI=$(command -v claude 2>/dev/null || echo "")
+
+  # Frontend design plugin
+  if [ -f "/mnt/skills/public/frontend-design/SKILL.md" ]; then
+    FRONTEND_DESIGN_PLUGIN="/mnt/skills/public/frontend-design/SKILL.md"
+  fi
+
+  # Write discovery report
+  cat > "$context_dir/cli_discovery.md" << EOF
+
+--- ARCH-5.2: CLI availability recorded in evidence ---
+# CLI Discovery Report
+## Generated: 2026-02-09T21:17:37Z
+
+| Tool | Path | Available |
+|------|------|-----------|
+| Gemini CLI | /root/.npm-global/bin/gemini | YES |
+| Codex CLI | /root/.npm-global/bin/codex | YES |
+| Claude CLI | /usr/local/bin/claude | YES |
+
+## Plugin Availability
+
+| Plugin | Path | Available |
+|--------|------|-----------|
+| frontend-design | NOT FOUND | NO |
+
+## Versions
+- Gemini: 0.27.0
+- Codex: codex-cli 0.92.0
+- Claude: 2.1.37 (Claude Code)
+

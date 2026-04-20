@@ -1,0 +1,15 @@
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/chatbot.py:449:    proposal_id: str
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/chatbot.py:469:            proposal_id=body.proposal_id,
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/chatbot.py:483:            proposal_id=body.proposal_id,
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:8:  Body: { proposal_id, message_id, thread_id, action, approved_by, reject_reason? }
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:41:        proposal_id: str,
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:51:            proposal_id: Unique proposal identifier
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:60:        proposal = await self._get_proposal(message_id, proposal_id)
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:62:            return {"success": False, "error": f"Proposal {proposal_id} not found"}
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:75:                message_id, proposal_id, "rejected",
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:78:            logger.info("proposal_rejected", proposal_id=proposal_id, by=user_id)
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:79:            return {"success": True, "action": "rejected", "proposal_id": proposal_id}
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:82:        await self._update_status(message_id, proposal_id, "approved", by=user_id)
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:90:                message_id, proposal_id, "failed",
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:100:                message_id, proposal_id, "executed",
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:106:                proposal_id=proposal_id,

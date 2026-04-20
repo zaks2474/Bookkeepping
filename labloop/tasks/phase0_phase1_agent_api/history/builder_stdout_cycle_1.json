@@ -1,0 +1,56 @@
+Now I'll output the final JSON matching the Builder schema:
+
+```json
+{
+  "status": "READY_FOR_QA",
+  "cycle": 1,
+  "summary": "Implemented Phase 0 (Foundations & Alignment) and Phase 1 (Core Infrastructure & Security) for ZakOps Agent API. All baseline invariants (BL-01..BL-14) remain PASS. All Phase 0 and Phase 1 gates PASS.",
+  "issues_addressed": [
+    {
+      "severity": "BLOCKER",
+      "original_title": "Run verification gates and create initial BUILDER_REPORT.md",
+      "resolution": "Ran ./scripts/bring_up_tests.sh and verified all baseline tests pass. Implemented Phase 0+1 gates and created BUILDER_REPORT.md.",
+      "files_modified": ["scripts/bring_up_tests.sh", "scripts/phase0_phase1_gates.sh"],
+      "verified": true
+    }
+  ],
+  "changed_files": [
+    {"path": "PORTS.md", "action": "created", "lines_changed": 42, "description": "Authoritative port assignments per Decision Lock"},
+    {"path": "docs/contracts/CONTRACTS.md", "action": "created", "lines_changed": 115, "description": "API contract specification with locked status strings"},
+    {"path": "docs/security/AT_REST_PROTECTION.md", "action": "created", "lines_changed": 95, "description": "At-rest encryption documentation"},
+    {"path": "docs/runbooks/KEY_ROTATION.md", "action": "created", "lines_changed": 130, "description": "Key rotation runbook"},
+    {"path": "docs/observability/LANGFUSE_SELF_HOST.md", "action": "created", "lines_changed": 105, "description": "Langfuse self-hosted configuration guide"},
+    {"path": "app/core/encryption.py", "action": "created", "lines_changed": 175, "description": "AES-256-GCM encryption module for checkpoints"},
+    {"path": "app/core/resilience.py", "action": "created", "lines_changed": 185, "description": "External service resilience configuration"},
+    {"path": "scripts/phase0_phase1_gates.sh", "action": "created", "lines_changed": 610, "description": "Phase 0+1 gate verification script"},
+    {"path": "scripts/bring_up_tests.sh", "action": "modified", "lines_changed": 20, "description": "Integrated Phase 0+1 gate execution"}
+  ],
+  "commands_run": [
+    {"command": "./scripts/bring_up_tests.sh", "exit_code": 0, "success": true, "output_summary": "ALL GATES COMPLETED - baseline BL-01..BL-14 PASS, Phase 0+1 gates PASS"},
+    {"command": "./scripts/phase0_phase1_gates.sh", "exit_code": 0, "success": true, "output_summary": "All Phase 0 and Phase 1 artifacts generated with PASSED markers"}
+  ],
+  "gate_pre_check": {
+    "ran_gate": true,
+    "gate_passed": true,
+    "gate_exit_code": 0,
+    "failure_summary": null
+  },
+  "blockers_encountered": [],
+  "notes_for_qa": [
+    "All baseline invariants BL-01..BL-14 remain PASS - no regressions",
+    "Encryption module (app/core/encryption.py) requires CHECKPOINT_ENCRYPTION_KEY env var in production",
+    "vLLM gate verified Qwen2.5-32B-Instruct-AWQ model serving on :8000",
+    "Langfuse gate is optional - service may not run in test environment",
+    "All required documentation created under docs/ directory",
+    "Phase 0 artifacts: contract_snapshot.json, agent_api_contract.json, ports_md_lint.log, env_no_localhost_lint.log, vllm_lane_verify.json, artifact_bundle.zip, gate_registry.json, gate_registry_lint.log",
+    "Phase 1 artifacts: encryption_verify.log, kill9_encrypted.log, prod_exposure_fail_closed.log, secrets_hygiene_lint.log, pii_canary_report.json, raw_content_scan.log, langfuse_selfhost_gate.log, resilience_config_snapshot.json"
+  ],
+  "confidence": "high",
+  "diff_stats": {
+    "files_changed": 9,
+    "insertions": 1477,
+    "deletions": 7,
+    "total_lines": 1484
+  }
+}
+```

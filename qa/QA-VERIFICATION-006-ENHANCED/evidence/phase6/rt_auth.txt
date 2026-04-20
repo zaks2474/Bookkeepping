@@ -1,0 +1,9 @@
+=== RT-AUTH: Authentication Enforcement ===
+--- TEST 1: No API key → should fail ---
+{"error":"unauthorized","message":"Invalid or missing API key"}
+--- TEST 2: Wrong API key → should fail ---
+{"error":"unauthorized","message":"Invalid or missing API key"}
+--- TEST 3: Correct API key → should succeed ---
+DL-0045
+
+=== RT-AUTH VERDICT: PASS ===

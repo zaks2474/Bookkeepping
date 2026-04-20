@@ -1,0 +1,8 @@
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/cost_repository.py:108:                    WHERE deal_id = :deal_id
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/cost_repository.py:122:                    WHERE deal_id = :deal_id
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/cost_repository.py:135:                    WHERE deal_id = :deal_id
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/cost_repository.py:149:                text("SELECT * FROM deal_budgets WHERE deal_id = :deal_id"),
+/home/zaks/Zaks-llm/venv/lib/python3.12/site-packages/debugpy/_vendored/pydevd/_pydevd_bundle/pydevconsole_code.py:248:    namespace); it doesn't deal with input buffering or prompting or
+/home/zaks/Zaks-llm/venv/lib/python3.12/site-packages/IPython/core/interactiveshell.py:1270:        # A table holding all the namespaces IPython deals with, so that
+/home/zaks/Zaks-llm/src/api/rag_rest_api.py:129:            # COL-V2 A-5: Build WHERE clauses dynamically for deal_id + source
+/home/zaks/Zaks-llm/src/api/rag_rest_api.py:472:                    "DELETE FROM crawledpage WHERE url = $1 AND deal_id = $2", url, deal_id

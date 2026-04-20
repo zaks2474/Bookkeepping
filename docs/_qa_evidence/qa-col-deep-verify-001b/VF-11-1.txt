@@ -1,0 +1,4 @@
+7:GET /api/v1/chatbot/threads/{id}/export?format=markdown
+34:            fmt: Export format — "markdown" (MVP) or "json"
+53:        content = self._export_markdown(thread, messages)
+60:    def _export_markdown(self, thread, messages) -> str:

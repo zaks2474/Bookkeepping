@@ -1,0 +1,60 @@
+=== Chat page localStorage implementation AFTER ===
+52:import { loadFromStorage, saveToStorage, removeFromStorage } from '@/lib/storage-utils';
+97:// F003-P1-002 Remediation: Using loadFromStorage with Zod validation + quarantine
+116:const StoredSessionSchema = z.object({
+126:type StoredSession = z.infer<typeof StoredSessionSchema>;
+156:    saveToStorage(STORAGE_KEY, data);
+171:  const result = loadFromStorage(STORAGE_KEY, StoredSessionSchema, {
+179:  removeFromStorage(STORAGE_KEY);
+
+=== storage-utils.ts created ===
+/**
+ * Safe localStorage utilities with Zod validation and quarantine
+ *
+ * F003-P1-002 + RT-STORE-1 Remediation:
+ * - Schema validation with Zod safeParse
+ * - Version checking for migrations
+ * - Corrupt data quarantine (delete on parse/schema failure)
+ * - Console.warn (not error) to avoid breaking error tracking
+ */
+
+import { z } from 'zod';
+
+/**
+ * Safely load data from localStorage with Zod validation.
+ *
+ * RT-STORE-1 Requirements:
+ * 1. If parse fails: DELETE the key, return fallback
+ * 2. If schema fails: DELETE the key, return fallback
+ * 3. If version mismatch: DELETE the key, return fallback
+ * 4. Console.warn on quarantine (not error)
+ *
+ * @param key - localStorage key
+ * @param schema - Zod schema to validate against
+ * @param options - { version: expected version number, fallback: default value }
+ */
+export function loadFromStorage<T>(
+  key: string,
+  schema: z.ZodSchema<T>,
+  options: { version: number; fallback: T }
+): T {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return options.fallback;
+
+    // Try to parse JSON
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(raw);
+    } catch {
+      console.warn(`[storage-utils] JSON parse failed for ${key}, quarantining`);
+      localStorage.removeItem(key);
+      return options.fallback;
+    }
+
+    // Check version (if schema expects a version field)
+    if (
+      typeof parsed === 'object' &&
+      parsed !== null &&
+      'version' in parsed &&
+      (parsed as Record<string, unknown>).version !== options.version

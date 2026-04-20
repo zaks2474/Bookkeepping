@@ -1,0 +1,1 @@
+    CONSTRAINT chk_scope CHECK (scope_type IN ('global', 'deal', 'document')),

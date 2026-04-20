@@ -1,0 +1,22 @@
+/home/zaks/zakops-backend/src/actions/tests/test_e2e_actions.py:60:    registry_path = Path("/home/zaks/DataRoom/.deal-registry/deal_registry.json")
+/home/zaks/zakops-backend/src/actions/engine/store.py:27:    return Path(os.getenv("ZAKOPS_STATE_DB", "/home/zaks/DataRoom/.deal-registry/ingest_state.db"))
+/home/zaks/zakops-backend/src/actions/context/context_pack.py:32:EVENTS_DIR = DATAROOM_ROOT / ".deal-registry" / "events"
+/home/zaks/zakops-backend/src/actions/executors/deal_enrich_materials.py:109:    queue_path = _dataroom_root() / ".deal-registry" / "link_intake_queue.json"
+/home/zaks/zakops-backend/src/actions/executors/deal_enrich_materials.py:150:      DataRoom/.deal-registry/link_intake_queue.json for operator follow-up.
+/home/zaks/zakops-backend/src/actions/executors/deal_backfill_sender_history.py:132:    return (_dataroom_root() / ".deal-registry" / "logs" / "email_backfill.jsonl").resolve()
+/home/zaks/zakops-backend/src/actions/executors/deal_backfill_sender_history.py:623:        path = Path(os.getenv("EMAIL_TRIAGE_STATE_DB", "/home/zaks/DataRoom/.deal-registry/email_triage_state.db")).resolve()
+/home/zaks/zakops-backend/src/actions/executors/deal_backfill_sender_history.py:697:        backfill_db_path = _dataroom_root() / ".deal-registry" / "email_backfill_state.db"
+/home/zaks/zakops-backend/src/actions/executors/email_triage_review_email.py:674:                registry_path = os.getenv("DEAL_REGISTRY_PATH", "/home/zaks/DataRoom/.deal-registry/deal_registry.json")
+/home/zaks/zakops-backend/src/actions/memory/triage_feedback.py:16:    return _dataroom_root() / ".deal-registry" / "triage_feedback.jsonl"
+/home/zaks/zakops-backend/src/actions/memory/store.py:15:    return Path(os.getenv("ZAKOPS_STATE_DB", "/home/zaks/DataRoom/.deal-registry/ingest_state.db"))
+/home/zaks/zakops-backend/src/workers/actions_runner.py:56:REGISTRY_PATH = str(DATAROOM_ROOT / ".deal-registry" / "deal_registry.json")
+/home/zaks/zakops-backend/src/workers/actions_runner.py:57:CASE_FILES_DIR = DATAROOM_ROOT / ".deal-registry" / "case_files"
+/home/zaks/zakops-backend/src/agent/bridge/README.md:94:/home/zaks/DataRoom/.deal-registry/logs/agent_bridge.jsonl
+/home/zaks/zakops-backend/src/agent/bridge/config.py:41:        return self.DATAROOM_ROOT / ".deal-registry"
+/home/zaks/zakops-backend/src/core/chat_evidence_builder.py:280:    def __init__(self, registry_path: str = "/home/zaks/DataRoom/.deal-registry/deal_registry.json"):
+/home/zaks/zakops-backend/src/core/chat_evidence_builder.py:282:        self.case_files_dir = Path("/home/zaks/DataRoom/.deal-registry/case_files")
+/home/zaks/zakops-backend/src/core/chat_evidence_builder.py:283:        self.events_dir = Path("/home/zaks/DataRoom/.deal-registry/events")
+/home/zaks/zakops-backend/src/core/chat_evidence_builder.py:284:        self.actions_path = Path("/home/zaks/DataRoom/.deal-registry/deferred_actions.json")
+/home/zaks/zakops-backend/src/core/deal_registry.py:1460:    registry = DealRegistry("/home/zaks/DataRoom/.deal-registry/deal_registry.json")
+/home/zaks/zakops-backend/src/core/database/adapter.py:56:            os.getenv("ZAKOPS_STATE_DB", "/home/zaks/DataRoom/.deal-registry/ingest_state.db")
+/home/zaks/zakops-backend/src/core/events/handlers.py:150:    # - Create /DataRoom/.deal-registry/{deal_id}/

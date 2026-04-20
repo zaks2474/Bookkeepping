@@ -1,0 +1,4 @@
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/agent.py:117:    S10.2 prototype flow forwards X-User-Id from dashboard middleware.
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/agent.py:119:    user_id_header = request.headers.get("X-User-Id") or request.headers.get("x-user-id")
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/agent.py:120:    if user_id_header and user_id_header.strip():
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/agent.py:121:        return user_id_header.strip()

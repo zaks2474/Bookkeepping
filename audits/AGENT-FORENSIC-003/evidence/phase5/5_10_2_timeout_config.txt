@@ -1,0 +1,23 @@
+=== CHECK 5.10.2: Timeout Configuration ===
+Timestamp: 2026-02-03T13:22:30-06:00
+
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:211:  // Poll for action status until terminal or timeout
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:157:    requestIdleCallback(doSave, { timeout: 1000 });
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:225:  const abortControllerRef = useRef<AbortController | null>(null);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:415:    abortControllerRef.current = new AbortController();
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:460:        if (abortControllerRef.current?.signal.aborted) break;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:160:  const pollActionUntilTerminal = async (actionId: string, opts?: { timeoutMs?: number; intervalMs?: number }) => {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:161:    const timeoutMs = opts?.timeoutMs ?? 120_000;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:170:      if (Date.now() - start > timeoutMs) throw new Error('Timed out waiting for action to complete');
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:326:            Decision point for deal-signal emails (Approve → create deal; Reject → mark non-deal)
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent-client.ts:356: * Returns an AbortController to cancel the stream.
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent-client.ts:358:export function streamRunEvents(_options: StreamRunOptions): AbortController {
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent-client.ts:360:  const controller = new AbortController();
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent-client.ts:367: * Returns an AbortController to cancel the stream.
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent-client.ts:373:): AbortController {
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent-client.ts:375:  const controller = new AbortController();
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent/providers/local.ts:22:  timeout: 30000,
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent/providers/local.ts:47:      const controller = new AbortController();
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent/providers/local.ts:48:      const timeoutId = setTimeout(() => controller.abort(), 5000);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent/providers/local.ts:53:        signal: controller.signal,
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent/providers/local.ts:56:      clearTimeout(timeoutId);

@@ -1,0 +1,11 @@
+=== VF-03.6 ALERT CARDS CLICKABLE ===
+--- Check alerts have Link wrapper ---
+412:                            alert.deal_id ? 'cursor-pointer hover:bg-accent/50' : ''
+425:                      return alert.deal_id ? (
+426:                        <Link key={i} href={`/deals/${alert.deal_id}`}>{alertContent}</Link>
+279:                <Link href='/deals'>
+303:                      <Link key={deal.deal_id} href={`/deals/${deal.deal_id}`}>
+426:                        <Link key={i} href={`/deals/${alert.deal_id}`}>{alertContent}</Link>
+--- Check cursor-pointer on alert cards ---
+304:                        <div className='flex items-center justify-between rounded-lg border p-3 hover:bg-accent transition-colors cursor-pointer'>
+412:                            alert.deal_id ? 'cursor-pointer hover:bg-accent/50' : ''

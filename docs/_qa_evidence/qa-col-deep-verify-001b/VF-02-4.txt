@@ -1,0 +1,16 @@
+5:the source evidence snippets. Flags weak/orphan citations.
+19:CITATION_HIGH_THRESHOLD = float(os.getenv("CITATION_HIGH_THRESHOLD", "0.5"))   # score >= this → "strong"
+20:CITATION_LOW_THRESHOLD = float(os.getenv("CITATION_LOW_THRESHOLD", "0.3"))     # score >= this → "weak"; below → also "weak" (no source = "orphan")
+21:CITATION_QUALITY_FLOOR = float(os.getenv("CITATION_QUALITY_FLOOR", "0.5"))     # quality_score must be >= this for audit to pass
+30:    strength: str  # "strong", "weak", "orphan"
+38:    strong: int = 0
+39:    weak: int = 0
+48:        return self.strong / self.total_citations
+101:            strength = "strong"
+102:            result.strong += 1
+104:            strength = "weak"
+105:            result.weak += 1
+107:            strength = "weak"
+108:            result.weak += 1
+125:            strong=result.strong,
+126:            weak=result.weak,

@@ -1,0 +1,13 @@
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:22:    "stage_transition": "_handle_stage_transition",
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:160:    async def _handle_stage_transition(self, proposal: dict, user_id: str) -> dict:
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:23:    "add_note": "_handle_add_note",
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:177:    async def _handle_add_note(self, proposal: dict, user_id: str) -> dict:
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:28:    "search_web": "_handle_search_web",
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:264:    async def _handle_search_web(self, proposal: dict, user_id: str) -> dict:
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:29:    "mark_complete": "_handle_mark_complete",
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:272:    async def _handle_mark_complete(self, proposal: dict, user_id: str) -> dict:
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:30:    "add_document": "_handle_add_document",
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:288:    async def _handle_add_document(self, proposal: dict, user_id: str) -> dict:
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:4:Handles proposal execution, status tracking, and the correct_brain_summary handler.
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:27:    "correct_brain_summary": "_handle_correct_brain_summary",
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:235:    async def _handle_correct_brain_summary(self, proposal: dict, user_id: str) -> dict:

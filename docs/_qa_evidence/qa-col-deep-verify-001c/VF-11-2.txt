@@ -1,0 +1,7 @@
+=== VF-11.2: Auth on compliance purge ===
+File: /home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/chatbot.py
+Line 558: @router.post("/admin/compliance/purge")
+Line 559-562: async def compliance_purge(body: CompliancePurgeRequest, session = Depends(get_current_session))
+Line 563: """COL-V2 S7.3: GDPR data purge with legal hold protection."""
+Line 564: _require_admin(session)
+RESULT: PASS — Admin auth required via _require_admin(session)

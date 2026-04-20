@@ -1,0 +1,15 @@
+=== CHECK 4.7.2: Verify both approvals exist as separate records ===
+Timestamp: 2026-02-03T13:17:06-06:00
+
+=== Query: Approvals WHERE thread_id IN (Thread A, Thread B) ===
+
+                  id                  |            thread_id            | status  |    tool_name    |                         idempotency_key                          |          created_at           
+--------------------------------------+---------------------------------+---------+-----------------+------------------------------------------------------------------+-------------------------------
+ 3d52c78e-780f-4d30-b30d-871ad8d29671 | forensic-003-multi-a-1770146198 | pending | transition_deal | 1b85c0d05d52916d981357b67b5f86521f643920526300235b40201a20869123 | 2026-02-03 19:16:38.611208+00
+ 3f1a9e2d-7697-44cc-885c-d3e88f84ede7 | forensic-003-multi-b-1770146198 | pending | transition_deal | 43e119176d7d5ed6427edd4c3262d66ab5b0d89657eb6cb7cb6083a1eb806189 | 2026-02-03 19:16:52.842752+00
+(2 rows)
+
+
+=== VERIFICATION: Different IDs and idempotency_keys ===
+ PASS: 2 distinct IDs | PASS: 2 distinct idempotency keys
+

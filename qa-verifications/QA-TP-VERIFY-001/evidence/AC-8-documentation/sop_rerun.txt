@@ -1,0 +1,6 @@
+=== A8.4 ===
+41:# 5. Re-run gates on a completed run
+147:## How to Rerun a Failed Pass
+149:### If an agent failed during Pass 1:
+153:4. Re-run gates: `make tripass-gates RUN_ID=<id>`
+160:5. Re-run gates: `make tripass-gates RUN_ID=<id>`

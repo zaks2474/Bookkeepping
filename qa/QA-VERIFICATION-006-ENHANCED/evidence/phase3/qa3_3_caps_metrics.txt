@@ -1,0 +1,6 @@
+=== QA-3.3: T2.4+T2.5 Capabilities/Metrics ===
+--- TEST 1: /capabilities endpoint ---
+{"capabilities":[{"id":"deal_create","name":"Create Deal","description":"Create a new deal from quarantine or manual entry","risk_level":"medium","requires_approval":true},{"id":"deal_transition","name":"Transition Deal Stage","description":"Move a deal from one stage to another","risk_level":"medium","requires_approval":true},{"id":"deal_archive","name":"Archive Deal","description":"Move a deal to archived status","risk_level":"medium","requires_approval":true},{"id":"note_add","name":"Add Note","description":"Add a note to a deal","risk_level":"low","requires_approval":false},{"id":"email_append","name":"Append Email Materials","description":"Attach email content to a deal","risk_level":"low","requires_approval":false},{"id":"rag_reindex","name":"Reindex Deal in RAG","description":"Trigger RAG reindexing for a deal","risk_level":"low","requires_approval":false}],"version":"1.0.0"}
+--- TEST 2: /metrics endpoint ---
+{"total_actions":0,"pending_approval":0,"completed_today":0,"failed_today":0,"avg_approval_time_seconds":null,"avg_execution_time_seconds":null,"by_capability":{},"version":"1.0.0"}
+=== QA-3.3 VERDICT: PASS ===

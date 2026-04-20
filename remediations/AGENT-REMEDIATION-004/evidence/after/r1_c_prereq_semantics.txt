@@ -1,0 +1,51 @@
+=== R1.C-PREREQ: SEMANTICS DECISION GATE (RT-SEM-1) ===
+
+Date: 2026-02-03
+Decision: OPTION A — status = "human decision"
+
+CHOSEN SEMANTICS:
+- "approved" means: the human clicked approve (the DECISION happened)
+- "rejected" means: the human clicked reject (the DECISION happened)
+- Execution result lives in tool_executions.success
+- approved_by, approved_at remain true even if execution failed
+
+RATIONALE:
+1. Current implementation already follows Option A semantics
+2. Audit trail of human decisions is preserved
+3. Dashboard can show "Approved (execution failed)" separately
+4. No data model changes required
+
+INVARIANTS ENFORCED:
+1. approved_by and approved_at NEVER nullified if user actually approved
+2. tool_executions table ALWAYS records the execution attempt
+3. audit_log captures BOTH the approval decision AND the execution outcome
+
+CURRENT CODE BEHAVIOR (agent.py lines 408-426):
+- approval.status = APPROVED on successful claim (regardless of execution outcome)
+- execution.success = actual_success (reflects tool execution result)
+- If exception during execution: ROLLBACK to pending (allow retry)
+- If tool reports {"ok": false}: approval still APPROVED, execution.success = false
+
+IMPLEMENTATION CHANGE FOR R1.C:
+- No change to "approved" semantics
+- Add clearer error communication in API response
+- Ensure dashboard shows execution status alongside approval status
+- Consider adding "execution_failed" flag to response for dashboard clarity
+
+EVIDENCE: Current data model supports this
+
+=== DATA MODEL VERIFICATION ===
+             approval_id              | approval_status |     resolved_by     | has_resolved_at | tool_success | has_error 
+--------------------------------------+-----------------+---------------------+-----------------+--------------+-----------
+ b407e12b-d18a-4291-841c-84eaa9a6b3bf | approved        | chaos-test          | t               | f            | f
+ 3d52c78e-780f-4d30-b30d-871ad8d29671 | approved        | multi-test-a        | t               | f            | f
+ 7b65f288-fb5f-40b7-aa90-61d11a25bdca | approved        | spam-tester         | t               | t            | f
+ 505b8aeb-66aa-47ad-b19d-845c8e0551d4 | approved        | forensic-tester     | t               | f            | f
+ b652bc7f-39b4-4da3-8692-da2ac76267be | approved        | forensic-audit-user | t               | t            | f
+ 23c61e51-5de9-4df2-98ce-38ffa3f729aa | approved        | qa-auditor-003      | t               | f            | f
+ 6ff7e4e0-2be1-4cea-886b-43f2e79e25b6 | approved        | qa-auditor-003      | t               | f            | f
+ 92fad3cf-c459-486a-b96e-4a589d125d3b | approved        | qa-auditor-003      | t               | t            | f
+ b47fb835-96f3-4c4d-8d7e-ab822885b2fe | approved        | qa-auditor-003      | t               | t            | f
+ f86e9790-d896-48ed-9dcc-421d27273ad2 | approved        | qa-auditor-003      | t               | t            | f
+(10 rows)
+

@@ -1,0 +1,5 @@
+/home/zaks/zakops-backend/src/actions/planner.py:28:    missing_fields: list[str] = Field(default_factory=list)
+/home/zaks/zakops-backend/src/actions/executors/communication_draft_email.py:147:                "- Do not invent deal facts.\n"
+/home/zaks/zakops-backend/src/actions/executors/_artifacts.py:49:                message="Deal folder_path missing; cannot determine artifact destination",
+/home/zaks/zakops-backend/src/actions/executors/_artifacts.py:93:                message="Deal folder_path missing; cannot determine artifact destination",
+/home/zaks/zakops-backend/src/actions/executors/deal_backfill_sender_history.py:935:                        "- Do not invent facts.\n"

@@ -1,0 +1,29 @@
+=== V-L4: Error Handling - dashboard/page.tsx ===
+Date: 2026-02-09T04:54:55Z
+
+File: /home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/page.tsx
+
+>> allSettled matches:
+66:      // DEAL-INTEGRITY-UNIFIED L3+L4: Server-computed counts + Promise.allSettled
+67:      const results = await Promise.allSettled([
+
+>> catch matches:
+95:    } catch (err) {
+
+>> error/Error matches:
+53:  const [error, setError] = useState<string | null>(null);
+64:    setError(null);
+76:      else console.error('Failed to load deals:', results[0].reason);
+78:      else console.error('Failed to load pipeline:', results[1].reason);
+80:      else console.error('Failed to load actions:', results[2].reason);
+82:      else console.error('Failed to load quarantine health:', results[3].reason);
+84:      else console.error('Failed to load quarantine items:', results[4].reason);
+86:      else console.error('Failed to load alerts:', results[5].reason);
+96:      setError(err instanceof Error ? err.message : 'Failed to load dashboard data');
+97:      // Show error toast only on manual refresh
+99:        toast.error('Refresh failed', {
+133:  if (error) {
+138:        <p className='text-muted-foreground'>{error}</p>
+
+>> fallback matches:
+(none)

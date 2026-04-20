@@ -1,0 +1,8 @@
+Shared chat state implementation (REC-018):
+  - Created lib/chat/session.ts with useChatSession hook
+  - Same storage key: zakops-chat-session (version 1)
+  - AgentDrawer now uses useChatSession instead of local state + mock responses
+  - Real SSE streaming via streamChatMessage from lib/api.ts
+  - Messages persist to localStorage, synced across components
+  - StorageEvent listener handles cross-tab updates
+  - Mock response template REMOVED — all messages go through real agent pipeline

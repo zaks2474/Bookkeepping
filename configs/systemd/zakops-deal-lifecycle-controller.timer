@@ -1,0 +1,12 @@
+[Unit]
+Description=ZakOps Deal Lifecycle Controller (hourly)
+
+[Timer]
+OnCalendar=hourly
+Persistent=true
+RandomizedDelaySec=10m
+Unit=zakops-deal-lifecycle-controller.service
+
+[Install]
+WantedBy=timers.target
+

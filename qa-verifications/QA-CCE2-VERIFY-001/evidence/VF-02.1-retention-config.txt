@@ -1,0 +1,3 @@
+=== VF-02.1 RETENTION CONFIG ===
+9:RETENTION="${SNAPSHOT_RETENTION:-10}"
+51:# Auto-clean: keep only the last RETENTION snapshots (default 10, configurable via SNAPSHOT_RETENTION)

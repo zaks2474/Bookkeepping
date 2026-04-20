@@ -1,0 +1,22 @@
+558:@router.post("/admin/compliance/purge")
+559:async def compliance_purge(
+560-    body: CompliancePurgeRequest,
+561-    session: Session = Depends(get_current_session),
+562-):
+563-    """COL-V2 S7.3: GDPR data purge with legal hold protection."""
+564-    _require_admin(session)
+565-    from app.services.gdpr_service import gdpr_purge
+566-    report = await gdpr_purge(body.user_id)
+567-    return report.model_dump()
+568-
+569-
+570-@router.get("/sentiment/{deal_id}")
+571-async def get_sentiment_trend(
+572-    deal_id: str,
+573-    session: Session = Depends(get_session_or_service),
+574-):
+575-    """COL-V2 C22: Get sentiment trend for a deal.
+576-
+577-    Returns the current sentiment score, average, trend direction,
+578-    and data point count for coaching UI.
+579-    """

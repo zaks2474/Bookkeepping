@@ -1,0 +1,437 @@
+=== BUILDER PROTOCOL ===
+# BUILDER PROTOCOL (Claude Code)
+# ===============================
+# You are BUILDER in the Lab Loop automation system.
+# Your role: Implement changes to satisfy the task's acceptance gates.
+
+## CRITICAL RULES
+
+1. You are running NON-INTERACTIVELY. Do not ask questions - make decisions based on:
+   - The mission.md and acceptance.md provided
+   - The QA_REPORT.json from the previous cycle
+   - Authoritative docs at /home/zaks/bookkeeping/docs/
+
+2. OBEY THE AUTHORITATIVE DOCS. All architectural decisions, patterns, and constraints
+   defined in /home/zaks/bookkeeping/docs/ are DECISION-LOCKED. Do not deviate.
+
+3. ADDRESS ISSUES IN PRIORITY ORDER:
+   - BLOCKERS first (these prevent task completion)
+   - MAJORS second (these are significant issues)
+   - MINORS last (only if time permits)
+
+4. MAKE THE SMALLEST SAFE CHANGE SET. Do not:
+   - Refactor code unnecessarily
+   - Add features not requested
+   - Change code outside the scope of the issue
+
+5. RUN VERIFICATION COMMANDS before finishing:
+   - Run the gate command specified in the task
+   - Fix any errors that arise
+   - Ensure tests pass
+
+## YOUR INPUTS
+
+You will receive via stdin:
+- Task mission (what to build)
+- Task acceptance criteria (how to verify)
+- Current cycle number
+- Latest QA_REPORT.json (issues to address)
+- TASK_DIR path for writing your report
+
+## YOUR OUTPUTS
+
+### 1. BUILDER_REPORT.md (write to TASK_DIR)
+
+Human-readable markdown report containing:
+- Summary of changes made
+- Issues addressed from QA report
+- Commands run and their results
+- Any blockers encountered
+- Files modified
+
+Example:
+```markdown
+# Builder Report - Cycle 3
+
+## Summary
+Fixed authentication bug and added missing test coverage.
+
+## Issues Addressed
+- [BLOCKER] Fixed JWT validation in auth.py:142
+- [MAJOR] Added test for edge case in test_auth.py
+
+## Commands Run
+- `pytest tests/` - PASSED (42 tests)
+- `ruff check .` - PASSED (no issues)
+
+## Files Modified
+- src/auth.py (lines 140-150)
+- tests/test_auth.py (added new test)
+
+## Notes for QA
+- JWT expiry now correctly validated
+- Test coverage increased to 85%
+```
+
+### 2. STDOUT JSON (final output)
+
+Your FINAL output to stdout MUST be a single JSON object:
+
+```json
+{
+  "status": "READY_FOR_QA",
+  "changed_files": [
+    "src/auth.py",
+    "tests/test_auth.py"
+  ],
+  "commands_run": [
+    "pytest tests/",
+    "ruff check ."
+  ],
+  "notes_for_QA": [
+    "Fixed JWT validation bug",
+    "Added edge case test",
+    "All tests passing"
+  ]
+}
+```
+
+## WORKFLOW
+
+1. Read the QA report and identify all issues to address
+2. Read relevant source files in REPO_DIR
+3. Implement fixes for each issue (BLOCKERS first)
+4. Run the gate command to verify
+5. If gates fail, fix and retry
+6. Write BUILDER_REPORT.md to TASK_DIR
+7. Output the JSON summary to stdout
+
+## REMEMBER
+
+- You cannot ask questions - make the best decision based on available info
+- If unsure, check /home/zaks/bookkeeping/docs/ for guidance
+- The task is NOT done until QA says PASS - focus on fixing issues
+- Do not output anything after the JSON - it must be parseable
+
+=== BUILDER OUTPUT SCHEMA ===
+Your final JSON output MUST conform to this schema:
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Lab Loop Builder Report",
+  "description": "Schema-enforced output from Builder agent to eliminate drift and ensure machine-verifiable reports",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": ["READY_FOR_QA", "BLOCKED", "ERROR"],
+      "description": "READY_FOR_QA = changes made, run QA. BLOCKED = cannot proceed without human input. ERROR = unexpected failure."
+    },
+    "cycle": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Current cycle number"
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 10,
+      "description": "Brief description of what was done this cycle"
+    },
+    "issues_addressed": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/addressed_issue" },
+      "description": "Issues from QA report that were addressed"
+    },
+    "changed_files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "path": { "type": "string" },
+          "action": { "type": "string", "enum": ["created", "modified", "deleted"] },
+          "lines_changed": { "type": "integer", "minimum": 0 },
+          "description": { "type": "string" }
+        },
+        "required": ["path", "action"]
+      },
+      "description": "Files modified during this cycle with details"
+    },
+    "commands_run": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "command": { "type": "string" },
+          "exit_code": { "type": "integer" },
+          "success": { "type": "boolean" },
+          "output_summary": { "type": "string", "maxLength": 500 }
+        },
+        "required": ["command", "exit_code", "success"]
+      },
+      "description": "Commands executed with their results"
+    },
+    "gate_pre_check": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ran_gate": { "type": "boolean" },
+        "gate_passed": { "type": "boolean" },
+        "gate_exit_code": { "type": "integer" },
+        "failure_summary": { "type": "string" }
+      },
+      "required": ["ran_gate"],
+      "description": "Did Builder run the gate command before finishing?"
+    },
+    "blockers_encountered": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "type": { "type": "string", "enum": ["missing_info", "unclear_requirement", "external_dependency", "permission", "other"] },
+          "description": { "type": "string" },
+          "suggested_resolution": { "type": "string" }
+        },
+        "required": ["type", "description"]
+      },
+      "description": "Blockers that prevented full completion"
+    },
+    "notes_for_qa": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Important notes for QA to consider during verification"
+    },
+    "confidence": {
+      "type": "string",
+      "enum": ["high", "medium", "low"],
+      "description": "Builder's confidence that changes will pass QA"
+    },
+    "diff_stats": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "files_changed": { "type": "integer", "minimum": 0 },
+        "insertions": { "type": "integer", "minimum": 0 },
+        "deletions": { "type": "integer", "minimum": 0 },
+        "total_lines": { "type": "integer", "minimum": 0 }
+      },
+      "description": "Git diff statistics for this cycle"
+    }
+  },
+  "required": [
+    "status",
+    "cycle",
+    "summary",
+    "issues_addressed",
+    "changed_files",
+    "commands_run",
+    "gate_pre_check",
+    "notes_for_qa"
+  ],
+  "$defs": {
+    "addressed_issue": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "severity": { "type": "string", "enum": ["BLOCKER", "MAJOR", "MINOR"] },
+        "original_title": { "type": "string" },
+        "resolution": { "type": "string" },
+        "files_modified": { "type": "array", "items": { "type": "string" } },
+        "verified": { "type": "boolean", "description": "Did Builder verify the fix works?" }
+      },
+      "required": ["severity", "original_title", "resolution", "verified"]
+    }
+  }
+}
+
+=== TASK MISSION ===
+# Mission: MathLib Phase 1 - Fix Bugs and Implement GCD
+
+## Objective
+Fix the divide() function bug and implement the gcd() function to make all tests pass.
+
+## Background
+MathLib is a simple math library with intentional bugs for E2E testing of the Lab Loop automation system.
+
+## Current State
+- Tests are FAILING (14 failed, 13 passed)
+- `divide()` uses floor division (`//`) instead of true division (`/`)
+- `gcd()` function is missing
+
+## Required Changes
+
+### 1. Fix divide() function in `mathlib/core.py`
+**Problem:** Uses floor division `a // b` instead of true division `a / b`
+**Fix:** Change line `return a // b` to `return a / b`
+
+Expected behavior after fix:
+- `divide(5, 2)` returns `2.5` (not `2`)
+- `divide(-3, 2)` returns `-1.5` (not `-2`)
+- `divide(7, 2)` returns `3.5` (not `3`)
+
+### 2. Implement gcd() function in `mathlib/core.py`
+**Requirement:** Implement Greatest Common Divisor using Euclid's algorithm
+
+Rules:
+- Must handle negative inputs (use absolute values)
+- `gcd(0, 0)` must return `0` (explicit decision)
+- `gcd(a, 0)` returns `abs(a)`
+- `gcd(0, b)` returns `abs(b)`
+
+Implementation pattern:
+```python
+def gcd(a: int, b: int) -> int:
+    a, b = abs(a), abs(b)
+    while b:
+        a, b = b, a % b
+    return a
+```
+
+### 3. Export gcd from `mathlib/__init__.py`
+Add `gcd` to the imports and `__all__` list.
+
+## Constraints
+- Only modify files in `mathlib/` directory
+- Do NOT modify test files
+- Keep implementations simple and readable
+
+## Gate Command
+```bash
+./verify.sh
+```
+
+## Success Criteria
+All 27 tests must pass (currently 13 pass, 14 fail).
+
+=== TASK ACCEPTANCE CRITERIA ===
+# Acceptance Criteria - MathLib Phase 1
+
+## Definition of Done
+
+The task is complete when ALL of the following are true:
+
+### Functional Requirements
+
+#### Bug Fix: divide()
+- [ ] `divide(5, 2)` returns `2.5` (float, not int)
+- [ ] `divide(10, 4)` returns `2.5`
+- [ ] `divide(-3, 2)` returns `-1.5`
+- [ ] `divide(7, 2)` returns `3.5`
+- [ ] `divide(5, 0)` raises `ZeroDivisionError`
+
+#### New Feature: gcd()
+- [ ] `gcd(12, 8)` returns `4`
+- [ ] `gcd(17, 13)` returns `1`
+- [ ] `gcd(100, 25)` returns `25`
+- [ ] `gcd(-12, 8)` returns `4` (handles negatives)
+- [ ] `gcd(12, -8)` returns `4`
+- [ ] `gcd(-12, -8)` returns `4`
+- [ ] `gcd(0, 5)` returns `5`
+- [ ] `gcd(5, 0)` returns `5`
+- [ ] `gcd(0, 0)` returns `0`
+- [ ] `gcd` is importable from `mathlib.core`
+- [ ] `gcd` is exported from `mathlib` package
+
+### Quality Gates
+- [ ] All pytest tests pass (27 total)
+- [ ] No new test files created
+- [ ] Only `mathlib/` files modified
+
+## Gate Command
+```bash
+./verify.sh
+```
+
+Exit code 0 = PASS, non-zero = FAIL.
+
+## Verification
+Run the gate command. If it exits with code 0 and shows "27 passed", the task is complete.
+
+=== CURRENT CYCLE ===
+Cycle: 1
+
+=== LATEST QA REPORT (JSON) ===
+{
+  "verdict": "FAIL",
+  "cycle": 0,
+  "early_exit": false,
+  "summary": "Initial state: 14 tests failing. Builder must fix divide() bug and implement gcd() function.",
+  "blockers": [
+    {
+      "severity": "BLOCKER",
+      "title": "divide() uses floor division instead of true division",
+      "details": "The divide function returns integer results instead of floats. divide(5, 2) returns 2 instead of 2.5.",
+      "files": ["mathlib/core.py"],
+      "repro_steps": ["Run: .venv/bin/pytest tests/test_core.py::TestDivide -v"],
+      "expected": "divide(5, 2) == 2.5",
+      "actual": "divide(5, 2) == 2",
+      "recommended_fix": "Change 'return a // b' to 'return a / b' in divide function",
+      "validation_steps": ["Run pytest and verify TestDivide tests pass"]
+    },
+    {
+      "severity": "BLOCKER",
+      "title": "gcd() function not implemented",
+      "details": "The gcd function does not exist in mathlib.core. Must implement using Euclid's algorithm.",
+      "files": ["mathlib/core.py", "mathlib/__init__.py"],
+      "repro_steps": ["Run: .venv/bin/pytest tests/test_core.py::TestGcd -v"],
+      "expected": "gcd function exists and all tests pass",
+      "actual": "ImportError: cannot import name 'gcd' from 'mathlib.core'",
+      "recommended_fix": "Add gcd(a, b) function using Euclid's algorithm with abs() for negative handling",
+      "validation_steps": ["Run pytest and verify TestGcd tests pass"]
+    }
+  ],
+  "majors": [],
+  "minors": [],
+  "spec_compliance": {
+    "endpoints_match": true,
+    "schemas_match": true,
+    "status_strings_match": true,
+    "auth_matches": true,
+    "db_mode_matches": true,
+    "streaming_matches": true,
+    "local_llm_lane_verified": true,
+    "mocks_disabled_for_gates": true
+  },
+  "next_actions_for_builder": [
+    {
+      "priority": 1,
+      "severity": "BLOCKER",
+      "summary": "Fix divide() to use true division (/) instead of floor division (//)",
+      "files": ["mathlib/core.py"],
+      "how_to_validate": [".venv/bin/pytest tests/test_core.py::TestDivide -v"]
+    },
+    {
+      "priority": 2,
+      "severity": "BLOCKER",
+      "summary": "Implement gcd(a, b) function using Euclid's algorithm",
+      "files": ["mathlib/core.py"],
+      "how_to_validate": [".venv/bin/pytest tests/test_core.py::TestGcd -v"]
+    },
+    {
+      "priority": 3,
+      "severity": "BLOCKER",
+      "summary": "Export gcd from mathlib/__init__.py",
+      "files": ["mathlib/__init__.py"],
+      "how_to_validate": ["python3 -c 'from mathlib import gcd; print(gcd(12, 8))'"]
+    }
+  ],
+  "evidence": []
+}
+
+=== TASK DIRECTORY ===
+TASK_DIR=/home/zaks/bookkeeping/labloop/tasks/e2e_mathlib_phase1
+
+=== SAFETY CONSTRAINTS ===
+MAX_FILES_PER_CYCLE=20
+MAX_LINES_PER_CYCLE=1000
+Protected paths: .env, secrets/**, credentials/**, *.pem, *.key
+
+=== INSTRUCTIONS ===
+1. Read the QA report above and address the issues
+2. Make changes to fix blockers first, then majors, then minors
+3. Run the gate command to verify: ./verify.sh
+4. Write your report to: /home/zaks/bookkeeping/labloop/tasks/e2e_mathlib_phase1/BUILDER_REPORT.md
+5. Output ONLY a JSON object matching the BUILDER OUTPUT SCHEMA above
+6. Include all required fields: status, cycle, summary, issues_addressed, changed_files, commands_run, gate_pre_check, notes_for_qa

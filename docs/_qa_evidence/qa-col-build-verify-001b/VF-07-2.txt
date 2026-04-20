@@ -1,0 +1,6 @@
+21:  const actions = useMemo(() => {
+42:      // Map child items into actions
+54:      // Return only valid actions (ignoring null base actions for containers)
+88:        keywords: 'actions tasks pending kinetic',
+91:        perform: () => navigateTo('/actions'),
+107:    <KBarProvider actions={actions}>

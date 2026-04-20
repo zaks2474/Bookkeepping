@@ -1,0 +1,47 @@
+[Unit]
+Description=ZakOps Deal Lifecycle API (:8090)
+After=network-online.target
+Wants=network-online.target
+Documentation=file:///home/zaks/bookkeeping/docs/ACTION-ENGINE-V1.2-INDEX.md
+
+[Service]
+Type=simple
+User=zaks
+Group=zaks
+WorkingDirectory=/home/zaks/scripts
+
+Environment=PYTHONUNBUFFERED=1
+Environment=PYTHONPATH=/home/zaks/scripts:/home/zaks/Zaks-llm/src
+Environment=DATAROOM_ROOT=/home/zaks/DataRoom
+Environment=ZAKOPS_STATE_DB=/home/zaks/DataRoom/.deal-registry/ingest_state.db
+
+# Safety defaults (no cloud for baseline operations unless explicitly enabled later)
+Environment=ALLOW_CLOUD_DEFAULT=false
+Environment=OPENAI_API_BASE=http://localhost:8000/v1
+
+# Tool gateway is executed by the runner; keep API-side tool execution disabled by default.
+Environment=ZAKOPS_TOOL_GATEWAY_ENABLED=false
+
+# Gmail MCP diagnostics (used by /api/actions/runner-status health field)
+Environment=GMAIL_MCP_CREDENTIALS_PATH=/home/zaks/.gmail-mcp/credentials.json
+Environment="GMAIL_MCP_COMMAND=npx -y @gongrzhe/server-gmail-autoauth-mcp"
+
+# Optional operator overrides (do NOT store secrets in repo)
+EnvironmentFile=-/etc/zakops/zakops-api-8090.env
+
+ExecStartPre=/usr/bin/python3 /home/zaks/scripts/zakops_api_preflight.py
+ExecStart=/usr/bin/python3 /home/zaks/scripts/deal_lifecycle_api.py --host 127.0.0.1 --port 8090
+
+Restart=always
+RestartSec=3
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=zakops-api-8090
+
+# Security hardening (relaxed for DataRoom access)
+NoNewPrivileges=true
+ProtectSystem=false
+
+[Install]
+WantedBy=multi-user.target
+

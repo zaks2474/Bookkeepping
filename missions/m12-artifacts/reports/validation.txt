@@ -1,0 +1,49 @@
+M12 Validation Transcript
+Date: 2026-02-12
+
+=== make validate-local ===
+Result: PASS
+- Sync types: PASS
+- Lint: PASS
+- TypeScript (tsc --noEmit): PASS
+- Contract surfaces: PASS
+- Frontend governance: PASS
+- Redocly ignores: 57 (ceiling: 57)
+- Port 8090 drift check: PASS
+
+=== npx tsc --noEmit ===
+Result: PASS (no output = no errors)
+
+=== Accessibility E2E Tests ===
+Result: 25/25 PASS
+
+accessibility-keyboard-sweep.spec.ts (10 tests):
+  KB-01: /dashboard tab navigation — PASS
+  KB-02: /deals tab controls — PASS
+  KB-03: /deals/new form fields — PASS
+  KB-04: /actions controls — PASS
+  KB-05: /quarantine controls — PASS
+  KB-06: /chat input — PASS
+  KB-07: /settings controls — PASS
+  KB-08: /hq controls — PASS
+  KB-09: Sidebar Ctrl+B toggle — PASS
+  KB-10: Global search Ctrl+K — PASS
+
+accessibility-focus-management.spec.ts (5 tests):
+  FM-01: Search dialog focus trap — PASS
+  FM-02: Mobile sidebar sheet — PASS
+  FM-03: Radix Dialog trap — PASS
+  FM-04: Escape closes dialog — PASS
+  FM-05: No auto-focus steal — PASS
+
+accessibility-contrast-semantics-smoke.spec.ts (10 tests):
+  CS-01: HTML lang attribute — PASS
+  CS-02: Document title — PASS
+  CS-03: Sidebar nav structure — PASS
+  CS-04: Focus indicators — PASS
+  CS-05: Button accessible names — PASS
+  CS-06: Form input labels — PASS
+  CS-07: SVG aria-hidden — PASS
+  CS-08: Color contrast (canvas/oklch) — PASS
+  CS-09: Screen reader text — PASS
+  CS-10: Dialog titles — PASS

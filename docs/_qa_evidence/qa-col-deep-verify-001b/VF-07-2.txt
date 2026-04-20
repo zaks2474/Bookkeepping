@@ -1,0 +1,3 @@
+4:Handles proposal execution, status tracking, and the correct_brain_summary handler.
+28:    "correct_brain_summary": "_handle_correct_brain_summary",
+238:    async def _handle_correct_brain_summary(self, proposal: dict, user_id: str) -> dict:

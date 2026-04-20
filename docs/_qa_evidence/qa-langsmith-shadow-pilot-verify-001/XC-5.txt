@@ -1,0 +1,16 @@
+=== E02 claims startup gate at lines 428-439 ===
+428:    # LAYER 2 — API key startup verification gate
+429:    # Warn loudly if ZAKOPS_API_KEY is not set (injection paths will 503 at runtime)
+430:    api_key = os.getenv("ZAKOPS_API_KEY", "").strip()
+431:    app.state.api_key_configured = bool(api_key)
+432:    if not api_key:
+433:        print(
+434:            "STARTUP WARNING: ZAKOPS_API_KEY is not set — "
+435:            "injection paths (/api/quarantine) will return 503 (fail-closed). "
+436:            "Set ZAKOPS_API_KEY to enable quarantine injection."
+437:        )
+438:    else:
+439:        print("API key gate PASSED: ZAKOPS_API_KEY is configured")
+MATCH: YES — LAYER 2 gate is exactly at lines 428-439
+
+VERDICT: PASS — line numbers accurate

@@ -1,0 +1,8 @@
+4:Scope restricts tools by chat context (global/deal/document).
+6:Final allowed set = intersection of scope tools AND role tools.
+17:SCOPE_TOOL_MAP: dict[str, frozenset[str]] = {
+71:        scope: Chat scope type (global, deal, document).
+78:    scope_tools = SCOPE_TOOL_MAP.get(scope, SCOPE_TOOL_MAP[DEFAULT_SCOPE])
+87:            return scope_tools
+89:    allowed = scope_tools & role_tools
+96:            scope_tools=list(scope_tools),

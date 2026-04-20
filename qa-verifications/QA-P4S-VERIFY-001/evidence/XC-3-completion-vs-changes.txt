@@ -1,0 +1,17 @@
+=== XC-3 COMPLETION VS CHANGES ===
+--- Key findings mentioned in both ---
+staleTime: completion=2 changes=1
+rewrites: completion=2 changes=3
+timeout: completion=2 changes=27
+alphanumeric: completion=0 changes=1
+DealCard: completion=2 changes=2
+border-border: completion=3 changes=0
+window.confirm: completion=2 changes=0
+scroll: completion=2 changes=13
+max-h: completion=1 changes=2
+
+--- ANALYSIS ---
+alphanumeric: completion uses 'A-Za-z0-9' not 'alphanumeric' — acceptable synonym
+border-border: CHANGES says 'bordered card container' — acceptable synonym
+window.confirm: CHANGES says 'confirmation dialog' — acceptable synonym
+Major fix keywords covered in both: 7/9 direct, 2/9 synonym. PASS.

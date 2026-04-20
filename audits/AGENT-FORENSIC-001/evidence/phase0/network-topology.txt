@@ -1,0 +1,62 @@
+=== Docker Networks ===
+NETWORK ID     NAME                               DRIVER    SCOPE
+0b9550fcc278   agent-api_agent-network            bridge    local
+2a60a0a17132   bridge                             bridge    local
+cd70d330af1e   crawl4ai-rag_backend               bridge    local
+67d13af2e0a0   docker_default                     bridge    local
+f23dd32ebfd3   docker_zakops-network              bridge    local
+0764546bc510   host                               host      local
+36d3b1ed6a4d   none                               null      local
+419cc1a2919e   zakops-agent-api_agent-network     bridge    local
+58742158cf8f   zakops-backend_zakops              bridge    local
+2157cfb8d86f   zakops-temporal_temporal-network   bridge    local
+11dd70001e88   zakops_network                     bridge    local
+ead8c6c72273   zaks-llm_ai-network                bridge    local
+
+=== Network: agent-api_agent-network ===
+zakops-agent-api (172.26.0.2/16)
+zakops-agent-db (172.26.0.3/16)
+
+
+=== Network: bridge ===
+
+
+=== Network: crawl4ai-rag_backend ===
+rag-rest-api (172.19.0.2/16)
+rag-db (172.19.0.3/16)
+
+
+=== Network: docker_default ===
+
+
+=== Network: docker_zakops-network ===
+
+
+=== Network: host ===
+
+
+=== Network: none ===
+
+
+=== Network: zakops-agent-api_agent-network ===
+
+
+=== Network: zakops-backend_zakops ===
+
+
+=== Network: zakops-temporal_temporal-network ===
+
+
+=== Network: zakops_network ===
+zakops-backend-backend-1 (172.23.0.4/16)
+zakops-postgres-1 (172.23.0.3/16)
+zakops-backend-outbox-worker-1 (172.23.0.5/16)
+zakops-redis-1 (172.23.0.2/16)
+
+
+=== Network: zaks-llm_ai-network ===
+openwebui (172.18.0.2/16)
+rag-rest-api (172.18.0.3/16)
+vllm-qwen (172.18.0.4/16)
+
+

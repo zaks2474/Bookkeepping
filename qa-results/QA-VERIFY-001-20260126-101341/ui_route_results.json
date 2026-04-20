@@ -1,0 +1,250 @@
+{
+  "summary": {
+    "passed": 8,
+    "total": 8
+  },
+  "test_suite": "UI Routes",
+  "tests": [
+    {
+      "details": {
+        "request": {
+          "elapsed_ms": 21,
+          "method": "GET",
+          "ok": true,
+          "request_json": null,
+          "response_headers": {
+            "Cache-Control": "private, no-cache, no-store, max-age=0, must-revalidate",
+            "Connection": "keep-alive",
+            "Content-Encoding": "gzip",
+            "Content-Type": "text/html; charset=utf-8",
+            "Date": "Mon, 26 Jan 2026 16:13:55 GMT",
+            "Keep-Alive": "timeout=5",
+            "Transfer-Encoding": "chunked",
+            "Vary": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch, Accept-Encoding",
+            "X-Powered-By": "Next.js",
+            "link": "</_next/static/media/26d0ba92e140f0dc-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/3be83a346553616c-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/4cf2300e9c8272f7-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/93f479601ee12b01-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/e4af272ccee01ff0-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/ec14413c594b3356-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\""
+          },
+          "response_json": null,
+          "response_text": "<!DOCTYPE html><html lang=\"en\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"stylesheet\" href=\"/_next/static/css/750a6387d561cd52.css\" data-precedence=\"next\"/><link rel=\"stylesheet\" href=\"/_next/static/css/92c73f2cba2c2a4d.css\" data-precedence=\"next\"/><link rel=\"stylesheet\" href=\"/_next/static/css/36d3e6130cab341d.css\" data-precedence=\"next\"/><link rel=\"preload\" as=\"script\" fetchPriority=\"low\" href=\"/_next/static/chunks/webpack-051b9f86f3f4c432.js\"/><script src=\"/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js\" async=\"\"></script><script src=\"/_next/static/chunks/1255-8befde0980f5cba9.js\" async=\"\"></script><script src=\"/_next/static/chunks/main-app-f3336e172256d2ab.js\" async=\"\"></script><script src=\"/_next/static/chunks/4909-5b84ef3be4b6f0dd.js\" async=\"\"></script><script src=\"/_next/static/chunks/7199-a4dcfc37fe77259d.js\" async=\"\"></script><script src=\"/_next/static/chunks/4109-04ee94a6b268fead.js\" async=\"\"></script><script src=\"/_next/static/chunks/9034-8e25483803b61e07.js\" async=\"\"></script><script src=\"/_next/static/chunks/6848-b17e0ba2b74e74bb.js\" async=\"\"></script><script src=\"/_next/static/chunks/5578-d9ebc5f762d2b52d.js\" async=\"\"></script><script src=\"/_next/static/chunks/7473-cec89bb7ba4b6760.js\" async=\"\"></script><script src=\"/_next/static/chunks/7274-dd6dc2d555eac5ab.js\" async=\"\"></script><script src=\"/_next/static/chunks/6743-5dfcb2a52b2a4ad6.js\" async=\"\"></script><script src=\"/_next/static/chunks/9371-91feddd1959ae1d7.js\" async=\"\"></script><script src=\"/_next/static/chunks/2601-97ad78a8d6212721.js\" async=\"\"></script><script src=\"/_next/static/chunks/2234-7702c598257b8d16.js\" async=\"\"></script><script src=\"/_next/static/chunks/1204-32594464cd8d5d0c.js\" async=\"\"></script><script src=\"/_next/static/chunks/4879-72c33e493193298c.js\" async=\"\"></script><script src=\"/_next/static/chunks/5190-671064a79082b5f2.js\" async=\"\"></script><script src=\"/_next/static/chunks/8720-1a27e2f69afa3d88.js\" async=\"\"></script><script src=\"/_next/static/chunks/6529-1def80c7765c9eb8.js\" async=\"\"></script><script src=\"/_next/static/chunks/7247-2be4307ec8cdb75b.js\" async=\"\"></script><script src=\"/_next/static/chunks/4429-055d8b3a680523ff.js\" async=\"\"></script><script src=\"/_next/static/chunks/9004-ae61728dda6ad4f5.js\" async=\"\"></script><script src=\"/_next/static/chunks/3615-47ddda4e08c1d5af.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/dashboard/page-5260702065866ce3.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/dashboard/loading-5550d3e6a8dd94d5.js\" async=\"\"></script><script src=\"/_next/static/chunks/9136-2db3df07172e1c02.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/layout-03585d44123f90f6.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/not-found-0709d2820f487326.js\" async=\"\"></script><script src=\"/_next/static/chunks/946-44607d72ebbfbf2c.js\" async=\"\"></script><script src=\"/_next/static/chunks/5081-1fedd22776c42f0b.js\" async=\"\"></script><script src=\"/_next/static/chunks/7840-00d4673194d1a95e.js\" async=\"\"></script><script src=\"/_next/static/chunks/2095-9bb4955bae9d9bd5.js\" async=\"\"></script><script src=\"/_next/static/chunks/2365-b644e2d8889441f1.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/dashboard/layout-83fedc73b30b1f36.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/dashboard/error-53e9a4607744fc69.js\" async=\"\"></script><meta name=\"next-size-adjust\" content=\"\"/><meta name=\"theme-color\" content=\"#ffffff\"/><title>Dashboard | ZakOps</title><meta name=\"description\" content=\"Deal Lifecycle Management Dashboard\"/><link rel=\"icon\" href=\"/favicon.ico\" type=\"image/x-icon\" sizes=\"16x16\"/><script>\n              try {\n                if (localStorage.theme === 'dark' || ((!('theme' in localStorage) || localStorage.theme === 'system') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {\n                  document.querySelector('meta[name=\"theme-color\"]').setAttribute('content', '#09090b')\n            \n\u2026(truncated, 90986 bytes total)\u2026",
+          "status_code": 200,
+          "url": "http://localhost:3003/dashboard"
+        }
+      },
+      "id": "5.1.1",
+      "name": "UI route Dashboard (/dashboard)",
+      "passed": true,
+      "timestamp_utc": "2026-01-26T16:13:55.588342+00:00"
+    },
+    {
+      "details": {
+        "request": {
+          "elapsed_ms": 15,
+          "method": "GET",
+          "ok": true,
+          "request_json": null,
+          "response_headers": {
+            "Cache-Control": "private, no-cache, no-store, max-age=0, must-revalidate",
+            "Connection": "keep-alive",
+            "Content-Encoding": "gzip",
+            "Content-Type": "text/html; charset=utf-8",
+            "Date": "Mon, 26 Jan 2026 16:13:55 GMT",
+            "Keep-Alive": "timeout=5",
+            "Transfer-Encoding": "chunked",
+            "Vary": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch, Accept-Encoding",
+            "X-Powered-By": "Next.js",
+            "link": "</_next/static/media/26d0ba92e140f0dc-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/3be83a346553616c-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/4cf2300e9c8272f7-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/93f479601ee12b01-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/e4af272ccee01ff0-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/ec14413c594b3356-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\""
+          },
+          "response_json": null,
+          "response_text": "<!DOCTYPE html><html lang=\"en\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"stylesheet\" href=\"/_next/static/css/750a6387d561cd52.css\" data-precedence=\"next\"/><link rel=\"stylesheet\" href=\"/_next/static/css/92c73f2cba2c2a4d.css\" data-precedence=\"next\"/><link rel=\"stylesheet\" href=\"/_next/static/css/36d3e6130cab341d.css\" data-precedence=\"next\"/><link rel=\"preload\" as=\"script\" fetchPriority=\"low\" href=\"/_next/static/chunks/webpack-051b9f86f3f4c432.js\"/><script src=\"/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js\" async=\"\"></script><script src=\"/_next/static/chunks/1255-8befde0980f5cba9.js\" async=\"\"></script><script src=\"/_next/static/chunks/main-app-f3336e172256d2ab.js\" async=\"\"></script><script src=\"/_next/static/chunks/4909-5b84ef3be4b6f0dd.js\" async=\"\"></script><script src=\"/_next/static/chunks/7199-a4dcfc37fe77259d.js\" async=\"\"></script><script src=\"/_next/static/chunks/4109-04ee94a6b268fead.js\" async=\"\"></script><script src=\"/_next/static/chunks/9034-8e25483803b61e07.js\" async=\"\"></script><script src=\"/_next/static/chunks/6848-b17e0ba2b74e74bb.js\" async=\"\"></script><script src=\"/_next/static/chunks/5578-d9ebc5f762d2b52d.js\" async=\"\"></script><script src=\"/_next/static/chunks/7473-cec89bb7ba4b6760.js\" async=\"\"></script><script src=\"/_next/static/chunks/7274-dd6dc2d555eac5ab.js\" async=\"\"></script><script src=\"/_next/static/chunks/6743-5dfcb2a52b2a4ad6.js\" async=\"\"></script><script src=\"/_next/static/chunks/2601-97ad78a8d6212721.js\" async=\"\"></script><script src=\"/_next/static/chunks/2234-7702c598257b8d16.js\" async=\"\"></script><script src=\"/_next/static/chunks/1204-32594464cd8d5d0c.js\" async=\"\"></script><script src=\"/_next/static/chunks/4879-72c33e493193298c.js\" async=\"\"></script><script src=\"/_next/static/chunks/5190-671064a79082b5f2.js\" async=\"\"></script><script src=\"/_next/static/chunks/7247-2be4307ec8cdb75b.js\" async=\"\"></script><script src=\"/_next/static/chunks/4429-055d8b3a680523ff.js\" async=\"\"></script><script src=\"/_next/static/chunks/9004-ae61728dda6ad4f5.js\" async=\"\"></script><script src=\"/_next/static/chunks/3615-47ddda4e08c1d5af.js\" async=\"\"></script><script src=\"/_next/static/chunks/271-3802cf5aa76a060f.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/hq/page-e27d112a48c8178d.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/hq/loading-950a42ff818db0ee.js\" async=\"\"></script><script src=\"/_next/static/chunks/9371-91feddd1959ae1d7.js\" async=\"\"></script><script src=\"/_next/static/chunks/8720-1a27e2f69afa3d88.js\" async=\"\"></script><script src=\"/_next/static/chunks/9136-2db3df07172e1c02.js\" async=\"\"></script><script src=\"/_next/static/chunks/6529-1def80c7765c9eb8.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/layout-03585d44123f90f6.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/not-found-0709d2820f487326.js\" async=\"\"></script><script src=\"/_next/static/chunks/946-44607d72ebbfbf2c.js\" async=\"\"></script><script src=\"/_next/static/chunks/5081-1fedd22776c42f0b.js\" async=\"\"></script><script src=\"/_next/static/chunks/7840-00d4673194d1a95e.js\" async=\"\"></script><script src=\"/_next/static/chunks/2095-9bb4955bae9d9bd5.js\" async=\"\"></script><script src=\"/_next/static/chunks/2365-b644e2d8889441f1.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/hq/layout-7c36c7f9e41e6f5f.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/hq/error-fff3962ba1f694e7.js\" async=\"\"></script><meta name=\"next-size-adjust\" content=\"\"/><meta name=\"theme-color\" content=\"#ffffff\"/><title>Operator HQ | ZakOps</title><meta name=\"description\" content=\"Command center for deal operations\"/><link rel=\"icon\" href=\"/favicon.ico\" type=\"image/x-icon\" sizes=\"16x16\"/><script>\n              try {\n                if (localStorage.theme === 'dark' || ((!('theme' in localStorage) || localStorage.theme === 'system') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {\n                  document.querySelector('meta[name=\"theme-color\"]\n\u2026(truncated, 95008 bytes total)\u2026",
+          "status_code": 200,
+          "url": "http://localhost:3003/hq"
+        }
+      },
+      "id": "5.1.2",
+      "name": "UI route Operator HQ (/hq)",
+      "passed": true,
+      "timestamp_utc": "2026-01-26T16:13:55.604288+00:00"
+    },
+    {
+      "details": {
+        "request": {
+          "elapsed_ms": 17,
+          "method": "GET",
+          "ok": true,
+          "request_json": null,
+          "response_headers": {
+            "Cache-Control": "private, no-cache, no-store, max-age=0, must-revalidate",
+            "Connection": "keep-alive",
+            "Content-Encoding": "gzip",
+            "Content-Type": "text/html; charset=utf-8",
+            "Date": "Mon, 26 Jan 2026 16:13:55 GMT",
+            "Keep-Alive": "timeout=5",
+            "Transfer-Encoding": "chunked",
+            "Vary": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch, Accept-Encoding",
+            "X-Powered-By": "Next.js",
+            "link": "</_next/static/media/26d0ba92e140f0dc-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/3be83a346553616c-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/4cf2300e9c8272f7-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/93f479601ee12b01-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/e4af272ccee01ff0-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/ec14413c594b3356-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\""
+          },
+          "response_json": null,
+          "response_text": "<!DOCTYPE html><html lang=\"en\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"stylesheet\" href=\"/_next/static/css/750a6387d561cd52.css\" data-precedence=\"next\"/><link rel=\"stylesheet\" href=\"/_next/static/css/92c73f2cba2c2a4d.css\" data-precedence=\"next\"/><link rel=\"stylesheet\" href=\"/_next/static/css/36d3e6130cab341d.css\" data-precedence=\"next\"/><link rel=\"preload\" as=\"script\" fetchPriority=\"low\" href=\"/_next/static/chunks/webpack-051b9f86f3f4c432.js\"/><script src=\"/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js\" async=\"\"></script><script src=\"/_next/static/chunks/1255-8befde0980f5cba9.js\" async=\"\"></script><script src=\"/_next/static/chunks/main-app-f3336e172256d2ab.js\" async=\"\"></script><script src=\"/_next/static/chunks/602dbae6-f254e7ce80402659.js\" async=\"\"></script><script src=\"/_next/static/chunks/4909-5b84ef3be4b6f0dd.js\" async=\"\"></script><script src=\"/_next/static/chunks/7199-a4dcfc37fe77259d.js\" async=\"\"></script><script src=\"/_next/static/chunks/4109-04ee94a6b268fead.js\" async=\"\"></script><script src=\"/_next/static/chunks/9034-8e25483803b61e07.js\" async=\"\"></script><script src=\"/_next/static/chunks/6848-b17e0ba2b74e74bb.js\" async=\"\"></script><script src=\"/_next/static/chunks/5578-d9ebc5f762d2b52d.js\" async=\"\"></script><script src=\"/_next/static/chunks/7473-cec89bb7ba4b6760.js\" async=\"\"></script><script src=\"/_next/static/chunks/6743-5dfcb2a52b2a4ad6.js\" async=\"\"></script><script src=\"/_next/static/chunks/2601-97ad78a8d6212721.js\" async=\"\"></script><script src=\"/_next/static/chunks/1204-32594464cd8d5d0c.js\" async=\"\"></script><script src=\"/_next/static/chunks/4879-72c33e493193298c.js\" async=\"\"></script><script src=\"/_next/static/chunks/8720-1a27e2f69afa3d88.js\" async=\"\"></script><script src=\"/_next/static/chunks/6310-1a6b5fc7233a9514.js\" async=\"\"></script><script src=\"/_next/static/chunks/5738-2ccb23ea650c9da4.js\" async=\"\"></script><script src=\"/_next/static/chunks/4429-055d8b3a680523ff.js\" async=\"\"></script><script src=\"/_next/static/chunks/9004-ae61728dda6ad4f5.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/deals/page-ef14eb7443d009d8.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/deals/loading-c839c2e5a74a2425.js\" async=\"\"></script><script src=\"/_next/static/chunks/9371-91feddd1959ae1d7.js\" async=\"\"></script><script src=\"/_next/static/chunks/9136-2db3df07172e1c02.js\" async=\"\"></script><script src=\"/_next/static/chunks/6529-1def80c7765c9eb8.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/layout-03585d44123f90f6.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/not-found-0709d2820f487326.js\" async=\"\"></script><script src=\"/_next/static/chunks/7274-dd6dc2d555eac5ab.js\" async=\"\"></script><script src=\"/_next/static/chunks/2234-7702c598257b8d16.js\" async=\"\"></script><script src=\"/_next/static/chunks/946-44607d72ebbfbf2c.js\" async=\"\"></script><script src=\"/_next/static/chunks/5081-1fedd22776c42f0b.js\" async=\"\"></script><script src=\"/_next/static/chunks/7840-00d4673194d1a95e.js\" async=\"\"></script><script src=\"/_next/static/chunks/7247-2be4307ec8cdb75b.js\" async=\"\"></script><script src=\"/_next/static/chunks/2095-9bb4955bae9d9bd5.js\" async=\"\"></script><script src=\"/_next/static/chunks/2365-b644e2d8889441f1.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/deals/layout-840caa7234be9ad0.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/deals/error-c23f89bd11f1cf54.js\" async=\"\"></script><meta name=\"next-size-adjust\" content=\"\"/><meta name=\"theme-color\" content=\"#ffffff\"/><title>ZakOps Dashboard</title><meta name=\"description\" content=\"Deal Lifecycle Management Dashboard\"/><link rel=\"icon\" href=\"/favicon.ico\" type=\"image/x-icon\" sizes=\"16x16\"/><script>\n              try {\n                if (localStorage.theme === 'dark' || ((!('theme' in localStorage) || localStorage.theme === 'system') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {\n                  document.querySelector('meta[name=\n\u2026(truncated, 73034 bytes total)\u2026",
+          "status_code": 200,
+          "url": "http://localhost:3003/deals"
+        }
+      },
+      "id": "5.1.3",
+      "name": "UI route Deals List (/deals)",
+      "passed": true,
+      "timestamp_utc": "2026-01-26T16:13:55.621762+00:00"
+    },
+    {
+      "details": {
+        "request": {
+          "elapsed_ms": 16,
+          "method": "GET",
+          "ok": true,
+          "request_json": null,
+          "response_headers": {
+            "Cache-Control": "private, no-cache, no-store, max-age=0, must-revalidate",
+            "Connection": "keep-alive",
+            "Content-Encoding": "gzip",
+            "Content-Type": "text/html; charset=utf-8",
+            "Date": "Mon, 26 Jan 2026 16:13:55 GMT",
+            "Keep-Alive": "timeout=5",
+            "Transfer-Encoding": "chunked",
+            "Vary": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch, Accept-Encoding",
+            "X-Powered-By": "Next.js",
+            "link": "</_next/static/media/26d0ba92e140f0dc-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/3be83a346553616c-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/4cf2300e9c8272f7-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/93f479601ee12b01-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/e4af272ccee01ff0-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/ec14413c594b3356-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\""
+          },
+          "response_json": null,
+          "response_text": "<!DOCTYPE html><html lang=\"en\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"stylesheet\" href=\"/_next/static/css/750a6387d561cd52.css\" data-precedence=\"next\"/><link rel=\"stylesheet\" href=\"/_next/static/css/92c73f2cba2c2a4d.css\" data-precedence=\"next\"/><link rel=\"stylesheet\" href=\"/_next/static/css/36d3e6130cab341d.css\" data-precedence=\"next\"/><link rel=\"preload\" as=\"script\" fetchPriority=\"low\" href=\"/_next/static/chunks/webpack-051b9f86f3f4c432.js\"/><script src=\"/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js\" async=\"\"></script><script src=\"/_next/static/chunks/1255-8befde0980f5cba9.js\" async=\"\"></script><script src=\"/_next/static/chunks/main-app-f3336e172256d2ab.js\" async=\"\"></script><script src=\"/_next/static/chunks/4909-5b84ef3be4b6f0dd.js\" async=\"\"></script><script src=\"/_next/static/chunks/7199-a4dcfc37fe77259d.js\" async=\"\"></script><script src=\"/_next/static/chunks/4109-04ee94a6b268fead.js\" async=\"\"></script><script src=\"/_next/static/chunks/9034-8e25483803b61e07.js\" async=\"\"></script><script src=\"/_next/static/chunks/6848-b17e0ba2b74e74bb.js\" async=\"\"></script><script src=\"/_next/static/chunks/5578-d9ebc5f762d2b52d.js\" async=\"\"></script><script src=\"/_next/static/chunks/7473-cec89bb7ba4b6760.js\" async=\"\"></script><script src=\"/_next/static/chunks/7274-dd6dc2d555eac5ab.js\" async=\"\"></script><script src=\"/_next/static/chunks/9371-91feddd1959ae1d7.js\" async=\"\"></script><script src=\"/_next/static/chunks/946-44607d72ebbfbf2c.js\" async=\"\"></script><script src=\"/_next/static/chunks/1204-32594464cd8d5d0c.js\" async=\"\"></script><script src=\"/_next/static/chunks/4879-72c33e493193298c.js\" async=\"\"></script><script src=\"/_next/static/chunks/5190-671064a79082b5f2.js\" async=\"\"></script><script src=\"/_next/static/chunks/8720-1a27e2f69afa3d88.js\" async=\"\"></script><script src=\"/_next/static/chunks/3256-48fd66772b35240e.js\" async=\"\"></script><script src=\"/_next/static/chunks/4429-055d8b3a680523ff.js\" async=\"\"></script><script src=\"/_next/static/chunks/1921-5c42efbe905d5c76.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/actions/page-d944cb41da36b772.js\" async=\"\"></script><script src=\"/_next/static/chunks/6743-5dfcb2a52b2a4ad6.js\" async=\"\"></script><script src=\"/_next/static/chunks/9136-2db3df07172e1c02.js\" async=\"\"></script><script src=\"/_next/static/chunks/6529-1def80c7765c9eb8.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/layout-03585d44123f90f6.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/not-found-0709d2820f487326.js\" async=\"\"></script><script src=\"/_next/static/chunks/2601-97ad78a8d6212721.js\" async=\"\"></script><script src=\"/_next/static/chunks/2234-7702c598257b8d16.js\" async=\"\"></script><script src=\"/_next/static/chunks/5081-1fedd22776c42f0b.js\" async=\"\"></script><script src=\"/_next/static/chunks/7840-00d4673194d1a95e.js\" async=\"\"></script><script src=\"/_next/static/chunks/7247-2be4307ec8cdb75b.js\" async=\"\"></script><script src=\"/_next/static/chunks/2095-9bb4955bae9d9bd5.js\" async=\"\"></script><script src=\"/_next/static/chunks/2365-b644e2d8889441f1.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/actions/layout-61923eb7df28c382.js\" async=\"\"></script><meta name=\"next-size-adjust\" content=\"\"/><meta name=\"theme-color\" content=\"#ffffff\"/><title>ZakOps Dashboard</title><meta name=\"description\" content=\"Deal Lifecycle Management Dashboard\"/><link rel=\"icon\" href=\"/favicon.ico\" type=\"image/x-icon\" sizes=\"16x16\"/><script>\n              try {\n                if (localStorage.theme === 'dark' || ((!('theme' in localStorage) || localStorage.theme === 'system') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {\n                  document.querySelector('meta[name=\"theme-color\"]').setAttribute('content', '#09090b')\n                }\n              } catch (_) {}\n            </script><script src=\"/_next/static/chunks/polyfills-42372ed130431b0a.js\" noModule=\"\"></script></head><body class=\"bg-background overflow-hidden ov\n\u2026(truncated, 71624 bytes total)\u2026",
+          "status_code": 200,
+          "url": "http://localhost:3003/actions"
+        }
+      },
+      "id": "5.1.4",
+      "name": "UI route Actions (/actions)",
+      "passed": true,
+      "timestamp_utc": "2026-01-26T16:13:55.638875+00:00"
+    },
+    {
+      "details": {
+        "request": {
+          "elapsed_ms": 13,
+          "method": "GET",
+          "ok": true,
+          "request_json": null,
+          "response_headers": {
+            "Cache-Control": "private, no-cache, no-store, max-age=0, must-revalidate",
+            "Connection": "keep-alive",
+            "Content-Encoding": "gzip",
+            "Content-Type": "text/html; charset=utf-8",
+            "Date": "Mon, 26 Jan 2026 16:13:55 GMT",
+            "Keep-Alive": "timeout=5",
+            "Transfer-Encoding": "chunked",
+            "Vary": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch, Accept-Encoding",
+            "X-Powered-By": "Next.js",
+            "link": "</_next/static/media/26d0ba92e140f0dc-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/3be83a346553616c-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/4cf2300e9c8272f7-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/93f479601ee12b01-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/e4af272ccee01ff0-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/ec14413c594b3356-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\""
+          },
+          "response_json": null,
+          "response_text": "<!DOCTYPE html><html lang=\"en\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"stylesheet\" href=\"/_next/static/css/750a6387d561cd52.css\" data-precedence=\"next\"/><link rel=\"stylesheet\" href=\"/_next/static/css/92c73f2cba2c2a4d.css\" data-precedence=\"next\"/><link rel=\"stylesheet\" href=\"/_next/static/css/36d3e6130cab341d.css\" data-precedence=\"next\"/><link rel=\"preload\" as=\"script\" fetchPriority=\"low\" href=\"/_next/static/chunks/webpack-051b9f86f3f4c432.js\"/><script src=\"/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js\" async=\"\"></script><script src=\"/_next/static/chunks/1255-8befde0980f5cba9.js\" async=\"\"></script><script src=\"/_next/static/chunks/main-app-f3336e172256d2ab.js\" async=\"\"></script><script src=\"/_next/static/chunks/4909-5b84ef3be4b6f0dd.js\" async=\"\"></script><script src=\"/_next/static/chunks/7199-a4dcfc37fe77259d.js\" async=\"\"></script><script src=\"/_next/static/chunks/4109-04ee94a6b268fead.js\" async=\"\"></script><script src=\"/_next/static/chunks/9034-8e25483803b61e07.js\" async=\"\"></script><script src=\"/_next/static/chunks/7473-cec89bb7ba4b6760.js\" async=\"\"></script><script src=\"/_next/static/chunks/4879-72c33e493193298c.js\" async=\"\"></script><script src=\"/_next/static/chunks/5190-671064a79082b5f2.js\" async=\"\"></script><script src=\"/_next/static/chunks/8720-1a27e2f69afa3d88.js\" async=\"\"></script><script src=\"/_next/static/chunks/6310-1a6b5fc7233a9514.js\" async=\"\"></script><script src=\"/_next/static/chunks/6682-1501112f9d1c45e6.js\" async=\"\"></script><script src=\"/_next/static/chunks/4429-055d8b3a680523ff.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/quarantine/page-21e74c7d81711b6e.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/quarantine/loading-a5c787f16784a826.js\" async=\"\"></script><script src=\"/_next/static/chunks/6743-5dfcb2a52b2a4ad6.js\" async=\"\"></script><script src=\"/_next/static/chunks/9371-91feddd1959ae1d7.js\" async=\"\"></script><script src=\"/_next/static/chunks/9136-2db3df07172e1c02.js\" async=\"\"></script><script src=\"/_next/static/chunks/6529-1def80c7765c9eb8.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/layout-03585d44123f90f6.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/not-found-0709d2820f487326.js\" async=\"\"></script><script src=\"/_next/static/chunks/6848-b17e0ba2b74e74bb.js\" async=\"\"></script><script src=\"/_next/static/chunks/5578-d9ebc5f762d2b52d.js\" async=\"\"></script><script src=\"/_next/static/chunks/7274-dd6dc2d555eac5ab.js\" async=\"\"></script><script src=\"/_next/static/chunks/2601-97ad78a8d6212721.js\" async=\"\"></script><script src=\"/_next/static/chunks/2234-7702c598257b8d16.js\" async=\"\"></script><script src=\"/_next/static/chunks/946-44607d72ebbfbf2c.js\" async=\"\"></script><script src=\"/_next/static/chunks/5081-1fedd22776c42f0b.js\" async=\"\"></script><script src=\"/_next/static/chunks/7840-00d4673194d1a95e.js\" async=\"\"></script><script src=\"/_next/static/chunks/7247-2be4307ec8cdb75b.js\" async=\"\"></script><script src=\"/_next/static/chunks/2095-9bb4955bae9d9bd5.js\" async=\"\"></script><script src=\"/_next/static/chunks/2365-b644e2d8889441f1.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/quarantine/layout-845b5ec5c83db1c0.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/quarantine/error-40c8b64d152c1f1d.js\" async=\"\"></script><meta name=\"next-size-adjust\" content=\"\"/><meta name=\"theme-color\" content=\"#ffffff\"/><title>ZakOps Dashboard</title><meta name=\"description\" content=\"Deal Lifecycle Management Dashboard\"/><link rel=\"icon\" href=\"/favicon.ico\" type=\"image/x-icon\" sizes=\"16x16\"/><script>\n              try {\n                if (localStorage.theme === 'dark' || ((!('theme' in localStorage) || localStorage.theme === 'system') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {\n                  document.querySelector('meta[name=\"theme-color\"]').setAttribute('content', '#09090b')\n                }\n              } catch (_) {}\n            </script><script src=\"/_next/\n\u2026(truncated, 72096 bytes total)\u2026",
+          "status_code": 200,
+          "url": "http://localhost:3003/quarantine"
+        }
+      },
+      "id": "5.1.5",
+      "name": "UI route Quarantine (/quarantine)",
+      "passed": true,
+      "timestamp_utc": "2026-01-26T16:13:55.652496+00:00"
+    },
+    {
+      "details": {
+        "request": {
+          "elapsed_ms": -1356,
+          "method": "GET",
+          "ok": true,
+          "request_json": null,
+          "response_headers": {
+            "Cache-Control": "private, no-cache, no-store, max-age=0, must-revalidate",
+            "Connection": "keep-alive",
+            "Content-Encoding": "gzip",
+            "Content-Type": "text/html; charset=utf-8",
+            "Date": "Mon, 26 Jan 2026 16:13:55 GMT",
+            "Keep-Alive": "timeout=5",
+            "Transfer-Encoding": "chunked",
+            "Vary": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch, Accept-Encoding",
+            "X-Powered-By": "Next.js",
+            "link": "</_next/static/media/26d0ba92e140f0dc-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/3be83a346553616c-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/4cf2300e9c8272f7-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/93f479601ee12b01-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/e4af272ccee01ff0-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/ec14413c594b3356-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\""
+          },
+          "response_json": null,
+          "response_text": "<!DOCTYPE html><html lang=\"en\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"stylesheet\" href=\"/_next/static/css/750a6387d561cd52.css\" data-precedence=\"next\"/><link rel=\"stylesheet\" href=\"/_next/static/css/92c73f2cba2c2a4d.css\" data-precedence=\"next\"/><link rel=\"stylesheet\" href=\"/_next/static/css/36d3e6130cab341d.css\" data-precedence=\"next\"/><link rel=\"preload\" as=\"script\" fetchPriority=\"low\" href=\"/_next/static/chunks/webpack-051b9f86f3f4c432.js\"/><script src=\"/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js\" async=\"\"></script><script src=\"/_next/static/chunks/1255-8befde0980f5cba9.js\" async=\"\"></script><script src=\"/_next/static/chunks/main-app-f3336e172256d2ab.js\" async=\"\"></script><script src=\"/_next/static/chunks/4909-5b84ef3be4b6f0dd.js\" async=\"\"></script><script src=\"/_next/static/chunks/7199-a4dcfc37fe77259d.js\" async=\"\"></script><script src=\"/_next/static/chunks/4109-04ee94a6b268fead.js\" async=\"\"></script><script src=\"/_next/static/chunks/6848-b17e0ba2b74e74bb.js\" async=\"\"></script><script src=\"/_next/static/chunks/5578-d9ebc5f762d2b52d.js\" async=\"\"></script><script src=\"/_next/static/chunks/1204-32594464cd8d5d0c.js\" async=\"\"></script><script src=\"/_next/static/chunks/4879-72c33e493193298c.js\" async=\"\"></script><script src=\"/_next/static/chunks/4429-055d8b3a680523ff.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/chat/page-65411b4dc6e86fe7.js\" async=\"\"></script><script src=\"/_next/static/chunks/9034-8e25483803b61e07.js\" async=\"\"></script><script src=\"/_next/static/chunks/6743-5dfcb2a52b2a4ad6.js\" async=\"\"></script><script src=\"/_next/static/chunks/9371-91feddd1959ae1d7.js\" async=\"\"></script><script src=\"/_next/static/chunks/8720-1a27e2f69afa3d88.js\" async=\"\"></script><script src=\"/_next/static/chunks/9136-2db3df07172e1c02.js\" async=\"\"></script><script src=\"/_next/static/chunks/6529-1def80c7765c9eb8.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/layout-03585d44123f90f6.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/not-found-0709d2820f487326.js\" async=\"\"></script><script src=\"/_next/static/chunks/7473-cec89bb7ba4b6760.js\" async=\"\"></script><script src=\"/_next/static/chunks/7274-dd6dc2d555eac5ab.js\" async=\"\"></script><script src=\"/_next/static/chunks/2601-97ad78a8d6212721.js\" async=\"\"></script><script src=\"/_next/static/chunks/2234-7702c598257b8d16.js\" async=\"\"></script><script src=\"/_next/static/chunks/946-44607d72ebbfbf2c.js\" async=\"\"></script><script src=\"/_next/static/chunks/5081-1fedd22776c42f0b.js\" async=\"\"></script><script src=\"/_next/static/chunks/7840-00d4673194d1a95e.js\" async=\"\"></script><script src=\"/_next/static/chunks/7247-2be4307ec8cdb75b.js\" async=\"\"></script><script src=\"/_next/static/chunks/2095-9bb4955bae9d9bd5.js\" async=\"\"></script><script src=\"/_next/static/chunks/2365-b644e2d8889441f1.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/chat/layout-67404ca38c611243.js\" async=\"\"></script><meta name=\"next-size-adjust\" content=\"\"/><meta name=\"theme-color\" content=\"#ffffff\"/><title>ZakOps Dashboard</title><meta name=\"description\" content=\"Deal Lifecycle Management Dashboard\"/><link rel=\"icon\" href=\"/favicon.ico\" type=\"image/x-icon\" sizes=\"16x16\"/><script>\n              try {\n                if (localStorage.theme === 'dark' || ((!('theme' in localStorage) || localStorage.theme === 'system') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {\n                  document.querySelector('meta[name=\"theme-color\"]').setAttribute('content', '#09090b')\n                }\n              } catch (_) {}\n            </script><script src=\"/_next/static/chunks/polyfills-42372ed130431b0a.js\" noModule=\"\"></script></head><body class=\"bg-background overflow-hidden overscroll-none font-sans antialiased __variable_188709 __variable_9a8899 __variable_3d9088 __variable_89e83c __variable_9738f2 __variable_f367f3\"><div hidden=\"\"><!--$--><!--/$--></div><style>#nprogress{pointer-events:none}#nprogress .bar{bac\n\u2026(truncated, 65392 bytes total)\u2026",
+          "status_code": 200,
+          "url": "http://localhost:3003/chat"
+        }
+      },
+      "id": "5.1.6",
+      "name": "UI route Chat (/chat)",
+      "passed": true,
+      "timestamp_utc": "2026-01-26T16:13:54.296209+00:00"
+    },
+    {
+      "details": {
+        "request": {
+          "elapsed_ms": 18,
+          "method": "GET",
+          "ok": true,
+          "request_json": null,
+          "response_headers": {
+            "Cache-Control": "private, no-cache, no-store, max-age=0, must-revalidate",
+            "Connection": "keep-alive",
+            "Content-Encoding": "gzip",
+            "Content-Type": "text/html; charset=utf-8",
+            "Date": "Mon, 26 Jan 2026 16:13:55 GMT",
+            "Keep-Alive": "timeout=5",
+            "Transfer-Encoding": "chunked",
+            "Vary": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch, Accept-Encoding",
+            "X-Powered-By": "Next.js",
+            "link": "</_next/static/media/26d0ba92e140f0dc-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/3be83a346553616c-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/4cf2300e9c8272f7-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/93f479601ee12b01-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/e4af272ccee01ff0-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/ec14413c594b3356-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\""
+          },
+          "response_json": null,
+          "response_text": "<!DOCTYPE html><html lang=\"en\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"stylesheet\" href=\"/_next/static/css/750a6387d561cd52.css\" data-precedence=\"next\"/><link rel=\"stylesheet\" href=\"/_next/static/css/92c73f2cba2c2a4d.css\" data-precedence=\"next\"/><link rel=\"stylesheet\" href=\"/_next/static/css/36d3e6130cab341d.css\" data-precedence=\"next\"/><link rel=\"preload\" as=\"script\" fetchPriority=\"low\" href=\"/_next/static/chunks/webpack-051b9f86f3f4c432.js\"/><script src=\"/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js\" async=\"\"></script><script src=\"/_next/static/chunks/1255-8befde0980f5cba9.js\" async=\"\"></script><script src=\"/_next/static/chunks/main-app-f3336e172256d2ab.js\" async=\"\"></script><script src=\"/_next/static/chunks/4909-5b84ef3be4b6f0dd.js\" async=\"\"></script><script src=\"/_next/static/chunks/7199-a4dcfc37fe77259d.js\" async=\"\"></script><script src=\"/_next/static/chunks/9034-8e25483803b61e07.js\" async=\"\"></script><script src=\"/_next/static/chunks/6848-b17e0ba2b74e74bb.js\" async=\"\"></script><script src=\"/_next/static/chunks/7473-cec89bb7ba4b6760.js\" async=\"\"></script><script src=\"/_next/static/chunks/7274-dd6dc2d555eac5ab.js\" async=\"\"></script><script src=\"/_next/static/chunks/6743-5dfcb2a52b2a4ad6.js\" async=\"\"></script><script src=\"/_next/static/chunks/2601-97ad78a8d6212721.js\" async=\"\"></script><script src=\"/_next/static/chunks/5190-671064a79082b5f2.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/agent/activity/page-14be94f5597b38bf.js\" async=\"\"></script><script src=\"/_next/static/chunks/4109-04ee94a6b268fead.js\" async=\"\"></script><script src=\"/_next/static/chunks/9371-91feddd1959ae1d7.js\" async=\"\"></script><script src=\"/_next/static/chunks/8720-1a27e2f69afa3d88.js\" async=\"\"></script><script src=\"/_next/static/chunks/9136-2db3df07172e1c02.js\" async=\"\"></script><script src=\"/_next/static/chunks/6529-1def80c7765c9eb8.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/layout-03585d44123f90f6.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/not-found-0709d2820f487326.js\" async=\"\"></script><script src=\"/_next/static/chunks/5578-d9ebc5f762d2b52d.js\" async=\"\"></script><script src=\"/_next/static/chunks/2234-7702c598257b8d16.js\" async=\"\"></script><script src=\"/_next/static/chunks/946-44607d72ebbfbf2c.js\" async=\"\"></script><script src=\"/_next/static/chunks/5081-1fedd22776c42f0b.js\" async=\"\"></script><script src=\"/_next/static/chunks/7840-00d4673194d1a95e.js\" async=\"\"></script><script src=\"/_next/static/chunks/7247-2be4307ec8cdb75b.js\" async=\"\"></script><script src=\"/_next/static/chunks/2095-9bb4955bae9d9bd5.js\" async=\"\"></script><script src=\"/_next/static/chunks/2365-b644e2d8889441f1.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/agent/activity/layout-d124bc1f839117e0.js\" async=\"\"></script><meta name=\"next-size-adjust\" content=\"\"/><meta name=\"theme-color\" content=\"#ffffff\"/><title>Agent Activity | ZakOps</title><meta name=\"description\" content=\"View all agent actions and history\"/><link rel=\"icon\" href=\"/favicon.ico\" type=\"image/x-icon\" sizes=\"16x16\"/><script>\n              try {\n                if (localStorage.theme === 'dark' || ((!('theme' in localStorage) || localStorage.theme === 'system') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {\n                  document.querySelector('meta[name=\"theme-color\"]').setAttribute('content', '#09090b')\n                }\n              } catch (_) {}\n            </script><script src=\"/_next/static/chunks/polyfills-42372ed130431b0a.js\" noModule=\"\"></script></head><body class=\"bg-background overflow-hidden overscroll-none font-sans antialiased __variable_188709 __variable_9a8899 __variable_3d9088 __variable_89e83c __variable_9738f2 __variable_f367f3\"><div hidden=\"\"><!--$--><!--/$--></div><style>#nprogress{pointer-events:none}#nprogress .bar{background:var(--primary);position:fixed;z-index:1600;top: 0;left:0;width:100%;height:3px}#nprogress .peg{display:block;position:abso\n\u2026(truncated, 67927 bytes total)\u2026",
+          "status_code": 200,
+          "url": "http://localhost:3003/agent/activity"
+        }
+      },
+      "id": "5.1.7",
+      "name": "UI route Agent Activity (/agent/activity)",
+      "passed": true,
+      "timestamp_utc": "2026-01-26T16:13:54.314534+00:00"
+    },
+    {
+      "details": {
+        "request": {
+          "elapsed_ms": 16,
+          "method": "GET",
+          "ok": true,
+          "request_json": null,
+          "response_headers": {
+            "Cache-Control": "private, no-cache, no-store, max-age=0, must-revalidate",
+            "Connection": "keep-alive",
+            "Content-Encoding": "gzip",
+            "Content-Type": "text/html; charset=utf-8",
+            "Date": "Mon, 26 Jan 2026 16:13:55 GMT",
+            "Keep-Alive": "timeout=5",
+            "Transfer-Encoding": "chunked",
+            "Vary": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch, Accept-Encoding",
+            "X-Powered-By": "Next.js",
+            "link": "</_next/static/media/26d0ba92e140f0dc-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/3be83a346553616c-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/4cf2300e9c8272f7-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/93f479601ee12b01-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/e4af272ccee01ff0-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/ec14413c594b3356-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\""
+          },
+          "response_json": null,
+          "response_text": "<!DOCTYPE html><html lang=\"en\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"stylesheet\" href=\"/_next/static/css/750a6387d561cd52.css\" data-precedence=\"next\"/><link rel=\"stylesheet\" href=\"/_next/static/css/92c73f2cba2c2a4d.css\" data-precedence=\"next\"/><link rel=\"stylesheet\" href=\"/_next/static/css/36d3e6130cab341d.css\" data-precedence=\"next\"/><link rel=\"preload\" as=\"script\" fetchPriority=\"low\" href=\"/_next/static/chunks/webpack-051b9f86f3f4c432.js\"/><script src=\"/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js\" async=\"\"></script><script src=\"/_next/static/chunks/1255-8befde0980f5cba9.js\" async=\"\"></script><script src=\"/_next/static/chunks/main-app-f3336e172256d2ab.js\" async=\"\"></script><script src=\"/_next/static/chunks/4909-5b84ef3be4b6f0dd.js\" async=\"\"></script><script src=\"/_next/static/chunks/7199-a4dcfc37fe77259d.js\" async=\"\"></script><script src=\"/_next/static/chunks/4109-04ee94a6b268fead.js\" async=\"\"></script><script src=\"/_next/static/chunks/9034-8e25483803b61e07.js\" async=\"\"></script><script src=\"/_next/static/chunks/6848-b17e0ba2b74e74bb.js\" async=\"\"></script><script src=\"/_next/static/chunks/5578-d9ebc5f762d2b52d.js\" async=\"\"></script><script src=\"/_next/static/chunks/9371-91feddd1959ae1d7.js\" async=\"\"></script><script src=\"/_next/static/chunks/1204-32594464cd8d5d0c.js\" async=\"\"></script><script src=\"/_next/static/chunks/2373-b60143a47acca885.js\" async=\"\"></script><script src=\"/_next/static/chunks/7810-d7295b74fa0d3e29.js\" async=\"\"></script><script src=\"/_next/static/chunks/6529-1def80c7765c9eb8.js\" async=\"\"></script><script src=\"/_next/static/chunks/8742-d2322464ac783b10.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/onboarding/page-6ddc1f226302869b.js\" async=\"\"></script><script src=\"/_next/static/chunks/6743-5dfcb2a52b2a4ad6.js\" async=\"\"></script><script src=\"/_next/static/chunks/8720-1a27e2f69afa3d88.js\" async=\"\"></script><script src=\"/_next/static/chunks/9136-2db3df07172e1c02.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/layout-03585d44123f90f6.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/not-found-0709d2820f487326.js\" async=\"\"></script><script src=\"/_next/static/chunks/7473-cec89bb7ba4b6760.js\" async=\"\"></script><script src=\"/_next/static/chunks/7274-dd6dc2d555eac5ab.js\" async=\"\"></script><script src=\"/_next/static/chunks/2601-97ad78a8d6212721.js\" async=\"\"></script><script src=\"/_next/static/chunks/2234-7702c598257b8d16.js\" async=\"\"></script><script src=\"/_next/static/chunks/946-44607d72ebbfbf2c.js\" async=\"\"></script><script src=\"/_next/static/chunks/5081-1fedd22776c42f0b.js\" async=\"\"></script><script src=\"/_next/static/chunks/7840-00d4673194d1a95e.js\" async=\"\"></script><script src=\"/_next/static/chunks/7247-2be4307ec8cdb75b.js\" async=\"\"></script><script src=\"/_next/static/chunks/2095-9bb4955bae9d9bd5.js\" async=\"\"></script><script src=\"/_next/static/chunks/2365-b644e2d8889441f1.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/onboarding/layout-0a536d44e383fe77.js\" async=\"\"></script><meta name=\"next-size-adjust\" content=\"\"/><meta name=\"theme-color\" content=\"#ffffff\"/><title>Onboarding | ZakOps</title><meta name=\"description\" content=\"Get started with ZakOps\"/><link rel=\"icon\" href=\"/favicon.ico\" type=\"image/x-icon\" sizes=\"16x16\"/><script>\n              try {\n                if (localStorage.theme === 'dark' || ((!('theme' in localStorage) || localStorage.theme === 'system') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {\n                  document.querySelector('meta[name=\"theme-color\"]').setAttribute('content', '#09090b')\n                }\n              } catch (_) {}\n            </script><script src=\"/_next/static/chunks/polyfills-42372ed130431b0a.js\" noModule=\"\"></script></head><body class=\"bg-background overflow-hidden overscroll-none font-sans antialiased __variable_188709 __variable_9a8899 __variable_3d9088 __variable_89e83c __variable_9738f2 __variable_f367f3\"><div hidden=\"\"\n\u2026(truncated, 56266 bytes total)\u2026",
+          "status_code": 200,
+          "url": "http://localhost:3003/onboarding"
+        }
+      },
+      "id": "5.1.8",
+      "name": "UI route Onboarding (/onboarding)",
+      "passed": true,
+      "timestamp_utc": "2026-01-26T16:13:54.330983+00:00"
+    }
+  ],
+  "timestamp_utc": "2026-01-26T16:13:54.330997+00:00"
+}

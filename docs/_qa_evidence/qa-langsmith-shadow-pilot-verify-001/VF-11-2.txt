@@ -1,0 +1,10 @@
+9:Accepts quarantine item injection from external callers (email-sync, LangSmith, manual).
+34:The injection rate limiter is separate from the general (60/min) and auth (10/min) limiters. The higher limit accommodates email-sync burst ingestion.
+49:| **400 Bad Request** | Invalid payload or unrecognized `source_type` (must be one of: `email`, `email_sync`, `langsmith_shadow`, `langsmith_live`, `manual`) |
+77:| `email_sync` | Items from the email synchronization pipeline |
+78:| `langsmith_shadow` | LangSmith shadow-mode items (measurement only) |
+79:| `langsmith_live` | LangSmith live-mode items |
+80:| `manual` | Manually injected items |
+81:| `email` | Default (legacy) |
+87:3. Default: `"email"`
+91:- **API**: `GET /api/quarantine?source_type=langsmith_shadow` — filters items by source type

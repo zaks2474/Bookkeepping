@@ -1,0 +1,6 @@
+Line 94-97: class GhostKnowledgeEvent(SSEEvent):
+  event_type = 'ghost_knowledge'
+  facts: list[dict]
+Also GhostKnowledgeFlagsEvent (line 100-108)
+In registry at line 153: 'ghost_knowledge': GhostKnowledgeEvent
+VERDICT: PASS

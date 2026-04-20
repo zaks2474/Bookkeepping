@@ -1,0 +1,70 @@
+=== CHECK 4.6.Y: Approve Spam Burst (N=20) ===
+Timestamp: 2026-02-03T13:13:19-06:00
+Deal ID: DL-CHAOS
+Thread ID: forensic-003-spam-1770145999
+
+=== Creating new approval for spam burst test ===
+{"thread_id":"forensic-003-spam-1770145999","status":"awaiting_approval","content":null,"pending_approval":{"approval_id":"7b65f288-fb5f-40b7-aa90-61d11a25bdca","tool":"transition_deal","args":{"deal_id":"DL-CHAOS","from_stage":"inbound","to_stage":"qualified","reason":"spam burst testing"},"permission_tier":"CRITICAL","requested_by":"spam-tester","requested_at":"2026-02-03T19:13:21.423669Z"},"actions_taken":[],"error":null}
+HTTP_CODE: 200
+
+Extracted approval ID: 7b65f288-fb5f-40b7-aa90-61d11a25bdca
+
+=== Firing 20 concurrent approve requests ===
+Spam approval ID: 7b65f288-fb5f-40b7-aa90-61d11a25bdca
+Start time: 2026-02-03T13:13:35-06:00
+
+Spam burst results:
+{"detail":"Approval already claimed by another request"}
+REQ_3: HTTP_409
+{"detail":"Approval already claimed by another request"}
+REQ_5: HTTP_409
+{"detail":"Approval already claimed by another request"}{"detail":"Approval already claimed by another request"}
+REQ_4: HTTP_409
+
+REQ_2: HTTP_409
+{"detail":"Approval already claimed by another request"}
+REQ_6: HTTP_409
+{"detail":"Approval already claimed by another request"}
+REQ_7: HTTP_409
+{"detail":"Approval already claimed by another request"}
+REQ_11: HTTP_409
+{"detail":"Approval already claimed by another request"}
+REQ_8: HTTP_409
+{"detail":"Approval already claimed by another request"}
+REQ_9: HTTP_409
+{"detail":"Approval already claimed by another request"}
+REQ_10: HTTP_409
+{"detail":"Approval already claimed by another request"}
+REQ_13: HTTP_409
+{"detail":"Approval already claimed by another request"}
+REQ_12: HTTP_409
+{"detail":"Approval already claimed by another request"}
+REQ_16: HTTP_409
+{"detail":"Approval already claimed by another request"}
+REQ_14: HTTP_409
+{"detail":"Approval already claimed by another request"}
+REQ_17: HTTP_409
+{"detail":"Approval already claimed by another request"}
+REQ_15: HTTP_409
+{"detail":"Approval already claimed by another request"}
+REQ_18: HTTP_409
+{"detail":"Approval already claimed by another request"}{"detail":"Approval already claimed by another request"}
+REQ_19: HTTP_409
+
+REQ_20: HTTP_409
+{"thread_id":"forensic-003-spam-1770145999","status":"completed","content":"The deal with ID `DL-CHAOS` has been successfully transitioned from the `screening` stage to the `qualified` stage for spam burst testing. The backend confirmed this update at 2026-02-03T19:13:35.313297Z.","pending_approval":null,"actions_taken":[{"tool":"transition_deal","result":{"ok":true,"deal_id":"DL-CHAOS","old_stage":"screening","new_stage":"qualified","backend_status":200,"updated_at":"2026-02-03T19:13:35.313297Z"}}],"error":null}
+REQ_1: HTTP_200
+
+End time: 2026-02-03T13:13:38-06:00
+
+=== HTTP Code Analysis ===
+HTTP 200 (success) count: 1
+HTTP 409 (conflict) count: 19
+Other HTTP codes count: 0
+Expected: 1x 200, 19x 409
+
+=== Tool Executions for Spam Approval ===
+Tool execution count:      1
+
+=== Verification ===
+PASS: Exactly 1 HTTP 200 and 1 tool execution

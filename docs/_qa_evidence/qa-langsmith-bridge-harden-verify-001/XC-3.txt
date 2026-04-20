@@ -1,0 +1,14 @@
+=== P2-04 audit says ===
+=== Write Call Audit ===
+
+Line 702: client.post -> DEAL_API_URL/api/actions (zakops_create_action) -> X-API-Key: ADDED
+Line 810: client.post -> DEAL_API_URL/.../approve (zakops_approve_quarantine) -> X-API-Key: ADDED
+Line 860: client.post -> RAG_API_URL/rag/query (rag_query_local) -> NO AUTH NEEDED (RAG service)
+Line 909: client.post -> RAG_API_URL/rag/index (rag_reindex_deal) -> NO AUTH NEEDED (RAG service)
+
+VERDICT: All 2 backend write calls now include X-API-Key. 2 RAG calls correctly skip auth.
+=== Actual X-API-Key locations ===
+50:# Backend API key (for X-API-Key header on write calls to backend)
+709:    headers = {"X-API-Key": BACKEND_API_KEY}
+801:                headers={"X-API-Key": BACKEND_API_KEY},
+908:                headers={"X-API-Key": BACKEND_API_KEY},

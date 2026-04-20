@@ -1,0 +1,171 @@
+{
+  "agent_identity": {
+    "agent_name": "Claude-Opus-4-5",
+    "agent_version": "claude-opus-4-5-20251101",
+    "run_id": "20260204-0212-b214408d",
+    "date_time": "2026-02-04T02:12:54Z",
+    "repo_revision": "a09538f04ed278c32ad6f2a037069b353bf5f797"
+  },
+  "v2_issues_addressed": 22,
+  "phases": [
+    {
+      "id": 0,
+      "name": "Stop the Bleeding",
+      "objective": "Establish baseline visibility and fix immediate blockers",
+      "issues_covered": ["ZK-ISSUE-0006", "ZK-ISSUE-0007", "ZK-ISSUE-0010", "ZK-ISSUE-0012"],
+      "task_count": 7,
+      "effort": "S-M"
+    },
+    {
+      "id": 1,
+      "name": "Data Truth Unification",
+      "objective": "Make PostgreSQL zakops.deals THE source of truth",
+      "issues_covered": ["ZK-ISSUE-0001", "ZK-ISSUE-0008", "ZK-ISSUE-0014"],
+      "task_count": 7,
+      "effort": "L"
+    },
+    {
+      "id": 2,
+      "name": "Contract Alignment",
+      "objective": "Ensure all API contracts are correct and consistent",
+      "issues_covered": ["ZK-ISSUE-0003", "ZK-ISSUE-0004", "ZK-ISSUE-0013", "ZK-ISSUE-0018", "ZK-ISSUE-0022"],
+      "task_count": 9,
+      "effort": "M-L"
+    },
+    {
+      "id": 3,
+      "name": "Deal Lifecycle Correctness",
+      "objective": "Ensure stage transitions, HITL approvals, and idempotency work",
+      "issues_covered": ["ZK-ISSUE-0009", "ZK-ISSUE-0011", "ZK-ISSUE-0015", "ZK-ISSUE-0016"],
+      "task_count": 7,
+      "effort": "M"
+    },
+    {
+      "id": 4,
+      "name": "Deal Knowledge System",
+      "objective": "Enable email ingestion, RAG indexing, and chat-based enrichment",
+      "issues_covered": ["ZK-ISSUE-0002", "ZK-ISSUE-0019", "ZK-ISSUE-0020", "ZK-ISSUE-0021"],
+      "task_count": 10,
+      "effort": "L"
+    },
+    {
+      "id": 5,
+      "name": "Hardening",
+      "objective": "Add authentication, improve reliability, add monitoring",
+      "issues_covered": ["ZK-ISSUE-0005", "ZK-ISSUE-0017"],
+      "task_count": 8,
+      "effort": "L"
+    },
+    {
+      "id": 6,
+      "name": "Legacy Decommission",
+      "objective": "Remove all legacy components and prove the system is clean",
+      "issues_covered": ["all remaining legacy references"],
+      "task_count": 9,
+      "effort": "M-L"
+    }
+  ],
+  "decision_set": {
+    "D2.1_source_of_truth": {
+      "topic": "How to eliminate split-brain",
+      "recommendation": "Option A — Postgres zakops.deals as sole source",
+      "rationale": "Already has schema, constraints, events, API"
+    },
+    "D2.2_stage_taxonomy": {
+      "topic": "Canonical stage names and allowed transitions",
+      "recommendation": "Option A — Keep 9-stage model",
+      "stages": ["inbound", "screening", "qualified", "loi", "diligence", "closing", "portfolio", "junk", "archived"]
+    },
+    "D2.3_agent_contract": {
+      "topic": "What the agent can do vs what requires backend",
+      "recommendation": "Option A — Agent calls backend HTTP APIs only",
+      "rationale": "Backend already has validation, events, idempotency"
+    },
+    "D2.4_email_ingestion": {
+      "topic": "How emails become deals",
+      "recommendation": "Option A — Refactor ingestion to POST to /api/quarantine",
+      "rationale": "Bridge email pipeline to Postgres"
+    },
+    "D2.5_rag_embeddings": {
+      "topic": "What gets embedded, where it lives, refresh strategy",
+      "recommendation": "Dedicated crawlrag database with deal update hooks"
+    },
+    "D2.6_hitl_auditability": {
+      "topic": "Where approvals live, how to audit",
+      "recommendation": "Add correlation_id to connect agent and backend events"
+    },
+    "D2.7_authentication": {
+      "topic": "Where tokens live, how services authenticate",
+      "recommendation": "Keep API key infrastructure, add user auth to Dashboard in Phase 5"
+    }
+  },
+  "coverage_matrix": {
+    "ZK-ISSUE-0001": {"phase": 1, "tasks": "1.1-1.7", "verification": "grep JSON unchanged; DB has deals"},
+    "ZK-ISSUE-0002": {"phase": 4, "tasks": "4.1-4.3", "verification": "Email → quarantine → deal trace"},
+    "ZK-ISSUE-0003": {"phase": 2, "tasks": "2.1", "verification": "Approve → deal exists"},
+    "ZK-ISSUE-0004": {"phase": 2, "tasks": "2.2", "verification": "Create deal → folder exists"},
+    "ZK-ISSUE-0005": {"phase": 5, "tasks": "5.1-5.3", "verification": "Login required"},
+    "ZK-ISSUE-0006": {"phase": 0, "tasks": "0.1", "verification": "Dashboard approve works"},
+    "ZK-ISSUE-0007": {"phase": 0, "tasks": "0.4-0.5", "verification": "No legacy stages in code"},
+    "ZK-ISSUE-0008": {"phase": 1, "tasks": "1.3", "verification": "Single actions table"},
+    "ZK-ISSUE-0009": {"phase": 3, "tasks": "3.1", "verification": "Agent creates deal"},
+    "ZK-ISSUE-0010": {"phase": 0, "tasks": "0.6", "verification": "Health check documented"},
+    "ZK-ISSUE-0011": {"phase": 3, "tasks": "3.2-3.4", "verification": "Matching correlation_ids"},
+    "ZK-ISSUE-0012": {"phase": 0, "tasks": "0.2-0.3", "verification": "Notes endpoint works"},
+    "ZK-ISSUE-0013": {"phase": 2, "tasks": "2.3-2.4", "verification": "Endpoints return 200"},
+    "ZK-ISSUE-0014": {"phase": 1, "tasks": "1.2", "verification": "No sys.path in code"},
+    "ZK-ISSUE-0015": {"phase": 3, "tasks": "3.5", "verification": "Stale approvals expired"},
+    "ZK-ISSUE-0016": {"phase": 3, "tasks": "3.6", "verification": "Duplicates rejected"},
+    "ZK-ISSUE-0017": {"phase": 5, "tasks": "5.4-5.5", "verification": "Policy documented"},
+    "ZK-ISSUE-0018": {"phase": 2, "tasks": "2.7-2.8", "verification": "Dashboard shows all deals"},
+    "ZK-ISSUE-0019": {"phase": 4, "tasks": "4.4-4.6", "verification": "3+ executors working"},
+    "ZK-ISSUE-0020": {"phase": 4, "tasks": "4.8", "verification": "SSE works OR documented"},
+    "ZK-ISSUE-0021": {"phase": 4, "tasks": "4.9-4.10", "verification": "Reminders working"},
+    "ZK-ISSUE-0022": {"phase": 2, "tasks": "2.5-2.6", "verification": "Endpoints work"}
+  },
+  "legacy_decommission": [
+    {"component": "deal_registry.json", "path": "/home/zaks/DataRoom/.deal-registry/deal_registry.json"},
+    {"component": "deal_registry.py", "path": "/home/zaks/scripts/deal_registry.py"},
+    {"component": "deal_state_machine.py", "path": "/home/zaks/scripts/deal_state_machine.py"},
+    {"component": "deal_lifecycle API", "path": "/home/zaks/zakops-backend/src/api/deal_lifecycle/"},
+    {"component": "quarantine.json", "path": "/home/zaks/DataRoom/.deal-registry/quarantine.json"},
+    {"component": "events JSONL", "path": "/home/zaks/DataRoom/.deal-registry/events/"}
+  ],
+  "prioritized_backlog": [
+    {"priority": "P0", "issue_id": "ZK-ISSUE-0001", "title": "Split-brain persistence", "effort": "L", "phase": 1},
+    {"priority": "P0", "issue_id": "ZK-ISSUE-0002", "title": "Email ingestion disabled", "effort": "L", "phase": 4},
+    {"priority": "P1", "issue_id": "ZK-ISSUE-0003", "title": "Quarantine no deal creation", "effort": "M", "phase": 2},
+    {"priority": "P1", "issue_id": "ZK-ISSUE-0004", "title": "No DataRoom folders", "effort": "M", "phase": 2},
+    {"priority": "P1", "issue_id": "ZK-ISSUE-0005", "title": "Dashboard no auth", "effort": "L", "phase": 5},
+    {"priority": "P1", "issue_id": "ZK-ISSUE-0006", "title": "Wrong quarantine endpoint", "effort": "S", "phase": 0},
+    {"priority": "P1", "issue_id": "ZK-ISSUE-0007", "title": "Stage taxonomy conflicts", "effort": "S", "phase": 0},
+    {"priority": "P1", "issue_id": "ZK-ISSUE-0008", "title": "Actions Postgres/SQLite split", "effort": "L", "phase": 1},
+    {"priority": "P2", "issue_id": "ZK-ISSUE-0009", "title": "Agent no create_deal", "effort": "M", "phase": 3},
+    {"priority": "P2", "issue_id": "ZK-ISSUE-0010", "title": "RAG unverified", "effort": "S", "phase": 0},
+    {"priority": "P2", "issue_id": "ZK-ISSUE-0011", "title": "No event correlation", "effort": "M", "phase": 3},
+    {"priority": "P2", "issue_id": "ZK-ISSUE-0012", "title": "Notes endpoint mismatch", "effort": "S", "phase": 0},
+    {"priority": "P2", "issue_id": "ZK-ISSUE-0013", "title": "Capabilities/metrics 501", "effort": "M", "phase": 2},
+    {"priority": "P2", "issue_id": "ZK-ISSUE-0014", "title": "sys.path hack", "effort": "S", "phase": 1},
+    {"priority": "P2", "issue_id": "ZK-ISSUE-0016", "title": "No duplicate detection", "effort": "M", "phase": 3},
+    {"priority": "P2", "issue_id": "ZK-ISSUE-0018", "title": "Zod schema mismatch", "effort": "M", "phase": 2},
+    {"priority": "P2", "issue_id": "ZK-ISSUE-0019", "title": "Executors unwired", "effort": "M", "phase": 4},
+    {"priority": "P2", "issue_id": "ZK-ISSUE-0020", "title": "SSE not implemented", "effort": "L", "phase": 4},
+    {"priority": "P2", "issue_id": "ZK-ISSUE-0021", "title": "No scheduling/reminders", "effort": "M", "phase": 4},
+    {"priority": "P3", "issue_id": "ZK-ISSUE-0015", "title": "Approval expiry lazy", "effort": "M", "phase": 3},
+    {"priority": "P3", "issue_id": "ZK-ISSUE-0017", "title": "No retention policy", "effort": "S", "phase": 5},
+    {"priority": "P3", "issue_id": "ZK-ISSUE-0022", "title": "Archive/restore missing", "effort": "S", "phase": 2}
+  ],
+  "summary": {
+    "total_issues": 22,
+    "total_phases": 7,
+    "total_tasks": 57,
+    "key_decisions": [
+      "Postgres zakops.deals is THE source of truth",
+      "Keep 9-stage canonical model",
+      "Agent calls backend APIs only (no direct DB)",
+      "Email ingestion POSTs to /api/quarantine",
+      "Add correlation IDs across systems",
+      "Add user auth to Dashboard"
+    ]
+  }
+}

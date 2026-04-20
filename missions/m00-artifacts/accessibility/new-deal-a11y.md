@@ -1,0 +1,47 @@
+- generic [active] [ref=e1]:
+  - region "Notifications alt+T"
+  - main [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - button "Toggle Sidebar" [ref=e6]:
+          - img
+          - generic [ref=e7]: Toggle Sidebar
+        - navigation "breadcrumb" [ref=e8]:
+          - list [ref=e9]:
+            - link "New" [disabled] [ref=e10]
+      - generic [ref=e11]:
+        - button [ref=e116]:
+          - img
+        - button [ref=e12]:
+          - generic [ref=e14]:
+            - img
+        - button "Toggle theme" [ref=e15]:
+          - img
+          - generic [ref=e16]: Toggle theme
+    - generic [ref=e17]:
+      - button "Deals" [ref=e19]:
+        - img
+        - text: Deals
+      - generic [ref=e20]:
+        - generic [ref=e22]: Create New Deal
+        - generic [ref=e24]:
+          - generic [ref=e25]:
+            - generic [ref=e26]: Deal Name *
+            - textbox "Deal Name *" [ref=e27]:
+              - /placeholder: e.g. Acme Corp Acquisition
+          - generic [ref=e28]:
+            - generic [ref=e29]: Display Name
+            - textbox "Display Name" [ref=e30]:
+              - /placeholder: Optional display name
+          - generic [ref=e31]:
+            - generic [ref=e32]: Initial Stage
+            - combobox "Initial Stage" [ref=e33]:
+              - generic: inbound
+              - img
+            - combobox [ref=e118]
+          - generic [ref=e35]:
+            - button "Create Deal" [disabled]
+            - button "Cancel" [ref=e36]
+  - button "Open Next.js Dev Tools" [ref=e124] [cursor=pointer]:
+    - img [ref=e125]
+  - alert [ref=e128]

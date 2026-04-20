@@ -1,0 +1,18 @@
+    Get complete deal state including deal_profile.json, classified_links.json, and triage_summary.json.
+        # Load triage_summary.json from first bundle if exists
+                                triage_path = Path(quarantine_dir) / "triage_summary.json"
+                                        deal["triage_summary_source"] = json.load(f)
+    email_body_snippet: str,
+    triage_summary: Optional[str] = None,
+    confidence: Optional[float] = None,
+    field_confidences: Optional[dict] = None,
+        email_body_snippet: First 500 chars of email body (eliminates preview dependency)
+        triage_summary: AI-generated triage summary for operator review
+        confidence: Classification confidence score (0.0-1.0)
+        field_confidences: Per-field confidence scores dict
+    if not email_body_snippet:
+        errors.append("email_body_snippet is required")
+        "email_body_snippet": email_body_snippet,
+        "triage_summary": triage_summary,
+        "confidence": confidence,
+        "field_confidences": field_confidences,

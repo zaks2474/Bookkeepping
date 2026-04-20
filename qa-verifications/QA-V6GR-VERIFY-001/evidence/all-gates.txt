@@ -1,0 +1,598 @@
+=== QA-V6GR-VERIFY-001 Pre-Flight ===
+Timestamp: 2026-02-09T23:42:09Z
+--- V6PP Guide ---
+1002 /home/zaks/bookkeeping/docs/V6PP-SETUP-GUIDE.md
+--- Settings.json ---
+Deny rules: 12
+Allow rules: 144
+--- MCP Servers ---
+['gmail', 'crawl4ai-rag']
+--- Hooks ---
+/home/zaks/.claude/hooks/memory-sync.sh
+/home/zaks/.claude/hooks/post-edit.sh
+/home/zaks/.claude/hooks/pre-bash.sh
+/home/zaks/.claude/hooks/pre-edit.sh
+/home/zaks/.claude/hooks/stop.sh
+Hook count: 5
+--- Rules ---
+/home/zaks/zakops-agent-api/.claude/rules/agent-tools.md
+/home/zaks/zakops-agent-api/.claude/rules/backend-api.md
+/home/zaks/zakops-agent-api/.claude/rules/contract-surfaces.md
+/home/zaks/zakops-agent-api/.claude/rules/dashboard-types.md
+/home/zaks/zakops-agent-api/.claude/rules/design-system.md
+Rule count: 5
+--- Commands ---
+/home/zaks/zakops-agent-api/.claude/commands/after-change.md
+/home/zaks/zakops-agent-api/.claude/commands/check-drift.md
+/home/zaks/zakops-agent-api/.claude/commands/contract-checker.md
+/home/zaks/zakops-agent-api/.claude/commands/hooks-check.md
+/home/zaks/zakops-agent-api/.claude/commands/infra-check.md
+/home/zaks/zakops-agent-api/.claude/commands/permissions-audit.md
+/home/zaks/zakops-agent-api/.claude/commands/scaffold-feature.md
+/home/zaks/zakops-agent-api/.claude/commands/sync-agent-types.md
+/home/zaks/zakops-agent-api/.claude/commands/sync-all.md
+/home/zaks/zakops-agent-api/.claude/commands/sync-backend-types.md
+/home/zaks/zakops-agent-api/.claude/commands/tripass.md
+/home/zaks/zakops-agent-api/.claude/commands/update-memory.md
+/home/zaks/zakops-agent-api/.claude/commands/validate.md
+Command count: 13
+--- CLAUDE.md ---
+143 /home/zaks/zakops-agent-api/CLAUDE.md
+64 /home/zaks/CLAUDE.md
+--- MEMORY.md ---
+127 /root/.claude/projects/-mnt-c-Users-mzsai/memory/MEMORY.md
+130 /root/.claude/projects/-home-zaks/memory/MEMORY.md
+--- Agent Definitions ---
+/home/zaks/.claude/agents/arch-reviewer.md
+/home/zaks/.claude/agents/contract-guardian.md
+/home/zaks/.claude/agents/test-engineer.md
+--- TriPass ---
+1051 /home/zaks/zakops-agent-api/tools/tripass/tripass.sh
+
+==============================
+=== VF-01: TriPass QA Enhancements ===
+==============================
+=== VF-01.1: Trap handler ===
+616:  trap 'release_lock' EXIT ERR INT TERM
+Trap with all 4 signals: 1
+VF-01.1: PASS
+=== VF-01.2: release_lock function ===
+534:release_lock() {
+616:  trap 'release_lock' EXIT ERR INT TERM
+742:    release_lock
+833:    release_lock
+release_lock defined: 1, removes lockfile: 1
+VF-01.2: PASS
+=== VF-01.3: T-3 SKIP logic ===
+16:#   --generate-only                     Force generate-only mode (no CLI execution)
+464:  # T-3 (ENH-1: SKIP on generate-only placeholder)
+466:  if [ -s "$run_dir/FINAL_MASTER.md" ] && grep -qi "placeholder\|run the.*prompt manually\|generate-only" "$run_dir/FINAL_MASTER.md" 2>/dev/null; then
+467:    echo "| T-3: Structural | SKIP | Generate-only placeholder detected |" >> "$gates_file"
+593:      --generate-only) force_generate_only="true"; shift ;;
+648:    log_warn "Force generate-only mode — no agents will be executed"
+650:    [ -z "$CLAUDE_CLI" ] && claude_exec="false" && log_warn "Claude CLI not available — generate-only for Claude"
+651:    [ -z "$GEMINI_CLI" ] && gemini_exec="false" && log_warn "Gemini CLI not available — generate-only for Gemini"
+652:    [ -z "$CODEX_CLI" ] && codex_exec="false" && log_warn "Codex CLI not available — generate-only for Codex"
+701:  # For generate-only agents, create placeholder reports
+712:This report was generated in generate-only mode.
+793:  # Placeholder reports for generate-only agents
+804:This cross-review was generated in generate-only mode.
+862:  # Placeholder for generate-only
+870:This is a placeholder. Run the consolidation prompt manually:
+913:This is a placeholder. Run the Meta-QA prompt manually:
+1045:      echo "  --generate-only                          Force generate-only mode"
+T-3 SKIP on generate-only: 2
+VF-01.3: PASS
+=== VF-01.4: T-6 idempotency ===
+402:  # Append to CHANGES.md (ENH-2: idempotent — skip if run_id already recorded)
+404:    echo "  SKIP: CHANGES.md already contains entry for ${run_id}"
+T-6 idempotency check: 1
+VF-01.4: PASS
+=== VF-01.5: ENH-9 chown ===
+929:    chown -R zaks:zaks "$run_dir" 2>/dev/null || true
+930:    chown -R zaks:zaks "$TEMPLATES_DIR" 2>/dev/null || true
+931:    chown zaks:zaks "$LATEST_PTR" 2>/dev/null || true
+932:    chown zaks:zaks "$SOP_FILE" 2>/dev/null || true
+chown zaks:zaks calls: 4
+VF-01.5: PASS
+=== VF-01.6: ENH-9 root check ===
+  # ENH-9: Fix file ownership for WSL (Claude runs as root, operator is zaks)
+  if [ "$(id -u)" -eq 0 ] && id zaks >/dev/null 2>&1; then
+    chown -R zaks:zaks "$run_dir" 2>/dev/null || true
+    chown -R zaks:zaks "$TEMPLATES_DIR" 2>/dev/null || true
+    chown zaks:zaks "$LATEST_PTR" 2>/dev/null || true
+    chown zaks:zaks "$SOP_FILE" 2>/dev/null || true
+Root user check before chown: 1
+VF-01.6: PASS
+=== VF-01.7: Gates in MEMORY.md ===
+85:- Gates: T-1 (append-only), T-2 (completeness), T-3 (structural), T-4 (drift), T-5 (no-drop), T-6 (memory sync)
+Gates line (single line with T-1 through T-6): 1
+VF-01.7: PASS
+=== VF-01.8: Lock file path ===
+Lock file declaration: LOCKFILE="/tmp/tripass.lock"
+Total LOCKFILE references: 8
+Hardcoded path references (should be 1 declaration only): 1
+VF-01.8: PASS
+
+==============================
+=== VF-02: Phantom Plugin Cleanup ===
+==============================
+=== VF-02.1: SOP phantom check ===
+Phantom refs in SOP: 0
+VF-02.1: PASS
+=== VF-02.2: Templates phantom check ===
+Phantom refs in templates: 0
+VF-02.2: PASS
+=== VF-02.3: tripass.sh phantom check ===
+Phantom refs in tripass.sh: 0
+VF-02.3: PASS
+=== VF-02.4: MEMORY.md phantom check ===
+Phantom refs in MEMORY.md (loaded): 1
+86:- Plugin: `frontend-design` at `/mnt/skills/public/frontend-design/SKILL.md` recommended for design-mode
+VF-02.4: FAIL
+=== VF-02.5: V6PP guide phantom check ===
+Phantom refs in V6PP guide: 0
+VF-02.5: PASS
+=== VF-02.6: Rules phantom check ===
+Phantom refs in .claude/rules/: 0
+VF-02.6: PASS
+=== VF-02.7: Plugin phrase check ===
+Total 'frontend-design plugin' phrases: 0
+VF-02.7: PASS
+=== VF-02.8: SOP design-mode references ===
+71:- Design-mode runs benefit from the frontend design standards embedded in `.claude/rules/design-system.md`. This rule is automatically loaded when Claude Code works on dashboard component files. No additional prerequisites are required
+design-system.md references in SOP: 1
+VF-02.8: PASS
+
+==============================
+=== VF-03: Surface 9 Artifacts ===
+==============================
+=== VF-03.1: Manifest existence ===
+-rw-r--r-- 1 zaks zaks 3193 Feb  9 17:10 /home/zaks/zakops-agent-api/apps/dashboard/src/types/design-system-manifest.ts
+Manifest exists: 1, lines: 102
+VF-03.1: PASS
+=== VF-03.2: Manifest conventions ===
+Convention 'allSettled\|data.fetching\|DATA_FETCHING': 6 matches
+Convention 'console.warn\|error.handling\|ERROR_HANDLING': 5 matches
+Convention 'caret-color\|css\|CSS_ARCHITECTURE': 4 matches
+Convention 'server.side\|aggregation\|DATA_AGGREGATION': 5 matches
+Convention 'PIPELINE_STAGES\|stage.definition\|STAGE_DEFINITIONS': 6 matches
+Convention 'middleware\|api.communication\|API_COMMUNICATION': 2 matches
+Convention 'bridge\|import.discipline\|IMPORT_DISCIPLINE': 3 matches
+Export/convention declarations: 16, Conventions found: 7 / 7
+VF-03.2: PASS
+=== VF-03.3: design-system.md ===
+-rw-r--r-- 1 zaks zaks 4126 Feb  9 17:10 /home/zaks/zakops-agent-api/.claude/rules/design-system.md
+---
+paths:
+  - "apps/dashboard/src/components/**"
+  - "apps/dashboard/src/app/**"
+  - "apps/dashboard/src/styles/**"
+---
+YAML frontmatter: 1, lines: 90
+VF-03.3: PASS
+=== VF-03.4: Trigger paths ===
+  - "apps/dashboard/src/components/**"
+  - "apps/dashboard/src/app/**"
+  - "apps/dashboard/src/styles/**"
+When working on dashboard components, follow BOTH categories below.
+- Component-specific styles scoped appropriately
+Triggers — components: 3, app: 1, styles: 1
+VF-03.4: PASS
+=== VF-03.5: Category A conventions ===
+Cat A 'Promise.allSettled\|allSettled': 2
+Cat A 'console\.warn\|console\.error': 2
+Cat A 'caret-color\|@layer base': 2
+Cat A 'server-side\|server.side\|\.length': 2
+Cat A 'PIPELINE_STAGES\|execution-contracts': 3
+Cat A 'middleware\|JSON 502\|/api/': 2
+Cat A 'bridge\|import discipline\|generated.*direct': 2
+Category A conventions found: 7 / 7
+VF-03.5: PASS
+=== VF-03.6: Category B standards ===
+Cat B 'Typography\|typography\|font': 5
+Cat B 'Color\|color\|palette': 7
+Cat B 'Motion\|animation\|micro-interaction': 2
+Cat B 'Spatial\|composition\|layout\|asymmetry': 4
+Cat B 'Anti-[Pp]attern\|anti.pattern\|cookie-cutter': 2
+Category B areas found: 5 / 5
+VF-03.6: PASS
+=== VF-03.7: Surface 9 in contract-surfaces.md ===
+58:### Surface 9: Component Design System → Dashboard
+Surface 9 entry: 1, boundary/validation refs: 4
+VF-03.7: PASS
+=== VF-03.8: validate-surface9.sh ===
+-rwxr-xr-x 1 zaks zaks 3494 Feb  9 17:10 /home/zaks/zakops-agent-api/tools/infra/validate-surface9.sh
+Executable: 1
+VF-03.8: PASS
+=== VF-03.9: Validation coverage ===
+Validation check 'import\|generated': 7
+Validation check 'PIPELINE_STAGES\|stage': 7
+Validation check 'allSettled\|Promise': 8
+Critical validation checks: 3 / 3
+VF-03.9: PASS
+=== VF-03 COMPLETE ===
+=== VF-02.4 RE-VERIFY ===
+Phantom refs after fix: 0
+
+==============================
+=== VF-04: Guide Completeness ===
+==============================
+=== VF-04.1: Parts check ===
+Part 1: 18:## Part 1: Repository & Environment Orientation
+Part 2: 80:## Part 2: Claude Brain Architecture
+Part 3: 254:## Part 3: Agent Topology
+Part 4: 294:## Part 4: The 9 Contract Surfaces
+Part 5: 468:## Part 5: Dynamic Memory System
+Part 6: 535:## Part 6: Deal Integrity Architecture Patterns
+Part 7: 582:## Part 7: TriPass Pipeline
+Part 8: 749:## Part 8: Rollback Procedures
+Part 9: 801:## Part 9: WSL Environment Hazards
+Total Parts: 9
+VF-04.1: PASS
+=== VF-04.2: Appendices check ===
+Appendix A: 833:## Appendix A: Complete File Inventory
+Appendix B: 874:## Appendix B: OpenAPI Specs, Generated Files & Bridge Files
+Appendix C: 907:## Appendix C: Glossary
+Appendix D: 940:## Appendix D: Agent Definition Files
+Appendix E: 977:## Appendix E: Completed Missions Registry
+Total Appendices: 5
+VF-04.2: PASS
+=== VF-04.3: What Changed section ===
+What Changed section: 1 (at 6:## What Changed Since V5PP-DMS)
+VF-04.3: PASS
+=== VF-04.4: No placeholders ===
+Placeholder text count: 1
+632:| T-3 | Structural Validity | Agent identity headers, required fields in FINAL_MASTER.md. **Returns SKIP on generate-only placeholder** (ENH-1) |
+VF-04.4: FAIL
+=== VF-04.5: Document Information ===
+## Document Information
+
+| Field | Value |
+|-------|-------|
+| **Version** | V6PP 6.0 |
+| **Date** | 2026-02-09 |
+| **Supersedes** | V5PP-DMS (2026-02-07) |
+| **Generated by** | Claude Opus 4.6 from live system state |
+| **Key changes** | Surface 9 added, TriPass QA hardened, phantom plugin removed, 9 contract surfaces documented |
+Doc Info: 1, Version: 7, Supersedes: 3
+VF-04.5: PASS
+=== VF-04.6: Part content depth ===
+Guide line count: 1002
+VF-04.6: PASS
+=== VF-04.7: Line count range ===
+V6PP guide lines: 1002 (target: 1000-1500)
+VF-04.7: PASS
+=== VF-04 COMPLETE ===
+
+==============================
+=== VF-05: Guide Accuracy — Critical Facts ===
+==============================
+=== VF-05.1: PostgreSQL port ===
+36:| PostgreSQL | 5432 | `zakops-backend-postgres-1` | `pg_isready` | **Port 5432 ONLY** — port 5435 does not exist |
+Port 5432 refs: 1, Port 5435 presented as valid: 0
+VF-05.1: PASS
+=== VF-05.2: Deny rule count ===
+Guide says: 12, Live: 12
+VF-05.2: PASS
+=== VF-05.3: Deny rules complete list ===
+Pattern 'api-types.generated.ts': 12 occurrences
+Pattern 'agent-api-types.generated.ts': 6 occurrences
+Pattern 'backend_models.py': 6 occurrences
+Pattern 'rag_models.py': 6 occurrences
+Pattern '.env)': 3 occurrences
+Pattern '.env.*)': 8 occurrences
+Deny patterns found in guide: 6 / 6
+VF-05.3: PASS
+=== VF-05.4: Allow rule count ===
+Guide says: 4, Live: 144
+Summary note present: 0
+VF-05.4: FAIL
+=== VF-05.5: Command count ===
+Guide says: 13, Live: 13
+VF-05.5: PASS
+=== VF-05.6: Hook count ===
+Guide says: 5, Live: 5
+VF-05.6: PASS
+=== VF-05.7: MCP servers ===
+Live MCP servers: ['crawl4ai-rag', 'gmail']
+Guide mentions 'gmail': 0
+Guide mentions 'crawl4ai-rag': 0
+Guide mentions wrong server pattern 'github.*mcp\|modelcontextprotocol': 1
+Guide mentions wrong server pattern 'playwright.*mcp': 1
+VF-05.7: FAIL
+=== VF-05.8: Surface count ===
+Surfaces in guide: 9
+Surface 9 mentions: 16
+VF-05.8: PASS
+=== VF-05.9: TriPass enhancements in guide ===
+Enhancement 'ENH-1\|T-3.*SKIP\|SKIP.*generate': 2
+Enhancement 'ENH-2\|T-6.*[Ii]dempoten\|idempoten': 3
+Enhancement 'ENH-3\|trap.*handler\|trap.*release': 4
+Enhancement 'ENH-8\|gates.*MEMORY\|MEMORY.*gates': 2
+Enhancement 'ENH-9\|chown.*zaks\|ownership.*WSL\|file ownership': 5
+Enhancements documented: 5 / 5
+VF-05.9: PASS
+=== VF-05.10: Port 8090 ===
+41:| **Port 8090** | — | — | — | **DECOMMISSIONED — never use** |
+8090 marked decommissioned: 1
+VF-05.10: PASS
+=== VF-05.11: Agent definitions path ===
+86:3. **Agent definitions** — `~/.claude/agents/*.md` (3 agents)
+267:Located at `~/.claude/agents/`. Each file has YAML frontmatter specifying name, description, model, and tool permissions.
+286:- **Agents** — Custom definitions in `~/.claude/agents/` with YAML frontmatter, model selection, and tool permissions. Invoked via `/agent-name` or Task tool with `subagent_type`
+868:| Architecture Reviewer | `~/.claude/agents/arch-reviewer.md` | Opus |
+869:| Contract Guardian | `~/.claude/agents/contract-guardian.md` | Sonnet |
+arch-reviewer.md
+contract-guardian.md
+test-engineer.md
+Guide says: `~/.claude/agents/*.md`, Actual: /home/zaks/.claude/agents/
+Has explicit or tilde agents path: 9
+VF-05.11: PASS
+=== VF-05.12: Stale 8-surface references ===
+Stale '8 surfaces' references: 1
+957:description: Read-only validator for all 8 contract surfaces
+VF-05.12: FAIL
+
+==============================
+=== VF-06: Guide Accuracy — Metrics ===
+==============================
+=== VF-06.1: CLAUDE.md monorepo ===
+Live: 143, Guide claims: 143
+VF-06.1: PASS
+=== VF-06.2: CLAUDE.md root ===
+Live: 64, Guide claims: 5
+VF-06.2: FAIL
+=== VF-06.3: Hook count ===
+Live: 5, Guide: 5
+VF-06.3: PASS
+=== VF-06.4: Rule count ===
+Live: 5, Guide: 5
+VF-06.4: PASS
+=== VF-06.5: Command count ===
+Live: 13, Guide: 13
+VF-06.5: PASS
+=== VF-06.6: Deny count ===
+Live: 12, Guide: 12
+VF-06.6: PASS
+=== VF-06.7: Allow count ===
+Live: 144, Guide: 4
+Summary note: 0
+VF-06.7: FAIL
+=== VF-06.8: MEMORY.md line count ===
+Live: 127, Guide: 129
+Delta: 2
+VF-06.8: PASS
+=== VF-06 COMPLETE ===
+
+=== RE-VERIFY REMEDIATED GATES ===
+VF-04.4 re-verify placeholder count: 0
+VF-04.4: PASS (remediated)
+VF-05.4 re-verify: Guide allow='', Summary note=1
+VF-05.4: PASS (remediated)
+VF-05.7 re-verify: correct=1, wrong=0
+VF-05.7: PASS (remediated)
+VF-05.12 re-verify: stale '8 surfaces' refs: 0
+VF-05.12: PASS (remediated)
+=== VF-06.2 manual verification ===
+88:5. **CLAUDE.md files** — Root-level `/home/zaks/CLAUDE.md` (64 lines) → Monorepo `/home/zaks/zakops-agent-api/CLAUDE.md` (143 lines, ceiling: 150)
+95:| `/home/zaks/CLAUDE.md` | 64 | Operational reference: service map, key paths, golden commands, secrets policy |
+840:| CLAUDE.md (root) | `/home/zaks/CLAUDE.md` | Yes | Manual edit |
+Content inspection: Guide says 64 lines on lines 88 and 95. Live is 64. Test regex extracted wrong number due to preceding '5.' in numbered list.
+VF-06.2: PASS (content correct, test regex extraction issue)
+VF-06.7 re-verify: Guide allow pattern='144'
+
+==============================
+=== VF-07: No Duplication ===
+==============================
+=== VF-07.1: Line count range ===
+Total lines: 1002 (target: 1000-1500)
+VF-07.1: PASS
+=== VF-07.2: Duplicate paragraphs ===
+Consecutive duplicate lines: 0
+VF-07.2: PASS
+=== VF-07.3: Service map uniqueness ===
+Service map row appearances: 3 (expect 1 each)
+VF-07.3: PASS
+=== VF-07.4: Deny rules table uniqueness ===
+Deny rules section headers: 2
+VF-07.4: PASS
+=== VF-07 COMPLETE ===
+
+==============================
+=== VF-08: Cross-Document Consistency ===
+==============================
+=== VF-08.1: Service map cross-check ===
+Port 3003 — Guide: 1, CLAUDE.md: 1
+Port 8091 — Guide: 1, CLAUDE.md: 1
+Port 8095 — Guide: 1, CLAUDE.md: 1
+Port 8052 — Guide: 1, CLAUDE.md: 1
+Port 5432 — Guide: 1, CLAUDE.md: 1
+VF-08.1: PASS
+=== VF-08.2: Surface cross-check ===
+Guide surfaces: 9, contract-surfaces.md mentions: 9
+VF-08.2: PASS
+=== VF-08.3: Command cross-check ===
+Live commands:
+after-change
+check-drift
+contract-checker
+hooks-check
+infra-check
+permissions-audit
+scaffold-feature
+sync-agent-types
+sync-all
+sync-backend-types
+tripass
+update-memory
+validate
+Commands missing from guide: 0
+VF-08.3: PASS
+=== VF-08.4: Hook cross-check ===
+Live hook scripts: ['post-edit.sh', 'pre-bash.sh', 'pre-edit.sh', 'stop.sh']
+Guide mentions pre-edit.sh: 3
+Guide mentions pre-bash.sh: 3
+Guide mentions post-edit.sh: 3
+Guide mentions stop.sh: 6
+Guide mentions memory-sync.sh: 10
+VF-08.4: PASS
+=== VF-08.5: MEMORY.md path cross-check ===
+Guide path: /root/.claude/projects/-home-zaks/memory/MEMORY.md
+Loaded path: /root/.claude/projects/-mnt-c-Users-mzsai/memory/MEMORY.md
+Match: NO
+VF-08.5: FAIL
+=== VF-08.6: TriPass cross-check ===
+Pattern 'forensic\|design\|implement' — Guide: 24, SOP: 13
+Pattern 'T-1\|T-2\|T-3\|T-4\|T-5\|T-6' — Guide: 10, SOP: 10
+Pattern 'autonomous\|generate-only' — Guide: 4, SOP: 3
+VF-08.6: PASS
+=== VF-08.7: Deny rules — inherits VF-05.2 + VF-05.3 ===
+VF-08.7: PASS (inherited)
+=== VF-08.8: MCP — inherits VF-05.7 ===
+VF-08.8: PASS (inherited from remediated VF-05.7)
+
+==============================
+=== VF-09: Memory Update ===
+==============================
+=== VF-09.1: Mission entry ===
+V6-GUIDE-REGEN-001 entries: 0
+VF-09.1: FAIL
+=== VF-09.2: Entry content ===
+Entry: 
+Entry mentions 'Surface 9\|surface.9': 0
+Entry mentions 'TriPass\|tripass': 0
+Entry mentions 'V6PP\|guide': 0
+VF-09.2: FAIL
+=== VF-09.3: Sentinel tags ===
+- <!-- AUTOSYNC:deny_rules --> **12 deny rules** in settings.json (Edit/Write to *.generated.ts, *_models.py, .env)
+- <!-- AUTOSYNC:rule_count --> **5 path-scoped rules** in `.claude/rules/` (auto-context injection)
+- <!-- AUTOSYNC:claude_md_lines --> CLAUDE.md: 143 lines (ceiling 150)
+- <!-- AUTOSYNC:redocly_ignores --> Redocly ignore ceiling: 57 (at limit — any new ignore breaks validate-local)
+- <!-- AUTOSYNC:hook_count --> Hooks: 5 scripts in ~/.claude/hooks/
+Sentinel tags: 5
+VF-09.3: PASS
+=== VF-09.4: MEMORY.md size ===
+MEMORY.md lines: 127 (limit: 200)
+VF-09.4: PASS
+=== VF-09 COMPLETE ===
+
+==============================
+=== VF-10: V5PP-DMS Supersession ===
+==============================
+=== VF-10.1: Supersession declaration ===
+999:| **Supersedes** | V5PP-DMS (2026-02-07) |
+Supersession declarations: 1
+VF-10.1: PASS
+=== VF-10.2: Current guide clarity ===
+# V6PP Setup Guide — ZakOps Claude Code Infrastructure
+## Generated: 2026-02-09 | Version: 6.0
+
+V6PP in title: 1
+VF-10.2: PASS
+=== VF-10.3: V5PP historical files ===
+-rw-r--r-- 1 root root 7109 Feb  6 21:08 /home/zaks/bookkeeping/docs/V5PP-EXECUTION-REPORT.md
+-rw-r--r-- 1 zaks zaks 4579 Feb  6 22:19 /home/zaks/bookkeeping/docs/V5PP-REMEDIATE-001-REPORT.md
+V5PP files on disk: 2
+VF-10.3: PASS
+=== VF-10.4: No V5PP-as-current ===
+V5PP referenced as current: 0
+VF-10.4: PASS
+=== VF-10 COMPLETE ===
+
+=== RE-VERIFY VF-08.5, VF-09.1, VF-09.2 ===
+Guide first MEMORY path: /root/.claude/projects/-home-zaks/memory/MEMORY.md
+Guide mentions -mnt-c path: 2
+VF-08.5: PASS (remediated — both paths documented)
+VF-09.1 re-verify: V6-GUIDE-REGEN-001 entries: 1
+VF-09.1: PASS (remediated)
+Entry: - V6-GUIDE-REGEN-001: Complete (2026-02-09) — Surface 9 introduced, TriPass QA hardened (5 ENH), phantom plugin removed, V6PP guide (1002 lines)
+
+==============================
+=== STRESS TESTS ===
+==============================
+=== ST-1: Surface 9 validation execution ===
+=== Surface 9: Design System Convention Validation ===
+
+Check 1: Import discipline (no direct generated file imports)
+  PASS: No direct generated file imports
+Check 2: Stage definitions (no hardcoded stage arrays)
+  PASS: No hardcoded stage arrays detected
+Check 3: Data fetching (Promise.allSettled usage)
+  PASS: No banned Promise.all usage in page files
+Check 4: Design system manifest
+  PASS: Manifest exists
+Check 5: Design system path-scoped rule
+  PASS: Rule file exists
+
+Surface 9 Validation: PASS (0 violations)
+Exit code: 0
+ST-1: PASS
+=== ST-2: MEMORY.md copy divergence ===
+Copy A (-mnt-c-Users-mzsai): 130 lines
+Copy B (-home-zaks): 130 lines
+Divergent lines: 2
+ST-2: INFORMATIONAL
+=== ST-3: CRLF check ===
+Files with CRLF: 0
+ST-3: PASS
+=== ST-4: TriPass file ownership ===
+/home/zaks/bookkeeping/docs/_tripass_templates/: zaks
+/home/zaks/bookkeeping/docs/TRIPASS_SOP.md: zaks
+/home/zaks/bookkeeping/docs/TRIPASS_LATEST_RUN.md: zaks
+Root-owned TriPass artifacts: 0
+ST-4: PASS
+=== ST-5: Contract Guardian surface count ===
+name: Contract Guardian
+description: Read-only validator for all 9 contract surfaces. Runs gates, reports drift, cannot modify source code.
+# Contract Guardian
+You are the Contract Guardian for ZakOps. Your ONLY job is to validate that all
+contract surfaces are aligned. You CANNOT edit or create source files. You can
+2. **Gate B -- Contract Surfaces:** `bash tools/infra/validate-contract-surfaces.sh`
+4. **Gate C -- Agent Config (Surface 8):** `bash tools/infra/validate-agent-config.sh`
+| Gate | Surface | Status | Notes |
+Stale '8 surfaces' in agent def: 0
+ST-5: PASS
+=== ST-6: Cross-reference validity ===
+Cross-references found:
+See Part 8
+see Part 4
+see Part 6
+Invalid cross-references: 0
+ST-6: PASS
+=== ST-7: Hook registration location ===
+Hook config file: /home/zaks/.claude/settings.json
+Hook events in project settings: 3
+14:- **Config-Stabilize findings remediated** — 14 configuration issues resolved across hooks, memory, and settings
+84:1. **User-level settings** — `~/.claude/settings.json` (permissions, hooks, MCP servers)
+933:| **Config-Stabilize** | Mission that remediated 14 configuration findings across hooks, memory, and settings |
+ST-7: INFORMATIONAL
+=== STRESS TESTS COMPLETE ===
+
+==============================
+=== CROSS-CONSISTENCY CHECKS ===
+==============================
+=== XC-1: MEMORY.md path consistency ===
+Guide says: /root/.claude/projects/-home-zaks/memory/MEMORY.md
+Actually loaded: /root/.claude/projects/-mnt-c-Users-mzsai/memory/MEMORY.md
+Loaded path in guide: 2
+XC-1: PASS (both paths documented)
+=== XC-2: Allow rules documentation ===
+Guide: 144, Live: 144
+XC-2: PASS
+=== XC-3: MCP server accuracy ===
+- `gmail` — `@gongrzhe/server-gmail-autoauth-mcp` (enabled)
+- `crawl4ai-rag` — Docker-based RAG crawler service (enabled)
+Live servers: ['crawl4ai-rag', 'gmail']
+XC-3: PASS
+=== XC-4: MEMORY.md phantom after Phase 2 ===
+Phantom /mnt/skills/ in loaded MEMORY.md: 0
+XC-4: PASS
+=== XC-5: Agent defs surface count ===
+STALE in arch-reviewer.md: 1. **Cross-Surface Impact** -- Which of the 8 contract surfaces does this change affect?
+STALE in test-engineer.md: For each of the 8 surfaces, write tests that verify alignment:
+Agent def stale: 2, Guide stale: 0
+XC-5: FAIL
+
+=== XC-5 RE-VERIFY ===
+Agent stale: 0, Guide stale: 0

@@ -1,0 +1,59 @@
+=== QA-2.5: Chaos Test (LIVE RE-RUN) ===
+Timestamp: 2026-02-03T16:03:00-06:00
+Test deal: DL-0020
+Creating approval with thread: qa-v4-chaos-1770156180
+Invoke response:
+{"thread_id":"qa-v4-chaos-1770156180","status":"awaiting_approval","content":null,"pending_approval":{"approval_id":"5b9da08b-926e-4116-836b-7c1874198e08","tool":"transition_deal","args":{"deal_id":"DL-0020","from_stage":"","to_stage":"loi","reason":null},"permission_tier":"CRITICAL","requested_by":"qa-v4","requested_at":"2026-02-03T22:03:02.710977Z"},"actions_taken":[],"error":null}
+Approval created: 5b9da08b-926e-4116-836b-7c1874198e08
+=== STOPPING BACKEND ===
+zakops-backend-backend-1
+=== APPROVING WITH BACKEND DOWN ===
+Approve response:
+{
+  "thread_id": "qa-v4-chaos-1770156180",
+  "status": "completed",
+  "content": "I encountered an issue while trying to move the deal DL-0020 to the &quot;loi&quot; stage. It seems the Deal API is currently unavailable at the specified address, and mocks are disabled. Could you please check the service status or try again later?",
+  "pending_approval": null,
+  "actions_taken": [
+    {
+      "tool": "transition_deal",
+      "result": {
+        "ok": false,
+        "error": "Deal API unavailable at http://host.docker.internal:8091 and mocks disabled"
+      }
+    }
+  ],
+  "error": "Tool execution did not complete"
+}
+
+=== RESTORING BACKEND ===
+zakops-backend-backend-1
+
+=== TRIPLE-PROOF: Approval row ===
+ERROR:  column "approved_by" does not exist
+LINE 1: SELECT id, status, approved_by, approved_at FROM approvals W...
+                           ^
+
+=== TRIPLE-PROOF: Tool execution ===
+                  id                  |             approval_id              | success | error_message 
+--------------------------------------+--------------------------------------+---------+---------------
+ 7e5f9d3d-ea95-4c97-be84-cd1c0dd63e2e | 5b9da08b-926e-4116-836b-7c1874198e08 | f       | 
+(1 row)
+
+
+=== TRIPLE-PROOF: Audit log ===
+        event_type        |          created_at           
+--------------------------+-------------------------------
+ approval_claimed         | 2026-02-03 22:03:26.299882+00
+ tool_execution_started   | 2026-02-03 22:03:26.310912+00
+ tool_execution_completed | 2026-02-03 22:03:28.389863+00
+ approval_approved        | 2026-02-03 22:03:28.389936+00
+(4 rows)
+
+
+=== TRIPLE-PROOF: Approval row (corrected) ===
+                  id                  |  status  | actor_id |          resolved_at          
+--------------------------------------+----------+----------+-------------------------------
+ 5b9da08b-926e-4116-836b-7c1874198e08 | approved | qa-v4    | 2026-02-03 22:03:28.389709+00
+(1 row)
+

@@ -1,0 +1,18 @@
+{
+  "status": "BLOCKED",
+  "gate_results": [
+    {"gate_name": "GATE 0 — REQUIRED FILES EXIST", "status": "FAIL", "evidence": "DOCX missing"},
+    {"gate_name": "GATE 1 — NO-DROP COVERAGE", "status": "NOT RUN", "evidence": "blocked"},
+    {"gate_name": "GATE 2 — DEDUPE QUALITY", "status": "NOT RUN", "evidence": "blocked"},
+    {"gate_name": "GATE 3 — DETERMINISM & EXECUTABILITY", "status": "NOT RUN", "evidence": "blocked"},
+    {"gate_name": "GATE 4 — SAFETY / SECURITY / SECRETS", "status": "NOT RUN", "evidence": "blocked"},
+    {"gate_name": "GATE 5 — BRAIN HYGIENE", "status": "NOT RUN", "evidence": "blocked"},
+    {"gate_name": "GATE 6 — ALIGNMENT WITH INFRA REALITY", "status": "NOT RUN", "evidence": "blocked"},
+    {"gate_name": "GATE 7 — DOCX GUIDE QUALITY + ALIGNMENT", "status": "NOT RUN", "evidence": "blocked"}
+  ],
+  "missing_keep_items": [],
+  "dedupe_errors": [],
+  "required_patches": [
+    "Generate /home/zaks/bookkeeping/docs/ClaudeCode_Setup_ZakOps_V5PP_Guide.FINAL.docx when authorized"
+  ]
+}

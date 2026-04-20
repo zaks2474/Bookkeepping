@@ -1,0 +1,2 @@
+/home/zaks/zakops-backend/src/core/events/handlers.py:186:        # Update last_indexed_at to track indexing attempt
+/home/zaks/zakops-backend/src/core/events/handlers.py:188:            "UPDATE zakops.deals SET last_indexed_at = $1 WHERE deal_id = $2",

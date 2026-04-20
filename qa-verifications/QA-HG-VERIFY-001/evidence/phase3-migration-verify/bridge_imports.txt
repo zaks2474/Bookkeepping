@@ -1,0 +1,18 @@
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:15:import type { PipelineStats, DealStage } from '@/types/api';
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-client.ts:37:} from '@/types/api';
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-client.ts:483:export type { Deal, DealCreate, DealUpdate, DealEvent, DealAlias } from '@/types/api';
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-client.ts:484:export type { Action, ActionApprove, ActionReject } from '@/types/api';
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-client.ts:485:export type { QuarantineItem, QuarantineProcess } from '@/types/api';
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-client.ts:486:export type { SenderProfile } from '@/types/api';
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-client.ts:487:export type { PipelineStageSummary, PipelineStats } from '@/types/api';
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/actions/ActionQueue.tsx:22:import type { Action, RiskLevel } from '@/types/api';
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealHeader.tsx:44:import type { Deal, DealStage, Priority } from '@/types/api';
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealWorkspace.tsx:25:import type { Deal, DealEvent, Action } from '@/types/api';
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealTimeline.tsx:31:import type { DealEvent, DealStage } from '@/types/api';
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deals/DealBoard.tsx:18:import type { Deal, DealStage } from '@/types/api';
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/operator-hq/QuickStats.tsx:22:import type { PipelineStats } from '@/types/api';
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/operator-hq/PipelineOverview.tsx:18:import type { PipelineStats, DealStage } from '@/types/api';
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/operator-hq/ActivityFeed.tsx:25:import type { DealEvent } from '@/types/api';
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/operator-hq/OperatorHQ.tsx:36:import type { PipelineStats, DealEvent, Action } from '@/types/api';
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/dashboard/ExecutionInbox.tsx:40:import type { Action, QuarantineItem, ActionStatus } from '@/types/api';
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/dashboard/TodayNextUpStrip.tsx:29:import type { Action, Deal, QuarantineItem } from '@/types/api';

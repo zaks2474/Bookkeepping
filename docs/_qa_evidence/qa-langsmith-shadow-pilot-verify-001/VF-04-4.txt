@@ -1,0 +1,4 @@
+Lines 1606-1627: Race condition handling
+1608: if row is None → ON CONFLICT triggered
+1623: response.status_code = 200 (race loser gets 200)
+1626: response.status_code = 201 (INSERT winner gets 201)

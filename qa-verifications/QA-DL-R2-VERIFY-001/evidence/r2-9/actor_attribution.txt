@@ -1,0 +1,6 @@
+/home/zaks/zakops-backend/src/api/orchestration/routers/workflow.py:16:from ...shared.middleware import get_current_operator
+/home/zaks/zakops-backend/src/api/orchestration/routers/workflow.py:81:        If authenticated, uses operator email/id. Falls back to transitioned_by query param.
+/home/zaks/zakops-backend/src/api/orchestration/routers/workflow.py:88:    # R2-9: Get actor from authenticated operator if available
+/home/zaks/zakops-backend/src/api/orchestration/routers/workflow.py:91:        operator = get_current_operator(request)
+/home/zaks/zakops-backend/src/api/orchestration/routers/workflow.py:92:        if operator:
+/home/zaks/zakops-backend/src/api/orchestration/routers/workflow.py:93:            actor = getattr(operator, 'email', None) or getattr(operator, 'id', None) or str(operator)

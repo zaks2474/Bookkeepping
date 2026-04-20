@@ -1,0 +1,41 @@
+=== XC-3 SURFACE COVERAGE ===
+12:Per builder baseline loading, this mission references existing operating context rather than repeating it: `CLAUDE.md`, `MEMORY.md`, 10 hooks, 7 path-scoped rules, deny rules, and delegated agents. This mission extends governance tracking to 16 contract surfaces (including S15 and S16), preserves the standing 7-rule infrastructure discipline, and enforces mission-specific deviations and sequencing below.
+95:| S15 | MCP Bridge Tool Interface contract surface; bridge implementation must match tool schema validators |
+96:| S16 | Email Triage Injection contract surface; LangSmith output must remain schema-valid through bridge to backend ingestion |
+103:## Contract Surface Matrix (S1-S16)
+108:| S1 | Backend -> Dashboard | Yes | P0, P1, P2, P4, P5, P6 | `cd /home/zaks/zakops-agent-api && make sync-types` |
+109:| S2 | Backend -> Agent SDK | Yes | P0, P1, P2, P4, P5, P6 | `cd /home/zaks/zakops-agent-api && make sync-backend-models` |
+110:| S3 | Agent OpenAPI | Conditional (only if agent API schema changes) | P1, P6 (if touched) | `cd /home/zaks/zakops-agent-api && make update-agent-spec` |
+111:| S4 | Agent -> Dashboard | Conditional | P6 (if agent contracts exposed) | `cd /home/zaks/zakops-agent-api && make sync-agent-types` |
+112:| S5 | RAG -> Backend SDK | No | N/A | `cd /home/zaks/zakops-agent-api && make sync-rag-models` (not expected) |
+113:| S6 | MCP Tools | Yes | P1, P6 | `cd /home/zaks/zakops-agent-api && make validate-surface6` |
+114:| S7 | SSE Events | Conditional (only if event schema touched) | P6 (if touched) | reference schema gate |
+115:| S8 | Agent Config | Yes | P1, P3 | `cd /home/zaks/zakops-agent-api && make validate-agent-config` |
+116:| S9 | Design System -> Dashboard | Yes | P2 | `cd /home/zaks/zakops-agent-api && make validate-surface9` |
+117:| S10 | Dependency Health | Yes | P0, P7 | `cd /home/zaks/zakops-agent-api && make validate-surface10` |
+118:| S11 | Env Registry | Yes | P0, P7 | `cd /home/zaks/zakops-agent-api && make validate-surface11` |
+119:| S12 | Error Taxonomy | Yes | P1, P4, P5 | `cd /home/zaks/zakops-agent-api && make validate-surface12` |
+120:| S13 | Test Coverage | Yes | P1, P2, P4, P8 | `cd /home/zaks/zakops-agent-api && make validate-surface13` |
+121:| S14 | Performance Budget | Yes | P8 | `cd /home/zaks/zakops-agent-api && make validate-surface14` |
+122:| S15 | MCP Bridge Tool Interface | Yes | P0, P1, P6 | `cd /home/zaks/zakops-agent-api && make validate-surface15` |
+123:| S16 | Email Triage Injection | Yes | P0, P1, P4, P5 | `cd /home/zaks/zakops-agent-api && make validate-surface16` |
+185:| 5 | Long execution causes context loss and skipped surfaces | HIGH | Hidden contract drift | Context checkpoint after Phase 4 + explicit S1-S16 phase gates |
+637:4. Governance safety: all affected surfaces (especially S10-S16) must have explicit phase gates.
+98:| Hard gate chain | Mandatory sync chain after API-touching phases: `make update-spec -> make sync-types -> make sync-backend-models -> npx tsc --noEmit` |
+108:| S1 | Backend -> Dashboard | Yes | P0, P1, P2, P4, P5, P6 | `cd /home/zaks/zakops-agent-api && make sync-types` |
+109:| S2 | Backend -> Agent SDK | Yes | P0, P1, P2, P4, P5, P6 | `cd /home/zaks/zakops-agent-api && make sync-backend-models` |
+122:| S15 | MCP Bridge Tool Interface | Yes | P0, P1, P6 | `cd /home/zaks/zakops-agent-api && make validate-surface15` |
+123:| S16 | Email Triage Injection | Yes | P0, P1, P4, P5 | `cd /home/zaks/zakops-agent-api && make validate-surface16` |
+132:- **Phase-gated sync chain is mandatory**: after every API-touching phase (P0, P1, P2, P4, P5, P6), run `make update-spec -> make sync-types -> make sync-backend-models -> npx tsc --noEmit` as gate criteria.
+172:make update-spec && make sync-types && make sync-backend-models && npx tsc --noEmit
+234:- `cd /home/zaks/zakops-agent-api && make validate-surface10 && make validate-surface11 && make validate-surface15 && make validate-surface16`
+235:- `cd /home/zaks/zakops-agent-api && make update-spec && make sync-types && make sync-backend-models && npx tsc --noEmit`
+278:- `cd /home/zaks/zakops-agent-api && make validate-surface6 && make validate-agent-config && make validate-surface12 && make validate-surface13 && make validate-surface15 && make validate-surface16`
+279:- `cd /home/zaks/zakops-agent-api && make update-spec && make sync-types && make sync-backend-models && npx tsc --noEmit`
+325:- `cd /home/zaks/zakops-agent-api && make update-spec && make sync-types && make sync-backend-models && npx tsc --noEmit`
+402:- `cd /home/zaks/zakops-agent-api && make validate-surface12 && make validate-surface13 && make validate-surface16`
+403:- `cd /home/zaks/zakops-agent-api && make update-spec && make sync-types && make sync-backend-models && npx tsc --noEmit`
+449:- `cd /home/zaks/zakops-agent-api && make validate-surface12 && make validate-surface16`
+450:- `cd /home/zaks/zakops-agent-api && make update-spec && make sync-types && make sync-backend-models && npx tsc --noEmit`
+488:- `cd /home/zaks/zakops-agent-api && make validate-surface6 && make validate-surface15`
+489:- `cd /home/zaks/zakops-agent-api && make update-spec && make sync-types && make sync-backend-models && npx tsc --noEmit`

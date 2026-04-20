@@ -1,0 +1,42 @@
+=== VF-04: Gemini 5-Column Table Accuracy ===
+
+The Gemini table uses a HARDCODED case statement (sync-agent-configs.sh lines 122-141)
+for boundary/artifacts/validation columns. Checked against canonical source:
+
+| # | Name (parsed) | Boundary (hardcoded) | Expected Boundary | Match |
+|---|--------------|---------------------|-------------------|-------|
+| S1 | Backend → Dashboard | OpenAPI -> TS Types | OpenAPI -> TS Types | ✓ |
+| S2 | Backend → Agent SDK | OpenAPI -> Py Models | OpenAPI -> Py Models | ✓ |
+| S3 | Agent API OpenAPI Spec | OpenAPI -> TS Types | Agent API Spec | ✗ |
+| S4 | Agent → Dashboard | OpenAPI -> Py Models | OpenAPI -> TS Types | ✗ |
+| S5 | RAG → Backend SDK | TS Contracts | OpenAPI -> Py Models | ✗ |
+| S6 | MCP Tool Schemas | Event definitions | Tool definitions | ✗ |
+| S7 | SSE Event Schema | Tool definitions | Event definitions | ✗ |
+| S8 | Agent Configuration | Py Tool Defs | Py Tool Defs | ✓ |
+| S9-S17 | (correct names) | (correct boundaries) | (correct) | ✓ |
+
+VALIDATION COLUMN CHECK:
+| # | Table Shows | Canonical Command | Match |
+|---|------------|-------------------|-------|
+| S3 | make sync-agent-types | make update-agent-spec | ✗ |
+| S4 | make sync-rag-models | make sync-agent-types | ✗ |
+| S5 | make validate-local | make sync-rag-models | ✗ |
+| S6 | make validate-local | (reference schema) | ~acceptable |
+| S7 | make validate-local | (reference schema) | ~acceptable |
+
+ARTIFACTS COLUMN CHECK:
+| # | Table Shows | Expected | Match |
+|---|------------|----------|-------|
+| S3 | agent-api-types.generated.ts | agent-api.json | ✗ |
+| S4 | rag_models.py | agent-api-types.generated.ts | ✗ |
+| S5 | execution-contracts.ts | rag_models.py | ✗ |
+| S6 | SSE contracts | tool-schemas.json | ✗ |
+| S7 | MCP contracts | agent-events.schema.json | ✗ |
+
+ROOT CAUSE: Cases 3-5 are shifted by +1 (S3 has S4's data, S4 has S5's data,
+S5 has fabricated data). Cases 6-7 are swapped (S6 has S7's data, S7 has S6's data).
+
+IMPACT: Gemini agent gets incorrect boundary/artifact/validation context for S3-S7.
+Surface names (column 2) are always correct since they come from parsed data.
+
+VERDICT: FAIL — Hardcoded Gemini enrichment columns wrong for S3-S7

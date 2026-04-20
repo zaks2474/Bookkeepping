@@ -1,0 +1,13 @@
+=== CHECK 5.9.2: WebSocket Endpoint Usage ===
+Timestamp: 2026-02-03T13:22:25-06:00
+
+/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/e2e/integration.test.tsx:610:  it('WebSocket endpoint for global updates', () => {
+/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/e2e/integration.test.tsx:611:    const wsEndpoint = '/ws/updates';
+/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/e2e/integration.test.tsx:612:    expect(wsEndpoint).toBe('/ws/updates');
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-client.ts:447:export function useWebSocketUpdates(
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-client.ts:451:  const wsUrl = API_BASE_URL.replace(/^http/, 'ws') + '/ws/updates';
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-client.ts:454:  // a library like `reconnecting-websocket` or implementing reconnection logic.
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-client.ts:456:    const ws = new WebSocket(wsUrl);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-client.ts:463:        console.error('Failed to parse WebSocket message');
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-client.ts:468:      console.error('WebSocket error:', error);
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/use-realtime-events.ts:430: * Hook for subscribing to global WebSocket events (deal updates, action updates, etc.)

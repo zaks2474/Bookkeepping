@@ -1,0 +1,30 @@
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:43:  type Deal,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:377:      return { type: 'deal', deal_id: selectedDealId };
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:10:  type Deal,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:15:import type { PipelineStats, DealStage } from '@/types/api';
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:65:  type DealDetail,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:66:  type DealEvent,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:67:  type DealEnrichment,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:69:  type DealMaterials,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx:50:import { archiveDeal, bulkArchiveDeals, getDeals, type Deal } from '@/lib/api';
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/page.tsx:24:  type Deal,
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:72:export const DealSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:86:export type Deal = z.infer<typeof DealSchema>;
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:129:export type DealDetail = z.infer<typeof DealDetailSchema>;
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:160:export type DealEvent = z.infer<typeof EventSchema>;
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:238:export type DealMaterials = z.infer<typeof DealMaterialsSchema>;
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:294:  deals: z.array(DealSchema),
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:295:}).or(z.array(DealSchema));
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:585:export interface DealEnrichment {
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-schemas.ts:126:export const DealSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-schemas.ts:313:export type DealStage = z.infer<typeof DealStageSchema>;
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-schemas.ts:314:export type DealStatus = z.infer<typeof DealStatusSchema>;
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-schemas.ts:323:export type Deal = z.infer<typeof DealSchema>;
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-schemas.ts:324:export type DealCreate = z.infer<typeof DealCreateSchema>;
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-schemas.ts:325:export type DealUpdate = z.infer<typeof DealUpdateSchema>;
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-schemas.ts:326:export type DealEvent = z.infer<typeof DealEventSchema>;
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-schemas.ts:327:export type DealAlias = z.infer<typeof DealAliasSchema>;
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-client.ts:483:export type { Deal, DealCreate, DealUpdate, DealEvent, DealAlias } from '@/types/api';
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api.ts:10:export type DealStage =
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api.ts:21:export type DealStatus = 'active' | 'junk' | 'merged' | 'archived';
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api.ts:27:export interface DealIdentifiers {

@@ -1,0 +1,180 @@
+=== Tables ===
+               List of relations
+ Schema |         Name          | Type  | Owner 
+--------+-----------------------+-------+-------
+ public | approvals             | table | agent
+ public | audit_log             | table | agent
+ public | checkpoint_blobs      | table | agent
+ public | checkpoint_migrations | table | agent
+ public | checkpoint_writes     | table | agent
+ public | checkpoints           | table | agent
+ public | session               | table | agent
+ public | tool_executions       | table | agent
+ public | user                  | table | agent
+(9 rows)
+
+=== Table: approvals ===
+                                     Table "public.approvals"
+      Column      |           Type           | Collation | Nullable |           Default            
+------------------+--------------------------+-----------+----------+------------------------------
+ id               | character varying(36)    |           | not null | uuid_generate_v4()::text
+ thread_id        | character varying(255)   |           | not null | 
+ checkpoint_id    | character varying(255)   |           |          | 
+ tool_name        | character varying(255)   |           | not null | 
+ tool_args        | text                     |           | not null | 
+ actor_id         | character varying(255)   |           | not null | 
+ status           | character varying(20)    |           | not null | 'pending'::character varying
+ idempotency_key  | character varying(255)   |           | not null | 
+ claimed_at       | timestamp with time zone |           |          | 
+ resolved_at      | timestamp with time zone |           |          | 
+ resolved_by      | character varying(255)   |           |          | 
+ rejection_reason | text                     |           |          | 
+ expires_at       | timestamp with time zone |           |          | 
+ created_at       | timestamp with time zone |           |          | now()
+Indexes:
+    "approvals_pkey" PRIMARY KEY, btree (id)
+    "approvals_idempotency_key_key" UNIQUE CONSTRAINT, btree (idempotency_key)
+    "idx_approvals_actor_id" btree (actor_id)
+    "idx_approvals_claimed_stale" btree (claimed_at) WHERE status::text = 'claimed'::text
+    "idx_approvals_expires_at" btree (expires_at) WHERE status::text = 'pending'::text
+    "idx_approvals_idempotency_key" btree (idempotency_key)
+    "idx_approvals_status" btree (status)
+    "idx_approvals_thread_id" btree (thread_id)
+    "idx_approvals_tool_name" btree (tool_name)
+Check constraints:
+    "approvals_status_check" CHECK (status::text = ANY (ARRAY['pending'::character varying, 'claimed'::character varying, 'approved'::character varying, 'rejected'::character varying, 'expired'::character varying]::text[]))
+Referenced by:
+    TABLE "tool_executions" CONSTRAINT "tool_executions_approval_id_fkey" FOREIGN KEY (approval_id) REFERENCES approvals(id) ON DELETE SET NULL
+
+=== Table: tool_executions ===
+                                  Table "public.tool_executions"
+     Column      |           Type           | Collation | Nullable |           Default            
+-----------------+--------------------------+-----------+----------+------------------------------
+ id              | character varying(36)    |           | not null | uuid_generate_v4()::text
+ approval_id     | character varying(36)    |           |          | 
+ idempotency_key | character varying(255)   |           | not null | 
+ tool_name       | character varying(255)   |           | not null | 
+ tool_args       | text                     |           | not null | 
+ status          | character varying(20)    |           | not null | 'claimed'::character varying
+ result          | text                     |           |          | 
+ success         | boolean                  |           | not null | false
+ error_message   | text                     |           |          | 
+ claimed_at      | timestamp with time zone |           | not null | now()
+ executed_at     | timestamp with time zone |           |          | 
+ completed_at    | timestamp with time zone |           |          | 
+ created_at      | timestamp with time zone |           |          | now()
+Indexes:
+    "tool_executions_pkey" PRIMARY KEY, btree (id)
+    "idx_tool_executions_approval_id" btree (approval_id)
+    "idx_tool_executions_idempotency_key" btree (idempotency_key)
+    "idx_tool_executions_success" btree (success)
+    "idx_tool_executions_tool_name" btree (tool_name)
+    "tool_executions_idempotency_key_key" UNIQUE CONSTRAINT, btree (idempotency_key)
+Check constraints:
+    "tool_executions_status_check" CHECK (status::text = ANY (ARRAY['claimed'::character varying, 'running'::character varying, 'succeeded'::character varying, 'failed'::character varying]::text[]))
+Foreign-key constraints:
+    "tool_executions_approval_id_fkey" FOREIGN KEY (approval_id) REFERENCES approvals(id) ON DELETE SET NULL
+
+=== Table: audit_log ===
+                                    Table "public.audit_log"
+      Column       |           Type           | Collation | Nullable |         Default          
+-------------------+--------------------------+-----------+----------+--------------------------
+ id                | character varying(36)    |           | not null | uuid_generate_v4()::text
+ created_at        | timestamp with time zone |           | not null | now()
+ actor_id          | character varying(255)   |           | not null | 
+ event_type        | character varying(100)   |           | not null | 
+ thread_id         | character varying(255)   |           |          | 
+ approval_id       | character varying(36)    |           |          | 
+ tool_execution_id | character varying(36)    |           |          | 
+ payload           | jsonb                    |           | not null | '{}'::jsonb
+Indexes:
+    "audit_log_pkey" PRIMARY KEY, btree (id)
+    "idx_audit_log_actor_id" btree (actor_id)
+    "idx_audit_log_approval_id" btree (approval_id)
+    "idx_audit_log_created_at" btree (created_at)
+    "idx_audit_log_event_type" btree (event_type)
+    "idx_audit_log_thread_id" btree (thread_id)
+Check constraints:
+    "audit_log_event_type_check" CHECK (event_type::text = ANY (ARRAY['approval_created'::character varying, 'approval_claimed'::character varying, 'approval_approved'::character varying, 'approval_rejected'::character varying, 'approval_expired'::character varying, 'tool_execution_started'::character varying, 'tool_execution_completed'::character varying, 'tool_execution_failed'::character varying, 'stale_claim_reclaimed'::character varying]::text[]))
+
+=== Table: user ===
+                                           Table "public.user"
+     Column      |            Type             | Collation | Nullable |             Default              
+-----------------+-----------------------------+-----------+----------+----------------------------------
+ created_at      | timestamp without time zone |           | not null | 
+ id              | integer                     |           | not null | nextval('user_id_seq'::regclass)
+ email           | character varying           |           | not null | 
+ hashed_password | character varying           |           | not null | 
+Indexes:
+    "user_pkey" PRIMARY KEY, btree (id)
+    "ix_user_email" UNIQUE, btree (email)
+Referenced by:
+    TABLE "session" CONSTRAINT "session_user_id_fkey" FOREIGN KEY (user_id) REFERENCES "user"(id)
+
+=== Table: session ===
+                          Table "public.session"
+   Column   |            Type             | Collation | Nullable | Default 
+------------+-----------------------------+-----------+----------+---------
+ created_at | timestamp without time zone |           | not null | 
+ id         | character varying           |           | not null | 
+ user_id    | integer                     |           | not null | 
+ name       | character varying           |           | not null | 
+Indexes:
+    "session_pkey" PRIMARY KEY, btree (id)
+Foreign-key constraints:
+    "session_user_id_fkey" FOREIGN KEY (user_id) REFERENCES "user"(id)
+
+=== Table: checkpoint_migrations ===
+       Table "public.checkpoint_migrations"
+ Column |  Type   | Collation | Nullable | Default 
+--------+---------+-----------+----------+---------
+ v      | integer |           | not null | 
+Indexes:
+    "checkpoint_migrations_pkey" PRIMARY KEY, btree (v)
+
+=== Table: checkpoints ===
+                    Table "public.checkpoints"
+        Column        | Type  | Collation | Nullable |   Default   
+----------------------+-------+-----------+----------+-------------
+ thread_id            | text  |           | not null | 
+ checkpoint_ns        | text  |           | not null | ''::text
+ checkpoint_id        | text  |           | not null | 
+ parent_checkpoint_id | text  |           |          | 
+ type                 | text  |           |          | 
+ checkpoint           | jsonb |           | not null | 
+ metadata             | jsonb |           | not null | '{}'::jsonb
+Indexes:
+    "checkpoints_pkey" PRIMARY KEY, btree (thread_id, checkpoint_ns, checkpoint_id)
+    "checkpoints_thread_id_idx" btree (thread_id)
+
+=== Table: checkpoint_blobs ===
+             Table "public.checkpoint_blobs"
+    Column     | Type  | Collation | Nullable | Default  
+---------------+-------+-----------+----------+----------
+ thread_id     | text  |           | not null | 
+ checkpoint_ns | text  |           | not null | ''::text
+ channel       | text  |           | not null | 
+ version       | text  |           | not null | 
+ type          | text  |           | not null | 
+ blob          | bytea |           |          | 
+Indexes:
+    "checkpoint_blobs_pkey" PRIMARY KEY, btree (thread_id, checkpoint_ns, channel, version)
+    "checkpoint_blobs_thread_id_idx" btree (thread_id)
+
+=== Table: checkpoint_writes ===
+             Table "public.checkpoint_writes"
+    Column     |  Type   | Collation | Nullable | Default  
+---------------+---------+-----------+----------+----------
+ thread_id     | text    |           | not null | 
+ checkpoint_ns | text    |           | not null | ''::text
+ checkpoint_id | text    |           | not null | 
+ task_id       | text    |           | not null | 
+ idx           | integer |           | not null | 
+ channel       | text    |           | not null | 
+ type          | text    |           |          | 
+ blob          | bytea   |           | not null | 
+ task_path     | text    |           | not null | ''::text
+Indexes:
+    "checkpoint_writes_pkey" PRIMARY KEY, btree (thread_id, checkpoint_ns, checkpoint_id, task_id, idx)
+    "checkpoint_writes_thread_id_idx" btree (thread_id)
+

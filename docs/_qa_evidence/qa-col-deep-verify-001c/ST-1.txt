@@ -1,0 +1,13 @@
+=== F-12 DDL Default Stage ===
+File: /home/zaks/zakops-backend/db/init/001_base_tables.sql
+Line 36: stage VARCHAR(50) DEFAULT 'lead',
+LEAD_DEFAULT_COUNT=1
+
+Canonical DealStage enum (workflow.py):
+  INBOUND="inbound", SCREENING, QUALIFIED, LOI, DILIGENCE, CLOSING, PORTFOLIO, JUNK, ARCHIVED
+  (No "lead" in the enum)
+
+FINDING: DDL still defaults to 'lead' which is NOT in the canonical DealStage enum.
+The correct default should be 'inbound'.
+RESULT: FAIL — LEAD_DEFAULT_COUNT=1, should be 0. F-12 finding not yet remediated.
+CLASSIFICATION: MISSING_FIX

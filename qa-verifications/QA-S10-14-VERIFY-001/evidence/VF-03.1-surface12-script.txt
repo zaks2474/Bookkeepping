@@ -1,0 +1,82 @@
+=== VF-03.1 SURFACE12 SCRIPT ===
+-rwxr-xr-x 1 zaks zaks 5043 Feb 10 11:49 /home/zaks/zakops-agent-api/tools/infra/validate-surface12.sh
+#!/usr/bin/env bash
+# validate-surface12.sh — Surface 12: Error Taxonomy Contract
+# Validates ERROR-SHAPES.md against actual error handler source files
+# CI-safe: does NOT require running services
+set -euo pipefail
+
+FAILURES=0
+WARNINGS=0
+
+ERROR_SHAPES="/home/zaks/bookkeeping/docs/ERROR-SHAPES.md"
+MONOREPO="/home/zaks/zakops-agent-api"
+BACKEND="/home/zaks/zakops-backend"
+
+echo "=== SURFACE 12: ERROR TAXONOMY CONTRACT ==="
+echo ""
+
+# ── CHECK 1: Source artifact exists ──────────────────────────────────
+echo "--- Check 1: Source Artifact ---"
+if [ -f "$ERROR_SHAPES" ]; then
+  LINES=$(wc -l < "$ERROR_SHAPES")
+  echo "  PASS: ERROR-SHAPES.md exists ($LINES lines)"
+else
+  echo "  FAIL: ERROR-SHAPES.md not found at $ERROR_SHAPES"
+  FAILURES=$((FAILURES+1))
+  echo ""
+  echo "================================"
+  echo "FAIL: $FAILURES CHECK(S) FAILED"
+  exit 1
+fi
+
+# ── CHECK 2: Documented shape count matches ──────────────────────────
+echo ""
+echo "--- Check 2: Shape Count ---"
+
+SHAPE_COUNT=$(grep -c "^### Shape" "$ERROR_SHAPES" 2>/dev/null) || SHAPE_COUNT=0
+if [ "$SHAPE_COUNT" -ge 6 ]; then
+  echo "  PASS: $SHAPE_COUNT error shapes documented (expected >= 6)"
+else
+  echo "  FAIL: Only $SHAPE_COUNT shapes documented (expected >= 6)"
+  FAILURES=$((FAILURES+1))
+fi
+
+# ── CHECK 3: Referenced source files exist ───────────────────────────
+echo ""
+echo "--- Check 3: Source File Resolution ---"
+
+# Shape 1: Backend structured ErrorResponse
+RESPONSES="$BACKEND/src/api/shared/responses.py"
+if [ -f "$RESPONSES" ]; then
+  echo "  PASS: Shape 1 source — responses.py exists"
+else
+  echo "  FAIL: Shape 1 source — responses.py missing ($RESPONSES)"
+  FAILURES=$((FAILURES+1))
+fi
+
+# Shape 1: Error codes
+ERROR_CODES="$BACKEND/src/api/shared/error_codes.py"
+if [ -f "$ERROR_CODES" ]; then
+  echo "  PASS: Shape 1 source — error_codes.py exists"
+else
+  echo "  FAIL: Shape 1 source — error_codes.py missing ($ERROR_CODES)"
+  FAILURES=$((FAILURES+1))
+fi
+
+# Shape 3: Agent-API validation error handler
+AGENT_MAIN="$MONOREPO/apps/agent-api/app/main.py"
+if [ -f "$AGENT_MAIN" ]; then
+  echo "  PASS: Shape 3 source — agent main.py exists"
+else
+  echo "  FAIL: Shape 3 source — agent main.py missing ($AGENT_MAIN)"
+  FAILURES=$((FAILURES+1))
+fi
+
+# Shape 4: Rate limiter
+RATE_LIMITER="$MONOREPO/apps/agent-api/app/core/middleware/rate_limiter.py"
+if [ -f "$RATE_LIMITER" ]; then
+  echo "  PASS: Shape 4 source — rate_limiter.py exists"
+else
+  echo "  WARN: Shape 4 source — rate_limiter.py not found ($RATE_LIMITER)"
+  WARNINGS=$((WARNINGS+1))

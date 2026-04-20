@@ -1,0 +1,218 @@
+{
+  "agent_identity": {
+    "agent_name": "Claude-Opus",
+    "run_id": "20260205-1710-1a20a2",
+    "date_time": "2026-02-05T17:10:00Z",
+    "dashboard_revision": "b96b33c5",
+    "backend_revision": "2a68de17"
+  },
+  "summary": {
+    "total_issues": 17,
+    "p0_critical": 4,
+    "p1_high": 6,
+    "p2_medium": 5,
+    "p3_low": 2,
+    "screenshots_analyzed": 11
+  },
+  "limitations_registry": [
+    {
+      "id": "DL-001",
+      "priority": "P0",
+      "category": "Routing",
+      "description": "/deals/GLOBAL and /deals/new treated as deal IDs; return 404",
+      "route": "/deals/[id]/page.tsx:18-25",
+      "api_contract": "GET /api/deals/{id}",
+      "evidence": ["Screenshot 1", "Screenshot 11"]
+    },
+    {
+      "id": "DL-002",
+      "priority": "P0",
+      "category": "Data Integrity",
+      "description": "Agent reports 3 deals vs UI showing 9 deals",
+      "route": "Multiple",
+      "api_contract": "Agent DB vs Backend API",
+      "evidence": ["Screenshot 6"]
+    },
+    {
+      "id": "DL-003",
+      "priority": "P0",
+      "category": "Demo-Only",
+      "description": "Onboarding saves to localStorage only; no backend persistence",
+      "route": "/onboarding/page.tsx:9-13",
+      "api_contract": "N/A",
+      "evidence": ["Screenshot 4"]
+    },
+    {
+      "id": "DL-004",
+      "priority": "P0",
+      "category": "Missing Feature",
+      "description": "No email configuration UI in Settings",
+      "route": "/settings/page.tsx",
+      "api_contract": "N/A",
+      "evidence": ["Screenshot 3"]
+    },
+    {
+      "id": "DL-005",
+      "priority": "P1",
+      "category": "API Contract",
+      "description": "Quarantine delete returns 404/Not Found",
+      "route": "/quarantine/page.tsx:263",
+      "api_contract": "POST /api/quarantine/{id}/delete",
+      "evidence": ["Screenshot 8"]
+    },
+    {
+      "id": "DL-006",
+      "priority": "P1",
+      "category": "API Contract",
+      "description": "Clear completed actions returns 405 Method Not Allowed",
+      "route": "/actions/page.tsx:486",
+      "api_contract": "POST /api/actions/clear-completed",
+      "evidence": ["Screenshot 9"]
+    },
+    {
+      "id": "DL-007",
+      "priority": "P1",
+      "category": "API Contract",
+      "description": "Quarantine preview returns null for some items",
+      "route": "/quarantine/page.tsx:143",
+      "api_contract": "GET /api/actions/quarantine/{id}/preview",
+      "evidence": ["Screenshot 7"]
+    },
+    {
+      "id": "DL-008",
+      "priority": "P1",
+      "category": "Rendering",
+      "description": "Chat responses show raw markdown instead of rendered",
+      "route": "/chat/page.tsx",
+      "api_contract": "N/A",
+      "evidence": ["Screenshot 6"]
+    },
+    {
+      "id": "DL-009",
+      "priority": "P1",
+      "category": "API Contract",
+      "description": "Deals bulk operation returns 405",
+      "route": "/deals/page.tsx",
+      "api_contract": "Unknown bulk endpoint",
+      "evidence": ["Screenshot 2"]
+    },
+    {
+      "id": "DL-010",
+      "priority": "P1",
+      "category": "Missing Feature",
+      "description": "No agent configuration section in Settings",
+      "route": "/settings/page.tsx",
+      "api_contract": "N/A",
+      "evidence": ["Screenshot 3"]
+    },
+    {
+      "id": "DL-011",
+      "priority": "P2",
+      "category": "Demo-Only",
+      "description": "Onboarding capability cards are presentational only",
+      "route": "OnboardingWizard",
+      "api_contract": "N/A",
+      "evidence": ["Screenshot 5"]
+    },
+    {
+      "id": "DL-012",
+      "priority": "P2",
+      "category": "Missing Feature",
+      "description": "No buy box criteria configuration",
+      "route": "/settings/page.tsx",
+      "api_contract": "N/A",
+      "evidence": ["Implied"]
+    },
+    {
+      "id": "DL-013",
+      "priority": "P2",
+      "category": "Missing Feature",
+      "description": "No notification preferences in Settings",
+      "route": "/settings/page.tsx",
+      "api_contract": "N/A",
+      "evidence": ["Implied"]
+    },
+    {
+      "id": "DL-014",
+      "priority": "P2",
+      "category": "UX",
+      "description": "Configure Email Settings button in onboarding has no target",
+      "route": "/onboarding/page.tsx",
+      "api_contract": "N/A",
+      "evidence": ["Screenshot 4"]
+    },
+    {
+      "id": "DL-015",
+      "priority": "P2",
+      "category": "Contract Gap",
+      "description": "Next.js API routes have mock fallbacks masking real failures",
+      "route": "/api/actions/clear-completed/route.ts:65-100",
+      "api_contract": "N/A",
+      "evidence": ["Code review"]
+    },
+    {
+      "id": "DL-016",
+      "priority": "P3",
+      "category": "UX",
+      "description": "Dashboard Ask Agent sidebar not integrated with main chat",
+      "route": "/dashboard/page.tsx",
+      "api_contract": "N/A",
+      "evidence": ["Screenshot 10"]
+    },
+    {
+      "id": "DL-017",
+      "priority": "P3",
+      "category": "UX",
+      "description": "Actions page shows 0 action(s) will be deleted even when actions exist",
+      "route": "/actions/page.tsx:1246-1256",
+      "api_contract": "N/A",
+      "evidence": ["Screenshot 9"]
+    }
+  ],
+  "root_cause_categories": [
+    {
+      "category": "Routing Architecture",
+      "description": "Dynamic [id] catch-all without slug guards",
+      "affected_issues": ["DL-001"]
+    },
+    {
+      "category": "Contract Drift",
+      "description": "Frontend calls endpoints backend doesn't expose",
+      "affected_issues": ["DL-005", "DL-006", "DL-007", "DL-009"]
+    },
+    {
+      "category": "Demo-Only Flows",
+      "description": "Onboarding/email config saves to localStorage only",
+      "affected_issues": ["DL-003", "DL-011", "DL-014"]
+    },
+    {
+      "category": "Data Source Mismatch",
+      "description": "Agent DB vs UI DB showing different deal counts",
+      "affected_issues": ["DL-002"]
+    }
+  ],
+  "feature_contract_mapping": {
+    "deals": {
+      "verified": ["getDeals", "getDeal", "transitionDeal", "addDealNote", "archiveDeal", "getDealEnrichment", "getDealMaterials"],
+      "broken": ["bulkArchiveDeals"]
+    },
+    "actions": {
+      "verified": ["getKineticActions", "getKineticAction", "approveKineticAction", "runKineticAction", "cancelKineticAction"],
+      "broken": ["clearCompletedActions"]
+    },
+    "quarantine": {
+      "verified": ["getQuarantineQueue", "approveQuarantineItem", "rejectQuarantineItem"],
+      "broken": ["getQuarantinePreview", "deleteQuarantineItem"]
+    },
+    "chat": {
+      "verified": ["streamChatMessage", "getChatSession", "executeChatProposal"],
+      "broken": []
+    },
+    "settings": {
+      "verified": [],
+      "missing": ["email_config", "agent_config", "buy_box_criteria", "notifications"]
+    }
+  },
+  "report_path": "/home/zaks/bookkeeping/docs/DASHBOARD_ROUND4_FORENSIC.Claude-Opus.20260205-1710-1a20a2.md",
+  "json_path": "/home/zaks/bookkeeping/docs/DASHBOARD_ROUND4_FORENSIC.Claude-Opus.20260205-1710-1a20a2.json"
+}

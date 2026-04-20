@@ -1,0 +1,42 @@
+=== GR-1: No production code modifications ===
+Pipeline outputs are Markdown only — checking file extensions in run dir:
+NON_MD_FILES=0
+
+=== GR-2: No modification of existing V5PP infrastructure ===
+Checking: 4-agent topology, existing hooks (only extensions), gates A-H, deny/allow rules untouched
+Evidence: QA-TP-VERIFY-001 verified this (AC-7/AC-8 PASS, all 75 gates PASS)
+
+=== GR-3: WSL-safe file paths ===
+References to /mnt/c/ in tripass.sh: 0
+
+=== GR-4: Markdown-only outputs ===
+Already verified in GR-1. NON_MD_FILES=0
+JSON acceptable only in EVIDENCE/ — checking:
+
+=== GR-5: Gemini/Codex have no write access ===
+Agents produce text output captured by orchestrator:
+263:      echo "# Gemini Agent — No Output" > "$output_file"
+264:      echo "The Gemini agent did not produce output within the timeout." >> "$output_file"
+287:      echo "# Codex Agent — No Output" > "$output_file"
+288:      echo "The Codex agent did not produce output within the timeout." >> "$output_file"
+Agents invoked via timeout + CLI, output captured by redirect:
+258:  timeout "$GEMINI_TIMEOUT" cat "$prompt_file" | "$GEMINI_CLI" \
+281:  timeout "$CODEX_TIMEOUT" "$CODEX_CLI" exec \
+
+=== GR-6: Bookkeeping discipline respected ===
+All outputs under /home/zaks/bookkeeping/docs/:
+RUNS_DIR=RUNS_DIR="$BOOKKEEPING/docs/_tripass_runs"
+TEMPLATES_DIR=TEMPLATES_DIR="$BOOKKEEPING/docs/_tripass_templates"
+
+=== GR-7: Fail loud, never fail silent ===
+36
+Gate failures logged to MASTER_LOG + gates.md
+
+=== GR-8: Template-driven, not hardcoded ===
+200:render_template() {
+661:    render_template "$TEMPLATES_DIR/pass1.md" \
+753:    render_template "$TEMPLATES_DIR/pass2.md" \
+836:  render_template "$TEMPLATES_DIR/pass3.md" \
+880:    render_template "$TEMPLATES_DIR/pass4_metaqa.md" \
+Templates are external files, rendered with variable substitution
+

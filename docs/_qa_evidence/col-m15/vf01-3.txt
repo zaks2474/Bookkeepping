@@ -1,0 +1,28 @@
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/logging.py:7:Per Decision Lock §5: NEVER log raw prompts/responses (hash + length only).
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/logging.py:44:    NEVER log raw prompts/responses. Returns hash + length only.
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/logging.py:62:    content_hash = hashlib.sha256(content_str.encode("utf-8")).hexdigest()[:16]
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:446:                    prompt_hash=prompt_info.content_hash,
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:459:                prompt_hash=prompt_info.content_hash,
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/security/canary_tokens.py:39:        """Generate a token with CANARY- prefix + sha256-derived hash."""
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/security/canary_tokens.py:41:        hashed = hashlib.sha256(payload.encode()).hexdigest()[:16]
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/prompts/__init__.py:3:R3 REMEDIATION [P2.3]: Added prompt versioning and hash computation.
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/prompts/__init__.py:33:# R3 REMEDIATION [P2.3]: Cache for prompt info (version and hash)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/prompts/__init__.py:46:def _compute_prompt_hash(content: str) -> str:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/prompts/__init__.py:48:    return hashlib.sha256(content.encode()).hexdigest()[:16]  # First 16 chars
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/prompts/__init__.py:55:    Use get_prompt_info() to access version/hash for tracing.
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/prompts/__init__.py:68:            content_hash=_compute_prompt_hash(raw_content),
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/prompts/__init__.py:79:    """Get prompt version and hash for tracing.
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/tracing.py:266:    prompt_hash: Optional[str] = None,
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/tracing.py:283:        "prompt_hash": prompt_hash,
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/idempotency.py:30:             "{thread_id}:{tool_name}:{sha256_hash}"
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/idempotency.py:47:    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/snapshot_writer.py:12:  - META: prompt version/hash, latency, routing decision
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/snapshot_writer.py:63:    prompt_hash: str | None = None
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/snapshot_writer.py:71:            self.evidence_hash = hashlib.sha256(self.evidence_context.encode()).hexdigest()
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/snapshot_writer.py:74:    def compute_prompt_hash(self) -> str:
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/snapshot_writer.py:77:            self.prompt_hash = hashlib.sha256(self.rendered_system_prompt.encode()).hexdigest()
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/snapshot_writer.py:78:        return self.prompt_hash or ""
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/snapshot_writer.py:105:        snapshot.compute_prompt_hash()
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/snapshot_writer.py:114:                        rendered_system_prompt, evidence_context, evidence_hash,
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/snapshot_writer.py:121:                        prompt_version, prompt_hash, latency_ms,
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/snapshot_writer.py:168:                    snapshot.prompt_hash,

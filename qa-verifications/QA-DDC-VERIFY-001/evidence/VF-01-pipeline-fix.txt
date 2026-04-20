@@ -1,0 +1,23 @@
+=== VF-01: Pipeline Reliability (Phase 1) ===
+
+1. v_pipeline_summary view alignment (001_base_tables.sql)
+   - Lines 279-291: CREATE OR REPLACE VIEW zakops.v_pipeline_summary
+   - Default stage: 'inbound' (was 'lead') ✓
+   - Columns: stage, count(*) AS count, avg_days_in_stage ✓
+   - WHERE: deleted = false AND status = 'active' ✓
+   - ORDER BY: inbound(1), screening(2), qualified(3), loi(4), diligence(5), closing(6), portfolio(7), junk(8), archived(9) ✓
+   - Comment: "matches migration 023_stage_check_constraint.sql" ✓
+   - Old stale columns removed: deal_count, active_count, stalled_count, total_value ✓
+   - Old stale stages removed: lead, proposal, negotiation, won, lost ✓
+
+2. get_pipeline_summary() error handling (main.py lines 2637-2649)
+   - try/except wraps DB query ✓
+   - except: logger.error(f"Pipeline summary query failed: {e}") ✓
+   - except: raise HTTPException(status_code=500, detail="Pipeline query failed") ✓
+   - NOT returning 200 [] on failure — raises 500 ✓
+
+3. Migration 023 cross-check
+   - 023_stage_check_constraint.sql lines 10-24 define same view ✓
+   - Init script view MATCHES migration 023 exactly ✓
+
+VERDICT: PASS — Pipeline view aligned, error handling correct

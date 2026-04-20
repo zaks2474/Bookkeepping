@@ -1,0 +1,14 @@
+=== GET exports ===
+src/app/api/quarantine/[id]/route.ts
+src/app/api/actions/capabilities/route.ts
+src/app/api/actions/metrics/route.ts
+
+=== POST exports ===
+src/app/api/quarantine/bulk-process/route.ts
+src/app/api/quarantine/bulk-delete/route.ts
+src/app/api/quarantine/[id]/undo-approve/route.ts
+src/app/api/actions/[id]/approve/route.ts
+src/app/api/actions/[id]/cancel/route.ts
+src/app/api/actions/[id]/retry/route.ts
+src/app/api/actions/[id]/update/route.ts
+DONE

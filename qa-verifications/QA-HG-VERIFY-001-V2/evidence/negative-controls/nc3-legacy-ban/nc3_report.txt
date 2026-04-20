@@ -1,0 +1,25 @@
+=== NC-3: LEGACY-BAN GATE NEGATIVE CONTROL (CORRECTED) ===
+
+ESLint config bans: (1) direct import of api-types.generated, (2) zod outside whitelisted files
+NC-3 tests ban #1: importing from api-types.generated in a non-whitelisted file
+
+Target file: /home/zaks/zakops-agent-api/apps/dashboard/src/lib/format.ts
+Added to top of file:
+// NC-3 SABOTAGE: Direct import from generated file (banned)
+import type { paths } from './api-types.generated';
+
+Running ESLint on sabotaged file (MUST FAIL)...
+
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/format.ts
+  2:1  error  './api-types.generated' import is restricted from being used by a pattern. Import from '@/types/api' instead of the generated file directly  no-restricted-imports
+
+✖ 1 problem (1 error, 0 warnings)
+
+
+ESLint exit code: 1 (expected: non-zero)
+PASS: ESLint correctly caught the banned import
+
+Running ESLint after revert...
+After revert ESLint exit: 0
+
+=== NC-3 COMPLETE ===

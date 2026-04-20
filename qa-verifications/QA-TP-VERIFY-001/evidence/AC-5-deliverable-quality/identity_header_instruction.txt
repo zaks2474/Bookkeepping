@@ -1,0 +1,9 @@
+4:**Agent**: {{AGENT_NAME}}
+49:Begin your report with exactly this header:
+52:# Pass 1 Report — {{AGENT_NAME}}
+--- Case-insensitive recheck ---
+3:## Agent Identity
+4:**Agent**: {{AGENT_NAME}}
+49:Begin your report with exactly this header:
+52:# Pass 1 Report — {{AGENT_NAME}}
+VERDICT: PASS — Template instructs agents to include identity header (Agent Identity section + AGENT_NAME in header format)

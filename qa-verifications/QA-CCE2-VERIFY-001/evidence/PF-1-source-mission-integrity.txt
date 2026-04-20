@@ -1,0 +1,18 @@
+=== PF-1 SOURCE MISSION INTEGRITY ===
+420 /home/zaks/bookkeeping/missions/CLAUDE-CODE-ENHANCE-002.md
+156:## Phase 0 - Discovery and Baseline
+180:## Phase 1 - Hook Runtime Hardening
+219:## Phase 2 - Validator, Harness, and Make Target Wiring
+260:## Phase 3 - Final Verification and Bookkeeping
+314:### AC-1: Baseline captured for all 7 enhancement items
+317:### AC-2: Fixture mode implemented for TaskCompleted
+320:### AC-3: Machine-readable gate markers implemented
+323:### AC-4: Snapshot retention is configurable and backward compatible
+326:### AC-5: Compact recovery quality assertions are objective
+329:### AC-6: Hook contract validator implemented
+332:### AC-7: Compact-recovery harness implemented
+335:### AC-8: TaskCompleted fixture harness implemented
+338:### AC-9: `make qa-cce-verify` implemented and passing
+341:### AC-10: No regression and bookkeeping closure complete
+phase_count= 4
+ac_count= 10

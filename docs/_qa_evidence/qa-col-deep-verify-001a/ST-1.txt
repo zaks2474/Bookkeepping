@@ -1,0 +1,19 @@
+Searching for raw httpx usage in agent-api services (should use BackendClient):
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/rag_rest.py:13:import httpx
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/rag_rest.py:135:        self._client: Optional[httpx.AsyncClient] = None
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/rag_rest.py:137:    async def _get_client(self) -> httpx.AsyncClient:
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/rag_rest.py:140:            self._client = httpx.AsyncClient(
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/llm.py:461:        import httpx
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/llm.py:479:            async with httpx.AsyncClient(timeout=60.0) as client:
+---
+BackendClient usage:
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:19:from app.services.backend_client import get_backend_client
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:184:        client = get_backend_client()
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:196:        client = get_backend_client()
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:207:        client = get_backend_client()
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:241:        client = get_backend_client()
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:275:        client = get_backend_client()
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/spaced_repetition.py:42:            # In production, fetch from backend via BackendClient
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/brain_extraction.py:241:    Uses BackendClient to POST facts/risks/decisions to the brain.
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/brain_extraction.py:245:        from app.core.langgraph.tools.deal_tools import BackendClient
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/brain_extraction.py:246:        client = BackendClient()

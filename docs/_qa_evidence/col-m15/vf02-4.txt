@@ -1,0 +1,64 @@
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/001_approvals.sql:7:CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/001_approvals.sql:10:CREATE TABLE IF NOT EXISTS approvals (
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/001_approvals.sql:33:CREATE INDEX IF NOT EXISTS idx_approvals_thread_id ON approvals(thread_id);
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/001_approvals.sql:34:CREATE INDEX IF NOT EXISTS idx_approvals_actor_id ON approvals(actor_id);
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/001_approvals.sql:35:CREATE INDEX IF NOT EXISTS idx_approvals_status ON approvals(status);
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/001_approvals.sql:36:CREATE INDEX IF NOT EXISTS idx_approvals_tool_name ON approvals(tool_name);
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/001_approvals.sql:37:CREATE INDEX IF NOT EXISTS idx_approvals_idempotency_key ON approvals(idempotency_key);
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/001_approvals.sql:38:CREATE INDEX IF NOT EXISTS idx_approvals_expires_at ON approvals(expires_at) WHERE status = 'pending';
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/001_approvals.sql:39:CREATE INDEX IF NOT EXISTS idx_approvals_claimed_stale ON approvals(claimed_at) WHERE status = 'claimed';
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/001_approvals.sql:42:CREATE TABLE IF NOT EXISTS tool_executions (
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/001_approvals.sql:64:CREATE INDEX IF NOT EXISTS idx_tool_executions_approval_id ON tool_executions(approval_id);
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/001_approvals.sql:65:CREATE INDEX IF NOT EXISTS idx_tool_executions_idempotency_key ON tool_executions(idempotency_key);
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/001_approvals.sql:66:CREATE INDEX IF NOT EXISTS idx_tool_executions_tool_name ON tool_executions(tool_name);
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/001_approvals.sql:67:CREATE INDEX IF NOT EXISTS idx_tool_executions_success ON tool_executions(success);
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/001_approvals.sql:70:CREATE TABLE IF NOT EXISTS audit_log (
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/001_approvals.sql:97:CREATE INDEX IF NOT EXISTS idx_audit_log_approval_id ON audit_log(approval_id);
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/001_approvals.sql:98:CREATE INDEX IF NOT EXISTS idx_audit_log_event_type ON audit_log(event_type);
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/001_approvals.sql:99:CREATE INDEX IF NOT EXISTS idx_audit_log_actor_id ON audit_log(actor_id);
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/001_approvals.sql:100:CREATE INDEX IF NOT EXISTS idx_audit_log_thread_id ON audit_log(thread_id);
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/001_approvals.sql:101:CREATE INDEX IF NOT EXISTS idx_audit_log_created_at ON audit_log(created_at);
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/001_approvals.sql:105:COMMENT ON TABLE tool_executions IS 'Claim-first idempotent tool execution log';
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store_rollback.sql:27:DROP FUNCTION IF EXISTS create_monthly_partitions(TEXT, INTEGER) CASCADE;
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:17:CREATE TABLE IF NOT EXISTS user_identity_map (
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:30:CREATE TABLE IF NOT EXISTS chat_threads (
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:57:CREATE INDEX IF NOT EXISTS idx_threads_user ON chat_threads(user_id);
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:58:CREATE INDEX IF NOT EXISTS idx_threads_deal ON chat_threads(deal_id) WHERE deal_id IS NOT NULL;
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:59:CREATE INDEX IF NOT EXISTS idx_threads_active ON chat_threads(user_id, last_active DESC) WHERE deleted = FALSE;
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:60:CREATE INDEX IF NOT EXISTS idx_threads_deleted ON chat_threads(deleted_at) WHERE deleted = TRUE;
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:63:CREATE TABLE IF NOT EXISTS chat_messages (
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:82:CREATE INDEX IF NOT EXISTS idx_messages_thread ON chat_messages(thread_id, turn_number);
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:83:CREATE INDEX IF NOT EXISTS idx_messages_user ON chat_messages(user_id);
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:86:CREATE TABLE IF NOT EXISTS thread_ownership (
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:94:CREATE INDEX IF NOT EXISTS idx_ownership_user ON thread_ownership(user_id);
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:95:CREATE INDEX IF NOT EXISTS idx_ownership_user_thread ON thread_ownership(user_id, thread_id);
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:98:CREATE TABLE IF NOT EXISTS session_summaries (
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:114:CREATE INDEX IF NOT EXISTS idx_summaries_thread ON session_summaries(thread_id, version DESC);
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:117:CREATE TABLE IF NOT EXISTS turn_snapshots ( -- PARTITION BY RANGE(created_at)
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:165:CREATE TABLE IF NOT EXISTS turn_snapshots_default PARTITION OF turn_snapshots DEFAULT;
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:168:CREATE TABLE IF NOT EXISTS cost_ledger ( -- PARTITION BY RANGE(created_at)
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:189:CREATE TABLE IF NOT EXISTS cost_ledger_default PARTITION OF cost_ledger DEFAULT;
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:191:CREATE INDEX IF NOT EXISTS idx_cost_deal ON cost_ledger(deal_id) WHERE deal_id IS NOT NULL;
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:192:CREATE INDEX IF NOT EXISTS idx_cost_user ON cost_ledger(user_id);
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:193:CREATE INDEX IF NOT EXISTS idx_cost_date ON cost_ledger(created_at);
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:212:CREATE TABLE IF NOT EXISTS deal_budgets (
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:225:CREATE TABLE IF NOT EXISTS cross_db_outbox (
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:238:CREATE INDEX IF NOT EXISTS idx_outbox_pending ON cross_db_outbox(status, created_at) WHERE status = 'pending';
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:259:-- QA gate anchor: create_monthly_partitions(p_table TEXT, p_months_ahead INTEGER DEFAULT 3)
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:260:CREATE OR REPLACE FUNCTION create_monthly_partitions(
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:275:        IF NOT EXISTS (
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:279:                'CREATE TABLE IF NOT EXISTS %I PARTITION OF %I FOR VALUES FROM (%L) TO (%L)',
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:288:SELECT create_monthly_partitions('turn_snapshots', 3);
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:289:SELECT create_monthly_partitions('cost_ledger', 3);
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/003_add_migration_tracking.sql:5:CREATE TABLE IF NOT EXISTS public.schema_migrations (
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/002_decision_ledger.sql:7:CREATE TABLE IF NOT EXISTS decision_ledger (
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/002_decision_ledger.sql:52:CREATE INDEX IF NOT EXISTS idx_decision_ledger_correlation_id ON decision_ledger(correlation_id);
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/002_decision_ledger.sql:53:CREATE INDEX IF NOT EXISTS idx_decision_ledger_thread_id ON decision_ledger(thread_id);
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/002_decision_ledger.sql:54:CREATE INDEX IF NOT EXISTS idx_decision_ledger_user_id ON decision_ledger(user_id);
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/002_decision_ledger.sql:55:CREATE INDEX IF NOT EXISTS idx_decision_ledger_deal_id ON decision_ledger(deal_id);
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/002_decision_ledger.sql:56:CREATE INDEX IF NOT EXISTS idx_decision_ledger_tool_selected ON decision_ledger(tool_selected);
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/002_decision_ledger.sql:57:CREATE INDEX IF NOT EXISTS idx_decision_ledger_tool_name ON decision_ledger(tool_name);
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/002_decision_ledger.sql:58:CREATE INDEX IF NOT EXISTS idx_decision_ledger_approval_id ON decision_ledger(approval_id);
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/002_decision_ledger.sql:59:CREATE INDEX IF NOT EXISTS idx_decision_ledger_created_at ON decision_ledger(created_at);
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/002_decision_ledger.sql:60:CREATE INDEX IF NOT EXISTS idx_decision_ledger_success ON decision_ledger(success) WHERE NOT success;
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/002_decision_ledger.sql:63:CREATE INDEX IF NOT EXISTS idx_decision_ledger_thread_created

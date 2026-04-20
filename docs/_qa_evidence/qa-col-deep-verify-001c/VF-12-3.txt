@@ -1,0 +1,8 @@
+FILE EXISTS
+2:COL-V2 S21.3 [H-3]: Anomaly-Driven Deal Alerts
+20:class DealAnomalyDetector:
+23:    async def check_anomalies(self, deal_id: str) -> dict[str, Any]:
+50:                "type": "unusual_silence",
+61:                "type": "activity_burst",
+209:anomaly_detector = DealAnomalyDetector()
+209 /home/zaks/zakops-backend/src/core/agent/anomaly_detector.py

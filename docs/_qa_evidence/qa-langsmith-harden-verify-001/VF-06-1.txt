@@ -1,0 +1,3 @@
+102:class RateLimiter:
+113:    def is_allowed(self, key: str) -> bool:
+135:    def get_remaining(self, key: str) -> int:

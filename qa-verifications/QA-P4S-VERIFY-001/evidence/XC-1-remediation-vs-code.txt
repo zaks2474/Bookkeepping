@@ -1,0 +1,9 @@
+=== XC-1 REMEDIATION LOG VS SOURCE CODE ===
+--- F-1: remediation-log says div role=button. Verify: ---
+1
+--- F-5: remediation-log says rewrites removed. Verify: ---
+rewrite_count=0
+--- F-7: remediation-log says A-Za-z0-9. Verify: ---
+  if (/^DL-[A-Za-z0-9]+$/i.test(id)) return true;
+--- F-12: remediation-log says Link wrapper. Verify: ---
+1

@@ -1,0 +1,12 @@
+--- PG.7: Obtain JWT + test ---
+NOTE: /api/v1/login returned no JWT; attempting /api/v1/auth/login (form)
+JWT length: 179
+HTTP 404
+NOTE: /api/v1/sessions not found; probing /api/v1/auth/sessions
+HTTP 200
+--- PG.8: Shadow endpoints ---
+/docs: HTTP 200
+/redoc: HTTP 200
+/openapi.json: HTTP 404
+/metrics: HTTP 200
+

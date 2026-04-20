@@ -1,0 +1,12 @@
+=== CHECK 4.2.4b: Reject valid pending approval ===
+Approval ID: 4d05f27e-9caf-4be8-8375-5b70ea8c568d
+Timestamp: 2026-02-03T13:08:52-06:00
+
+{
+    "thread_id": "forensic-003-reject-1770145722",
+    "status": "completed",
+    "content": "Action rejected: Forensic test \u2014 verifying rejection path",
+    "pending_approval": null,
+    "actions_taken": [],
+    "error": null
+}

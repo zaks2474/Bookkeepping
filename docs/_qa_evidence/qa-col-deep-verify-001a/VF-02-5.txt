@@ -1,0 +1,7 @@
+before_turn parameter: True (line 358: before_turn: int | None = None)
+Cursor-based pagination: True
+turn_number reference: True
+Signature: async def get_messages(self, thread_id: str, user_id: str, limit: int = 50, before_turn: int | None = None)
+---
+Lines 365-373: WHERE thread_id = :tid AND turn_number < :before_turn ORDER BY turn_number DESC
+VERDICT: PASS

@@ -1,0 +1,23 @@
+=== XC-3 TEST MATRIX VS FILE-CREATE CONTRACT ===
+336:    - `/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/deals-board-shape.test.ts`
+411:    - `/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/onboarding-sequence.test.tsx`
+412:    - `/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/quarantine-input-state.test.tsx`
+600:    - `/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/deals-board-shape.test.ts`
+601:    - `/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/dashboard-refresh-toast.test.tsx`
+602:    - `/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/onboarding-sequence.test.tsx`
+603:    - `/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/quarantine-input-state.test.tsx`
+604:    - `/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/settings-export-route.test.ts`
+609:    - `/home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/dashboard-worldclass-remediation.spec.ts`
+814:| `/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/deals-board-shape.test.ts` | 1,6 | Board payload regression guard |
+815:| `/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/dashboard-refresh-toast.test.tsx` | 3,6 | Manual-vs-auto refresh feedback guard |
+816:| `/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/onboarding-sequence.test.tsx` | 2,6 | Step order regression guard |
+817:| `/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/quarantine-input-state.test.tsx` | 2,6 | Input ghost-state regression guard |
+818:| `/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/settings-export-route.test.ts` | 1,6 | Export route/UX guard |
+819:| `/home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/dashboard-worldclass-remediation.spec.ts` | 6 | End-to-end path coverage for this mission |
+--- file existence ---
+-rw-r--r-- 1 zaks zaks 5275 Feb 10 23:28 /home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/deals-board-shape.test.ts
+-rw-r--r-- 1 zaks zaks 3051 Feb 10 23:28 /home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/dashboard-refresh-toast.test.tsx
+-rw-r--r-- 1 zaks zaks 6360 Feb 10 23:32 /home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/onboarding-sequence.test.tsx
+-rw-r--r-- 1 zaks zaks 5232 Feb 10 23:28 /home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/quarantine-input-state.test.tsx
+-rw-r--r-- 1 zaks zaks 6576 Feb 10 23:28 /home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/settings-export-route.test.ts
+-rw-r--r-- 1 zaks zaks 10663 Feb 10 23:26 /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/dashboard-worldclass-remediation.spec.ts

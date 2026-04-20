@@ -1,0 +1,13 @@
+=== XC-4: CHANGES.md entries ===
+CHANGES_ENTRIES=12
+RUN_COUNT=1
+7:  - `tools/tripass/tripass.sh` — Main orchestrator (init/run/status/gates commands)
+10:  - `bookkeeping/docs/TRIPASS_LATEST_RUN.md` — Latest run pointer
+12:  - `bookkeeping/docs/_tripass_runs/TP-20260209-211737/` — Proof-of-life run directory
+14:  - `Makefile` — Added tripass-init, tripass-run, tripass-status, tripass-gates targets
+15:  - `~/.claude/hooks/stop.sh` — Added TriPass active-run awareness (lockfile check)
+16:  - `~/.claude/hooks/memory-sync.sh` — Added tripass_runs + tripass_latest fact gathering
+21:## 2026-02-09 — TriPass Run: TP-20260209-211737
+22:- **Type:** TriPass pipeline run
+23:- **Run directory:** /home/zaks/bookkeeping/docs/_tripass_runs/TP-20260209-211737
+28:## 2026-02-09 — TriPass Run: TP-20260209-211737

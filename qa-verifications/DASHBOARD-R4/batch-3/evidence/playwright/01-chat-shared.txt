@@ -1,0 +1,9 @@
+
+Running 4 tests using 1 worker
+
+  ✓  1 [chromium] › tests/e2e/chat-shared.spec.ts:4:7 › Chat + Agent Drawer — Batch 3 Verification › chat page loads and renders message input (3.7s)
+  ✓  2 [chromium] › tests/e2e/chat-shared.spec.ts:15:7 › Chat + Agent Drawer — Batch 3 Verification › chat renders markdown as HTML, not raw text (4.7s)
+  ✓  3 [chromium] › tests/e2e/chat-shared.spec.ts:36:7 › Chat + Agent Drawer — Batch 3 Verification › ask agent drawer opens from dashboard (4.8s)
+  ✓  4 [chromium] › tests/e2e/chat-shared.spec.ts:56:7 › Chat + Agent Drawer — Batch 3 Verification › chat page markdown rendering produces HTML elements (3.6s)
+
+  4 passed (17.6s)

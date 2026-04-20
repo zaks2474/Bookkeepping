@@ -1,0 +1,17 @@
+=== CHECK 4.6.Z: Replay After Completion ===
+Timestamp: 2026-02-03T13:13:50-06:00
+Approval ID: 7b65f288-fb5f-40b7-aa90-61d11a25bdca
+
+=== Current approval status ===
+ 7b65f288-fb5f-40b7-aa90-61d11a25bdca | approved | spam-tester | 2026-02-03 19:13:38.051961+00
+
+=== Attempting replay (approve after completion) ===
+{"detail":"Approval already resolved (status: approved)"}
+HTTP_CODE: 409
+
+=== Analysis ===
+PASS: Replay rejected with HTTP 409 (Conflict)
+Message correctly indicates already resolved state
+
+=== Tool execution count after replay attempt ===
+Execution count:      1 (should still be 1)

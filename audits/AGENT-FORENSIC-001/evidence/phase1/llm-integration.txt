@@ -1,0 +1,46 @@
+AGENT-FORENSIC-001 Phase 1 — Step 1.5: LLM Integration Check
+==============================================================
+Date: 2026-02-02
+
+CONNECTION TO vLLM:
+- Config: VLLM_BASE_URL env var (default: empty, but set in deployment)
+- Default model: Qwen/Qwen2.5-32B-Instruct-AWQ
+- Connection via ChatOpenAI (langchain_openai) with base_url pointed at vLLM
+- API key: "not-needed" when using vLLM (services/llm.py:56)
+- Fallback: OpenAI API if OPENAI_API_KEY is set
+
+MODEL CONFIGURATION:
+- Primary: Qwen/Qwen2.5-32B-Instruct-AWQ (vLLM on port 8000)
+- Secondary: Qwen/Qwen2.5-7B-Instruct-AWQ (vLLM)
+- Fallback: gpt-4o, gpt-4o-mini (OpenAI)
+- Temperature: 0.2 (DEFAULT_LLM_TEMPERATURE)
+- Max tokens: 2000
+- Max retries: 3 with exponential backoff
+- Circular fallback through all registered models
+
+PROMPT INJECTION PROTECTION:
+[WARN] System prompt loaded from file (core/prompts/system.md) with f-string formatting
+       — kwargs passed directly to format() — potential template injection if user-controlled
+       values reach the long_term_memory kwarg
+[WARN] User messages are NOT sanitized before being sent to LLM
+       — The sanitize_string() in auth.py sanitizes tokens, not user chat content
+       — LLM invoke in graph.py passes raw user messages to the model
+[INFO] Tool execution results are passed back through ToolMessage without sanitization
+
+LLM RESPONSE VALIDATION:
+[WARN] LLM responses are NOT validated/sanitized before returning to client
+       — graph.py _chat() returns response_message directly
+       — output_validation.py exists (sanitize_llm_output) but is NOT called
+         in the response pipeline
+       — The module is defined but never imported or used in graph.py or chatbot.py
+[INFO] Streaming responses also lack output validation
+
+TOOLS AVAILABLE TO LLM:
+- duckduckgo_search
+- search_deals, get_deal, list_deals
+- transition_deal (requires HITL approval)
+- Tools call Backend API (8091) via HTTP, not direct DB
+
+LONG TERM MEMORY:
+- DISABLE_LONG_TERM_MEMORY=true by default (Decision Lock compliance)
+- When enabled: mem0 with pgvector, model gpt-5-nano for extraction

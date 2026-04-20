@@ -1,0 +1,311 @@
+{
+  "agent_identity": {
+    "agent_name": "Claude-Opus",
+    "run_id": "20260204-1915-p3final",
+    "date_time": "2026-02-04T19:15:00Z",
+    "repo_revision": "2a68de172c7faf1df6f53357f4b43b0161d5dd32",
+    "synthesis_type": "PASS_3_FINAL"
+  },
+  "summary": {
+    "v2_issues_total": 22,
+    "v2_issues_covered": 22,
+    "coverage_percent": 100,
+    "deduplicated_upgrades": 13,
+    "phases": 10,
+    "builder_missions": 12,
+    "verdict": "Execution-ready plan synthesized from 3 Round-2 plans + PASS 1 + PASS 2"
+  },
+  "decision_set": {
+    "D1_canonical_sot": {
+      "decision": "PostgreSQL zakops.deals is SOLE source of truth",
+      "invariants": [
+        "SOT-INV-1: All deal writes through Postgres only",
+        "SOT-INV-2: Legacy adapters removed/disabled by default",
+        "SOT-INV-3: CI guard blocks legacy patterns"
+      ]
+    },
+    "D2_contract_sot": {
+      "decision": "OpenAPI is authoritative contract; generate all client types",
+      "strategy": [
+        "Backend Pydantic → OpenAPI",
+        "OpenAPI → TypeScript client + Zod",
+        "Delete manual schemas",
+        "CI contract gate"
+      ]
+    },
+    "D3_agent_boundary": {
+      "decision": "Agent tools are audited, idempotent, HITL-gated for destructive ops",
+      "tools": {
+        "get_deal": {"writes": false, "idempotent": "N/A", "hitl": false},
+        "search_deals": {"writes": false, "idempotent": "N/A", "hitl": false},
+        "transition_deal": {"writes": true, "idempotent": true, "hitl": false},
+        "create_deal": {"writes": true, "idempotent": true, "hitl": true},
+        "add_note": {"writes": true, "idempotent": true, "hitl": false}
+      }
+    },
+    "D4_hitl_persistence": {
+      "decision": "HITL approvals persisted with full audit trail",
+      "requirements": ["approvals table", "background expiry job", "audit logging"]
+    },
+    "D5_email_ingestion": {
+      "decision": "Email ingestion writes directly to PostgreSQL",
+      "architecture": ["IMAP sync", "quarantine_items", "atomic approve→create", "outbox side-effects"]
+    },
+    "D6_observability": {
+      "decision": "Correlation IDs end-to-end; OTel as stretch goal",
+      "mandatory": ["X-Correlation-ID header", "correlation_id in logs", "correlation_id in deal_events"]
+    },
+    "D7_rag_strategy": {
+      "decision": "RAG is advisory, not authoritative; freshness tracked",
+      "requirements": ["last_indexed_at column", "content_hash column", "circuit breaker"]
+    }
+  },
+  "phases": [
+    {
+      "id": "R2-0",
+      "name": "Forensic Baseline",
+      "priority": "BLOCKING",
+      "owner": "infra",
+      "objective": "Collect 5-layer truth + browser evidence",
+      "tasks": [
+        "Dump OpenAPI spec",
+        "Diff Pydantic vs Zod",
+        "Capture browser console",
+        "Dump DB schema",
+        "Verify legacy refs"
+      ],
+      "gates": ["Evidence pack complete"],
+      "acceptance_criteria": ["All 5 evidence files exist and are non-empty", "Schema diff report identifies all mismatches", "Legacy refs catalogued"],
+      "v2_issues_closed": []
+    },
+    {
+      "id": "R2-1",
+      "name": "Contract Alignment",
+      "priority": "P0",
+      "owner": "frontend",
+      "objective": "Zero ZodErrors; single schema source",
+      "tasks": [
+        "Generate TS client from OpenAPI",
+        "Delete manual schemas",
+        "Align ActionStatus enum",
+        "Replace silent failures"
+      ],
+      "gates": ["Zero ZodErrors in browser", "Generated client in use"],
+      "acceptance_criteria": ["npm run generate:client succeeds", "Browser console shows zero ZodErrors", "ActionStatus displays correctly"],
+      "v2_issues_closed": ["ZK-ISSUE-0007", "ZK-ISSUE-0013", "ZK-ISSUE-0018", "ZK-ISSUE-0020"],
+      "upgrades_completed": ["UPG-001", "UPG-006", "UPG-007", "UPG-008"]
+    },
+    {
+      "id": "R2-2",
+      "name": "Idempotency Layer",
+      "priority": "P0",
+      "owner": "backend",
+      "objective": "No 500s on duplicates",
+      "tasks": [
+        "Create idempotency_keys table",
+        "Add IdempotencyMiddleware",
+        "Update write endpoints"
+      ],
+      "gates": ["Duplicate POST returns 200"],
+      "acceptance_criteria": ["Duplicate POST returns 200 with cached response", "No 500 errors on duplicates", "Agent double-submit creates one resource"],
+      "v2_issues_closed": ["ZK-ISSUE-0016"],
+      "upgrades_completed": ["UPG-002"]
+    },
+    {
+      "id": "R2-3",
+      "name": "V2 Coverage Closure",
+      "priority": "P1",
+      "owner": ["backend", "frontend"],
+      "objective": "Close all 8 missing V2 issues",
+      "tasks": [
+        "Wire approve→create",
+        "Add folder scaffold",
+        "Fix quarantine endpoint",
+        "Add notes endpoint",
+        "Add archive/restore",
+        "Add expiry job",
+        "Wire executors"
+      ],
+      "gates": ["Each V2 issue has passing test"],
+      "acceptance_criteria": ["All 8 missing V2 issues have regression tests", "Quarantine approval atomically creates deal", "Dashboard uses correct /process endpoint"],
+      "v2_issues_closed": ["ZK-ISSUE-0002", "ZK-ISSUE-0003", "ZK-ISSUE-0004", "ZK-ISSUE-0006", "ZK-ISSUE-0009", "ZK-ISSUE-0012", "ZK-ISSUE-0015", "ZK-ISSUE-0017", "ZK-ISSUE-0019", "ZK-ISSUE-0021", "ZK-ISSUE-0022"]
+    },
+    {
+      "id": "R2-4",
+      "name": "Transactional Outbox",
+      "priority": "P1",
+      "owner": "backend",
+      "objective": "Reliable side-effects",
+      "tasks": [
+        "Create outbox table",
+        "Modify mutations to use outbox",
+        "Implement relay worker"
+      ],
+      "gates": ["Outbox processed in <=5s"],
+      "acceptance_criteria": ["All side-effects written to outbox atomically", "Worker processes events within 5s", "No events lost during worker restart"],
+      "v2_issues_closed": [],
+      "upgrades_completed": ["UPG-003"]
+    },
+    {
+      "id": "R2-5",
+      "name": "Deal Transition Ledger",
+      "priority": "P1",
+      "owner": "backend",
+      "objective": "Auditable lifecycle transitions",
+      "tasks": [
+        "Create deal_transitions table",
+        "Enforce 422 on invalid",
+        "Add transitions endpoint"
+      ],
+      "gates": ["Ledger row for every transition"],
+      "acceptance_criteria": ["Every transition creates ledger entry", "Invalid transitions return 422", "UI timeline displays transitions"],
+      "v2_issues_closed": [],
+      "upgrades_completed": ["UPG-009"]
+    },
+    {
+      "id": "R2-6",
+      "name": "Observability Hardening",
+      "priority": "P2",
+      "owner": ["infra", "backend"],
+      "objective": "Correlation IDs end-to-end",
+      "tasks": [
+        "Unify fetch wrapper",
+        "Add correlation to deal_events",
+        "Add RAG circuit breaker"
+      ],
+      "gates": ["correlation_id in all logs"],
+      "acceptance_criteria": ["All requests include X-Correlation-ID in logs", "deal_events contains correlation_id", "RAG circuit breaker triggers fallback"],
+      "v2_issues_closed": ["ZK-ISSUE-0005", "ZK-ISSUE-0010", "ZK-ISSUE-0011"],
+      "upgrades_completed": ["UPG-005", "UPG-010"]
+    },
+    {
+      "id": "R2-7",
+      "name": "Contract Testing CI Gate",
+      "priority": "P2",
+      "owner": "infra",
+      "objective": "Prevent schema drift",
+      "tasks": [
+        "Create contract test script",
+        "Add to CI pipeline",
+        "Add forbidden-pattern gate"
+      ],
+      "gates": ["CI fails on mismatch"],
+      "acceptance_criteria": ["CI fails on schema mismatch", "CI fails on forbidden patterns", "Contract report generated on every PR"],
+      "v2_issues_closed": [],
+      "upgrades_completed": ["UPG-004", "UPG-011"]
+    },
+    {
+      "id": "R2-8",
+      "name": "Agent Evaluation Framework",
+      "priority": "P2",
+      "owner": "agent",
+      "objective": "Prevent agent regressions",
+      "tasks": [
+        "Create eval dataset",
+        "Implement eval runner",
+        "Add to CI"
+      ],
+      "gates": [">=18/20 scenarios pass"],
+      "acceptance_criteria": ["Eval dataset contains 20+ scenarios", "At least 18/20 pass", "No regression on core flows"],
+      "v2_issues_closed": [],
+      "upgrades_completed": ["UPG-013"]
+    },
+    {
+      "id": "R2-9",
+      "name": "Regression Proofing",
+      "priority": "P2",
+      "owner": ["infra", "backend"],
+      "objective": "Permanent protection for V2 issues",
+      "tasks": [
+        "Add regression tests",
+        "Remove legacy patterns",
+        "Update CHANGELOG"
+      ],
+      "gates": ["Revert any fix → CI fails"],
+      "acceptance_criteria": ["All 22 V2 issues have regression tests", "Reverting any fix causes CI failure", "rg for legacy patterns returns empty"],
+      "v2_issues_closed": ["ZK-ISSUE-0001", "ZK-ISSUE-0008", "ZK-ISSUE-0014"],
+      "upgrades_completed": ["UPG-012"]
+    }
+  ],
+  "coverage_matrix": [
+    {"id": "ZK-ISSUE-0001", "severity": "P0", "title": "Split-brain persistence", "phase": "R2-9", "owner": "backend", "status": "MAPPED"},
+    {"id": "ZK-ISSUE-0002", "severity": "P0", "title": "Email ingestion disabled", "phase": "R2-3", "owner": "backend", "status": "MAPPED"},
+    {"id": "ZK-ISSUE-0003", "severity": "P1", "title": "Quarantine approval no deal", "phase": "R2-3", "owner": "backend", "status": "MAPPED"},
+    {"id": "ZK-ISSUE-0004", "severity": "P1", "title": "No DataRoom folders", "phase": "R2-3", "owner": "backend", "status": "MAPPED"},
+    {"id": "ZK-ISSUE-0005", "severity": "P1", "title": "No authentication", "phase": "R2-6", "owner": "security", "status": "MAPPED"},
+    {"id": "ZK-ISSUE-0006", "severity": "P1", "title": "Wrong quarantine endpoint", "phase": "R2-3", "owner": "frontend", "status": "MAPPED"},
+    {"id": "ZK-ISSUE-0007", "severity": "P1", "title": "Stage taxonomy conflicts", "phase": "R2-1", "owner": "backend", "status": "MAPPED"},
+    {"id": "ZK-ISSUE-0008", "severity": "P1", "title": "Actions split Postgres/SQLite", "phase": "R2-9", "owner": "backend", "status": "MAPPED"},
+    {"id": "ZK-ISSUE-0009", "severity": "P2", "title": "Agent cannot create deals", "phase": "R2-3", "owner": "agent", "status": "MAPPED"},
+    {"id": "ZK-ISSUE-0010", "severity": "P2", "title": "RAG search unverified", "phase": "R2-6", "owner": "backend", "status": "MAPPED"},
+    {"id": "ZK-ISSUE-0011", "severity": "P2", "title": "No event correlation", "phase": "R2-6", "owner": "infra", "status": "MAPPED"},
+    {"id": "ZK-ISSUE-0012", "severity": "P2", "title": "Deal notes endpoint mismatch", "phase": "R2-3", "owner": "backend", "status": "MAPPED"},
+    {"id": "ZK-ISSUE-0013", "severity": "P2", "title": "Capabilities/metrics 501", "phase": "R2-1", "owner": "backend", "status": "MAPPED"},
+    {"id": "ZK-ISSUE-0014", "severity": "P2", "title": "sys.path hack", "phase": "R2-9", "owner": "backend", "status": "MAPPED"},
+    {"id": "ZK-ISSUE-0015", "severity": "P3", "title": "No approval expiry job", "phase": "R2-3", "owner": "backend", "status": "MAPPED"},
+    {"id": "ZK-ISSUE-0016", "severity": "P2", "title": "No duplicate detection", "phase": "R2-2", "owner": "backend", "status": "MAPPED"},
+    {"id": "ZK-ISSUE-0017", "severity": "P3", "title": "No retention policy", "phase": "R2-3", "owner": "data", "status": "MAPPED"},
+    {"id": "ZK-ISSUE-0018", "severity": "P2", "title": "Zod schema mismatch", "phase": "R2-1", "owner": "frontend", "status": "MAPPED"},
+    {"id": "ZK-ISSUE-0019", "severity": "P2", "title": "Executors unwired", "phase": "R2-3", "owner": "backend", "status": "MAPPED"},
+    {"id": "ZK-ISSUE-0020", "severity": "P2", "title": "SSE not implemented", "phase": "R2-1", "owner": "backend", "status": "MAPPED"},
+    {"id": "ZK-ISSUE-0021", "severity": "P2", "title": "No scheduling/reminders", "phase": "R2-3", "owner": "backend", "status": "MAPPED"},
+    {"id": "ZK-ISSUE-0022", "severity": "P3", "title": "Archive/restore missing", "phase": "R2-3", "owner": "backend", "status": "MAPPED"}
+  ],
+  "upgrade_register": [
+    {"id": "UPG-001", "title": "Generated TypeScript Client from OpenAPI", "proposed_by": ["Opus", "Codex", "Gemini"], "priority": "P0", "phase": "R2-1"},
+    {"id": "UPG-002", "title": "Idempotency-Key on All Write Endpoints", "proposed_by": ["Codex", "Gemini"], "priority": "P0", "phase": "R2-2"},
+    {"id": "UPG-003", "title": "Transactional Outbox for Side-Effects", "proposed_by": ["Codex", "Gemini"], "priority": "P1", "phase": "R2-4"},
+    {"id": "UPG-004", "title": "Contract Testing CI Gate", "proposed_by": ["Opus", "Codex", "Gemini"], "priority": "P2", "phase": "R2-7"},
+    {"id": "UPG-005", "title": "RAG Circuit Breaker", "proposed_by": ["Codex", "Gemini"], "priority": "P2", "phase": "R2-6"},
+    {"id": "UPG-006", "title": "ActionStatus Enum Alignment", "proposed_by": ["Opus"], "priority": "P0", "phase": "R2-1"},
+    {"id": "UPG-007", "title": "Trim ActionSchema Phantom Fields", "proposed_by": ["Opus"], "priority": "P1", "phase": "R2-1"},
+    {"id": "UPG-008", "title": "Replace Silent Failures with User Errors", "proposed_by": ["Opus", "Gemini"], "priority": "P1", "phase": "R2-1"},
+    {"id": "UPG-009", "title": "Deal Transition Ledger", "proposed_by": ["Codex"], "priority": "P1", "phase": "R2-5"},
+    {"id": "UPG-010", "title": "OpenTelemetry Integration", "proposed_by": ["Codex"], "priority": "P2", "phase": "R2-6"},
+    {"id": "UPG-011", "title": "Safe Decommissioning Guardrails", "proposed_by": ["Codex"], "priority": "P1", "phase": "R2-9"},
+    {"id": "UPG-012", "title": "Schema Migration Safety", "proposed_by": ["Codex"], "priority": "P2", "phase": "R2-9"},
+    {"id": "UPG-013", "title": "Agent Evaluation Framework", "proposed_by": ["Codex"], "priority": "P2", "phase": "R2-8"}
+  ],
+  "builder_missions": [
+    {"id": 1, "name": "R2-0 Forensic Baseline", "phase": "R2-0"},
+    {"id": 2, "name": "R2-1 Contract Alignment", "phase": "R2-1"},
+    {"id": 3, "name": "R2-2 Idempotency Layer", "phase": "R2-2"},
+    {"id": 4, "name": "R2-3a Quarantine-to-Deal Flow", "phase": "R2-3"},
+    {"id": 5, "name": "R2-3b Missing Endpoints", "phase": "R2-3"},
+    {"id": 6, "name": "R2-3c Background Jobs", "phase": "R2-3"},
+    {"id": 7, "name": "R2-4 Transactional Outbox", "phase": "R2-4"},
+    {"id": 8, "name": "R2-5 Deal Transition Ledger", "phase": "R2-5"},
+    {"id": 9, "name": "R2-6 Observability Hardening", "phase": "R2-6"},
+    {"id": 10, "name": "R2-7 Contract Testing CI Gate", "phase": "R2-7"},
+    {"id": 11, "name": "R2-8 Agent Evaluation Framework", "phase": "R2-8"},
+    {"id": 12, "name": "R2-9 Regression Proofing", "phase": "R2-9"}
+  ],
+  "qa_plan": {
+    "pass_1_functional": {
+      "tests": 14,
+      "categories": ["Deal CRUD", "Stage transitions", "Quarantine", "Actions", "RAG", "SSE", "Correlation"]
+    },
+    "pass_2_adversarial": {
+      "tests": 10,
+      "categories": ["Idempotency", "Outage handling", "Invalid transitions", "Schema mismatch", "Legacy patterns"]
+    },
+    "ship_it_criteria": [
+      "All 22 V2 issues have PASS in regression tests",
+      "QA Pass 1: 14/14 functional tests pass",
+      "QA Pass 2: 10/10 adversarial tests pass",
+      "Zero ZodErrors in browser",
+      "Contract CI gate passes",
+      "Forbidden pattern gate passes",
+      "All evidence artifacts collected"
+    ]
+  },
+  "input_sources": {
+    "round2_plans": [
+      {"agent": "Opus", "run_id": "opus.run001", "score": 21},
+      {"agent": "Codex", "run_id": "20260204-1651-0e51", "score": 28},
+      {"agent": "Gemini", "run_id": "20260204-1050-gemini", "score": 21}
+    ],
+    "pass_1": {"agent": "Claude-Opus", "run_id": "20260204-1835-p1r2"},
+    "pass_2": {"agent": "Codex", "run_id": "20260204-1728-102efc"}
+  }
+}

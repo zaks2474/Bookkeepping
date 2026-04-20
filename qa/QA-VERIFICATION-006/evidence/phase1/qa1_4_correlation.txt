@@ -1,0 +1,55 @@
+=== QA-1.4: T0.6-T0.8 Correlation ID ===
+--- TEST 1: Dashboard middleware ---
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api/generated.ts:205:  correlation_id?: string;
+/home/zaks/zakops-agent-api/apps/dashboard/src/middleware.ts:8: * REMEDIATION-V3 [ZK-ISSUE-0011]: Generates X-Correlation-ID header for request tracing.
+/home/zaks/zakops-agent-api/apps/dashboard/src/middleware.ts:19: * Generate a correlation ID for request tracing.
+/home/zaks/zakops-agent-api/apps/dashboard/src/middleware.ts:22:function generateCorrelationId(): string {
+/home/zaks/zakops-agent-api/apps/dashboard/src/middleware.ts:29:  // Generate or forward correlation ID for all API requests
+/home/zaks/zakops-agent-api/apps/dashboard/src/middleware.ts:30:  const existingCorrelationId = request.headers.get('X-Correlation-ID');
+/home/zaks/zakops-agent-api/apps/dashboard/src/middleware.ts:31:  const correlationId = existingCorrelationId || generateCorrelationId();
+/home/zaks/zakops-agent-api/apps/dashboard/src/middleware.ts:33:  // For non-write methods, add correlation ID to response and pass through
+/home/zaks/zakops-agent-api/apps/dashboard/src/middleware.ts:37:      response.headers.set('X-Correlation-ID', correlationId);
+/home/zaks/zakops-agent-api/apps/dashboard/src/middleware.ts:63:      response.headers.set('X-Correlation-ID', correlationId);
+/home/zaks/zakops-agent-api/apps/dashboard/src/middleware.ts:73:    'X-Correlation-ID': correlationId,
+/home/zaks/zakops-agent-api/apps/dashboard/src/middleware.ts:98:        'X-Correlation-ID': correlationId,
+/home/zaks/zakops-agent-api/apps/dashboard/src/middleware.ts:103:      { error: 'backend_unavailable', message: 'Failed to reach backend API', correlation_id: correlationId },
+/home/zaks/zakops-agent-api/apps/dashboard/src/middleware.ts:104:      { status: 502, headers: { 'X-Correlation-ID': correlationId } }
+
+--- TEST 2: Backend correlation_id ---
+/home/zaks/zakops-backend/src/api/orchestration/routers/events.py:39:    correlation_id: str | None = None
+/home/zaks/zakops-backend/src/api/orchestration/routers/events.py:59:    correlation_id: str | None = Query(None, description="Filter by correlation_id (e.g., deal_id)"),
+/home/zaks/zakops-backend/src/api/orchestration/routers/events.py:81:    correlation_id: str | None,
+/home/zaks/zakops-backend/src/api/orchestration/routers/events.py:93:        correlation_id=correlation_id,
+/home/zaks/zakops-backend/src/api/orchestration/routers/events.py:196:    correlation_id: str | None = Query(None, description="Filter by correlation_id"),
+/home/zaks/zakops-backend/src/api/orchestration/routers/events.py:203:    Returns events from the replay buffer, filtered by correlation_id and/or event_type.
+/home/zaks/zakops-backend/src/api/orchestration/routers/events.py:215:                if correlation_id and event.get("correlation_id") != correlation_id:
+/home/zaks/zakops-backend/src/api/orchestration/routers/events.py:224:                    correlation_id=event.get("correlation_id"),
+/home/zaks/zakops-backend/src/api/orchestration/routers/events.py:238:    correlation_id: str | None = Query(None, description="Correlation ID"),
+/home/zaks/zakops-backend/src/api/orchestration/routers/events.py:252:        correlation_id=correlation_id,
+/home/zaks/zakops-backend/src/api/orchestration/routers/admin.py:39:    correlation_id: str | None = None,
+/home/zaks/zakops-backend/src/api/orchestration/routers/admin.py:49:        correlation_id=correlation_id
+/home/zaks/zakops-backend/src/api/orchestration/routers/admin.py:52:    total = await manager.get_count(correlation_id)
+/home/zaks/zakops-backend/src/api/orchestration/routers/admin.py:96:    correlation_id: str | None = None,
+/home/zaks/zakops-backend/src/api/orchestration/routers/admin.py:104:        correlation_id=correlation_id,
+
+--- TEST 3: deal_events schema ---
+  column_name   |     data_type     
+----------------+-------------------
+ correlation_id | character varying
+(1 row)
+
+
+--- TEST 4: Live correlation test ---
+Test correlation_id: qa006-corr-1770191343
+Deal: DL-0049
+{"error":{"code":"VALIDATION_ERROR","message":"Request validation failed","details":[{"field":"body.new_stage","message":"Field required","code":"missing"}],"trace_id":"1fc8297a-4976-4dfe-95d6-aedf9c076c45","timestamp":"2026-02-04T07:49:03.222606Z"}}
+--- Checking stored correlation_id ---
+ correlation_id 
+----------------
+(0 rows)
+
+--- Transition with correlation_id ---
+{"deal_id":"DL-0049","from_stage":"inbound","to_stage":"screening","success":true,"timestamp":"2026-02-04T07:49:18.230256+00:00","idempotent_hit":false} correlation_id | event_type 
+----------------+------------
+(0 rows)
+

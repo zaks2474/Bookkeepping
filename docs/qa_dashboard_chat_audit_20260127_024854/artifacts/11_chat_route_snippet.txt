@@ -1,0 +1,80 @@
+     1	import { NextRequest, NextResponse } from 'next/server';
+     2	
+     3	const AGENT_API_URL = process.env.NEXT_PUBLIC_AGENT_API_URL || process.env.AGENT_API_URL || 'http://localhost:8095';
+     4	const BACKEND_URL = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8091';
+     5	
+     6	/**
+     7	 * POST /api/chat
+     8	 *
+     9	 * Handles chat requests with multiple fallback strategies:
+    10	 * 1. Try Agent API chatbot endpoint
+    11	 * 2. Try Backend agent invoke endpoint
+    12	 * 3. Return a helpful response if both fail
+    13	 */
+    14	export async function POST(request: NextRequest) {
+    15	  try {
+    16	    const body = await request.json();
+    17	
+    18	    // Extract the user's message
+    19	    const userMessage = body.query || body.message ||
+    20	      (body.messages && body.messages[body.messages.length - 1]?.content) || '';
+    21	
+    22	    if (!userMessage) {
+    23	      return NextResponse.json(
+    24	        { error: 'No message provided' },
+    25	        { status: 400 }
+    26	      );
+    27	    }
+    28	
+    29	    // Transform the request to match Agent API's expected format
+    30	    const messages = body.messages || [
+    31	      { role: 'user', content: userMessage }
+    32	    ];
+    33	
+    34	    // Strategy 1: Try Agent API chatbot
+    35	    try {
+    36	      const agentUrl = `${AGENT_API_URL}/api/v1/chatbot/chat`;
+    37	
+    38	      const response = await fetch(agentUrl, {
+    39	        method: 'POST',
+    40	        headers: {
+    41	          'Content-Type': 'application/json',
+    42	        },
+    43	        body: JSON.stringify({
+    44	          messages,
+    45	          session_id: body.session_id,
+    46	          ...body.options,
+    47	        }),
+    48	      });
+    49	
+    50	      // If successful, return the response
+    51	      if (response.ok) {
+    52	        const contentType = response.headers.get('content-type');
+    53	        if (contentType?.includes('text/event-stream')) {
+    54	          return new NextResponse(response.body, {
+    55	            status: response.status,
+    56	            headers: {
+    57	              'Content-Type': 'text/event-stream',
+    58	              'Cache-Control': 'no-cache',
+    59	              'Connection': 'keep-alive',
+    60	            },
+    61	          });
+    62	        }
+    63	        const data = await response.json();
+    64	        return NextResponse.json(data);
+    65	      }
+    66	
+    67	      // If auth error, continue to fallback
+    68	      if (response.status !== 401 && response.status !== 403) {
+    69	        const errorData = await response.json().catch(() => ({}));
+    70	        console.log('[Chat] Agent API returned:', response.status, errorData);
+    71	      }
+    72	    } catch (agentError) {
+    73	      console.log('[Chat] Agent API unavailable, trying fallback');
+    74	    }
+    75	
+    76	    // Strategy 2: Try Backend agent invoke (for deal-scoped queries)
+    77	    if (body.scope?.deal_id) {
+    78	      try {
+    79	        const backendUrl = `${BACKEND_URL}/api/agent/invoke`;
+    80	        const response = await fetch(backendUrl, {

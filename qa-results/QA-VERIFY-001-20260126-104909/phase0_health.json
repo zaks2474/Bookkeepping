@@ -1,0 +1,141 @@
+{
+  "http": {
+    "agent_health": {
+      "elapsed_ms": 5,
+      "method": "GET",
+      "ok": true,
+      "request_json": null,
+      "response_headers": {
+        "content-length": "159",
+        "content-type": "application/json",
+        "date": "Mon, 26 Jan 2026 16:49:09 GMT",
+        "server": "uvicorn",
+        "x-request-id": "4807ccd1",
+        "x-response-time": "0.004s"
+      },
+      "response_json": {
+        "components": {
+          "api": "healthy",
+          "database": "healthy"
+        },
+        "environment": "development",
+        "status": "healthy",
+        "timestamp": "2026-01-26T16:49:09.788640",
+        "version": "1.0.0"
+      },
+      "response_text": "{\"status\":\"healthy\",\"version\":\"1.0.0\",\"environment\":\"development\",\"components\":{\"api\":\"healthy\",\"database\":\"healthy\"},\"timestamp\":\"2026-01-26T16:49:09.788640\"}",
+      "status_code": 200,
+      "url": "http://localhost:8095/health"
+    },
+    "backend_health": {
+      "elapsed_ms": 3,
+      "method": "GET",
+      "ok": true,
+      "request_json": null,
+      "response_headers": {
+        "content-length": "79",
+        "content-type": "application/json",
+        "date": "Mon, 26 Jan 2026 16:49:08 GMT",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "server": "uvicorn",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY",
+        "x-trace-id": "ae186396-00de-4768-b59b-8f8d0f569a33",
+        "x-xss-protection": "1; mode=block"
+      },
+      "response_json": {
+        "status": "healthy",
+        "timestamp": "2026-01-26T16:49:09.782828",
+        "version": "1.0.0"
+      },
+      "response_text": "{\"status\":\"healthy\",\"timestamp\":\"2026-01-26T16:49:09.782828\",\"version\":\"1.0.0\"}",
+      "status_code": 200,
+      "url": "http://localhost:8091/health"
+    },
+    "dashboard_root": {
+      "elapsed_ms": 29,
+      "method": "GET",
+      "ok": true,
+      "request_json": null,
+      "response_headers": {
+        "Cache-Control": "private, no-cache, no-store, max-age=0, must-revalidate",
+        "Connection": "keep-alive",
+        "Content-Encoding": "gzip",
+        "Content-Type": "text/html; charset=utf-8",
+        "Date": "Mon, 26 Jan 2026 16:49:09 GMT",
+        "Keep-Alive": "timeout=5",
+        "Transfer-Encoding": "chunked",
+        "Vary": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch, Accept-Encoding",
+        "X-Powered-By": "Next.js",
+        "link": "</_next/static/media/26d0ba92e140f0dc-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/3be83a346553616c-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/4cf2300e9c8272f7-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/93f479601ee12b01-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/e4af272ccee01ff0-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/ec14413c594b3356-s.p.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\""
+      },
+      "response_json": null,
+      "response_text": "<!DOCTYPE html><html lang=\"en\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"stylesheet\" href=\"/_next/static/css/750a6387d561cd52.css\" data-precedence=\"next\"/><link rel=\"stylesheet\" href=\"/_next/static/css/92c73f2cba2c2a4d.css\" data-precedence=\"next\"/><link rel=\"stylesheet\" href=\"/_next/static/css/36d3e6130cab341d.css\" data-precedence=\"next\"/><link rel=\"preload\" as=\"script\" fetchPriority=\"low\" href=\"/_next/static/chunks/webpack-051b9f86f3f4c432.js\"/><script src=\"/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js\" async=\"\"></script><script src=\"/_next/static/chunks/1255-8befde0980f5cba9.js\" async=\"\"></script><script src=\"/_next/static/chunks/main-app-f3336e172256d2ab.js\" async=\"\"></script><script src=\"/_next/static/chunks/4909-5b84ef3be4b6f0dd.js\" async=\"\"></script><script src=\"/_next/static/chunks/7199-a4dcfc37fe77259d.js\" async=\"\"></script><script src=\"/_next/static/chunks/4109-04ee94a6b268fead.js\" async=\"\"></script><script src=\"/_next/static/chunks/9034-8e25483803b61e07.js\" async=\"\"></script><script src=\"/_next/static/chunks/6848-b17e0ba2b74e74bb.js\" async=\"\"></script><script src=\"/_next/static/chunks/5578-d9ebc5f762d2b52d.js\" async=\"\"></script><script src=\"/_next/static/chunks/7473-cec89bb7ba4b6760.js\" async=\"\"></script><script src=\"/_next/static/chunks/7274-dd6dc2d555eac5ab.js\" async=\"\"></script><script src=\"/_next/static/chunks/6743-5dfcb2a52b2a4ad6.js\" async=\"\"></script><script src=\"/_next/static/chunks/9371-91feddd1959ae1d7.js\" async=\"\"></script><script src=\"/_next/static/chunks/2601-97ad78a8d6212721.js\" async=\"\"></script><script src=\"/_next/static/chunks/2234-7702c598257b8d16.js\" async=\"\"></script><script src=\"/_next/static/chunks/1204-32594464cd8d5d0c.js\" async=\"\"></script><script src=\"/_next/static/chunks/4879-72c33e493193298c.js\" async=\"\"></script><script src=\"/_next/static/chunks/5190-671064a79082b5f2.js\" async=\"\"></script><script src=\"/_next/static/chunks/8720-1a27e2f69afa3d88.js\" async=\"\"></script><script src=\"/_next/static/chunks/6529-1def80c7765c9eb8.js\" async=\"\"></script><script src=\"/_next/static/chunks/7247-2be4307ec8cdb75b.js\" async=\"\"></script><script src=\"/_next/static/chunks/4429-055d8b3a680523ff.js\" async=\"\"></script><script src=\"/_next/static/chunks/9004-ae61728dda6ad4f5.js\" async=\"\"></script><script src=\"/_next/static/chunks/3615-47ddda4e08c1d5af.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/dashboard/page-5260702065866ce3.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/dashboard/loading-5550d3e6a8dd94d5.js\" async=\"\"></script><script src=\"/_next/static/chunks/9136-2db3df07172e1c02.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/layout-03585d44123f90f6.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/not-found-0709d2820f487326.js\" async=\"\"></script><script src=\"/_next/static/chunks/946-44607d72ebbfbf2c.js\" async=\"\"></script><script src=\"/_next/static/chunks/5081-1fedd22776c42f0b.js\" async=\"\"></script><script src=\"/_next/static/chunks/7840-00d4673194d1a95e.js\" async=\"\"></script><script src=\"/_next/static/chunks/2095-9bb4955bae9d9bd5.js\" async=\"\"></script><script src=\"/_next/static/chunks/2365-b644e2d8889441f1.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/dashboard/layout-83fedc73b30b1f36.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/dashboard/error-53e9a4607744fc69.js\" async=\"\"></script><meta name=\"next-size-adjust\" content=\"\"/><meta name=\"theme-color\" content=\"#ffffff\"/><title>Dashboard | ZakOps</title><meta name=\"description\" content=\"Deal Lifecycle Management Dashboard\"/><link rel=\"icon\" href=\"/favicon.ico\" type=\"image/x-icon\" sizes=\"16x16\"/><script>\n              try {\n                if (localStorage.theme === 'dark' || ((!('theme' in localStorage) || localStorage.theme === 'system') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {\n                  document.querySelector('meta[name=\"theme-color\"]').setAttribute('content', '#09090b')\n            \n\u2026(truncated, 90986 bytes total)\u2026",
+      "status_code": 200,
+      "url": "http://localhost:3003/"
+    },
+    "rag_stats": {
+      "elapsed_ms": 3,
+      "method": "GET",
+      "ok": true,
+      "request_json": null,
+      "response_headers": {
+        "content-length": "85",
+        "content-type": "application/json",
+        "date": "Mon, 26 Jan 2026 16:49:08 GMT",
+        "server": "uvicorn"
+      },
+      "response_json": {
+        "embedding_dim": 1024,
+        "embedding_model": "bge-m3",
+        "total_chunks": 226,
+        "unique_urls": 12
+      },
+      "response_text": "{\"total_chunks\":226,\"unique_urls\":12,\"embedding_model\":\"bge-m3\",\"embedding_dim\":1024}",
+      "status_code": 200,
+      "url": "http://localhost:8052/rag/stats"
+    }
+  },
+  "tcp": {
+    "legacy_8090_tcp": {
+      "args": [
+        "nc",
+        "-z",
+        "-w2",
+        "localhost",
+        "8090"
+      ],
+      "elapsed_ms": 0,
+      "returncode": 1,
+      "stderr": "",
+      "stdout": ""
+    },
+    "postgres_tcp": {
+      "args": [
+        "nc",
+        "-z",
+        "-w2",
+        "localhost",
+        "5432"
+      ],
+      "elapsed_ms": 1,
+      "returncode": 0,
+      "stderr": "Connection to localhost (127.0.0.1) 5432 port [tcp/postgresql] succeeded!\n",
+      "stdout": ""
+    },
+    "redis_tcp": {
+      "args": [
+        "nc",
+        "-z",
+        "-w2",
+        "localhost",
+        "6379"
+      ],
+      "elapsed_ms": 0,
+      "returncode": 0,
+      "stderr": "Connection to localhost (127.0.0.1) 6379 port [tcp/redis] succeeded!\n",
+      "stdout": ""
+    }
+  },
+  "timestamp_utc": "2026-01-26T16:49:09.826318+00:00"
+}

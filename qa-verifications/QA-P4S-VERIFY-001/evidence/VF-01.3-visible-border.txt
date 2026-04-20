@@ -1,0 +1,5 @@
+=== VF-01.3 VISIBLE BORDER SEPARATION ===
+--- Checking for visible border class (not border-transparent) ---
+94:                'hover:bg-accent/50 border border-border/40',
+--- Ensuring border-transparent is removed ---
+border_transparent_count=0

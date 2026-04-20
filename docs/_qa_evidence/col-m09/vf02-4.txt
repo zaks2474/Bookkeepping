@@ -1,0 +1,5 @@
+apps/agent-api/app/services/chat_repository.py:223:                text("DELETE FROM turn_snapshots WHERE thread_id = :thread_id"),
+apps/agent-api/app/services/snapshot_writer.py:14:Snapshots are written to turn_snapshots table (partitioned by created_at).
+apps/agent-api/app/services/snapshot_writer.py:112:                    INSERT INTO turn_snapshots (
+apps/agent-api/app/services/snapshot_writer.py:202:                    "SELECT * FROM turn_snapshots WHERE thread_id = $1 AND turn_number = $2",
+apps/agent-api/app/services/snapshot_writer.py:219:                    FROM turn_snapshots

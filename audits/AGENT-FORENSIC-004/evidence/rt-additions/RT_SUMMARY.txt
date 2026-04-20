@@ -1,0 +1,34 @@
+=== RT-ADDITIONS SUMMARY ===
+
+RT-3PLANE (Three-Plane Observability):
+  PLANE 1 (Logs):    PASS - Structured logs with thread_id correlation
+  PLANE 2 (Traces):  NOT_CONFIGURED - Langfuse keys empty (P2)
+  PLANE 3 (Audit):   PASS - audit_log + tool_executions linked
+  VERDICT: 2/3 planes = PASS with P2 finding
+
+RT-DBSOT (DB Source-of-Truth):
+  VERDICT: PASS - zakops_agent DB is authoritative, isolated from zakops
+  P2 Finding: Orphan container zakops-postgres-1 may cause confusion
+
+RT-LOGSAFE (Sensitive Data Logging):
+  6.B.1 Secret Scan:    PASS - No secrets in logs (false positives only)
+  6.B.2 PII Redaction:  PASS - No PII patterns found  
+  6.B.3 Stack Traces:   PASS - Uses container paths (/app/), not host paths
+  VERDICT: PASS
+
+RT-TAMPER (Log Integrity):
+  6.C.1 Log Storage:    Docker json-file (standard)
+  6.C.2 Audit Protection: No triggers - P3 (defense-in-depth gap)
+  6.C.3 Timestamps:     Server-side NOW() default - GOOD
+  VERDICT: PASS with P3 finding
+
+RT-DIAG (Diagnostic Endpoints):
+  6.D.1 Health:    Minimal status, no internals - GOOD
+  Debug endpoints: None found (404)
+  OpenAPI docs:    /docs, /redoc exposed - P3 (disable in prod)
+  Metrics:         /metrics exposed - P3 (protect in prod)
+  VERDICT: PASS with P3 findings
+
+OVERALL RT STATUS: PASS (with findings)
+  P2: Langfuse not configured, orphan container
+  P3: No audit triggers, docs/metrics exposed in dev

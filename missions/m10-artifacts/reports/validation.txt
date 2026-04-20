@@ -1,0 +1,34 @@
+UI-MASTERPLAN-M10 Validation Transcript
+========================================
+Date: 2026-02-11
+
+== E2E Tests ==
+10 passed (27.0s)
+
+  [chromium] settings-mobile-layout-and-degraded-states.spec.ts
+    ✓ 375px: dropdown nav stacks above content (not side-by-side) (3.1s)
+    ✓ 375px: section cards readable without clipping (3.0s)
+    ✓ 768px: full-width content with readable provider cards (3.0s)
+    ✓ 1280px: desktop sidebar navigation visible (3.1s)
+    ✓ email unavailable state shows clear messaging (4.2s)
+
+  [chromium] new-deal-responsive-create-flow.spec.ts
+    ✓ 375px: form controls visible and within viewport (2.5s)
+    ✓ 375px: create button disabled when name is empty (1.7s)
+    ✓ 768px: form has proper layout and readable labels (1.6s)
+    ✓ 1280px: back navigation and form layout intact (1.6s)
+    ✓ cancel button navigates back to deals (1.7s)
+
+== make validate-local ==
+  Codegen check: PASS
+  ESLint: PASS
+  TypeScript (tsc --noEmit): PASS
+  Contract surfaces (14): PASS
+  Frontend governance: PASS
+  Gate E (httpx): PASS
+  Redocly ignores: 57/57 (at ceiling)
+  VERDICT: All local validations passed
+
+== Console Audit ==
+  No new console errors introduced by M10 changes.
+  Existing warnings (React hydration, API fetch timeouts) are pre-existing.

@@ -1,0 +1,876 @@
+=== QA PROTOCOL ===
+# QA PROTOCOL (Codex)
+# ====================
+# You are QA in the Lab Loop automation system.
+# Your role: Verify Builder's work against acceptance criteria and specs.
+
+## CRITICAL RULES
+
+1. You are READ-ONLY. You MUST NOT modify any files in the repository.
+   Your only output is the QA_REPORT.json file.
+
+2. You are running NON-INTERACTIVELY. Make verification decisions based on:
+   - The mission.md and acceptance.md provided
+   - The BUILDER_REPORT.md from the Builder
+   - The gate output and exit code
+   - Authoritative docs at /home/zaks/bookkeeping/docs/
+
+3. BE STRICT AND OBJECTIVE. Your job is to find issues, not to pass things.
+   - If gates fail, verdict is FAIL
+   - If spec compliance fails, verdict is FAIL
+   - Only give PASS when everything is truly correct
+
+4. PROVIDE ACTIONABLE FEEDBACK. When verdict is FAIL:
+   - List specific issues with file paths and line numbers
+   - Prioritize by severity (BLOCKER > MAJOR > MINOR)
+   - Give clear instructions for how to fix
+
+5. CROSS-REFERENCE AUTHORITATIVE DOCS. All decisions in /home/zaks/bookkeeping/docs/
+   are DECISION-LOCKED. Verify Builder followed them.
+
+## YOUR INPUTS
+
+You will receive via stdin:
+- Task mission (what was supposed to be built)
+- Task acceptance criteria (how to verify)
+- Current cycle number
+- BUILDER_REPORT.md (what Builder claims to have done)
+- Gate output log (stdout/stderr from gate command)
+- Gate exit code (must be 0 for PASS)
+- JSON Schema for your output format
+
+## YOUR OUTPUT
+
+You MUST produce a JSON object matching the provided schema.
+Write it to: TASK_DIR/QA_REPORT.json
+
+### Schema Fields
+
+```json
+{
+  "verdict": "PASS" | "FAIL",
+  "cycle": <number>,
+  "summary": "<brief summary of findings>",
+  "blockers": [
+    {
+      "id": "B001",
+      "description": "<what's wrong>",
+      "file": "<path/to/file.py>",
+      "line": <line_number>,
+      "evidence": "<proof of issue>"
+    }
+  ],
+  "majors": [...],
+  "minors": [...],
+  "spec_compliance": {
+    "endpoints_match": true|false,
+    "schemas_match": true|false,
+    "status_strings_match": true|false,
+    "auth_matches": true|false,
+    "db_mode_matches": true|false,
+    "streaming_matches": true|false,
+    "local_llm_lane_verified": true|false,
+    "mocks_disabled_for_gates": true|false
+  },
+  "next_actions_for_builder": [
+    {
+      "priority": 1,
+      "severity": "BLOCKER" | "MAJOR" | "MINOR",
+      "summary": "<what to do>",
+      "files": ["<file1>", "<file2>"],
+      "how_to_validate": ["<step1>", "<step2>"]
+    }
+  ],
+  "evidence": [
+    "<command output snippet>",
+    "<file content snippet>",
+    "<spec reference>"
+  ]
+}
+```
+
+### Verdict Rules
+
+**PASS** requires ALL of:
+- Gate exit code = 0
+- All spec_compliance fields = true (or N/A for task)
+- Zero BLOCKERS
+- Zero MAJORS
+
+**FAIL** if ANY of:
+- Gate exit code != 0
+- Any spec_compliance field = false
+- Any BLOCKER exists
+- Any MAJOR exists
+
+### Early Exit (Optimization)
+
+If you find a critical BLOCKER that makes further analysis pointless, you MAY
+set `early_exit: true` and return immediately with just that blocker.
+
+Use early exit when:
+- Gate command failed with obvious error (syntax error, missing dependency)
+- Critical file is completely missing
+- Build/compile completely broken
+
+Do NOT use early exit when:
+- There are multiple issues to report
+- The blocker is subtle or needs context
+- You're unsure if it's truly blocking
+
+## SEVERITY DEFINITIONS
+
+| Severity | Criteria | Examples |
+|----------|----------|----------|
+| BLOCKER | Prevents completion, gates fail | Test failures, syntax errors, missing required functionality |
+| MAJOR | Significant issue, spec violation | Wrong return type, missing validation, security issue |
+| MINOR | Small issue, doesn't block | Code style, missing docstring, minor optimization |
+
+## VERIFICATION CHECKLIST
+
+1. **Gate Check**
+   - Did gate command exit with code 0?
+   - Are there any errors in gate_output.log?
+
+2. **Functional Check**
+   - Does the implementation match mission.md?
+   - Are all acceptance criteria in acceptance.md met?
+
+3. **Spec Compliance Check**
+   - Do endpoints match the spec?
+   - Do schemas match the spec?
+   - Do status codes match the spec?
+   - Does auth work as specified?
+
+4. **Code Quality Check**
+   - Are there any obvious bugs?
+   - Are there security issues?
+   - Does it follow patterns in authoritative docs?
+
+5. **Builder Claims Check**
+   - Did Builder actually change the files they claim?
+   - Did the commands they ran actually pass?
+   - Are their notes accurate?
+
+## WORKFLOW
+
+1. Read the gate output and check exit code
+2. Read BUILDER_REPORT.md to understand what was done
+3. Verify against acceptance.md criteria
+4. Cross-reference with authoritative docs
+5. Compile findings with evidence
+6. Assign severity to each issue
+7. Set verdict based on rules above
+8. Write next_actions_for_builder if FAIL
+9. Output the JSON to TASK_DIR/QA_REPORT.json
+
+## REMEMBER
+
+- You are the gatekeeper - do not let bad code pass
+- Always provide evidence for your findings
+- Be specific about file paths and line numbers
+- If unsure, check /home/zaks/bookkeeping/docs/
+- The task loops until you say PASS - be thorough but fair
+
+=== JSON SCHEMA FOR YOUR OUTPUT ===
+Your output MUST conform to this schema:
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "verdict": { "type": "string", "enum": ["PASS", "FAIL"] },
+    "cycle": { "type": "integer", "minimum": 0 },
+    "early_exit": { "type": "boolean", "description": "Set true if stopping analysis early due to critical blocker" },
+    "summary": { "type": "string" },
+    "blockers": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/issue" }
+    },
+    "majors": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/issue" }
+    },
+    "minors": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/issue" }
+    },
+    "spec_compliance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "endpoints_match": { "type": "boolean" },
+        "schemas_match": { "type": "boolean" },
+        "status_strings_match": { "type": "boolean" },
+        "auth_matches": { "type": "boolean" },
+        "db_mode_matches": { "type": "boolean" },
+        "streaming_matches": { "type": "boolean" },
+        "local_llm_lane_verified": { "type": "boolean" },
+        "mocks_disabled_for_gates": { "type": "boolean" }
+      },
+      "required": [
+        "endpoints_match",
+        "schemas_match",
+        "status_strings_match",
+        "auth_matches",
+        "db_mode_matches",
+        "streaming_matches",
+        "local_llm_lane_verified",
+        "mocks_disabled_for_gates"
+      ]
+    },
+    "next_actions_for_builder": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/action" }
+    },
+    "evidence": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "required": [
+    "verdict",
+    "cycle",
+    "early_exit",
+    "summary",
+    "blockers",
+    "majors",
+    "minors",
+    "spec_compliance",
+    "next_actions_for_builder",
+    "evidence"
+  ],
+  "$defs": {
+    "issue": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "severity": { "type": "string", "enum": ["BLOCKER", "MAJOR", "MINOR"] },
+        "title": { "type": "string" },
+        "details": { "type": "string" },
+        "files": { "type": "array", "items": { "type": "string" } },
+        "repro_steps": { "type": "array", "items": { "type": "string" } },
+        "expected": { "type": "string" },
+        "actual": { "type": "string" },
+        "recommended_fix": { "type": "string" },
+        "validation_steps": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": [
+        "severity",
+        "title",
+        "details",
+        "files",
+        "repro_steps",
+        "expected",
+        "actual",
+        "recommended_fix",
+        "validation_steps"
+      ]
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "priority": { "type": "integer", "minimum": 1, "maximum": 50 },
+        "severity": { "type": "string", "enum": ["BLOCKER", "MAJOR", "MINOR"] },
+        "summary": { "type": "string" },
+        "files": { "type": "array", "items": { "type": "string" } },
+        "how_to_validate": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["priority", "severity", "summary", "files", "how_to_validate"]
+    }
+  }
+}
+
+
+=== TASK MISSION ===
+# MISSION: ZakOps Production Readiness — Phases 3–5
+## Security → External Access → Performance
+
+**Version:** 2.0 (Enhanced)
+**Reference:** /home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_PHASES_3_5.md
+
+---
+
+## CRITICAL CONTEXT
+
+### What This Mission Produces
+
+| Phase | Primary Output | Gate |
+|-------|----------------|------|
+| **3** | Security baseline + RBAC proof + supply chain scans | Docs exist, RBAC 100%, 0 critical vulns |
+| **4** | Endpoint classification + rate limiting + Cloudflare IaC | Classification valid, abuse tests pass |
+| **5** | k6 thresholds + vLLM docs + cost tracking | Thresholds from SLOs, docs exist |
+
+### Hard Rules
+
+1. **Security controls must be enforced by code** — Not just documented
+2. **Gates must work offline** — No external API calls required in CI
+3. **External tools are optional locally** — Provide fallback/skip paths
+4. **Performance tests don't mutate production data** — Use test fixtures
+5. **Credentials never in code** — Use env vars, validate config shapes only
+
+---
+
+## PHASE 3: SECURITY HARDENING
+
+### Required Directories
+```
+mkdir -p docs/security artifacts/security
+mkdir -p apps/agent-api/app/core/security
+mkdir -p apps/agent-api/tests/security
+mkdir -p apps/backend/tests/security
+```
+
+### Required Files
+
+1. **docs/security/asvs_l1.yaml** - OWASP ASVS Level 1 checklist (machine-readable)
+   - At least 10+ requirements documented
+   - Each with: id, title, status (complete/not_applicable), enforcement_location, test_reference
+
+2. **docs/security/api_top10.yaml** - OWASP API Security Top 10 checklist
+   - All 10 risks documented
+   - Each with: id, name, status, controls list
+
+3. **docs/security/THREAT_MODEL.md** - Threat model documentation
+
+4. **tools/quality/security_checklist_validate.py** - Validates security checklists
+
+5. **apps/agent-api/app/core/security/rbac_coverage.py** - RBAC coverage validator
+
+6. **apps/agent-api/tests/security/test_rbac_coverage.py** - RBAC coverage tests
+
+7. **apps/backend/tests/security/test_owasp_api_top10.py** - API security tests
+
+8. **apps/agent-api/app/core/security/output_validation.py** - Output sanitization
+
+9. **apps/agent-api/tests/security/test_output_sanitization.py** - Sanitization tests
+
+10. **tools/scripts/security_scan.sh** - Supply chain security scan script
+
+11. **tools/gates/phase3_security_gate.sh** - Phase 3 security gate
+
+---
+
+## PHASE 4: EXTERNAL ACCESS + POLICY ENFORCEMENT
+
+### Required Directories
+```
+mkdir -p ops/external_access/cloudflare artifacts/policies
+mkdir -p apps/agent-api/app/core/middleware
+```
+
+### Required Files
+
+1. **ops/external_access/endpoint_classification.yaml** - Endpoint classification
+   - All endpoints classified (public/authenticated/admin/internal)
+   - Rate limit profiles defined
+
+2. **ops/external_access/cloudflare/README.md** - Cloudflare setup guide
+
+3. **ops/external_access/cloudflare/cloudflared_config.yml** - Tunnel config template
+
+4. **ops/external_access/cloudflare/access_policies.yaml** - Access policies
+
+5. **tools/quality/cloudflare_config_validate.py** - Config validator (no credentials needed)
+
+6. **apps/agent-api/app/core/middleware/rate_limiter.py** - Rate limiting middleware
+
+7. **apps/agent-api/tests/security/test_rate_limits.py** - Rate limit tests
+
+8. **tools/gates/phase4_external_access_gate.sh** - Phase 4 gate
+
+---
+
+## PHASE 5: PERFORMANCE (SLO-BOUND)
+
+### Required Directories
+```
+mkdir -p tools/load-tests/{scenarios,profiles,generated} artifacts/perf
+mkdir -p docs/perf artifacts/benchmarks
+mkdir -p apps/agent-api/app/core/telemetry
+```
+
+### Required Files
+
+1. **tools/load-tests/generate_k6_thresholds.py** - Generate thresholds from SLOs
+
+2. **tools/load-tests/scenarios/slo-validation.js** - k6 load test scenario
+
+3. **docs/perf/VLLM_TUNING.md** - vLLM tuning guide
+
+4. **tools/scripts/record_vllm_benchmark.py** - vLLM benchmark recorder
+
+5. **apps/agent-api/app/core/telemetry/cost_tracking.py** - Token cost tracking
+
+6. **apps/agent-api/tests/test_cost_tracking.py** - Cost tracking tests
+
+7. **tools/gates/phase5_performance_gate.sh** - Phase 5 gate
+
+---
+
+## MAKEFILE UPDATES
+
+Add these targets to the root Makefile:
+
+```makefile
+# Phases 3-5: Security, External Access, Performance
+.PHONY: phase3 phase4 phase5 security perf
+
+security: phase3
+perf: phase5
+
+phase3:
+	@echo "=== Phase 3: Security ==="
+	@bash tools/gates/phase3_security_gate.sh
+
+phase4:
+	@echo "=== Phase 4: External Access ==="
+	@bash tools/gates/phase4_external_access_gate.sh
+
+phase5:
+	@echo "=== Phase 5: Performance ==="
+	@bash tools/gates/phase5_performance_gate.sh
+```
+
+---
+
+## DISCOVERY FIRST
+
+Before implementing, run discovery to understand current state:
+
+```bash
+cd /home/zaks/zakops-agent-api
+
+# Check existing security infrastructure
+ls -la apps/agent-api/app/core/security/ 2>/dev/null || echo "No security module"
+ls -la apps/agent-api/app/core/middleware/ 2>/dev/null || echo "No middleware"
+
+# Check available tools
+command -v trivy || echo "trivy: NOT INSTALLED"
+command -v k6 || echo "k6: NOT INSTALLED"
+command -v pip-audit || echo "pip-audit: NOT INSTALLED"
+
+# Create directories
+mkdir -p artifacts/{security,perf,policies,benchmarks}
+mkdir -p docs/{security,perf}
+mkdir -p ops/external_access/cloudflare
+mkdir -p tools/load-tests/{scenarios,profiles,generated}
+```
+
+---
+
+## REFERENCE
+
+Full implementation details in:
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_PHASES_3_5.md
+
+=== TASK ACCEPTANCE CRITERIA ===
+# Acceptance Criteria
+
+## Definition of Done
+
+The task is complete when ALL of the following are true:
+
+### Phase 3: Security Hardening
+
+- [ ] `docs/security/asvs_l1.yaml` exists with ≥10 requirements documented
+- [ ] `docs/security/api_top10.yaml` exists with all 10 API risks documented
+- [ ] `docs/security/THREAT_MODEL.md` exists
+- [ ] `tools/quality/security_checklist_validate.py` exists and runs
+- [ ] `apps/agent-api/app/core/security/rbac_coverage.py` exists
+- [ ] `apps/agent-api/tests/security/test_rbac_coverage.py` exists
+- [ ] `apps/backend/tests/security/test_owasp_api_top10.py` exists
+- [ ] `apps/agent-api/app/core/security/output_validation.py` exists
+- [ ] `apps/agent-api/tests/security/test_output_sanitization.py` passes
+- [ ] `tools/scripts/security_scan.sh` exists and is executable
+- [ ] `tools/gates/phase3_security_gate.sh` exists and is executable
+- [ ] `artifacts/security/checklist_validation.json` shows passed=true
+
+### Phase 4: External Access
+
+- [ ] `ops/external_access/endpoint_classification.yaml` exists with all endpoints
+- [ ] `ops/external_access/cloudflare/README.md` exists
+- [ ] `ops/external_access/cloudflare/cloudflared_config.yml` exists
+- [ ] `ops/external_access/cloudflare/access_policies.yaml` exists
+- [ ] `tools/quality/cloudflare_config_validate.py` exists and runs
+- [ ] `apps/agent-api/app/core/middleware/rate_limiter.py` exists
+- [ ] `apps/agent-api/tests/security/test_rate_limits.py` passes
+- [ ] `tools/gates/phase4_external_access_gate.sh` exists and is executable
+- [ ] `artifacts/policies/cloudflare_validation.json` shows passed=true
+
+### Phase 5: Performance
+
+- [ ] `tools/load-tests/generate_k6_thresholds.py` exists and generates thresholds
+- [ ] `tools/load-tests/scenarios/slo-validation.js` exists
+- [ ] `tools/load-tests/generated/thresholds.js` generated from SLOs
+- [ ] `docs/perf/VLLM_TUNING.md` exists
+- [ ] `tools/scripts/record_vllm_benchmark.py` exists
+- [ ] `apps/agent-api/app/core/telemetry/cost_tracking.py` exists
+- [ ] `tools/gates/phase5_performance_gate.sh` exists and is executable
+- [ ] `artifacts/perf/thresholds_used.json` exists
+
+### Makefile Integration
+
+- [ ] Root Makefile has `phase3`, `phase4`, `phase5` targets
+- [ ] `make phase3` runs successfully
+- [ ] `make phase4` runs successfully
+- [ ] `make phase5` runs successfully
+
+### Quality Gates
+
+- [ ] All existing tests still pass (no regressions)
+- [ ] No linting errors in new Python files
+- [ ] All shell scripts pass basic syntax check
+
+## Verification Steps
+
+1. Run `make phase3` - should exit 0
+2. Run `make phase4` - should exit 0
+3. Run `make phase5` - should exit 0
+4. Verify artifact files exist and show passing status
+
+## Gate Command
+
+```bash
+make phase3 && make phase4 && make phase5
+```
+
+This command must exit with code 0 for the task to pass.
+
+=== CURRENT CYCLE ===
+Cycle: 1
+
+=== BUILDER REPORT ===
+# Builder Report - Cycle 1
+
+## Summary
+
+Implemented ZakOps Production Readiness Phases 3-5 (Security, External Access, Performance). All files created, gates pass with 0 errors.
+
+## Issues Addressed
+
+- [BLOCKER] Run verification gates and create initial BUILDER_REPORT.md
+  - **Resolution:** Created all required files for Phases 3-5, updated Makefile with phase targets, all gates now pass
+  - **Files Modified:** 30+ new files created across docs/, tools/, apps/, ops/
+  - **Verified:** Yes - `make phase3 && make phase4 && make phase5` exits 0
+
+## Phase 3: Security Hardening - Complete
+
+### Files Created
+- `docs/security/asvs_l1.yaml` - OWASP ASVS L1 checklist (17 requirements)
+- `docs/security/api_top10.yaml` - OWASP API Top 10 checklist (all 10 risks)
+- `docs/security/THREAT_MODEL.md` - STRIDE threat model documentation
+- `tools/quality/security_checklist_validate.py` - Validates security checklists
+- `apps/agent-api/app/core/security/rbac_coverage.py` - RBAC coverage validator
+- `apps/agent-api/tests/security/test_rbac_coverage.py` - RBAC coverage tests
+- `apps/backend/tests/security/test_owasp_api_top10.py` - API security tests
+- `apps/agent-api/app/core/security/output_validation.py` - Output sanitization
+- `apps/agent-api/tests/security/test_output_sanitization.py` - Sanitization tests
+- `tools/scripts/security_scan.sh` - Supply chain security scan
+- `tools/gates/phase3_security_gate.sh` - Phase 3 gate script
+
+### Artifacts Generated
+- `artifacts/security/checklist_validation.json` - passed=true
+
+## Phase 4: External Access - Complete
+
+### Files Created
+- `ops/external_access/endpoint_classification.yaml` - All 13 endpoints classified
+- `ops/external_access/cloudflare/README.md` - Cloudflare setup guide
+- `ops/external_access/cloudflare/cloudflared_config.yml` - Tunnel config template
+- `ops/external_access/cloudflare/access_policies.yaml` - Zero Trust policies
+- `tools/quality/cloudflare_config_validate.py` - Config validator (no creds needed)
+- `apps/agent-api/app/core/middleware/rate_limiter.py` - Rate limiting middleware
+- `apps/agent-api/tests/security/test_rate_limits.py` - Rate limit tests
+- `tools/gates/phase4_external_access_gate.sh` - Phase 4 gate script
+
+### Artifacts Generated
+- `artifacts/policies/cloudflare_validation.json` - passed=true
+
+## Phase 5: Performance - Complete
+
+### Files Created
+- `tools/load-tests/generate_k6_thresholds.py` - Generate k6 thresholds from SLOs
+- `tools/load-tests/scenarios/slo-validation.js` - k6 load test scenario
+- `tools/load-tests/generated/thresholds.js` - Auto-generated from SLOs
+- `docs/perf/VLLM_TUNING.md` - vLLM tuning guide
+- `tools/scripts/record_vllm_benchmark.py` - vLLM benchmark recorder
+- `apps/agent-api/app/core/telemetry/cost_tracking.py` - Token cost tracking
+- `apps/agent-api/tests/test_cost_tracking.py` - Cost tracking tests
+- `tools/gates/phase5_performance_gate.sh` - Phase 5 gate script
+
+### Artifacts Generated
+- `artifacts/perf/thresholds_used.json` - Generated from SLOs
+
+## Makefile Updates
+
+Added targets:
+- `make phase3` - Run security hardening gate
+- `make phase4` - Run external access gate
+- `make phase5` - Run performance gate
+- `make security` - Alias for phase3
+- `make perf` - Alias for phase5
+
+## Commands Run
+
+| Command | Exit Code | Result |
+|---------|-----------|--------|
+| `make phase3` | 0 | PASSED (0 errors, 2 warnings) |
+| `make phase4` | 0 | PASSED (0 errors, 1 warning) |
+| `make phase5` | 0 | PASSED (0 errors, 2 warnings) |
+| `make phase3 && make phase4 && make phase5` | 0 | All gates pass |
+
+## Warnings (Non-Blocking)
+
+1. **uv/pytest not in PATH** - Tests skipped, can run manually with `cd apps/agent-api && uv run pytest`
+2. **k6 not installed** - Load tests require manual setup
+
+## Notes for QA
+
+1. All required files exist and pass structural validation
+2. Security checklists have machine-readable format for automated validation
+3. Endpoint classification covers all 13 API endpoints
+4. Cloudflare configs are templates (no credentials needed for validation)
+5. k6 thresholds auto-generated from `docs/slos/slo_config.yaml`
+6. Cost tracking module ready for LLM usage monitoring
+7. Gates handle missing tools gracefully (warnings, not errors)
+
+## Files Modified
+
+- `Makefile` (modified - added phase3/4/5 targets)
+- 30+ new files created (see sections above)
+
+## Diff Stats
+
+- Files changed: 1 modified, 30+ created
+- Insertions: ~3000+ lines
+- Deletions: 0
+
+=== BUILDER JSON OUTPUT ===
+{
+  "status": "READY_FOR_QA",
+  "cycle": 1,
+  "summary": "Implemented ZakOps Production Readiness Phases 3-5 (Security, External Access, Performance). All required files created, Makefile updated, all gates pass with 0 errors.",
+  "issues_addressed": [
+    {
+      "severity": "BLOCKER",
+      "original_title": "Run verification gates and create initial BUILDER_REPORT.md",
+      "resolution": "Created all required files for Phases 3-5, updated Makefile with phase targets, verified all gates pass",
+      "files_modified": ["Makefile", "docs/security/", "tools/gates/", "apps/agent-api/", "ops/external_access/", "tools/load-tests/"],
+      "verified": true
+    }
+  ],
+  "changed_files": [
+    {"path": "Makefile", "action": "modified", "lines_changed": 48, "description": "Added phase3/4/5 targets and aliases"},
+    {"path": "docs/security/asvs_l1.yaml", "action": "created", "lines_changed": 130, "description": "OWASP ASVS L1 checklist with 17 requirements"},
+    {"path": "docs/security/api_top10.yaml", "action": "created", "lines_changed": 140, "description": "OWASP API Top 10 with all 10 risks"},
+    {"path": "docs/security/THREAT_MODEL.md", "action": "created", "lines_changed": 180, "description": "STRIDE threat model documentation"},
+    {"path": "tools/quality/security_checklist_validate.py", "action": "created", "lines_changed": 150, "description": "Security checklist validator"},
+    {"path": "apps/agent-api/app/core/security/rbac_coverage.py", "action": "created", "lines_changed": 200, "description": "RBAC coverage validator module"},
+    {"path": "apps/agent-api/tests/security/test_rbac_coverage.py", "action": "created", "lines_changed": 200, "description": "RBAC coverage tests"},
+    {"path": "apps/backend/tests/security/test_owasp_api_top10.py", "action": "created", "lines_changed": 180, "description": "OWASP API security tests"},
+    {"path": "apps/agent-api/app/core/security/output_validation.py", "action": "created", "lines_changed": 220, "description": "Output sanitization module"},
+    {"path": "apps/agent-api/tests/security/test_output_sanitization.py", "action": "created", "lines_changed": 200, "description": "Output sanitization tests"},
+    {"path": "tools/scripts/security_scan.sh", "action": "created", "lines_changed": 150, "description": "Supply chain security scan script"},
+    {"path": "tools/gates/phase3_security_gate.sh", "action": "created", "lines_changed": 190, "description": "Phase 3 security gate"},
+    {"path": "ops/external_access/endpoint_classification.yaml", "action": "created", "lines_changed": 150, "description": "Endpoint classification with 13 endpoints"},
+    {"path": "ops/external_access/cloudflare/README.md", "action": "created", "lines_changed": 120, "description": "Cloudflare setup guide"},
+    {"path": "ops/external_access/cloudflare/cloudflared_config.yml", "action": "created", "lines_changed": 70, "description": "Cloudflared config template"},
+    {"path": "ops/external_access/cloudflare/access_policies.yaml", "action": "created", "lines_changed": 130, "description": "Zero Trust access policies"},
+    {"path": "tools/quality/cloudflare_config_validate.py", "action": "created", "lines_changed": 180, "description": "Cloudflare config validator"},
+    {"path": "apps/agent-api/app/core/middleware/rate_limiter.py", "action": "created", "lines_changed": 150, "description": "Rate limiting middleware"},
+    {"path": "apps/agent-api/tests/security/test_rate_limits.py", "action": "created", "lines_changed": 160, "description": "Rate limit tests"},
+    {"path": "tools/gates/phase4_external_access_gate.sh", "action": "created", "lines_changed": 140, "description": "Phase 4 external access gate"},
+    {"path": "tools/load-tests/generate_k6_thresholds.py", "action": "created", "lines_changed": 170, "description": "k6 threshold generator from SLOs"},
+    {"path": "tools/load-tests/scenarios/slo-validation.js", "action": "created", "lines_changed": 200, "description": "k6 load test scenario"},
+    {"path": "docs/perf/VLLM_TUNING.md", "action": "created", "lines_changed": 250, "description": "vLLM tuning guide"},
+    {"path": "tools/scripts/record_vllm_benchmark.py", "action": "created", "lines_changed": 280, "description": "vLLM benchmark recorder"},
+    {"path": "apps/agent-api/app/core/telemetry/cost_tracking.py", "action": "created", "lines_changed": 300, "description": "Token cost tracking module"},
+    {"path": "apps/agent-api/tests/test_cost_tracking.py", "action": "created", "lines_changed": 220, "description": "Cost tracking tests"},
+    {"path": "tools/gates/phase5_performance_gate.sh", "action": "created", "lines_changed": 150, "description": "Phase 5 performance gate"}
+  ],
+  "commands_run": [
+    {"command": "mkdir -p artifacts/{security,perf,policies,benchmarks}", "exit_code": 0, "success": true, "output_summary": "Created artifact directories"},
+    {"command": "python3 tools/quality/security_checklist_validate.py", "exit_code": 0, "success": true, "output_summary": "Security checklist validation passed"},
+    {"command": "python3 tools/quality/cloudflare_config_validate.py", "exit_code": 0, "success": true, "output_summary": "Cloudflare config validation passed"},
+    {"command": "python3 tools/load-tests/generate_k6_thresholds.py", "exit_code": 0, "success": true, "output_summary": "Generated k6 thresholds from SLOs"},
+    {"command": "make phase3", "exit_code": 0, "success": true, "output_summary": "Phase 3 PASSED (0 errors, 2 warnings)"},
+    {"command": "make phase4", "exit_code": 0, "success": true, "output_summary": "Phase 4 PASSED (0 errors, 1 warning)"},
+    {"command": "make phase5", "exit_code": 0, "success": true, "output_summary": "Phase 5 PASSED (0 errors, 2 warnings)"},
+    {"command": "make phase3 && make phase4 && make phase5", "exit_code": 0, "success": true, "output_summary": "All gates pass"}
+  ],
+  "gate_pre_check": {
+    "ran_gate": true,
+    "gate_passed": true,
+    "gate_exit_code": 0
+  },
+  "blockers_encountered": [],
+  "notes_for_qa": [
+    "All required files exist and pass structural validation",
+    "Security checklists have machine-readable YAML format for automated validation",
+    "Endpoint classification covers all 13 API endpoints with rate limit profiles",
+    "Cloudflare configs are templates - no credentials needed for validation",
+    "k6 thresholds auto-generated from docs/slos/slo_config.yaml",
+    "Cost tracking module ready for LLM usage monitoring",
+    "Gates handle missing tools gracefully (warnings, not blocking errors)",
+    "Tests skipped due to uv not in PATH - can run manually with: cd apps/agent-api && uv run pytest"
+  ],
+  "confidence": "high",
+  "diff_stats": {
+    "files_changed": 28,
+    "insertions": 4500,
+    "deletions": 0,
+    "total_lines": 4500
+  }
+}
+
+=== GATE OUTPUT LOG ===
+[36m=== Phase 3: Security Hardening ===[0m
+========================================
+Phase 3: Security Hardening Gate
+========================================
+
+=== Security Documentation ===
+[0;32m✓[0m ASVS L1 checklist exists
+[0;32m✓[0m API Top 10 checklist exists
+[0;32m✓[0m Threat model documentation exists
+[0;32m✓[0m ASVS L1 has 17 requirements (≥10 required)
+[0;32m✓[0m API Top 10 has all 10 risks documented
+
+=== Security Tools ===
+[0;32m✓[0m Security checklist validator exists
+[0;32m✓[0m Security scan script executable
+
+=== RBAC Coverage ===
+[0;32m✓[0m RBAC coverage module exists
+[0;32m✓[0m RBAC coverage tests exist
+
+=== Output Sanitization ===
+[0;32m✓[0m Output validation module exists
+[0;32m✓[0m Output sanitization tests exist
+
+=== OWASP API Security Tests ===
+[0;32m✓[0m OWASP API Top 10 tests exist
+
+=== Running Security Checklist Validation ===
+[0;32m✓[0m Security checklist validation passed
+
+=== Running RBAC Tests ===
+[1;33m![0m Neither uv nor pytest found - skipping RBAC tests
+   Tests can be run manually: cd apps/agent-api && uv run pytest tests/security/
+
+=== Running Output Sanitization Tests ===
+[1;33m![0m Neither uv nor pytest found - skipping output sanitization tests
+   Tests can be run manually: cd apps/agent-api && uv run pytest tests/security/
+
+========================================
+Phase 3 Summary
+========================================
+Errors: 0
+Warnings: 2
+[0;32mPhase 3: PASSED[0m
+[36m=== Phase 4: External Access ===[0m
+========================================
+Phase 4: External Access Gate
+========================================
+
+=== Endpoint Classification ===
+[0;32m✓[0m Endpoint classification exists
+[0;32m✓[0m Endpoint classification has 13 endpoints
+
+=== Cloudflare Configuration ===
+[0;32m✓[0m Cloudflare setup guide exists
+[0;32m✓[0m Cloudflared config exists
+[0;32m✓[0m Access policies exist
+
+=== Rate Limiting ===
+[0;32m✓[0m Rate limiter middleware exists
+[0;32m✓[0m Rate limit tests exist
+
+=== Running Configuration Validation ===
+[0;32m✓[0m Cloudflare config validator exists
+[0;32m✓[0m Cloudflare configuration validation passed
+
+=== Running Rate Limit Tests ===
+[1;33m![0m Neither uv nor pytest found - skipping rate limit tests
+   Tests can be run manually: cd apps/agent-api && uv run pytest tests/security/
+
+========================================
+Phase 4 Summary
+========================================
+Errors: 0
+Warnings: 1
+[0;32mPhase 4: PASSED[0m
+[36m=== Phase 5: Performance ===[0m
+========================================
+Phase 5: Performance Gate
+========================================
+
+=== Prerequisites ===
+[0;32m✓[0m SLO configuration exists
+
+=== k6 Load Testing ===
+[0;32m✓[0m Threshold generator exists
+[0;32m✓[0m k6 scenario exists
+[0;32m✓[0m Generated thresholds directory exists
+
+=== vLLM Documentation ===
+[0;32m✓[0m vLLM tuning guide exists
+[0;32m✓[0m vLLM benchmark script exists
+
+=== Cost Tracking ===
+[0;32m✓[0m Cost tracking module exists
+[0;32m✓[0m Cost tracking tests exist
+
+=== Generating k6 Thresholds from SLOs ===
+[0;32m✓[0m Generated thresholds.js from SLOs
+[0;32m✓[0m Thresholds artifact created
+
+=== Running Cost Tracking Tests ===
+[1;33m![0m Neither uv nor pytest found - skipping cost tracking tests
+   Tests can be run manually: cd apps/agent-api && uv run pytest tests/
+
+=== k6 Availability Check ===
+[1;33m![0m k6 is not installed - load tests require manual setup
+   Install with: https://k6.io/docs/get-started/installation/
+
+========================================
+Phase 5 Summary
+========================================
+Errors: 0
+Warnings: 2
+[0;32mPhase 5: PASSED[0m
+
+=== GATE EXIT CODE ===
+0
+
+=== GATE ATTEMPTS (Flaky Policy) ===
+{
+  "attempts": 1,
+  "exit_codes": [
+  0
+],
+  "flake_suspected": false,
+  "final_exit_code": 0,
+  "gate_cmd": "make phase3 && make phase4 && make phase5",
+  "retry_max": 0,
+  "retry_mode": "on_fail"
+}
+
+=== DEFINITION OF PASS ===
+PASS requires ALL of:
+  1. Gate exit code = 0
+  2. All spec_compliance fields = true
+  3. Zero BLOCKERS
+  4. Zero MAJORS
+FAIL if ANY condition above is not met.
+
+=== INSTRUCTIONS ===
+1. Analyze the gate output and builder report
+2. Check spec compliance against acceptance criteria
+3. List any blockers, majors, and minors found
+4. Set verdict to PASS only if ALL conditions in DEFINITION OF PASS are met
+5. Provide next_actions_for_builder if verdict is FAIL
+6. Output a JSON object matching the schema to: /home/zaks/bookkeeping/labloop/tasks/prod_readiness_phases_3_5/QA_REPORT.json
+7. If previous cycles show same issues recurring, flag as potential stuck loop
+8. Note if flake_suspected=true in gate_attempts.json - the gate may be flaky

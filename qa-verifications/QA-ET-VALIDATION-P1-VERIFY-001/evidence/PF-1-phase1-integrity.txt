@@ -1,0 +1,13 @@
+=== PF-1 PHASE-1 INTEGRITY ===
+700 /home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md
+182:| 2 | UI fixes rely on new columns but migration order is wrong | MEDIUM | Detail/list regressions and empty fields | Phase 0 migration-number safety check + Phase 1 gate G1-01/G1-02 |
+240:## Phase 1 - Canonical Schema and Contract Enforcement
+252:- P1-01: Add migration 033 schema expansion and rollback SQL for new quarantine columns (`email_body_snippet`, `triage_summary`, `source_thread_id`, `schema_version`, `confidence`, `received_at`, etc.).
+253:- P1-02: Update QuarantineCreate validation with `extra='forbid'`, source-aware required fields, and known `schema_version` allowlist.
+254:- P1-03: Update QuarantineResponse to include expanded fields and computed subject display via `COALESCE(email_subject, subject)`.
+255:- P1-04: Update POST ingestion mapping (`source_message_id -> message_id`) and write all expanded columns.
+256:- P1-05: Remove preview filesystem dependency by returning inline snippet/full-body metadata from API.
+257:- P1-06: Expand bridge tool contract to full schema and local fail-fast validation.
+258:- P1-07: Execute golden payload test proving inject -> DB -> UI continuity.
+266:- G1-01: All new DB columns exist (`\\d zakops.quarantine_items` verification).
+277:- G1-12: Dedup still holds under expanded schema.

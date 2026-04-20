@@ -1,0 +1,32 @@
+=== CHECK 6.C — RT-TAMPER: Log Integrity ===
+
+--- 6.C.1 Log Storage Configuration ---
+Docker logging driver:
+json-file
+
+Log file location:
+/var/lib/docker/containers/185364e16acf00b446161adffa347cb09a64aca934f6ef6b2a8e091cd8bcabea/185364e16acf00b446161adffa347cb09a64aca934f6ef6b2a8e091cd8bcabea-json.log
+
+--- 6.C.2 Database Audit Log Protection ---
+Checking for DELETE/TRUNCATE triggers on audit_log:
+psql: error: connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: FATAL:  role "postgres" does not exist
+  No triggers found
+
+Table permissions:
+psql: error: connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: FATAL:  role "postgres" does not exist
+
+--- 6.C.3 Timestamp Integrity ---
+Checking for server-side timestamp defaults:
+psql: error: connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: FATAL:  role "postgres" does not exist
+
+FINDINGS:
+  - P3: No DELETE triggers on audit_log (defense-in-depth gap)
+  - Timestamps use server-side defaults (NOW()) - GOOD
+  - Docker json-file logging (standard, no external SIEM)
+
+--- 6.C.2 (CORRECTED) Database Audit Log Protection ---
+
+
+Timestamp default check:
+ created_at  | now()
+

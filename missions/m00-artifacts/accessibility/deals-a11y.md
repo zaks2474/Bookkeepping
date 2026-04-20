@@ -1,0 +1,210 @@
+- generic [active] [ref=e1]:
+  - region "Notifications alt+T"
+  - main [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - button "Toggle Sidebar" [ref=e6]:
+          - img
+          - generic [ref=e7]: Toggle Sidebar
+        - navigation "breadcrumb" [ref=e8]:
+          - list [ref=e9]:
+            - link "Deals" [disabled] [ref=e10]
+      - generic [ref=e11]:
+        - button [ref=e136]:
+          - img
+        - button [ref=e12]:
+          - generic [ref=e14]:
+            - img
+        - button "Toggle theme" [ref=e15]:
+          - img
+          - generic [ref=e16]: Toggle theme
+    - generic [ref=e17]:
+      - generic [ref=e18]:
+        - generic [ref=e19]:
+          - heading "Deals" [level=1] [ref=e20]
+          - paragraph [ref=e21]: Manage your deal pipeline
+        - generic [ref=e22]:
+          - tablist [ref=e24]:
+            - tab "Table" [selected] [ref=e25]:
+              - img
+              - text: Table
+            - tab "Board" [ref=e26]:
+              - img
+              - text: Board
+          - link "New Deal" [ref=e27] [cursor=pointer]:
+            - /url: /deals/new
+            - button "New Deal" [ref=e28]
+          - button "Refresh" [ref=e138]:
+            - img
+            - text: Refresh
+      - generic [ref=e31]:
+        - generic [ref=e33]:
+          - img [ref=e34]
+          - textbox "Search deals..." [ref=e37]
+        - combobox [ref=e38]:
+          - generic: All stages
+          - img
+        - combobox [ref=e40]:
+          - generic: active
+          - img
+      - generic [ref=e42]:
+        - generic [ref=e45]:
+          - img [ref=e46]
+          - text: 9 Deals
+        - table [ref=e140]:
+          - rowgroup [ref=e141]:
+            - row "Select all visible deals Deal Name Stage Broker Priority Last Update" [ref=e142]:
+              - columnheader "Select all visible deals" [ref=e143]:
+                - checkbox "Select all visible deals" [ref=e144]
+              - columnheader "Deal Name" [ref=e145] [cursor=pointer]:
+                - generic [ref=e146]: Deal Name
+              - columnheader "Stage" [ref=e147] [cursor=pointer]:
+                - generic [ref=e148]: Stage
+              - columnheader "Broker" [ref=e149] [cursor=pointer]:
+                - generic [ref=e150]: Broker
+              - columnheader "Priority" [ref=e151] [cursor=pointer]:
+                - generic [ref=e152]: Priority
+              - columnheader "Last Update" [ref=e153] [cursor=pointer]:
+                - generic [ref=e154]:
+                  - text: Last Update
+                  - img [ref=e155]
+              - columnheader [ref=e157]
+          - rowgroup [ref=e158]:
+            - row "Select deal DL-0086 Zaks Store test005 DL-0086 closing - - 0d ago Delete deal DL-0086" [ref=e159] [cursor=pointer]:
+              - cell "Select deal DL-0086" [ref=e160]:
+                - checkbox "Select deal DL-0086" [ref=e161]
+              - cell "Zaks Store test005 DL-0086" [ref=e162]:
+                - generic [ref=e163]:
+                  - paragraph [ref=e164]: Zaks Store test005
+                  - paragraph [ref=e165]: DL-0086
+              - cell "closing" [ref=e166]:
+                - generic [ref=e167]: closing
+              - cell "-" [ref=e168]
+              - cell "-" [ref=e169]
+              - cell "0d ago" [ref=e170]
+              - cell "Delete deal DL-0086" [ref=e171]:
+                - button "Delete deal DL-0086" [ref=e172]:
+                  - img
+            - row "Select deal DL-0075 Zaks Store test DL-0075 inbound - - 3d ago Delete deal DL-0075" [ref=e173] [cursor=pointer]:
+              - cell "Select deal DL-0075" [ref=e174]:
+                - checkbox "Select deal DL-0075" [ref=e175]
+              - cell "Zaks Store test DL-0075" [ref=e176]:
+                - generic [ref=e177]:
+                  - paragraph [ref=e178]: Zaks Store test
+                  - paragraph [ref=e179]: DL-0075
+              - cell "inbound" [ref=e180]:
+                - generic [ref=e181]: inbound
+              - cell "-" [ref=e182]
+              - cell "-" [ref=e183]
+              - cell "3d ago" [ref=e184]
+              - cell "Delete deal DL-0075" [ref=e185]:
+                - button "Delete deal DL-0075" [ref=e186]:
+                  - img
+            - row "Select deal DL-0063 Idempotency Verified Deal DL-0063 inbound - - 6d ago Delete deal DL-0063" [ref=e187] [cursor=pointer]:
+              - cell "Select deal DL-0063" [ref=e188]:
+                - checkbox "Select deal DL-0063" [ref=e189]
+              - cell "Idempotency Verified Deal DL-0063" [ref=e190]:
+                - generic [ref=e191]:
+                  - paragraph [ref=e192]: Idempotency Verified Deal
+                  - paragraph [ref=e193]: DL-0063
+              - cell "inbound" [ref=e194]:
+                - generic [ref=e195]: inbound
+              - cell "-" [ref=e196]
+              - cell "-" [ref=e197]
+              - cell "6d ago" [ref=e198]
+              - cell "Delete deal DL-0063" [ref=e199]:
+                - button "Delete deal DL-0063" [ref=e200]:
+                  - img
+            - row "Select deal DL-0055 FINAL-DUP-TEST-1770191830 DL-0055 inbound - - 7d ago Delete deal DL-0055" [ref=e201] [cursor=pointer]:
+              - cell "Select deal DL-0055" [ref=e202]:
+                - checkbox "Select deal DL-0055" [ref=e203]
+              - cell "FINAL-DUP-TEST-1770191830 DL-0055" [ref=e204]:
+                - generic [ref=e205]:
+                  - paragraph [ref=e206]: FINAL-DUP-TEST-1770191830
+                  - paragraph [ref=e207]: DL-0055
+              - cell "inbound" [ref=e208]:
+                - generic [ref=e209]: inbound
+              - cell "-" [ref=e210]
+              - cell "-" [ref=e211]
+              - cell "7d ago" [ref=e212]
+              - cell "Delete deal DL-0055" [ref=e213]:
+                - button "Delete deal DL-0055" [ref=e214]:
+                  - img
+            - row "Select deal DL-0053 REMEDIATION-TEST-1770191806 DL-0053 inbound - - 7d ago Delete deal DL-0053" [ref=e215] [cursor=pointer]:
+              - cell "Select deal DL-0053" [ref=e216]:
+                - checkbox "Select deal DL-0053" [ref=e217]
+              - cell "REMEDIATION-TEST-1770191806 DL-0053" [ref=e218]:
+                - generic [ref=e219]:
+                  - paragraph [ref=e220]: REMEDIATION-TEST-1770191806
+                  - paragraph [ref=e221]: DL-0053
+              - cell "inbound" [ref=e222]:
+                - generic [ref=e223]: inbound
+              - cell "-" [ref=e224]
+              - cell "-" [ref=e225]
+              - cell "7d ago" [ref=e226]
+              - cell "Delete deal DL-0053" [ref=e227]:
+                - button "Delete deal DL-0053" [ref=e228]:
+                  - img
+            - row "Select deal DL-0045 auth-test-1770190171 DL-0045 inbound - - 7d ago Delete deal DL-0045" [ref=e229] [cursor=pointer]:
+              - cell "Select deal DL-0045" [ref=e230]:
+                - checkbox "Select deal DL-0045" [ref=e231]
+              - cell "auth-test-1770190171 DL-0045" [ref=e232]:
+                - generic [ref=e233]:
+                  - paragraph [ref=e234]: auth-test-1770190171
+                  - paragraph [ref=e235]: DL-0045
+              - cell "inbound" [ref=e236]:
+                - generic [ref=e237]: inbound
+              - cell "-" [ref=e238]
+              - cell "-" [ref=e239]
+              - cell "7d ago" [ref=e240]
+              - cell "Delete deal DL-0045" [ref=e241]:
+                - button "Delete deal DL-0045" [ref=e242]:
+                  - img
+            - row "Select deal DL-0038 CANARY-1770188139 DL-0038 inbound - - 7d ago Delete deal DL-0038" [ref=e243] [cursor=pointer]:
+              - cell "Select deal DL-0038" [ref=e244]:
+                - checkbox "Select deal DL-0038" [ref=e245]
+              - cell "CANARY-1770188139 DL-0038" [ref=e246]:
+                - generic [ref=e247]:
+                  - paragraph [ref=e248]: CANARY-1770188139
+                  - paragraph [ref=e249]: DL-0038
+              - cell "inbound" [ref=e250]:
+                - generic [ref=e251]: inbound
+              - cell "-" [ref=e252]
+              - cell "-" [ref=e253]
+              - cell "7d ago" [ref=e254]
+              - cell "Delete deal DL-0038" [ref=e255]:
+                - button "Delete deal DL-0038" [ref=e256]:
+                  - img
+            - row "Select deal DL-IDEM2 Idempotency Test Deal 2 DL-IDEM2 screening - - 8d ago Delete deal DL-IDEM2" [ref=e257] [cursor=pointer]:
+              - cell "Select deal DL-IDEM2" [ref=e258]:
+                - checkbox "Select deal DL-IDEM2" [ref=e259]
+              - cell "Idempotency Test Deal 2 DL-IDEM2" [ref=e260]:
+                - generic [ref=e261]:
+                  - paragraph [ref=e262]: Idempotency Test Deal 2
+                  - paragraph [ref=e263]: DL-IDEM2
+              - cell "screening" [ref=e264]:
+                - generic [ref=e265]: screening
+              - cell "-" [ref=e266]
+              - cell "-" [ref=e267]
+              - cell "8d ago" [ref=e268]
+              - cell "Delete deal DL-IDEM2" [ref=e269]:
+                - button "Delete deal DL-IDEM2" [ref=e270]:
+                  - img
+            - row "Select deal DL-IDEM Idempotency Test Deal DL-IDEM screening - - 8d ago Delete deal DL-IDEM" [ref=e271] [cursor=pointer]:
+              - cell "Select deal DL-IDEM" [ref=e272]:
+                - checkbox "Select deal DL-IDEM" [ref=e273]
+              - cell "Idempotency Test Deal DL-IDEM" [ref=e274]:
+                - generic [ref=e275]:
+                  - paragraph [ref=e276]: Idempotency Test Deal
+                  - paragraph [ref=e277]: DL-IDEM
+              - cell "screening" [ref=e278]:
+                - generic [ref=e279]: screening
+              - cell "-" [ref=e280]
+              - cell "-" [ref=e281]
+              - cell "8d ago" [ref=e282]
+              - cell "Delete deal DL-IDEM" [ref=e283]:
+                - button "Delete deal DL-IDEM" [ref=e284]:
+                  - img
+  - button "Open Next.js Dev Tools" [ref=e290] [cursor=pointer]:
+    - img [ref=e291]
+  - alert [ref=e294]

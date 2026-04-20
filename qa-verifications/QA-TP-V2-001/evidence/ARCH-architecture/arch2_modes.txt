@@ -1,0 +1,21 @@
+=== ARCH-2: Pipeline Modes ===
+--- ARCH-2.1: Forensic mode ---
+13:#   --mode <forensic|design|implement>  Pipeline mode (default: forensic)
+576:  local mode="forensic"
+600:    forensic|design|implement) ;;
+601:    *) log_err "Invalid mode: $mode (must be forensic, design, or implement)"; exit 1 ;;
+1027:      echo "  --mode <forensic|design|implement>       Pipeline mode (default: forensic)"
+
+--- ARCH-2.2: Design mode ---
+13:#   --mode <forensic|design|implement>  Pipeline mode (default: forensic)
+35:FRONTEND_DESIGN_PLUGIN=""
+161:  # Frontend design plugin
+162:  if [ -f "/mnt/skills/public/frontend-design/SKILL.md" ]; then
+163:    FRONTEND_DESIGN_PLUGIN="/mnt/skills/public/frontend-design/SKILL.md"
+
+--- ARCH-2.3: Implement mode ---
+13:#   --mode <forensic|design|implement>  Pipeline mode (default: forensic)
+600:    forensic|design|implement) ;;
+601:    *) log_err "Invalid mode: $mode (must be forensic, design, or implement)"; exit 1 ;;
+1027:      echo "  --mode <forensic|design|implement>       Pipeline mode (default: forensic)"
+

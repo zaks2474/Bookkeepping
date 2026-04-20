@@ -1,0 +1,20 @@
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/node_registry.py:110:    name = "risk_assessment"
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/node_registry.py:112:    domains = ["risk_assessment", "risk", "mitigation", "compliance"]
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/node_registry.py:121:            f"You are a risk assessment specialist for M&A transactions.\n"
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/node_registry.py:264:            "risk_assessment": [
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/security/citation_audit.py:5:the source evidence snippets. Flags weak/orphan citations.
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/brain_extraction.py:33:        new_facts, new_risks, new_decisions, new_open_items,
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/brain_extraction.py:47:        "new_open_items": [],
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/brain_extraction.py:161:                result["new_open_items"].append({
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/momentum_calculator.py:24:    open_items_total: int = 0,
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/momentum_calculator.py:25:    open_items_completed: int = 0,
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/momentum_calculator.py:62:    if open_items_total > 0:
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/momentum_calculator.py:63:        completion_ratio = open_items_completed / open_items_total
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/summarizer.py:164:            "company", "stage", "risk", "timeline", "valuation",
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/messages/block_translators/bedrock_converse.py:133:        (source_content := citation.get("source_content"))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/urllib3/contrib/pyopenssl.py:89:_openssl_to_stdlib_verify = {v: k for k, v in _stdlib_to_openssl_verify.items()}
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/opentelemetry/sdk/environment_variables/__init__.py:472:clients private key to use in mTLS communication in PEM format for metrics.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/opentelemetry/sdk/environment_variables/__init__.py:497:The :envvar:`OTEL_EXPORTER_OTLP_METRICS_HEADERS` contains the key-value pairs to be used as headers for metrics
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/callbacks/mlflow_callback.py:96:            key: getattr(textstat, key)(text) for key in get_text_complexity_metrics()
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/callbacks/mlflow_callback.py:317:        self.metrics = {key: 0 for key in mlflow_callback_metrics()}
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/callbacks/comet_ml_callback.py:527:        for key, value in metrics_summary.items():

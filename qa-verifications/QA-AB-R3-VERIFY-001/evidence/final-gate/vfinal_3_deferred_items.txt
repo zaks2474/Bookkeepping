@@ -1,0 +1,9 @@
+| Item | Initially Deferred In | Final Claim | Verification | Status | Notes |
+|------|----------------------|-------------|-------------|--------|-------|
+| P2.2 Langfuse health | Phase 2 | Fixed in final | phase2/v3_2_langfuse_health.txt | PASS | check_health uses client.trace/flush when configured |
+| P2.4 Dynamic tool list | Phase 2 | Fixed in final | phase2/v3_7_validate_tools.txt | PASS (CI mode) | Static list in CI; full import needs deps |
+| P2.6 Decision Ledger | Phase 2 | Fixed in final | phase2/v3_8_decision_ledger_* + remediation/REM-004_* | PASS (table created) | Not wired into graph (see discrepancies D-7) |
+| P3.1 Tenant isolation | Phase 3 | Fixed in final | phase3/v4_1_tenant_isolation.txt | PASS | validate_user_id returns False on invalid |
+| P3.3 Local embedding | Phase 3 | Fixed in final | phase3/v4_5_embedding_config.txt | PASS | config present |
+| P4.3 Deal health | Phase 4 | Fixed in final | phase4/v5_3_deal_health.txt | PASS | tool registered |
+| P4.5 Expand traces ≥30 | Phase 4 | Fixed in final | phase4/v5_5_golden_traces_all.txt | PASS | 31/31 present |

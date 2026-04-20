@@ -1,0 +1,77 @@
+QA-4.6: UF-009 SSE Error Sanitization
+=======================================
+
+Test 1: SSE Error Handling in agent.py
+---------------------------------------
+File: /home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/agent.py
+Function: invoke_agent_stream (lines 781-854)
+
+Error Handling (lines 838-844):
+    except Exception as e:
+        logger.error(
+            "agent_stream_failed",
+            actor_id=invoke_request.actor_id,
+            error=str(e),
+        )
+        yield f"event: error\ndata: {{\"error\": \"An internal error occurred\"}}\n\n"
+
+ANALYSIS:
+- Logger captures str(e) for internal debugging (line 842)
+- SSE stream returns SANITIZED generic message: "An internal error occurred" (line 844)
+- Raw exception is NOT exposed to client
+- Proper separation: detailed error logged internally, generic error sent to client
+
+VERDICT: SECURE
+
+Test 2: SSE Error Handling in chatbot.py
+-----------------------------------------
+File: /home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/chatbot.py
+Function: chat_stream -> event_generator (lines 100-132)
+
+Error Handling (lines 123-131):
+    except Exception as e:
+        logger.error(
+            "stream_chat_request_failed",
+            session_id=session.id,
+            error=str(e),
+            exc_info=True,
+        )
+        error_response = StreamResponse(content="An internal error occurred", done=True)
+        yield f"data: {json.dumps(error_response.model_dump())}\n\n"
+
+ANALYSIS:
+- Logger captures str(e) + traceback (exc_info=True) for debugging (lines 124-129)
+- SSE stream returns SANITIZED generic message via StreamResponse object (line 130)
+- Uses Pydantic model to ensure proper structure
+- Raw exception is NOT exposed to client
+
+VERDICT: SECURE
+
+Test 3: Non-Streaming Error Handling (chatbot.py)
+--------------------------------------------------
+File: /home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/chatbot.py
+Function: chat (lines 36-71)
+
+Error Handling (lines 68-70):
+    except Exception as e:
+        logger.error("chat_request_failed", session_id=session.id, error=str(e), exc_info=True)
+        raise HTTPException(status_code=500, detail="An internal error occurred")
+
+ANALYSIS:
+- Logger captures str(e) + traceback for debugging
+- HTTPException returns SANITIZED generic message
+- Consistent with SSE error handling
+
+VERDICT: SECURE
+
+OVERALL VERDICT: PASS
+====================
+Evidence:
+- All SSE error paths return generic "An internal error occurred" message
+- Raw exceptions (str(e)) are logged internally but NOT sent to clients
+- Proper separation of concerns: detailed logging vs. sanitized client responses
+- Both agent.py and chatbot.py follow the same secure pattern
+- No traceback, file paths, or raw exception data exposed in SSE streams
+
+Security Assessment: SECURE
+All SSE endpoints properly sanitize error messages before sending to clients.

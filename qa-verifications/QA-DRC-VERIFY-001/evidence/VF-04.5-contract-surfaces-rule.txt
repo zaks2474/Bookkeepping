@@ -1,0 +1,6 @@
+### Surface 17: Dashboard API Route Coverage Contract
+- **Boundary:** api.ts function calls ↔ Next.js route handler files ↔ middleware handledByRoutes
+- **Source:** `apps/dashboard/src/lib/api.ts` (apiFetch calls)
+- **Validation:** `make validate-surface17` / `bash tools/infra/validate-surface17.sh`
+- **Key Files:**
+  - `apps/dashboard/src/lib/api.ts` — all apiFetch/fetch calls to /api/* endpoints

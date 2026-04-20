@@ -1,0 +1,30 @@
+78:  const [sourceTypeFilter, setSourceTypeFilter] = useState<string>('');
+79-
+80-  const fetchData = async () => {
+81-    setLoading(true);
+82-    setError(null);
+83-    try {
+84-      const itemsData = await getQuarantineQueue({
+85-        limit: 200,
+86-        offset: 0,
+87:        source_type: sourceTypeFilter || undefined,
+88-      });
+89-      setItems(itemsData);
+90-      setSelectedForDelete(new Set());
+91-    } catch (err) {
+92-      setError(err instanceof Error ? err.message : 'Failed to load quarantine');
+93-    } finally {
+94-      setLoading(false);
+95-    }
+96-  };
+97-
+98-  useEffect(() => {
+99-    fetchData();
+100:  }, [sourceTypeFilter]);
+101-
+102-  // Restore operator name from localStorage only on mount (not on every keystroke)
+103-  useEffect(() => {
+104-    try {
+105-      const saved = window.localStorage.getItem('zakops_operator_name');
+106-      if (saved) setOperatorName(saved);
+107-    } catch {

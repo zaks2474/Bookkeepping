@@ -1,0 +1,12 @@
+validate-all: sync-types lint-dashboard ## Run all validation gates
+	@echo "$(CYAN)=== Full Validation ===$(RESET)"
+	cd $(DASHBOARD_ROOT) && npx tsc --noEmit
+	@$(MAKE) check-redocly-debt
+	@if curl -sf $(BACKEND_API)/health > /dev/null 2>&1; then \
+		$(MAKE) check-contract-drift; \
+	else \
+		echo "$(YELLOW)Backend not available — skipping contract-drift check$(RESET)"; \
+	fi
+	@echo "$(GREEN)All validations passed$(RESET)"
+Sub-commands in validate-all: 2
+PASS: validate-all has 2 sub-commands

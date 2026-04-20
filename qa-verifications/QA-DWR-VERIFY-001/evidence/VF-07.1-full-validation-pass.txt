@@ -1,0 +1,505 @@
+=== VF-07.1 FULL VALIDATION PASS ===
+[36m=== Sync Types ===[0m
+cd /home/zaks/zakops-agent-api/apps/dashboard && npx openapi-typescript ../../packages/contracts/openapi/zakops-api.json -o src/lib/api-types.generated.ts
+✨ openapi-typescript 7.10.1
+🚀 ../../packages/contracts/openapi/zakops-api.json → src/lib/api-types.generated.ts [140.9ms]
+[32mTypes regenerated from committed spec[0m
+[36m=== Sync Agent Types ===[0m
+cd /home/zaks/zakops-agent-api/apps/dashboard && npx openapi-typescript ../../packages/contracts/openapi/agent-api.json -o src/lib/agent-api-types.generated.ts
+✨ openapi-typescript 7.10.1
+🚀 ../../packages/contracts/openapi/agent-api.json → src/lib/agent-api-types.generated.ts [61.5ms]
+[32mAgent API types regenerated from committed spec[0m
+[36m[dashboard][0m Linting...
+cd apps/dashboard && npm run lint
+
+> zakops-dashboard@1.0.0 lint
+> next lint
+
+`next lint` is deprecated and will be removed in Next.js 16.
+For new projects, use create-next-app to choose your preferred linter.
+For existing projects, migrate to the ESLint CLI:
+npx @next/codemod@canary next-lint-to-eslint-cli .
+
+ ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of /home/zaks/zakops-agent-api/package-lock.json as the root directory.
+ To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+ Detected additional lockfiles: 
+   * /home/zaks/zakops-agent-api/apps/dashboard/package-lock.json
+
+
+./src/app/actions/page.tsx
+275:6  Warning: React Hook useEffect has a missing dependency: 'actions'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/deals/[id]/page.tsx
+268:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/deals/page.tsx
+126:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/components/global-search.tsx
+147:6  Warning: React Hook React.useEffect has missing dependencies: 'allActions.length', 'allDeals.length', and 'allQuarantine.length'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+180:6  Warning: React Hook React.useEffect has a missing dependency: 'searchAll'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/components/onboarding/OnboardingWizard.tsx
+169:6  Warning: React Hook useEffect has missing dependencies: 'initialState' and 'updatePersistedState'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/hooks/use-realtime-events.ts
+411:6  Warning: React Hook useEffect has missing dependencies: 'connect' and 'disconnect'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+549:6  Warning: React Hook useEffect has missing dependencies: 'connect' and 'disconnect'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/hooks/use-render-tracking.ts
+40:79  Warning: The ref value 'renderCount.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'renderCount.current' to a variable inside the effect, and use that variable in the cleanup function.  react-hooks/exhaustive-deps
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules
+[36m=== Contract Surface Validation ===[0m
+=== CONTRACT SURFACE VALIDATION ===
+
+--- Generated File Freshness ---
+  PASS: Surface 1: Backend -> Dashboard: current
+  PASS: Surface 2: Backend -> Agent SDK: current
+  PASS: Surface 4: Agent -> Dashboard: current
+  PASS: Surface 5: RAG -> Backend SDK: current
+
+--- Reference Schema Existence ---
+  PASS: Surface 3: Agent OpenAPI: exists
+  PASS: Surface 6: MCP Tools: exists
+  PASS: Surface 7: SSE Events: exists
+
+--- Bridge Import Enforcement ---
+  PASS: No direct generated file imports found
+
+--- Typed SDK Enforcement ---
+  PASS: deal_tools.py uses typed SDK (0 untyped patterns)
+
+--- Surface 8: Agent Config Alignment ---
+  PASS: Surface 8: Agent config alignment check passed
+
+--- Surface 9: Design System Conventions ---
+  PASS: Surface 9: Design system convention check passed
+
+--- Surface 10: Dependency Health ---
+  PASS: Surface 10: Dependency health check passed
+
+--- Surface 11: Env Registry ---
+  PASS: Surface 11: Env registry check passed
+
+--- Surface 12: Error Taxonomy ---
+  PASS: Surface 12: Error taxonomy check passed
+
+--- Surface 13: Test Coverage ---
+  PASS: Surface 13: Test coverage check passed
+
+--- Surface 14: Performance Budget ---
+  PASS: Surface 14: Performance budget check passed
+
+================================
+PASS: ALL 14 CONTRACT SURFACE CHECKS PASSED
+[32mContract surface validation passed[0m
+[36m=== Agent Config Validation ===[0m
+WARN: system.md lists tools not found in deal_tools.py:
+  - add_note
+  - create_deal
+  - get_deal
+  - get_deal_health
+  - list_deals
+  - search_deals
+  - transition_deal
+PASS: agent config alignment checks passed
+============================================================
+R3 REMEDIATION [P2.4]: Prompt Tool List Validation
+============================================================
+Loading environment: Environment.DEVELOPMENT
+Loaded environment from /home/zaks/zakops-agent-api/apps/agent-api/.env.development
+[2m2026-02-11T06:01:47.181523Z[0m [[32m[1minfo     [0m] [1mlogging_initialized           [0m [[0m[1m[34mapp.core.logging[0m][0m [36mdebug[0m=[35mTrue[0m [36menvironment[0m=[35mdevelopment[0m [36mfilename[0m=[35mlogging.py[0m [36mfunc_name[0m=[35m<module>[0m [36mlineno[0m=[35m300[0m [36mlog_format[0m=[35mconsole[0m [36mlog_level[0m=[35mDEBUG[0m [36mmodule[0m=[35mlogging[0m [36mpathname[0m=[35m/home/zaks/zakops-agent-api/apps/agent-api/app/core/logging.py[0m
+[2m2026-02-11T06:01:58.991580Z[0m [[31m[1merror    [0m] [1mdatabase_initialization_error [0m [[0m[1m[34mapp.core.logging[0m][0m [36menvironment[0m=[35mdevelopment[0m [36merror[0m=[35m"(psycopg.OperationalError) failed to resolve host 'db': [Errno -3] Temporary failure in name resolution\n(Background on this error at: https://sqlalche.me/e/20/e3q8)"[0m [36mfilename[0m=[35mdatabase.py[0m [36mfunc_name[0m=[35m__init__[0m [36mlineno[0m=[35m68[0m [36mmodule[0m=[35mdatabase[0m [36mpathname[0m=[35m/home/zaks/zakops-agent-api/apps/agent-api/app/services/database.py[0m
+WARN: validate_prompt_tools.py failed (requires running DB) — skipping
+PASS: validate-agent-config.sh
+[32mAgent config validation passed[0m
+[36m=== SSE Schema Validation ===[0m
+PASS: SSE schema valid
+[32mSSE schema validation passed[0m
+[36m=== Frontend Governance Validation ===[0m
+=== Rule Frontmatter Validation ===
+
+Checking: design-system.md
+  PASS: Valid frontmatter with dashboard path coverage
+Checking: accessibility.md
+  PASS: Valid frontmatter with dashboard path coverage
+Checking: component-patterns.md
+  PASS: Valid frontmatter with dashboard path coverage
+
+--- General frontmatter structure check ---
+  OK: accessibility.md has valid frontmatter structure
+  OK: agent-tools.md has valid frontmatter structure
+  INFO: backend-api.md has no frontmatter (non-scoped rule)
+  OK: component-patterns.md has valid frontmatter structure
+  OK: contract-surfaces.md has valid frontmatter structure
+  INFO: dashboard-types.md has no frontmatter (non-scoped rule)
+  OK: design-system.md has valid frontmatter structure
+
+Rule Frontmatter Validation: PASS
+=== Frontend Governance Anchor Validation ===
+
+--- design-system.md governance sections ---
+  PASS: Skill Preload
+  PASS: Responsive Breakpoint
+  PASS: Z-Index
+  PASS: Dark Mode
+  PASS: Animation Performance
+  PASS: State Management
+  PASS: Anti-convergence
+  PASS: Data Fetching
+  PASS: Error Handling
+  PASS: CSS Architecture
+  PASS: Import Discipline
+
+--- accessibility.md governance sections ---
+  PASS: Semantic Structure
+  PASS: Keyboard Navigation
+  PASS: Color Contrast
+  PASS: ARIA
+  PASS: Reduced Motion
+
+--- component-patterns.md governance sections ---
+  PASS: Server vs Client
+  PASS: Loading.*Empty.*Error
+  PASS: Suspense
+  PASS: State Ownership
+  PASS: Composability
+
+--- Port 8090 drift check ---
+  PASS: No port 8090 references in governance rules
+
+Frontend Governance Validation: PASS
+=== Gate E: Raw httpx Client Usage Check ===
+Scanner: grep
+PASS: No raw httpx client usage in deal_tools.py
+[32mFrontend governance validation passed[0m
+[36m=== Local Validation (Offline) ===[0m
+cd /home/zaks/zakops-agent-api/apps/dashboard && npx tsc --noEmit
+make[1]: Entering directory '/home/zaks/zakops-agent-api'
+Redocly ignores: 57 (ceiling: 57)
+make[1]: Leaving directory '/home/zaks/zakops-agent-api'
+[32mAll local validations passed[0m
+--- type-check ---
+npm error Missing script: "type-check"
+npm error
+npm error To see a list of scripts, run:
+npm error   npm run
+npm error A complete log of this run can be found in: /root/.npm/_logs/2026-02-11T06_02_01_195Z-debug-0.log
+--- unit tests ---
+
+> zakops-dashboard@1.0.0 test
+> vitest run src/__tests__/deals-board-shape.test.ts src/__tests__/dashboard-refresh-toast.test.tsx src/__tests__/onboarding-sequence.test.tsx src/__tests__/quarantine-input-state.test.tsx src/__tests__/settings-export-route.test.ts
+
+
+[1m[46m RUN [49m[22m [36mv4.0.17 [39m[90m/home/zaks/zakops-agent-api/apps/dashboard[39m
+
+ [32m✓[39m src/__tests__/quarantine-input-state.test.tsx [2m([22m[2m8 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m src/__tests__/dashboard-refresh-toast.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[32m 39[2mms[22m[39m
+[90mstderr[2m | src/__tests__/settings-export-route.test.ts[2m > [22m[2mSettings Export Route Error Handling[2m > [22m[2mshould return user-safe message on backend 500 error
+[22m[39m[settings/data/export] Backend returned [33m500[39m
+
+[90mstderr[2m | src/__tests__/settings-export-route.test.ts[2m > [22m[2mSettings Export Route Error Handling[2m > [22m[2mshould return user-safe message on backend 404 error
+[22m[39m[settings/data/export] Backend returned [33m404[39m
+
+[90mstderr[2m | src/__tests__/settings-export-route.test.ts[2m > [22m[2mSettings Export Route Error Handling[2m > [22m[2mshould return 502 on backend unavailable
+[22m[39m[settings/data/export] Backend unavailable: ECONNREFUSED
+
+[90mstderr[2m | src/__tests__/settings-export-route.test.ts[2m > [22m[2mSettings Export Route Error Handling[2m > [22m[2mshould return 502 on timeout
+[22m[39m[settings/data/export] Backend unavailable: Request timeout
+
+[90mstderr[2m | src/__tests__/settings-export-route.test.ts[2m > [22m[2mSettings Export Route Error Handling[2m > [22m[2mshould NOT expose raw backend error details to user
+[22m[39m[settings/data/export] Backend returned [33m500[39m
+
+[90mstderr[2m | src/__tests__/settings-export-route.test.ts[2m > [22m[2mSettings Export Route Error Handling[2m > [22m[2mshould use error taxonomy codes
+[22m[39m[settings/data/export] Backend returned [33m422[39m
+
+[90mstderr[2m | src/__tests__/settings-export-route.test.ts[2m > [22m[2mSettings Export Route Error Handling[2m > [22m[2mshould use error taxonomy codes
+[22m[39m[settings/data/export] Backend unavailable: Network error
+
+[90mstderr[2m | src/__tests__/settings-export-route.test.ts[2m > [22m[2mSettings Export Route Error Handling[2m > [22m[2mshould handle non-Error exceptions gracefully
+[22m[39m[settings/data/export] Backend unavailable: Something went wrong
+
+ [32m✓[39m src/__tests__/settings-export-route.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m src/__tests__/deals-board-shape.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+[90mstderr[2m | src/__tests__/onboarding-sequence.test.tsx[2m > [22m[2mOnboarding Wizard Step Sequencing[2m > [22m[2mshould start at step 0 (Welcome) by default, not backendStep
+[22m[39mWarning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+
+[90mstderr[2m | src/__tests__/onboarding-sequence.test.tsx[2m > [22m[2mOnboarding Wizard Step Sequencing[2m > [22m[2mshould always start at step 0 regardless of initialStep parameter
+[22m[39mWarning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+
+[90mstderr[2m | src/__tests__/onboarding-sequence.test.tsx[2m > [22m[2mOnboarding Wizard Step Sequencing[2m > [22m[2mshould advance exactly one step on Continue
+[22m[39mWarning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+
+[90mstderr[2m | src/__tests__/onboarding-sequence.test.tsx[2m > [22m[2mOnboarding Wizard Step Sequencing[2m > [22m[2mshould load backendStep when resumeFromBackend is called
+[22m[39mWarning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+
+[90mstderr[2m | src/__tests__/onboarding-sequence.test.tsx[2m > [22m[2mOnboarding Wizard Step Sequencing[2m > [22m[2mshould reset to step 0 on start fresh
+[22m[39mWarning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+
+[90mstderr[2m | src/__tests__/onboarding-sequence.test.tsx[2m > [22m[2mOnboarding Wizard Step Sequencing[2m > [22m[2mshould not auto-resume on mount
+[22m[39mWarning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+
+[90mstderr[2m | src/__tests__/onboarding-sequence.test.tsx[2m > [22m[2mOnboarding Wizard Step Sequencing[2m > [22m[2mshould persist step to backend on forward navigation
+[22m[39mWarning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+
+[90mstderr[2m | src/__tests__/onboarding-sequence.test.tsx[2m > [22m[2mOnboarding Wizard Step Sequencing[2m > [22m[2mshould allow backward navigation without backend update
+[22m[39mWarning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+
+ [32m✓[39m src/__tests__/onboarding-sequence.test.tsx [2m([22m[2m9 tests[22m[2m)[22m[32m 25[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m5 passed[39m[22m[90m (5)[39m
+[2m      Tests [22m [1m[32m36 passed[39m[22m[90m (36)[39m
+[2m   Start at [22m 00:02:01
+[2m   Duration [22m 526ms[2m (transform 263ms, setup 108ms, import 342ms, tests 86ms, environment 1.42s)[22m
+
+--- e2e ---
+
+> zakops-dashboard@1.0.0 test:e2e
+> playwright test tests/e2e/dashboard-worldclass-remediation.spec.ts
+
+
+Running 11 tests using 1 worker
+
+  ✓   1 [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:22:5 › F-01: dashboard page loads with scroll container (1.8s)
+  ✘   2 [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:37:5 › F-02: agent drawer has "Full chat" link (6.9s)
+  ✘   3 [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:37:5 › F-02: agent drawer has "Full chat" link (retry #1) (6.9s)
+  ✓   4 [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:53:5 › F-03: no toast appears during passive dashboard use (4.8s)
+  ✓   5 [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:67:5 › F-04: deals page loads without runtime crash (4.6s)
+  ✓   6 [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:83:5 › F-05: quarantine page loads without ghost characters in inputs (4.9s)
+  ✓   7 [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:107:5 › F-06: chat page has history toggle button (1.5s)
+  ✓   8 [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:117:5 › F-08: onboarding page exists and loads (4.5s)
+  ✓   9 [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:128:5 › F-09: settings page loads with all sections (4.1s)
+  ✓  10 [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:140:5 › F-10: settings page has back-to-dashboard link (4.1s)
+  ✓  11 [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:154:5 › F-10: settings page content is scrollable (4.1s)
+  ✓  12 [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:175:5 › chat page has provider selector and scope controls (4.6s)
+
+
+  1) [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:37:5 › F-02: agent drawer has "Full chat" link 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('a').filter({ hasText: /full chat/i })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('a').filter({ hasText: /full chat/i })[22m
+
+
+      43 |     // Verify "Full chat" link exists in the drawer
+      44 |     const fullChatLink = page.locator('a', { hasText: /full chat/i });
+    > 45 |     await expect(fullChatLink).toBeVisible({ timeout: 5000 });
+         |                                ^
+      46 |   }
+      47 | });
+      48 |
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/dashboard-worldclass-remediation.spec.ts:45:32
+
+    Error Context: test-results/dashboard-worldclass-remed-acd99-t-drawer-has-Full-chat-link-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/dashboard-worldclass-remed-acd99-t-drawer-has-Full-chat-link-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/dashboard-worldclass-remed-acd99-t-drawer-has-Full-chat-link-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('a').filter({ hasText: /full chat/i })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('a').filter({ hasText: /full chat/i })[22m
+
+
+      43 |     // Verify "Full chat" link exists in the drawer
+      44 |     const fullChatLink = page.locator('a', { hasText: /full chat/i });
+    > 45 |     await expect(fullChatLink).toBeVisible({ timeout: 5000 });
+         |                                ^
+      46 |   }
+      47 | });
+      48 |
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/dashboard-worldclass-remediation.spec.ts:45:32
+
+    Error Context: test-results/dashboard-worldclass-remed-acd99-t-drawer-has-Full-chat-link-chromium-retry1/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/dashboard-worldclass-remed-acd99-t-drawer-has-Full-chat-link-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/dashboard-worldclass-remed-acd99-t-drawer-has-Full-chat-link-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:37:5 › F-02: agent drawer has "Full chat" link 
+  10 passed (55.2s)

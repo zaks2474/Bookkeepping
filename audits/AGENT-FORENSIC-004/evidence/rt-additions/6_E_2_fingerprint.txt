@@ -1,0 +1,30 @@
+=== CHECK 6.E.2 — Fingerprint Tables ===
+--- Agent DB has 'approvals' (Backend should NOT) ---
+service "db" is not running
+
+--- Backend DB has 'deals' (Agent should NOT) ---
+ deals_count 
+-------------
+           4
+(1 row)
+
+
+--- Cross-check: Agent DB should NOT have 'deals' ---
+time="2026-02-03T16:52:57-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-03T16:52:57-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+ERROR:  relation "deals" does not exist
+LINE 1: SELECT COUNT(*) FROM deals;
+                             ^
+--- Re-checking Agent DB approvals count ---
+time="2026-02-03T16:53:04-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-03T16:53:04-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+ approvals_count 
+-----------------
+              47
+(1 row)
+
+
+--- Cross-check: Backend DB should NOT have 'approvals' ---
+ERROR:  relation "approvals" does not exist
+LINE 1: SELECT COUNT(*) FROM approvals;
+                             ^

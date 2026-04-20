@@ -1,0 +1,9 @@
+54:  /** Momentum score (0-100) from backend brain/momentum endpoint */
+55:  momentumScore?: number | null;
+65:function getMomentumConfig(score: number | null | undefined) {
+94:  momentumScore,
+105:  const momentum = getMomentumConfig(momentumScore);
+334:        {momentumScore !== null && momentumScore !== undefined && (
+339:            <Badge variant="outline" className={`${momentum.bg} ${momentum.color} font-semibold`}>
+340:              <momentum.Icon className="w-3 h-3 mr-1" />
+341:              {momentum.label}/100

@@ -1,0 +1,61 @@
+================================================================================
+HARD RULES VERIFICATION
+================================================================================
+Timestamp: 2026-02-08
+
+================================================================================
+HR-1: All 6 Layer Completion Reports Exist
+================================================================================
+Path: /home/zaks/bookkeeping/qa-verifications/DEAL-INTEGRITY-UNIFIED/layer-{1..6}/completion-report.md
+
+Layer 1: EXISTS (61 lines)
+Layer 2: EXISTS (60 lines)
+Layer 3: EXISTS (69 lines)
+Layer 4: EXISTS (72 lines)
+Layer 5: EXISTS (64 lines)
+Layer 6: EXISTS (63 lines)
+
+VERDICT: PASS — All 6 completion reports present with substantive content.
+
+================================================================================
+HR-6: Port 8090 Never Referenced in Active Source
+================================================================================
+Searched: *.py *.ts *.tsx *.yml *.yaml *.env* *.json across all 3 repos
+Excluded: node_modules, .git, package-lock, .venv, .test_venv, artifacts, __pycache__
+
+Active source references found: NONE in active source code.
+
+References found ONLY in:
+- packages/contracts/runtime.topology.json: "decommissioned_ports": [8090]  (documenting it IS decommissioned — correct)
+- venv chardet frequency tables (numeric coincidence, not port reference)
+- scripts/probes/phase2_cloudflare_lint.py (lint tool that BLOCKS 8090 exposure — correct)
+- gate_artifacts/ (historical test artifacts, not active code)
+
+VERDICT: PASS — Port 8090 is not used in any active source code. The only references
+are in decommission documentation and lint tools that enforce the ban.
+
+================================================================================
+HR-7: zakops DB Uses Schema zakops, NOT public; User zakops, NOT dealengine
+================================================================================
+Searched: BACKEND_ROOT/src/**/*.py for "dealengine" or "public.deals"
+
+Result: 0 matches
+
+All queries in main.py and workflow.py use "zakops.deals", "zakops.deal_events",
+"zakops.deal_transitions", etc. (zakops schema, not public).
+
+Database config:
+  CANONICAL_DB_NAME = "zakops"
+  CANONICAL_DB_USER = "zakops"
+
+VERDICT: PASS — No dealengine or public.deals references in active source.
+
+================================================================================
+HR-8: Redocly Ignore Ceiling (max 57)
+================================================================================
+File: /home/zaks/zakops-agent-api/.redocly.lint-ignore.yaml
+Count pattern: grep -c "^    - " (4-space indent lines)
+
+Result: 57 ignores
+
+VERDICT: PASS — Exactly at ceiling (57/57). No growth.

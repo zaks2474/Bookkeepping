@@ -1,0 +1,10 @@
+=== V4 SCRIPT DISPOSITION CHECK ===
+--- Scripts that should be DELETED from active locations ---
+PASS: schema-diff.sh removed from active paths (archived in evidence only)
+PASS: detect-phantom-endpoints.sh removed from active paths (archived in evidence only)
+PASS: dashboard-network-capture.sh removed from active paths (archived in evidence only)
+PASS: sse-validation.sh removed from active paths (archived in evidence only)
+--- Scripts that should be KEPT ---
+PASS: rag-routing-proof.sh exists (157 lines)
+PASS: generate-manifest.sh exists (156 lines)
+PASS: validate-enforcement.sh exists (205 lines)

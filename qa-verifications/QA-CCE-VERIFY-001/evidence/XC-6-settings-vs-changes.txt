@@ -1,0 +1,5 @@
+alwaysThinkingEnabled= True
+ENABLE_TOOL_SEARCH= auto:5
+3:## 2026-02-11 — CLAUDE-CODE-ENHANCE-001: Five Session-Surviving Feature Additions
+7:1. `ENABLE_TOOL_SEARCH=auto:5` — lazy-loads MCP tools to reduce context consumption
+10:4. `alwaysThinkingEnabled=true` — enables extended thinking by default

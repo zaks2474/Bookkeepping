@@ -1,0 +1,14 @@
+=== F5.2: Test artifacts resolved ===
+ deal_id |        canonical_name        | deleted | status  
+---------+------------------------------+---------+---------
+ DL-0050 | SPLITBRAIN-CANARY-1770191513 | t       | deleted
+ DL-0046 | E2E-LIFECYCLE-1770190330     | t       | deleted
+ DL-0057 | DUP-VERIFY-1770191980        | t       | deleted
+ DL-0060 | DUP-FINAL-1770192031         | t       | deleted
+ DL-0049 | SPLITBRAIN-FINAL-1770190410  | t       | deleted
+ DL-0048 | SPLITBRAIN-PROOF-1770190379  | t       | deleted
+ DL-0047 | SPLITBRAIN-PROOF-1770190360  | t       | deleted
+(7 rows)
+
+Active test artifacts: 0
+VERDICT: PASS

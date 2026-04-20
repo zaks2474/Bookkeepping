@@ -1,0 +1,58 @@
+{
+  "summary": {
+    "passed": 1,
+    "total": 4
+  },
+  "test_suite": "Phase 1 \u2014 Backend API",
+  "tests": [
+    {
+      "details": {
+        "artifact": "backend_endpoint_probe.json"
+      },
+      "id": "1.0",
+      "name": "Backend endpoint probe (OpenAPI reachability)",
+      "passed": true,
+      "timestamp_utc": "2026-01-26T16:13:50.098674+00:00"
+    },
+    {
+      "details": {
+        "artifact": "deals_crud_results.json",
+        "summary": {
+          "passed": 1,
+          "total": 6
+        }
+      },
+      "id": "1.1",
+      "name": "Deals CRUD suite executed",
+      "passed": false,
+      "timestamp_utc": "2026-01-26T16:13:50.691496+00:00"
+    },
+    {
+      "details": {
+        "artifact": "actions_crud_results.json",
+        "summary": {
+          "passed": 2,
+          "total": 5
+        }
+      },
+      "id": "1.2",
+      "name": "Actions suite executed",
+      "passed": false,
+      "timestamp_utc": "2026-01-26T16:13:50.955013+00:00"
+    },
+    {
+      "details": {
+        "artifact": "quarantine_results.json",
+        "summary": {
+          "passed": 1,
+          "total": 3
+        }
+      },
+      "id": "1.3",
+      "name": "Quarantine suite executed",
+      "passed": false,
+      "timestamp_utc": "2026-01-26T16:13:51.107347+00:00"
+    }
+  ],
+  "timestamp_utc": "2026-01-26T16:13:51.107351+00:00"
+}

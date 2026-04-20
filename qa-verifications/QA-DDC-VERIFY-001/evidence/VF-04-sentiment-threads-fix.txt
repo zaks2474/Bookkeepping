@@ -1,0 +1,23 @@
+=== Sentiment Path Fix ===
+File: apps/dashboard/src/app/api/agent/sentiment/[dealId]/route.ts (NEW, 31 lines)
+
+- Dashboard path: GET /api/agent/sentiment/[dealId]
+- Agent proxy path: /api/v1/chatbot/sentiment/${dealId} (line 18) ✓
+- Old broken path was: /api/agent/api/v1/chatbot/sentiment/ (double /api prefix)
+- Uses agentFetch (line 9 import, line 17 call) ✓
+- Next.js 15 async params: Promise<{ dealId: string }> (line 13) ✓
+- Error: console.warn + 502 JSON (line 24-28) ✓
+
+api.ts sentiment call: /api/agent/sentiment/${dealId} (line 2714) ✓
+NO double /api prefix ✓
+
+=== Threads Path Fix ===
+File: apps/dashboard/src/app/api/chat/threads/route.ts (54 lines)
+
+- GET proxy path: /api/v1/chatbot/threads (line 19) ✓
+- POST proxy path: /api/v1/chatbot/threads (line 41) ✓
+- Old broken path was: /v1/chatbot/threads (missing /api prefix)
+- Uses agentFetch (line 9 import) ✓
+- Error: console.warn + 502 JSON (lines 25, 47) ✓
+
+VERDICT: PASS — Both path fixes verified

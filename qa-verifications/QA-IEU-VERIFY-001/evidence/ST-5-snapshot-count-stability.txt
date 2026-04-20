@@ -1,0 +1,24 @@
+=== ST-5 SNAPSHOT + COUNT STABILITY ===
+[36m=== Infrastructure Snapshot ===[0m
+=== GENERATING INFRASTRUCTURE MANIFEST ===
+Timestamp: 2026-02-10T22:47:20Z
+  DB schema: 812 columns captured
+  Manifest generated: INFRASTRUCTURE_MANIFEST.md
+[32mManifest generated: /home/zaks/zakops-agent-api/INFRASTRUCTURE_MANIFEST.md[0m
+[36m=== Infrastructure Snapshot ===[0m
+=== GENERATING INFRASTRUCTURE MANIFEST ===
+Timestamp: 2026-02-10T22:47:31Z
+  DB schema: 812 columns captured
+  Manifest generated: INFRASTRUCTURE_MANIFEST.md
+[32mManifest generated: /home/zaks/zakops-agent-api/INFRASTRUCTURE_MANIFEST.md[0m
+=== Four-Way Surface Count Consistency ===
+
+  Contract catalog: 14
+  CLAUDE.md header: 14 (table rows: 14)
+  Unified validator: 14 (invocations: 37)
+  Manifest entries: 14
+
+  PASS: All 4 sources agree: 14 surfaces
+
+Four-Way Count Consistency: PASS (1 pass, 0 fail)
+EXIT=0

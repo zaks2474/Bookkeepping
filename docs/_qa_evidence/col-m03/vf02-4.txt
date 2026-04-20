@@ -1,0 +1,6 @@
+async def list_threads(
+    """List chat threads for the current user.
+    COL-DESIGN-SPEC-V2 Section 3.5: GET /api/v1/chatbot/threads
+        threads, total = await chat_repository.list_threads(
+            "threads": [_thread_to_summary(t) for t in threads],
+            "total": total,

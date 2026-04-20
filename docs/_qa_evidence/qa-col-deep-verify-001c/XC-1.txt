@@ -1,0 +1,6 @@
+=== MCP server ===
+311:        return await backend_post(f"/api/quarantine/{item_id}/process", data)
+341:        return await backend_post(f"/api/quarantine/{item_id}/process", data)
+=== Backend main.py ===
+1696:@app.post("/api/quarantine/{item_id}/process")
+RESULT: MCP endpoint /process matches backend route /api/quarantine/{item_id}/process

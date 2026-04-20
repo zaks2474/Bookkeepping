@@ -1,0 +1,43 @@
+=== VF-02.2 COMPONENT-PATTERNS RULE PRESENCE ===
+-rw-r--r-- 1 zaks zaks 2794 Feb 10 12:28 /home/zaks/zakops-agent-api/.claude/rules/component-patterns.md
+---
+paths:
+  - "apps/dashboard/src/components/**"
+  - "apps/dashboard/src/app/**"
+  - "apps/dashboard/src/hooks/**"
+---
+
+# Component Patterns — Dashboard
+
+## Server vs Client Component Split
+- Default to Server Components — only add `"use client"` when the component needs browser APIs, event handlers, useState, or useEffect
+- Data fetching belongs in Server Components or server actions — never `useEffect` + `fetch` for initial data loads
+- Keep `"use client"` components as leaf nodes — push interactivity down, keep data-fetching parents as server components
+- File convention: client components in the same directory, named descriptively (e.g., `DealCardActions.tsx` as the client child of `DealCard.tsx`)
+
+## Loading, Empty, and Error States
+- Every data-dependent component must handle three states: loading, empty, and error
+- Loading: use Suspense boundaries with `loading.tsx` files at the route level, or skeleton components at the component level
+- Empty: explicit empty-state UI with guidance (not just blank space) — e.g., "No deals found. Create your first deal."
+- Error: use `error.tsx` boundaries at the route level; component-level try/catch for server components; error boundaries for client components
+- Pattern: `{data.length === 0 ? <EmptyState /> : <DataList data={data} />}`
+
+## Suspense Boundaries
+- Place `<Suspense>` boundaries around independently-loadable sections
+- Granularity: one boundary per data-independent section — avoid wrapping the entire page in a single Suspense
+- Fallback UIs should match the layout shape of the loaded content (skeleton, not spinner)
+- Nested Suspense for progressive disclosure: shell loads first, then sections fill in
+
+## State Ownership Boundaries
+- State lives at the lowest common ancestor that needs it
+- Props flow down, events flow up — no prop drilling beyond 2 levels; use Context or composition instead
+- URL state (searchParams) for filter/sort/pagination state — enables sharing and back-button support
+- Server state: fetched via Server Components or React Server Actions, not client-side global stores
+- Client-only transient state (form inputs, toggle states, hover) stays in the component via useState
+
+## Composability and Prop Discipline
+- Components accept the minimum props needed — avoid "god components" with 10+ props
+- Use the compound component pattern for related groups (e.g., `<Card>`, `<Card.Header>`, `<Card.Body>`)
+- Avoid boolean prop explosion (`isLarge`, `isPrimary`, `isOutlined`) — use a single `variant` prop with union type
+- Children-based composition over configuration props: `<Layout sidebar={<Sidebar />}>` over `<Layout showSidebar sidebarItems={[...]} />`
+- Extract reusable logic into custom hooks, named `use<Purpose>` (e.g., `useDealFilters`, `usePagination`)

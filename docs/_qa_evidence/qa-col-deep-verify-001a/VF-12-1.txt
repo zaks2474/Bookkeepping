@@ -1,0 +1,21 @@
+File: /home/zaks/zakops-agent-api/apps/agent-api/app/schemas/sse_events.py
+---
+SSE_EVENT_TYPES registry (lines 143-159): 15 event types
+  1. message_chunk (line 25)
+  2. message_complete (line 31)
+  3. thread_updated (line 39)
+  4. brain_updated (line 47)
+  5. summary_generated (line 55)
+  6. injection_alert (line 63)
+  7. legal_hold_set (line 70)
+  8. budget_warning (line 78)
+  9. cost_update (line 86)
+  10. ghost_knowledge (line 94)
+  11. ghost_knowledge_flags (line 100)
+  12. momentum_update (line 111)
+  13. tool_execution (line 119)
+  14. approval_required (line 127)
+  15. error (line 135)
+---
+Count: 15 (>= 10 threshold)
+VERDICT: PASS

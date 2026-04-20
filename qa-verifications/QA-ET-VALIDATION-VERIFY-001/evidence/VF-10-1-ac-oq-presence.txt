@@ -1,0 +1,32 @@
+=== VF-10.1 AC PRESENCE ===
+582:### AC-1
+585:### AC-2
+588:### AC-3
+591:### AC-4
+594:### AC-5
+597:### AC-6
+600:### AC-7
+603:### AC-8
+606:### AC-9
+609:### AC-10
+612:### AC-11
+615:### AC-12
+618:### AC-13
+621:### AC-14
+624:### AC-15
+627:### AC-16
+94:| OQ Criteria | Operational Quarantine acceptance floor (OQ-01 through OQ-14); mission cannot pass without all OQ criteria met |
+583:OQ-01 satisfied: LangSmith-injected items render with real subject (zero false "Unknown subject" when `email_subject` is populated).
+586:OQ-02 satisfied: `email_body_snippet` always populated and rendered; zero "Preview not found" regressions.
+589:OQ-03 satisfied: every approve action writes all 5 lifecycle artifacts.
+592:OQ-04 satisfied: reject action requires reason in UI and backend validation.
+595:OQ-05 satisfied: optimistic locking yields one success and one 409 in concurrent approve race.
+598:OQ-06 satisfied: `langsmith_shadow` isolation preserved across filters.
+601:OQ-07 satisfied: kill switch disables writes in under one second and preserves reads.
+604:OQ-08 satisfied: unauthenticated bridge requests are blocked (401/403, never 200).
+607:OQ-09 satisfied: schema contract rejects missing required fields with explicit errors.
+610:OQ-10 satisfied: dedup under concurrency proves exactly one record for duplicate injections.
+613:OQ-11 satisfied: triage summary is visible in detail panel for all applicable items.
+616:OQ-12 satisfied: extraction evidence and field confidences are visible in detail UI.
+619:OQ-13 satisfied: correlation ID trace is complete from quarantine through transitions/events/outbox.
+622:OQ-14 satisfied: source type indicators visible in list and detail surfaces.

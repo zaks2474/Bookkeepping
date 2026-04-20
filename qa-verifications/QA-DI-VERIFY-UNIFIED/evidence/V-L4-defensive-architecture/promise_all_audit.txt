@@ -1,0 +1,17 @@
+=== V-L4.1: Promise.all Audit ===
+Date: 2026-02-09T04:54:44Z
+
+--- All Promise.all occurrences (excluding Promise.allSettled) ---
+/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/deal-integrity.test.ts:243:    const [summaryRes, dealsRes] = await Promise.all([
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/pipeline/route.ts:23:    const [summaryResponse, dealsResponse] = await Promise.all([
+
+--- All Promise.allSettled occurrences ---
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:184:      // DEAL-INTEGRITY-UNIFIED L4: Promise.allSettled for graceful degradation
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:185:      const results = await Promise.allSettled([
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:28:      // DEAL-INTEGRITY-UNIFIED L3+L4: Server-computed counts + Promise.allSettled
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:29:      const results = await Promise.allSettled([
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:124:      // DEAL-INTEGRITY-UNIFIED L4: Promise.allSettled for graceful degradation
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:125:      const results = await Promise.allSettled([
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/alerts/route.ts:16:    const [dealsRes, actionsRes, quarantineRes] = await Promise.allSettled([
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/page.tsx:66:      // DEAL-INTEGRITY-UNIFIED L3+L4: Server-computed counts + Promise.allSettled
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/page.tsx:67:      const results = await Promise.allSettled([

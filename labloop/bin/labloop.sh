@@ -1,0 +1,2741 @@
+#!/usr/bin/env bash
+#
+# Lab Loop Orchestrator v2.1.1
+# ============================
+# Automated QA/Builder loop using Claude Code (Builder) and Codex/Gemini (QA)
+#
+# v2.1.1 Features:
+# - Gemini fallback when Codex is unavailable (usage limit, timeout, errors)
+# - Automatic QA agent selection (Codex primary, Gemini fallback)
+# - Stability fixes (JSON extraction, timeouts, fallback reports)
+#
+# v2.1 Features:
+# - Flaky Gate Policy (retry handling with evidence capture)
+# - Spec Oracle Stage (independent spec checking)
+# - Prompt Evals (behavioral regression harness)
+# - All v2.0 features retained
+#
+# Usage: labloop.sh <TASK_ID> [--dry-run] [--max-cycles N] [--tier fast|full]
+#
+set -euo pipefail
+
+# Version
+LABLOOP_VERSION="3.0.0"
+
+# v3.0 Features:
+# - Project profile support (.labloop.yaml)
+# - Auto-artifact commits (prevents diff limit violations)
+# - Enhanced preflight checks
+# - labloop doctor integration
+# - Improved error recovery
+
+# Ensure npm global binaries are in PATH (claude, codex, gemini)
+# Prefer user-owned binaries first; keep root path as fallback.
+export PATH="$HOME/.npm-global/bin:/home/zaks/.npm-global/bin:$PATH"
+if [[ -d "/root/.npm-global/bin" ]]; then
+  export PATH="$PATH:/root/.npm-global/bin"
+fi
+
+# QA Agent Configuration (v2.1.1)
+# Primary: codex, Fallback: gemini
+QA_PRIMARY_AGENT="${QA_PRIMARY_AGENT:-codex}"
+QA_FALLBACK_AGENT="${QA_FALLBACK_AGENT:-gemini}"
+QA_FALLBACK_ENABLED="${QA_FALLBACK_ENABLED:-true}"
+QA_AGENT_USED=""  # Tracks which agent was used in current cycle
+
+# ============================================================
+# MODEL SELECTION (v2.2.0)
+# ============================================================
+# Builder model (Claude CLI)
+# Options: "opus", "sonnet", "haiku", or full name like "claude-opus-4-5-20250929"
+BUILDER_MODEL="${BUILDER_MODEL:-opus}"
+
+# QA model for Codex (OpenAI)
+# Options: "o3", "o4-mini", "gpt-4.5", "gpt-5.2", etc.
+QA_CODEX_MODEL="${QA_CODEX_MODEL:-}"
+CODEX_CLI_PATH="${CODEX_CLI_PATH:-$HOME/.npm-global/bin/codex}"
+
+# QA model for Gemini
+# Options: "gemini-2.5-pro", "gemini-2.5-flash", "gemini-3.0", etc.
+QA_GEMINI_MODEL="${QA_GEMINI_MODEL:-gemini-2.5-pro}"
+
+# Gemini configuration
+GEMINI_API_KEY="${GEMINI_API_KEY:-}"
+GEMINI_CLI_PATH="${GEMINI_CLI_PATH:-$HOME/.npm-global/bin/gemini}"
+GEMINI_TIMEOUT="${GEMINI_TIMEOUT:-900}"  # 15 minutes
+
+if [[ ! -x "$CODEX_CLI_PATH" ]] && command -v codex >/dev/null 2>&1; then
+  CODEX_CLI_PATH="$(command -v codex)"
+fi
+if [[ ! -x "$GEMINI_CLI_PATH" ]] && [[ -x "/root/.npm-global/bin/gemini" ]]; then
+  GEMINI_CLI_PATH="/root/.npm-global/bin/gemini"
+fi
+
+# Load Gemini API key from file if not set
+if [[ -z "$GEMINI_API_KEY" ]]; then
+  if [[ -f "/home/zaks/.gemini_api" ]]; then
+    GEMINI_API_KEY=$(cat /home/zaks/.gemini_api)
+    export GEMINI_API_KEY
+  fi
+fi
+
+# Load persistent config if exists
+LABLOOP_CONFIG="${LABLOOP_CONFIG:-$HOME/.labloop/config}"
+if [[ -f "$LABLOOP_CONFIG" ]]; then
+  source "$LABLOOP_CONFIG"
+fi
+# Also check common locations
+[[ -f "/home/zaks/.labloop/config" ]] && source "/home/zaks/.labloop/config"
+[[ -f "/root/.labloop/config" ]] && source "/root/.labloop/config"
+
+# Parse arguments
+TASK_ID=""
+DRY_RUN=false
+MAX_CYCLES="${MAX_CYCLES:-50}"
+INCREMENTAL=false
+WEBHOOK_URL="${LABLOOP_WEBHOOK:-}"
+EMAIL_TO="${LABLOOP_EMAIL:-}"
+SKIP_PREFLIGHT=false
+GATE_TIER="fast"  # fast or full
+BUNDLE_MODE="condensed"  # condensed or full (v2.1.3: Token Economy optimization)
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --dry-run)
+      DRY_RUN=true
+      shift
+      ;;
+    --max-cycles)
+      MAX_CYCLES="$2"
+      shift 2
+      ;;
+    --incremental)
+      INCREMENTAL=true
+      shift
+      ;;
+    --webhook)
+      WEBHOOK_URL="$2"
+      shift 2
+      ;;
+    --email)
+      EMAIL_TO="$2"
+      shift 2
+      ;;
+    --skip-preflight)
+      SKIP_PREFLIGHT=true
+      shift
+      ;;
+    --tier)
+      GATE_TIER="$2"
+      shift 2
+      ;;
+    --bundle-mode)
+      BUNDLE_MODE="$2"
+      shift 2
+      ;;
+    --version)
+      echo "Lab Loop v$LABLOOP_VERSION"
+      exit 0
+      ;;
+    -*)
+      echo "Unknown option: $1" >&2
+      exit 1
+      ;;
+    *)
+      TASK_ID="$1"
+      shift
+      ;;
+  esac
+done
+
+if [[ -z "$TASK_ID" ]]; then
+  echo "Usage: labloop.sh <TASK_ID> [--dry-run] [--max-cycles N] [--tier fast|full]"
+  exit 1
+fi
+
+# Paths
+BASE="/home/zaks/bookkeeping/labloop"
+TASK_DIR="$BASE/tasks/$TASK_ID"
+SCHEMAS="$BASE/schemas"
+TEMPLATES="$BASE/templates"
+CONFIG_DIR="$BASE/config"
+
+# Validate task exists
+if [[ ! -d "$TASK_DIR" ]]; then
+  echo "ERROR: Task directory not found: $TASK_DIR"
+  echo "Run: labloop new $TASK_ID"
+  exit 1
+fi
+
+if [[ ! -f "$TASK_DIR/config.env" ]]; then
+  echo "ERROR: Missing config.env in $TASK_DIR"
+  exit 1
+fi
+
+# Load task config
+source "$TASK_DIR/config.env"
+
+# Validate required config
+: "${REPO_DIR:?REPO_DIR must be set in config.env}"
+: "${GATE_CMD:?GATE_CMD must be set in config.env}"
+GATE_FAST_CMD="${GATE_FAST_CMD:-$GATE_CMD}"
+GATE_FULL_CMD="${GATE_FULL_CMD:-$GATE_CMD}"
+CLAUDE_ADD_DIRS="${CLAUDE_ADD_DIRS:-}"
+
+# v2.1: Flaky Gate Policy config (OPTIONAL - defaults preserve v2.0 behavior)
+GATE_RETRY_MAX="${GATE_RETRY_MAX:-0}"
+GATE_RETRY_DELAY_SEC="${GATE_RETRY_DELAY_SEC:-2}"
+GATE_RETRY_ON_REGEX="${GATE_RETRY_ON_REGEX:-}"
+GATE_RETRY_OFF_REGEX="${GATE_RETRY_OFF_REGEX:-}"
+GATE_RETRY_TIMEOUT_SEC="${GATE_RETRY_TIMEOUT_SEC:-}"
+GATE_RETRY_MODE="${GATE_RETRY_MODE:-on_fail}"
+
+# v2.1.3: Smart Stuck Logic config (consecutive cycles before declaring stuck)
+STUCK_CONSECUTIVE_CYCLES="${STUCK_CONSECUTIVE_CYCLES:-3}"
+
+# v2.1: Spec Oracle config (OPTIONAL)
+SPEC_CHECK_CMD="${SPEC_CHECK_CMD:-}"
+SPEC_CHECK_TIMEOUT_SEC="${SPEC_CHECK_TIMEOUT_SEC:-}"
+SPEC_CHECK_REQUIRED="${SPEC_CHECK_REQUIRED:-}"
+# Default SPEC_CHECK_REQUIRED to true if SPEC_CHECK_CMD is set
+if [[ -n "$SPEC_CHECK_CMD" && -z "$SPEC_CHECK_REQUIRED" ]]; then
+  SPEC_CHECK_REQUIRED="true"
+fi
+
+# v2.1: Prompt Evals config (OPTIONAL)
+EVAL_CMD="${EVAL_CMD:-}"
+EVAL_TIMEOUT_SEC="${EVAL_TIMEOUT_SEC:-}"
+EVAL_REQUIRED="${EVAL_REQUIRED:-}"
+EVAL_RESULTS_PATH="${EVAL_RESULTS_PATH:-$TASK_DIR/artifacts/eval_results.json}"
+# Default EVAL_REQUIRED to true if EVAL_CMD is set
+if [[ -n "$EVAL_CMD" && -z "$EVAL_REQUIRED" ]]; then
+  EVAL_REQUIRED="true"
+fi
+
+# Create directories
+mkdir -p "$TASK_DIR/history" "$TASK_DIR/artifacts" "$TASK_DIR/snapshots"
+
+# Load safety configuration
+SAFETY_CONF="${SAFETY_CONF:-$CONFIG_DIR/safety.conf}"
+if [[ -f "$SAFETY_CONF" ]]; then
+  source "$SAFETY_CONF"
+fi
+# Set defaults if not loaded
+PROTECTED_PATHS="${PROTECTED_PATHS:-()}"
+COMMAND_DENYLIST="${COMMAND_DENYLIST:-()}"
+MAX_FILES_PER_CYCLE="${MAX_FILES_PER_CYCLE:-20}"
+MAX_LINES_PER_CYCLE="${MAX_LINES_PER_CYCLE:-500}"
+MAX_LINES_PER_FILE="${MAX_LINES_PER_FILE:-300}"
+DIFF_LIMIT_ACTION="${DIFF_LIMIT_ACTION:-escalate}"
+REQUIRE_CLEAN_START="${REQUIRE_CLEAN_START:-false}"
+AUTO_STASH="${AUTO_STASH:-false}"
+MAX_UNCOMMITTED_FILES="${MAX_UNCOMMITTED_FILES:-50}"
+REDACT_SECRETS="${REDACT_SECRETS:-true}"
+REDACT_REPLACEMENT="${REDACT_REPLACEMENT:-[REDACTED]}"
+
+# v3.0: Enhanced defaults
+AUTO_COMMIT_ARTIFACTS="${AUTO_COMMIT_ARTIFACTS:-false}"
+MAX_UNCOMMITTED_WARNING="${MAX_UNCOMMITTED_WARNING:-$MAX_UNCOMMITTED_FILES}"
+
+# ============================================================
+# HELPER FUNCTIONS
+# ============================================================
+
+# Timestamp
+ts() { date -u +"%Y-%m-%dT%H:%M:%SZ"; }
+
+# ============================================================
+# v3.0: Project Profile Support
+# ============================================================
+
+# Load project profile from .labloop.yaml
+load_project_profile() {
+  local repo_dir="$1"
+  local profile_file="$repo_dir/.labloop.yaml"
+
+  if [[ ! -f "$profile_file" ]]; then
+    log "No project profile found at $profile_file (using defaults)"
+    return 0
+  fi
+
+  log "Loading project profile from $profile_file"
+
+  # Parse YAML using simple grep/sed (works without yq)
+  # Override settings if defined in profile
+
+  # Limits
+  local max_files=$(grep -E "^\s+max_files_per_cycle:" "$profile_file" 2>/dev/null | awk '{print $2}')
+  local max_lines=$(grep -E "^\s+max_lines_per_cycle:" "$profile_file" 2>/dev/null | awk '{print $2}')
+  local max_uncommitted=$(grep -E "^\s+max_uncommitted_files:" "$profile_file" 2>/dev/null | awk '{print $2}')
+
+  [[ -n "$max_files" ]] && MAX_FILES_PER_CYCLE="$max_files"
+  [[ -n "$max_lines" ]] && MAX_LINES_PER_CYCLE="$max_lines"
+  [[ -n "$max_uncommitted" ]] && MAX_UNCOMMITTED_WARNING="$max_uncommitted"
+
+  # Auto-commit artifacts
+  AUTO_COMMIT_ARTIFACTS=$(grep -E "^\s+commit_artifacts:" "$profile_file" 2>/dev/null | awk '{print $2}')
+  [[ "$AUTO_COMMIT_ARTIFACTS" == "true" ]] && AUTO_COMMIT_ARTIFACTS=true || AUTO_COMMIT_ARTIFACTS=false
+
+  log "Profile loaded: max_files=$MAX_FILES_PER_CYCLE, max_lines=$MAX_LINES_PER_CYCLE, auto_commit=$AUTO_COMMIT_ARTIFACTS"
+}
+
+# ============================================================
+# v3.0: Auto-Commit Artifacts
+# ============================================================
+
+# Auto-commit gate artifacts to prevent diff limit violations
+auto_commit_artifacts() {
+  local repo_dir="$1"
+
+  if [[ "$AUTO_COMMIT_ARTIFACTS" != "true" ]]; then
+    return 0
+  fi
+
+  cd "$repo_dir"
+
+  # Check for uncommitted artifact changes
+  local artifact_changes=$(git status --porcelain gate_artifacts/ 2>/dev/null | wc -l)
+
+  if [[ $artifact_changes -gt 0 ]]; then
+    log "Auto-committing $artifact_changes artifact changes..."
+    git add gate_artifacts/ 2>/dev/null || true
+    git commit -m "chore(gates): Auto-commit gate artifacts [skip ci]
+
+Generated by Lab Loop v${LABLOOP_VERSION}
+Co-Authored-By: Lab Loop <labloop@zakops.local>" 2>/dev/null || true
+    log "Artifacts committed successfully"
+  fi
+
+  cd - > /dev/null
+}
+
+# ============================================================
+# v3.0: Enhanced Preflight Checks
+# ============================================================
+
+# Run comprehensive preflight checks
+run_enhanced_preflight() {
+  local repo_dir="$1"
+  local issues=0
+
+  log "Running enhanced preflight checks..."
+
+  # Check 1: Git working directory
+  cd "$repo_dir"
+  local uncommitted=$(git status --porcelain 2>/dev/null | wc -l)
+  if [[ $uncommitted -gt $MAX_UNCOMMITTED_WARNING ]]; then
+    log "WARNING: $uncommitted uncommitted changes exceeds limit ($MAX_UNCOMMITTED_WARNING)"
+
+    # Auto-commit if enabled
+    if [[ "$AUTO_COMMIT_ARTIFACTS" == "true" ]]; then
+      auto_commit_artifacts "$repo_dir"
+      uncommitted=$(git status --porcelain 2>/dev/null | wc -l)
+    fi
+
+    if [[ $uncommitted -gt $MAX_UNCOMMITTED_WARNING ]]; then
+      ((issues++))
+    fi
+  fi
+
+  # Check 2: Virtual environment
+  if [[ -f "$repo_dir/venv/bin/activate" ]]; then
+    log "Pre-flight: Virtual environment found"
+  elif [[ -f "$repo_dir/.venv/bin/activate" ]]; then
+    log "Pre-flight: Virtual environment found (.venv)"
+  else
+    log "WARNING: No virtual environment found"
+  fi
+
+  # Check 3: Python syntax check
+  log "Pre-flight: Python syntax check..."
+  if command -v python3 &>/dev/null; then
+    local syntax_errors=0
+    while IFS= read -r -d '' pyfile; do
+      if ! python3 -m py_compile "$pyfile" 2>/dev/null; then
+        log "  Syntax error: $pyfile"
+        ((syntax_errors++))
+      fi
+    done < <(find "$repo_dir/src" -name "*.py" -print0 2>/dev/null | head -z -n 50)
+
+    if [[ $syntax_errors -gt 0 ]]; then
+      log "WARNING: $syntax_errors Python syntax errors found"
+      ((issues++))
+    fi
+  fi
+
+  # Check 4: Stale locks
+  if [[ -f "$TASK_DIR/.lock" ]]; then
+    local lock_pid=$(cat "$TASK_DIR/.pid" 2>/dev/null || echo "0")
+    if ! ps -p "$lock_pid" &>/dev/null 2>&1; then
+      log "Removing stale lock (PID $lock_pid not running)"
+      rm -f "$TASK_DIR/.lock" "$TASK_DIR/.pid"
+    fi
+  fi
+
+  cd - > /dev/null
+
+  if [[ $issues -eq 0 ]]; then
+    log "Pre-flight checks passed"
+    return 0
+  else
+    log "Pre-flight found $issues issues"
+    return 1
+  fi
+}
+
+# ============================================================
+# v3.0: Error Recovery
+# ============================================================
+
+# Attempt to recover from common errors
+attempt_recovery() {
+  local error_type="$1"
+  local context="$2"
+
+  case "$error_type" in
+    "diff_limit")
+      log "Attempting recovery: Auto-committing to reset diff baseline..."
+      auto_commit_artifacts "$REPO_DIR"
+      git -C "$REPO_DIR" add -A 2>/dev/null || true
+      git -C "$REPO_DIR" commit -m "chore: Auto-commit for Lab Loop recovery [skip ci]" 2>/dev/null || true
+      return 0
+      ;;
+    "stale_lock")
+      log "Attempting recovery: Removing stale lock..."
+      rm -f "$TASK_DIR/.lock" "$TASK_DIR/.pid"
+      return 0
+      ;;
+    "builder_timeout")
+      log "Attempting recovery: Builder timed out, will retry with fresh context..."
+      return 0
+      ;;
+    *)
+      log "No automatic recovery available for: $error_type"
+      return 1
+      ;;
+  esac
+}
+
+# Log with timestamp
+log() {
+  echo "[$(ts)] $*"
+}
+
+# Redact secrets from a file
+redact_file() {
+  local file="$1"
+  if [[ "$REDACT_SECRETS" != "true" ]] || [[ ! -f "$file" ]]; then
+    return 0
+  fi
+
+  local tmp_file="${file}.redacting"
+  cp "$file" "$tmp_file"
+
+  # Common secret patterns
+  sed -i \
+    -e 's/\(api[_-]\?key\|apikey\)[^a-zA-Z0-9]*[a-zA-Z0-9_-]\{20,\}/\1='"$REDACT_REPLACEMENT"'/gi' \
+    -e 's/\(password\|passwd\|pwd\|secret\)[^a-zA-Z0-9]*[^[:space:]"'\'']\{8,\}/\1='"$REDACT_REPLACEMENT"'/gi' \
+    -e 's/\(bearer\|token\)[^a-zA-Z0-9]*[a-zA-Z0-9_.-]\{20,\}/\1='"$REDACT_REPLACEMENT"'/gi' \
+    -e 's/ghp_[a-zA-Z0-9]\{36\}/'"$REDACT_REPLACEMENT"'/g' \
+    -e 's/sk-[a-zA-Z0-9]\{48\}/'"$REDACT_REPLACEMENT"'/g' \
+    -e 's/xox[baprs]-[a-zA-Z0-9-]\+/'"$REDACT_REPLACEMENT"'/g' \
+    -e 's/-----BEGIN [A-Z ]*KEY-----/'"$REDACT_REPLACEMENT"'/g' \
+    "$tmp_file" 2>/dev/null || true
+
+  mv "$tmp_file" "$file"
+}
+
+# Redact directory of files
+redact_directory() {
+  local dir="$1"
+  if [[ "$REDACT_SECRETS" != "true" ]] || [[ ! -d "$dir" ]]; then
+    return 0
+  fi
+
+  find "$dir" -type f \( -name "*.log" -o -name "*.json" -o -name "*.txt" -o -name "*.md" \) 2>/dev/null | while read -r file; do
+    redact_file "$file"
+  done
+}
+
+# ============================================================
+# TASK LOCKING (Concurrency Safety)
+# ============================================================
+
+LOCK_FILE="$TASK_DIR/.lock"
+PID_FILE="$TASK_DIR/.pid"
+LOCK_FD=200
+
+acquire_lock() {
+  log "Acquiring task lock..."
+
+  # Create lock file descriptor
+  exec 200>"$LOCK_FILE"
+
+  # Try to acquire lock (non-blocking first to check)
+  if ! flock -n 200; then
+    local existing_pid=""
+    if [[ -f "$PID_FILE" ]]; then
+      existing_pid=$(cat "$PID_FILE" 2>/dev/null || echo "unknown")
+    fi
+    log "ERROR: Task '$TASK_ID' is already running (PID: $existing_pid)"
+    log "If this is stale, remove: $LOCK_FILE and $PID_FILE"
+    exit 1
+  fi
+
+  # Write our PID
+  echo "$$" > "$PID_FILE"
+  log "Lock acquired (PID: $$)"
+
+  # Setup cleanup trap
+  trap release_lock EXIT
+}
+
+release_lock() {
+  log "Releasing task lock..."
+  flock -u 200 2>/dev/null || true
+  rm -f "$PID_FILE" 2>/dev/null || true
+  # Don't remove lock file - leave for future use
+}
+
+# ============================================================
+# ENVIRONMENT SNAPSHOT (Reproducibility)
+# ============================================================
+
+capture_environment_snapshot() {
+  local cycle=$1
+  local snapshot_dir="$TASK_DIR/snapshots/cycle_${cycle}"
+  mkdir -p "$snapshot_dir"
+
+  log "Capturing environment snapshot..."
+
+  # Git state
+  if [[ -d "$REPO_DIR/.git" ]]; then
+    (
+      cd "$REPO_DIR"
+      git rev-parse HEAD > "$snapshot_dir/git_commit_before.txt" 2>/dev/null || echo "unknown"
+      git status --porcelain > "$snapshot_dir/git_status_before.txt" 2>/dev/null || true
+      git branch --show-current > "$snapshot_dir/git_branch.txt" 2>/dev/null || echo "detached"
+    )
+  fi
+
+  # Tool versions
+  {
+    echo "labloop_version=$LABLOOP_VERSION"
+    echo "claude_version=$(claude --version 2>/dev/null || echo 'unknown')"
+    echo "codex_version=$(codex --version 2>/dev/null || echo 'unknown')"
+    echo "python_version=$(python3 --version 2>/dev/null || echo 'unknown')"
+    echo "node_version=$(node --version 2>/dev/null || echo 'unknown')"
+    echo "bash_version=$BASH_VERSION"
+  } > "$snapshot_dir/tool_versions.txt"
+
+  # Python dependencies (if applicable)
+  if [[ -f "$REPO_DIR/requirements.txt" ]] || [[ -f "$REPO_DIR/pyproject.toml" ]]; then
+    (cd "$REPO_DIR" && pip freeze 2>/dev/null || true) > "$snapshot_dir/pip_freeze.txt"
+  fi
+
+  # Node dependencies (if applicable)
+  if [[ -f "$REPO_DIR/package.json" ]]; then
+    (cd "$REPO_DIR" && npm ls --depth=0 2>/dev/null || true) > "$snapshot_dir/npm_ls.txt"
+  fi
+
+  # Timestamp and config
+  {
+    echo "timestamp=$(ts)"
+    echo "task_id=$TASK_ID"
+    echo "repo_dir=$REPO_DIR"
+    echo "gate_tier=$GATE_TIER"
+    echo "max_cycles=$MAX_CYCLES"
+    echo "incremental=$INCREMENTAL"
+    echo "gate_retry_max=$GATE_RETRY_MAX"
+    echo "spec_check_cmd=${SPEC_CHECK_CMD:-none}"
+    echo "eval_cmd=${EVAL_CMD:-none}"
+  } > "$snapshot_dir/run_metadata.txt"
+
+  log "Environment snapshot saved to $snapshot_dir"
+}
+
+capture_post_cycle_snapshot() {
+  local cycle=$1
+  local snapshot_dir="$TASK_DIR/snapshots/cycle_${cycle}"
+
+  if [[ -d "$REPO_DIR/.git" ]]; then
+    (
+      cd "$REPO_DIR"
+      git rev-parse HEAD > "$snapshot_dir/git_commit_after.txt" 2>/dev/null || echo "unknown"
+      git diff --stat HEAD~1..HEAD > "$snapshot_dir/git_diff_stat.txt" 2>/dev/null || true
+    )
+  fi
+}
+
+# ============================================================
+# SAFETY GUARDRAILS
+# ============================================================
+
+# Check if a path is protected
+is_protected_path() {
+  local path="$1"
+
+  # Check against protected patterns
+  for pattern in "${PROTECTED_PATHS[@]:-}"; do
+    if [[ -n "$pattern" ]]; then
+      # Use bash glob pattern matching only (no substring matching)
+      # This allows .env to NOT match .env.example
+      if [[ "$path" == $pattern ]]; then
+        return 0  # Is protected
+      fi
+      # For ** patterns, convert to proper glob
+      if [[ "$pattern" == **/* ]]; then
+        local glob_pattern="${pattern//\*\*/\*}"
+        if [[ "$path" == $glob_pattern ]]; then
+          return 0  # Is protected
+        fi
+      fi
+    fi
+  done
+
+  return 1  # Not protected
+}
+
+# Validate command against denylist
+validate_command() {
+  local cmd="$1"
+
+  for pattern in "${COMMAND_DENYLIST[@]:-}"; do
+    if [[ -n "$pattern" ]]; then
+      if echo "$cmd" | grep -qE "$pattern"; then
+        log "SECURITY: Blocked command matching pattern: $pattern"
+        log "SECURITY: Command was: $cmd"
+        return 1  # Blocked
+      fi
+    fi
+  done
+
+  return 0  # Allowed
+}
+
+# Check diff limits after Builder runs
+check_diff_limits() {
+  local cycle=$1
+
+  if [[ ! -d "$REPO_DIR/.git" ]]; then
+    return 0
+  fi
+
+  cd "$REPO_DIR"
+
+  # Get diff stats
+  local diff_stat
+  diff_stat=$(git diff --stat HEAD 2>/dev/null || echo "")
+
+  if [[ -z "$diff_stat" ]]; then
+    return 0  # No changes
+  fi
+
+  local files_changed
+  local total_changes
+  files_changed=$(echo "$diff_stat" | grep -c "^\s" 2>/dev/null || echo "0")
+  total_changes=$(echo "$diff_stat" | tail -1 | grep -oE '[0-9]+' | paste -sd+ - | bc 2>/dev/null || echo "0")
+
+  local violations=""
+
+  if [[ $files_changed -gt $MAX_FILES_PER_CYCLE ]]; then
+    violations+="Files changed ($files_changed) exceeds limit ($MAX_FILES_PER_CYCLE). "
+  fi
+
+  if [[ $total_changes -gt $MAX_LINES_PER_CYCLE ]]; then
+    violations+="Lines changed ($total_changes) exceeds limit ($MAX_LINES_PER_CYCLE). "
+  fi
+
+  cd - > /dev/null
+
+  if [[ -n "$violations" ]]; then
+    log "DIFF LIMIT VIOLATION: $violations"
+    if [[ "$DIFF_LIMIT_ACTION" == "escalate" ]]; then
+      return 1
+    fi
+  fi
+
+  return 0
+}
+
+# Check for protected path modifications
+check_protected_paths() {
+  if [[ ! -d "$REPO_DIR/.git" ]]; then
+    return 0
+  fi
+
+  cd "$REPO_DIR"
+
+  local modified_files
+  modified_files=$(git diff --name-only HEAD 2>/dev/null || echo "")
+
+  for file in $modified_files; do
+    if is_protected_path "$file"; then
+      log "SECURITY: Protected path modified: $file"
+      cd - > /dev/null
+      return 1
+    fi
+  done
+
+  cd - > /dev/null
+  return 0
+}
+
+# ============================================================
+# TOOL CHECKS
+# ============================================================
+
+check_tools() {
+  log "Checking required tools..."
+
+  if ! command -v claude &>/dev/null; then
+    echo "ERROR: 'claude' CLI not found. Install Claude Code first."
+    exit 1
+  fi
+
+  # Check QA agents (v2.1.1: Codex primary, Gemini fallback)
+  local codex_available=false
+  local gemini_available=false
+
+  if command -v codex &>/dev/null; then
+    codex_available=true
+    log "  Codex CLI: available"
+  else
+    log "  Codex CLI: NOT available"
+  fi
+
+  if [[ -x "$GEMINI_CLI_PATH" ]] && [[ -n "$GEMINI_API_KEY" ]]; then
+    gemini_available=true
+    log "  Gemini CLI: available (API key configured)"
+  elif [[ -x "$GEMINI_CLI_PATH" ]]; then
+    log "  Gemini CLI: installed but NO API key"
+  else
+    log "  Gemini CLI: NOT available"
+  fi
+
+  # Check if Claude is configured as QA (v3.1.0)
+  if [[ "$QA_PRIMARY_AGENT" == "claude" ]]; then
+    log "  QA Mode: Claude primary (${QA_CLAUDE_MODEL:-opus}), ${QA_FALLBACK_AGENT:-gemini} fallback"
+  elif [[ "$codex_available" == "false" ]] && [[ "$gemini_available" == "false" ]]; then
+    echo "ERROR: No QA agent available. Need either Codex, Gemini, or Claude."
+    exit 1
+  elif [[ "$codex_available" == "false" ]] && [[ "$QA_FALLBACK_ENABLED" == "true" ]]; then
+    log "  QA Mode: Gemini only (Codex unavailable)"
+    QA_PRIMARY_AGENT="gemini"
+  elif [[ "$codex_available" == "true" ]] && [[ "$gemini_available" == "true" ]]; then
+    log "  QA Mode: Codex primary, Gemini fallback"
+  elif [[ "$codex_available" == "true" ]]; then
+    log "  QA Mode: Codex only (no fallback)"
+    QA_FALLBACK_ENABLED="false"
+  fi
+
+  # Check for jq (used for JSON validation)
+  if ! command -v jq &>/dev/null; then
+    log "WARNING: 'jq' not found. JSON validation will be limited."
+  fi
+
+  log "Tools OK: claude, QA agents configured"
+}
+
+# ============================================================
+# PRE-FLIGHT VALIDATION
+# ============================================================
+
+run_preflight() {
+  if [[ "$SKIP_PREFLIGHT" == "true" ]]; then
+    return 0
+  fi
+
+  log "Running pre-flight checks..."
+  local preflight_fail=0
+
+  cd "$REPO_DIR"
+
+  # Check for uncommitted changes
+  if [[ -d ".git" ]]; then
+    local dirty_files
+    dirty_files=$(git status --porcelain 2>/dev/null | wc -l)
+
+    if [[ "$REQUIRE_CLEAN_START" == "true" ]] && [[ $dirty_files -gt 0 ]]; then
+      if [[ "$AUTO_STASH" == "true" ]]; then
+        log "Pre-flight: Auto-stashing $dirty_files uncommitted changes..."
+        git stash push -m "labloop-autostash-$(date +%s)" 2>/dev/null || {
+          log "PREFLIGHT FAIL: Could not auto-stash changes"
+          preflight_fail=1
+        }
+      else
+        log "PREFLIGHT FAIL: $dirty_files uncommitted changes (REQUIRE_CLEAN_START=true)"
+        preflight_fail=1
+      fi
+    elif [[ $dirty_files -gt $MAX_UNCOMMITTED_FILES ]]; then
+      log "WARNING: $dirty_files uncommitted changes exceeds limit ($MAX_UNCOMMITTED_FILES)"
+    fi
+  fi
+
+  # Python syntax check
+  if [[ -f "pyproject.toml" ]] || [[ -f "setup.py" ]]; then
+    log "Pre-flight: Python syntax check..."
+    local py_errors=0
+    while IFS= read -r -d '' pyfile; do
+      if ! python3 -m py_compile "$pyfile" 2>/dev/null; then
+        log "PREFLIGHT FAIL: Syntax error in $pyfile"
+        py_errors=$((py_errors + 1))
+      fi
+    done < <(find . -name "*.py" -not -path "./.venv/*" -not -path "./venv/*" -not -path "./.git/*" -print0 2>/dev/null | head -z -n 100)
+    if [[ $py_errors -gt 0 ]]; then
+      preflight_fail=1
+    fi
+  fi
+
+  # Node.js package check
+  if [[ -f "package.json" ]] && [[ ! -d "node_modules" ]]; then
+    log "WARNING: node_modules missing - run npm/yarn/pnpm install first"
+  fi
+
+  cd - > /dev/null
+
+  if [[ $preflight_fail -ne 0 ]]; then
+    log "Pre-flight checks failed - fix issues before running loop"
+    return 1
+  fi
+
+  log "Pre-flight checks passed"
+  return 0
+}
+
+# ============================================================
+# NOTIFICATIONS
+# ============================================================
+
+send_webhook() {
+  local event="$1"
+  local cycle="$2"
+  local details="${3:-}"
+
+  if [[ -z "$WEBHOOK_URL" ]]; then
+    return 0
+  fi
+
+  local payload
+  payload=$(cat <<EOF
+{
+  "task_id": "$TASK_ID",
+  "event": "$event",
+  "cycle": $cycle,
+  "timestamp": "$(ts)",
+  "repo": "$REPO_DIR",
+  "details": "$details"
+}
+EOF
+)
+
+  # Fire and forget - don't block on webhook
+  curl -s -X POST "$WEBHOOK_URL" \
+    -H "Content-Type: application/json" \
+    -d "$payload" \
+    --max-time 5 > /dev/null 2>&1 &
+}
+
+send_email() {
+  local event="$1"
+  local cycle="$2"
+  local details="${3:-}"
+
+  if [[ -z "$EMAIL_TO" ]]; then
+    return 0
+  fi
+
+  local subject="[Lab Loop] $TASK_ID - $event"
+  local body
+
+  case "$event" in
+    PASS)
+      subject="[Lab Loop] $TASK_ID - PASSED"
+      body="Lab Loop task completed successfully!
+
+Task: $TASK_ID
+Event: $event
+Cycle: $cycle
+Time: $(ts)
+Repo: $REPO_DIR
+
+$details
+
+---
+Lab Loop Automation v$LABLOOP_VERSION"
+      ;;
+    STUCK)
+      subject="[Lab Loop] $TASK_ID - STUCK"
+      body="Lab Loop task is stuck and needs intervention.
+
+Task: $TASK_ID
+Event: $event
+Cycle: $cycle
+Time: $(ts)
+Repo: $REPO_DIR
+
+$details
+
+An escalation packet has been created at:
+$TASK_DIR/escalation_*.zip
+
+---
+Lab Loop Automation v$LABLOOP_VERSION"
+      ;;
+    MAX_CYCLES)
+      subject="[Lab Loop] $TASK_ID - MAX CYCLES"
+      body="Lab Loop reached maximum cycles without passing.
+
+Task: $TASK_ID
+Event: $event
+Cycle: $cycle
+Time: $(ts)
+Repo: $REPO_DIR
+
+$details
+
+---
+Lab Loop Automation v$LABLOOP_VERSION"
+      ;;
+    FAIL)
+      if [[ $((cycle % 5)) -ne 0 ]]; then
+        return 0
+      fi
+      subject="[Lab Loop] $TASK_ID - Cycle $cycle Failed"
+      body="Lab Loop cycle $cycle failed, continuing...
+
+Task: $TASK_ID
+Event: $event
+Cycle: $cycle
+Time: $(ts)
+Repo: $REPO_DIR
+
+$details
+
+---
+Lab Loop Automation v$LABLOOP_VERSION"
+      ;;
+    STARTED)
+      subject="[Lab Loop] $TASK_ID - Started"
+      body="Lab Loop task started.
+
+Task: $TASK_ID
+Time: $(ts)
+Repo: $REPO_DIR
+Max Cycles: $MAX_CYCLES
+Gate Tier: $GATE_TIER
+
+---
+Lab Loop Automation v$LABLOOP_VERSION"
+      ;;
+    PREFLIGHT_FAIL)
+      subject="[Lab Loop] $TASK_ID - Pre-flight Failed"
+      body="Lab Loop pre-flight checks failed.
+
+Task: $TASK_ID
+Time: $(ts)
+Repo: $REPO_DIR
+
+$details
+
+---
+Lab Loop Automation v$LABLOOP_VERSION"
+      ;;
+    SAFETY_VIOLATION)
+      subject="[Lab Loop] $TASK_ID - SAFETY VIOLATION"
+      body="Lab Loop detected a safety violation and stopped.
+
+Task: $TASK_ID
+Event: $event
+Cycle: $cycle
+Time: $(ts)
+Repo: $REPO_DIR
+
+$details
+
+---
+Lab Loop Automation v$LABLOOP_VERSION"
+      ;;
+    BUILDER_SCHEMA_FAIL)
+      subject="[Lab Loop] $TASK_ID - Builder Schema Validation Failed"
+      body="Builder output failed schema validation.
+
+Task: $TASK_ID
+Cycle: $cycle
+Time: $(ts)
+
+$details
+
+---
+Lab Loop Automation v$LABLOOP_VERSION"
+      ;;
+    *)
+      return 0
+      ;;
+  esac
+
+  # Use Python for SMTP
+  if command -v python3 &>/dev/null; then
+    python3 - "$EMAIL_TO" "$subject" "$body" << 'PYEOF' 2>/dev/null &
+import sys
+import smtplib
+from email.mime.text import MIMEText
+import os
+
+to_email = sys.argv[1]
+subject = sys.argv[2]
+body = sys.argv[3]
+
+smtp_user = os.environ.get('LABLOOP_SMTP_USER', '')
+smtp_pass = os.environ.get('LABLOOP_SMTP_PASS', '')
+smtp_host = os.environ.get('LABLOOP_SMTP_HOST', 'smtp.gmail.com')
+smtp_port = int(os.environ.get('LABLOOP_SMTP_PORT', '587'))
+
+if not smtp_user or not smtp_pass:
+    sys.exit(1)
+
+msg = MIMEText(body)
+msg['Subject'] = subject
+msg['From'] = smtp_user
+msg['To'] = to_email
+
+try:
+    with smtplib.SMTP(smtp_host, smtp_port) as server:
+        server.starttls()
+        server.login(smtp_user, smtp_pass)
+        server.send_message(msg)
+except Exception as e:
+    print(f"Email failed: {e}", file=sys.stderr)
+    sys.exit(1)
+PYEOF
+  fi
+}
+
+send_notification() {
+  local event="$1"
+  local cycle="$2"
+  local details="${3:-}"
+
+  send_webhook "$event" "$cycle" "$details"
+  send_email "$event" "$cycle" "$details"
+}
+
+# ============================================================
+# QA MEMORY
+# ============================================================
+
+get_qa_memory() {
+  local current_cycle=$1
+  local memory=""
+
+  if [[ $current_cycle -le 1 ]]; then
+    echo ""
+    return
+  fi
+
+  memory="=== QA MEMORY (Previous Cycles) ===\n"
+
+  local start_cycle=$((current_cycle - 3))
+  [[ $start_cycle -lt 1 ]] && start_cycle=1
+
+  for i in $(seq $start_cycle $((current_cycle - 1))); do
+    local report="$TASK_DIR/history/qa_report_cycle_${i}.json"
+    if [[ -f "$report" ]]; then
+      local verdict blockers majors minors
+      verdict=$(grep -o '"verdict"[[:space:]]*:[[:space:]]*"[^"]*"' "$report" 2>/dev/null | cut -d'"' -f4 || echo "N/A")
+      blockers=$(grep -o '"severity"[[:space:]]*:[[:space:]]*"BLOCKER"' "$report" 2>/dev/null | wc -l)
+      majors=$(grep -o '"severity"[[:space:]]*:[[:space:]]*"MAJOR"' "$report" 2>/dev/null | wc -l)
+      minors=$(grep -o '"severity"[[:space:]]*:[[:space:]]*"MINOR"' "$report" 2>/dev/null | wc -l)
+      memory+="Cycle $i: $verdict (${blockers}B/${majors}M/${minors}m)\n"
+    fi
+  done
+
+  echo -e "$memory"
+}
+
+# ============================================================
+# INCREMENTAL FILE TRACKING
+# ============================================================
+
+get_changed_files() {
+  local cache_file="$TASK_DIR/_file_cache.txt"
+
+  if [[ "$INCREMENTAL" != "true" ]]; then
+    echo ""
+    return
+  fi
+
+  cd "$REPO_DIR"
+
+  local current_hashes
+  current_hashes=$(find . -name "*.py" -o -name "*.ts" -o -name "*.js" -o -name "*.go" -o -name "*.rs" 2>/dev/null | \
+    grep -v node_modules | grep -v .venv | grep -v venv | grep -v .git | \
+    head -500 | xargs -I{} sh -c 'echo "$(md5sum "{}" 2>/dev/null | cut -d" " -f1) {}"' | sort)
+
+  local changed_files=""
+
+  if [[ -f "$cache_file" ]]; then
+    local prev_hashes
+    prev_hashes=$(cat "$cache_file")
+    changed_files=$(diff <(echo "$prev_hashes") <(echo "$current_hashes") 2>/dev/null | \
+      grep "^>" | awk '{print $3}' | tr '\n' ' ')
+  fi
+
+  echo "$current_hashes" > "$cache_file"
+
+  cd - > /dev/null
+
+  if [[ -n "$changed_files" ]]; then
+    echo "=== CHANGED FILES (Incremental) ===$changed_files"
+  fi
+}
+
+# ============================================================
+# QA REPORT SEEDING
+# ============================================================
+
+seed_qa_report() {
+  if [[ ! -f "$TASK_DIR/QA_REPORT.json" ]]; then
+    log "Seeding initial QA_REPORT.json..."
+    cat > "$TASK_DIR/QA_REPORT.json" <<'EOF'
+{
+  "verdict": "FAIL",
+  "cycle": 0,
+  "summary": "Initial seeded QA report. Builder should run gates and implement fixes.",
+  "blockers": [],
+  "majors": [],
+  "minors": [],
+  "spec_compliance": {
+    "endpoints_match": false,
+    "schemas_match": false,
+    "status_strings_match": false,
+    "auth_matches": false,
+    "db_mode_matches": false,
+    "streaming_matches": false,
+    "local_llm_lane_verified": false,
+    "mocks_disabled_for_gates": false
+  },
+  "next_actions_for_builder": [
+    {
+      "priority": 1,
+      "severity": "BLOCKER",
+      "summary": "Run verification gates and create initial BUILDER_REPORT.md",
+      "files": [],
+      "how_to_validate": ["Run gate command and check exit code is 0"]
+    }
+  ],
+  "evidence": []
+}
+EOF
+  fi
+}
+
+# ============================================================
+# BUILDER OPERATIONS
+# ============================================================
+
+compose_builder_bundle() {
+  local cycle=$1
+  local bundle="$TASK_DIR/_bundle.txt"
+  local prev_qa_report="$TASK_DIR/QA_REPORT.json"
+
+  {
+    echo "=== BUILDER PROTOCOL ==="
+    cat "$TEMPLATES/builder_protocol.txt"
+    echo
+    echo "=== BUILDER OUTPUT SCHEMA ==="
+    echo "Your final JSON output MUST conform to this schema:"
+    cat "$SCHEMAS/builder_report.schema.json"
+    echo
+    echo "=== TASK MISSION ==="
+    # v2.1.3: Condensed Prompt Logic - reduce tokens for cycles > 1
+    if [[ "$BUNDLE_MODE" == "condensed" && $cycle -gt 1 ]]; then
+      head -n 20 "$TASK_DIR/mission.md"
+      echo "... (refer to cycle 1 for full mission)"
+    else
+      cat "$TASK_DIR/mission.md"
+    fi
+    echo
+    echo "=== TASK ACCEPTANCE CRITERIA ==="
+    if [[ "$BUNDLE_MODE" == "condensed" && $cycle -gt 1 ]]; then
+      head -n 20 "$TASK_DIR/acceptance.md"
+      echo "... (refer to cycle 1 for full criteria)"
+    else
+      cat "$TASK_DIR/acceptance.md"
+    fi
+    echo
+    echo "=== CURRENT CYCLE ==="
+    echo "Cycle: $cycle"
+    echo
+    local changed
+    changed=$(get_changed_files)
+    if [[ -n "$changed" ]]; then
+      echo "$changed"
+      echo
+    fi
+    echo "=== LATEST QA REPORT (JSON) ==="
+    # v2.1.3: Extract only critical fields for condensed mode
+    if [[ "$BUNDLE_MODE" == "condensed" && $cycle -gt 1 && -f "$prev_qa_report" ]]; then
+      if command -v jq &>/dev/null; then
+        jq '{verdict, blockers, majors, next_actions_for_builder}' "$prev_qa_report" 2>/dev/null || cat "$prev_qa_report"
+      else
+        cat "$prev_qa_report"
+      fi
+    else
+      cat "$prev_qa_report"
+    fi
+    echo
+    echo "=== TASK DIRECTORY ==="
+    echo "TASK_DIR=$TASK_DIR"
+    echo
+    echo "=== SAFETY CONSTRAINTS ==="
+    echo "MAX_FILES_PER_CYCLE=$MAX_FILES_PER_CYCLE"
+    echo "MAX_LINES_PER_CYCLE=$MAX_LINES_PER_CYCLE"
+    echo "Protected paths: .env, secrets/**, credentials/**, *.pem, *.key"
+    echo
+    echo "=== INSTRUCTIONS ==="
+    echo "1. Read the QA report above and address the issues"
+    echo "2. Make changes to fix blockers first, then majors, then minors"
+    echo "3. VERIFY your fix by running the gate command: $GATE_CMD"
+    echo "4. Write your report to: $TASK_DIR/BUILDER_REPORT.md"
+    echo "5. Output ONLY a JSON object matching the BUILDER OUTPUT SCHEMA above"
+    echo "6. Include all required fields: status, cycle, summary, issues_addressed, changed_files, commands_run, gate_pre_check, notes_for_qa"
+  } > "$bundle"
+
+  echo "$bundle"
+}
+
+validate_builder_output() {
+  local output_file="$1"
+  local cycle="$2"
+
+  log "Validating Builder output against schema..."
+
+  # Check if file exists and is valid JSON
+  if [[ ! -f "$output_file" ]]; then
+    log "ERROR: Builder output file not found: $output_file"
+    return 1
+  fi
+
+  # Extract JSON from output (Builder may output text before JSON or wrap in markdown)
+  local json_content
+  local file_content
+  file_content=$(cat "$output_file" | tr -d '\r')
+
+  # Check if file contains a markdown JSON code block (anywhere in the file)
+  if echo "$file_content" | grep -q '```json'; then
+    # Extract content between ```json and ``` markers (handles blocks anywhere in text)
+    json_content=$(echo "$file_content" | sed -n '/```json/,/```/p' | sed '1d;$d' | head -500)
+  elif echo "$file_content" | grep -q '```'; then
+    # Try generic code block
+    json_content=$(echo "$file_content" | sed -n '/```/,/```/p' | sed '1d;$d' | head -500)
+  else
+    # No markdown wrapper - try to extract raw JSON object
+    json_content=$(echo "$file_content" | grep -Pzo '\{[\s\S]*\}' 2>/dev/null | tr '\0' '\n' | tail -1 || echo "$file_content")
+  fi
+
+  # Basic JSON validation with jq
+  if command -v jq &>/dev/null; then
+    if ! echo "$json_content" | jq empty 2>/dev/null; then
+      log "ERROR: Builder output is not valid JSON"
+      return 1
+    fi
+
+    # Check required fields
+    local status
+    status=$(echo "$json_content" | jq -r '.status // empty' 2>/dev/null)
+    if [[ -z "$status" ]]; then
+      log "ERROR: Builder output missing required field: status"
+      return 1
+    fi
+
+    if [[ "$status" != "READY_FOR_QA" && "$status" != "BLOCKED" && "$status" != "ERROR" ]]; then
+      log "ERROR: Builder status must be READY_FOR_QA, BLOCKED, or ERROR (got: $status)"
+      return 1
+    fi
+
+    # Check other required fields
+    for field in cycle summary changed_files commands_run gate_pre_check notes_for_qa; do
+      if ! echo "$json_content" | jq -e ".$field" > /dev/null 2>&1; then
+        log "WARNING: Builder output missing field: $field"
+      fi
+    done
+
+    # Save validated JSON
+    echo "$json_content" > "$TASK_DIR/_builder_validated.json"
+
+    log "Builder output validation passed"
+    return 0
+  else
+    # Fallback: basic check for JSON structure
+    if echo "$json_content" | grep -q '"status"'; then
+      log "Builder output appears valid (jq not available for full validation)"
+      echo "$json_content" > "$TASK_DIR/_builder_validated.json"
+      return 0
+    else
+      log "ERROR: Builder output missing status field"
+      return 1
+    fi
+  fi
+}
+
+run_builder() {
+  local cycle=$1
+  local bundle=$2
+  local max_retries=2
+  local retry=0
+
+  log "Running Builder (Claude Code) with model: ${BUILDER_MODEL}..."
+
+  while [[ $retry -lt $max_retries ]]; do
+    # --dangerously-skip-permissions required for non-interactive automation
+    # --model selects the Claude model (opus, sonnet, haiku, or full name)
+    local claude_opts="-p --output-format text --dangerously-skip-permissions --model ${BUILDER_MODEL}"
+    if [[ -n "$CLAUDE_ADD_DIRS" ]]; then
+      claude_opts="$claude_opts --add-dir $CLAUDE_ADD_DIRS"
+    fi
+
+    if [[ "$DRY_RUN" == "true" ]]; then
+      log "[DRY-RUN] Would run: cat $bundle | claude $claude_opts ..."
+      cat > "$TASK_DIR/_builder_stdout.json" <<EOF
+{
+  "status": "READY_FOR_QA",
+  "cycle": $cycle,
+  "summary": "Dry run mode - no actual changes made",
+  "issues_addressed": [],
+  "changed_files": [],
+  "commands_run": [{"command": "dry-run", "exit_code": 0, "success": true}],
+  "gate_pre_check": {"ran_gate": false},
+  "notes_for_qa": ["Dry run mode - no actual QA performed"],
+  "confidence": "high"
+}
+EOF
+      break
+    else
+      cd "$REPO_DIR"
+
+      # v2.1.4: Fix Builder invocation - combine bundle + instructions into single stdin
+      # This avoids the confusing dual-input (stdin + argument) that caused hangs
+      local combined_input
+      combined_input=$(mktemp)
+      {
+        cat "$bundle"
+        echo ""
+        echo "=== BUILDER INSTRUCTIONS ==="
+        echo "Follow the instructions above. Implement fixes for the task."
+        echo "Write your report to $TASK_DIR/BUILDER_REPORT.md"
+        echo "Then output ONLY the final JSON object matching the Builder schema."
+        echo "Required fields: status, cycle, summary, issues_addressed, changed_files, commands_run, gate_pre_check, notes_for_qa"
+      } > "$combined_input"
+
+      # v2.1.3: Metrics - track builder duration
+      local build_start=$(date +%s)
+
+      # 20 minute timeout for Builder - use stdin only (no separate prompt argument)
+      # The < redirection is more reliable than pipe for automation
+      if timeout 1200 claude $claude_opts < "$combined_input" > "$TASK_DIR/_builder_stdout.json" 2>&1; then
+        local build_end=$(date +%s)
+        local build_duration=$((build_end - build_start))
+        echo "$build_duration" > "$TASK_DIR/_builder_duration.txt"
+        log "Builder completed in ${build_duration}s"
+      else
+        local exit_code=$?
+        local build_end=$(date +%s)
+        local build_duration=$((build_end - build_start))
+        echo "$build_duration" > "$TASK_DIR/_builder_duration.txt"
+        if [[ $exit_code -eq 124 ]]; then
+          log "WARNING: Builder timed out after 20 minutes (${build_duration}s)"
+        else
+          log "WARNING: Builder exited with non-zero status ($exit_code) after ${build_duration}s"
+        fi
+      fi
+
+      # Cleanup temp file
+      rm -f "$combined_input" 2>/dev/null
+
+      cd - > /dev/null
+    fi
+
+    # Validate output
+    if validate_builder_output "$TASK_DIR/_builder_stdout.json" "$cycle"; then
+      break
+    else
+      retry=$((retry + 1))
+      if [[ $retry -lt $max_retries ]]; then
+        log "Retrying Builder with schema validation feedback (attempt $((retry + 1))/$max_retries)..."
+
+        # Add validation error to bundle (use temp file to avoid clobbering during read)
+        local temp_bundle
+        temp_bundle=$(mktemp)
+        {
+          cat "$bundle"
+          echo
+          echo "=== SCHEMA VALIDATION ERROR ==="
+          echo "Your previous output failed schema validation. Please regenerate ONLY valid JSON."
+          echo "Required fields: status, cycle, summary, issues_addressed, changed_files, commands_run, gate_pre_check, notes_for_qa"
+          echo "Status must be one of: READY_FOR_QA, BLOCKED, ERROR"
+        } > "$temp_bundle"
+        mv "$temp_bundle" "$bundle"
+      else
+        log "ERROR: Builder output failed schema validation after $max_retries attempts"
+        send_notification "BUILDER_SCHEMA_FAIL" "$cycle" "Builder output failed schema validation"
+      fi
+    fi
+  done
+
+  # Save to history
+  cp "$TASK_DIR/_builder_stdout.json" "$TASK_DIR/history/builder_stdout_cycle_${cycle}.json"
+
+  # Create placeholder BUILDER_REPORT.md if not created
+  if [[ ! -f "$TASK_DIR/BUILDER_REPORT.md" ]]; then
+    echo "# Builder Report - Cycle $cycle" > "$TASK_DIR/BUILDER_REPORT.md"
+    echo "" >> "$TASK_DIR/BUILDER_REPORT.md"
+    echo "Builder did not create a report. Check _builder_stdout.json for details." >> "$TASK_DIR/BUILDER_REPORT.md"
+  fi
+}
+
+# ============================================================
+# GATE OPERATIONS (v2.1: Flaky Gate Policy with retry support)
+# ============================================================
+
+# Global variables for gate results (set by run_gates)
+GATE_FINAL_RC=0
+GATE_FLAKE_SUSPECTED=false
+GATE_ATTEMPTS=0
+
+run_gates() {
+  local cycle=$1
+  local gate_cmd
+
+  # v2.1.3: Metrics - track gate duration
+  local gate_start_time=$(date +%s)
+
+  # Select gate based on tier
+  if [[ "$GATE_TIER" == "full" ]]; then
+    gate_cmd="$GATE_FULL_CMD"
+    log "Running FULL verification gates: $gate_cmd"
+  else
+    gate_cmd="$GATE_FAST_CMD"
+    log "Running FAST verification gates: $gate_cmd"
+  fi
+
+  # Reset gate state
+  GATE_FINAL_RC=0
+  GATE_FLAKE_SUSPECTED=false
+  GATE_ATTEMPTS=0
+
+  local exit_codes=()
+  local attempt=1
+  local max_attempts=$((GATE_RETRY_MAX + 1))
+  local had_failure=false
+
+  if [[ "$DRY_RUN" == "true" ]]; then
+    log "[DRY-RUN] Would run: $gate_cmd"
+    echo "DRY RUN: Gate command would be executed" > "$TASK_DIR/gate_output.log"
+    echo "0" > "$TASK_DIR/gate_rc.txt"
+    cp "$TASK_DIR/gate_output.log" "$TASK_DIR/history/gate_output_cycle_${cycle}.log"
+
+    # Create gate_attempts.json for dry run
+    cat > "$TASK_DIR/artifacts/gate_attempts.json" <<EOF
+{
+  "attempts": 1,
+  "exit_codes": [0],
+  "flake_suspected": false,
+  "final_exit_code": 0,
+  "dry_run": true
+}
+EOF
+    GATE_ATTEMPTS=1
+    # v2.1.3: Record gate duration for dry run
+    local gate_end_time=$(date +%s)
+    local gate_duration=$((gate_end_time - gate_start_time))
+    echo "$gate_duration" > "$TASK_DIR/_gate_duration.txt"
+    return 0
+  fi
+
+  while [[ $attempt -le $max_attempts ]]; do
+    log "Gate attempt $attempt of $max_attempts..."
+
+    local attempt_log="$TASK_DIR/history/gate_attempt_${attempt}.log"
+    local gate_rc=0
+
+    set +e
+    if [[ -n "$GATE_RETRY_TIMEOUT_SEC" ]]; then
+      timeout "$GATE_RETRY_TIMEOUT_SEC" bash -c "cd '$REPO_DIR' && bash -lc '$gate_cmd'" 2>&1 | tee "$attempt_log"
+      gate_rc=${PIPESTATUS[0]}
+    else
+      (cd "$REPO_DIR" && bash -lc "$gate_cmd") 2>&1 | tee "$attempt_log"
+      gate_rc=${PIPESTATUS[0]}
+    fi
+    set -e
+
+    exit_codes+=("$gate_rc")
+    log "Gate attempt $attempt exit code: $gate_rc"
+
+    # Check if this is the final successful attempt after a failure
+    if [[ $gate_rc -eq 0 ]]; then
+      if [[ "$had_failure" == "true" ]]; then
+        GATE_FLAKE_SUSPECTED=true
+        log "FLAKE SUSPECTED: Gate passed after earlier failure"
+      fi
+      GATE_FINAL_RC=0
+      break
+    else
+      had_failure=true
+      GATE_FINAL_RC=$gate_rc
+    fi
+
+    # Check if we should retry
+    if [[ $attempt -lt $max_attempts ]]; then
+      local should_retry=true
+
+      # Check retry mode
+      if [[ "$GATE_RETRY_MODE" == "on_fail" && $gate_rc -eq 0 ]]; then
+        should_retry=false
+      fi
+
+      # Check ON regex (must match to retry)
+      if [[ -n "$GATE_RETRY_ON_REGEX" ]]; then
+        if ! grep -qE "$GATE_RETRY_ON_REGEX" "$attempt_log" 2>/dev/null; then
+          log "Gate output does not match GATE_RETRY_ON_REGEX, not retrying"
+          should_retry=false
+        fi
+      fi
+
+      # Check OFF regex (must NOT match to retry)
+      if [[ -n "$GATE_RETRY_OFF_REGEX" ]]; then
+        if grep -qE "$GATE_RETRY_OFF_REGEX" "$attempt_log" 2>/dev/null; then
+          log "Gate output matches GATE_RETRY_OFF_REGEX, not retrying"
+          should_retry=false
+        fi
+      fi
+
+      if [[ "$should_retry" == "true" ]]; then
+        log "Retrying gate in ${GATE_RETRY_DELAY_SEC}s..."
+        sleep "$GATE_RETRY_DELAY_SEC"
+      else
+        break
+      fi
+    fi
+
+    attempt=$((attempt + 1))
+  done
+
+  GATE_ATTEMPTS=$attempt
+
+  # Copy final attempt to standard location
+  cp "$TASK_DIR/history/gate_attempt_${GATE_ATTEMPTS}.log" "$TASK_DIR/gate_output.log"
+  cp "$TASK_DIR/gate_output.log" "$TASK_DIR/history/gate_output_cycle_${cycle}.log"
+  echo "$GATE_FINAL_RC" > "$TASK_DIR/gate_rc.txt"
+
+  # Write gate_attempts.json
+  local exit_codes_json
+  exit_codes_json=$(printf '%s\n' "${exit_codes[@]}" | jq -s '.')
+  cat > "$TASK_DIR/artifacts/gate_attempts.json" <<EOF
+{
+  "attempts": $GATE_ATTEMPTS,
+  "exit_codes": $exit_codes_json,
+  "flake_suspected": $GATE_FLAKE_SUSPECTED,
+  "final_exit_code": $GATE_FINAL_RC,
+  "gate_cmd": $(echo "$gate_cmd" | jq -R .),
+  "retry_max": $GATE_RETRY_MAX,
+  "retry_mode": "$GATE_RETRY_MODE"
+}
+EOF
+
+  # v2.1.3: Metrics - record gate duration
+  local gate_end_time=$(date +%s)
+  local gate_duration=$((gate_end_time - gate_start_time))
+  echo "$gate_duration" > "$TASK_DIR/_gate_duration.txt"
+
+  log "Gate exit code: $GATE_FINAL_RC (attempts: $GATE_ATTEMPTS, flake_suspected: $GATE_FLAKE_SUSPECTED, duration: ${gate_duration}s)"
+  return $GATE_FINAL_RC
+}
+
+# ============================================================
+# SPEC ORACLE (v2.1: Independent spec checking)
+# ============================================================
+
+# Global variables for spec check results
+SPEC_CHECK_RC=0
+SPEC_CHECK_PASSED=true
+
+run_spec_check() {
+  local cycle=$1
+
+  # Reset state
+  SPEC_CHECK_RC=0
+  SPEC_CHECK_PASSED=true
+
+  # Skip if not configured
+  if [[ -z "$SPEC_CHECK_CMD" ]]; then
+    return 0
+  fi
+
+  log "Running Spec Oracle: $SPEC_CHECK_CMD"
+
+  local spec_log="$TASK_DIR/history/spec_check_cycle_${cycle}.log"
+
+  if [[ "$DRY_RUN" == "true" ]]; then
+    log "[DRY-RUN] Would run spec check: $SPEC_CHECK_CMD"
+    echo "DRY RUN: Spec check would be executed" > "$spec_log"
+    cat > "$TASK_DIR/artifacts/spec_check.json" <<EOF
+{
+  "command": "$SPEC_CHECK_CMD",
+  "exit_code": 0,
+  "passed": true,
+  "dry_run": true
+}
+EOF
+    return 0
+  fi
+
+  set +e
+  if [[ -n "$SPEC_CHECK_TIMEOUT_SEC" ]]; then
+    timeout "$SPEC_CHECK_TIMEOUT_SEC" bash -c "cd '$REPO_DIR' && bash -lc '$SPEC_CHECK_CMD'" 2>&1 | tee "$spec_log"
+    SPEC_CHECK_RC=${PIPESTATUS[0]}
+  else
+    (cd "$REPO_DIR" && bash -lc "$SPEC_CHECK_CMD") 2>&1 | tee "$spec_log"
+    SPEC_CHECK_RC=${PIPESTATUS[0]}
+  fi
+  set -e
+
+  if [[ $SPEC_CHECK_RC -ne 0 ]]; then
+    SPEC_CHECK_PASSED=false
+  fi
+
+  # Write spec_check.json
+  cat > "$TASK_DIR/artifacts/spec_check.json" <<EOF
+{
+  "command": $(echo "$SPEC_CHECK_CMD" | jq -R .),
+  "exit_code": $SPEC_CHECK_RC,
+  "passed": $SPEC_CHECK_PASSED
+}
+EOF
+
+  log "Spec check exit code: $SPEC_CHECK_RC (passed: $SPEC_CHECK_PASSED)"
+
+  # Return failure if required and failed
+  if [[ "$SPEC_CHECK_REQUIRED" == "true" && "$SPEC_CHECK_PASSED" == "false" ]]; then
+    return 1
+  fi
+
+  return 0
+}
+
+# ============================================================
+# PROMPT EVALS (v2.1: Behavioral regression harness)
+# ============================================================
+
+# Global variables for eval results
+EVAL_RC=0
+EVAL_PASSED=true
+
+run_eval() {
+  local cycle=$1
+
+  # Reset state
+  EVAL_RC=0
+  EVAL_PASSED=true
+
+  # Skip if not configured
+  if [[ -z "$EVAL_CMD" ]]; then
+    return 0
+  fi
+
+  log "Running Prompt Eval: $EVAL_CMD"
+
+  local eval_log="$TASK_DIR/history/eval_cycle_${cycle}.log"
+
+  if [[ "$DRY_RUN" == "true" ]]; then
+    log "[DRY-RUN] Would run eval: $EVAL_CMD"
+    echo "DRY RUN: Eval would be executed" > "$eval_log"
+    cat > "$EVAL_RESULTS_PATH" <<EOF
+{
+  "dry_run": true,
+  "passed": true
+}
+EOF
+    return 0
+  fi
+
+  set +e
+  if [[ -n "$EVAL_TIMEOUT_SEC" ]]; then
+    timeout "$EVAL_TIMEOUT_SEC" bash -c "cd '$REPO_DIR' && bash -lc '$EVAL_CMD'" 2>&1 | tee "$eval_log"
+    EVAL_RC=${PIPESTATUS[0]}
+  else
+    (cd "$REPO_DIR" && bash -lc "$EVAL_CMD") 2>&1 | tee "$eval_log"
+    EVAL_RC=${PIPESTATUS[0]}
+  fi
+  set -e
+
+  log "Eval exit code: $EVAL_RC"
+
+  # Check if eval passed
+  if [[ $EVAL_RC -ne 0 ]]; then
+    EVAL_PASSED=false
+  fi
+
+  # Check if results file exists and is valid JSON (when required)
+  if [[ "$EVAL_REQUIRED" == "true" ]]; then
+    if [[ ! -f "$EVAL_RESULTS_PATH" ]]; then
+      log "ERROR: Eval results file not found: $EVAL_RESULTS_PATH"
+      EVAL_PASSED=false
+    elif command -v jq &>/dev/null; then
+      if ! jq empty "$EVAL_RESULTS_PATH" 2>/dev/null; then
+        log "ERROR: Eval results file is not valid JSON"
+        EVAL_PASSED=false
+      fi
+    fi
+  fi
+
+  log "Eval passed: $EVAL_PASSED"
+
+  # Return failure if required and failed
+  if [[ "$EVAL_REQUIRED" == "true" && "$EVAL_PASSED" == "false" ]]; then
+    return 1
+  fi
+
+  return 0
+}
+
+# ============================================================
+# QA OPERATIONS
+# ============================================================
+
+# v2.1.3: Auto-collect evidence for QA visibility
+run_qa_requested_commands() {
+  local cycle=$1
+  local evidence_file="$TASK_DIR/artifacts/qa_evidence_cycle_${cycle}.txt"
+
+  log "Collecting auto-evidence for QA..."
+
+  # Run safe evidence commands and save output
+  {
+    echo "=== AUTO-COLLECTED EVIDENCE (Cycle $cycle) ==="
+    echo "Timestamp: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+    echo
+    echo "--- git status ---"
+    git -C "$REPO_DIR" status --porcelain 2>/dev/null || echo "(git status unavailable)"
+    echo
+    echo "--- Recent changes (git diff --stat) ---"
+    git -C "$REPO_DIR" diff --stat HEAD~1 2>/dev/null | head -30 || echo "(git diff unavailable)"
+    echo
+    echo "--- Directory listing (top-level) ---"
+    ls -la "$REPO_DIR" 2>/dev/null | head -30 || echo "(ls unavailable)"
+  } > "$evidence_file" 2>/dev/null
+
+  log "Evidence saved to $evidence_file"
+}
+
+compose_qa_input() {
+  local cycle=$1
+  local qa_in="$TASK_DIR/_qa_in.txt"
+
+  {
+    echo "=== QA PROTOCOL ==="
+    cat "$TEMPLATES/qa_protocol.txt"
+    echo
+    echo "=== JSON SCHEMA FOR YOUR OUTPUT ==="
+    echo "Your output MUST conform to this schema:"
+    cat "$SCHEMAS/qa_report.schema.json"
+    echo
+    echo "=== TASK MISSION ==="
+    cat "$TASK_DIR/mission.md"
+    echo
+    echo "=== TASK ACCEPTANCE CRITERIA ==="
+    cat "$TASK_DIR/acceptance.md"
+    echo
+    echo "=== CURRENT CYCLE ==="
+    echo "Cycle: $cycle"
+    echo
+    echo "=== BUILDER REPORT ==="
+    if [[ -f "$TASK_DIR/BUILDER_REPORT.md" ]]; then
+      cat "$TASK_DIR/BUILDER_REPORT.md"
+    else
+      echo "(BUILDER_REPORT.md not found)"
+    fi
+    echo
+    echo "=== BUILDER JSON OUTPUT ==="
+    if [[ -f "$TASK_DIR/_builder_validated.json" ]]; then
+      cat "$TASK_DIR/_builder_validated.json"
+    elif [[ -f "$TASK_DIR/_builder_stdout.json" ]]; then
+      cat "$TASK_DIR/_builder_stdout.json"
+    else
+      echo "(No builder JSON output)"
+    fi
+    echo
+    echo "=== GATE OUTPUT LOG ==="
+    cat "$TASK_DIR/gate_output.log"
+    echo
+    echo "=== GATE EXIT CODE ==="
+    cat "$TASK_DIR/gate_rc.txt"
+    echo
+
+    # v2.1: Include gate attempts summary
+    if [[ -f "$TASK_DIR/artifacts/gate_attempts.json" ]]; then
+      echo "=== GATE ATTEMPTS (Flaky Policy) ==="
+      cat "$TASK_DIR/artifacts/gate_attempts.json"
+      echo
+    fi
+
+    # v2.1: Include spec check results
+    if [[ -f "$TASK_DIR/artifacts/spec_check.json" ]]; then
+      echo "=== SPEC CHECK RESULTS ==="
+      cat "$TASK_DIR/artifacts/spec_check.json"
+      echo
+      local spec_log="$TASK_DIR/history/spec_check_cycle_${cycle}.log"
+      if [[ -f "$spec_log" ]]; then
+        echo "=== SPEC CHECK LOG ==="
+        cat "$spec_log"
+        echo
+      fi
+    fi
+
+    # v2.1: Include eval results
+    if [[ -f "$EVAL_RESULTS_PATH" ]]; then
+      echo "=== EVAL RESULTS ==="
+      cat "$EVAL_RESULTS_PATH"
+      echo
+      local eval_log="$TASK_DIR/history/eval_cycle_${cycle}.log"
+      if [[ -f "$eval_log" ]]; then
+        echo "=== EVAL LOG ==="
+        cat "$eval_log"
+        echo
+      fi
+    fi
+
+    # v2.1.3: Include auto-collected evidence
+    local evidence_file="$TASK_DIR/artifacts/qa_evidence_cycle_${cycle}.txt"
+    if [[ -f "$evidence_file" ]]; then
+      echo "=== SYSTEM EVIDENCE ==="
+      cat "$evidence_file"
+      echo
+    fi
+
+    local memory
+    memory=$(get_qa_memory "$cycle")
+    if [[ -n "$memory" ]]; then
+      echo "$memory"
+      echo
+    fi
+    echo "=== DEFINITION OF PASS ==="
+    echo "PASS requires ALL of:"
+    echo "  1. Gate exit code = 0"
+    echo "  2. All spec_compliance fields = true"
+    echo "  3. Zero BLOCKERS"
+    echo "  4. Zero MAJORS"
+    if [[ -n "$SPEC_CHECK_CMD" ]]; then
+      echo "  5. Spec check passed = true (SPEC_CHECK_CMD configured)"
+    fi
+    if [[ -n "$EVAL_CMD" ]]; then
+      echo "  6. Eval passed = true (EVAL_CMD configured)"
+    fi
+    echo "FAIL if ANY condition above is not met."
+    echo
+    echo "=== INSTRUCTIONS ==="
+    echo "1. Analyze the gate output and builder report"
+    echo "2. Check spec compliance against acceptance criteria"
+    echo "3. List any blockers, majors, and minors found"
+    echo "4. Set verdict to PASS only if ALL conditions in DEFINITION OF PASS are met"
+    echo "5. Provide next_actions_for_builder if verdict is FAIL"
+    echo "6. Output a JSON object matching the schema to: $TASK_DIR/QA_REPORT.json"
+    echo "7. If previous cycles show same issues recurring, flag as potential stuck loop"
+    if [[ -f "$TASK_DIR/artifacts/gate_attempts.json" ]]; then
+      echo "8. Note if flake_suspected=true in gate_attempts.json - the gate may be flaky"
+    fi
+  } > "$qa_in"
+
+  echo "$qa_in"
+}
+
+# ============================================================
+# QA AGENT: CODEX
+# ============================================================
+
+run_qa_codex() {
+  local cycle=$1
+  local qa_in=$2
+  local output_file="$TASK_DIR/QA_REPORT.json"
+
+  # Build model option if specified
+  local model_opt=""
+  if [[ -n "$QA_CODEX_MODEL" ]]; then
+    model_opt="--model $QA_CODEX_MODEL"
+    log "Running QA with Codex (model: ${QA_CODEX_MODEL})..."
+  else
+    log "Running QA with Codex (default model)..."
+  fi
+
+  # v2.1.3: Metrics - track QA duration
+  local qa_start=$(date +%s)
+
+  local codex_output
+  codex_output=$(mktemp)
+  local codex_log="$TASK_DIR/history/codex_output_cycle_${cycle}.log"
+
+  # 15 minute timeout for QA
+  if timeout 900 "$CODEX_CLI_PATH" exec \
+    $model_opt \
+    --cd "$REPO_DIR" \
+    --output-schema "$SCHEMAS/qa_report.schema.json" \
+    --output-last-message "$output_file" \
+    - < "$qa_in" > "$codex_output" 2>&1; then
+
+    # Save output log
+    cp "$codex_output" "$codex_log" 2>/dev/null || true
+    rm -f "$codex_output"
+
+    # v2.1.3: Record QA duration
+    local qa_end=$(date +%s)
+    local qa_duration=$((qa_end - qa_start))
+    echo "$qa_duration" > "$TASK_DIR/_qa_duration.txt"
+
+    # Check if output is valid
+    if [[ -s "$output_file" ]]; then
+      log "QA (Codex) completed successfully in ${qa_duration}s"
+      QA_AGENT_USED="codex"
+      return 0
+    else
+      log "WARNING: Codex produced empty output"
+      rm -f "$codex_output"
+      return 1
+    fi
+  else
+    local exit_code=$?
+
+    # v2.1.3: Record QA duration even on failure
+    local qa_end=$(date +%s)
+    local qa_duration=$((qa_end - qa_start))
+    echo "$qa_duration" > "$TASK_DIR/_qa_duration.txt"
+
+    # Save output log even on failure
+    cp "$codex_output" "$codex_log" 2>/dev/null || true
+
+    if [[ $exit_code -eq 124 ]]; then
+      log "ERROR: Codex timed out after 15 minutes (${qa_duration}s)"
+    else
+      log "WARNING: Codex exited with code $exit_code after ${qa_duration}s"
+      # Check for usage limit errors
+      if grep -qi "rate.limit\|usage.limit\|quota\|exceeded\|subscription" "$codex_output" 2>/dev/null; then
+        log "DETECTED: Codex usage/rate limit reached"
+      fi
+    fi
+
+    # Log first 50 lines for debugging
+    log "Codex output (first 50 lines):"
+    head -50 "$codex_output" 2>/dev/null | while read -r line; do
+      log "  $line"
+    done
+
+    rm -f "$codex_output"
+    return 1
+  fi
+}
+
+# ============================================================
+# QA AGENT: CLAUDE (v3.1.0 - Opus 4.5 support)
+# ============================================================
+
+run_qa_claude() {
+  local cycle=$1
+  local qa_in=$2
+  local output_file="$TASK_DIR/QA_REPORT.json"
+
+  # Build model option if specified
+  local model_opt=""
+  if [[ -n "$QA_CLAUDE_MODEL" ]]; then
+    model_opt="--model $QA_CLAUDE_MODEL"
+    log "Running QA with Claude (model: ${QA_CLAUDE_MODEL})..."
+  else
+    model_opt="--model opus"
+    log "Running QA with Claude (default: opus)..."
+  fi
+
+  # v3.1.0: Metrics - track QA duration
+  local qa_start=$(date +%s)
+
+  local claude_output
+  claude_output=$(mktemp)
+  local claude_log="$TASK_DIR/history/claude_qa_output_cycle_${cycle}.log"
+
+  # 20 minute timeout for QA (Claude may be more thorough)
+  local qa_timeout="${QA_TIMEOUT:-1200}"
+
+  # Claude CLI doesn't have --cd, so we cd into the repo dir first
+  if timeout "$qa_timeout" bash -c "cd '$REPO_DIR' && claude \
+    -p \
+    --output-format json \
+    --dangerously-skip-permissions \
+    $model_opt \
+    < '$qa_in'" > "$claude_output" 2>&1; then
+
+    # Save output log
+    cp "$claude_output" "$claude_log" 2>/dev/null || true
+
+    # v3.1.0: Record QA duration
+    local qa_end=$(date +%s)
+    local qa_duration=$((qa_end - qa_start))
+    echo "$qa_duration" > "$TASK_DIR/_qa_duration.txt"
+
+    # PRIORITY 1: Check if Claude wrote the QA_REPORT.json file directly
+    # Claude often writes to the output file directly rather than stdout
+    if [[ -s "$output_file" ]] && grep -q '"verdict"' "$output_file" 2>/dev/null; then
+      if python3 -c "import json; json.load(open('$output_file'))" 2>/dev/null; then
+        log "QA (Claude) completed successfully in ${qa_duration}s (direct file write)"
+        QA_AGENT_USED="claude"
+        rm -f "$claude_output"
+        return 0
+      fi
+    fi
+
+    # PRIORITY 2: Extract JSON from Claude stdout (may have markdown wrapper)
+    if grep -q '"verdict"' "$claude_output"; then
+      # Try to extract JSON block
+      if grep -q '```json' "$claude_output"; then
+        sed -n '/```json/,/```/p' "$claude_output" | sed '1d;$d' > "$output_file"
+      else
+        # Assume raw JSON output
+        cp "$claude_output" "$output_file"
+      fi
+
+      # Validate JSON structure
+      if python3 -c "import json; json.load(open('$output_file'))" 2>/dev/null; then
+        log "QA (Claude) completed successfully in ${qa_duration}s"
+        QA_AGENT_USED="claude"
+        rm -f "$claude_output"
+        return 0
+      else
+        log "WARNING: Claude output is not valid JSON, attempting repair..."
+        # Try to find and extract JSON object
+        python3 -c "
+import re, json, sys
+with open('$claude_output') as f:
+    content = f.read()
+# Find JSON object with verdict
+match = re.search(r'\{[^{}]*\"verdict\"[^{}]*\}', content, re.DOTALL)
+if not match:
+    match = re.search(r'\{.*\"verdict\".*\}', content, re.DOTALL)
+if match:
+    try:
+        obj = json.loads(match.group())
+        with open('$output_file', 'w') as out:
+            json.dump(obj, out, indent=2)
+        sys.exit(0)
+    except: pass
+sys.exit(1)
+" 2>/dev/null
+        if [[ $? -eq 0 ]]; then
+          log "QA (Claude) output repaired successfully in ${qa_duration}s"
+          QA_AGENT_USED="claude"
+          rm -f "$claude_output"
+          return 0
+        fi
+      fi
+    fi
+
+    log "WARNING: Claude produced output but no valid verdict JSON"
+    rm -f "$claude_output"
+    return 1
+  else
+    local exit_code=$?
+
+    # v3.1.0: Record QA duration even on failure
+    local qa_end=$(date +%s)
+    local qa_duration=$((qa_end - qa_start))
+    echo "$qa_duration" > "$TASK_DIR/_qa_duration.txt"
+
+    # Save output log even on failure
+    cp "$claude_output" "$claude_log" 2>/dev/null || true
+
+    if [[ $exit_code -eq 124 ]]; then
+      log "ERROR: Claude timed out after ${qa_timeout}s (${qa_duration}s elapsed)"
+    else
+      log "WARNING: Claude exited with code $exit_code after ${qa_duration}s"
+    fi
+
+    # Log first 50 lines for debugging
+    log "Claude output (first 50 lines):"
+    head -50 "$claude_output" 2>/dev/null | while read -r line; do
+      log "  $line"
+    done
+
+    rm -f "$claude_output"
+    return 1
+  fi
+}
+
+# ============================================================
+# QA AGENT: GEMINI (v2.1.1 Fallback)
+# ============================================================
+
+run_qa_gemini() {
+  local cycle=$1
+  local qa_in=$2
+  local output_file="$TASK_DIR/QA_REPORT.json"
+
+  # Build model option for Gemini
+  local gemini_model_opt=""
+  if [[ -n "$QA_GEMINI_MODEL" ]]; then
+    gemini_model_opt="-m $QA_GEMINI_MODEL"
+    log "Running QA with Gemini (model: ${QA_GEMINI_MODEL})..."
+  else
+    log "Running QA with Gemini (fallback, default model)..."
+  fi
+
+  if [[ -z "$GEMINI_API_KEY" ]]; then
+    log "ERROR: GEMINI_API_KEY not set"
+    return 1
+  fi
+
+  local gemini_output
+  gemini_output=$(mktemp)
+  local gemini_log="$TASK_DIR/history/gemini_output_cycle_${cycle}.log"
+
+  # Create a condensed prompt for Gemini (keep under 30KB)
+  # Full QA input can be 50KB+ which is too large for efficient processing
+  local gemini_prompt
+  gemini_prompt=$(mktemp)
+
+  {
+    echo "You are a QA agent evaluating software changes. Analyze the following and output a JSON verdict."
+    echo ""
+    echo "=== GATE RESULT ==="
+    if [[ -f "$TASK_DIR/gate_rc.txt" ]]; then
+      echo "Gate exit code: $(cat "$TASK_DIR/gate_rc.txt")"
+    fi
+    echo ""
+    echo "=== GATE OUTPUT (last 100 lines) ==="
+    if [[ -f "$TASK_DIR/gate_output.log" ]]; then
+      tail -100 "$TASK_DIR/gate_output.log"
+    fi
+    echo ""
+    echo "=== BUILDER REPORT ==="
+    if [[ -f "$TASK_DIR/BUILDER_REPORT.md" ]]; then
+      head -100 "$TASK_DIR/BUILDER_REPORT.md"
+    fi
+    echo ""
+    echo "=== ACCEPTANCE CRITERIA ==="
+    if [[ -f "$TASK_DIR/acceptance.md" ]]; then
+      head -80 "$TASK_DIR/acceptance.md"
+    fi
+    echo ""
+    echo "=== YOUR TASK ==="
+    echo "Based on the gate result and builder report, output a JSON object with this EXACT structure:"
+    echo ""
+    echo '{'
+    echo '  "verdict": "PASS" or "FAIL",'
+    echo '  "cycle": '"$cycle"','
+    echo '  "early_exit": false,'
+    echo '  "summary": "Brief summary of your findings",'
+    echo '  "blockers": [],'
+    echo '  "majors": [],'
+    echo '  "minors": [],'
+    echo '  "spec_compliance": {'
+    echo '    "endpoints_match": true,'
+    echo '    "schemas_match": true,'
+    echo '    "status_strings_match": true,'
+    echo '    "auth_matches": true,'
+    echo '    "db_mode_matches": true,'
+    echo '    "streaming_matches": true,'
+    echo '    "local_llm_lane_verified": true,'
+    echo '    "mocks_disabled_for_gates": true'
+    echo '  },'
+    echo '  "next_actions_for_builder": [],'
+    echo '  "evidence": []'
+    echo '}'
+    echo ""
+    echo "RULES:"
+    echo "- If gate exit code is 0 and all tests passed, verdict should be PASS"
+    echo "- If gate exit code is non-zero, verdict MUST be FAIL"
+    echo "- Output ONLY the JSON, no other text"
+  } > "$gemini_prompt"
+
+  local prompt_size
+  prompt_size=$(wc -c < "$gemini_prompt")
+  log "Gemini prompt size: ${prompt_size} bytes"
+
+  # Run Gemini with timeout - use stdin via pipe (NOT positional argument)
+  # Include model option if specified
+  export GEMINI_API_KEY
+  if timeout "$GEMINI_TIMEOUT" bash -c "cat '$gemini_prompt' | '$GEMINI_CLI_PATH' $gemini_model_opt --yolo" > "$gemini_output" 2>&1; then
+    log "Gemini command completed"
+  else
+    local exit_code=$?
+    log "WARNING: Gemini exited with code $exit_code"
+  fi
+
+  # Save full output for debugging
+  cp "$gemini_output" "$gemini_log" 2>/dev/null || true
+  rm -f "$gemini_prompt"
+
+  # Extract JSON from Gemini output
+  local json_content=""
+  local file_content
+  file_content=$(cat "$gemini_output")
+
+  # Try to extract JSON (similar to builder JSON extraction)
+  if echo "$file_content" | grep -q '```json'; then
+    # Extract from markdown code block
+    json_content=$(echo "$file_content" | sed -n '/```json/,/```/p' | sed '1d;$d' | head -500)
+  elif echo "$file_content" | grep -q '```'; then
+    # Try generic code block
+    json_content=$(echo "$file_content" | sed -n '/```/,/```/p' | sed '1d;$d' | head -500)
+  else
+    # Try to find raw JSON object - look for the verdict pattern
+    json_content=$(echo "$file_content" | grep -Pzo '\{\s*"verdict"[\s\S]*\}' 2>/dev/null | tr '\0' '\n' | head -1 || echo "")
+    if [[ -z "$json_content" ]]; then
+      # Fallback: try any JSON object
+      json_content=$(echo "$file_content" | grep -Pzo '\{[\s\S]*\}' 2>/dev/null | tr '\0' '\n' | tail -1 || echo "")
+    fi
+  fi
+
+  rm -f "$gemini_output"
+
+  # Validate the extracted JSON
+  if [[ -n "$json_content" ]]; then
+    # Check if it's valid JSON
+    if echo "$json_content" | jq empty 2>/dev/null; then
+      # Check if it has required fields
+      if echo "$json_content" | jq -e '.verdict and .cycle' >/dev/null 2>&1; then
+        # Ensure early_exit field exists
+        if ! echo "$json_content" | jq -e '.early_exit' >/dev/null 2>&1; then
+          json_content=$(echo "$json_content" | jq '. + {early_exit: false}')
+        fi
+        echo "$json_content" | jq '.' > "$output_file"
+        log "QA (Gemini) completed successfully"
+        QA_AGENT_USED="gemini"
+        return 0
+      else
+        log "WARNING: Gemini JSON missing required fields (verdict, cycle)"
+        log "JSON content: $(echo "$json_content" | head -c 200)"
+      fi
+    else
+      log "WARNING: Gemini output is not valid JSON"
+      log "Raw output: $(echo "$file_content" | head -c 500)"
+    fi
+  else
+    log "WARNING: Could not extract JSON from Gemini output"
+    log "Full output: $(echo "$file_content" | head -c 500)"
+  fi
+
+  return 1
+}
+
+# ============================================================
+# QA ORCHESTRATOR (v2.1.1: Primary + Fallback)
+# ============================================================
+
+run_qa() {
+  local cycle=$1
+  local qa_in=$2
+
+  log "Running QA phase (primary: $QA_PRIMARY_AGENT, fallback: $QA_FALLBACK_AGENT)..."
+
+  # v2.1.3: Collect auto-evidence before running QA
+  run_qa_requested_commands "$cycle"
+
+  if [[ "$DRY_RUN" == "true" ]]; then
+    log "[DRY-RUN] Would run QA agent with schema enforcement"
+    # Vary the dry-run report to avoid stuck detection
+    local random_id=$((RANDOM % 1000))
+    cat > "$TASK_DIR/QA_REPORT.json" <<EOF
+{
+  "verdict": "FAIL",
+  "cycle": $cycle,
+  "early_exit": false,
+  "summary": "Dry run mode - simulated QA check (id: $random_id)",
+  "blockers": [],
+  "majors": [],
+  "minors": [],
+  "spec_compliance": {
+    "endpoints_match": false,
+    "schemas_match": false,
+    "status_strings_match": false,
+    "auth_matches": false,
+    "db_mode_matches": false,
+    "streaming_matches": false,
+    "local_llm_lane_verified": false,
+    "mocks_disabled_for_gates": false
+  },
+  "next_actions_for_builder": [],
+  "evidence": ["dry-run-$random_id"]
+}
+EOF
+    QA_AGENT_USED="dry-run"
+  else
+    local qa_success=false
+
+    # Try primary QA agent
+    if [[ "$QA_PRIMARY_AGENT" == "codex" ]]; then
+      if run_qa_codex "$cycle" "$qa_in"; then
+        qa_success=true
+      fi
+    elif [[ "$QA_PRIMARY_AGENT" == "gemini" ]]; then
+      if run_qa_gemini "$cycle" "$qa_in"; then
+        qa_success=true
+      fi
+    elif [[ "$QA_PRIMARY_AGENT" == "claude" ]]; then
+      if run_qa_claude "$cycle" "$qa_in"; then
+        qa_success=true
+      fi
+    fi
+
+    # Try fallback if primary failed and fallback is enabled
+    if [[ "$qa_success" == "false" ]] && [[ "$QA_FALLBACK_ENABLED" == "true" ]]; then
+      log "Primary QA agent ($QA_PRIMARY_AGENT) failed, trying fallback ($QA_FALLBACK_AGENT)..."
+
+      if [[ "$QA_FALLBACK_AGENT" == "gemini" ]]; then
+        if run_qa_gemini "$cycle" "$qa_in"; then
+          qa_success=true
+        fi
+      elif [[ "$QA_FALLBACK_AGENT" == "codex" ]]; then
+        if run_qa_codex "$cycle" "$qa_in"; then
+          qa_success=true
+        fi
+      elif [[ "$QA_FALLBACK_AGENT" == "claude" ]]; then
+        if run_qa_claude "$cycle" "$qa_in"; then
+          qa_success=true
+        fi
+      fi
+    fi
+
+    # If both agents failed, create a fallback report
+    if [[ "$qa_success" == "false" ]] || [[ ! -s "$TASK_DIR/QA_REPORT.json" ]]; then
+      log "ERROR: All QA agents failed, creating fallback report"
+      cat > "$TASK_DIR/QA_REPORT.json" <<EOF
+{
+  "verdict": "FAIL",
+  "cycle": $cycle,
+  "early_exit": true,
+  "summary": "All QA agents failed - primary: $QA_PRIMARY_AGENT, fallback: $QA_FALLBACK_AGENT",
+  "blockers": [{"severity": "BLOCKER", "title": "QA system failure", "details": "Both Codex and Gemini failed to produce valid output. Check logs in history/"}],
+  "majors": [],
+  "minors": [],
+  "spec_compliance": {},
+  "next_actions_for_builder": [{"priority": 1, "severity": "BLOCKER", "summary": "Investigate QA agent failures"}],
+  "evidence": []
+}
+EOF
+      QA_AGENT_USED="fallback-report"
+    fi
+
+    log "QA completed using: $QA_AGENT_USED"
+  fi
+
+  # Save to history
+  cp "$TASK_DIR/QA_REPORT.json" "$TASK_DIR/history/qa_report_cycle_${cycle}.json"
+
+  # Record which agent was used
+  echo "$QA_AGENT_USED" > "$TASK_DIR/history/qa_agent_cycle_${cycle}.txt"
+}
+
+# ============================================================
+# VERDICT & STUCK DETECTION
+# ============================================================
+
+check_verdict() {
+  if grep -q '"verdict"[[:space:]]*:[[:space:]]*"PASS"' "$TASK_DIR/QA_REPORT.json"; then
+    return 0
+  fi
+  return 1
+}
+
+check_stuck() {
+  # v2.1.3: Smart Stuck Logic - require N consecutive unchanged cycles
+
+  # Disable stuck detection in dry-run mode
+  if [[ "$DRY_RUN" == "true" ]]; then
+    return 1  # Never stuck in dry-run
+  fi
+
+  local hash_file="$TASK_DIR/_qa_hash_prev"
+  local stuck_count_file="$TASK_DIR/_stuck_count"
+  local current_hash
+  current_hash=$(sha256sum "$TASK_DIR/QA_REPORT.json" | awk '{print $1}')
+
+  if [[ -f "$hash_file" ]]; then
+    local prev_hash
+    prev_hash=$(cat "$hash_file")
+    if [[ "$prev_hash" == "$current_hash" ]]; then
+      # Hash matches - potentially stuck
+      local count=1
+      if [[ -f "$stuck_count_file" ]]; then
+        count=$(cat "$stuck_count_file")
+        count=$((count + 1))
+      fi
+      echo "$count" > "$stuck_count_file"
+
+      if [[ $count -ge $STUCK_CONSECUTIVE_CYCLES ]]; then
+        log "STUCK DETECTED: QA report unchanged for $count consecutive cycles."
+        return 0  # Truly stuck
+      else
+        log "WARNING: QA report unchanged ($count/$STUCK_CONSECUTIVE_CYCLES). Continuing..."
+        echo "$current_hash" > "$hash_file"
+        return 1  # Not yet stuck
+      fi
+    else
+      # Hash changed, reset count
+      echo "0" > "$stuck_count_file"
+    fi
+  else
+    echo "0" > "$stuck_count_file"
+  fi
+
+  echo "$current_hash" > "$hash_file"
+  return 1  # Not stuck
+}
+
+# ============================================================
+# ESCALATION PACKET (v2.1: includes new artifacts)
+# ============================================================
+
+create_stuck_packet() {
+  local cycle=$1
+  local packet_dir="$TASK_DIR/escalation_$(date +%Y%m%d_%H%M%S)"
+  local packet_zip="$packet_dir.zip"
+
+  log "Creating stuck escalation packet..."
+
+  mkdir -p "$packet_dir"
+
+  # Copy last 3 QA reports
+  for i in $(seq "$cycle" -1 1 | head -3); do
+    local report="$TASK_DIR/history/qa_report_cycle_${i}.json"
+    if [[ -f "$report" ]]; then
+      cp "$report" "$packet_dir/"
+    fi
+  done
+
+  # Copy last 3 builder reports
+  for i in $(seq "$cycle" -1 1 | head -3); do
+    local report="$TASK_DIR/history/builder_stdout_cycle_${i}.json"
+    if [[ -f "$report" ]]; then
+      cp "$report" "$packet_dir/"
+    fi
+  done
+
+  # Copy last 3 gate logs
+  for i in $(seq "$cycle" -1 1 | head -3); do
+    local logfile="$TASK_DIR/history/gate_output_cycle_${i}.log"
+    if [[ -f "$logfile" ]]; then
+      cp "$logfile" "$packet_dir/"
+    fi
+  done
+
+  # v2.1: Copy all gate attempt logs
+  for attempt_log in "$TASK_DIR/history"/gate_attempt_*.log; do
+    if [[ -f "$attempt_log" ]]; then
+      cp "$attempt_log" "$packet_dir/"
+    fi
+  done
+
+  # v2.1: Copy gate_attempts.json
+  if [[ -f "$TASK_DIR/artifacts/gate_attempts.json" ]]; then
+    cp "$TASK_DIR/artifacts/gate_attempts.json" "$packet_dir/"
+  fi
+
+  # v2.1: Copy spec check artifacts
+  if [[ -f "$TASK_DIR/artifacts/spec_check.json" ]]; then
+    cp "$TASK_DIR/artifacts/spec_check.json" "$packet_dir/"
+  fi
+  local last_spec_log="$TASK_DIR/history/spec_check_cycle_${cycle}.log"
+  if [[ -f "$last_spec_log" ]]; then
+    cp "$last_spec_log" "$packet_dir/"
+  fi
+
+  # v2.1: Copy eval artifacts
+  if [[ -f "$EVAL_RESULTS_PATH" ]]; then
+    cp "$EVAL_RESULTS_PATH" "$packet_dir/"
+  fi
+  local last_eval_log="$TASK_DIR/history/eval_cycle_${cycle}.log"
+  if [[ -f "$last_eval_log" ]]; then
+    cp "$last_eval_log" "$packet_dir/"
+  fi
+
+  # Copy current reports
+  [[ -f "$TASK_DIR/QA_REPORT.json" ]] && cp "$TASK_DIR/QA_REPORT.json" "$packet_dir/current_qa_report.json"
+  [[ -f "$TASK_DIR/BUILDER_REPORT.md" ]] && cp "$TASK_DIR/BUILDER_REPORT.md" "$packet_dir/current_builder_report.md"
+  [[ -f "$TASK_DIR/gate_output.log" ]] && cp "$TASK_DIR/gate_output.log" "$packet_dir/current_gate_output.log"
+
+  # Add git diff from repo
+  if [[ -d "$REPO_DIR/.git" ]]; then
+    (cd "$REPO_DIR" && git diff HEAD~10..HEAD 2>/dev/null || git diff 2>/dev/null) > "$packet_dir/git_diff.patch" 2>&1 || true
+    (cd "$REPO_DIR" && git log --oneline -20 2>/dev/null) > "$packet_dir/git_log.txt" 2>&1 || true
+    (cd "$REPO_DIR" && git status 2>/dev/null) > "$packet_dir/git_status.txt" 2>&1 || true
+  fi
+
+  # Copy snapshots
+  if [[ -d "$TASK_DIR/snapshots" ]]; then
+    cp -r "$TASK_DIR/snapshots" "$packet_dir/"
+  fi
+
+  # Add task config (but NOT the main config with secrets)
+  cp "$TASK_DIR/config.env" "$packet_dir/"
+  cp "$TASK_DIR/mission.md" "$packet_dir/"
+  cp "$TASK_DIR/acceptance.md" "$packet_dir/"
+
+  # Create summary
+  cat > "$packet_dir/ESCALATION_SUMMARY.md" <<EOF
+# Stuck Escalation Packet
+
+**Task:** $TASK_ID
+**Stuck at Cycle:** $cycle
+**Generated:** $(ts)
+**Repo:** $REPO_DIR
+**Lab Loop Version:** $LABLOOP_VERSION
+
+## Contents
+
+- Last 3 QA reports (qa_report_cycle_*.json)
+- Last 3 builder outputs (builder_stdout_cycle_*.json)
+- Last 3 gate logs (gate_output_cycle_*.log)
+- Gate attempt logs (gate_attempt_*.log)
+- gate_attempts.json (flake policy evidence)
+- spec_check.json + spec_check_cycle_*.log (if configured)
+- eval_results.json + eval_cycle_*.log (if configured)
+- Current reports (current_*.*)
+- Git diff, log, and status
+- Environment snapshots
+- Task configuration files
+
+## Quick Analysis
+
+The loop became stuck because the QA report hash was identical to the previous cycle.
+This typically means:
+1. Builder made no effective changes
+2. Same issues persist despite attempted fixes
+3. May require human intervention or architectural changes
+
+## v2.1 Extended Info
+
+- Flake suspected: Check gate_attempts.json
+- Spec check: Check spec_check.json
+- Eval: Check eval_results.json
+
+## Next Steps
+
+1. Review the QA reports for recurring blockers
+2. Check git diff for what changes were attempted
+3. Consider if the mission/acceptance criteria need clarification
+4. May need manual intervention before resuming
+EOF
+
+  # REDACT SECRETS before zipping
+  log "Redacting secrets from escalation packet..."
+  redact_directory "$packet_dir"
+
+  # Create zip
+  (cd "$TASK_DIR" && zip -r "$(basename "$packet_zip")" "$(basename "$packet_dir")" -x "*.DS_Store") > /dev/null 2>&1
+
+  # Cleanup unzipped directory
+  rm -rf "$packet_dir"
+
+  log "Escalation packet created: $packet_zip"
+  echo "$packet_zip"
+}
+
+# ============================================================
+# SMART BACKOFF
+# ============================================================
+
+count_blockers() {
+  grep -o '"severity"[[:space:]]*:[[:space:]]*"BLOCKER"' "$TASK_DIR/QA_REPORT.json" 2>/dev/null | wc -l
+}
+
+smart_sleep() {
+  local current_blockers=$1
+  local prev_blockers=$2
+  local no_progress_count=$3
+
+  if [[ $current_blockers -lt $prev_blockers ]]; then
+    log "Progress detected ($prev_blockers -> $current_blockers blockers) - quick retry"
+    sleep 1
+  elif [[ $no_progress_count -ge 3 ]]; then
+    local backoff=$((2 ** (no_progress_count - 2)))
+    [[ $backoff -gt 30 ]] && backoff=30
+    log "No progress for $no_progress_count cycles - backing off ${backoff}s"
+    sleep $backoff
+  else
+    sleep 2
+  fi
+}
+
+# ============================================================
+# MAIN LOOP
+# ============================================================
+
+main() {
+  log "========================================"
+  log "LAB LOOP v$LABLOOP_VERSION: $TASK_ID"
+  log "Repo: $REPO_DIR"
+  log "Max cycles: $MAX_CYCLES"
+  log "Gate tier: $GATE_TIER"
+  log "Dry run: $DRY_RUN"
+  log "Incremental: $INCREMENTAL"
+  log "Webhook: ${WEBHOOK_URL:-none}"
+  log "Email: ${EMAIL_TO:-none}"
+  log "Gate retry max: $GATE_RETRY_MAX"
+  log "Spec check: ${SPEC_CHECK_CMD:-none}"
+  log "Eval cmd: ${EVAL_CMD:-none}"
+  log "Profile: $REPO_DIR/.labloop.yaml"
+  log "Auto-commit artifacts: $AUTO_COMMIT_ARTIFACTS"
+  log "========================================"
+
+  # Acquire task lock
+  acquire_lock
+
+  check_tools
+
+  # v3.0: Load project profile (overrides defaults with project-specific settings)
+  load_project_profile "$REPO_DIR"
+
+  # Pre-flight validation
+  if ! run_preflight; then
+    log "Pre-flight validation failed"
+    send_notification "PREFLIGHT_FAIL" 0 "Pre-flight checks failed"
+    exit 1
+  fi
+
+  # v3.0: Run enhanced preflight checks
+  if ! run_enhanced_preflight "$REPO_DIR"; then
+    log "Enhanced preflight found issues - attempting recovery..."
+    attempt_recovery "diff_limit" "pre-flight"
+    # Re-run after recovery attempt
+    run_enhanced_preflight "$REPO_DIR" || true
+  fi
+
+  seed_qa_report
+  send_notification "STARTED" 0 "Lab loop started"
+
+  # Dry-run mode: limit to 1 cycle to demonstrate flow
+  if [[ "$DRY_RUN" == "true" ]]; then
+    MAX_CYCLES=1
+    log "DRY-RUN: Limiting to 1 cycle for demonstration"
+  fi
+
+  local prev_blockers=999
+  local no_progress_count=0
+
+  for cycle in $(seq 1 "$MAX_CYCLES"); do
+    log "========================================"
+    log "CYCLE $cycle / $MAX_CYCLES"
+    log "========================================"
+
+    send_notification "CYCLE_START" "$cycle" "Starting cycle $cycle"
+
+    # Capture environment snapshot
+    capture_environment_snapshot "$cycle"
+
+    # Step 1: Compose and run Builder
+    bundle=$(compose_builder_bundle "$cycle")
+    run_builder "$cycle" "$bundle"
+
+    # Step 2: Safety checks after Builder
+    if ! check_protected_paths; then
+      log "SAFETY VIOLATION: Protected paths were modified"
+      send_notification "SAFETY_VIOLATION" "$cycle" "Protected paths were modified by Builder"
+      exit 1
+    fi
+
+    if ! check_diff_limits "$cycle"; then
+      log "SAFETY WARNING: Diff limits exceeded - attempting recovery..."
+      attempt_recovery "diff_limit" "post-builder"
+
+      # Re-check after recovery
+      if ! check_diff_limits "$cycle"; then
+        log "SAFETY VIOLATION: Diff limits still exceeded after recovery"
+        send_notification "SAFETY_VIOLATION" "$cycle" "Diff limits exceeded by Builder"
+        exit 1
+      fi
+      log "Recovery successful - diff limits now within bounds"
+    fi
+
+    # Step 3: Run gates (with flaky policy support)
+    local gate_passed=true
+    if ! run_gates "$cycle"; then
+      gate_passed=false
+    fi
+
+    # Step 4: Run spec check (if configured)
+    local spec_passed=true
+    if ! run_spec_check "$cycle"; then
+      spec_passed=false
+      log "Spec check failed - cycle will FAIL"
+    fi
+
+    # Step 5: Run eval (if configured and gate+spec passed)
+    local eval_passed=true
+    if [[ -n "$EVAL_CMD" ]]; then
+      if [[ "$gate_passed" == "true" && "$spec_passed" == "true" ]]; then
+        if ! run_eval "$cycle"; then
+          eval_passed=false
+          log "Eval failed - cycle will FAIL"
+        fi
+      else
+        log "Skipping eval (gate or spec check failed)"
+        eval_passed=false
+      fi
+    fi
+
+    # v3.0: Auto-commit artifacts (prevents diff limit violations in next cycle)
+    auto_commit_artifacts "$REPO_DIR"
+
+    # Step 6: Capture post-cycle snapshot
+    capture_post_cycle_snapshot "$cycle"
+
+    # Step 7: Compose and run QA
+    qa_in=$(compose_qa_input "$cycle")
+    run_qa "$cycle" "$qa_in"
+
+    # Step 8: Check verdict
+    if check_verdict; then
+      log "========================================"
+      log "PASS on cycle $cycle"
+      if [[ "$GATE_FLAKE_SUSPECTED" == "true" ]]; then
+        log "NOTE: Flake suspected during gate execution"
+      fi
+      log "========================================"
+      send_notification "PASS" "$cycle" "Task completed successfully"
+      exit 0
+    fi
+
+    # Step 9: Check if stuck
+    if check_stuck; then
+      log "========================================"
+      log "STUCK: QA report unchanged from previous cycle"
+      log "Human intervention required"
+      log "========================================"
+      local packet
+      packet=$(create_stuck_packet "$cycle")
+      log "Escalation packet: $packet"
+      log "========================================"
+      send_notification "STUCK" "$cycle" "Loop stuck - escalation packet created"
+      exit 2
+    fi
+
+    # Step 10: Smart backoff
+    local current_blockers
+    current_blockers=$(count_blockers)
+
+    if [[ $current_blockers -ge $prev_blockers ]]; then
+      ((no_progress_count++)) || true
+    else
+      no_progress_count=0
+    fi
+
+    log "Verdict: FAIL (blockers: $current_blockers) - continuing to next cycle..."
+    send_notification "FAIL" "$cycle" "Cycle $cycle failed with $current_blockers blockers"
+    smart_sleep "$current_blockers" "$prev_blockers" "$no_progress_count"
+
+    prev_blockers=$current_blockers
+  done
+
+  log "========================================"
+  log "MAX CYCLES ($MAX_CYCLES) reached without PASS"
+  log "========================================"
+  send_notification "MAX_CYCLES" "$MAX_CYCLES" "Maximum cycles reached without PASS"
+  exit 3
+}
+
+main "$@"

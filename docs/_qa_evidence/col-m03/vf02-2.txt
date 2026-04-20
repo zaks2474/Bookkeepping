@@ -1,0 +1,8 @@
+242:@router.get("/threads")
+243:async def list_threads(
+252:    COL-DESIGN-SPEC-V2 Section 3.5: GET /api/v1/chatbot/threads
+304:@router.get("/threads/{thread_id}/messages")
+314:    COL-DESIGN-SPEC-V2 Section 3.5: GET /api/v1/chatbot/threads/{id}/messages
+394:@router.get("/threads/{thread_id}/export")
+403:    COL-DESIGN-SPEC-V2 Section 12.2: GET /api/v1/chatbot/threads/{id}/export
+503:@router.get("/threads/{thread_id}/snapshots")

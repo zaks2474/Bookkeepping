@@ -1,0 +1,11 @@
+=== CHECK 4.1.2: Verify ALL approval fields populated ===
+Thread ID: forensic-003-lifecycle-1770145664
+Timestamp: 2026-02-03T13:08:11-06:00
+
+time="2026-02-03T13:08:11-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-03T13:08:11-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+                  id                  |             thread_id             |            checkpoint_id             |    tool_name    |                                 tool_args                                 |      actor_id       | status  |                         idempotency_key                          |          expires_at           |          created_at           
+--------------------------------------+-----------------------------------+--------------------------------------+-----------------+---------------------------------------------------------------------------+---------------------+---------+------------------------------------------------------------------+-------------------------------+-------------------------------
+ b652bc7f-39b4-4da3-8692-da2ac76267be | forensic-003-lifecycle-1770145664 | 1f101339-fdaa-6f8c-8001-27e1e20ef879 | transition_deal | {"deal_id": "DL-CHAOS", "from_stage": "inbound", "to_stage": "screening"} | forensic-audit-user | pending | 2d4a1916e3e069cacc2aed81fe911503bb95a3487ab82958afdabaf4239f8be9 | 2026-02-03 20:07:46.219357+00 | 2026-02-03 19:07:46.219601+00
+(1 row)
+

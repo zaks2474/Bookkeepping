@@ -1,0 +1,389 @@
+apps/agent-api/app/core/langgraph/graph.py:631:                    all_tool_names=frozenset(self.tools_by_name.keys()),
+apps/agent-api/app/core/langgraph/tools/deal_tools.py:88:VALID_STAGES = frozenset([
+apps/agent-api/app/core/langgraph/tools/deal_tools.py:95:VALID_TRANSITIONS: dict[str, frozenset[str]] = {
+apps/agent-api/app/core/langgraph/tools/deal_tools.py:96:    "inbound": frozenset(["screening", "junk", "archived"]),
+apps/agent-api/app/core/langgraph/tools/deal_tools.py:97:    "screening": frozenset(["qualified", "junk", "archived"]),
+apps/agent-api/app/core/langgraph/tools/deal_tools.py:98:    "qualified": frozenset(["loi", "junk", "archived"]),
+apps/agent-api/app/core/langgraph/tools/deal_tools.py:99:    "loi": frozenset(["diligence", "junk", "archived"]),
+apps/agent-api/app/core/langgraph/tools/deal_tools.py:100:    "diligence": frozenset(["closing", "junk", "archived"]),
+apps/agent-api/app/core/langgraph/tools/deal_tools.py:101:    "closing": frozenset(["portfolio", "junk", "archived"]),
+apps/agent-api/app/core/langgraph/tools/deal_tools.py:102:    "portfolio": frozenset(["archived"]),
+apps/agent-api/app/core/langgraph/tools/deal_tools.py:103:    "junk": frozenset(["archived"]),
+apps/agent-api/app/core/langgraph/tools/deal_tools.py:104:    "archived": frozenset(),  # Terminal state, no transitions out
+apps/agent-api/app/core/security/tool_scoping.py:17:SCOPE_TOOL_MAP: dict[str, frozenset[str]] = {
+apps/agent-api/app/core/security/tool_scoping.py:18:    "global": frozenset([
+apps/agent-api/app/core/security/tool_scoping.py:23:    "deal": frozenset([
+apps/agent-api/app/core/security/tool_scoping.py:33:    "document": frozenset([
+apps/agent-api/app/core/security/tool_scoping.py:41:_VIEWER_TOOLS = frozenset([
+apps/agent-api/app/core/security/tool_scoping.py:48:_OPERATOR_TOOLS = _VIEWER_TOOLS | frozenset(["add_note"])
+apps/agent-api/app/core/security/tool_scoping.py:49:_APPROVER_TOOLS = _OPERATOR_TOOLS | frozenset(["transition_deal", "create_deal"])
+apps/agent-api/app/core/security/tool_scoping.py:51:ROLE_TOOL_MAP: dict[str, frozenset[str]] = {
+apps/agent-api/app/core/security/tool_scoping.py:55:    "ADMIN": frozenset(["*"]),  # Wildcard — all tools allowed
+apps/agent-api/app/core/security/tool_scoping.py:66:    all_tool_names: Optional[frozenset[str]] = None,
+apps/agent-api/app/core/security/tool_scoping.py:67:) -> frozenset[str]:
+apps/agent-api/app/core/security/tool_scoping.py:76:        frozenset of allowed tool names.
+apps/agent-api/app/core/security/tool_scoping.py:107:    all_tool_names: Optional[frozenset[str]] = None,
+apps/agent-api/app/schemas/agent.py:170:HITL_TOOLS = frozenset([
+apps/agent-api/.venv/lib/python3.13/site-packages/passlib/pwd.py:130:_set_types = (set, frozenset)
+apps/agent-api/.venv/lib/python3.13/site-packages/passlib/pwd.py:142:    # check cache to speed things up for frozensets / tuples / strings
+apps/agent-api/.venv/lib/python3.13/site-packages/passlib/utils/binary.py:585:        return frozenset(pset)
+apps/agent-api/.venv/lib/python3.13/site-packages/passlib/registry.py:173:_forbidden_names = frozenset(["onload", "policy", "context", "all",
+apps/agent-api/.venv/lib/python3.13/site-packages/isort/main.py:962:    if isinstance(item, (set, frozenset)):
+apps/agent-api/.venv/lib/python3.13/site-packages/isort/settings.py:56:CYTHON_EXTENSIONS = frozenset({"pyx", "pxd"})
+apps/agent-api/.venv/lib/python3.13/site-packages/isort/settings.py:57:SUPPORTED_EXTENSIONS = frozenset({"py", "pyi", *CYTHON_EXTENSIONS})
+apps/agent-api/.venv/lib/python3.13/site-packages/isort/settings.py:58:BLOCKED_EXTENSIONS = frozenset({"pex"})
+apps/agent-api/.venv/lib/python3.13/site-packages/isort/settings.py:75:DEFAULT_SKIP: FrozenSet[str] = frozenset(
+apps/agent-api/.venv/lib/python3.13/site-packages/isort/settings.py:148:    force_to_top: FrozenSet[str] = frozenset()
+apps/agent-api/.venv/lib/python3.13/site-packages/isort/settings.py:150:    extend_skip: FrozenSet[str] = frozenset()
+apps/agent-api/.venv/lib/python3.13/site-packages/isort/settings.py:151:    skip_glob: FrozenSet[str] = frozenset()
+apps/agent-api/.venv/lib/python3.13/site-packages/isort/settings.py:152:    extend_skip_glob: FrozenSet[str] = frozenset()
+apps/agent-api/.venv/lib/python3.13/site-packages/isort/settings.py:159:    known_future_library: FrozenSet[str] = frozenset(("__future__",))
+apps/agent-api/.venv/lib/python3.13/site-packages/isort/settings.py:160:    known_third_party: FrozenSet[str] = frozenset()
+apps/agent-api/.venv/lib/python3.13/site-packages/isort/settings.py:161:    known_first_party: FrozenSet[str] = frozenset()
+apps/agent-api/.venv/lib/python3.13/site-packages/isort/settings.py:162:    known_local_folder: FrozenSet[str] = frozenset()
+apps/agent-api/.venv/lib/python3.13/site-packages/isort/settings.py:163:    known_standard_library: FrozenSet[str] = frozenset()
+apps/agent-api/.venv/lib/python3.13/site-packages/isort/settings.py:164:    extra_standard_library: FrozenSet[str] = frozenset()
+apps/agent-api/.venv/lib/python3.13/site-packages/isort/settings.py:172:    length_sort_sections: FrozenSet[str] = frozenset()
+apps/agent-api/.venv/lib/python3.13/site-packages/isort/settings.py:173:    add_imports: FrozenSet[str] = frozenset()
+apps/agent-api/.venv/lib/python3.13/site-packages/isort/settings.py:174:    remove_imports: FrozenSet[str] = frozenset()
+apps/agent-api/.venv/lib/python3.13/site-packages/isort/settings.py:204:    no_lines_before: FrozenSet[str] = frozenset()
+apps/agent-api/.venv/lib/python3.13/site-packages/isort/settings.py:223:    treat_comments_as_code: FrozenSet[str] = frozenset()
+apps/agent-api/.venv/lib/python3.13/site-packages/isort/settings.py:227:    constants: FrozenSet[str] = frozenset()
+apps/agent-api/.venv/lib/python3.13/site-packages/isort/settings.py:228:    classes: FrozenSet[str] = frozenset()
+apps/agent-api/.venv/lib/python3.13/site-packages/isort/settings.py:229:    variables: FrozenSet[str] = frozenset()
+apps/agent-api/.venv/lib/python3.13/site-packages/isort/settings.py:235:    namespace_packages: FrozenSet[str] = frozenset()
+apps/agent-api/.venv/lib/python3.13/site-packages/isort/settings.py:275:                self, "known_standard_library", frozenset(getattr(stdlibs, self.py_version).stdlib)
+apps/agent-api/.venv/lib/python3.13/site-packages/isort/settings.py:419:                        combined_config[section_name] = frozenset(value)
+apps/agent-api/.venv/lib/python3.13/site-packages/isort/settings.py:421:                    known_other[import_heading] = frozenset(value)
+apps/agent-api/.venv/lib/python3.13/site-packages/isort/settings.py:904:            elif existing_value_type == frozenset:
+apps/agent-api/.venv/lib/python3.13/site-packages/isort/settings.py:905:                settings[key] = frozenset(_as_list(settings.get(key)))  # type: ignore
+apps/agent-api/.venv/lib/python3.13/site-packages/isort/_vendored/tomli/_parser.py:15:ASCII_CTRL = frozenset(chr(i) for i in range(32)) | frozenset(chr(127))
+apps/agent-api/.venv/lib/python3.13/site-packages/isort/_vendored/tomli/_parser.py:19:ILLEGAL_BASIC_STR_CHARS = ASCII_CTRL - frozenset("\t")
+apps/agent-api/.venv/lib/python3.13/site-packages/isort/_vendored/tomli/_parser.py:20:ILLEGAL_MULTILINE_BASIC_STR_CHARS = ASCII_CTRL - frozenset("\t\n\r")
+apps/agent-api/.venv/lib/python3.13/site-packages/isort/_vendored/tomli/_parser.py:23:ILLEGAL_MULTILINE_LITERAL_STR_CHARS = ASCII_CTRL - frozenset("\t\n")
+apps/agent-api/.venv/lib/python3.13/site-packages/isort/_vendored/tomli/_parser.py:27:TOML_WS = frozenset(" \t")
+apps/agent-api/.venv/lib/python3.13/site-packages/isort/_vendored/tomli/_parser.py:28:TOML_WS_AND_NEWLINE = TOML_WS | frozenset("\n")
+apps/agent-api/.venv/lib/python3.13/site-packages/isort/_vendored/tomli/_parser.py:29:BARE_KEY_CHARS = frozenset(string.ascii_letters + string.digits + "-_")
+apps/agent-api/.venv/lib/python3.13/site-packages/isort/_vendored/tomli/_parser.py:30:KEY_INITIAL_CHARS = BARE_KEY_CHARS | frozenset("\"'")
+apps/agent-api/.venv/lib/python3.13/site-packages/isort/_vendored/tomli/_parser.py:31:HEXDIGIT_CHARS = frozenset(string.hexdigits)
+apps/agent-api/.venv/lib/python3.13/site-packages/python_multipart/multipart.py:159:TOKEN_CHARS_SET = frozenset(
+apps/agent-api/.venv/lib/python3.13/site-packages/typing_extensions.py:297:            return hash(frozenset(_value_and_type_iter(self.__args__)))
+apps/agent-api/.venv/lib/python3.13/site-packages/typing_extensions.py:523:_EXCLUDED_ATTRS = frozenset(typing.EXCLUDED_ATTRIBUTES) | {
+apps/agent-api/.venv/lib/python3.13/site-packages/typing_extensions.py:1089:            tp_dict.__required_keys__ = frozenset(required_keys)
+apps/agent-api/.venv/lib/python3.13/site-packages/typing_extensions.py:1090:            tp_dict.__optional_keys__ = frozenset(optional_keys)
+apps/agent-api/.venv/lib/python3.13/site-packages/typing_extensions.py:1091:            tp_dict.__readonly_keys__ = frozenset(readonly_keys)
+apps/agent-api/.venv/lib/python3.13/site-packages/typing_extensions.py:1092:            tp_dict.__mutable_keys__ = frozenset(mutable_keys)
+apps/agent-api/.venv/lib/python3.13/site-packages/typing_extensions.py:1139:        the Point2D.__required_keys__ and Point2D.__optional_keys__ frozensets.
+apps/agent-api/.venv/lib/python3.13/site-packages/typing_extensions.py:3554:    _special_namedtuple_fields = frozenset({'__module__', '__name__', '__annotations__'})
+apps/agent-api/.venv/lib/python3.13/site-packages/typing_extensions.py:3843:        _ATTRIBUTE_DELEGATION_EXCLUSIONS = frozenset({
+apps/agent-api/.venv/lib/python3.13/site-packages/typing_extensions.py:4066:            frozenset({'a', 'b'})
+apps/agent-api/.venv/lib/python3.13/site-packages/typing_extensions.py:4073:            return frozenset(tp.__protocol_attrs__)
+apps/agent-api/.venv/lib/python3.13/site-packages/typing_extensions.py:4074:        return frozenset(_get_protocol_attrs(tp))
+apps/agent-api/.venv/lib/python3.13/site-packages/typing_extensions.py:4422:        _recursive_guard=frozenset(),
+apps/agent-api/.venv/lib/python3.13/site-packages/jsonpatch.py:210:        return hash(frozenset(self.operation.items()))
+apps/agent-api/.venv/lib/python3.13/site-packages/langgraph_sdk/client.py:126:    elif isinstance(obj, (set, frozenset)):
+apps/agent-api/.venv/lib/python3.13/site-packages/urllib3/connection.py:404:        header_keys = frozenset(to_str(k.lower()) for k in headers)
+apps/agent-api/.venv/lib/python3.13/site-packages/urllib3/util/retry.py:184:    DEFAULT_ALLOWED_METHODS = frozenset(
+apps/agent-api/.venv/lib/python3.13/site-packages/urllib3/util/retry.py:189:    RETRY_AFTER_STATUS_CODES = frozenset([413, 429, 503])
+apps/agent-api/.venv/lib/python3.13/site-packages/urllib3/util/retry.py:192:    DEFAULT_REMOVE_HEADERS_ON_REDIRECT = frozenset(
+apps/agent-api/.venv/lib/python3.13/site-packages/urllib3/util/retry.py:242:        self.remove_headers_on_redirect = frozenset(
+apps/agent-api/.venv/lib/python3.13/site-packages/urllib3/util/request.py:19:SKIPPABLE_HEADERS = frozenset(["accept-encoding", "host", "user-agent"])
+apps/agent-api/.venv/lib/python3.13/site-packages/urllib3/poolmanager.py:83:    key_headers: frozenset[tuple[str, str]] | None
+apps/agent-api/.venv/lib/python3.13/site-packages/urllib3/poolmanager.py:85:    key__proxy_headers: frozenset[tuple[str, str]] | None
+apps/agent-api/.venv/lib/python3.13/site-packages/urllib3/poolmanager.py:88:    key__socks_options: frozenset[tuple[str, str]] | None
+apps/agent-api/.venv/lib/python3.13/site-packages/urllib3/poolmanager.py:122:    # These are both dictionaries and need to be transformed into frozensets
+apps/agent-api/.venv/lib/python3.13/site-packages/urllib3/poolmanager.py:125:            context[key] = frozenset(context[key].items())
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic_core/core_schema.py:211:    'frozenset',
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic_core/core_schema.py:1751:    type: Required[Literal['frozenset']]
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic_core/core_schema.py:1762:def frozenset_schema(
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic_core/core_schema.py:1774:    Returns a schema that matches a frozenset of a given schema, e.g.:
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic_core/core_schema.py:1779:    schema = core_schema.frozenset_schema(
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic_core/core_schema.py:1783:    assert v.validate_python(frozenset(range(3))) == frozenset({0, 1, 2})
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic_core/core_schema.py:1787:        items_schema: The value must be a frozenset with items that match this schema
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic_core/core_schema.py:1788:        min_length: The value must be a frozenset with at least this many items
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic_core/core_schema.py:1789:        max_length: The value must be a frozenset with at most this many items
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic_core/core_schema.py:1791:        strict: The value must be a frozenset with exactly this many items
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic_core/core_schema.py:1797:        type='frozenset',
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic_core/core_schema.py:4080:    'frozenset',
+apps/agent-api/.venv/lib/python3.13/site-packages/opentelemetry/sdk/metrics/_internal/_view_instrument_match.py:45:        self._attributes_aggregation: Dict[frozenset, _Aggregation] = {}
+apps/agent-api/.venv/lib/python3.13/site-packages/opentelemetry/sdk/metrics/_internal/_view_instrument_match.py:105:        aggr_key = frozenset(attributes.items())
+apps/agent-api/.venv/lib/python3.13/site-packages/opentelemetry/sdk/_logs/_internal/__init__.py:440:_RESERVED_ATTRS = frozenset(
+apps/agent-api/.venv/lib/python3.13/site-packages/requests/utils.py:621:UNRESERVED_SET = frozenset(
+apps/agent-api/.venv/lib/python3.13/site-packages/prometheus_client/metrics.py:382:    _MULTIPROC_MODES = frozenset(('all', 'liveall', 'min', 'livemin', 'max', 'livemax', 'sum', 'livesum', 'mostrecent', 'livemostrecent'))
+apps/agent-api/.venv/lib/python3.13/site-packages/prometheus_client/metrics.py:383:    _MOST_RECENT_MODES = frozenset(('mostrecent', 'livemostrecent'))
+apps/agent-api/.venv/lib/python3.13/site-packages/tiktoken/core.py:118:            if not isinstance(disallowed_special, frozenset):
+apps/agent-api/.venv/lib/python3.13/site-packages/tiktoken/core.py:119:                disallowed_special = frozenset(disallowed_special)
+apps/agent-api/.venv/lib/python3.13/site-packages/tiktoken/core.py:151:            if not isinstance(disallowed_special, frozenset):
+apps/agent-api/.venv/lib/python3.13/site-packages/tiktoken/core.py:152:                disallowed_special = frozenset(disallowed_special)
+apps/agent-api/.venv/lib/python3.13/site-packages/tiktoken/core.py:196:        if not isinstance(disallowed_special, frozenset):
+apps/agent-api/.venv/lib/python3.13/site-packages/tiktoken/core.py:197:            disallowed_special = frozenset(disallowed_special)
+apps/agent-api/.venv/lib/python3.13/site-packages/tiktoken/core.py:235:            if not isinstance(disallowed_special, frozenset):
+apps/agent-api/.venv/lib/python3.13/site-packages/tiktoken/core.py:236:                disallowed_special = frozenset(disallowed_special)
+apps/agent-api/.venv/lib/python3.13/site-packages/tiktoken/core.py:426:def _special_token_regex(tokens: frozenset[str]) -> "regex.Pattern[str]":
+apps/agent-api/.venv/lib/python3.13/site-packages/dataclasses_json/core.py:44:    Set: frozenset,
+apps/agent-api/.venv/lib/python3.13/site-packages/attr/filters.py:12:    Returns a tuple of `frozenset`s of classes and attributes.
+apps/agent-api/.venv/lib/python3.13/site-packages/attr/filters.py:15:        frozenset(cls for cls in what if isinstance(cls, type)),
+apps/agent-api/.venv/lib/python3.13/site-packages/attr/filters.py:16:        frozenset(cls for cls in what if isinstance(cls, str)),
+apps/agent-api/.venv/lib/python3.13/site-packages/attr/filters.py:17:        frozenset(cls for cls in what if isinstance(cls, Attribute)),
+apps/agent-api/.venv/lib/python3.13/site-packages/attr/_funcs.py:83:            elif isinstance(v, (tuple, list, set, frozenset)):
+apps/agent-api/.venv/lib/python3.13/site-packages/attr/_funcs.py:155:    elif isinstance(val, (tuple, list, set, frozenset)):
+apps/agent-api/.venv/lib/python3.13/site-packages/attr/_funcs.py:267:            elif isinstance(v, (tuple, list, set, frozenset)):
+apps/agent-api/.venv/lib/python3.13/site-packages/langgraph/_internal/_fields.py:76:_DEFAULT_KEYS: frozenset[str] = frozenset()
+apps/agent-api/.venv/lib/python3.13/site-packages/langgraph/_internal/_typing.py:17:    __required_keys__: ClassVar[frozenset[str]]
+apps/agent-api/.venv/lib/python3.13/site-packages/langgraph/_internal/_typing.py:18:    __optional_keys__: ClassVar[frozenset[str]]
+apps/agent-api/.venv/lib/python3.13/site-packages/langgraph/_internal/_typing.py:26:    __required_keys__: frozenset[str]
+apps/agent-api/.venv/lib/python3.13/site-packages/langgraph/_internal/_typing.py:27:    __optional_keys__: frozenset[str]
+apps/agent-api/.venv/lib/python3.13/site-packages/langgraph/checkpoint/serde/jsonplus.py:296:    elif isinstance(obj, (set, frozenset, deque)):
+apps/agent-api/.venv/lib/python3.13/site-packages/langgraph/pregel/remote.py:70:_CONF_DROPLIST = frozenset(
+apps/agent-api/.venv/lib/python3.13/site-packages/jinja2/environment.py:1203:            frozenset(extensions),
+apps/agent-api/.venv/lib/python3.13/site-packages/jinja2/sandbox.py:45:        frozenset(
+apps/agent-api/.venv/lib/python3.13/site-packages/jinja2/sandbox.py:60:        frozenset(["clear", "pop", "popitem", "setdefault", "update"]),
+apps/agent-api/.venv/lib/python3.13/site-packages/jinja2/sandbox.py:64:        frozenset(
+apps/agent-api/.venv/lib/python3.13/site-packages/jinja2/sandbox.py:70:        frozenset(
+apps/agent-api/.venv/lib/python3.13/site-packages/jinja2/sandbox.py:225:    intercepted_binops: t.FrozenSet[str] = frozenset()
+apps/agent-api/.venv/lib/python3.13/site-packages/jinja2/sandbox.py:240:    intercepted_unops: t.FrozenSet[str] = frozenset()
+apps/agent-api/.venv/lib/python3.13/site-packages/jinja2/compiler.py:133:    if type(value) in {tuple, list, set, frozenset}:
+apps/agent-api/.venv/lib/python3.13/site-packages/jinja2/lexer.py:149:ignored_tokens = frozenset(
+apps/agent-api/.venv/lib/python3.13/site-packages/jinja2/lexer.py:160:ignore_if_empty = frozenset(
+apps/agent-api/.venv/lib/python3.13/site-packages/jinja2/parser.py:20:_statement_keywords = frozenset(
+apps/agent-api/.venv/lib/python3.13/site-packages/jinja2/parser.py:36:_compare_operators = frozenset(["eq", "ne", "lt", "lteq", "gt", "gteq"])
+apps/agent-api/.venv/lib/python3.13/site-packages/fastapi/encoders.py:70:    frozenset: list,
+apps/agent-api/.venv/lib/python3.13/site-packages/fastapi/encoders.py:308:    if isinstance(obj, (list, set, frozenset, GeneratorType, tuple, deque)):
+apps/agent-api/.venv/lib/python3.13/site-packages/fastapi/_compat/shared.py:54:    FrozenSet: frozenset,
+apps/agent-api/.venv/lib/python3.13/site-packages/fastapi/_compat/shared.py:55:    frozenset: frozenset,
+apps/agent-api/.venv/lib/python3.13/site-packages/langsmith/_internal/_serde.py:38:        elif isinstance(obj, (set, frozenset, collections.deque)):
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/annoy.py:20:INDEX_METRICS = frozenset(["angular", "euclidean", "manhattan", "hamming", "dot"])
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/faiss.py:1380:        VALID_OPERATORS = frozenset(list(OPERATIONS) + ["$and", "$or", "$not"])
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/faiss.py:1434:                    condition_set = frozenset(condition)
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/tiledb.py:18:INDEX_METRICS = frozenset(["euclidean"])
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/mysql/base.py:1507:    _match_valid_flag_combinations = frozenset(
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/sqltypes.py:2022:    _strict_bools = frozenset([None, True, False])
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/compiler.py:1263:    literal_execute_params: FrozenSet[BindParameter[Any]] = frozenset()
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/compiler.py:1269:    post_compile_params: FrozenSet[BindParameter[Any]] = frozenset()
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/compiler.py:4663:            [("correlate_froms", frozenset()), ("asfrom_froms", frozenset())]
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/base.py:225:        # for a long time this was an empty frozenset, meaning
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/base.py:232:        obj.proxy_set = frozenset([obj])
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/elements.py:1319:    foreign_keys: AbstractSet[ForeignKey] = frozenset()
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/elements.py:1562:        return frozenset(c for c in self.proxy_set if not c._proxies)
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/elements.py:1574:        return frozenset([self._deannotate()]).union(
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/elements.py:1580:        return frozenset(_expand_cloned(self.proxy_set))
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/util/_collections.py:72:EMPTY_SET: FrozenSet[Any] = frozenset()
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/util/_collections.py:73:NONE_SET: FrozenSet[Any] = frozenset([None])
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/util/langhelpers.py:1218:    _memoized_keys: FrozenSet[str] = frozenset()
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/testing/util.py:484:        frozenset: iter,
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/testing/plugin/pytestplugin.py:281:                add_markers = frozenset()
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/collections.py:1374:_set_binop_bases = (set, frozenset)
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/collections.py:1378:    """Allow only set, frozenset and self.__class__-derived
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/util.py:127:all_cascades = frozenset(
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/query.py:474:            compile_options["_only_load_props"] = frozenset(only_load_props)
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/attributes.py:2307:_NO_STATE_SYMBOLS = frozenset([id(PASSIVE_NO_RESULT), id(NO_VALUE)])
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/mapper.py:2057:        return frozenset(self._props.values())
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/mapper.py:2748:            table: frozenset(
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/mapper.py:2757:            table: frozenset(
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/mapper.py:2778:            table: frozenset([col.key for col in pks])
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/mapper.py:2785:            table: frozenset([self._columntoproperty[col].key for col in pks])
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/mapper.py:2794:            table: frozenset(
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/mapper.py:2813:            table: frozenset(
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/mapper.py:2830:            table: frozenset(col.key for col in cols if col.key is not None)
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/mapper.py:2839:            table: frozenset(col.key for col in cols if col.key is not None)
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/relationships.py:3255:            return frozenset(
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/relationships.py:3470:        self.names = frozenset(names)
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/instrumentation.py:252:        return frozenset(self)
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/instrumentation.py:256:        return frozenset(
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/instrumentation.py:262:        return frozenset(
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/instrumentation.py:272:        return frozenset([attr.impl for attr in self.values()])
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/loading.py:730:        compile_options["_only_load_props"] = frozenset(only_load_props)
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/decl_api.py:1320:        return frozenset(manager.mapper for manager in self._managers).union(
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/base.py:282:_never_set = frozenset([NEVER_SET])
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/base.py:284:_none_set = frozenset([None, NEVER_SET, PASSIVE_NO_RESULT])
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/base.py:286:_none_only_set = frozenset([None])
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/event/attr.py:319:    propagate: FrozenSet[_ListenerFnType] = frozenset()
+apps/agent-api/.venv/lib/python3.13/site-packages/yarl/_url.py:49:USES_RELATIVE = frozenset(uses_relative)
+apps/agent-api/.venv/lib/python3.13/site-packages/yarl/_url.py:53:SCHEME_REQUIRES_HOST = frozenset(("http", "https", "ws", "wss", "ftp"))
+apps/agent-api/.venv/lib/python3.13/site-packages/yarl/_parse.py:20:USES_AUTHORITY = frozenset(uses_netloc)
+apps/agent-api/.venv/lib/python3.13/site-packages/datamodel_code_generator/types.py:311:        return frozenset(
+apps/agent-api/.venv/lib/python3.13/site-packages/datamodel_code_generator/model/base.py:387:        return frozenset(
+apps/agent-api/.venv/lib/python3.13/site-packages/datamodel_code_generator/parser/base.py:99:        return frozenset(to_hashable(i) for i in item)
+apps/agent-api/.venv/lib/python3.13/site-packages/pyasn1/type/namedtype.py:168:        self.__requiredComponents = frozenset(
+apps/agent-api/.venv/lib/python3.13/site-packages/pyasn1/type/namedtype.py:171:        self.__keys = frozenset([namedType.name for namedType in self.__namedTypes])
+apps/agent-api/.venv/lib/python3.13/site-packages/cryptography/x509/name.py:226:        # Keep list and frozenset to preserve attribute order where it matters
+apps/agent-api/.venv/lib/python3.13/site-packages/cryptography/x509/name.py:228:        self._attribute_set = frozenset(attributes)
+apps/agent-api/.venv/lib/python3.13/site-packages/cryptography/x509/extensions.py:584:        reasons: frozenset[ReasonFlags] | None,
+apps/agent-api/.venv/lib/python3.13/site-packages/cryptography/x509/extensions.py:619:            not isinstance(reasons, frozenset)
+apps/agent-api/.venv/lib/python3.13/site-packages/cryptography/x509/extensions.py:622:            raise TypeError("reasons must be None or frozenset of ReasonFlags")
+apps/agent-api/.venv/lib/python3.13/site-packages/cryptography/x509/extensions.py:678:    def reasons(self) -> frozenset[ReasonFlags] | None:
+apps/agent-api/.venv/lib/python3.13/site-packages/cryptography/x509/extensions.py:1953:        only_some_reasons: frozenset[ReasonFlags] | None,
+apps/agent-api/.venv/lib/python3.13/site-packages/cryptography/x509/extensions.py:1961:            not isinstance(only_some_reasons, frozenset)
+apps/agent-api/.venv/lib/python3.13/site-packages/cryptography/x509/extensions.py:1965:                "only_some_reasons must be None or frozenset of ReasonFlags"
+apps/agent-api/.venv/lib/python3.13/site-packages/cryptography/x509/extensions.py:2091:    ) -> frozenset[ReasonFlags] | None:
+apps/agent-api/.venv/lib/python3.13/site-packages/cryptography/hazmat/primitives/ciphers/algorithms.py:37:    key_sizes = frozenset([128, 192, 256, 512])
+apps/agent-api/.venv/lib/python3.13/site-packages/cryptography/hazmat/primitives/ciphers/algorithms.py:50:    key_sizes = frozenset([128])
+apps/agent-api/.venv/lib/python3.13/site-packages/cryptography/hazmat/primitives/ciphers/algorithms.py:60:    key_sizes = frozenset([256])
+apps/agent-api/.venv/lib/python3.13/site-packages/cryptography/hazmat/primitives/ciphers/algorithms.py:70:    key_sizes = frozenset([128, 192, 256])
+apps/agent-api/.venv/lib/python3.13/site-packages/cryptography/hazmat/primitives/ciphers/algorithms.py:153:    key_sizes = frozenset([256])
+apps/agent-api/.venv/lib/python3.13/site-packages/cryptography/hazmat/primitives/ciphers/algorithms.py:176:    key_sizes = frozenset([128])
+apps/agent-api/.venv/lib/python3.13/site-packages/cryptography/hazmat/primitives/_cipheralgorithm.py:25:    def key_sizes(self) -> frozenset[int]:
+apps/agent-api/.venv/lib/python3.13/site-packages/cryptography/hazmat/decrepit/ciphers/algorithms.py:16:    key_sizes = frozenset([40, 56, 64, 80, 128, 160, 192, 256])
+apps/agent-api/.venv/lib/python3.13/site-packages/cryptography/hazmat/decrepit/ciphers/algorithms.py:29:    key_sizes = frozenset([64, 128, 192])
+apps/agent-api/.venv/lib/python3.13/site-packages/cryptography/hazmat/decrepit/ciphers/algorithms.py:46:    key_sizes = frozenset(range(32, 449, 8))
+apps/agent-api/.venv/lib/python3.13/site-packages/cryptography/hazmat/decrepit/ciphers/algorithms.py:59:    key_sizes = frozenset(range(40, 129, 8))
+apps/agent-api/.venv/lib/python3.13/site-packages/cryptography/hazmat/decrepit/ciphers/algorithms.py:72:    key_sizes = frozenset([128])
+apps/agent-api/.venv/lib/python3.13/site-packages/cryptography/hazmat/decrepit/ciphers/algorithms.py:85:    key_sizes = frozenset([128])
+apps/agent-api/.venv/lib/python3.13/site-packages/cryptography/hazmat/decrepit/ciphers/algorithms.py:100:    key_sizes = frozenset([128])
+apps/agent-api/.venv/lib/python3.13/site-packages/regex/regex.py:434:_METACHARS = frozenset("()[]{}?*+|^$\\.-#&~")
+apps/agent-api/.venv/lib/python3.13/site-packages/regex/regex.py:492:                        args_supplied.add((k, frozenset(kwargs[k])))
+apps/agent-api/.venv/lib/python3.13/site-packages/regex/regex.py:498:            args_supplied = frozenset(args_supplied)
+apps/agent-api/.venv/lib/python3.13/site-packages/regex/regex.py:599:        values = frozenset(kwargs[name])
+apps/agent-api/.venv/lib/python3.13/site-packages/regex/regex.py:601:            items = frozenset(_fold_case(info, v) for v in values)
+apps/agent-api/.venv/lib/python3.13/site-packages/regex/regex.py:662:        args_needed = frozenset(args_needed)
+apps/agent-api/.venv/lib/python3.13/site-packages/regex/_regex_core.py:140:ALPHA = frozenset(string.ascii_letters)
+apps/agent-api/.venv/lib/python3.13/site-packages/regex/_regex_core.py:141:DIGITS = frozenset(string.digits)
+apps/agent-api/.venv/lib/python3.13/site-packages/regex/_regex_core.py:143:OCT_DIGITS = frozenset(string.octdigits)
+apps/agent-api/.venv/lib/python3.13/site-packages/regex/_regex_core.py:144:HEX_DIGITS = frozenset(string.hexdigits)
+apps/agent-api/.venv/lib/python3.13/site-packages/regex/_regex_core.py:145:SPECIAL_CHARS = frozenset("()|?*+{^$.[\\#") | frozenset([""])
+apps/agent-api/.venv/lib/python3.13/site-packages/regex/_regex_core.py:146:NAMED_CHAR_PART = ALNUM | frozenset(" -")
+apps/agent-api/.venv/lib/python3.13/site-packages/regex/_regex_core.py:147:PROPERTY_NAME_PART = ALNUM | frozenset(" &_-.")
+apps/agent-api/.venv/lib/python3.13/site-packages/numpy/linalg/tests/test_linalg.py:88:        self.tags = frozenset(tags)  # prevent shared tags
+apps/agent-api/.venv/lib/python3.13/site-packages/numpy/typing/tests/data/pass/literal.py:15:KACF = frozenset({None, "K", "A", "C", "F"})
+apps/agent-api/.venv/lib/python3.13/site-packages/numpy/typing/tests/data/pass/literal.py:16:ACF = frozenset({None, "A", "C", "F"})
+apps/agent-api/.venv/lib/python3.13/site-packages/numpy/typing/tests/data/pass/literal.py:17:CF = frozenset({None, "C", "F"})
+apps/agent-api/.venv/lib/python3.13/site-packages/numpy/typing/tests/data/pass/literal.py:19:order_list: list[tuple[frozenset[str | None], Callable[..., Any]]] = [
+apps/agent-api/.venv/lib/python3.13/site-packages/packaging/specifiers.py:726:            self._specs = frozenset(map(Specifier, split_specifiers))
+apps/agent-api/.venv/lib/python3.13/site-packages/packaging/specifiers.py:729:            self._specs = frozenset(specifiers)
+apps/agent-api/.venv/lib/python3.13/site-packages/packaging/specifiers.py:809:        specifier._specs = frozenset(self._specs | other._specs)
+apps/agent-api/.venv/lib/python3.13/site-packages/packaging/metadata.py:313:    for name in frozenset(parsed.keys()):
+apps/agent-api/.venv/lib/python3.13/site-packages/packaging/metadata.py:469:_REQUIRED_ATTRS = frozenset(["metadata_version", "name", "version"])
+apps/agent-api/.venv/lib/python3.13/site-packages/packaging/metadata.py:720:            fields_to_check = frozenset(ins._raw) | _REQUIRED_ATTRS
+apps/agent-api/.venv/lib/python3.13/site-packages/packaging/tags.py:96:def parse_tag(tag: str) -> frozenset[Tag]:
+apps/agent-api/.venv/lib/python3.13/site-packages/packaging/tags.py:98:    Parses the provided tag (e.g. `py3-none-any`) into a frozenset of Tag instances.
+apps/agent-api/.venv/lib/python3.13/site-packages/packaging/tags.py:109:    return frozenset(tags)
+apps/agent-api/.venv/lib/python3.13/site-packages/packaging/utils.py:96:) -> tuple[NormalizedName, Version, BuildTag, frozenset[Tag]]:
+apps/agent-api/.venv/lib/python3.13/site-packages/lxml/html/diff.py:727:empty_tags = cython.declare(frozenset, defs.empty_tags)
+apps/agent-api/.venv/lib/python3.13/site-packages/lxml/html/diff.py:729:block_level_tags = cython.declare(frozenset, frozenset([
+apps/agent-api/.venv/lib/python3.13/site-packages/lxml/html/diff.py:756:block_level_container_tags = cython.declare(frozenset, frozenset([
+apps/agent-api/.venv/lib/python3.13/site-packages/lxml/html/defs.py:11:empty_tags = frozenset([
+apps/agent-api/.venv/lib/python3.13/site-packages/lxml/html/defs.py:15:deprecated_tags = frozenset([
+apps/agent-api/.venv/lib/python3.13/site-packages/lxml/html/defs.py:20:link_attrs = frozenset([
+apps/agent-api/.venv/lib/python3.13/site-packages/lxml/html/defs.py:32:event_attrs = frozenset([
+apps/agent-api/.venv/lib/python3.13/site-packages/lxml/html/defs.py:40:safe_attrs = frozenset([
+apps/agent-api/.venv/lib/python3.13/site-packages/lxml/html/defs.py:53:top_level_tags = frozenset([
+apps/agent-api/.venv/lib/python3.13/site-packages/lxml/html/defs.py:57:head_tags = frozenset([
+apps/agent-api/.venv/lib/python3.13/site-packages/lxml/html/defs.py:61:general_block_tags = frozenset([
+apps/agent-api/.venv/lib/python3.13/site-packages/lxml/html/defs.py:81:list_tags = frozenset([
+apps/agent-api/.venv/lib/python3.13/site-packages/lxml/html/defs.py:85:table_tags = frozenset([
+apps/agent-api/.venv/lib/python3.13/site-packages/lxml/html/defs.py:92:block_tags = general_block_tags | list_tags | table_tags | frozenset([
+apps/agent-api/.venv/lib/python3.13/site-packages/lxml/html/defs.py:97:form_tags = frozenset([
+apps/agent-api/.venv/lib/python3.13/site-packages/lxml/html/defs.py:102:special_inline_tags = frozenset([
+apps/agent-api/.venv/lib/python3.13/site-packages/lxml/html/defs.py:108:phrase_tags = frozenset([
+apps/agent-api/.venv/lib/python3.13/site-packages/lxml/html/defs.py:113:font_style_tags = frozenset([
+apps/agent-api/.venv/lib/python3.13/site-packages/lxml/html/defs.py:117:frame_tags = frozenset([
+apps/agent-api/.venv/lib/python3.13/site-packages/lxml/html/defs.py:121:html5_tags = frozenset([
+apps/agent-api/.venv/lib/python3.13/site-packages/lxml/html/defs.py:130:nonstandard_tags = frozenset(['blink', 'marquee'])
+apps/agent-api/.venv/lib/python3.13/site-packages/_pytest/python.py:332:IGNORED_ATTRIBUTES = frozenset.union(
+apps/agent-api/.venv/lib/python3.13/site-packages/_pytest/python.py:333:    frozenset(),
+apps/agent-api/.venv/lib/python3.13/site-packages/_pytest/assertion/util.py:126:    return isinstance(x, (set, frozenset))
+apps/agent-api/.venv/lib/python3.13/site-packages/_pytest/main.py:572:        self._initialpaths: frozenset[Path] = frozenset()
+apps/agent-api/.venv/lib/python3.13/site-packages/_pytest/main.py:573:        self._initialpaths_with_parents: frozenset[Path] = frozenset()
+apps/agent-api/.venv/lib/python3.13/site-packages/_pytest/main.py:786:            self._initialpaths = frozenset(initialpaths)
+apps/agent-api/.venv/lib/python3.13/site-packages/_pytest/main.py:787:            self._initialpaths_with_parents = frozenset(initialpaths_with_parents)
+apps/agent-api/.venv/lib/python3.13/site-packages/_pytest/_io/pprint.py:244:    _dispatch[frozenset.__repr__] = _pprint_set
+apps/agent-api/.venv/lib/python3.13/site-packages/_pytest/_io/pprint.py:649:_builtin_scalars = frozenset(
+apps/agent-api/.venv/lib/python3.13/site-packages/langfuse/api/core/jsonable_encoder.py:86:    if isinstance(obj, (list, set, frozenset, GeneratorType, tuple)):
+apps/agent-api/.venv/lib/python3.13/site-packages/langfuse/_utils/serializer.py:130:            if isinstance(obj, (tuple, set, frozenset)):
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic_settings/sources/utils.py:81:        annotation, (BaseModel, Mapping, Sequence, tuple, set, frozenset, deque)
+apps/agent-api/.venv/lib/python3.13/site-packages/black/trans.py:57:SPLIT_SAFE_CHARS = frozenset(["\u3001", "\u3002", "\uff0c"])  # East Asian stops
+apps/agent-api/.venv/lib/python3.13/site-packages/black/handle_ipynb_magics.py:22:TRANSFORMED_MAGICS = frozenset((
+apps/agent-api/.venv/lib/python3.13/site-packages/black/handle_ipynb_magics.py:28:TOKENS_TO_IGNORE = frozenset((
+apps/agent-api/.venv/lib/python3.13/site-packages/black/handle_ipynb_magics.py:37:PYTHON_CELL_MAGICS = frozenset((
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/_internal/_validators.py:442:            collections.abc.Set: frozenset,
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/_internal/_schema_gather.py:104:    elif schema_type in {'list', 'set', 'frozenset', 'generator'}:
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/_internal/_generate_schema.py:124:FROZEN_SET_TYPES: list[type] = [typing.FrozenSet, frozenset, collections.abc.Set]  # noqa: UP006
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/_internal/_generate_schema.py:375:    def _frozenset_schema(self, items_type: Any) -> CoreSchema:
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/_internal/_generate_schema.py:376:        return core_schema.frozenset_schema(self.generate_schema(items_type))
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/_internal/_generate_schema.py:1040:            return self._frozenset_schema(Any)
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/_internal/_generate_schema.py:1127:            return self._frozenset_schema(self._get_first_arg_or_any(obj))
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/_internal/_generate_schema.py:1499:                required_keys: frozenset[str] = typed_dict_cls.__required_keys__
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/_internal/_core_utils.py:40:_LIST_LIKE_SCHEMA_WITH_ITEMS_TYPES = {'list', 'set', 'frozenset'}
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/_internal/_known_annotated_metadata.py:68:SEQUENCE_SCHEMA_TYPES = ('list', 'tuple', 'set', 'frozenset', 'generator', *TEXT_SCHEMA_TYPES)
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/_internal/_known_annotated_metadata.py:78:    (SET_CONSTRAINTS, ('set', 'frozenset')),
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/_internal/_serializers.py:20:    frozenset: frozenset,
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/_internal/_serializers.py:21:    typing.FrozenSet: frozenset,  # noqa: UP006
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/_internal/_serializers.py:28:    collections.abc.Set: frozenset,
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/_internal/_utils.py:63:    frozenset,
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/_internal/_utils.py:91:    return isinstance(v, (list, tuple, set, frozenset, GeneratorType, deque))
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/deprecated/json.py:63:    frozenset: list,
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/v1/types.py:43:    frozenset_validator,
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/v1/types.py:71:    'confrozenset',
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/v1/types.py:528:class ConstrainedFrozenSet(frozenset):  # type: ignore
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/v1/types.py:530:    __origin__ = frozenset
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/v1/types.py:539:        yield cls.frozenset_length_validator
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/v1/types.py:546:    def frozenset_length_validator(cls, v: 'Optional[FrozenSet[T]]') -> 'Optional[FrozenSet[T]]':
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/v1/types.py:550:        v = frozenset_validator(v)
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/v1/types.py:562:def confrozenset(
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/v1/schema.py:66:    confrozenset,
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/v1/schema.py:798:    (frozenset, {'type': 'array', 'items': {}, 'uniqueItems': True}),
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/v1/schema.py:1078:                return confrozenset(go(args[0]), min_items=field_info.min_items, max_items=field_info.max_items)
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/v1/fields.py:709:                    {f'frozenset_{i}': Validator(validator, pre=True) for i, validator in enumerate(get_validators())}
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/v1/fields.py:939:            converted = frozenset(result)
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/v1/fields.py:1168:            or lenient_issubclass(self.type_, (BaseModel, list, set, frozenset, dict))
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/v1/env_settings.py:110:            elif isinstance(env, (set, frozenset)):
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/v1/json.py:53:    frozenset: list,
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/v1/utils.py:114:    frozenset,
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/v1/utils.py:159:    return isinstance(v, (list, tuple, set, frozenset, GeneratorType, deque))
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/v1/errors.py:295:    msg_template = 'value is not a valid frozenset'
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/v1/errors.py:352:    code = 'frozenset.min_items'
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/v1/errors.py:360:    code = 'frozenset.max_items'
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/v1/validators.py:289:def frozenset_validator(v: Any) -> FrozenSet[Any]:
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/v1/validators.py:290:    if isinstance(v, frozenset):
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/v1/validators.py:293:        return frozenset(v)
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/v1/validators.py:686:    (frozenset, [frozenset_validator]),
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/v1/__init__.py:87:    'confrozenset',
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/types.py:52:    'confrozenset',
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/types.py:855:def confrozenset(
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/types.py:857:) -> type[frozenset[HashableItemType]]:
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/types.py:861:        item_type: The type of the items in the frozenset.
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/types.py:862:        min_length: The minimum length of the frozenset.
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/types.py:863:        max_length: The maximum length of the frozenset.
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/types.py:866:        The wrapped frozenset type.
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/types.py:868:    return Annotated[frozenset[item_type], annotated_types.Len(min_length or 0, max_length)]  # pyright: ignore[reportReturnType]
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/fields.py:1028:            This option can be applied only to iterable types (list, tuple, set, and frozenset).
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/json_schema.py:966:    def frozenset_schema(self, schema: core_schema.FrozenSetSchema) -> JsonSchemaValue:
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/json_schema.py:967:        """Generates a JSON schema that matches a frozenset schema.
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/experimental/pipeline.py:513:        if s and s['type'] in {'str', 'list', 'tuple', 'set', 'frozenset', 'dict'}:
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/experimental/pipeline.py:520:                or s['type'] == 'frozenset'
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/__init__.py:157:    'confrozenset',
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/__init__.py:320:    'confrozenset': (__spec__.parent, '.types'),
+apps/agent-api/.venv/lib/python3.13/site-packages/typing_inspection/typing_objects.py:555:    typing.FrozenSet: frozenset,
+apps/agent-api/.venv/lib/python3.13/site-packages/requests_toolbelt/threaded/pool.py:176:    attrs = frozenset(['request_kwargs', 'response'])
+apps/agent-api/.venv/lib/python3.13/site-packages/requests_toolbelt/threaded/pool.py:198:    attrs = frozenset(['request_kwargs', 'exception'])
+apps/agent-api/.venv/lib/python3.13/site-packages/google/protobuf/json_format.py:36:_INT_TYPES = frozenset([
+apps/agent-api/.venv/lib/python3.13/site-packages/google/protobuf/json_format.py:42:_INT64_TYPES = frozenset([
+apps/agent-api/.venv/lib/python3.13/site-packages/google/protobuf/json_format.py:46:_FLOAT_TYPES = frozenset([
+apps/agent-api/.venv/lib/python3.13/site-packages/google/protobuf/text_format.py:45:_QUOTES = frozenset(("'", '"'))
+apps/agent-api/.venv/lib/python3.13/site-packages/h2/utilities.py:30:CONNECTION_HEADERS = frozenset([
+apps/agent-api/.venv/lib/python3.13/site-packages/h2/utilities.py:39:_ALLOWED_PSEUDO_HEADER_FIELDS = frozenset([
+apps/agent-api/.venv/lib/python3.13/site-packages/h2/utilities.py:49:_SECURE_HEADERS = frozenset([
+apps/agent-api/.venv/lib/python3.13/site-packages/h2/utilities.py:56:_REQUEST_ONLY_HEADERS = frozenset([
+apps/agent-api/.venv/lib/python3.13/site-packages/h2/utilities.py:65:_RESPONSE_ONLY_HEADERS = frozenset([b":status"])
+apps/agent-api/.venv/lib/python3.13/site-packages/h2/utilities.py:70:_CONNECT_REQUEST_ONLY_HEADERS = frozenset([b":protocol"])
+apps/agent-api/.venv/lib/python3.13/site-packages/h2/utilities.py:73:_WHITESPACE = frozenset(map(ord, whitespace))
+apps/agent-api/.venv/lib/python3.13/site-packages/aiohttp/web_app.py:97:    ATTRS = frozenset(
+apps/agent-api/.venv/lib/python3.13/site-packages/aiohttp/helpers.py:79:EMPTY_BODY_STATUS_CODES = frozenset((204, 304, *range(100, 200)))
+apps/agent-api/.venv/lib/python3.13/site-packages/aiohttp/helpers.py:713:    ATTRS = frozenset(["_content_type", "_content_dict", "_stored_content_type"])
+apps/agent-api/.venv/lib/python3.13/site-packages/aiohttp/hdrs.py:113:METH_HEAD_ALL: Final = frozenset(
+apps/agent-api/.venv/lib/python3.13/site-packages/aiohttp/hdrs.py:116:METH_CONNECT_ALL: Final = frozenset(
+apps/agent-api/.venv/lib/python3.13/site-packages/aiohttp/hdrs.py:119:HOST_ALL: Final = frozenset(
+apps/agent-api/.venv/lib/python3.13/site-packages/aiohttp/connector.py:76:EMPTY_SCHEMA_SET = frozenset({""})
+apps/agent-api/.venv/lib/python3.13/site-packages/aiohttp/connector.py:77:HTTP_SCHEMA_SET = frozenset({"http", "https"})
+apps/agent-api/.venv/lib/python3.13/site-packages/aiohttp/connector.py:78:WS_SCHEMA_SET = frozenset({"ws", "wss"})
+apps/agent-api/.venv/lib/python3.13/site-packages/aiohttp/connector.py:833:    allowed_protocol_schema_set = HIGH_LEVEL_SCHEMA_SET | frozenset({"tcp"})
+apps/agent-api/.venv/lib/python3.13/site-packages/aiohttp/connector.py:1541:    allowed_protocol_schema_set = HIGH_LEVEL_SCHEMA_SET | frozenset({"unix"})
+apps/agent-api/.venv/lib/python3.13/site-packages/aiohttp/connector.py:1599:    allowed_protocol_schema_set = HIGH_LEVEL_SCHEMA_SET | frozenset({"npipe"})
+apps/agent-api/.venv/lib/python3.13/site-packages/aiohttp/http_websocket.py:17:_INTERNAL_RECEIVE_TYPES = frozenset(
+apps/agent-api/.venv/lib/python3.13/site-packages/aiohttp/web_request.py:128:    ATTRS = HeadersMixin.ATTRS | frozenset(
+apps/agent-api/.venv/lib/python3.13/site-packages/aiohttp/web_request.py:846:    ATTRS = BaseRequest.ATTRS | frozenset(["_match_info"])
+apps/agent-api/.venv/lib/python3.13/site-packages/aiohttp/client.py:222:IDEMPOTENT_METHODS = frozenset({"GET", "HEAD", "OPTIONS", "TRACE", "PUT", "DELETE"})
+apps/agent-api/.venv/lib/python3.13/site-packages/aiohttp/client.py:231:    ATTRS = frozenset(
+apps/agent-api/.venv/lib/python3.13/site-packages/aiohttp/client.py:396:            self._skip_auto_headers = frozenset(istr(i) for i in skip_auto_headers)
+apps/agent-api/.venv/lib/python3.13/site-packages/aiohttp/client.py:398:            self._skip_auto_headers = frozenset()
+apps/agent-api/.venv/lib/python3.13/site-packages/aiohttp/client_reqrep.py:229:_SSL_SCHEMES = frozenset(("https", "wss"))

@@ -1,0 +1,18 @@
+10:| **Target Precision** | >= 80% |
+11:| **Minimum Sample Size** | 20 reviewed items (TP + FP >= 20) |
+45:You cannot make a TP/FP decision yet — you need more context, or the item is ambiguous. Deferred items are **excluded from precision calculation** until you resolve them.
+52:### Precision Formula
+55:Precision = TP / (TP + FP)
+59:- Target: Precision >= 80% (at least 4 out of 5 suggestions are valid)
+60:- Precision is only meaningful when TP + FP >= 20 (minimum sample size)
+64:| Reviewed (TP+FP) | Precision Reliability |
+77:| Day | Date | New Items | Reviewed | TP | FP | Deferred | Daily Precision | Cumulative TP | Cumulative FP | Cumulative Precision | Notes |
+87:**Daily Precision** = TP / (TP + FP) for that day only (skip if no reviews that day).
+89:**Cumulative Precision** = (Sum of all TP so far) / (Sum of all TP + all FP so far).
+113:6. **Calculate precision** — Use the formula: `TP / (TP + FP)`. Update both Daily and Cumulative columns.
+119:- If you defer an item, revisit it within 2 days and resolve it (TP or FP)
+149:### Approved vs rejected (raw TP/FP proxy)
+160:### Precision calculation from database
+176:**Note:** Database precision is a proxy. The pilot tracker is the authoritative record because the operator may have nuanced TP/FP judgments that the simple approved/rejected status doesn't capture.
+200:- [ ] All deferred items are resolved (TP or FP) or explicitly noted as unresolvable
+201:- [ ] Sample size requirement met (TP + FP >= 20)

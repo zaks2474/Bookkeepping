@@ -1,0 +1,33 @@
+=== VF-06.4 GOVERNANCE DRIFT EXTENDED COVERAGE ===
+12:DRIFT=0
+23:      echo "  PASS: $rule referenced in validate-surface9.sh"
+25:      echo "  DRIFT: $rule NOT referenced in validate-surface9.sh"
+26:      DRIFT=$((DRIFT + 1))
+40:      echo "  PASS: $script referenced in ci.yml"
+42:      echo "  DRIFT: $script NOT referenced in ci.yml"
+43:      DRIFT=$((DRIFT + 1))
+55:  echo "  PASS: validate-frontend-governance target exists"
+57:  echo "  DRIFT: validate-frontend-governance target missing from Makefile"
+58:  DRIFT=$((DRIFT + 1))
+68:    echo "  PASS: validate-frontend-governance is a validate-local dependency"
+70:    echo "  DRIFT: validate-frontend-governance exists but is not in validate-local"
+71:    DRIFT=$((DRIFT + 1))
+74:  echo "  DRIFT: validate-frontend-governance not found in Makefile"
+75:  DRIFT=$((DRIFT + 1))
+84:    echo "  DRIFT: Port 8090 reference in $rule"
+85:    DRIFT=$((DRIFT + 1))
+88:if [ "$DRIFT" -eq 0 ]; then
+89:  echo "  PASS: No port 8090 in governance rule files"
+97:    echo "  PASS: $target target exists"
+99:    echo "  DRIFT: $target target missing from Makefile"
+100:    DRIFT=$((DRIFT + 1))
+109:    echo "  PASS: $script referenced in ci.yml"
+111:    echo "  DRIFT: $script NOT referenced in ci.yml"
+112:    DRIFT=$((DRIFT + 1))
+116:# ── Check 8: Governance runtime benchmark ──
+118:echo "--- Governance validation benchmark ---"
+124:  echo "  PASS: validate-frontend-governance completed in ${BENCH_MS}ms (budget: 5000ms)"
+126:  echo "  INFO: validate-frontend-governance took ${BENCH_MS}ms (over 5000ms budget)"
+130:if [ "$DRIFT" -eq 0 ]; then
+131:  echo "Governance Drift Check: PASS (no drift)"
+134:  echo "Governance Drift Check: FAIL ($DRIFT drift items)"

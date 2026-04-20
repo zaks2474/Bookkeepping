@@ -1,0 +1,3 @@
+=== /home/zaks/zakops-backend/db/migrations/029_quarantine_hardening.sql ===
+34:CREATE INDEX IF NOT EXISTS idx_quarantine_correlation_id
+35:    ON zakops.quarantine_items (correlation_id)

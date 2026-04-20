@@ -1,0 +1,7 @@
+Lines 70-75: class LegalHoldSetEvent(SSEEvent):
+  event_type = 'legal_hold_set'
+  thread_id: str
+  reason: str
+  set_by: str
+In registry at line 150: 'legal_hold_set': LegalHoldSetEvent
+VERDICT: PASS

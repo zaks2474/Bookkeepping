@@ -1,0 +1,7 @@
+=== VF-03.2 SUBJECT COALESCE QUERY ===
+240:    # P1-03: display_subject = COALESCE(email_subject, subject) for transitional rendering
+241:    display_subject: str | None = None
+1579:            COALESCE(q.email_subject, q.subject) AS display_subject,
+1640:            COALESCE(q.email_subject, q.subject) AS display_subject,
+1784:               COALESCE(q.email_subject, q.subject) AS display_subject,
+1832:                      COALESCE(email_subject, subject) AS display_subject,

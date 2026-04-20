@@ -1,0 +1,26 @@
+=== VF-01.3 BRIDGE AUTH ENFORCEMENT ===
+11:Transport: Both SSE (/sse) and Streamable HTTP (/mcp)
+15:- Bearer token authentication on all MCP requests
+43:API_KEY = os.getenv("ZAKOPS_BRIDGE_API_KEY", "")
+77:                    headers={"Authorization": f"Bearer {BACKEND_API_KEY}"},
+166:class BearerAuthMiddleware(BaseHTTPMiddleware):
+167:    """Middleware to verify Bearer token on all requests except health."""
+183:        # P0-T6: Auth bypass removed — all MCP paths now require valid Bearer token
+184:        auth_header = request.headers.get("Authorization", "")
+186:        # Check Authorization header
+191:            logger.warning(f"AUTH FAIL: Missing Authorization header. "
+197:                content={"error": "Missing Authorization header"}
+200:        if not auth_header.startswith("Bearer "):
+207:                content={"error": "Invalid Authorization header format"}
+1198:        "sse_endpoint": "/sse",
+1199:        "streamable_http_endpoint": "/mcp",
+1210:    SSE: /sse (GET for stream, POST to /messages/?session_id=...)
+1211:    Streamable HTTP: /mcp (POST with JSON-RPC)
+1218:    # Normalize /sse/ to /sse (LangSmith may add trailing slash)
+1221:        if request.url.path == "/sse/":
+1222:            request.scope["path"] = "/sse"
+1247:        a.add_middleware(BearerAuthMiddleware, api_key=API_KEY)
+1250:    # ASGI dispatcher: /mcp → streamable-http, everything else → SSE
+1255:            if path in ("/mcp", "/mcp/"):
+1311:    print(f"SSE Endpoint: http://{BRIDGE_HOST}:{BRIDGE_PORT}/sse")
+1312:    print(f"Streamable HTTP Endpoint: http://{BRIDGE_HOST}:{BRIDGE_PORT}/mcp")

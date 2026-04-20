@@ -1,0 +1,8 @@
+File: /home/zaks/zakops-agent-api/apps/agent-api/app/core/security/injection_guard.py
+---
+Lines 30-36: @dataclass class ScanResult:
+  passed: bool
+  patterns_found: list[str] = field(default_factory=list)
+  severity: str = 'none'
+  sanitized_content: Optional[str] = None
+VERDICT: PASS — all 4 fields present

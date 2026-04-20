@@ -1,0 +1,31 @@
+app/api/v1/agent.py:162:        # R3 REMEDIATION [P2.1]: Extract or generate correlation_id
+app/api/v1/agent.py:163:        correlation_id = request.headers.get("X-Correlation-ID") or str(uuid.uuid4())
+app/api/v1/agent.py:165:        # Bind correlation_id to structlog context for all subsequent logs
+app/api/v1/agent.py:166:        logger.bind(correlation_id=correlation_id)
+app/api/v1/agent.py:172:            correlation_id=correlation_id,
+app/api/v1/agent.py:176:        # R3 REMEDIATION [P2.1]: Include correlation_id in metadata for tool propagation
+app/api/v1/agent.py:178:        metadata["correlation_id"] = correlation_id
+app/core/langgraph/graph.py:71:from app.core.langgraph.tools.deal_tools import set_correlation_id
+app/core/langgraph/graph.py:266:        R3 REMEDIATION [P2.1]: Added correlation_id propagation to tools.
+app/core/langgraph/graph.py:274:        # R3 REMEDIATION [P2.1]: Set correlation_id context for tool HTTP calls
+app/core/langgraph/graph.py:275:        correlation_id = state.metadata.get("correlation_id", "")
+app/core/langgraph/graph.py:276:        if correlation_id:
+app/core/langgraph/graph.py:277:            set_correlation_id(correlation_id)
+app/core/langgraph/graph.py:503:        R3 REMEDIATION [P2.1]: Propagates correlation_id to tool HTTP calls.
+app/core/langgraph/graph.py:515:        # R3 REMEDIATION [P2.1]: Set correlation_id context for tool HTTP calls
+app/core/langgraph/graph.py:516:        correlation_id = state.metadata.get("correlation_id", "")
+app/core/langgraph/graph.py:517:        if correlation_id:
+app/core/langgraph/graph.py:518:            set_correlation_id(correlation_id)
+app/core/langgraph/tools/deal_tools.py:37:# R3 REMEDIATION [P2.1]: Context variable for correlation_id propagation
+app/core/langgraph/tools/deal_tools.py:38:_correlation_id_ctx: ContextVar[str] = ContextVar("correlation_id", default="")
+app/core/langgraph/tools/deal_tools.py:41:def set_correlation_id(correlation_id: str) -> None:
+app/core/langgraph/tools/deal_tools.py:42:    """Set correlation_id in context for tool HTTP calls."""
+app/core/langgraph/tools/deal_tools.py:43:    _correlation_id_ctx.set(correlation_id)
+app/core/langgraph/tools/deal_tools.py:46:def get_correlation_id() -> str:
+app/core/langgraph/tools/deal_tools.py:47:    """Get correlation_id from context."""
+app/core/langgraph/tools/deal_tools.py:48:    return _correlation_id_ctx.get()
+app/core/langgraph/tools/deal_tools.py:52:    """Get headers for backend API requests including auth and correlation_id."""
+app/core/langgraph/tools/deal_tools.py:56:    # R3 REMEDIATION [P2.1]: Include correlation_id for end-to-end tracing
+app/core/langgraph/tools/deal_tools.py:57:    correlation_id = get_correlation_id()
+app/core/langgraph/tools/deal_tools.py:58:    if correlation_id:
+app/core/langgraph/tools/deal_tools.py:59:        headers["X-Correlation-ID"] = correlation_id

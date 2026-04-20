@@ -1,0 +1,30 @@
+=== VF-02: Deal Sub-Resource Endpoints (Phase 2) ===
+
+File: /home/zaks/zakops-backend/src/api/orchestration/main.py (3424 lines)
+
+1. GET /api/deals/{deal_id}/case-file (lines 3252-3304)
+   - Route decorator: @app.get("/api/deals/{deal_id}/case-file") at line 3252 ✓
+   - 404 on deal not found (lines 3256-3258) ✓
+   - 404 on no brain data (lines 3260-3262) ✓
+   - Counts: event_count, thread_count, task_rows by status (lines 3264-3272) ✓
+   - Response envelope: { deal_id, version: "v1", generated_at, data: {deal, brain, counts} } (lines 3293-3304) ✓
+
+2. GET /api/deals/{deal_id}/enrichment (lines 3307-3360)
+   - Route decorator: @app.get("/api/deals/{deal_id}/enrichment") at line 3307 ✓
+   - 404 on deal not found ONLY (lines 3315-3316) ✓
+   - Returns 200 with defaults if no brain (NOT 404) ✓
+   - Response shape: deal_id, display_name, broker{name,email,company,phone,domain}, aliases, materials ✓
+   - Default materials: { total: 0, by_type: {}, auth_required_count: 0 } ✓
+   - Default enrichment_confidence: 0 when no brain ✓
+
+3. GET /api/deals/{deal_id}/materials (lines 3363-3409)
+   - Route decorator: @app.get("/api/deals/{deal_id}/materials") at line 3363 ✓
+   - 404 on deal not found ONLY (lines 3371-3372) ✓
+   - Returns 200 with empty correspondence if no approved items ✓
+   - Queries quarantine_items WHERE status='approved' ORDER BY received_at DESC ✓
+   - Synthetic bundle_id: f"qi-{row['id']}" at line 3387 ✓
+   - Correspondence structure: bundle_id, subject, from, date, format:"email", attachments:[], links:{all:[]} ✓
+   - aggregate_links: all zeros + empty arrays (lines 3401-3407) ✓
+   - pending_auth: [] (line 3408) ✓
+
+VERDICT: PASS — All 3 endpoints verified with correct shapes and 404 behavior

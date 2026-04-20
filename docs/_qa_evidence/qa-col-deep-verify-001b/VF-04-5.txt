@@ -1,0 +1,23 @@
+18:    "global": frozenset([
+19-        "list_deals",
+20-        "search_deals",
+21-        "duckduckgo_results_json",
+22-    ]),
+23-    "deal": frozenset([
+24-        "get_deal",
+25-        "get_deal_health",
+26-        "add_note",
+27-        "transition_deal",
+28-        "create_deal",
+29-        "list_deals",
+30-        "search_deals",
+31-        "duckduckgo_results_json",
+32-    ]),
+33-    "document": frozenset([
+34-        "duckduckgo_results_json",
+35-        "get_deal",
+36-        "get_deal_health",
+37-    ]),
+38-}
+=== Check: transition_deal should NOT be in global scope ===
+SCOPE_TOOL_MAP found — manual review needed for global scope contents

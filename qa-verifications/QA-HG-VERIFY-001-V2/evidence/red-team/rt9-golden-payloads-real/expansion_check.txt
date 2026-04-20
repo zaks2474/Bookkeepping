@@ -1,0 +1,16 @@
+=== V2: GOLDEN PAYLOADS EXPANSION CHECK ===
+--- Found golden files ---
+actions.json
+deals.json
+error-401.json
+error-404.json
+error-500.json
+error-validation-400.json
+events.json
+quarantine.json
+PASS: Found error error payload
+MISSING: 422 error payload
+PASS: Found 401 error payload
+MISSING: 403 error payload
+PASS: Found 500 error payload
+--- Capturing error payloads ---

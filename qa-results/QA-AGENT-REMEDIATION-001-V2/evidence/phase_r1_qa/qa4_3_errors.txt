@@ -1,0 +1,41 @@
+QA-4.3: UF-007 Error Sanitization
+===================================
+
+Test 1: Search for detail=str(e) and detail=f"..." patterns
+------------------------------------------------------------
+Found 2 instances of f-string in error details:
+
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/agent.py:286:
+    detail=f"Approval already resolved (status: {approval.status})"
+
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/agent.py:554:
+    detail=f"Cannot reject approval (status: {approval.status})"
+
+ANALYSIS:
+These f-strings expose approval.status values (e.g., "APPROVED", "REJECTED", "PENDING").
+This is controlled enum data, NOT raw exception data or internal paths.
+Risk: LOW - enum values are safe to expose to authenticated users.
+
+Test 2: Live Error Response Testing
+------------------------------------
+Request 1: Invalid JSON to /api/v1/agent/invoke
+Response: {"detail":"Validation error","errors":[{"field":"0","message":"JSON decode error"}]}
+Analysis: Sanitized - no traceback, uses generic validation error message
+
+Request 2: Non-existent endpoint /api/v1/nonexistent
+Response: {"detail":"Not Found"}
+Analysis: Sanitized - generic 404 message
+
+VERDICT: PASS with MINOR NOTE
+Evidence:
+- No str(e) patterns found that leak raw exception data
+- No traceback, file paths, or module names exposed in live testing
+- F-string usage is limited to controlled enum values (ApprovalStatus)
+- Custom validation handler in main.py (lines 88-116) sanitizes validation errors
+
+Minor Note:
+- Lines 286 and 554 expose ApprovalStatus enum values, which is acceptable for 
+  authenticated business logic errors but should be monitored if status values 
+  ever contain sensitive information.
+
+Security Risk: LOW - properly sanitized

@@ -1,0 +1,8 @@
+=== VF-04.2 SURFACE9 NEW SECTION ANCHORS ===
+NOTE: Original case-sensitive search returned empty. Re-running case-insensitive:
+103:for SECTION in "Skill Preload" "Responsive Breakpoint" "Z-Index" "Dark Mode" "Animation Performance" "State Management"; do
+115:# ── Check 8: Anti-convergence policy present ──────────────────────────
+116:echo "Check 8: Anti-convergence policy"
+117:if grep -qi "anti-convergence\|NEVER converge" "$DS_RULE" 2>/dev/null; then
+118:  echo "  PASS: Anti-convergence policy present"
+120:  echo "  FAIL: Anti-convergence policy not found in design-system.md"

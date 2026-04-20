@@ -1,0 +1,4 @@
+=== CHECK 4.5: Makefile Portability ===
+FAIL Hardcoded paths found:
+17:USER_HOME ?= /home/zaks
+CHECK 4.5: FAIL

@@ -1,0 +1,30 @@
+--- src/app/api/quarantine/[id]/route.ts ---
+19:    const response = await backendFetch(`/api/quarantine/${id}`);
+
+--- src/app/api/quarantine/bulk-process/route.ts ---
+16:    const response = await backendFetch('/api/quarantine/bulk-process', {
+
+--- src/app/api/quarantine/bulk-delete/route.ts ---
+16:    const response = await backendFetch('/api/quarantine/bulk-delete', {
+
+--- src/app/api/quarantine/[id]/undo-approve/route.ts ---
+20:    const response = await backendFetch(`/api/quarantine/${id}/undo-approve`, {
+
+--- src/app/api/actions/capabilities/route.ts ---
+14:    const response = await backendFetch('/api/actions/capabilities');
+
+--- src/app/api/actions/[id]/approve/route.ts ---
+20:    const response = await backendFetch(`/api/actions/${actionId}/approve`, {
+
+--- src/app/api/actions/[id]/cancel/route.ts ---
+20:    const response = await backendFetch(`/api/actions/${actionId}/cancel`, {
+
+--- src/app/api/actions/[id]/retry/route.ts ---
+20:    const response = await backendFetch(`/api/actions/${actionId}/retry`, {
+
+--- src/app/api/actions/[id]/update/route.ts ---
+21:    const response = await backendFetch(`/api/actions/${actionId}/update`, {
+
+--- src/app/api/actions/metrics/route.ts ---
+14:    const response = await backendFetch('/api/actions/metrics');
+

@@ -1,0 +1,10 @@
+=== Phase R1Y: LLM Output Sanitization ===
+
+BEFORE: get_stream_response() yielded raw token.content without sanitization
+AFTER: Each streaming token passes through sanitize_llm_output() before yield
+
+Code change in graph.py get_stream_response():
+- Old: yield token.content
+- New: sanitization_result = sanitize_llm_output(content); yield sanitization_result.sanitized
+
+Covers: invoke_with_hitl(), resume_after_approval(), get_stream_response()

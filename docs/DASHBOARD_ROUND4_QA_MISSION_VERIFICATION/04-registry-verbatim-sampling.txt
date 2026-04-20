@@ -1,0 +1,63 @@
+Limitations Registry sample: ID=DL-008 line=121
+verbatim: Settings page has no Email Configuration section
+source_excerpt: Settings page has no Email Configuration section
+Limitations Registry sample: ID=DL-026 line=147
+verbatim: Mock fallbacks trigger on 404 but not on 500/405; hides real errors
+source_excerpt: Mock fallbacks trigger on 404 but not on 500/405; hides real errors
+Limitations Registry sample: ID=DL-042 line=158
+verbatim: Actions "Clear" dialog shows "0 action(s) will be deleted" even when actions exist
+source_excerpt: Actions "Clear" dialog shows "0 action(s) will be deleted" even when actions exist
+Limitations Registry sample: ID=DL-030 line=151
+verbatim: Error responses vary: `{error}` vs `{detail}` vs `{message}`
+source_excerpt: Error responses vary: `{error}` vs `{detail}` vs `{message}`
+Limitations Registry sample: ID=DL-038 line=165
+verbatim: Mobile/responsive behavior not verified
+source_excerpt: Mobile/responsive behavior not verified
+Limitations Registry sample: ID=DL-013 line=126
+verbatim: Chat displays raw markdown instead of rendered HTML
+source_excerpt: Chat displays raw markdown instead of rendered HTML
+Limitations Registry sample: ID=DL-023 line=144
+verbatim: Tab order, Enter/Escape handlers not tested
+source_excerpt: Tab order, Enter/Escape handlers not tested
+Recommendations Registry sample: ID=REC-005 line=179
+verbatim: Route all writes through Next API routes that inject X-API-Key OR add key to `apiFetch` for write methods
+source_excerpt: Route all writes through Next API routes that inject X-API-Key OR add key to `apiFetch` for write methods
+Recommendations Registry sample: ID=REC-038 line=227
+verbatim: Add activity timeline per deal showing all actions
+source_excerpt: Add activity timeline per deal showing all actions
+Recommendations Registry sample: ID=REC-027 line=211
+verbatim: Validate operator name against authenticated session server-side
+source_excerpt: Validate operator name against authenticated session server-side
+Recommendations Registry sample: ID=REC-020 line=204
+verbatim: Remove `.passthrough()`, use strict schemas, run in strict mode
+source_excerpt: Remove `.passthrough()`, use strict schemas, run in strict mode
+Recommendations Registry sample: ID=REC-040 line=229
+verbatim: Add CI gate comparing frontend API calls to backend OpenAPI spec
+source_excerpt: Add CI gate comparing frontend API calls to backend OpenAPI spec
+Recommendations Registry sample: ID=REC-036 line=225
+verbatim: Add timezone setting; apply to all timestamps
+source_excerpt: Add timezone setting; apply to all timestamps
+Recommendations Registry sample: ID=REC-006 line=180
+verbatim: Implement Hybrid Search (RAG + SQL) in agent OR trigger RAG reindex on deal changes
+source_excerpt: Implement Hybrid Search (RAG + SQL) in agent OR trigger RAG reindex on deal changes
+Upgrades Registry sample: ID=UP-03 line=615
+verbatim: Request correlation ID middleware
+source_excerpt: Request correlation ID middleware
+Upgrades Registry sample: ID=UP-19 line=631
+verbatim: API versioning strategy
+source_excerpt: API versioning strategy
+Upgrades Registry sample: ID=UP-11 line=623
+verbatim: Visual regression testing (Percy/Chromatic)
+source_excerpt: Visual regression testing (Percy/Chromatic)
+Upgrades Registry sample: ID=UP-05 line=617
+verbatim: Optimistic UI updates (`onMutate`)
+source_excerpt: Optimistic UI updates (`onMutate`)
+Upgrades Registry sample: ID=UP-01 line=613
+verbatim: Contract-first client generation (orval/openapi-typescript)
+source_excerpt: Contract-first client generation (orval/openapi-typescript)
+E2E Tests Registry sample: ID=? line=732
+verbatim: E2E-006: Clear completed actions works
+source_excerpt: E2E-006: Clear completed actions works
+E2E Tests Registry sample: ID=? line=761
+verbatim: E2E-007: Chat renders markdown correctly
+source_excerpt: E2E-007: Chat renders markdown correctly

@@ -1,0 +1,3 @@
+If a marker appears in LLM output, data leaked and response must BLOCK.
+BLOCK_RESPONSE = "BLOCK"
+        """Detect leaked canary tokens in output text."""

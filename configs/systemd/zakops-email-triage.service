@@ -1,0 +1,15 @@
+[Unit]
+Description=ZakOps Email Triage (one-shot)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=zaks
+WorkingDirectory=/home/zaks/bookkeeping/scripts
+Environment=PYTHONUNBUFFERED=1
+Environment=EMAIL_TRIAGE_ENABLE_ACTIONS=true
+Environment=EMAIL_TRIAGE_ACTIONS_BASE_URL=http://localhost:8090
+Environment=GMAIL_MCP_CREDENTIALS_PATH=/home/zaks/.gmail-mcp/credentials.json
+Environment="GMAIL_MCP_COMMAND=npx -y @gongrzhe/server-gmail-autoauth-mcp"
+ExecStart=/usr/bin/python3 -m email_triage_agent.run_once

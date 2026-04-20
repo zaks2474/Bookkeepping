@@ -1,0 +1,13 @@
+=== DC-5: Makefile Integration ===
+--- DC-5.1: Targets follow make conventions ---
+tripass-init: ## Initialize TriPass pipeline (templates + CLI discovery)
+tripass-run: ## Run TriPass pipeline (usage: make tripass-run MISSION=<file> MODE=forensic)
+tripass-status: ## Show TriPass pipeline status (usage: make tripass-status RUN_ID=<id>)
+tripass-gates: ## Re-run gates for a TriPass run (usage: make tripass-gates RUN_ID=<id>)
+
+--- DC-5.2: settings.json allows make * patterns ---
+      "Bash(make sync-*)",
+      "Bash(make validate-*)",
+      "Bash(make infra-*)",
+      "Bash(make update-*)"
+

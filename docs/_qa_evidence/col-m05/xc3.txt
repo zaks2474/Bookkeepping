@@ -1,0 +1,5 @@
+    # ── History ─────────────────────────────────────────────
+    async def record_history(
+            INSERT INTO zakops.deal_brain_history
+    async def get_history(self, deal_id: str, limit: int = 20) -> list[dict]:
+        """Get brain version history for a deal."""

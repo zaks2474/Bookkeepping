@@ -1,0 +1,8 @@
+=== BACKEND STAGES ===
+['archived', 'inbound', 'qualified', 'screening']
+
+=== DASHBOARD STAGES (DealStage) ===
+['archived', 'closing', 'diligence', 'inbound', 'junk', 'loi', 'portfolio', 'qualified', 'screening']
+
+=== COMPARISON ===
+STAGES ONLY IN DASHBOARD: ['closing', 'diligence', 'junk', 'loi', 'portfolio']

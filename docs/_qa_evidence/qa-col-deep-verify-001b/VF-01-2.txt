@@ -1,0 +1,15 @@
+23:def should_summarize(turn_number: int, last_summarized_turn: int) -> bool:
+31:        and (turn_number - last_summarized_turn) >= SUMMARIZE_EVERY_N_TURNS
+37:async def get_latest_summary(thread_id: str) -> Optional[dict]:
+56:async def get_last_summarized_turn(thread_id: str) -> int:
+67:async def get_unsummarized_messages(thread_id: str, since_turn: int) -> list[dict]:
+68:    """Get messages that haven't been summarized yet."""
+76:async def store_summary(
+131:def extractive_summarize(
+224:async def maybe_summarize_after_turn(
+233:    last_turn = await get_last_summarized_turn(thread_id)
+235:    if not should_summarize(current_turn, last_turn):
+242:        last_summarized=last_turn,
+245:    # Get unsummarized messages
+246:    messages = await get_unsummarized_messages(thread_id, last_turn)
+255:    result = extractive_summarize(messages, prev_text, deal_name)

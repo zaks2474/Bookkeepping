@@ -1,0 +1,36 @@
+event: token
+data: {"token":"I received your message: \"hello"}
+
+event: token
+data: {"token":" test\"\n\nThe AI assistant service is"}
+
+event: token
+data: {"token":" currently initializing. While it starts"}
+
+event: token
+data: {"token":" up, you can:\n- **Dashboard**: See"}
+
+event: token
+data: {"token":" pipeline overview and pending items\n-"}
+
+event: token
+data: {"token":" **Deals**: Browse and manage your"}
+
+event: token
+data: {"token":" deal portfolio\n- **Actions**: Review and"}
+
+event: token
+data: {"token":" approve pending actions\n- **Quarantine**: Process"}
+
+event: token
+data: {"token":" items needing classification\n\nThe full AI"}
+
+event: token
+data: {"token":" assistant will be available shortly"}
+
+event: token
+data: {"token":" to provide detailed answers."}
+
+event: done
+data: {"citations":[],"proposals":[],"model_used":"fallback","latency_ms":0,"warnings":["AI agent service is currently unavailable. Showing helpful guidance instead."]}
+

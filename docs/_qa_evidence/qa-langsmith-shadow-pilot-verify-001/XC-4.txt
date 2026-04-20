@@ -1,0 +1,15 @@
+=== E01 claims main.py:272 has langsmith_live ===
+272:    source_type: str | None = None  # manual, email_sync, langsmith_shadow, langsmith_live
+MATCH: YES
+
+=== E01 claims main.py:277 has VALID_SOURCE_TYPES ===
+277:VALID_SOURCE_TYPES = {"email", "email_sync", "langsmith_shadow", "langsmith_live", "manual"}
+MATCH: YES
+
+=== E01 claims page.tsx:326 has langsmith_shadow, 327 has langsmith_live ===
+325:            <option value='email_sync'>Email sync</option>
+326:            <option value='langsmith_shadow'>LangSmith shadow</option>
+327:            <option value='langsmith_live'>LangSmith live</option>
+MATCH: YES (shifted by -1 from original claim of 326/327, but content matches)
+
+VERDICT: PASS — all line numbers accurate

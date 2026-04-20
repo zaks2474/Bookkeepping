@@ -1,0 +1,37 @@
+=== VF-06.2 FAIL-FAST VALIDATION ===
+280:def validate_path_safe(base_path: Path, relative_path: str) -> Path:
+287:        raise ValueError("Path traversal blocked: '..' not allowed")
+290:        raise ValueError("Absolute paths not allowed")
+298:        raise ValueError("Path traversal blocked: path escapes base directory")
+316:    raise ValueError(f"Deal folder not found for {deal_id}")
+350:            raise RuntimeError("Verification failed: written data does not match")
+358:        raise e
+587:        target_path = validate_path_safe(deal_folder, relative_path)
+608:            raise RuntimeError("Verification failed: written content does not match")
+704:    schema_version: str,
+741:        email_subject: Email subject line (required — displayed in quarantine list)
+742:        sender: Sender email address (required)
+744:        schema_version: Schema version string (must be "1.0.0")
+772:        "schema_version": schema_version,
+778:        errors.append("source_message_id is required")
+780:        errors.append("email_subject is required")
+782:        errors.append("sender is required")
+784:        errors.append("classification is required")
+785:    if not schema_version:
+786:        errors.append("schema_version is required")
+787:    if schema_version and schema_version not in ("1.0.0",):
+788:        errors.append(f"Unknown schema_version '{schema_version}'. Allowed: ['1.0.0']")
+790:        errors.append("correlation_id is required")
+792:        errors.append("email_body_snippet is required")
+797:            "message": f"Missing or invalid required fields: {', '.join(errors)}",
+798:            "missing_fields": errors,
+811:        "schema_version": schema_version,
+1130:            validated_paths = []
+1133:                    full_path = validate_path_safe(deal_folder, rel_path)
+1134:                    validated_paths.append(str(full_path))
+1137:            if validated_paths:
+1138:                payload["paths"] = validated_paths
+1161:    """Health check endpoint (no authentication required)."""
+1212:    Health: /health (no auth required)
+1227:    # Inject the required Accept header so the request isn't rejected.
+1232:            # Mutate the scope headers to include the required Accept

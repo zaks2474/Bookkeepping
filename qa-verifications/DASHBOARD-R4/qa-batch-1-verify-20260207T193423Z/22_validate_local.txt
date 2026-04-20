@@ -1,0 +1,16 @@
+[36m=== Sync Types ===[0m
+cd /home/zaks/zakops-agent-api/apps/dashboard && npx openapi-typescript ../../packages/contracts/openapi/zakops-api.json -o src/lib/api-types.generated.ts
+✨ openapi-typescript 7.10.1
+🚀 ../../packages/contracts/openapi/zakops-api.json → src/lib/api-types.generated.ts [95.5ms]
+[32mTypes regenerated from committed spec[0m
+[36m=== Sync Agent Types ===[0m
+cd /home/zaks/zakops-agent-api/apps/dashboard && npx openapi-typescript ../../packages/contracts/openapi/agent-api.json -o src/lib/agent-api-types.generated.ts
+✨ openapi-typescript 7.10.1
+🚀 ../../packages/contracts/openapi/agent-api.json → src/lib/agent-api-types.generated.ts [50.7ms]
+[32mAgent API types regenerated from committed spec[0m
+[36m[dashboard][0m Linting...
+cd apps/dashboard && npm run lint
+
+> zakops-dashboard@1.0.0 lint
+> next lint
+

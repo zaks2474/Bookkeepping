@@ -1,0 +1,4 @@
+        session: The current session from the auth token.
+        user_id = str(session.user_id)
+        thread = await chat_repository.get_thread(thread_id, user_id)
+            thread_id=thread_id, user_id=user_id,

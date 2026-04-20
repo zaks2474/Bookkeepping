@@ -1,0 +1,8 @@
+=== DATABASE SOURCE OF TRUTH CHECK ===
+
+--- BACKEND DATABASE ---
+DATABASE_URL=postgresql://zakops:zakops_dev@postgres:5432/zakops
+DATABASE_BACKEND=postgresql
+
+--- DEAL COUNT FROM API ---
+API returns: 25 deals

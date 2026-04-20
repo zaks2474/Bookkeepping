@@ -1,0 +1,47 @@
+=== V-L3.1: Canonical Stage Config Search ===
+Date: 2026-02-09T04:53:58Z
+
+--- Search: PIPELINE_STAGES in monorepo packages/ ---
+(no matches)
+
+--- Search: STAGE_ORDER in monorepo packages/ ---
+(no matches)
+
+--- Search: stageConfig in monorepo packages/ ---
+(no matches)
+
+--- Search: PIPELINE_STAGES in dashboard/src/ ---
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:16:import { PIPELINE_STAGES } from '@/types/execution-contracts';
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:55:  const dealsByStage = PIPELINE_STAGES.reduce((acc, stage) => {
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/execution-contracts.ts:102:export const PIPELINE_STAGES: readonly DealStage[] = [
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/execution-contracts.ts:124:  ...PIPELINE_STAGES,
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deals/DealBoard.tsx:20:  PIPELINE_STAGES as CANONICAL_PIPELINE_STAGES,
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deals/DealBoard.tsx:30:const PIPELINE_STAGES = CANONICAL_PIPELINE_STAGES.map((id) => ({
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deals/DealBoard.tsx:234:            {PIPELINE_STAGES.map((stage) => (
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/operator-hq/PipelineOverview.tsx:23:  PIPELINE_STAGES as CANONICAL_PIPELINE_STAGES,
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/operator-hq/PipelineOverview.tsx:41:const PIPELINE_STAGES = CANONICAL_PIPELINE_STAGES as readonly DealStage[];
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/operator-hq/PipelineOverview.tsx:84:        {PIPELINE_STAGES.map((stage) => {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/operator-hq/PipelineOverview.tsx:149:            {PIPELINE_STAGES.map((stage, idx) => {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/operator-hq/PipelineOverview.tsx:162:                    } ${idx === PIPELINE_STAGES.length - 1 ? 'rounded-r-lg' : ''}`}
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/operator-hq/PipelineOverview.tsx:178:            {PIPELINE_STAGES.map((stage) => {
+
+--- Search: STAGE_ORDER in dashboard/src/ ---
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/page.tsx:41:const STAGE_ORDER = ALL_STAGES_ORDERED;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/page.tsx:118:  const stageCounts = STAGE_ORDER.reduce((acc, stage) => {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/page.tsx:209:                    {deals.length} active deals across {STAGE_ORDER.filter(s => stageCounts[s] > 0).length} stages
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/page.tsx:232:                  {STAGE_ORDER.map((stage) => {
+
+--- Search: stageConfig in dashboard/src/ ---
+(no matches)
+
+--- Search: PIPELINE_STAGES in backend/src/ ---
+(no matches)
+
+--- Search: STAGE_ORDER in backend/src/ ---
+(no matches)
+
+--- Search: stageConfig in backend/src/ ---
+(no matches)
+
+--- Search: stage_config in backend ---
+(no matches)

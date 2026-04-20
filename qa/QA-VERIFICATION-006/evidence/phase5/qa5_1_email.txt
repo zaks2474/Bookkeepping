@@ -1,0 +1,36 @@
+=== QA-5.1: T4.1 Email Ingestion ===
+--- TEST 1: Stage 4 uses backend API ---
+/home/zaks/scripts/sync_sharepoint.py:259:    response = requests.post(url, data=data)
+/home/zaks/scripts/sync_sharepoint.py:309:            create_resp = requests.post(create_url, headers={
+/home/zaks/scripts/tests/test_prompt2_regressions.py:167:            legacy = await client.get("/api/quarantine")
+/home/zaks/scripts/tests/test_delete_controls_endpoints.py:149:                f"/api/quarantine/{action_id}/delete",
+/home/zaks/scripts/deal_lifecycle_api.py:28:    GET  /api/quarantine                 - List quarantine items
+/home/zaks/scripts/deal_lifecycle_api.py:29:    POST /api/quarantine/{id}/resolve    - Resolve quarantine item
+/home/zaks/scripts/deal_lifecycle_api.py:2378:    """Normalize an EMAIL_TRIAGE.REVIEW_EMAIL action to the legacy /api/quarantine item shape."""
+/home/zaks/scripts/deal_lifecycle_api.py:3160:@app.get("/api/quarantine/health")
+/home/zaks/scripts/deal_lifecycle_api.py:3187:@app.get("/api/quarantine")
+/home/zaks/scripts/deal_lifecycle_api.py:3213:@app.get("/api/quarantine/{quarantine_id}")
+/home/zaks/scripts/deal_lifecycle_api.py:3234:@app.post("/api/quarantine/{quarantine_id}/delete")
+/home/zaks/scripts/deal_lifecycle_api.py:3247:@app.post("/api/quarantine/bulk-delete")
+/home/zaks/scripts/deal_lifecycle_api.py:3266:@app.post("/api/quarantine/{quarantine_id}/resolve")
+/home/zaks/scripts/tests/test_rag_reindex_deal_executor.py:58:        with patch("actions.executors.rag_reindex_deal.requests.post", return_value=_Resp()):
+/home/zaks/scripts/score_deal.py:68:        response = requests.post(RAG_QUERY_URL, json=payload, timeout=30)
+
+--- TEST 2: No direct JSON/SQLite writes for deals ---
+/home/zaks/scripts/deal_diligence_coordinator.py:52:REGISTRY_PATH = "/home/zaks/DataRoom/.deal-registry/deal_registry.json"
+/home/zaks/scripts/portfolio_operator.py:64:REGISTRY_PATH = "/home/zaks/DataRoom/.deal-registry/deal_registry.json"
+/home/zaks/scripts/quality_audit.py:33:REGISTRY_PATH = Path("/home/zaks/DataRoom/.deal-registry/deal_registry.json")
+/home/zaks/scripts/chat_orchestrator.py:2450:        registry_path = "/home/zaks/DataRoom/.deal-registry/deal_registry.json"
+/home/zaks/scripts/chat_orchestrator.py:2498:        registry_path = "/home/zaks/DataRoom/.deal-registry/deal_registry.json"
+/home/zaks/scripts/sync_sharepoint.py:84:REGISTRY_PATH = "/home/zaks/DataRoom/.deal-registry/deal_registry.json"
+/home/zaks/scripts/lifecycle_event_emitter.py:49:REGISTRY_PATH = "/home/zaks/DataRoom/.deal-registry/deal_registry.json"
+/home/zaks/scripts/tests/test_deal_archive_persistence_runner_regression.py:26:        self.registry_path = self.dataroom_root / ".deal-registry" / "deal_registry.json"
+/home/zaks/scripts/db/migrate_from_json.py:9:    - deal_registry.json -> zakops.deals, zakops.deal_aliases
+/home/zaks/scripts/db/migrate_from_json.py:29:DEAL_REGISTRY = REGISTRY_DIR / "deal_registry.json"
+
+--- TEST 3: quarantine_items table exists ---
+ count 
+-------
+     1
+(1 row)
+

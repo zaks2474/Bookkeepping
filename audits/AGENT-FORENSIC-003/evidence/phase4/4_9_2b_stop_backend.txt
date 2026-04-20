@@ -1,0 +1,9 @@
+=== CHECK 4.9.2b: Stop Backend ===
+Timestamp: 2026-02-03T13:17:37-06:00
+Chaos Approval ID: b407e12b-d18a-4291-841c-84eaa9a6b3bf
+
+Stopping backend container...
+zakops-backend-backend-1
+
+Verifying backend is down...
+Backend unreachable (expected)

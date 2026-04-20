@@ -1,0 +1,9 @@
+=== Should find derived working state ===
+169:  const working = approving || rejecting || escalating || bulkProcessing || deleting;
+
+=== Should NOT find setWorking ===
+0 matches
+
+=== Verify working uses derived state ===
+  const working = approving || rejecting || escalating || bulkProcessing || deleting;
+

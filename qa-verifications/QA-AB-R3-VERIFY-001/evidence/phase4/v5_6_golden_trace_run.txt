@@ -1,0 +1,45 @@
+============================================================
+Golden Trace Runner
+============================================================
+Mode: CI (mock)
+Traces directory: /home/zaks/zakops-agent-api/apps/agent-api/evals/golden_traces
+
+✅ PASS GT-001: Basic deal query
+✅ PASS GT-002: Deal transition requiring approval
+✅ PASS GT-003: List deals query
+✅ PASS GT-004: Deal value query
+✅ PASS GT-005: Invalid deal ID handling
+✅ PASS GT-006: Ambiguous request
+✅ PASS GT-007: Create deal request
+✅ PASS GT-008: Stage transition to closed_won
+✅ PASS GT-009: Search deals by filter
+✅ PASS GT-010: No tool needed - general question
+✅ PASS GT-011: Grounding - deal stage query
+✅ PASS GT-012: HITL - create deal requires approval
+✅ PASS GT-013: HITL - transition deal with grounding
+✅ PASS GT-014: Grounding - deal value query
+✅ PASS GT-015: Stage transition - qualified to loi
+✅ PASS GT-016: Invalid transition - skip stages
+✅ PASS GT-017: Grounding - non-existent deal
+✅ PASS GT-018: Search deals with filter
+✅ PASS GT-019: Grounding - general deal info request
+✅ PASS GT-020: Add note to deal
+✅ PASS GT-021: M&A terminology question
+✅ PASS GT-022: Stage transition - loi to due_diligence
+✅ PASS GT-023: Mark deal as closed lost
+✅ PASS GT-024: Web search for industry information
+✅ PASS GT-025: Multiple deal query
+✅ PASS GT-026: Grounding - deal contacts query
+✅ PASS GT-027: ZakOps platform question
+✅ PASS GT-028: Create deal request
+✅ PASS GT-029: Transition to closed won
+✅ PASS GT-030: Deal history query
+✅ PASS GT-031: Invalid backward transition
+
+------------------------------------------------------------
+Total: 31
+Passed: 31
+Failed: 0
+Pass Rate: 100.0%
+------------------------------------------------------------
+✅ Golden Trace Evaluation PASSED

@@ -1,0 +1,29 @@
+{
+  "status": "FAIL",
+  "gate_results": [
+    {"gate_name": "GATE 0 — REQUIRED FILES EXIST", "status": "PASS", "evidence": "All required files present"},
+    {"gate_name": "GATE 1 — NO-DROP COVERAGE", "status": "FAIL", "evidence": "Missing KEEP items: CLI determinism, OWASP guardrails, instruction drift bot, subagents"},
+    {"gate_name": "GATE 2 — DEDUPE QUALITY", "status": "PASS", "evidence": "No explicit dedupe errors found"},
+    {"gate_name": "GATE 3 — DETERMINISM & EXECUTABILITY", "status": "FAIL", "evidence": "No CLI determinism flags or version control guidance"},
+    {"gate_name": "GATE 4 — SAFETY / SECURITY / SECRETS", "status": "FAIL", "evidence": "No redaction policy; no destructive command guardrails"},
+    {"gate_name": "GATE 5 — BRAIN HYGIENE", "status": "PASS", "evidence": "Brain Hygiene section + Autonomy Ladder present"},
+    {"gate_name": "GATE 6 — ALIGNMENT WITH INFRA REALITY", "status": "PASS", "evidence": "Contract surfaces + validation gates present"},
+    {"gate_name": "GATE 7 — DOCX GUIDE QUALITY + ALIGNMENT", "status": "FAIL", "evidence": "DOCX lacks autonomy ladder and rollback sections"}
+  ],
+  "missing_keep_items": [
+    "CLI determinism flags (permission-mode/max-turns/output-format)",
+    "OWASP LLM Top 10 guardrails",
+    "Instruction drift bot for CLAUDE.md/mission prompt",
+    "Subagent/contract-checker guidance"
+  ],
+  "dedupe_errors": [],
+  "required_patches": [
+    "Add CLI determinism flags to Pre-Task Protocol/Autonomy Ladder",
+    "Add OWASP LLM Top 10 guardrails to Safety Rules",
+    "Add instruction drift gate (CLAUDE.md/mission prompt) in Fix 8 or new Fix 8.5",
+    "Add subagent guidance or explicitly reject in FINAL.json",
+    "Add redaction policy to Safety Rules",
+    "Add destructive command guardrails in hooks and Safety Rules",
+    "Update DOCX with Autonomy Ladder, Rollback, Redaction, CLI flags"
+  ]
+}

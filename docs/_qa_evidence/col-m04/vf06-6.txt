@@ -1,0 +1,1 @@
+CREATE INDEX IF NOT EXISTS idx_deal_access_user ON zakops.deal_access(user_id);

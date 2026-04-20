@@ -1,0 +1,8 @@
+Total deals returned: 22
+
+Total unique fields across all deals: 15
+Fields: ['action_count', 'alias_count', 'broker', 'canonical_name', 'company_info', 'created_at', 'days_since_update', 'deal_id', 'display_name', 'folder_path', 'identifiers', 'metadata', 'stage', 'status', 'updated_at']
+
+Nullable fields (null in at least one deal): ['display_name', 'folder_path']
+
+✓ All deals have consistent schema

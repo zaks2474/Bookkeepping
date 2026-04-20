@@ -1,0 +1,5 @@
+Provenance badge implementation:
+  - Added data_source field to SSE done event in /api/chat route.ts (Strategy 1 + 2)
+  - Chat page parses data_source from done event, stores on ChatMessage as dataSource
+  - MessageBubble renders "Source: DB" badge for assistant messages with dataSource="backend_api"
+  - Badge uses outline variant, 10px font, positioned below message content

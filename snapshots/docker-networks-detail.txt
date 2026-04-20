@@ -2,13 +2,13 @@
 === agent-api_agent-network (0b9550fcc278) driver=bridge
 template parsing error: template: :1: unexpected "," in range
 
-=== bridge (2a60a0a17132) driver=bridge
+=== bridge (c48c67522942) driver=bridge
 template parsing error: template: :1: unexpected "," in range
 
 === crawl4ai-rag_backend (cd70d330af1e) driver=bridge
 template parsing error: template: :1: unexpected "," in range
 
-=== docker_default (67d13af2e0a0) driver=bridge
+=== docker_default (0e662696815b) driver=bridge
 template parsing error: template: :1: unexpected "," in range
 
 === docker_zakops-network (f23dd32ebfd3) driver=bridge
@@ -30,6 +30,9 @@ template parsing error: template: :1: unexpected "," in range
 template parsing error: template: :1: unexpected "," in range
 
 === zakops_network (11dd70001e88) driver=bridge
+template parsing error: template: :1: unexpected "," in range
+
+=== zakops_zakops-network (496d744d6a08) driver=bridge
 template parsing error: template: :1: unexpected "," in range
 
 === zaks-llm_ai-network (ead8c6c72273) driver=bridge

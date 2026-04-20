@@ -1,0 +1,23 @@
+  getDealTasks,
+  const [delegatedTasks, setDelegatedTasks] = useState<DelegatedTask[]>([]);
+        getDealTasks(dealId),
+      if (results[9].status === 'fulfilled') setDelegatedTasks(results[9].value.tasks);
+      else { console.warn('Failed to load delegated tasks:', results[9].reason); failures.delegatedTasks = String(results[9].reason); }
+  const handleRetry = async (actionId: string): Promise<{ success: boolean; error?: string }> => {
+            Retry
+                Tasks ({delegatedTasks.length})
+                {delegatedTasks.some(t => t.status === 'dead_letter') && (
+                            onRetry={handleRetry}
+                        Retry
+                        Retry
+            {/* P6-05: Delegated Tasks Tab */}
+                  <CardTitle className='text-base'>Delegated Tasks</CardTitle>
+                    Tasks assigned to agents for this deal. Dead-letter tasks require manual intervention.
+                  {delegatedTasks.length === 0 ? (
+                      {delegatedTasks.some(t => t.status === 'dead_letter') && (
+                              {delegatedTasks.filter(t => t.status === 'dead_letter').length} task(s) in dead letter — requires manual review
+                      {delegatedTasks.map((task) => (
+                                  Retry
+                                  Confirm
+                                Confirmed by {task.confirmed_by} at {format(new Date(task.confirmed_at), 'MMM d, HH:mm')}
+              {transitioning ? 'Transitioning...' : 'Confirm Transition'}

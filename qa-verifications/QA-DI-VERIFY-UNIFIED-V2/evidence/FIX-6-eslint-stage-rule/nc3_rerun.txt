@@ -1,0 +1,14 @@
+=== F6.2: NC-3 re-run ===
+Created sabotage file: /home/zaks/zakops-agent-api/apps/dashboard/src/components/qa-nc3-retest.tsx
+Contents:
+const PIPELINE_STAGES = ['prospecting', 'qualification', 'proposal'];
+export default function NC3() { return <div>{PIPELINE_STAGES.join(',')}</div>; }
+---
+
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/qa-nc3-retest.tsx
+  1:7  error  Hardcoded stage arrays are not allowed. Import PIPELINE_STAGES from '@/types/execution-contracts' instead  no-restricted-syntax
+
+✖ 1 problem (1 error, 0 warnings)
+
+ESLint exit code: 1 (expect 1 = caught)
+VERDICT: PASS — sabotage caught

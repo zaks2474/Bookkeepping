@@ -1,0 +1,200 @@
+/**
+ * ZakOps API Client
+ *
+ * Centralized API client with Zod validation and response normalization.
+ * All API calls MUST go through this module - no direct fetch in components.
+ *
+ * The frontend uses Next.js rewrites to proxy /api/* to the backend,
+ * so we always call relative paths.
+ */
+
+import { z } from 'zod';
+
+// ============================================================================
+// Zod Schemas - Define expected response shapes
+// ============================================================================
+
+/**
+ * Coerce a value to number, handling strings with currency symbols, commas, etc.
+ * Returns null/undefined if the value cannot be parsed.
+ * Logs warnings (not errors) for type coercions to aid debugging without alarming.
+ */
+function coerceToNumber(val: unknown): number | null | undefined {
+  if (val === null) return null;
+  if (val === undefined) return undefined;
+  if (typeof val === 'number') return isNaN(val) ? null : val;
+  if (typeof val === 'string') {
+    // Remove currency symbols, commas, whitespace
+    const cleaned = val.replace(/[$,\s]/g, '').trim();
+    if (cleaned === '' || cleaned === '-' || cleaned.toLowerCase() === 'tbd') {
+      // Expected non-numeric values - don't log
+      return null;
+    }
+    const num = parseFloat(cleaned);
+    if (isNaN(num)) {
+      // Unexpected string that couldn't be parsed - log as debug info
+      if (process.env.NODE_ENV === 'development') {
+        console.debug(`[API] Coerced non-numeric string to null: "${val}"`);
+      }
+      return null;
+    }
+    return num;
+  }
+  return null;
+}
+
+// Schema for numeric fields that might arrive as strings
+const coercedNumber = z.preprocess(coerceToNumber, z.number().nullable().optional());
+
+/**
+ * Coerce broker field to string. Backend may return:
+ * - string: broker name directly
+ * - object: { name?: string, email?: string, ... }
+ * - null/undefined
+ * We extract the name for display purposes.
+ */
+function coerceBrokerToString(val: unknown): string | null {
+  if (val === null || val === undefined) return null;
+  if (typeof val === 'string') return val || null;
+  if (typeof val === 'object' && val !== null) {
+    const obj = val as Record<string, unknown>;
+    // Extract name from broker object
+    if (typeof obj.name === 'string' && obj.name) {
+      return obj.name;
+    }
+    // Empty object {} returns null
+    return null;
+  }
+  return null;
+}
+
+// Deal schema
+export const DealSchema = z.object({
+  deal_id: z.string(),
+  canonical_name: z.string().nullable(),
+  display_name: z.string().optional().nullable(),
+  stage: z.string(),
+  status: z.string(),
+  broker: z.preprocess(coerceBrokerToString, z.string().nullable().optional()),
+  priority: z.string().nullable().optional(),
+  updated_at: z.string().nullable().optional(),
+  created_at: z.string().nullable().optional(),
+  days_since_update: z.preprocess(coerceToNumber, z.number().optional()),
+  folder_path: z.string().optional().nullable(),
+}).passthrough();
+
+export type Deal = z.infer<typeof DealSchema>;
+
+// Deal detail schema (expanded)
+// REMEDIATION-V3 [ZK-ISSUE-0018]: Added .passthrough() to avoid silent field drops
+export const DealDetailSchema = z.object({
+  deal_id: z.string(),
+  canonical_name: z.string().nullable(),
+  display_name: z.string().nullable().optional(),
+  folder_path: z.string().nullable().optional(),
+  stage: z.string(),
+  status: z.string(),
+  broker: z.object({
+    name: z.string().nullable(),
+    email: z.string().nullable(),
+    company: z.string().nullable(),
+    phone: z.string().nullable(),
+  }).passthrough().nullable().optional(),
+  company_info: z.object({
+    sector: z.string().nullable().optional(),
+    location: z.any().nullable().optional(),
+  }).passthrough().nullable().optional(),
+  metadata: z.object({
+    priority: z.string().nullable().optional(),
+    asking_price: coercedNumber,
+    ebitda: coercedNumber,
+    revenue: coercedNumber,
+    multiple: coercedNumber,
+    nda_status: z.string().nullable().optional(),
+    cim_received: z.boolean().nullable().optional(),
+  }).passthrough().nullable().optional(),
+  state_machine: z.object({
+    current_stage: z.string(),
+    is_terminal: z.boolean(),
+    allowed_transitions: z.array(z.string()),
+    advisory_context: z.string().nullable().optional(),
+  }).passthrough().nullable().optional(),
+  case_file: z.any().nullable().optional(),
+  event_count: z.number().optional(),
+  pending_actions: z.number().optional(),
+  created_at: z.string().nullable().optional(),
+  updated_at: z.string().nullable().optional(),
+}).passthrough();
+
+export type DealDetail = z.infer<typeof DealDetailSchema>;
+
+// Deferred action schema
+// REMEDIATION-V3 [ZK-ISSUE-0018]: Added .passthrough() to avoid silent field drops
+// FIX: Changed to .nullable().optional() to handle backend null values
+export const ActionSchema = z.object({
+  action_id: z.string(),
+  deal_id: z.string().nullable().optional(),
+  action_type: z.string(),
+  scheduled_for: z.string().nullable().optional(),
+  status: z.string(),
+  priority: z.string().nullable().optional(),
+  is_due: z.boolean().nullable().optional(),
+  data: z.any().nullable().optional(),
+}).passthrough();
+
+export type Action = z.infer<typeof ActionSchema>;
+
+// Event schema — matches backend deal_events response
+// REMEDIATION-V3 [ZK-ISSUE-0018]: Added .passthrough() to avoid silent field drops
+// FIX: Changed to .nullable().optional() to handle backend null values
+export const EventSchema = z.object({
+  id: z.string(),
+  deal_id: z.string().nullable().optional(),
+  event_type: z.string(),
+  source: z.string().nullable().optional(),
+  actor: z.string().nullable().optional(),
+  details: z.record(z.unknown()).nullable().optional(),
+  created_at: z.string(),
+}).passthrough();
+
+export type DealEvent = z.infer<typeof EventSchema>;
+
+// Quarantine item schema
+// REMEDIATION-V3 [ZK-ISSUE-0018]: Added .passthrough() to avoid silent field drops
+// FIX: Changed all .optional() to .nullable().optional() to handle backend null values
+export const QuarantineItemSchema = z.object({
+  id: z.string().nullable().optional(),
+  quarantine_id: z.string().nullable().optional(),
+  action_id: z.string().nullable().optional(),
+  email_subject: z.string().nullable().optional(),
+  subject: z.string().nullable().optional(),
+  sender: z.string().nullable().optional(),
+  from: z.string().nullable().optional(),
+  received_at: z.string().nullable().optional(),
+  timestamp: z.string().nullable().optional(),
+  quarantine_reason: z.string().nullable().optional(),
+  reason: z.string().nullable().optional(),
+  status: z.string().nullable().optional(),
+  classification: z.string().nullable().optional(),
+  urgency: z.string().nullable().optional(),
+  company: z.string().nullable().optional(),
+  links: z.array(z.record(z.unknown())).nullable().optional(),
+  attachments: z.array(z.record(z.unknown())).nullable().optional(),
+  quarantine_dir: z.string().nullable().optional(),
+  capability_id: z.string().nullable().optional(),
+}).passthrough();
+
+export type QuarantineItem = z.infer<typeof QuarantineItemSchema>;
+
+// Quarantine health schema
+// REMEDIATION-V3 [ZK-ISSUE-0018]: Added .passthrough() to avoid silent field drops
+export const QuarantineHealthSchema = z.object({
+  status: z.string(),
+  pending_items: z.number(),
+  oldest_pending_days: z.number().optional(),
+}).passthrough();
+
+export type QuarantineHealth = z.infer<typeof QuarantineHealthSchema>;
+
+// Quarantine preview schema (right-side panel)
+// FIX: Changed all .optional() to .nullable().optional() to handle backend null values

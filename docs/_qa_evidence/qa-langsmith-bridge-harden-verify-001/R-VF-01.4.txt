@@ -1,0 +1,9 @@
+REMEDIATION: VF-01.4 — Port 8090 drift in supporting files
+DATE: 2026-02-14
+FILES_FIXED: 4
+  1. .env: ZAKOPS_DEAL_API_URL=http://localhost:8090 → 8091
+  2. .env.example: ZAKOPS_DEAL_API_URL=http://localhost:8090 → 8091
+  3. README.md: (:8090) → (:8091)
+  4. config.py: default "http://localhost:8090" → "http://localhost:8091"
+POST_REMEDIATION_GREP_HITS=0 (excluding .rest_backup)
+VERDICT: REMEDIATED

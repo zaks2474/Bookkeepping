@@ -1,0 +1,36 @@
+{
+  "timestamp_utc": "2026-01-24T03:58:51Z",
+  "authoritative_sources": [
+    "/home/zaks/bookkeeping/docs/hitl_spike/QA_REPORT.md",
+    "/home/zaks/bookkeeping/docs/ZakOps-Scaffold-Master-Plan-v2.md",
+    "/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v2.md",
+    "/home/zaks/bookkeeping/docs/DECISION-LOCK-FILE.md"
+  ],
+  "pass1_syntheses": [
+    "/home/zaks/bookkeeping/docs/roadmap_3pass/current/pass1/S_Gemini_3.0.md",
+    "/home/zaks/bookkeeping/docs/roadmap_3pass/current/pass1/S_Claude_OPUS_4.5.md",
+    "/home/zaks/bookkeeping/docs/roadmap_3pass/current/pass1/S_GPT_5.2.md"
+  ],
+  "pass2_critiques": [
+    "/home/zaks/bookkeeping/docs/roadmap_3pass/current/pass2/R_Gemini_3.0.md",
+    "/home/zaks/bookkeeping/docs/roadmap_3pass/current/pass2/R_Claude_OPUS_4.5.md",
+    "/home/zaks/bookkeeping/docs/roadmap_3pass/current/pass2/R_GPT_5.2.md"
+  ],
+  "outputs": {
+    "A": {
+      "path": "/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v1.md",
+      "sha256": "cef534aee9a149708094c3c91e236f7766dcf700397bf5d90810c743a0d242ad"
+    },
+    "B": {
+      "path": "/mnt/c/Users/mzsai/Downloads/ZakOps-Ultimate-Implementation-Roadmap-combine.v1.md",
+      "sha256": "cef534aee9a149708094c3c91e236f7766dcf700397bf5d90810c743a0d242ad"
+    },
+    "C": {
+      "path": "/home/zaks/bookkeeping/docs/roadmap_3pass/current/pass3/ZakOps-ultimate-Implementation-Roadmap-combine.v1.md",
+      "sha256": "cef534aee9a149708094c3c91e236f7766dcf700397bf5d90810c743a0d242ad"
+    },
+    "manifest": {
+      "path": "/home/zaks/bookkeeping/docs/roadmap_3pass/current/pass3/manifest.json"
+    }
+  }
+}

@@ -1,0 +1,31 @@
+=== ST-4 GOVERNANCE DRIFT SENTINEL ===
+12:## Skill Preloads
+70:- Use animations purposefully for feedback and delight, not decoration
+72:- Focus on high-impact moments: orchestrated page loads with staggered reveals (animation-delay)
+99:- Use Tailwind's default breakpoint scale as reference: `sm` (640px), `md` (768px), `lg` (1024px), `xl` (1280px), `2xl` (1536px)
+102:- Avoid custom breakpoints unless the project's `tailwind.config.ts` explicitly defines them
+105:- Use a defined z-index token scale to prevent stacking conflicts:
+114:- New stacking contexts (`isolation: isolate`) can reset z-index scope within a subtree
+120:- Test both themes: every component must be legible in both light and dark modes
+124:- **GPU-composited properties** (prefer for animations): `transform`, `opacity`, `filter`, `clip-path`
+126:- Wrap decorative animations in `@media (prefers-reduced-motion: no-preference) { }` — see accessibility rule for details
+127:- Keep animation durations under 400ms for UI transitions; 200-300ms is the sweet spot for micro-interactions
+128:- Use `will-change` sparingly and only on elements about to animate — remove after animation completes
+12:- Use semantic HTML elements (`<nav>`, `<main>`, `<section>`, `<article>`, `<aside>`, `<header>`, `<footer>`) over generic `<div>` wrappers
+20:- Modals must trap focus inside and return focus to trigger on close
+22:- Visible focus indicators — never `outline: none` without a visible replacement
+25:- Target WCAG AA minimum: 4.5:1 for normal text, 3:1 for large text (18px+ bold or 24px+)
+30:- Prefer native HTML semantics over ARIA (`<button>` over `<div role="button">`)
+31:- When ARIA is necessary: `aria-label` for icon-only buttons, `aria-live` for dynamic content updates, `aria-expanded` for collapsible sections
+32:- Form inputs must have associated `<label>` elements or `aria-label`
+33:- Do not use `aria-hidden="true"` on focusable elements
+42:- SVG icons used as interactive elements need `aria-label` or `<title>` inside
+13:- Keep `"use client"` components as leaf nodes — push interactivity down, keep data-fetching parents as server components
+14:- File convention: client components in the same directory, named descriptively (e.g., `DealCardActions.tsx` as the client child of `DealCard.tsx`)
+17:- Every data-dependent component must handle three states: loading, empty, and error
+18:- Loading: use Suspense boundaries with `loading.tsx` files at the route level, or skeleton components at the component level
+19:- Empty: explicit empty-state UI with guidance (not just blank space) — e.g., "No deals found. Create your first deal."
+20:- Error: use `error.tsx` boundaries at the route level; component-level try/catch for server components; error boundaries for client components
+32:- URL state (searchParams) for filter/sort/pagination state — enables sharing and back-button support
+33:- Server state: fetched via Server Components or React Server Actions, not client-side global stores
+34:- Client-only transient state (form inputs, toggle states, hover) stays in the component via useState

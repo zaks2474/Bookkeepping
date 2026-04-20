@@ -1,5 +1,582 @@
 # Change Log
 
+## 2026-02-24 — OPENSOURCE-READY-001: Contributor Readiness Scaffolding
+
+- **Mission:** Go from 6.2/10 to 8.5/10 contributor readiness. Let experienced devs find, run, and contribute.
+- **P0 (Baseline):** validate-local PASS, secret scan CLEAN, demo compose syntax valid.
+- **P1 (Repository Hygiene):**
+  - LICENSE switched from Proprietary to MIT
+  - Created CODE_OF_CONDUCT.md (Contributor Covenant 2.1)
+  - Created .github/ISSUE_TEMPLATE/ (bug_report.yml, feature_request.yml, config.yml)
+  - Created .github/PULL_REQUEST_TEMPLATE.md
+  - Updated SECURITY.md (removed placeholder email, added GitHub advisory link)
+- **P2 (Documentation):**
+  - Rewrote README.md (architecture diagram, demo mode quick start, contributor links)
+  - Expanded CONTRIBUTING.md (setup guide, architecture overview, coding standards, async workflow)
+  - Created docs/GETTING-STARTED.md (step-by-step from clone to running instance)
+  - Created ROADMAP.md (Now/Next/Later structure)
+- **P3 (DEMO_MODE Implementation):**
+  - Added DEMO_MODE setting to agent-api config
+  - Created apps/agent-api/app/services/mock_llm.py (MockChatModel — BaseChatModel drop-in)
+  - Created apps/agent-api/app/services/mock_rag.py (MockRAGRESTClient with canned results)
+  - Wired mock providers into _create_llm_instance(), generate_json(), and get_rag_rest_client()
+  - Added `make bootstrap` target with DEMO_MODE=true support
+- **P4 (Community Infrastructure):**
+  - Created .github/labels.yml (22 labels: type, effort, component, status, priority)
+  - Created .github/ISSUE_TEMPLATE/rfc.md (RFC template)
+  - Created docs/STARTER-ISSUES.md (16 issues: 6 good-first-issue, 6 help-wanted, 4 RFC)
+- **P5 (Recruitment Materials):**
+  - Created docs/community/POST-TEMPLATES.md (Reddit, Dev.to, Twitter, Discord)
+  - Created docs/community/ASYNC-WORKFLOW.md (contributor workflow guide)
+- **P6 (Validation):** make validate-local PASS, all files verified, CHANGES.md updated.
+- **Files created:** 16 new, 6 modified
+- **Validation:** make validate-local PASS, tsc --noEmit PASS
+
+## 2026-02-23 — RUNTIME-PROVIDER-SWITCHING: True Multi-Provider Chat Routing
+
+- **Mission:** Make model switching UI actually route to selected cloud providers (OpenAI, Anthropic, Google) instead of silently falling back to local Qwen.
+- **Root cause:** 3 blockers — INTERNAL_RESOLVE_TOKEN never generated, 5 silent fallback paths in model-resolver.ts, cache not invalidated on model activation.
+- **Phase 0 (Discovery):** Confirmed all 3 blockers via live verification.
+- **Phase 1 (Critical Fix):**
+  - Generated & deployed `INTERNAL_RESOLVE_TOKEN` to `apps/backend/.env` + `apps/dashboard/.env.local`
+  - Rewrote `model-resolver.ts` — replaced 5 silent fallback paths with thrown errors for cloud providers (INV-1/2/3)
+  - Added `invalidateModelCache()` call in `apps/dashboard/src/app/api/settings/models/active/route.ts`
+  - Enhanced `[MODEL_ROUTER]` logging in `route.ts` — resolution, success, failure with correlation IDs
+  - Cloud provider errors return 502 JSON (not silent Qwen fallback)
+- **Phase 2 (UX Redesign):**
+  - Rewrote `ModelSwitcher.tsx` to match LangSmith reference: grouped by provider, search/filter, checkmark active indicator, scrollable dropdown
+- **Phase 3 (Production Hardening):**
+  - Created migration `041_model_config_cloud_flag.sql` — `model_config_cloud_enabled` feature flag kill switch
+  - Added rate limiting (5s/user) + feature flag check to activation endpoint in `model_config.py`
+  - Added CHECK 8 to `session-start.sh` — INTERNAL_RESOLVE_TOKEN alignment verification
+  - Added LAYER 5 to backend startup (`main.py`) — TOKEN_ENCRYPTION_KEY + INTERNAL_RESOLVE_TOKEN warnings
+  - Added `correlation_id` to all provider error responses in `route.ts`
+- **Phase 4 (Integration Testing):** All 5 tests PASS + rate limiting + validate-local PASS
+- **Files modified:**
+  - `apps/dashboard/src/lib/agent/model-resolver.ts` (silent fallback elimination)
+  - `apps/dashboard/src/app/api/chat/route.ts` (logging, error format, correlation IDs)
+  - `apps/dashboard/src/app/api/settings/models/active/route.ts` (cache invalidation)
+  - `apps/dashboard/src/components/chat/ModelSwitcher.tsx` (LangSmith-style UI)
+  - `apps/backend/src/api/orchestration/main.py` (LAYER 5 startup gates)
+  - `apps/backend/src/api/orchestration/routers/model_config.py` (rate limit + flag check)
+  - `apps/backend/db/migrations/041_model_config_cloud_flag.sql` (new)
+  - `~/.claude/hooks/session-start.sh` (CHECK 8)
+  - `apps/backend/.env` + `apps/dashboard/.env.local` (INTERNAL_RESOLVE_TOKEN)
+
+## 2026-02-23 — TRIAGE-BRIDGE-ALIGN-001 COMPLETE: Full MCP Bridge + Backend Alignment
+
+- **Mission:** Align MCP bridge and backend so all 24 LangSmith email triage agent tools work at 100%
+- **Previous state:** 15/24 tools working (62%). 3 endpoints missing, 2 bridge paths wrong, RAG down, UUID crashes.
+- **Result:** 24/24 tools operational, bridge health "healthy", `make validate-local` PASS
+- **Phase 1 — Backend Endpoints (main.py):**
+  - Added `POST /api/triage/runs` — stores cron run reports in `deal_events` (idempotent on run_id)
+  - Added `GET /api/triage/runs` — lists runs with pagination + 24h stats
+  - Added `POST /api/actions` — creates action proposals in `zakops.actions` table (rate-limited, idempotent)
+  - Added Pydantic models: `TriageRunReport`, `ActionCreate`
+  - Created migration `040_triage_run_index.sql` — partial index for triage run queries
+- **Phase 2 — Feature Flags:** `delegate_actions` already enabled (skipped)
+- **Phase 3 — Bridge Fixes (server.py):**
+  - Fixed `zakops_report_task_result`: UUID detection branch routes cron-style IDs to `/api/triage/runs`, UUIDs to delegation path
+  - Fixed `zakops_approve_quarantine`: corrected endpoint from `/api/actions/quarantine/{id}/approve` to `/api/quarantine/{id}/process`
+  - Added `_UUID_PATTERN` regex constant, startup API key validation, correlation ID propagation, error detail in responses
+- **Phase 4 — Backend Hardening:**
+  - Added `_parse_task_uuid()` helper — returns 400 for invalid UUIDs instead of 500 crash
+  - Applied to all 6 task endpoints (13 UUID parse sites): result, retry, confirm, claim, renew-lease, message
+- **Phase 5 — RAG Recovery:** Restarted rag-db + rag-rest-api (pool=null at boot). RAG healthy: 3486 chunks, 122 URLs.
+- **Files modified:**
+  - `apps/backend/src/api/orchestration/main.py` — 3 new endpoints + UUID hardening
+  - `apps/agent-api/mcp_bridge/server.py` — 3 tool routing fixes + startup validation
+  - `apps/backend/db/migrations/040_triage_run_index.sql` — new partial index
+- **Verification:** Bridge health "healthy" (all 4 checks green), all new endpoints return correct status codes, `make validate-local` PASS
+
+## 2026-02-21 — MODEL-CONFIG-001 COMPLETE: Session 3 (P6-P8)
+
+- **Mission:** LangSmith-style multi-model configuration — COMPLETE (all 18 AC PASS)
+- **Phases completed:** P6 (Model Management Page), P7 (Cleanup + Surface Compliance), P8 (Final Validation)
+- **P6 — Model Management Page:**
+  - /settings/models page: provider x context grid (5 providers x 2 contexts)
+  - Freshness-aware badges (green <1h, yellow <24h, gray stale), latency display
+  - "Re-test All" button, "Manage all models" link from settings
+- **P7 — Cleanup + Surface Compliance:**
+  - Deprecated ProviderSection.tsx and provider-settings.ts (@deprecated JSDoc)
+  - 10 E2E tests covering settings tabs, chat switcher, management page grid
+  - Surface validations: 9 (PASS), 11 (PASS), 12 (PASS), 17 (PASS)
+  - ENV-CROSSREF.md updated with INTERNAL_RESOLVE_TOKEN
+- **P8 — Final Validation:**
+  - `make validate-local`: PASS
+  - TypeScript compilation: PASS
+  - All 18 acceptance criteria verified
+  - Completion report: `docs/MODEL-CONFIG-001-COMPLETION.md`
+- **Total files created:** 18 across 3 sessions
+- **Total commits:** 8 on `feat/model-config-001`
+- **Manual step required:** Add `INTERNAL_RESOLVE_TOKEN` to `.env.example` files (blocked by deny rules)
+
+## 2026-02-21 — QA-MC1S2-VERIFY-001: FULL PASS (28/28 gates, 1 remediation)
+
+- **What:** Independent QA verification of MODEL-CONFIG-001 Session 2 (P3-P5)
+- **Results:**
+  - 3/3 Pre-Flight, 15/15 VF gates, 5/5 XC, 5/5 ST — all PASS
+  - 1 remediation: model-resolver.ts root-owned → fixed to zaks
+  - 2 INFO: dead ProviderSelector.tsx + stale test refs (deferred to P7)
+  - 4 enhancement opportunities (ENH-1 through ENH-4)
+- **Scorecard:** `qa-verifications/QA-MC1S2-VERIFY-001/QA-MC1S2-VERIFY-001-SCORECARD.md`
+- **Verdict:** FULL PASS
+
+## 2026-02-21 — MODEL-CONFIG-001 Session 2 (P3-P5): Settings UI + Chat Rewrite + Google Provider
+
+- **Mission:** LangSmith-style multi-model configuration (continued)
+- **Phases completed:** P3 (Settings UI Redesign), P4 (Chat Quick-Switch + Route Rewrite), P5 (Google AI Provider)
+- **P3 — Settings UI Redesign:**
+  - ProviderConfigDialog: paste-aware key input (detects sk-/sk-ant-/AIza prefix), auto-test after save, latency display
+  - ModelConfigSection: tab-based dual context (Chat/Email Triage), provider list with health dots, status badges, "Re-test All" button
+  - localStorage migration helper: batch migration to server, all-or-nothing, only clears localStorage on success
+  - Updated settings page: replaced ProviderSection with ModelConfigSection, renamed section to "AI Models"
+- **P4 — Chat Quick-Switch + Route Rewrite:**
+  - model-resolver.ts: server-side config resolution with 10s TTL cache, internal-only API key resolution, graceful failover
+  - ModelSwitcher.tsx: always-visible model name in header, dropdown with health dots + latency, toast on switch
+  - Chat route rewritten: removed client-sent providerConfig, uses resolveActiveProvider('chat')
+  - Chat page updated: replaced ProviderSelector with ModelSwitcher, useIsCloudProvider() hook
+- **P5 — Google AI Provider:**
+  - google.ts: Gemini generateContent API, x-goog-api-key auth, systemInstruction support
+  - Model resolver updated: Google case now creates real provider instead of placeholder fallback
+- **Files created:** 5 (ProviderConfigDialog, ModelConfigSection, migrate-provider-settings, model-resolver, ModelSwitcher, google.ts)
+- **Files modified:** 4 (settings/page.tsx, preferences-types.ts, chat/route.ts, chat/page.tsx)
+- **Commits:** P3 (3125e71), P4 (aad3edf), P5 (bc303a3) on feat/model-config-001
+- **Remaining:** P6 (Model Management Page), P7 (Cleanup + Surface Compliance), P8 (Final Validation)
+
+## 2026-02-21 — QA-MC1-VERIFY-001: FULL PASS (41/41 gates, 1 remediation)
+
+- **What:** Independent QA verification of MODEL-CONFIG-001 Session 1 (P0-P2)
+- **Results:**
+  - 2/2 Pre-Flight PASS, 30/30 Verification Family gates PASS (VF-01 through VF-07)
+  - 4/4 Cross-Consistency PASS, 5/5 Stress Tests PASS
+  - 3 live backend endpoints verified (HTTP 200, correct response shapes)
+  - Security confirmed: Fernet encryption, key hiding, resolve token+origin guard, rate limiting, delete guardrails
+  - 1 remediation: 3 backend files had root ownership → fixed to zaks
+  - 6 enhancement opportunities (ENH-1 through ENH-6)
+- **Evidence:** `/tmp/qa-mc1/` (41 evidence files)
+- **Scorecard:** `qa-verifications/QA-MC1-VERIFY-001/QA-MC1-VERIFY-001-SCORECARD.md`
+- **Verdict:** FULL PASS
+
+## 2026-02-21 — MODEL-CONFIG-001 Session 1 (P0-P2): Database + Backend API + Dashboard Wiring
+
+- **Mission:** LangSmith-style multi-model configuration with encrypted API key storage
+- **Phases completed:** P0 (Discovery), P1 (Database + Backend), P2 (Dashboard Proxy + Types + Hooks)
+- **P1 — Database + Backend API:**
+  - Migration 039: `model_configurations` table with encrypted API keys (Fernet), partial unique index for active model invariant
+  - Backend router: 8 endpoints (list, active, upsert, activate, test, resolve, delete, migrate)
+  - Mandatory encryption (503 if unavailable), key propagation across contexts, rate-limited tests (10s), 15s timeout
+  - Delete guardrails (409 for active/local), audit trail via deal_events, internal-only resolve endpoint
+- **P2 — Dashboard Infrastructure:**
+  - Types + provider metadata (5 providers: local, openai, anthropic, google, custom)
+  - API client functions, Next.js proxy routes (4 route files), React Query hooks with optimistic updates
+  - OpenAPI spec updated, generated types synced, TypeScript compiles clean
+- **Files created:** 10 (migration, rollback, backend router, types, API client, 4 proxy routes, React Query hook)
+- **Files modified:** 1 (`main.py` — router registration)
+- **Branch:** `feat/model-config-001` (2 commits)
+- **Remaining:** P3-P5 (Session 2: Settings UI, Chat rewrite, Google provider), P6-P8 (Session 3)
+- **Checkpoint:** `/home/zaks/bookkeeping/mission-checkpoints/MODEL-CONFIG-001.md`
+
+## 2026-02-20 — QA-SMR-VERIFY-001: FULL PASS (44/44 gates, 0 remediations)
+
+- **What:** Independent QA verification of SYSTEM-MATURITY-REMEDIATION-001 (12 phases, 35 AC)
+- **Results:**
+  - 4/4 Pre-Flight PASS
+  - 33/33 Verification Family gates PASS (VF-01 through VF-07)
+  - 4/4 Cross-Consistency gates PASS (XC-1 through XC-4)
+  - 3/3 Stress Tests PASS (ST-1 through ST-3)
+  - 17/17 Playwright E2E tests PASS (analytics, settings, chat, deals)
+  - 7/7 Live endpoint checks PASS (stats, decisions, alerts, conviction, knowledge, archive, tasks-health)
+  - 0 remediations, 5 enhancement opportunities (ENH-1 through ENH-5)
+- **Evidence:** `/tmp/qa-smr/` (44 evidence files), scorecard at `qa-verifications/QA-SMR-VERIFY-001/`
+- **Verdict:** FULL PASS — All 35 AC claims independently verified
+
+## 2026-02-20 — SYSTEM-MATURITY-REMEDIATION-001: Full-Stack Gap Remediation
+
+- **Mission:** Close all gaps from Second Round Interview — System Maturity & User-Facing Intelligence
+- **Phases:** P0-P11 (Discovery → Final Validation), 35 AC items
+- **Session 1 (P0-P6):** Settings UX, profile integration, model switching, agent resilience, document upload API, materials panel wiring
+- **Session 2 (P7-P11):** Document RAG + email + entity tools, cross-session memory, observability, onboarding intelligence, E2E tests
+- **Changes delivered (Session 2):**
+  1. **Document/Email/Entity Tools (P7):** 5 new agent tools — `list_deal_documents`, `search_deal_documents`, `analyze_document`, `get_deal_email_threads`, `lookup_entity`. All read-only, NOT HITL-gated. RAGClient for deal-scoped document search.
+  2. **Cross-Session Memory (P8):** LLM-backed abstractive summarization (vLLM Qwen 2.5), retention policy (90d snapshots, 365d cost_ledger), HTTP cascade for deal deletion → thread archival, memory backfill utility, unified agent knowledge endpoint.
+  3. **Observability (P9):** Agent stats/decisions/alerts/conviction endpoints. Prometheus agent_tool_calls_total counter. Analytics dashboard page with cost cards, urgency alerts, top tools, decision log. Fixed duplicate Prometheus counter registration.
+  4. **Onboarding Intelligence (P10):** Profile enrichment service for sector/stage signal extraction. `interview_user` tool for incomplete profile onboarding. Profile insights wired into system prompt.
+  5. **E2E Tests (P11):** 4 new Playwright test files (17 tests): settings-provider-models, chat-profile-integration, deal-materials-upload, analytics-observability. All pass.
+- **Tool count progression:** 14 → 16 (P2) → 21 (P7) → 22 (P10)
+- **HITL tools:** 8 (unchanged from P2 — all new tools are read-only)
+- **Files created (Session 2):**
+  - `apps/agent-api/app/core/langgraph/tools/document_tools.py` (5 tools)
+  - `apps/agent-api/app/services/rag_client.py` (RAG REST client)
+  - `apps/agent-api/app/services/memory_backfill.py` (historical thread backfill)
+  - `apps/agent-api/app/services/profile_enricher.py` (sector/stage enrichment)
+  - `apps/dashboard/src/app/analytics/page.tsx` (analytics dashboard)
+  - `apps/dashboard/tests/e2e/settings-provider-models.spec.ts`
+  - `apps/dashboard/tests/e2e/chat-profile-integration.spec.ts`
+  - `apps/dashboard/tests/e2e/deal-materials-upload.spec.ts`
+  - `apps/dashboard/tests/e2e/analytics-observability.spec.ts`
+- **Files modified (Session 2):**
+  - `apps/agent-api/app/api/v1/agent.py` (8 new endpoints: stats, decisions, alerts, conviction, knowledge, threads/archive, tasks/health, turns)
+  - `apps/agent-api/app/core/metrics.py` (agent_tool_calls_total, removed duplicate counter)
+  - `apps/agent-api/app/core/langgraph/tools/__init__.py` (16→22 tools)
+  - `apps/agent-api/app/core/langgraph/tools/profile_tools.py` (+interview_user)
+  - `apps/agent-api/app/core/security/tool_scoping.py` (SCOPE_TOOL_MAP for 22 tools + stage recommendations)
+  - `apps/agent-api/app/core/prompts/system.md` (tools 17-22, interview_user guidance)
+  - `apps/agent-api/app/core/langgraph/graph.py` (profile insights injection)
+  - `apps/agent-api/app/services/summarizer.py` (abstractive summarization, retention policy)
+  - `apps/agent-api/app/core/config.py` (fix stale LONG_TERM_MEMORY_MODEL)
+  - `apps/agent-api/app/services/backend_client.py` (artifact, email, entity methods)
+  - `apps/dashboard/src/components/icons.tsx` (analytics icon)
+  - `apps/dashboard/src/config/nav-config.ts` (analytics nav item)
+- **Validation:** `make validate-local` PASS, `npx tsc --noEmit` PASS, 22 tools verified, 17 new E2E tests pass
+
+## 2026-02-20 — CHAT-CONTROL-SURFACE-001: Chat as Universal Control Surface
+
+- **Mission:** Transform chat from deal-management-only to universal control surface
+- **Phases:** P0-P8 (Discovery → Validate), 14 AC items
+- **Changes delivered:**
+  1. **Quarantine Tools (P2):** 4 new agent tools — `list_quarantine_items`, `approve_quarantine_item`, `reject_quarantine_item`, `escalate_quarantine_item`. All mutation tools HITL-gated.
+  2. **Delegation Tools (P3):** 2 new agent tools — `delegate_research` (COMPANY_PROFILE/BROKER_PROFILE/MARKET_SCAN/VENDOR_DUE_DILIGENCE), `trigger_email_scan` (EMAIL_TRIAGE.PROCESS_INBOX). Both HITL-gated. 503 handling for disabled delegation.
+  3. **BackendClient Methods (P1):** `list_quarantine()`, `process_quarantine()`, `create_delegation_task()` with correct endpoint routing (deal-scoped vs global).
+  4. **Model-Agnostic Prompt (P4):** System prompt parameterized with `{model_identity}` — no more hardcoded Qwen references. Tool count updated to 14.
+  5. **Multi-Provider Routing (P5):** Chat route dispatches to OpenAI/Anthropic/Custom providers. SSRF validation on custom endpoints. Cloud providers text-only (no ZakOps tools). Provider config sent from client localStorage → request body → server-side factory.
+  6. **Operational Hardening (P6):** MCP IP allowlist, structured proposal audit logs, operator identity via OPERATOR_NAME env var, expected_version optimistic locking on quarantine, data_fetched_at timestamps.
+  7. **Unit Tests (P7):** 43 tests across 3 files — quarantine tools (19), delegation tools (15), BackendClient methods (9). All pass.
+- **Files created:**
+  - `apps/agent-api/app/core/langgraph/tools/quarantine_tools.py`
+  - `apps/agent-api/app/core/langgraph/tools/delegation_tools.py`
+  - `apps/dashboard/src/lib/agent/providers/openai.ts`
+  - `apps/dashboard/src/lib/agent/providers/anthropic.ts`
+  - `apps/dashboard/src/lib/agent/providers/custom.ts`
+  - `apps/agent-api/tests/test_quarantine_tools.py`
+  - `apps/agent-api/tests/test_delegation_tools.py`
+  - `apps/agent-api/tests/test_backend_client_new_methods.py`
+- **Files modified:**
+  - `apps/agent-api/app/services/backend_client.py` (3 new methods)
+  - `apps/agent-api/app/core/langgraph/tools/__init__.py` (8→14 tools)
+  - `apps/agent-api/app/schemas/agent.py` (HITL_TOOLS 2→7)
+  - `apps/agent-api/app/core/prompts/system.md` (model-agnostic, v1.5.0-ccs)
+  - `apps/agent-api/app/core/prompts/__init__.py` (model_identity kwarg)
+  - `apps/dashboard/src/app/api/chat/route.ts` (provider routing, timestamps)
+  - `apps/dashboard/src/lib/api.ts` (providerConfig param)
+  - `apps/dashboard/src/app/chat/page.tsx` (providerConfig from localStorage)
+  - `apps/dashboard/src/app/api/chat/execute-proposal/route.ts` (audit logging)
+  - `apps/backend/mcp_server/server.py` (IP allowlist)
+- **Validation:** `tsc --noEmit` PASS, `make validate-local` PASS, 43/43 unit tests PASS, 9/10 Playwright E2E PASS (1 pre-existing failure)
+- **Agent state:** 14 tools, 7 HITL-gated, model-agnostic prompt
+
+## 2026-02-19 — Quarantine Approval Fix + Comprehensive Playwright Testing
+
+- **What:** Fixed two bugs in quarantine approval introduced by DEAL-UX-PIPELINE-001 v2 Phase 2
+  (brain seed pipeline). Verified all 4 quarantine actions + full deal page via Playwright.
+- **Bug 1 — Brain seed FK violation:**
+  - `seed_from_enrichment()` was called INSIDE the database transaction before `deals` INSERT committed
+  - `deal_brain` table has FK to `deals` → `ForeignKeyViolationError: Key (deal_id)=(...) not present`
+  - Fix: Moved brain seed AFTER transaction commit; capture enrichment data in local vars inside txn
+- **Bug 2 — Missing logger import:**
+  - The except handler for brain seed failures referenced `logger` (undefined in scope)
+  - `NameError: name 'logger' is not defined` — masked the FK error with a second crash
+  - Fix: Added `import logging` + `logger = logging.getLogger(__name__)` at top of main.py
+- **File:** `apps/backend/src/api/orchestration/main.py`
+- **Playwright Test Results (ALL PASS):**
+  - **Approve:** Dialog → Submit → Deal DL-0133 created → Redirected to deal page → Brain seeded (6 facts)
+  - **Reject:** Dialog → Reason required → Submit → Toast "Rejected (non-deal)" → Item removed from queue
+  - **Escalate:** Dialog → Priority/Reason/Note → Submit → Toast "Escalated for review" → Item removed
+  - **Delegate:** Dialog → Task Type/Priority → Submit → Toast "Delegated to agent" → Agent panel appeared
+  - **Deal Page Overview:** Deal info, Broker, Financials, Source Intelligence, Email Threads — all rendering
+  - **Deal Page Materials:** 1 bundle, expanded shows email summary from triage_summary
+  - **Deal Page Brain:** 6 auto-seeded facts (ebitda, revenue, broker_name, broker_company, broker_email, company_name)
+  - **Deal Page Events:** deal_created event with structured rendering; Add Note → event count incremented
+  - **Deal Page Transitions:** "Created → inbound by Zak (system)"
+  - **Deal Page Chat:** Link navigated to `/chat?deal_id=DL-0133` with deal pre-selected
+  - **Deals List:** 10 deals, row click → deal detail navigation working
+
+## 2026-02-19 — LangSmith Agent v1.1 Sync + MCP Bridge Auth Fix
+
+- **What:** Synced LangSmith Email Triage Agent to v1.1-enrichment, fixed MCP bridge auth,
+  verified end-to-end injection pipeline with 3 live deal signals.
+- **MCP Bridge Auth Fix:**
+  - Root cause: Bridge process missing `ZAKOPS_API_KEY` env var — sent empty `X-API-Key` header to backend
+  - Backend `APIKeyMiddleware` returned 401 "Invalid or missing API key"
+  - Fix: Restarted bridge with `ZAKOPS_API_KEY` + `ZAKOPS_BRIDGE_BEARER_REQUIRED=false`
+  - Bearer auth disabled for LangSmith compatibility (LangSmith can't send custom auth headers)
+- **Zod Schema Fix:**
+  - `ExtractionEvidenceFinancialsSchema.multiple` changed from `z.number()` to `z.union([z.string(), z.number()])`
+  - Agent sends multiples as strings (e.g., "3.8x") — Zod rejected, causing entire quarantine page to fail
+  - File: `apps/dashboard/src/lib/api.ts` (line 179)
+- **v1.1 Test Batch Results (3/3 SUCCESS):**
+  - $6M ARR AI SaaS (Andrew @ Acquire.com) — 201 Created, HIGH, confidence 0.96
+  - Pickleball Brand (Amanda Raab @ Quiet Light) — 201 Created, HIGH, confidence 0.95
+  - Maternal Health Supplement (Ethan Alexander @ Quiet Light) — 201 Created, MEDIUM, confidence 0.94
+  - All carry: field_confidences, nested extraction_evidence, comprehensive triage_summary, prompt_version=v1.1-enrichment
+- **Browser verified:** All 12 quarantine items rendering, detail panel shows full v1.1 data
+
+## 2026-02-19 — DEAL-UX-PIPELINE-001 v2 Execution Complete (Phases 1-7)
+
+- **What:** Full-stack quarantine→deal living data pipeline. Transforms stubs and rendering bugs
+  into a deterministic, traceable system with categorized intelligence, lifecycle provenance,
+  type-discriminated event rendering, and a triage workbench.
+- **14 invariants** (6 data ownership, 4 rendering, 4 pipeline) — all verified.
+- **Phase 1 — Materials Engine (Backend):**
+  - Rewrote `/api/deals/{id}/materials` endpoint with dual-join (qi.deal_id + identifiers.quarantine_item_id)
+  - `DISTINCT ON (q.id)` prevents duplicate bundles
+  - email_body populated from triage_summary with fallback chain (INV-R4)
+  - Link classification by link_type taxonomy (primary/tracking/social)
+  - Attachments from qi.attachments JSONB
+  - Files: `apps/backend/src/api/orchestration/main.py`
+- **Phase 2 — Brain Seed Pipeline (Backend):**
+  - Added `seed_from_enrichment()` to DealBrainService — categorized facts (Financial/Contacts/Profile/Status)
+  - Human-formatted values ($2.5M, 3.2x, Yes/No), per-field confidence from field_confidences
+  - Entity graph seeding (broker as person, company as organization)
+  - Wired in approve endpoint with fault isolation (try/except, INV-P2)
+  - Files: `apps/backend/src/core/agent/deal_brain_service.py`, `apps/backend/src/api/orchestration/main.py`
+- **Phase 3 — Lifecycle Provenance Chain (Backend):**
+  - Added `received_at`, `approved_at`, `time_in_quarantine_hours` to deal metadata
+  - Null-safe fallback chain: received_at → created_at → utcnow()
+  - Thread-linked deals get timestamps merged (only if missing)
+  - Timestamps included in deal_created event payload
+  - Files: `apps/backend/src/api/orchestration/main.py`
+- **Phase 4 — Materials UI (Dashboard):**
+  - Replaced internal text with "Emails, attachments, and documents associated with this deal" (INV-R2)
+  - Removed dead Deal folder div (INV-R3)
+  - Email body rendering with fallback "Email content not available" (INV-R4)
+  - Path shown only when non-null
+  - Files: `apps/dashboard/src/app/deals/[id]/page.tsx`
+- **Phase 5 — Notes & Event Timeline (Dashboard):**
+  - Added `getDealNotes()` + `NoteSchema` + `DealNote` type to api.ts
+  - Notes rendered as human-readable cards with category badges and relative time (INV-R1)
+  - Event renderer registry — 6 known types get structured rendering:
+    note_added, deal_created, stage_transition, quarantine_attached, material_cataloged, action_*
+  - JSON.stringify fallback only for unknown event types (INV-P4)
+  - Files: `apps/dashboard/src/lib/api.ts`, `apps/dashboard/src/app/deals/[id]/page.tsx`
+- **Phase 6 — Quarantine Triage Workbench (Dashboard):**
+  - Subject lines: truncate → line-clamp-2 (2-line display)
+  - Relative time with urgency coloring: >3d amber, >7d red
+  - Search bar: client-side filter by subject/company/broker/sender
+  - Operator name input moved to secondary position
+  - Summary snippet increased from 80 to 120 chars
+  - Files: `apps/dashboard/src/app/quarantine/page.tsx`
+- **Phase 7 — Validation:**
+  - `npx tsc --noEmit`: PASS (zero errors)
+  - `make validate-local`: PASS
+  - Backend rebuilt and deployed
+  - Browser verification: all 14 invariants confirmed
+
+## 2026-02-18 — DEAL-DATA-ARCHITECTURE-001 Execution Complete (Phases 0-7)
+
+- **What:** Systemic architectural fix for quarantine-to-deal data flow. Replaces procedural
+  band-aid (DEAL-EVIDENCE-PIPELINE-001) with structural guarantees that data flows cleanly
+  from injection through deal lifecycle to dashboard display.
+- **Source:** 3-pass architectural review (DATA-FLOW-ARCH-REVIEW-MASTER.md), 11 findings (F-01 through F-11).
+- **Phase 1 — Deal Data Contract (F-02):**
+  - Created `src/core/deals/deal_contract.py` — 4 Pydantic models: DealBrokerContract,
+    DealMetadataContract, DealCompanyInfoContract, DealIdentifiersContract
+  - All use `ConfigDict(extra='allow')` for forward compatibility
+- **Phase 2 — DealEnrichmentService (F-02, F-03, F-04, F-05, F-06):**
+  - Created `src/core/deals/enrichment.py` — DealEnrichmentService with:
+    - `enrich_from_quarantine()` — full enrichment with priority hierarchy
+    - `merge_into_existing()` — non-destructive merge for attach paths
+    - `validate_extraction_evidence()` — F-07 format validation (warnings only)
+    - `parse_currency()` / `parse_multiple()` — extracted from inline code
+  - Refactored all 4 approve call sites in orchestration/main.py to use service
+  - Removed ~200 lines of inline `_build_deal_enrichment`, `_parse_currency`, `_parse_multiple`
+  - New fields carried forward: field_confidences, langsmith_run_id, langsmith_trace_url,
+    attachment_count, entities.people
+- **Phase 3 — PATCH JSONB Merge (F-01):**
+  - Changed PATCH endpoint from destructive overwrite (`col = $N::jsonb`) to merge
+    (`COALESCE(col, '{}'::jsonb) || $N::jsonb`) — preserves existing keys
+- **Phase 4 — Injection Validation (F-07):**
+  - Wired `validate_extraction_evidence()` at quarantine injection time (warnings only, never rejects)
+- **Phase 5 — Quarantine Source Link (F-09):**
+  - Backend: `GET /api/deals/{deal_id}/quarantine-source` endpoint
+  - Dashboard: `getDealQuarantineSource()` fetch + QuarantineSourceSchema
+  - Dashboard: Source Intelligence card on deal Overview tab — shows triage summary,
+    field confidences, urgency, attachments, LangSmith trace link, collapsible extraction evidence
+- **Phase 6 — Backfill Traceability:**
+  - Enhanced backfill_deal_evidence.sql with F-03/F-04/F-05/F-06 traceability fields
+  - 8 deals enriched with field_confidences, triage_summary, attachment_count, langsmith metadata
+- **Phase 7 — Validation:**
+  - `make validate-local` PASS, `npx tsc --noEmit` PASS, backend health OK
+  - DL-0121 confirmed: broker, financials, CIM, triage_summary, field_confidences populated
+  - Quarantine-source endpoint returns full extraction data for all linked deals
+- **Files created:**
+  - `apps/backend/src/core/deals/deal_contract.py` — Pydantic deal data contracts
+  - `apps/backend/src/core/deals/enrichment.py` — DealEnrichmentService
+- **Files modified:**
+  - `apps/backend/src/core/deals/__init__.py` — new exports
+  - `apps/backend/src/api/orchestration/main.py` — enrichment service refactor, JSONB merge, source endpoint, injection validation
+  - `apps/dashboard/src/lib/api.ts` — QuarantineSourceSchema, getDealQuarantineSource
+  - `apps/dashboard/src/app/deals/[id]/page.tsx` — Source Intelligence card
+  - `apps/backend/scripts/backfill_deal_evidence.sql` — traceability backfill step
+- **Docs created:**
+  - `/home/zaks/bookkeeping/docs/DATA-FLOW-ARCH-REVIEW-MASTER.md` — 3-pass review master document
+  - `/home/zaks/bookkeeping/docs/MISSION-DEAL-DATA-ARCHITECTURE-001.md` — v2.4 mission prompt
+
+## 2026-02-18 — DEAL-EVIDENCE-PIPELINE-001 Execution Complete (Phases 1-4)
+
+- **What:** Fixed critical data loss when quarantine items are approved into deals.
+  The backend approve endpoint never read `extraction_evidence` from quarantine items,
+  causing deal pages to show "TBD" / "Unknown" / "-" for financials and broker details.
+- **Root Cause:** `orchestration/main.py` approve endpoints mapped only `{name, email}` for
+  broker and `{source, quarantine_item_id, approved_by}` for metadata — ignoring all
+  extraction_evidence data (financials, broker details, entities, typed_links).
+- **TriPass Review:** 12 consolidated findings from 3-agent adversarial review (Claude+Codex+Gemini).
+  9/12 findings directly addressed. Run: TP-20260218-194105.
+- **Phase 1 — Backend (4 approve paths fixed):**
+  - Added shared `_build_deal_enrichment()` helper with priority hierarchy:
+    corrections > flat item > flat ev > nested ev > default
+  - Added `_parse_currency()` for $2.5M/$350K/2,500,000/TBD/N/A handling
+  - Added `_parse_multiple()` for "4.2x" handling
+  - Single approve (new deal): uses enrichment helper for INSERT
+  - Single approve (explicit deal_id): non-destructive merge into existing deal
+  - Thread-match attach: non-destructive merge into existing deal
+  - Bulk approve: expanded SELECT to include extraction_evidence + uses helper
+- **Phase 2 — Dashboard:**
+  - Added `.passthrough()` to DealDetailSchema broker/metadata/company_info sub-objects
+- **Phase 3 — Backfill:**
+  - Per-key null-conditional SQL (not JSONB `||`) — safe, idempotent, non-destructive
+  - Dual JOIN: `identifiers->>'quarantine_item_id'` + `q.deal_id` (covers attach path)
+  - Supports both flat ev keys (broker_name) and nested (broker.name)
+  - 7 existing deals backfilled (DL-0108 through DL-0121)
+  - DL-0121 confirmed: broker name/email, asking price, revenue, SDE, CIM now populated
+- **Phase 4 — Validation:**
+  - Backend builds clean, tsc --noEmit passes, make validate-local PASS
+- **Files modified:**
+  - `apps/backend/src/api/orchestration/main.py` — shared enrichment helper + 4 approve path fixes
+  - `apps/dashboard/src/lib/api.ts` — .passthrough() on DealDetailSchema
+- **Files created:**
+  - `apps/backend/scripts/backfill_deal_evidence.sql` — one-time backfill script
+
+## 2026-02-18 — TriPass Run: TP-20260218-194105
+- **Type:** TriPass pipeline run
+- **Run directory:** /home/zaks/bookkeeping/docs/_tripass_runs/TP-20260218-194105
+- **Status:** COMPLETED
+- **Files created:** Run directory with passes 1-3 + evidence
+
+
+## 2026-02-18 — QUARANTINE-INTELLIGENCE-001 Execution Complete (Phases 0-6)
+
+- **What:** Full execution of quarantine intelligence mission — transforms quarantine from "decide blind" to "decide in 3 seconds with full context."
+- **Why:** Pipeline A injects rich triage data but the dashboard dropped it (Zod schema mismatch) and rendered almost nothing. Operators saw subject + "Preview not found."
+- **Phases completed:**
+  - **P0+P1:** Schema unification — `ExtractionEvidenceSchema` (Zod) with 5 nested sub-schemas, unified `getQuarantinePreview()` with graceful degradation, `getSenderIntelligence()`, `getTriageFeedback()`, classification filter normalization to lowercase
+  - **P2:** 10 triage intelligence components — TriageSummaryCard, DealSignalsCard, ClassificationReasoningCard, MaterialsAndLinksCard, EntitiesCard, SenderIntelCard, EmailBodyCard, ProvenanceFooter, TriageIntelPanel (orchestrator), format-utils
+  - **P3:** Page integration — replaced 88 lines of inline rendering with `<TriageIntelPanel>`, added parallel sender intel + triage feedback fetching via `Promise.allSettled`, removed `renderLinkGroups` and `renderAttachments` functions, cleaned up 6 unused imports
+  - **P4:** Queue enhancement — list items now show company name, broker badge, triage summary snippet (80 char truncated)
+  - **P5:** Agent deployment package — `EXTRACTION_EVIDENCE_SCHEMA.md` + `AGENT_EXTRACTION_EVIDENCE_DEPLOYMENT.md`, copied to Windows Downloads
+  - **P6:** Validation — `npx tsc --noEmit` PASS, `make validate-local` PASS, Surface 9 PASS, Surface 17 PASS (44/44)
+- **Files modified:**
+  - `apps/dashboard/src/lib/api.ts` — ExtractionEvidenceSchema, SenderIntelligenceSchema, TriageFeedbackSchema, unified preview, provenance fields
+  - `apps/dashboard/src/app/quarantine/page.tsx` — type unification, TriageIntelPanel integration, queue enrichment, import cleanup
+- **Files created (10 components):**
+  - `apps/dashboard/src/components/quarantine/format-utils.ts`
+  - `apps/dashboard/src/components/quarantine/TriageSummaryCard.tsx`
+  - `apps/dashboard/src/components/quarantine/DealSignalsCard.tsx`
+  - `apps/dashboard/src/components/quarantine/ClassificationReasoningCard.tsx`
+  - `apps/dashboard/src/components/quarantine/MaterialsAndLinksCard.tsx`
+  - `apps/dashboard/src/components/quarantine/EntitiesCard.tsx`
+  - `apps/dashboard/src/components/quarantine/SenderIntelCard.tsx`
+  - `apps/dashboard/src/components/quarantine/EmailBodyCard.tsx`
+  - `apps/dashboard/src/components/quarantine/ProvenanceFooter.tsx`
+  - `apps/dashboard/src/components/quarantine/TriageIntelPanel.tsx`
+- **Files created (docs):**
+  - `bookkeeping/docs/EXTRACTION_EVIDENCE_SCHEMA.md`
+  - `bookkeeping/docs/AGENT_EXTRACTION_EVIDENCE_DEPLOYMENT.md`
+- **Design patterns:** Dual-source (F-3), 3-tier link rendering (F-7), conflicting signals warning (F-11), `.passthrough()` forward compat, Promise.allSettled for sender intel
+- **Validation:** tsc clean, validate-local PASS, Surface 9 PASS, Surface 17 PASS (44/44)
+
+## 2026-02-18 — TriPass Consolidation Report: QUARANTINE-INTELLIGENCE-001 Adversarial Review
+
+- **What:** Produced FINAL_MASTER.md for TriPass run TP-20260218-095911 (Pass 3 consolidation).
+- **Why:** Consolidate 2 independent adversarial review reports (CLAUDE + CODEX) into a single deduplicated, builder-ready master document before executing the quarantine intelligence mission.
+- **Results:**
+  - 22 total Pass 1 findings across 2 agents (Gemini timed out in both passes)
+  - Consolidated to 17 deduplicated findings: 7 MUST-ADD, 7 SHOULD-ADD, 3 NICE-TO-HAVE
+  - 3 discarded items (with documented reasons), 5 drift items (out of scope)
+  - 11 builder-enforceable acceptance gates
+  - 0% drop rate (all findings accounted for)
+  - 2 conflicts resolved with evidence (schema unification target, flat vs nested evidence)
+- **Files modified:** `/home/zaks/bookkeeping/docs/_tripass_runs/TP-20260218-095911/FINAL_MASTER.md`
+- **Key findings:** routing_conflict regression blocker (F-1), approve dialog correction key mismatch (F-2), empty evidence dual-source fallback (F-3), parse failure graceful degradation (F-4)
+
+## 2026-02-18 — Pipeline A First Production Batch Triage — 14/14 Injections, 100% Success
+
+- **What:** First full Pipeline A batch triage run by LangSmith Exec Agent after `delegate_actions` flag enablement.
+- **Why:** Milestone — proves end-to-end integration operational at production scale.
+- **Results:**
+  - 25 emails fetched from Gmail inbox
+  - 25/25 labeled (100% label success)
+  - 14/14 quarantine injections created (all 201 Created)
+  - Classification: 15 DEAL_SIGNAL, 4 NEWSLETTER, 6 SPAM
+  - Urgency: 2 HIGH, 1 MED, 22 LOW
+  - 0 dedup hits, 0 errors
+  - Broker sources: Quiet Light (12), ENLIGN Advisors (1 thread), Transworld (1)
+- **Operator Items:** 2 HIGH-urgency quarantine items flagged for review:
+  - Digital Transformation Agency (Jeff Snell / ENLIGN) — dataroom follow-up, reply needed
+  - Landscaping Co / Flower Shop (Patrick / Transworld) — personalized broker outreach
+- **Known Issue:** `zakops_report_task_result` returned HTTP 500 — agent used self-generated `poll_run_...` task_id, but endpoint requires pre-existing task record. Non-blocking (run stored locally by agent). Workflow gap: self-initiated runs need to self-delegate first.
+- **Actions:**
+  - Enabled `delegate_actions` feature flag via `PUT /api/admin/flags/delegate_actions?enabled=true`
+  - Agent ran Pipeline A with standard params (query="in:inbox -label:ZakOps/Processed", max_results=25)
+  - Run ID: `poll_run_2026-02-18T08:47:00Z`, Correlation ID: `et-a3f7c1b9d4e2`
+
+## 2026-02-18 — QA-IP3-VERIFY-001: FULL PASS (49/49 gates, 0 remediations)
+
+- **What:** Independent QA verification of INTEGRATION-PHASE3-BUILD-001 (Bi-directional Communication)
+- **Why:** Verify all 6 deliverables with fresh evidence per mission prompt standard v2.4
+- **Results:**
+  - 4/4 Pre-Flight PASS
+  - 34/34 Verification Family gates PASS (VF-01 through VF-08)
+  - 5/5 Cross-Consistency gates PASS (XC-1 through XC-5)
+  - 6/6 Stress Tests PASS (ST-1 through ST-6)
+  - 0 remediations required, 8 enhancement opportunities identified (ENH-1 through ENH-8)
+- **Files Created:**
+  - `bookkeeping/docs/QA-IP3-VERIFY-001.md` — QA mission prompt
+  - `bookkeeping/qa-verifications/QA-IP3-VERIFY-001/SCORECARD.md` — Final scorecard
+- **Evidence:** 45 tee'd evidence files in `/tmp/qa-ip3-*.txt`
+- **Verdict:** FULL PASS — Integration Phase 3 verified complete
+
+## 2026-02-18 — Phase 3 Agent-Side Verification COMPLETE + Bridge Restart
+
+- **What:** LangSmith agent verified all Phase 3 capabilities after bridge restart. All 5 verification tests PASS.
+- **Why:** Bridge was still running Phase 2 code (started Feb 17). Restarted to pick up Phase 3 code.
+- **Actions:**
+  - Killed stale bridge process (PID 720345, running since Feb 17)
+  - Restarted MCP bridge with Phase 3 code at port 9100
+  - Agent confirmed: bridge_tool_count=24, prompt_version="v1.0-integration-phase3"
+  - Agent confirmed: deal-agnostic events, task messages tool, backfill task listing all working
+  - Wrote Phase 3 Deployment Package (`docs/INTEGRATION-PHASE3-DEPLOYMENT-PACKAGE.md`)
+  - Updated Integration Roadmap — all 3 phases COMPLETE, handshake status updated
+- **Milestone:** Integration Spec v1.0 — ALL 3 PHASES VERIFIED END-TO-END (both ZakOps and agent sides)
+
+## 2026-02-18 — INTEGRATION-PHASE3-BUILD-001: Bi-directional Communication (Final Integration Phase)
+
+- **What:** Phase 3 of 3 in the ZakOps + LangSmith Agent integration. Closes the bi-directional communication loop between operator and agent.
+- **Why:** Complete the integration roadmap: lease reclaim for stale tasks, Gmail back-labeling automation, deal-agnostic event polling, and operator-to-agent mid-task messaging.
+- **Deliverables (6):**
+  1. LeaseReaper — background worker reclaims expired-lease delegated tasks (ENH-9)
+  2. Back-labeling — quarantine approve/reject auto-creates SYNC.BACKFILL_LABELS task (Item 15)
+  3. Event polling expansion — `since_ts`, `event_type`, deal-agnostic `/api/events/history` (Item 16)
+  4. Operator messaging — `POST /api/tasks/{id}/message` + MCP bridge tool + dashboard UI (Item 17)
+  5. Dashboard delegation UX — DelegationDisabledError for 503, specific toasts (ENH-5, ENH-6)
+  6. `@ensure_dict_response` decorator — replaces 9 manual `_ensure_dict()` call sites (ENH-10)
+- **Files Created:**
+  - `apps/backend/src/core/delegation/__init__.py` — delegation package init
+  - `apps/backend/src/core/delegation/lease_reaper.py` — LeaseReaper class (OutboxProcessor pattern)
+  - `apps/backend/db/migrations/037_task_messages.sql` — messages JSONB column on delegated_tasks
+  - `apps/backend/db/migrations/037_task_messages_rollback.sql` — rollback for 037
+  - `apps/dashboard/src/app/api/events/history/route.ts` — proxy route for /api/events/history
+- **Files Modified:**
+  - `apps/backend/src/api/orchestration/main.py` — lifespan (reaper), _maybe_create_backfill_task, process_quarantine hook, bulk_process_quarantine hook, events expansion, events/history endpoint, message endpoint, since_ts datetime parsing fix
+  - `apps/backend/src/api/shared/routers/health.py` — lease_reaper_active component
+  - `apps/agent-api/mcp_bridge/server.py` — ensure_dict_response decorator (9 sites), events tool expansion, get_task_messages tool, manifest v1.0-integration-phase3
+  - `apps/agent-api/mcp_bridge/agent_contract.py` — events tool def, task_messages tool def, SYNC.BACKFILL_LABELS workflow in system prompt
+  - `apps/dashboard/src/lib/api.ts` — DelegationDisabledError, getDelegationTypes fix, createDelegatedTask fix, sendTaskMessage function
+  - `apps/dashboard/src/app/quarantine/page.tsx` — delegate dialog error handling, message state, message UI panel
+- **Golden Tests:** T7-enhanced (4 cases), T-reaper (8 reclaims), T-backlabel (1→2 tasks), T-message (5 cases) — all PASS
+- **Validation:** make validate-local PASS, npx tsc --noEmit PASS, browser verified (0 errors)
+- **Contract Surfaces:** 1 (Backend→Dashboard), 2 (Backend→Agent SDK), 15 (MCP Bridge), 17 (Dashboard Route Coverage)
+
 ## 2026-02-17 — STANDARD-ENFORCE-001: Self-Enforcing Mission Prompt Standard v2.4
 
 - **What:** Updated Mission Prompt Standard from v2.3 to v2.4 with content drift fixes, structural gaps filled, and technical enforcement infrastructure

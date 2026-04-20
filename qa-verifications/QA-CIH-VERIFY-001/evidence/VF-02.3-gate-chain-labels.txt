@@ -1,0 +1,5 @@
+=== VF-02.3 GATE CHAIN + LABELS ===
+45:  echo "Gate A: validate-fast"
+56:  echo "Gate B: validate-contract-surfaces (14 surfaces)"
+68:  echo "Gate E: raw httpx client usage check"
+104:  echo "All gates passed."

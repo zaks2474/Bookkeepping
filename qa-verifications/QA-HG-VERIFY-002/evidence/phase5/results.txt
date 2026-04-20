@@ -1,0 +1,37 @@
+=== PHASE 5: DB MIGRATIONS ===
+
+V-P5.1: Zaks-llm/db/migrations dir exists?
+  Result: EXISTS
+  Verdict: PASS
+
+V-P5.2: 001_initial_schema.sql line count
+  Result: 94 lines
+  Verdict: PASS (substantial DDL)
+
+V-P5.3: agent-api 003_add_migration_tracking.sql exists?
+  Result: EXISTS
+  Verdict: PASS
+
+V-P5.4: Runner scripts exist and executable?
+  agent-api run_migrations.sh: OK: executable
+  Zaks-llm run_migrations.sh: OK: executable
+  Verdict: PASS
+
+V-P5.5: migration-assertion.sh exists?
+  Result: EXISTS
+  Verdict: PASS
+
+V-P5.6: No hardcoded containers in migration-assertion.sh?
+  Result: FOUND hardcoded "docker exec rag-db" (line 81) and
+          "docker exec zakops-backend-postgres-1" (line 119)
+  These use "docker exec <container-name>" NOT "docker compose exec <service>"
+  Verdict: FAIL — hardcoded container names present
+
+V-P5.7: rag-api in runtime.topology.json?
+  Result: Found with full mapping (service, port, db, migrations_dir, container, network)
+  Verdict: PASS
+
+V-P5.8: Live schema dumps exist?
+  crawlrag-live-schema.sql: EXISTS
+  zakops_agent-live-schema.sql: EXISTS
+  Verdict: PASS

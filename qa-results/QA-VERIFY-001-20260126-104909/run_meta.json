@@ -1,0 +1,13 @@
+{
+  "env": {
+    "AGENT_URL": "http://localhost:8095",
+    "BACKEND_URL": "http://localhost:8091",
+    "DASHBOARD_URL": "http://localhost:3003",
+    "PG_CONTAINER": "zakops-postgres-1",
+    "PG_DB": "zakops",
+    "PG_USER": "zakops",
+    "RAG_URL": "http://localhost:8052"
+  },
+  "run_id": "QA-VERIFY-001-20260126-104909",
+  "timestamp_utc": "2026-01-26T16:49:09.780423+00:00"
+}

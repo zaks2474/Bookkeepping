@@ -1,0 +1,251 @@
+#!/usr/bin/env bash
+#
+# Lab Loop Doctor - Diagnose and fix common issues
+# Usage: labloop-doctor [task_name] [--fix]
+#
+set -euo pipefail
+
+VERSION="3.0.0"
+LABLOOP_BASE="${LABLOOP_BASE:-/home/zaks/bookkeeping/labloop}"
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+log_ok() { echo -e "${GREEN}[OK]${NC} $1"; }
+log_warn() { echo -e "${YELLOW}[WARN]${NC} $1"; }
+log_fail() { echo -e "${RED}[FAIL]${NC} $1"; }
+log_info() { echo -e "${BLUE}[INFO]${NC} $1"; }
+
+TASK_NAME="${1:-}"
+FIX_MODE=false
+[[ "${2:-}" == "--fix" ]] && FIX_MODE=true
+
+echo "========================================"
+echo "Lab Loop Doctor v${VERSION}"
+echo "========================================"
+echo ""
+
+ISSUES_FOUND=0
+ISSUES_FIXED=0
+
+# Check 1: Claude CLI
+echo "Checking Claude CLI..."
+if command -v claude &>/dev/null; then
+  CLAUDE_VERSION=$(claude --version 2>/dev/null | head -1)
+  log_ok "Claude CLI installed: $CLAUDE_VERSION"
+else
+  log_fail "Claude CLI not found"
+  ((ISSUES_FOUND++))
+fi
+
+# Check 2: Codex CLI
+echo "Checking Codex CLI..."
+if command -v codex &>/dev/null || [[ -f "/root/.npm-global/bin/codex" ]]; then
+  log_ok "Codex CLI available"
+else
+  log_warn "Codex CLI not found (will use Gemini fallback)"
+fi
+
+# Check 3: Gemini CLI
+echo "Checking Gemini CLI..."
+GEMINI_PATH="/root/.npm-global/bin/gemini"
+if [[ -f "$GEMINI_PATH" ]]; then
+  if [[ -f "/home/zaks/.gemini_api" ]]; then
+    log_ok "Gemini CLI available with API key"
+  else
+    log_warn "Gemini CLI found but no API key at /home/zaks/.gemini_api"
+  fi
+else
+  log_fail "Gemini CLI not found at $GEMINI_PATH"
+  ((ISSUES_FOUND++))
+fi
+
+# Check 4: jq installed
+echo "Checking jq..."
+if command -v jq &>/dev/null; then
+  log_ok "jq installed"
+else
+  log_fail "jq not installed (required for JSON parsing)"
+  ((ISSUES_FOUND++))
+  if $FIX_MODE; then
+    log_info "Installing jq..."
+    apt-get update && apt-get install -y jq && log_ok "jq installed" && ((ISSUES_FIXED++))
+  fi
+fi
+
+# Check 5: yq installed (for YAML parsing)
+echo "Checking yq..."
+if command -v yq &>/dev/null; then
+  log_ok "yq installed"
+else
+  log_warn "yq not installed (optional, for YAML profile parsing)"
+  if $FIX_MODE; then
+    log_info "Installing yq..."
+    pip3 install yq 2>/dev/null && log_ok "yq installed" && ((ISSUES_FIXED++))
+  fi
+fi
+
+# Check 6: Stale locks
+echo "Checking for stale locks..."
+STALE_LOCKS=$(find "$LABLOOP_BASE/tasks" -name ".lock" -mmin +60 2>/dev/null | wc -l)
+if [[ $STALE_LOCKS -gt 0 ]]; then
+  log_warn "Found $STALE_LOCKS stale lock file(s) (older than 60 minutes)"
+  ((ISSUES_FOUND++))
+  if $FIX_MODE; then
+    find "$LABLOOP_BASE/tasks" -name ".lock" -mmin +60 -delete 2>/dev/null
+    find "$LABLOOP_BASE/tasks" -name ".pid" -mmin +60 -delete 2>/dev/null
+    log_ok "Removed stale locks"
+    ((ISSUES_FIXED++))
+  fi
+else
+  log_ok "No stale locks found"
+fi
+
+# Check 7: Old Claude processes
+echo "Checking for stuck Claude processes..."
+STUCK_CLAUDE=$(ps aux | grep -E "claude.*dangerously" | grep -v grep | awk '{split($10,a,"-"); if(a[2] != strftime("%d")) print $2}' | wc -l)
+if [[ $STUCK_CLAUDE -gt 0 ]]; then
+  log_warn "Found potentially stuck Claude processes from previous days"
+  if $FIX_MODE; then
+    log_info "Killing stuck processes..."
+    ps aux | grep -E "claude.*dangerously" | grep -v grep | awk '{split($10,a,"-"); if(a[2] != strftime("%d")) print $2}' | xargs -r kill 2>/dev/null || true
+    ((ISSUES_FIXED++))
+  fi
+else
+  log_ok "No stuck Claude processes"
+fi
+
+# Check 8: Task-specific checks
+if [[ -n "$TASK_NAME" ]]; then
+  TASK_DIR="$LABLOOP_BASE/tasks/$TASK_NAME"
+  echo ""
+  echo "Task-specific checks for: $TASK_NAME"
+  echo "----------------------------------------"
+
+  if [[ -d "$TASK_DIR" ]]; then
+    log_ok "Task directory exists"
+
+    # Check config.env
+    if [[ -f "$TASK_DIR/config.env" ]]; then
+      log_ok "config.env exists"
+      source "$TASK_DIR/config.env"
+
+      # Check REPO_DIR
+      if [[ -n "${REPO_DIR:-}" ]] && [[ -d "$REPO_DIR" ]]; then
+        log_ok "REPO_DIR exists: $REPO_DIR"
+
+        # Check for .labloop.yaml
+        if [[ -f "$REPO_DIR/.labloop.yaml" ]]; then
+          log_ok "Project profile found: $REPO_DIR/.labloop.yaml"
+        else
+          log_warn "No project profile at $REPO_DIR/.labloop.yaml"
+        fi
+
+        # Check venv
+        if [[ -d "$REPO_DIR/venv" ]]; then
+          log_ok "Virtual environment found"
+        elif [[ -d "$REPO_DIR/.venv" ]]; then
+          log_ok "Virtual environment found (.venv)"
+        else
+          log_warn "No virtual environment found"
+        fi
+
+        # Check git status
+        cd "$REPO_DIR"
+        UNCOMMITTED=$(git status --porcelain 2>/dev/null | wc -l)
+        if [[ $UNCOMMITTED -eq 0 ]]; then
+          log_ok "Git working directory clean"
+        elif [[ $UNCOMMITTED -lt 50 ]]; then
+          log_warn "$UNCOMMITTED uncommitted changes (within limits)"
+        else
+          log_fail "$UNCOMMITTED uncommitted changes (exceeds limit of 50)"
+          ((ISSUES_FOUND++))
+          if $FIX_MODE; then
+            log_info "Auto-committing changes..."
+            git add -A && git commit -m "chore: Auto-commit before Lab Loop run [skip ci]" && ((ISSUES_FIXED++))
+          fi
+        fi
+
+        # Check gate script
+        if [[ -n "${GATE_CMD:-}" ]]; then
+          GATE_SCRIPT=$(echo "$GATE_CMD" | awk '{print $NF}')
+          if [[ -f "$REPO_DIR/$GATE_SCRIPT" ]] || [[ -f "$GATE_SCRIPT" ]]; then
+            log_ok "Gate script exists"
+          else
+            log_fail "Gate script not found: $GATE_SCRIPT"
+            ((ISSUES_FOUND++))
+          fi
+        fi
+      else
+        log_fail "REPO_DIR not set or doesn't exist"
+        ((ISSUES_FOUND++))
+      fi
+    else
+      log_fail "config.env not found"
+      ((ISSUES_FOUND++))
+    fi
+
+    # Check for active lock
+    if [[ -f "$TASK_DIR/.lock" ]]; then
+      LOCK_PID=$(cat "$TASK_DIR/.pid" 2>/dev/null || echo "unknown")
+      if ps -p "$LOCK_PID" &>/dev/null 2>&1; then
+        log_info "Task is currently running (PID: $LOCK_PID)"
+      else
+        log_warn "Stale lock found (PID $LOCK_PID not running)"
+        if $FIX_MODE; then
+          rm -f "$TASK_DIR/.lock" "$TASK_DIR/.pid"
+          log_ok "Removed stale lock"
+          ((ISSUES_FIXED++))
+        fi
+      fi
+    else
+      log_ok "No active lock"
+    fi
+  else
+    log_fail "Task directory not found: $TASK_DIR"
+    ((ISSUES_FOUND++))
+  fi
+fi
+
+# Check 9: Required services (if task specified and has profile)
+if [[ -n "$TASK_NAME" ]] && [[ -f "${REPO_DIR:-}/.labloop.yaml" ]]; then
+  echo ""
+  echo "Service health checks..."
+  echo "----------------------------------------"
+
+  # Simple health check for Deal API
+  if curl -s --max-time 5 "http://localhost:8090/health" &>/dev/null; then
+    log_ok "Deal API (localhost:8090) is healthy"
+  else
+    log_warn "Deal API (localhost:8090) not responding"
+  fi
+
+  # Langfuse
+  if curl -s --max-time 5 "http://localhost:3001/api/public/health" &>/dev/null; then
+    log_ok "Langfuse (localhost:3001) is healthy"
+  else
+    log_warn "Langfuse (localhost:3001) not responding (optional)"
+  fi
+fi
+
+# Summary
+echo ""
+echo "========================================"
+echo "Summary"
+echo "========================================"
+if [[ $ISSUES_FOUND -eq 0 ]]; then
+  log_ok "All checks passed! Lab Loop is ready to run."
+else
+  echo -e "${YELLOW}Issues found: $ISSUES_FOUND${NC}"
+  if $FIX_MODE; then
+    echo -e "${GREEN}Issues fixed: $ISSUES_FIXED${NC}"
+  else
+    echo "Run with --fix to auto-fix issues: labloop-doctor $TASK_NAME --fix"
+  fi
+fi
+
+exit $ISSUES_FOUND

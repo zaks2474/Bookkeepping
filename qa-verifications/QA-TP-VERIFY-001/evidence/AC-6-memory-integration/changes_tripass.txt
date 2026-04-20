@@ -1,0 +1,6 @@
+=== A6.5 ===
+3:## 2026-02-09 — TRIPASS-INTEGRATE-002: Three-Pass Pipeline Orchestrator
+7:  - `tools/tripass/tripass.sh` — Main orchestrator (init/run/status/gates commands)
+8:  - `bookkeeping/docs/_tripass_templates/pass{1,2,3,4_metaqa}.md` — 4 prompt templates
+9:  - `bookkeeping/docs/TRIPASS_SOP.md` — Full SOP with Prerequisites by Mode section
+10:  - `bookkeeping/docs/TRIPASS_LATEST_RUN.md` — Latest run pointer

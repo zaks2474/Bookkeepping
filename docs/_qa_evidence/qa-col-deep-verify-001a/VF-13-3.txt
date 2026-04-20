@@ -1,0 +1,8 @@
+Role CHECK constraint on user_identity_map (line 26):
+  CONSTRAINT chk_role CHECK (role IN ('VIEWER', 'OPERATOR', 'APPROVER', 'ADMIN'))
+---
+VIEWER: present
+OPERATOR: present
+APPROVER: present
+ADMIN: present
+VERDICT: PASS

@@ -1,0 +1,6 @@
+=== F4.3: Phantom cursor (manual) ===
+Manual verification required:
+1. Navigate to /deals
+2. Click on deal rows and table cells
+3. Verify: no blinking text cursor appears outside of input fields
+VERDICT: DEFERRED-MANUAL (operator must confirm)

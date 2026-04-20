@@ -1,0 +1,1767 @@
+=== ST-6 FULL E2E REGRESSION ===
+
+Running 231 tests using 1 worker
+
+[1A[2K[1/231] [chromium] › tests/e2e/accessibility-contrast-semantics-smoke.spec.ts:28:7 › Contrast & Semantics Smoke › CS-01: HTML lang attribute is set
+[1A[2K[2/231] [chromium] › tests/e2e/accessibility-contrast-semantics-smoke.spec.ts:36:7 › Contrast & Semantics Smoke › CS-02: Page has proper document title
+[1A[2K[3/231] [chromium] › tests/e2e/accessibility-contrast-semantics-smoke.spec.ts:45:7 › Contrast & Semantics Smoke › CS-03: Sidebar navigation has accessible structure
+[1A[2K[4/231] [chromium] › tests/e2e/accessibility-contrast-semantics-smoke.spec.ts:61:7 › Contrast & Semantics Smoke › CS-04: Interactive elements have visible focus indicators
+[1A[2K[5/231] [chromium] › tests/e2e/accessibility-contrast-semantics-smoke.spec.ts:83:7 › Contrast & Semantics Smoke › CS-05: Buttons have accessible names
+[1A[2K[6/231] [chromium] › tests/e2e/accessibility-contrast-semantics-smoke.spec.ts:112:7 › Contrast & Semantics Smoke › CS-06: Form inputs have associated labels on /deals/new
+[1A[2K[7/231] [chromium] › tests/e2e/accessibility-contrast-semantics-smoke.spec.ts:143:7 › Contrast & Semantics Smoke › CS-07: Images and icons have alt text or aria-hidden
+[1A[2K[8/231] [chromium] › tests/e2e/accessibility-contrast-semantics-smoke.spec.ts:171:7 › Contrast & Semantics Smoke › CS-08: Color contrast — text elements have sufficient contrast ratio
+[1A[2K[9/231] [chromium] › tests/e2e/accessibility-contrast-semantics-smoke.spec.ts:261:7 › Contrast & Semantics Smoke › CS-09: Screen reader text (sr-only) exists for icon-only controls
+[1A[2K[10/231] [chromium] › tests/e2e/accessibility-contrast-semantics-smoke.spec.ts:270:7 › Contrast & Semantics Smoke › CS-10: Dialogs have accessible title and description
+[1A[2K[11/231] [chromium] › tests/e2e/accessibility-focus-management.spec.ts:55:7 › Focus Management › FM-01: Global search dialog traps focus and returns on Escape
+[1A[2K[12/231] [chromium] › tests/e2e/accessibility-focus-management.spec.ts:84:7 › Focus Management › FM-02: Sidebar toggle on mobile opens sheet with focus management
+[1A[2K[13/231] [chromium] › tests/e2e/accessibility-focus-management.spec.ts:119:7 › Focus Management › FM-03: Radix Dialog components have proper focus trap
+[1A[2K[14/231] [chromium] › tests/e2e/accessibility-focus-management.spec.ts:148:7 › Focus Management › FM-04: Escape key closes search dialog on /deals
+[1A[2K[15/231] [chromium] › tests/e2e/accessibility-focus-management.spec.ts:166:7 › Focus Management › FM-05: Page-level focus — no element auto-steals focus on route load
+[1A[2K[16/231] [chromium] › tests/e2e/accessibility-keyboard-sweep.spec.ts:69:7 › Keyboard Navigation Sweep › KB-01: /dashboard — Tab reaches sidebar nav items and main content
+[1A[2K[17/231] [chromium] › tests/e2e/accessibility-keyboard-sweep.spec.ts:92:7 › Keyboard Navigation Sweep › KB-02: /deals — Tab reaches deal list controls
+[1A[2K[18/231] [chromium] › tests/e2e/accessibility-keyboard-sweep.spec.ts:114:7 › Keyboard Navigation Sweep › KB-03: /deals/new — Tab order covers form fields and action buttons
+[1A[2K[19/231] [chromium] › tests/e2e/accessibility-keyboard-sweep.spec.ts:131:7 › Keyboard Navigation Sweep › KB-04: /actions — Tab reaches action queue controls
+[1A[2K[20/231] [chromium] › tests/e2e/accessibility-keyboard-sweep.spec.ts:146:7 › Keyboard Navigation Sweep › KB-05: /quarantine — Tab reaches quarantine controls
+[1A[2K[21/231] [chromium] › tests/e2e/accessibility-keyboard-sweep.spec.ts:161:7 › Keyboard Navigation Sweep › KB-06: /chat — Tab reaches chat input and controls
+[1A[2K[22/231] [chromium] › tests/e2e/accessibility-keyboard-sweep.spec.ts:178:7 › Keyboard Navigation Sweep › KB-07: /settings — Tab reaches settings controls
+[1A[2K[23/231] [chromium] › tests/e2e/accessibility-keyboard-sweep.spec.ts:196:7 › Keyboard Navigation Sweep › KB-08: /hq — Tab reaches operator HQ controls
+[1A[2K[24/231] [chromium] › tests/e2e/accessibility-keyboard-sweep.spec.ts:211:7 › Keyboard Navigation Sweep › KB-09: Sidebar keyboard shortcut (Ctrl+B) toggles sidebar
+[1A[2K[25/231] [chromium] › tests/e2e/accessibility-keyboard-sweep.spec.ts:229:7 › Keyboard Navigation Sweep › KB-10: Global search (Ctrl+K) opens and Escape closes
+[1A[2K[26/231] [chromium] › tests/e2e/actions-detail-workflow.spec.ts:4:7 › Actions Detail Workflow (F-11 Closure) › 1280px: no empty detail panel when no action selected
+[1A[2K[27/231] [chromium] › tests/e2e/actions-detail-workflow.spec.ts:25:7 › Actions Detail Workflow (F-11 Closure) › 768px: no detail panel shown at tablet width
+[1A[2K[28/231] [chromium] › tests/e2e/actions-detail-workflow.spec.ts:35:7 › Actions Detail Workflow (F-11 Closure) › 375px: mobile detail sheet hidden when no selection
+[1A[2K[29/231] [chromium] › tests/e2e/actions-detail-workflow.spec.ts:44:7 › Actions Detail Workflow (F-11 Closure) › page loads with correct layout structure at all breakpoints
+[1A[2K[30/231] [chromium] › tests/e2e/actions-mobile-primary-controls.spec.ts:4:7 › Actions Mobile Primary Controls (F-12 Closure) › 375px: toolbar buttons visible and within viewport
+[1A[2K[31/231] [chromium] › tests/e2e/actions-mobile-primary-controls.spec.ts:28:7 › Actions Mobile Primary Controls (F-12 Closure) › 768px: toolbar buttons show text labels
+[1A[2K[32/231] [chromium] › tests/e2e/actions-mobile-primary-controls.spec.ts:38:7 › Actions Mobile Primary Controls (F-12 Closure) › 1280px: full toolbar with text labels and no clipping
+[1A[2K[33/231] [chromium] › tests/e2e/actions-mobile-primary-controls.spec.ts:56:7 › Actions Mobile Primary Controls (F-12 Closure) › 375px: search and type filter remain usable
+[1A[2K[34/231] [chromium] › tests/e2e/actions-mobile-primary-controls.spec.ts:74:7 › Actions Mobile Primary Controls (F-12 Closure) › status tabs wrap without clipping at 375px
+[1A[2K[35/231] [chromium] › tests/e2e/agent-activity-mobile-density.spec.ts:4:7 › Agent Activity Mobile Density (F-23 Closure) › 375px: search and tabs visible above fold
+[1A[2K[36/231] [chromium] › tests/e2e/agent-activity-mobile-density.spec.ts:22:7 › Agent Activity Mobile Density (F-23 Closure) › 375px: refresh button reachable and within viewport
+[1A[2K[37/231] [chromium] › tests/e2e/agent-activity-mobile-density.spec.ts:36:7 › Agent Activity Mobile Density (F-23 Closure) › 768px: all activity tabs visible without clipping
+[1A[2K[38/231] [chromium] › tests/e2e/agent-activity-mobile-density.spec.ts:51:7 › Agent Activity Mobile Density (F-23 Closure) › 1280px: full desktop layout with Recent Runs section
+[1A[2K[39/231] [chromium] › tests/e2e/agent-activity-mobile-density.spec.ts:66:7 › Agent Activity Mobile Density (F-23 Closure) › page loads with title and status at all breakpoints
+[1A[2K[40/231] [chromium] › tests/e2e/backend-up.spec.ts:28:7 › Backend Up — Live Data › API returns real deal data through middleware proxy
+[1A[2K[41/231] [chromium] › tests/e2e/backend-up.spec.ts:40:7 › Backend Up — Live Data › all pages render with zero console errors
+[1A[2K[42/231] [chromium] › tests/e2e/backend-up.spec.ts:60:7 › Backend Up — Live Data › deal count parity: /hq total matches /deals total
+[1A[2K[43/231] [chromium] › tests/e2e/chat-interaction-closure.spec.ts:4:7 › Chat Interaction Closure (M-04) › provider selector visible at all breakpoints
+[1A[2K[44/231] [chromium] › tests/e2e/chat-interaction-closure.spec.ts:4:7 › Chat Interaction Closure (M-04) › provider selector visible at all breakpoints (retry #1)
+[1A[2K  1) [chromium] › tests/e2e/chat-interaction-closure.spec.ts:4:7 › Chat Interaction Closure (M-04) › provider selector visible at all breakpoints 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByTestId('provider-selector')
+    Expected: visible
+    Timeout: 15000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 15000ms[22m
+    [2m  - waiting for getByTestId('provider-selector')[22m
+
+
+       9 |
+      10 |       // Provider selector should always be visible (responsive width)
+    > 11 |       await expect(page.getByTestId('provider-selector')).toBeVisible();
+         |                                                           ^
+      12 |     }
+      13 |   });
+      14 |
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/chat-interaction-closure.spec.ts:11:59
+
+    Error Context: test-results/chat-interaction-closure-C-a2c55--visible-at-all-breakpoints-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/chat-interaction-closure-C-a2c55--visible-at-all-breakpoints-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/chat-interaction-closure-C-a2c55--visible-at-all-breakpoints-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByTestId('provider-selector')
+    Expected: visible
+    Timeout: 15000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 15000ms[22m
+    [2m  - waiting for getByTestId('provider-selector')[22m
+
+
+       9 |
+      10 |       // Provider selector should always be visible (responsive width)
+    > 11 |       await expect(page.getByTestId('provider-selector')).toBeVisible();
+         |                                                           ^
+      12 |     }
+      13 |   });
+      14 |
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/chat-interaction-closure.spec.ts:11:59
+
+    Error Context: test-results/chat-interaction-closure-C-a2c55--visible-at-all-breakpoints-chromium-retry1/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/chat-interaction-closure-C-a2c55--visible-at-all-breakpoints-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/chat-interaction-closure-C-a2c55--visible-at-all-breakpoints-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K[45/231] [chromium] › tests/e2e/chat-interaction-closure.spec.ts:15:7 › Chat Interaction Closure (M-04) › scope and deal selectors visible at all breakpoints
+[1A[2K[46/231] [chromium] › tests/e2e/chat-interaction-closure.spec.ts:15:7 › Chat Interaction Closure (M-04) › scope and deal selectors visible at all breakpoints (retry #1)
+[1A[2K  2) [chromium] › tests/e2e/chat-interaction-closure.spec.ts:15:7 › Chat Interaction Closure (M-04) › scope and deal selectors visible at all breakpoints 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByTestId('scope-selector')
+    Expected: visible
+    Timeout: 15000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 15000ms[22m
+    [2m  - waiting for getByTestId('scope-selector')[22m
+
+
+      19 |       await page.waitForTimeout(2000);
+      20 |
+    > 21 |       await expect(page.getByTestId('scope-selector')).toBeVisible();
+         |                                                        ^
+      22 |       await expect(page.getByTestId('deal-selector')).toBeVisible();
+      23 |     }
+      24 |   });
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/chat-interaction-closure.spec.ts:21:56
+
+    Error Context: test-results/chat-interaction-closure-C-9fdab--visible-at-all-breakpoints-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/chat-interaction-closure-C-9fdab--visible-at-all-breakpoints-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/chat-interaction-closure-C-9fdab--visible-at-all-breakpoints-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByTestId('scope-selector')
+    Expected: visible
+    Timeout: 15000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 15000ms[22m
+    [2m  - waiting for getByTestId('scope-selector')[22m
+
+
+      19 |       await page.waitForTimeout(2000);
+      20 |
+    > 21 |       await expect(page.getByTestId('scope-selector')).toBeVisible();
+         |                                                        ^
+      22 |       await expect(page.getByTestId('deal-selector')).toBeVisible();
+      23 |     }
+      24 |   });
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/chat-interaction-closure.spec.ts:21:56
+
+    Error Context: test-results/chat-interaction-closure-C-9fdab--visible-at-all-breakpoints-chromium-retry1/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/chat-interaction-closure-C-9fdab--visible-at-all-breakpoints-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/chat-interaction-closure-C-9fdab--visible-at-all-breakpoints-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K[47/231] [chromium] › tests/e2e/chat-interaction-closure.spec.ts:26:7 › Chat Interaction Closure (M-04) › evidence panel toggles on desktop
+[1A[2K[48/231] [chromium] › tests/e2e/chat-interaction-closure.spec.ts:26:7 › Chat Interaction Closure (M-04) › evidence panel toggles on desktop (retry #1)
+[1A[2K  3) [chromium] › tests/e2e/chat-interaction-closure.spec.ts:26:7 › Chat Interaction Closure (M-04) › evidence panel toggles on desktop 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByTestId('evidence-panel')
+    Expected: visible
+    Timeout: 15000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 15000ms[22m
+    [2m  - waiting for getByTestId('evidence-panel')[22m
+
+
+      35 |
+      36 |     // Evidence panel should appear
+    > 37 |     await expect(page.getByTestId('evidence-panel')).toBeVisible();
+         |                                                      ^
+      38 |
+      39 |     // Click again to close
+      40 |     await evidenceBtn.click();
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/chat-interaction-closure.spec.ts:37:54
+
+    Error Context: test-results/chat-interaction-closure-C-fce17-ce-panel-toggles-on-desktop-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/chat-interaction-closure-C-fce17-ce-panel-toggles-on-desktop-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/chat-interaction-closure-C-fce17-ce-panel-toggles-on-desktop-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByTestId('evidence-panel')
+    Expected: visible
+    Timeout: 15000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 15000ms[22m
+    [2m  - waiting for getByTestId('evidence-panel')[22m
+
+
+      35 |
+      36 |     // Evidence panel should appear
+    > 37 |     await expect(page.getByTestId('evidence-panel')).toBeVisible();
+         |                                                      ^
+      38 |
+      39 |     // Click again to close
+      40 |     await evidenceBtn.click();
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/chat-interaction-closure.spec.ts:37:54
+
+    Error Context: test-results/chat-interaction-closure-C-fce17-ce-panel-toggles-on-desktop-chromium-retry1/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/chat-interaction-closure-C-fce17-ce-panel-toggles-on-desktop-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/chat-interaction-closure-C-fce17-ce-panel-toggles-on-desktop-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K[49/231] [chromium] › tests/e2e/chat-interaction-closure.spec.ts:46:7 › Chat Interaction Closure (M-04) › debug panel toggles on desktop
+[1A[2K[50/231] [chromium] › tests/e2e/chat-interaction-closure.spec.ts:46:7 › Chat Interaction Closure (M-04) › debug panel toggles on desktop (retry #1)
+[1A[2K  4) [chromium] › tests/e2e/chat-interaction-closure.spec.ts:46:7 › Chat Interaction Closure (M-04) › debug panel toggles on desktop 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByTestId('debug-panel')
+    Expected: visible
+    Timeout: 15000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 15000ms[22m
+    [2m  - waiting for getByTestId('debug-panel')[22m
+
+
+      53 |     await page.waitForTimeout(500);
+      54 |
+    > 55 |     await expect(page.getByTestId('debug-panel')).toBeVisible();
+         |                                                   ^
+      56 |
+      57 |     await debugToggle.click();
+      58 |     await page.waitForTimeout(500);
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/chat-interaction-closure.spec.ts:55:51
+
+    Error Context: test-results/chat-interaction-closure-C-f81d4-ug-panel-toggles-on-desktop-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/chat-interaction-closure-C-f81d4-ug-panel-toggles-on-desktop-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/chat-interaction-closure-C-f81d4-ug-panel-toggles-on-desktop-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByTestId('debug-panel')
+    Expected: visible
+    Timeout: 15000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 15000ms[22m
+    [2m  - waiting for getByTestId('debug-panel')[22m
+
+
+      53 |     await page.waitForTimeout(500);
+      54 |
+    > 55 |     await expect(page.getByTestId('debug-panel')).toBeVisible();
+         |                                                   ^
+      56 |
+      57 |     await debugToggle.click();
+      58 |     await page.waitForTimeout(500);
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/chat-interaction-closure.spec.ts:55:51
+
+    Error Context: test-results/chat-interaction-closure-C-f81d4-ug-panel-toggles-on-desktop-chromium-retry1/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/chat-interaction-closure-C-f81d4-ug-panel-toggles-on-desktop-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/chat-interaction-closure-C-f81d4-ug-panel-toggles-on-desktop-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K[51/231] [chromium] › tests/e2e/chat-interaction-closure.spec.ts:63:7 › Chat Interaction Closure (M-04) › mobile: evidence toggles via dropdown menu
+[1A[2K[52/231] [chromium] › tests/e2e/chat-interaction-closure.spec.ts:63:7 › Chat Interaction Closure (M-04) › mobile: evidence toggles via dropdown menu (retry #1)
+[1A[2K  5) [chromium] › tests/e2e/chat-interaction-closure.spec.ts:63:7 › Chat Interaction Closure (M-04) › mobile: evidence toggles via dropdown menu 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByTestId('evidence-panel')
+    Expected: visible
+    Timeout: 15000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 15000ms[22m
+    [2m  - waiting for getByTestId('evidence-panel')[22m
+
+
+      76 |
+      77 |     // Evidence panel should be visible
+    > 78 |     await expect(page.getByTestId('evidence-panel')).toBeVisible();
+         |                                                      ^
+      79 |   });
+      80 |
+      81 |   test('mobile: debug toggles via dropdown menu', async ({ page }) => {
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/chat-interaction-closure.spec.ts:78:54
+
+    Error Context: test-results/chat-interaction-closure-C-2f475-e-toggles-via-dropdown-menu-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/chat-interaction-closure-C-2f475-e-toggles-via-dropdown-menu-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/chat-interaction-closure-C-2f475-e-toggles-via-dropdown-menu-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByTestId('evidence-panel')
+    Expected: visible
+    Timeout: 15000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 15000ms[22m
+    [2m  - waiting for getByTestId('evidence-panel')[22m
+
+
+      76 |
+      77 |     // Evidence panel should be visible
+    > 78 |     await expect(page.getByTestId('evidence-panel')).toBeVisible();
+         |                                                      ^
+      79 |   });
+      80 |
+      81 |   test('mobile: debug toggles via dropdown menu', async ({ page }) => {
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/chat-interaction-closure.spec.ts:78:54
+
+    Error Context: test-results/chat-interaction-closure-C-2f475-e-toggles-via-dropdown-menu-chromium-retry1/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/chat-interaction-closure-C-2f475-e-toggles-via-dropdown-menu-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/chat-interaction-closure-C-2f475-e-toggles-via-dropdown-menu-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K[53/231] [chromium] › tests/e2e/chat-interaction-closure.spec.ts:81:7 › Chat Interaction Closure (M-04) › mobile: debug toggles via dropdown menu
+[1A[2K[54/231] [chromium] › tests/e2e/chat-interaction-closure.spec.ts:81:7 › Chat Interaction Closure (M-04) › mobile: debug toggles via dropdown menu (retry #1)
+[1A[2K  6) [chromium] › tests/e2e/chat-interaction-closure.spec.ts:81:7 › Chat Interaction Closure (M-04) › mobile: debug toggles via dropdown menu 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByTestId('debug-panel')
+    Expected: visible
+    Timeout: 15000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 15000ms[22m
+    [2m  - waiting for getByTestId('debug-panel')[22m
+
+
+      91 |     await page.waitForTimeout(500);
+      92 |
+    > 93 |     await expect(page.getByTestId('debug-panel')).toBeVisible();
+         |                                                   ^
+      94 |   });
+      95 |
+      96 |   test('mobile: history sheet opens from dropdown', async ({ page }) => {
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/chat-interaction-closure.spec.ts:93:51
+
+    Error Context: test-results/chat-interaction-closure-C-3d19e-g-toggles-via-dropdown-menu-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/chat-interaction-closure-C-3d19e-g-toggles-via-dropdown-menu-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/chat-interaction-closure-C-3d19e-g-toggles-via-dropdown-menu-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByTestId('debug-panel')
+    Expected: visible
+    Timeout: 15000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 15000ms[22m
+    [2m  - waiting for getByTestId('debug-panel')[22m
+
+
+      91 |     await page.waitForTimeout(500);
+      92 |
+    > 93 |     await expect(page.getByTestId('debug-panel')).toBeVisible();
+         |                                                   ^
+      94 |   });
+      95 |
+      96 |   test('mobile: history sheet opens from dropdown', async ({ page }) => {
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/chat-interaction-closure.spec.ts:93:51
+
+    Error Context: test-results/chat-interaction-closure-C-3d19e-g-toggles-via-dropdown-menu-chromium-retry1/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/chat-interaction-closure-C-3d19e-g-toggles-via-dropdown-menu-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/chat-interaction-closure-C-3d19e-g-toggles-via-dropdown-menu-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K[55/231] [chromium] › tests/e2e/chat-interaction-closure.spec.ts:96:7 › Chat Interaction Closure (M-04) › mobile: history sheet opens from dropdown
+[1A[2K[56/231] [chromium] › tests/e2e/chat-interaction-closure.spec.ts:96:7 › Chat Interaction Closure (M-04) › mobile: history sheet opens from dropdown (retry #1)
+[1A[2K  7) [chromium] › tests/e2e/chat-interaction-closure.spec.ts:96:7 › Chat Interaction Closure (M-04) › mobile: history sheet opens from dropdown 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByText('Chat History')
+    Expected: visible
+    Error: strict mode violation: getByText('Chat History') resolved to 5 elements:
+        1) <h3 class="text-sm font-semibold flex items-center gap-1.5">…</h3> aka locator('h3')
+        2) <p class="text-xs text-center">No chat history yet</p> aka locator('main').getByText('No chat history yet')
+        3) <p class="text-xs text-muted-foreground mt-4">Your chat history is saved to both server and bro…</p> aka getByText('Your chat history is saved to')
+        4) <h2 id="radix-_r_d_" data-slot="sheet-title" class="text-foreground font-semibold flex items-center gap-1.5 text-sm">…</h2> aka getByRole('heading', { name: 'Chat History' })
+        5) <p class="text-xs text-center">No chat history yet</p> aka getByLabel('Chat History').getByText('No chat history yet')
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 15000ms[22m
+    [2m  - waiting for getByText('Chat History')[22m
+
+
+      107 |
+      108 |     // Sheet should open with history content
+    > 109 |     await expect(page.getByText('Chat History')).toBeVisible();
+          |                                                  ^
+      110 |   });
+      111 |
+      112 |   test('new chat button resets conversation on desktop', async ({ page }) => {
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/chat-interaction-closure.spec.ts:109:50
+
+    Error Context: test-results/chat-interaction-closure-C-fbe55-y-sheet-opens-from-dropdown-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/chat-interaction-closure-C-fbe55-y-sheet-opens-from-dropdown-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/chat-interaction-closure-C-fbe55-y-sheet-opens-from-dropdown-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByText('Chat History')
+    Expected: visible
+    Error: strict mode violation: getByText('Chat History') resolved to 5 elements:
+        1) <h3 class="text-sm font-semibold flex items-center gap-1.5">…</h3> aka locator('h3')
+        2) <p class="text-xs text-center">No chat history yet</p> aka locator('main').getByText('No chat history yet')
+        3) <p class="text-xs text-muted-foreground mt-4">Your chat history is saved to both server and bro…</p> aka getByText('Your chat history is saved to')
+        4) <h2 id="radix-_r_d_" data-slot="sheet-title" class="text-foreground font-semibold flex items-center gap-1.5 text-sm">…</h2> aka getByRole('heading', { name: 'Chat History' })
+        5) <p class="text-xs text-center">No chat history yet</p> aka getByLabel('Chat History').getByText('No chat history yet')
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 15000ms[22m
+    [2m  - waiting for getByText('Chat History')[22m
+
+
+      107 |
+      108 |     // Sheet should open with history content
+    > 109 |     await expect(page.getByText('Chat History')).toBeVisible();
+          |                                                  ^
+      110 |   });
+      111 |
+      112 |   test('new chat button resets conversation on desktop', async ({ page }) => {
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/chat-interaction-closure.spec.ts:109:50
+
+    Error Context: test-results/chat-interaction-closure-C-fbe55-y-sheet-opens-from-dropdown-chromium-retry1/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/chat-interaction-closure-C-fbe55-y-sheet-opens-from-dropdown-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/chat-interaction-closure-C-fbe55-y-sheet-opens-from-dropdown-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K[57/231] [chromium] › tests/e2e/chat-interaction-closure.spec.ts:112:7 › Chat Interaction Closure (M-04) › new chat button resets conversation on desktop
+[1A[2K[58/231] [chromium] › tests/e2e/chat-interaction-closure.spec.ts:123:7 › Chat Interaction Closure (M-04) › no console errors during interaction at 375px
+[1A[2K[59/231] [chromium] › tests/e2e/chat-responsive-toolbar.spec.ts:4:7 › Chat Responsive Toolbar (F-22 Closure) › desktop: all toolbar buttons visible at 1280px
+[1A[2K[60/231] [chromium] › tests/e2e/chat-responsive-toolbar.spec.ts:19:7 › Chat Responsive Toolbar (F-22 Closure) › mobile: dropdown menu accessible at 375px with all controls
+[1A[2K[61/231] [chromium] › tests/e2e/chat-responsive-toolbar.spec.ts:39:7 › Chat Responsive Toolbar (F-22 Closure) › tablet: toolbar buttons wrap without clipping at 768px
+[1A[2K[62/231] [chromium] › tests/e2e/chat-responsive-toolbar.spec.ts:58:7 › Chat Responsive Toolbar (F-22 Closure) › chat input and send button visible at all breakpoints
+[1A[2K[63/231] [chromium] › tests/e2e/chat-shared.spec.ts:4:7 › Chat + Agent Drawer — Batch 3 Verification › chat page loads and renders message input
+[1A[2K[64/231] [chromium] › tests/e2e/chat-shared.spec.ts:15:7 › Chat + Agent Drawer — Batch 3 Verification › chat renders markdown as HTML, not raw text
+[1A[2K[65/231] [chromium] › tests/e2e/chat-shared.spec.ts:36:7 › Chat + Agent Drawer — Batch 3 Verification › ask agent drawer opens from dashboard
+[1A[2K[66/231] [chromium] › tests/e2e/chat-shared.spec.ts:56:7 › Chat + Agent Drawer — Batch 3 Verification › chat page markdown rendering produces HTML elements
+[1A[2K[67/231] [chromium] › tests/e2e/cross-page-integration-flows.spec.ts:35:7 › Journey A: Deal Lifecycle Flow › A1-A10: dashboard → deals → deal workspace → actions → quarantine
+[1A[2K[68/231] [chromium] › tests/e2e/cross-page-integration-flows.spec.ts:91:7 › Journey B: Chat Proposal Flow › B1-B7: chat → deals → dashboard
+[1A[2K[69/231] [chromium] › tests/e2e/cross-page-integration-flows.spec.ts:128:7 › Journey C: Settings/Onboarding Coherence › C1-C9: onboarding → settings → dashboard → hq → agent/activity
+[1A[2K[70/231] [chromium] › tests/e2e/cross-page-integration-flows.spec.ts:176:7 › Journey responsive replay › Journey A key steps at 375px
+[1A[2K[71/231] [chromium] › tests/e2e/cross-page-integration-flows.spec.ts:204:7 › Journey responsive replay › Journey C key steps at 375px
+[1A[2K[72/231] [chromium] › tests/e2e/dashboard-responsive-counts.spec.ts:6:7 › Dashboard — Today & Next Up Responsive (F-19) › 375px: cards narrower with scroll affordance
+[1A[2K[73/231] [chromium] › tests/e2e/dashboard-responsive-counts.spec.ts:19:7 › Dashboard — Today & Next Up Responsive (F-19) › 768px: Today & Next Up cards fully visible
+[1A[2K[74/231] [chromium] › tests/e2e/dashboard-responsive-counts.spec.ts:27:7 › Dashboard — Today & Next Up Responsive (F-19) › 1280px: no regression in Today & Next Up
+[1A[2K[75/231] [chromium] › tests/e2e/dashboard-responsive-counts.spec.ts:27:7 › Dashboard — Today & Next Up Responsive (F-19) › 1280px: no regression in Today & Next Up (retry #1)
+[1A[2K  8) [chromium] › tests/e2e/dashboard-responsive-counts.spec.ts:27:7 › Dashboard — Today & Next Up Responsive (F-19) › 1280px: no regression in Today & Next Up 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByText('Pipeline')
+    Expected: visible
+    Error: strict mode violation: getByText('Pipeline') resolved to 2 elements:
+        1) <p class="text-muted-foreground text-sm">Deal pipeline overview and activity</p> aka getByText('Deal pipeline overview and')
+        2) <div data-slot="card-title" class="leading-none font-semibold flex items-center gap-2">…</div> aka getByText('Pipeline', { exact: true })
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 15000ms[22m
+    [2m  - waiting for getByText('Pipeline')[22m
+
+
+      31 |
+      32 |     await expect(page.getByText('Today & Next Up')).toBeVisible();
+    > 33 |     await expect(page.getByText('Pipeline')).toBeVisible();
+         |                                              ^
+      34 |   });
+      35 | });
+      36 |
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/dashboard-responsive-counts.spec.ts:33:46
+
+    Error Context: test-results/dashboard-responsive-count-b69bc-regression-in-Today-Next-Up-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/dashboard-responsive-count-b69bc-regression-in-Today-Next-Up-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/dashboard-responsive-count-b69bc-regression-in-Today-Next-Up-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByText('Pipeline')
+    Expected: visible
+    Error: strict mode violation: getByText('Pipeline') resolved to 2 elements:
+        1) <p class="text-muted-foreground text-sm">Deal pipeline overview and activity</p> aka getByText('Deal pipeline overview and')
+        2) <div data-slot="card-title" class="leading-none font-semibold flex items-center gap-2">…</div> aka getByText('Pipeline', { exact: true })
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 15000ms[22m
+    [2m  - waiting for getByText('Pipeline')[22m
+
+
+      31 |
+      32 |     await expect(page.getByText('Today & Next Up')).toBeVisible();
+    > 33 |     await expect(page.getByText('Pipeline')).toBeVisible();
+         |                                              ^
+      34 |   });
+      35 | });
+      36 |
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/dashboard-responsive-counts.spec.ts:33:46
+
+    Error Context: test-results/dashboard-responsive-count-b69bc-regression-in-Today-Next-Up-chromium-retry1/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/dashboard-responsive-count-b69bc-regression-in-Today-Next-Up-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/dashboard-responsive-count-b69bc-regression-in-Today-Next-Up-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K[76/231] [chromium] › tests/e2e/dashboard-responsive-counts.spec.ts:38:7 › Dashboard — Pipeline Count Coherence (F-20) › pipeline count shows skeleton during load, then real data
+[1A[2K[77/231] [chromium] › tests/e2e/dashboard-responsive-counts.spec.ts:53:7 › Dashboard — Pipeline Count Coherence (F-20) › All Deals count shows real data after load
+[1A[2K[78/231] [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:22:5 › F-01: dashboard page loads with scroll container
+[1A[2K[79/231] [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:37:5 › F-02: agent drawer has "Full chat" link
+[1A[2K[80/231] [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:37:5 › F-02: agent drawer has "Full chat" link (retry #1)
+[1A[2K  9) [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:37:5 › F-02: agent drawer has "Full chat" link 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('a').filter({ hasText: /full chat/i })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('a').filter({ hasText: /full chat/i })[22m
+
+
+      43 |     // Verify "Full chat" link exists in the drawer
+      44 |     const fullChatLink = page.locator('a', { hasText: /full chat/i });
+    > 45 |     await expect(fullChatLink).toBeVisible({ timeout: 5000 });
+         |                                ^
+      46 |   }
+      47 | });
+      48 |
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/dashboard-worldclass-remediation.spec.ts:45:32
+
+    Error Context: test-results/dashboard-worldclass-remed-acd99-t-drawer-has-Full-chat-link-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/dashboard-worldclass-remed-acd99-t-drawer-has-Full-chat-link-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/dashboard-worldclass-remed-acd99-t-drawer-has-Full-chat-link-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('a').filter({ hasText: /full chat/i })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('a').filter({ hasText: /full chat/i })[22m
+
+
+      43 |     // Verify "Full chat" link exists in the drawer
+      44 |     const fullChatLink = page.locator('a', { hasText: /full chat/i });
+    > 45 |     await expect(fullChatLink).toBeVisible({ timeout: 5000 });
+         |                                ^
+      46 |   }
+      47 | });
+      48 |
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/dashboard-worldclass-remediation.spec.ts:45:32
+
+    Error Context: test-results/dashboard-worldclass-remed-acd99-t-drawer-has-Full-chat-link-chromium-retry1/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/dashboard-worldclass-remed-acd99-t-drawer-has-Full-chat-link-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/dashboard-worldclass-remed-acd99-t-drawer-has-Full-chat-link-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K[81/231] [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:53:5 › F-03: no toast appears during passive dashboard use
+[1A[2K[82/231] [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:67:5 › F-04: deals page loads without runtime crash
+[1A[2K[83/231] [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:83:5 › F-05: quarantine page loads without ghost characters in inputs
+[1A[2K[84/231] [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:107:5 › F-06: chat page has history toggle button
+[1A[2K[85/231] [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:117:5 › F-08: onboarding page exists and loads
+[1A[2K[86/231] [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:128:5 › F-09: settings page loads with all sections
+[1A[2K[87/231] [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:140:5 › F-10: settings page has back-to-dashboard link
+[1A[2K[88/231] [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:154:5 › F-10: settings page content is scrollable
+[1A[2K[89/231] [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:175:5 › chat page has provider selector and scope controls
+[1A[2K[90/231] [chromium] › tests/e2e/deal-routing-create.spec.ts:4:7 › deal routing and create › navigate to /deals/new shows create form
+[1A[2K[91/231] [chromium] › tests/e2e/deal-routing-create.spec.ts:12:7 › deal routing and create › /deals/new form creates deal and redirects
+[1A[2K[92/231] [chromium] › tests/e2e/deal-routing-create.spec.ts:12:7 › deal routing and create › /deals/new form creates deal and redirects (retry #1)
+[1A[2K  10) [chromium] › tests/e2e/deal-routing-create.spec.ts:12:7 › deal routing and create › /deals/new form creates deal and redirects 
+
+    TimeoutError: page.waitForURL: Timeout 10000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation until "load"
+    ============================================================
+
+      15 |     await page.getByTestId('create-deal-submit').click();
+      16 |     // Should redirect to /deals/DL-XXXX
+    > 17 |     await page.waitForURL(/\/deals\/DL-\d+/, { timeout: 10000 });
+         |                ^
+      18 |     await expect(page.locator('body')).toBeVisible();
+      19 |   });
+      20 |
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/deal-routing-create.spec.ts:17:16
+
+    Error Context: test-results/deal-routing-create-deal-r-b68f5--creates-deal-and-redirects-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/deal-routing-create-deal-r-b68f5--creates-deal-and-redirects-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/deal-routing-create-deal-r-b68f5--creates-deal-and-redirects-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    TimeoutError: page.waitForURL: Timeout 10000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation until "load"
+    ============================================================
+
+      15 |     await page.getByTestId('create-deal-submit').click();
+      16 |     // Should redirect to /deals/DL-XXXX
+    > 17 |     await page.waitForURL(/\/deals\/DL-\d+/, { timeout: 10000 });
+         |                ^
+      18 |     await expect(page.locator('body')).toBeVisible();
+      19 |   });
+      20 |
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/deal-routing-create.spec.ts:17:16
+
+    Error Context: test-results/deal-routing-create-deal-r-b68f5--creates-deal-and-redirects-chromium-retry1/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/deal-routing-create-deal-r-b68f5--creates-deal-and-redirects-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/deal-routing-create-deal-r-b68f5--creates-deal-and-redirects-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K[93/231] [chromium] › tests/e2e/deal-routing-create.spec.ts:21:7 › deal routing and create › /deals/GLOBAL shows invalid ID page
+[1A[2K[94/231] [chromium] › tests/e2e/deal-workspace-mobile-readability.spec.ts:7:7 › Deal Workspace Mobile Readability (F-08 Closure) › 375px: card values visible alongside labels
+[1A[2K[95/231] [chromium] › tests/e2e/deal-workspace-mobile-readability.spec.ts:7:7 › Deal Workspace Mobile Readability (F-08 Closure) › 375px: card values visible alongside labels (retry #1)
+[1A[2K  11) [chromium] › tests/e2e/deal-workspace-mobile-readability.spec.ts:7:7 › Deal Workspace Mobile Readability (F-08 Closure) › 375px: card values visible alongside labels 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator:  locator('text=Stage').first()
+    Expected: visible
+    Received: hidden
+    Timeout:  15000ms
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 15000ms[22m
+    [2m  - waiting for locator('text=Stage').first()[22m
+    [2m    19 × locator resolved to <p id="radix-_R_136knedalbH2_" data-slot="dialog-description" class="text-muted-foreground text-sm">Search for deals by name, ID, broker, or stage</p>[22m
+    [2m       - unexpected value "hidden"[22m
+
+
+      15 |
+      16 |     // Values should be in the DOM and visible (not clipped off-screen)
+    > 17 |     await expect(page.locator('text=Stage').first()).toBeVisible();
+         |                                                      ^
+      18 |     // The value next to "Stage" should be visible within the viewport
+      19 |     const stageValue = page.locator('text=closing').first();
+      20 |     await expect(stageValue).toBeVisible();
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/deal-workspace-mobile-readability.spec.ts:17:54
+
+    Error Context: test-results/deal-workspace-mobile-read-e29f2-es-visible-alongside-labels-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/deal-workspace-mobile-read-e29f2-es-visible-alongside-labels-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/deal-workspace-mobile-read-e29f2-es-visible-alongside-labels-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator:  locator('text=Stage').first()
+    Expected: visible
+    Received: hidden
+    Timeout:  15000ms
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 15000ms[22m
+    [2m  - waiting for locator('text=Stage').first()[22m
+    [2m    19 × locator resolved to <p id="radix-_R_136knedalbH2_" data-slot="dialog-description" class="text-muted-foreground text-sm">Search for deals by name, ID, broker, or stage</p>[22m
+    [2m       - unexpected value "hidden"[22m
+
+
+      15 |
+      16 |     // Values should be in the DOM and visible (not clipped off-screen)
+    > 17 |     await expect(page.locator('text=Stage').first()).toBeVisible();
+         |                                                      ^
+      18 |     // The value next to "Stage" should be visible within the viewport
+      19 |     const stageValue = page.locator('text=closing').first();
+      20 |     await expect(stageValue).toBeVisible();
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/deal-workspace-mobile-readability.spec.ts:17:54
+
+    Error Context: test-results/deal-workspace-mobile-read-e29f2-es-visible-alongside-labels-chromium-retry1/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/deal-workspace-mobile-read-e29f2-es-visible-alongside-labels-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/deal-workspace-mobile-read-e29f2-es-visible-alongside-labels-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K[96/231] [chromium] › tests/e2e/deal-workspace-mobile-readability.spec.ts:28:7 › Deal Workspace Mobile Readability (F-08 Closure) › 375px: header buttons all accessible
+[1A[2K[97/231] [chromium] › tests/e2e/deal-workspace-mobile-readability.spec.ts:39:7 › Deal Workspace Mobile Readability (F-08 Closure) › 375px: tab bar scrollable with all tabs accessible
+[1A[2K[98/231] [chromium] › tests/e2e/deal-workspace-mobile-readability.spec.ts:55:7 › Deal Workspace Mobile Readability (F-08 Closure) › 768px: cards show values without clipping
+[1A[2K[99/231] [chromium] › tests/e2e/deal-workspace-mobile-readability.spec.ts:55:7 › Deal Workspace Mobile Readability (F-08 Closure) › 768px: cards show values without clipping (retry #1)
+[1A[2K  12) [chromium] › tests/e2e/deal-workspace-mobile-readability.spec.ts:55:7 › Deal Workspace Mobile Readability (F-08 Closure) › 768px: cards show values without clipping 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('text=Broker')
+    Expected: visible
+    Error: strict mode violation: locator('text=Broker') resolved to 2 elements:
+        1) <p id="radix-_R_136knedalbH2_" data-slot="dialog-description" class="text-muted-foreground text-sm">Search for deals by name, ID, broker, or stage</p> aka getByText('Search for deals by name, ID')
+        2) <div data-slot="card-title" class="font-semibold text-base">Broker</div> aka getByTestId('deal-detail-scroll').getByText('Broker')
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 15000ms[22m
+    [2m  - waiting for locator('text=Broker')[22m
+
+
+      61 |     await expect(page.locator('text=Deal Information')).toBeVisible();
+      62 |     await expect(page.locator('text=closing').first()).toBeVisible();
+    > 63 |     await expect(page.locator('text=Broker')).toBeVisible();
+         |                                               ^
+      64 |     await expect(page.locator('text=Financials')).toBeVisible();
+      65 |   });
+      66 |
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/deal-workspace-mobile-readability.spec.ts:63:47
+
+    Error Context: test-results/deal-workspace-mobile-read-b327f-how-values-without-clipping-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/deal-workspace-mobile-read-b327f-how-values-without-clipping-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/deal-workspace-mobile-read-b327f-how-values-without-clipping-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('text=Broker')
+    Expected: visible
+    Error: strict mode violation: locator('text=Broker') resolved to 2 elements:
+        1) <p id="radix-_R_136knedalbH2_" data-slot="dialog-description" class="text-muted-foreground text-sm">Search for deals by name, ID, broker, or stage</p> aka getByText('Search for deals by name, ID')
+        2) <div data-slot="card-title" class="font-semibold text-base">Broker</div> aka getByTestId('deal-detail-scroll').getByText('Broker')
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 15000ms[22m
+    [2m  - waiting for locator('text=Broker')[22m
+
+
+      61 |     await expect(page.locator('text=Deal Information')).toBeVisible();
+      62 |     await expect(page.locator('text=closing').first()).toBeVisible();
+    > 63 |     await expect(page.locator('text=Broker')).toBeVisible();
+         |                                               ^
+      64 |     await expect(page.locator('text=Financials')).toBeVisible();
+      65 |   });
+      66 |
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/deal-workspace-mobile-readability.spec.ts:63:47
+
+    Error Context: test-results/deal-workspace-mobile-read-b327f-how-values-without-clipping-chromium-retry1/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/deal-workspace-mobile-read-b327f-how-values-without-clipping-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/deal-workspace-mobile-read-b327f-how-values-without-clipping-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K[100/231] [chromium] › tests/e2e/deal-workspace-mobile-readability.spec.ts:67:7 › Deal Workspace Mobile Readability (F-08 Closure) › 1280px: desktop layout unchanged and fully visible
+[1A[2K[101/231] [chromium] › tests/e2e/deal-workspace-tab-truthfulness.spec.ts:6:7 › Deal Workspace Tab Truthfulness (F-09 Closure) › materials tab shows explicit degraded messaging when data unavailable
+[1A[2K[102/231] [chromium] › tests/e2e/deal-workspace-tab-truthfulness.spec.ts:24:7 › Deal Workspace Tab Truthfulness (F-09 Closure) › case file tab shows explicit degraded messaging when data unavailable
+[1A[2K[103/231] [chromium] › tests/e2e/deal-workspace-tab-truthfulness.spec.ts:42:7 › Deal Workspace Tab Truthfulness (F-09 Closure) › events tab shows truthful count
+[1A[2K[104/231] [chromium] › tests/e2e/deal-workspace-tab-truthfulness.spec.ts:55:7 › Deal Workspace Tab Truthfulness (F-09 Closure) › overview tab shows deal data at all breakpoints
+[1A[2K[105/231] [chromium] › tests/e2e/deal-workspace-tab-truthfulness.spec.ts:69:7 › Deal Workspace Tab Truthfulness (F-09 Closure) › status badge hidden when active (F-10)
+[1A[2K[106/231] [chromium] › tests/e2e/deals-list-responsive-nuqs.spec.ts:6:7 › Deals List — Responsive Table (F-21) › 375px: Deal Name and Stage visible, Broker/Priority/Last Update hidden
+[1A[2K[107/231] [chromium] › tests/e2e/deals-list-responsive-nuqs.spec.ts:26:7 › Deals List — Responsive Table (F-21) › 768px: all columns visible including Broker and Priority
+[1A[2K[108/231] [chromium] › tests/e2e/deals-list-responsive-nuqs.spec.ts:38:7 › Deals List — Responsive Table (F-21) › 1280px: full table no regression
+[1A[2K[109/231] [chromium] › tests/e2e/deals-list-responsive-nuqs.spec.ts:51:7 › Deals List — nuqs URL State › sort persists in URL via nuqs
+[1A[2K[110/231] [chromium] › tests/e2e/deals-list-responsive-nuqs.spec.ts:64:7 › Deals List — nuqs URL State › stage filter updates URL
+[1A[2K[111/231] [chromium] › tests/e2e/deals-list-responsive-nuqs.spec.ts:78:7 › Deals List — nuqs URL State › view mode toggle updates URL
+[1A[2K[112/231] [chromium] › tests/e2e/graceful-degradation.spec.ts:66:7 › Graceful Degradation — Backend Down › API proxy returns JSON 502 (not HTML) when backend is down
+[1A[2K[113/231] [chromium] › tests/e2e/graceful-degradation.spec.ts:85:7 › Graceful Degradation — Backend Down › /hq page renders without crashing
+[1A[2K[114/231] [chromium] › tests/e2e/graceful-degradation.spec.ts:104:7 › Graceful Degradation — Backend Down › /deals page renders without crashing
+[1A[2K[115/231] [chromium] › tests/e2e/graceful-degradation.spec.ts:120:7 › Graceful Degradation — Backend Down › /actions page renders without crashing
+[1A[2K[116/231] [chromium] › tests/e2e/graceful-degradation.spec.ts:136:7 › Graceful Degradation — Backend Down › /quarantine page renders without crashing
+[1A[2K[117/231] [chromium] › tests/e2e/graceful-degradation.spec.ts:152:7 › Graceful Degradation — Backend Down › /dashboard page renders without crashing
+[1A[2K[118/231] [chromium] › tests/e2e/graceful-degradation.spec.ts:168:7 › Graceful Degradation — Backend Down › full navigation sweep — no page crashes
+[1A[2K[119/231] [chromium] › tests/e2e/hq-pipeline-legibility-and-controls.spec.ts:4:7 › HQ Pipeline Legibility and Controls (F-14 Closure) › 375px: QuickStats labels fully readable (no destructive truncation)
+[1A[2K[120/231] [chromium] › tests/e2e/hq-pipeline-legibility-and-controls.spec.ts:16:7 › HQ Pipeline Legibility and Controls (F-14 Closure) › 375px: pipeline stage badges readable (not truncated fragments)
+[1A[2K[121/231] [chromium] › tests/e2e/hq-pipeline-legibility-and-controls.spec.ts:28:7 › HQ Pipeline Legibility and Controls (F-14 Closure) › 375px: tabs reachable and readable
+[1A[2K[122/231] [chromium] › tests/e2e/hq-pipeline-legibility-and-controls.spec.ts:39:7 › HQ Pipeline Legibility and Controls (F-14 Closure) › 1280px: desktop layout unchanged (7-col pipeline, 4-col stats)
+[1A[2K[123/231] [chromium] › tests/e2e/hq-pipeline-legibility-and-controls.spec.ts:63:7 › HQ Pipeline Legibility and Controls (F-14 Closure) › 768px: stats and stages readable at tablet width
+[1A[2K[124/231] [chromium] › tests/e2e/new-deal-responsive-create-flow.spec.ts:4:7 › New Deal Responsive Create Flow (M-10) › 375px: form controls visible and within viewport
+[1A[2K[125/231] [chromium] › tests/e2e/new-deal-responsive-create-flow.spec.ts:30:7 › New Deal Responsive Create Flow (M-10) › 375px: create button disabled when name is empty
+[1A[2K[126/231] [chromium] › tests/e2e/new-deal-responsive-create-flow.spec.ts:48:7 › New Deal Responsive Create Flow (M-10) › 768px: form has proper layout and readable labels
+[1A[2K[127/231] [chromium] › tests/e2e/new-deal-responsive-create-flow.spec.ts:61:7 › New Deal Responsive Create Flow (M-10) › 1280px: back navigation and form layout intact
+[1A[2K[128/231] [chromium] › tests/e2e/new-deal-responsive-create-flow.spec.ts:77:7 › New Deal Responsive Create Flow (M-10) › cancel button navigates back to deals
+[1A[2K[129/231] [chromium] › tests/e2e/no-dead-ui.spec.ts:62:9 › REC-041: No Dead UI › /dashboard — no 404/405 on page load
+[1A[2K[130/231] [chromium] › tests/e2e/no-dead-ui.spec.ts:107:9 › REC-041: No Dead UI › /dashboard — click buttons without errors
+[1A[2K[131/231] [chromium] › tests/e2e/no-dead-ui.spec.ts:62:9 › REC-041: No Dead UI › /deals — no 404/405 on page load
+[1A[2K[132/231] [chromium] › tests/e2e/no-dead-ui.spec.ts:107:9 › REC-041: No Dead UI › /deals — click buttons without errors
+[1A[2K[133/231] [chromium] › tests/e2e/no-dead-ui.spec.ts:62:9 › REC-041: No Dead UI › /actions — no 404/405 on page load
+[1A[2K[134/231] [chromium] › tests/e2e/no-dead-ui.spec.ts:107:9 › REC-041: No Dead UI › /actions — click buttons without errors
+[1A[2K[135/231] [chromium] › tests/e2e/no-dead-ui.spec.ts:107:9 › REC-041: No Dead UI › /actions — click buttons without errors (retry #1)
+[1A[2K  13) [chromium] › tests/e2e/no-dead-ui.spec.ts:107:9 › REC-041: No Dead UI › /actions — click buttons without errors 
+
+    Error: Errors after clicking 10 buttons on /actions:
+    GET http://localhost:3003/api/actions/capabilities → 405
+    GET http://localhost:3003/api/actions/capabilities → 405
+    GET http://localhost:3003/api/actions/capabilities → 405
+
+    [2mexpect([22m[31mreceived[39m[2m).[22mtoHaveLength[2m([22m[32mexpected[39m[2m)[22m
+
+    Expected length: [32m0[39m
+    Received length: [31m3[39m
+    Received array:  [31m[{"method": "GET", "status": 405, "url": "http://localhost:3003/api/actions/capabilities"}, {"method": "GET", "status": 405, "url": "http://localhost:3003/api/actions/capabilities"}, {"method": "GET", "status": 405, "url": "http://localhost:3003/api/actions/capabilities"}][39m
+
+      139 |           realErrors,
+      140 |           `Errors after clicking ${clicked} buttons on ${route}:\n${summary}`
+    > 141 |         ).toHaveLength(0);
+          |           ^
+      142 |       }
+      143 |     });
+      144 |   }
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/no-dead-ui.spec.ts:141:11
+
+    Error Context: test-results/no-dead-ui-REC-041-No-Dead-dcbfe-lick-buttons-without-errors-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/no-dead-ui-REC-041-No-Dead-dcbfe-lick-buttons-without-errors-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/no-dead-ui-REC-041-No-Dead-dcbfe-lick-buttons-without-errors-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: Errors after clicking 10 buttons on /actions:
+    GET http://localhost:3003/api/actions/capabilities → 405
+    GET http://localhost:3003/api/actions/capabilities → 405
+    GET http://localhost:3003/api/actions/capabilities → 405
+
+    [2mexpect([22m[31mreceived[39m[2m).[22mtoHaveLength[2m([22m[32mexpected[39m[2m)[22m
+
+    Expected length: [32m0[39m
+    Received length: [31m3[39m
+    Received array:  [31m[{"method": "GET", "status": 405, "url": "http://localhost:3003/api/actions/capabilities"}, {"method": "GET", "status": 405, "url": "http://localhost:3003/api/actions/capabilities"}, {"method": "GET", "status": 405, "url": "http://localhost:3003/api/actions/capabilities"}][39m
+
+      139 |           realErrors,
+      140 |           `Errors after clicking ${clicked} buttons on ${route}:\n${summary}`
+    > 141 |         ).toHaveLength(0);
+          |           ^
+      142 |       }
+      143 |     });
+      144 |   }
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/no-dead-ui.spec.ts:141:11
+
+    Error Context: test-results/no-dead-ui-REC-041-No-Dead-dcbfe-lick-buttons-without-errors-chromium-retry1/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/no-dead-ui-REC-041-No-Dead-dcbfe-lick-buttons-without-errors-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/no-dead-ui-REC-041-No-Dead-dcbfe-lick-buttons-without-errors-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K[136/231] [chromium] › tests/e2e/no-dead-ui.spec.ts:62:9 › REC-041: No Dead UI › /quarantine — no 404/405 on page load
+[1A[2K[137/231] [chromium] › tests/e2e/no-dead-ui.spec.ts:107:9 › REC-041: No Dead UI › /quarantine — click buttons without errors
+[1A[2K[138/231] [chromium] › tests/e2e/no-dead-ui.spec.ts:62:9 › REC-041: No Dead UI › /settings — no 404/405 on page load
+[1A[2K[139/231] [chromium] › tests/e2e/no-dead-ui.spec.ts:107:9 › REC-041: No Dead UI › /settings — click buttons without errors
+[1A[2K[140/231] [chromium] › tests/e2e/no-dead-ui.spec.ts:107:9 › REC-041: No Dead UI › /settings — click buttons without errors (retry #1)
+[1A[2K  14) [chromium] › tests/e2e/no-dead-ui.spec.ts:107:9 › REC-041: No Dead UI › /settings — click buttons without errors 
+
+    Error: Errors after clicking 1 buttons on /settings:
+    GET http://localhost:3003/api/settings/preferences → 404
+    GET http://localhost:3003/api/settings/email → 404
+    GET http://localhost:3003/api/settings/preferences → 404
+
+    [2mexpect([22m[31mreceived[39m[2m).[22mtoHaveLength[2m([22m[32mexpected[39m[2m)[22m
+
+    Expected length: [32m0[39m
+    Received length: [31m3[39m
+    Received array:  [31m[{"method": "GET", "status": 404, "url": "http://localhost:3003/api/settings/preferences"}, {"method": "GET", "status": 404, "url": "http://localhost:3003/api/settings/email"}, {"method": "GET", "status": 404, "url": "http://localhost:3003/api/settings/preferences"}][39m
+
+      139 |           realErrors,
+      140 |           `Errors after clicking ${clicked} buttons on ${route}:\n${summary}`
+    > 141 |         ).toHaveLength(0);
+          |           ^
+      142 |       }
+      143 |     });
+      144 |   }
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/no-dead-ui.spec.ts:141:11
+
+    Error Context: test-results/no-dead-ui-REC-041-No-Dead-ab463-lick-buttons-without-errors-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/no-dead-ui-REC-041-No-Dead-ab463-lick-buttons-without-errors-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/no-dead-ui-REC-041-No-Dead-ab463-lick-buttons-without-errors-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: Errors after clicking 1 buttons on /settings:
+    GET http://localhost:3003/api/settings/email → 404
+    GET http://localhost:3003/api/settings/preferences → 404
+    GET http://localhost:3003/api/settings/preferences → 404
+
+    [2mexpect([22m[31mreceived[39m[2m).[22mtoHaveLength[2m([22m[32mexpected[39m[2m)[22m
+
+    Expected length: [32m0[39m
+    Received length: [31m3[39m
+    Received array:  [31m[{"method": "GET", "status": 404, "url": "http://localhost:3003/api/settings/email"}, {"method": "GET", "status": 404, "url": "http://localhost:3003/api/settings/preferences"}, {"method": "GET", "status": 404, "url": "http://localhost:3003/api/settings/preferences"}][39m
+
+      139 |           realErrors,
+      140 |           `Errors after clicking ${clicked} buttons on ${route}:\n${summary}`
+    > 141 |         ).toHaveLength(0);
+          |           ^
+      142 |       }
+      143 |     });
+      144 |   }
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/no-dead-ui.spec.ts:141:11
+
+    Error Context: test-results/no-dead-ui-REC-041-No-Dead-ab463-lick-buttons-without-errors-chromium-retry1/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/no-dead-ui-REC-041-No-Dead-ab463-lick-buttons-without-errors-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/no-dead-ui-REC-041-No-Dead-ab463-lick-buttons-without-errors-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K[141/231] [chromium] › tests/e2e/no-dead-ui.spec.ts:62:9 › REC-041: No Dead UI › /hq — no 404/405 on page load
+[1A[2K[142/231] [chromium] › tests/e2e/no-dead-ui.spec.ts:107:9 › REC-041: No Dead UI › /hq — click buttons without errors
+[1A[2K[143/231] [chromium] › tests/e2e/no-dead-ui.spec.ts:107:9 › REC-041: No Dead UI › /hq — click buttons without errors (retry #1)
+[1A[2K  15) [chromium] › tests/e2e/no-dead-ui.spec.ts:107:9 › REC-041: No Dead UI › /hq — click buttons without errors 
+
+    Error: Errors after clicking 10 buttons on /hq:
+    GET http://localhost:3003/api/actions/capabilities → 405
+
+    [2mexpect([22m[31mreceived[39m[2m).[22mtoHaveLength[2m([22m[32mexpected[39m[2m)[22m
+
+    Expected length: [32m0[39m
+    Received length: [31m1[39m
+    Received array:  [31m[{"method": "GET", "status": 405, "url": "http://localhost:3003/api/actions/capabilities"}][39m
+
+      139 |           realErrors,
+      140 |           `Errors after clicking ${clicked} buttons on ${route}:\n${summary}`
+    > 141 |         ).toHaveLength(0);
+          |           ^
+      142 |       }
+      143 |     });
+      144 |   }
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/no-dead-ui.spec.ts:141:11
+
+    Error Context: test-results/no-dead-ui-REC-041-No-Dead-c392a-lick-buttons-without-errors-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/no-dead-ui-REC-041-No-Dead-c392a-lick-buttons-without-errors-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/no-dead-ui-REC-041-No-Dead-c392a-lick-buttons-without-errors-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: Errors after clicking 10 buttons on /hq:
+    GET http://localhost:3003/api/actions/capabilities → 405
+
+    [2mexpect([22m[31mreceived[39m[2m).[22mtoHaveLength[2m([22m[32mexpected[39m[2m)[22m
+
+    Expected length: [32m0[39m
+    Received length: [31m1[39m
+    Received array:  [31m[{"method": "GET", "status": 405, "url": "http://localhost:3003/api/actions/capabilities"}][39m
+
+      139 |           realErrors,
+      140 |           `Errors after clicking ${clicked} buttons on ${route}:\n${summary}`
+    > 141 |         ).toHaveLength(0);
+          |           ^
+      142 |       }
+      143 |     });
+      144 |   }
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/no-dead-ui.spec.ts:141:11
+
+    Error Context: test-results/no-dead-ui-REC-041-No-Dead-c392a-lick-buttons-without-errors-chromium-retry1/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/no-dead-ui-REC-041-No-Dead-c392a-lick-buttons-without-errors-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/no-dead-ui-REC-041-No-Dead-c392a-lick-buttons-without-errors-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K[144/231] [chromium] › tests/e2e/no-dead-ui.spec.ts:62:9 › REC-041: No Dead UI › /agent/activity — no 404/405 on page load
+[1A[2K[145/231] [chromium] › tests/e2e/no-dead-ui.spec.ts:107:9 › REC-041: No Dead UI › /agent/activity — click buttons without errors
+[1A[2K[146/231] [chromium] › tests/e2e/no-dead-ui.spec.ts:62:9 › REC-041: No Dead UI › /chat — no 404/405 on page load
+[1A[2K[147/231] [chromium] › tests/e2e/no-dead-ui.spec.ts:107:9 › REC-041: No Dead UI › /chat — click buttons without errors
+[1A[2K[148/231] [chromium] › tests/e2e/no-dead-ui.spec.ts:62:9 › REC-041: No Dead UI › /onboarding — no 404/405 on page load
+[1A[2K[149/231] [chromium] › tests/e2e/no-dead-ui.spec.ts:107:9 › REC-041: No Dead UI › /onboarding — click buttons without errors
+[1A[2K[150/231] [chromium] › tests/e2e/onboarding-responsive-polish.spec.ts:6:7 › Onboarding — Stepper Labels Responsive (F-18) › 375px: current step label visible, non-current labels hidden
+[1A[2K[151/231] [chromium] › tests/e2e/onboarding-responsive-polish.spec.ts:6:7 › Onboarding — Stepper Labels Responsive (F-18) › 375px: current step label visible, non-current labels hidden (retry #1)
+[1A[2K  16) [chromium] › tests/e2e/onboarding-responsive-polish.spec.ts:6:7 › Onboarding — Stepper Labels Responsive (F-18) › 375px: current step label visible, non-current labels hidden 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeAttached[2m([22m[2m)[22m failed
+
+    Locator: getByRole('button', { name: 'Your Profile' })
+    Expected: attached
+    Timeout: 15000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeAttached" with timeout 15000ms[22m
+    [2m  - waiting for getByRole('button', { name: 'Your Profile' })[22m
+
+
+      17 |     // At 375px, the text span has "hidden sm:inline" so button shows icon only
+      18 |     // The button itself is attached but the label text is not visible
+    > 19 |     await expect(profileBtn).toBeAttached();
+         |                              ^
+      20 |   });
+      21 |
+      22 |   test('768px: all stepper labels visible', async ({ page }) => {
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/onboarding-responsive-polish.spec.ts:19:30
+
+    Error Context: test-results/onboarding-responsive-poli-c6a4a-e-non-current-labels-hidden-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/onboarding-responsive-poli-c6a4a-e-non-current-labels-hidden-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/onboarding-responsive-poli-c6a4a-e-non-current-labels-hidden-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeAttached[2m([22m[2m)[22m failed
+
+    Locator: getByRole('button', { name: 'Your Profile' })
+    Expected: attached
+    Timeout: 15000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeAttached" with timeout 15000ms[22m
+    [2m  - waiting for getByRole('button', { name: 'Your Profile' })[22m
+
+
+      17 |     // At 375px, the text span has "hidden sm:inline" so button shows icon only
+      18 |     // The button itself is attached but the label text is not visible
+    > 19 |     await expect(profileBtn).toBeAttached();
+         |                              ^
+      20 |   });
+      21 |
+      22 |   test('768px: all stepper labels visible', async ({ page }) => {
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/onboarding-responsive-polish.spec.ts:19:30
+
+    Error Context: test-results/onboarding-responsive-poli-c6a4a-e-non-current-labels-hidden-chromium-retry1/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/onboarding-responsive-poli-c6a4a-e-non-current-labels-hidden-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/onboarding-responsive-poli-c6a4a-e-non-current-labels-hidden-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K[152/231] [chromium] › tests/e2e/onboarding-responsive-polish.spec.ts:22:7 › Onboarding — Stepper Labels Responsive (F-18) › 768px: all stepper labels visible
+[1A[2K[153/231] [chromium] › tests/e2e/onboarding-responsive-polish.spec.ts:32:7 › Onboarding — Stepper Labels Responsive (F-18) › 1280px: all stepper labels and controls visible
+[1A[2K[154/231] [chromium] › tests/e2e/onboarding-responsive-polish.spec.ts:45:7 › Onboarding — Resume Banner Compact (F-17) › resume banner shows compact step indicator
+[1A[2K[155/231] [chromium] › tests/e2e/onboarding-responsive-polish.spec.ts:59:7 › Onboarding — Resume Banner Compact (F-17) › 375px: resume banner fits single line with truncation
+[1A[2K[156/231] [chromium] › tests/e2e/phase-coverage.spec.ts:18:7 › Phase 1: Settings › settings page loads with section navigation
+[1A[2K[157/231] [chromium] › tests/e2e/phase-coverage.spec.ts:18:7 › Phase 1: Settings › settings page loads with section navigation (retry #1)
+[1A[2K  17) [chromium] › tests/e2e/phase-coverage.spec.ts:18:7 › Phase 1: Settings › settings page loads with section navigation 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByText('Settings')
+    Expected: visible
+    Error: strict mode violation: getByText('Settings') resolved to 3 elements:
+        1) <h1 class="text-3xl font-bold">Settings</h1> aka getByRole('heading', { name: 'Settings' })
+        2) <button type="button" data-state="closed" aria-expanded="false" aria-controls="radix-_r_4_" data-slot="collapsible-trigger" class="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">…</button> aka getByRole('button', { name: 'Advanced Settings' })
+        3) <p class="text-sm text-muted-foreground">Download all your deals, actions, and settings as…</p> aka getByText('Download all your deals,')
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 15000ms[22m
+    [2m  - waiting for getByText('Settings')[22m
+
+
+      21 |
+      22 |     // Should show settings heading
+    > 23 |     await expect(page.getByText('Settings')).toBeVisible();
+         |                                              ^
+      24 |
+      25 |     // Should have section anchors (Agent, Notifications, Data, Display, etc.)
+      26 |     const sections = ['Agent', 'Notification', 'Data', 'Display'];
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/phase-coverage.spec.ts:23:46
+
+    Error Context: test-results/phase-coverage-Phase-1-Set-5dfc1-ads-with-section-navigation-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/phase-coverage-Phase-1-Set-5dfc1-ads-with-section-navigation-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/phase-coverage-Phase-1-Set-5dfc1-ads-with-section-navigation-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByText('Settings')
+    Expected: visible
+    Error: strict mode violation: getByText('Settings') resolved to 3 elements:
+        1) <h1 class="text-3xl font-bold">Settings</h1> aka getByRole('heading', { name: 'Settings' })
+        2) <button type="button" data-state="closed" aria-expanded="false" aria-controls="radix-_r_4_" data-slot="collapsible-trigger" class="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">…</button> aka getByRole('button', { name: 'Advanced Settings' })
+        3) <p class="text-sm text-muted-foreground">Download all your deals, actions, and settings as…</p> aka getByText('Download all your deals,')
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 15000ms[22m
+    [2m  - waiting for getByText('Settings')[22m
+
+
+      21 |
+      22 |     // Should show settings heading
+    > 23 |     await expect(page.getByText('Settings')).toBeVisible();
+         |                                              ^
+      24 |
+      25 |     // Should have section anchors (Agent, Notifications, Data, Display, etc.)
+      26 |     const sections = ['Agent', 'Notification', 'Data', 'Display'];
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/phase-coverage.spec.ts:23:46
+
+    Error Context: test-results/phase-coverage-Phase-1-Set-5dfc1-ads-with-section-navigation-chromium-retry1/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/phase-coverage-Phase-1-Set-5dfc1-ads-with-section-navigation-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/phase-coverage-Phase-1-Set-5dfc1-ads-with-section-navigation-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K[158/231] [chromium] › tests/e2e/phase-coverage.spec.ts:33:7 › Phase 1: Settings › settings page shows email integration section
+[1A[2K[159/231] [chromium] › tests/e2e/phase-coverage.spec.ts:44:7 › Phase 2: Onboarding › onboarding page loads without crashing
+[1A[2K[160/231] [chromium] › tests/e2e/phase-coverage.spec.ts:55:7 › Phase 3: Quality › error boundaries render on broken pages
+[1A[2K[161/231] [chromium] › tests/e2e/phase-coverage.spec.ts:65:7 › Phase 3: Quality › API requests include correlation ID header
+[1A[2K[162/231] [chromium] › tests/e2e/phase-coverage.spec.ts:87:7 › Phase 4: UX Polish › deals page has pagination controls when >20 items
+[1A[2K[163/231] [chromium] › tests/e2e/phase-coverage.spec.ts:102:7 › Phase 4: UX Polish › deals filters persist in URL
+[1A[2K[164/231] [chromium] › tests/e2e/phase-coverage.spec.ts:116:7 › Phase 4: UX Polish › escape closes dialogs
+[1A[2K[165/231] [chromium] › tests/e2e/phase-coverage.spec.ts:135:7 › Phase 4: UX Polish › chat input responds to Enter key
+[1A[2K[166/231] [chromium] › tests/e2e/phase-coverage.spec.ts:150:7 › Phase 5: Page Audits › /hq page loads with stats and pipeline
+[1A[2K[167/231] [chromium] › tests/e2e/phase-coverage.spec.ts:150:7 › Phase 5: Page Audits › /hq page loads with stats and pipeline (retry #1)
+[1A[2K  18) [chromium] › tests/e2e/phase-coverage.spec.ts:150:7 › Phase 5: Page Audits › /hq page loads with stats and pipeline 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator:  getByText('Operator').first()
+    Expected: visible
+    Received: hidden
+    Timeout:  10000ms
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 10000ms[22m
+    [2m  - waiting for getByText('Operator').first()[22m
+    [2m    14 × locator resolved to <span>Operator HQ</span>[22m
+    [2m       - unexpected value "hidden"[22m
+
+
+      155 |     await expect(
+      156 |       page.getByText('Operator', { exact: false }).first()
+    > 157 |     ).toBeVisible({ timeout: 10000 });
+          |       ^
+      158 |   });
+      159 |
+      160 |   test('/agent/activity page loads with timeline', async ({ page }) => {
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/phase-coverage.spec.ts:157:7
+
+    Error Context: test-results/phase-coverage-Phase-5-Pag-d27d6-ads-with-stats-and-pipeline-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/phase-coverage-Phase-5-Pag-d27d6-ads-with-stats-and-pipeline-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/phase-coverage-Phase-5-Pag-d27d6-ads-with-stats-and-pipeline-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator:  getByText('Operator').first()
+    Expected: visible
+    Received: hidden
+    Timeout:  10000ms
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 10000ms[22m
+    [2m  - waiting for getByText('Operator').first()[22m
+    [2m    14 × locator resolved to <span>Operator HQ</span>[22m
+    [2m       - unexpected value "hidden"[22m
+
+
+      155 |     await expect(
+      156 |       page.getByText('Operator', { exact: false }).first()
+    > 157 |     ).toBeVisible({ timeout: 10000 });
+          |       ^
+      158 |   });
+      159 |
+      160 |   test('/agent/activity page loads with timeline', async ({ page }) => {
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/phase-coverage.spec.ts:157:7
+
+    Error Context: test-results/phase-coverage-Phase-5-Pag-d27d6-ads-with-stats-and-pipeline-chromium-retry1/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/phase-coverage-Phase-5-Pag-d27d6-ads-with-stats-and-pipeline-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/phase-coverage-Phase-5-Pag-d27d6-ads-with-stats-and-pipeline-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K[168/231] [chromium] › tests/e2e/phase-coverage.spec.ts:160:7 › Phase 5: Page Audits › /agent/activity page loads with timeline
+[1A[2K[169/231] [chromium] › tests/e2e/phase-coverage.spec.ts:160:7 › Phase 5: Page Audits › /agent/activity page loads with timeline (retry #1)
+[1A[2K  19) [chromium] › tests/e2e/phase-coverage.spec.ts:160:7 › Phase 5: Page Audits › /agent/activity page loads with timeline 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator:  getByText('Agent').first()
+    Expected: visible
+    Received: hidden
+    Timeout:  10000ms
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 10000ms[22m
+    [2m  - waiting for getByText('Agent').first()[22m
+    [2m    14 × locator resolved to <span>Agent Activity</span>[22m
+    [2m       - unexpected value "hidden"[22m
+
+
+      165 |     await expect(
+      166 |       page.getByText('Agent', { exact: false }).first()
+    > 167 |     ).toBeVisible({ timeout: 10000 });
+          |       ^
+      168 |   });
+      169 |
+      170 |   test('bulk archive endpoint responds', async ({ request }) => {
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/phase-coverage.spec.ts:167:7
+
+    Error Context: test-results/phase-coverage-Phase-5-Pag-16b73-ty-page-loads-with-timeline-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/phase-coverage-Phase-5-Pag-16b73-ty-page-loads-with-timeline-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/phase-coverage-Phase-5-Pag-16b73-ty-page-loads-with-timeline-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator:  getByText('Agent').first()
+    Expected: visible
+    Received: hidden
+    Timeout:  10000ms
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 10000ms[22m
+    [2m  - waiting for getByText('Agent').first()[22m
+    [2m    14 × locator resolved to <span>Agent Activity</span>[22m
+    [2m       - unexpected value "hidden"[22m
+
+
+      165 |     await expect(
+      166 |       page.getByText('Agent', { exact: false }).first()
+    > 167 |     ).toBeVisible({ timeout: 10000 });
+          |       ^
+      168 |   });
+      169 |
+      170 |   test('bulk archive endpoint responds', async ({ request }) => {
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/phase-coverage.spec.ts:167:7
+
+    Error Context: test-results/phase-coverage-Phase-5-Pag-16b73-ty-page-loads-with-timeline-chromium-retry1/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/phase-coverage-Phase-5-Pag-16b73-ty-page-loads-with-timeline-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/phase-coverage-Phase-5-Pag-16b73-ty-page-loads-with-timeline-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K[170/231] [chromium] › tests/e2e/phase-coverage.spec.ts:170:7 › Phase 5: Page Audits › bulk archive endpoint responds
+[1A[2K[171/231] [chromium] › tests/e2e/quarantine-actions.spec.ts:4:7 › Quarantine & Actions — Batch 2 Verification › quarantine page loads and shows items
+[1A[2K[172/231] [chromium] › tests/e2e/quarantine-actions.spec.ts:15:7 › Quarantine & Actions — Batch 2 Verification › quarantine item selection loads preview
+[1A[2K[173/231] [chromium] › tests/e2e/quarantine-actions.spec.ts:38:7 › Quarantine & Actions — Batch 2 Verification › actions page loads and shows capabilities
+[1A[2K[174/231] [chromium] › tests/e2e/quarantine-actions.spec.ts:48:7 › Quarantine & Actions — Batch 2 Verification › actions clear-completed button exists
+[1A[2K[175/231] [chromium] › tests/e2e/quarantine-mobile-responsiveness.spec.ts:6:7 › Quarantine — Mobile Responsiveness (F-13) › 375px: decision controls visible below queue
+[1A[2K[176/231] [chromium] › tests/e2e/quarantine-mobile-responsiveness.spec.ts:6:7 › Quarantine — Mobile Responsiveness (F-13) › 375px: decision controls visible below queue (retry #1)
+[1A[2K  20) [chromium] › tests/e2e/quarantine-mobile-responsiveness.spec.ts:6:7 › Quarantine — Mobile Responsiveness (F-13) › 375px: decision controls visible below queue 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByText('Queue')
+    Expected: visible
+    Error: strict mode violation: getByText('Queue') resolved to 2 elements:
+        1) <div data-slot="card-title" class="leading-none font-semibold flex items-center gap-2">…</div> aka getByText('Queue', { exact: true })
+        2) <p>Select an item from the queue to review</p> aka getByText('Select an item from the queue')
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 15000ms[22m
+    [2m  - waiting for getByText('Queue')[22m
+
+
+      10 |
+      11 |     // Queue card should be visible
+    > 12 |     await expect(page.getByText('Queue')).toBeVisible();
+         |                                           ^
+      13 |
+      14 |     // Decision panel controls should all be visible (stacked below queue)
+      15 |     await expect(page.getByRole('button', { name: 'Clear' })).toBeVisible();
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/quarantine-mobile-responsiveness.spec.ts:12:43
+
+    Error Context: test-results/quarantine-mobile-responsi-c7ce2-ontrols-visible-below-queue-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/quarantine-mobile-responsi-c7ce2-ontrols-visible-below-queue-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/quarantine-mobile-responsi-c7ce2-ontrols-visible-below-queue-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByText('Queue')
+    Expected: visible
+    Error: strict mode violation: getByText('Queue') resolved to 2 elements:
+        1) <div data-slot="card-title" class="leading-none font-semibold flex items-center gap-2">…</div> aka getByText('Queue', { exact: true })
+        2) <p>Select an item from the queue to review</p> aka getByText('Select an item from the queue')
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 15000ms[22m
+    [2m  - waiting for getByText('Queue')[22m
+
+
+      10 |
+      11 |     // Queue card should be visible
+    > 12 |     await expect(page.getByText('Queue')).toBeVisible();
+         |                                           ^
+      13 |
+      14 |     // Decision panel controls should all be visible (stacked below queue)
+      15 |     await expect(page.getByRole('button', { name: 'Clear' })).toBeVisible();
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/quarantine-mobile-responsiveness.spec.ts:12:43
+
+    Error Context: test-results/quarantine-mobile-responsi-c7ce2-ontrols-visible-below-queue-chromium-retry1/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/quarantine-mobile-responsi-c7ce2-ontrols-visible-below-queue-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/quarantine-mobile-responsi-c7ce2-ontrols-visible-below-queue-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K[177/231] [chromium] › tests/e2e/quarantine-mobile-responsiveness.spec.ts:22:7 › Quarantine — Mobile Responsiveness (F-13) › 768px: both panels side-by-side with all controls visible
+[1A[2K[178/231] [chromium] › tests/e2e/quarantine-mobile-responsiveness.spec.ts:22:7 › Quarantine — Mobile Responsiveness (F-13) › 768px: both panels side-by-side with all controls visible (retry #1)
+[1A[2K  21) [chromium] › tests/e2e/quarantine-mobile-responsiveness.spec.ts:22:7 › Quarantine — Mobile Responsiveness (F-13) › 768px: both panels side-by-side with all controls visible 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByText('Queue')
+    Expected: visible
+    Error: strict mode violation: getByText('Queue') resolved to 2 elements:
+        1) <div data-slot="card-title" class="leading-none font-semibold flex items-center gap-2">…</div> aka getByText('Queue', { exact: true })
+        2) <p>Select an item from the queue to review</p> aka getByText('Select an item from the queue')
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 15000ms[22m
+    [2m  - waiting for getByText('Queue')[22m
+
+
+      25 |     await page.waitForLoadState('networkidle');
+      26 |
+    > 27 |     await expect(page.getByText('Queue')).toBeVisible();
+         |                                           ^
+      28 |     await expect(page.getByRole('button', { name: 'Clear' })).toBeVisible();
+      29 |     await expect(page.getByRole('button', { name: 'Reject' })).toBeVisible();
+      30 |     await expect(page.getByRole('button', { name: 'Approve' })).toBeVisible();
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/quarantine-mobile-responsiveness.spec.ts:27:43
+
+    Error Context: test-results/quarantine-mobile-responsi-30db4-e-with-all-controls-visible-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/quarantine-mobile-responsi-30db4-e-with-all-controls-visible-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/quarantine-mobile-responsi-30db4-e-with-all-controls-visible-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByText('Queue')
+    Expected: visible
+    Error: strict mode violation: getByText('Queue') resolved to 2 elements:
+        1) <div data-slot="card-title" class="leading-none font-semibold flex items-center gap-2">…</div> aka getByText('Queue', { exact: true })
+        2) <p>Select an item from the queue to review</p> aka getByText('Select an item from the queue')
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 15000ms[22m
+    [2m  - waiting for getByText('Queue')[22m
+
+
+      25 |     await page.waitForLoadState('networkidle');
+      26 |
+    > 27 |     await expect(page.getByText('Queue')).toBeVisible();
+         |                                           ^
+      28 |     await expect(page.getByRole('button', { name: 'Clear' })).toBeVisible();
+      29 |     await expect(page.getByRole('button', { name: 'Reject' })).toBeVisible();
+      30 |     await expect(page.getByRole('button', { name: 'Approve' })).toBeVisible();
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/quarantine-mobile-responsiveness.spec.ts:27:43
+
+    Error Context: test-results/quarantine-mobile-responsi-30db4-e-with-all-controls-visible-chromium-retry1/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/quarantine-mobile-responsi-30db4-e-with-all-controls-visible-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/quarantine-mobile-responsi-30db4-e-with-all-controls-visible-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K[179/231] [chromium] › tests/e2e/quarantine-mobile-responsiveness.spec.ts:35:7 › Quarantine — Mobile Responsiveness (F-13) › 1280px: full layout no regression
+[1A[2K[180/231] [chromium] › tests/e2e/quarantine-mobile-responsiveness.spec.ts:35:7 › Quarantine — Mobile Responsiveness (F-13) › 1280px: full layout no regression (retry #1)
+[1A[2K  22) [chromium] › tests/e2e/quarantine-mobile-responsiveness.spec.ts:35:7 › Quarantine — Mobile Responsiveness (F-13) › 1280px: full layout no regression 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByText('Queue')
+    Expected: visible
+    Error: strict mode violation: getByText('Queue') resolved to 2 elements:
+        1) <div data-slot="card-title" class="leading-none font-semibold flex items-center gap-2">…</div> aka getByText('Queue', { exact: true })
+        2) <p>Select an item from the queue to review</p> aka getByText('Select an item from the queue')
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 15000ms[22m
+    [2m  - waiting for getByText('Queue')[22m
+
+
+      38 |     await page.waitForLoadState('networkidle');
+      39 |
+    > 40 |     await expect(page.getByText('Queue')).toBeVisible();
+         |                                           ^
+      41 |     await expect(page.getByRole('button', { name: 'Clear' })).toBeVisible();
+      42 |     await expect(page.getByRole('button', { name: 'Approve' })).toBeVisible();
+      43 |     await expect(page.getByLabel('Operator')).toBeVisible();
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/quarantine-mobile-responsiveness.spec.ts:40:43
+
+    Error Context: test-results/quarantine-mobile-responsi-0a7e6-x-full-layout-no-regression-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/quarantine-mobile-responsi-0a7e6-x-full-layout-no-regression-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/quarantine-mobile-responsi-0a7e6-x-full-layout-no-regression-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByText('Queue')
+    Expected: visible
+    Error: strict mode violation: getByText('Queue') resolved to 2 elements:
+        1) <div data-slot="card-title" class="leading-none font-semibold flex items-center gap-2">…</div> aka getByText('Queue', { exact: true })
+        2) <p>Select an item from the queue to review</p> aka getByText('Select an item from the queue')
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 15000ms[22m
+    [2m  - waiting for getByText('Queue')[22m
+
+
+      38 |     await page.waitForLoadState('networkidle');
+      39 |
+    > 40 |     await expect(page.getByText('Queue')).toBeVisible();
+         |                                           ^
+      41 |     await expect(page.getByRole('button', { name: 'Clear' })).toBeVisible();
+      42 |     await expect(page.getByRole('button', { name: 'Approve' })).toBeVisible();
+      43 |     await expect(page.getByLabel('Operator')).toBeVisible();
+        at /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/quarantine-mobile-responsiveness.spec.ts:40:43
+
+    Error Context: test-results/quarantine-mobile-responsi-0a7e6-x-full-layout-no-regression-chromium-retry1/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/quarantine-mobile-responsi-0a7e6-x-full-layout-no-regression-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/quarantine-mobile-responsi-0a7e6-x-full-layout-no-regression-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K[181/231] [chromium] › tests/e2e/quarantine-mobile-responsiveness.spec.ts:46:7 › Quarantine — Mobile Responsiveness (F-13) › 375px: refresh button accessible
+[1A[2K[182/231] [chromium] › tests/e2e/responsive-regression.spec.ts:106:11 › dashboard responsive (F-19, F-20) › mobile (375px): loads and key elements visible
+[1A[2K[183/231] [chromium] › tests/e2e/responsive-regression.spec.ts:106:11 › dashboard responsive (F-19, F-20) › tablet (768px): loads and key elements visible
+[1A[2K[184/231] [chromium] › tests/e2e/responsive-regression.spec.ts:106:11 › dashboard responsive (F-19, F-20) › desktop (1280px): loads and key elements visible
+[1A[2K[185/231] [chromium] › tests/e2e/responsive-regression.spec.ts:106:11 › deals responsive (F-21) › mobile (375px): loads and key elements visible
+[1A[2K[186/231] [chromium] › tests/e2e/responsive-regression.spec.ts:106:11 › deals responsive (F-21) › tablet (768px): loads and key elements visible
+[1A[2K[187/231] [chromium] › tests/e2e/responsive-regression.spec.ts:106:11 › deals responsive (F-21) › desktop (1280px): loads and key elements visible
+[1A[2K[188/231] [chromium] › tests/e2e/responsive-regression.spec.ts:106:11 › deal-workspace responsive (F-08, F-09, F-10) › mobile (375px): loads and key elements visible
+[1A[2K[189/231] [chromium] › tests/e2e/responsive-regression.spec.ts:106:11 › deal-workspace responsive (F-08, F-09, F-10) › tablet (768px): loads and key elements visible
+[1A[2K[190/231] [chromium] › tests/e2e/responsive-regression.spec.ts:106:11 › deal-workspace responsive (F-08, F-09, F-10) › desktop (1280px): loads and key elements visible
+[1A[2K[191/231] [chromium] › tests/e2e/responsive-regression.spec.ts:106:11 › deals-new responsive (M-10) › mobile (375px): loads and key elements visible
+[1A[2K[192/231] [chromium] › tests/e2e/responsive-regression.spec.ts:106:11 › deals-new responsive (M-10) › tablet (768px): loads and key elements visible
+[1A[2K[193/231] [chromium] › tests/e2e/responsive-regression.spec.ts:106:11 › deals-new responsive (M-10) › desktop (1280px): loads and key elements visible
+[1A[2K[194/231] [chromium] › tests/e2e/responsive-regression.spec.ts:106:11 › actions responsive (F-11, F-12) › mobile (375px): loads and key elements visible
+[1A[2K[195/231] [chromium] › tests/e2e/responsive-regression.spec.ts:106:11 › actions responsive (F-11, F-12) › tablet (768px): loads and key elements visible
+[1A[2K[196/231] [chromium] › tests/e2e/responsive-regression.spec.ts:106:11 › actions responsive (F-11, F-12) › desktop (1280px): loads and key elements visible
+[1A[2K[197/231] [chromium] › tests/e2e/responsive-regression.spec.ts:106:11 › quarantine responsive (F-13) › mobile (375px): loads and key elements visible
+[1A[2K[198/231] [chromium] › tests/e2e/responsive-regression.spec.ts:106:11 › quarantine responsive (F-13) › tablet (768px): loads and key elements visible
+[1A[2K[199/231] [chromium] › tests/e2e/responsive-regression.spec.ts:106:11 › quarantine responsive (F-13) › desktop (1280px): loads and key elements visible
+[1A[2K[200/231] [chromium] › tests/e2e/responsive-regression.spec.ts:106:11 › chat responsive (F-22) › mobile (375px): loads and key elements visible
+[1A[2K[201/231] [chromium] › tests/e2e/responsive-regression.spec.ts:106:11 › chat responsive (F-22) › tablet (768px): loads and key elements visible
+[1A[2K[202/231] [chromium] › tests/e2e/responsive-regression.spec.ts:106:11 › chat responsive (F-22) › desktop (1280px): loads and key elements visible
+[1A[2K[203/231] [chromium] › tests/e2e/responsive-regression.spec.ts:106:11 › settings responsive (F-15, F-16) › mobile (375px): loads and key elements visible
+[1A[2K[204/231] [chromium] › tests/e2e/responsive-regression.spec.ts:106:11 › settings responsive (F-15, F-16) › tablet (768px): loads and key elements visible
+[1A[2K[205/231] [chromium] › tests/e2e/responsive-regression.spec.ts:106:11 › settings responsive (F-15, F-16) › desktop (1280px): loads and key elements visible
+[1A[2K[206/231] [chromium] › tests/e2e/responsive-regression.spec.ts:106:11 › onboarding responsive (F-17, F-18) › mobile (375px): loads and key elements visible
+[1A[2K[207/231] [chromium] › tests/e2e/responsive-regression.spec.ts:106:11 › onboarding responsive (F-17, F-18) › tablet (768px): loads and key elements visible
+[1A[2K[208/231] [chromium] › tests/e2e/responsive-regression.spec.ts:106:11 › onboarding responsive (F-17, F-18) › desktop (1280px): loads and key elements visible
+[1A[2K[209/231] [chromium] › tests/e2e/responsive-regression.spec.ts:106:11 › hq responsive (F-14) › mobile (375px): loads and key elements visible
+[1A[2K[210/231] [chromium] › tests/e2e/responsive-regression.spec.ts:106:11 › hq responsive (F-14) › tablet (768px): loads and key elements visible
+[1A[2K[211/231] [chromium] › tests/e2e/responsive-regression.spec.ts:106:11 › hq responsive (F-14) › desktop (1280px): loads and key elements visible
+[1A[2K[212/231] [chromium] › tests/e2e/responsive-regression.spec.ts:106:11 › agent-activity responsive (F-23) › mobile (375px): loads and key elements visible
+[1A[2K[213/231] [chromium] › tests/e2e/responsive-regression.spec.ts:106:11 › agent-activity responsive (F-23) › tablet (768px): loads and key elements visible
+[1A[2K[214/231] [chromium] › tests/e2e/responsive-regression.spec.ts:106:11 › agent-activity responsive (F-23) › desktop (1280px): loads and key elements visible
+[1A[2K[215/231] [chromium] › tests/e2e/settings-mobile-layout-and-degraded-states.spec.ts:4:7 › Settings Mobile Layout and Degraded States (F-15/F-16 Closure) › 375px: dropdown nav stacks above content (not side-by-side)
+[1A[2K[216/231] [chromium] › tests/e2e/settings-mobile-layout-and-degraded-states.spec.ts:18:7 › Settings Mobile Layout and Degraded States (F-15/F-16 Closure) › 375px: section cards readable without clipping
+[1A[2K[217/231] [chromium] › tests/e2e/settings-mobile-layout-and-degraded-states.spec.ts:32:7 › Settings Mobile Layout and Degraded States (F-15/F-16 Closure) › 768px: full-width content with readable provider cards
+[1A[2K[218/231] [chromium] › tests/e2e/settings-mobile-layout-and-degraded-states.spec.ts:44:7 › Settings Mobile Layout and Degraded States (F-15/F-16 Closure) › 1280px: desktop sidebar navigation visible
+[1A[2K[219/231] [chromium] › tests/e2e/settings-mobile-layout-and-degraded-states.spec.ts:60:7 › Settings Mobile Layout and Degraded States (F-15/F-16 Closure) › email unavailable state shows clear messaging
+[1A[2K[220/231] [chromium] › tests/e2e/smoke.spec.ts:3:5 › smoke: dashboard loads
+[1A[2K[221/231] [chromium] › tests/e2e/visual-regression.spec.ts:44:11 › visual: dashboard › screenshot dashboard-375px
+[1A[2K[222/231] [chromium] › tests/e2e/visual-regression.spec.ts:44:11 › visual: dashboard › screenshot dashboard-768px
+[1A[2K[223/231] [chromium] › tests/e2e/visual-regression.spec.ts:44:11 › visual: dashboard › screenshot dashboard-1280px
+[1A[2K[224/231] [chromium] › tests/e2e/visual-regression.spec.ts:44:11 › visual: deals › screenshot deals-375px
+[1A[2K[225/231] [chromium] › tests/e2e/visual-regression.spec.ts:44:11 › visual: deals › screenshot deals-768px
+[1A[2K[226/231] [chromium] › tests/e2e/visual-regression.spec.ts:44:11 › visual: deals › screenshot deals-1280px
+[1A[2K[227/231] [chromium] › tests/e2e/visual-regression.spec.ts:44:11 › visual: deal-workspace › screenshot deal-workspace-375px
+[1A[2K[228/231] [chromium] › tests/e2e/visual-regression.spec.ts:44:11 › visual: deal-workspace › screenshot deal-workspace-768px
+[1A[2K[229/231] [chromium] › tests/e2e/visual-regression.spec.ts:44:11 › visual: deal-workspace › screenshot deal-workspace-1280px
+[1A[2K[230/231] [chromium] › tests/e2e/visual-regression.spec.ts:44:11 › visual: deals-new › screenshot deals-new-375px
+[1A[2K[231/231] [chromium] › tests/e2e/visual-regression.spec.ts:44:11 › visual: deals-new › screenshot deals-new-768px
+[1A[2K[232/231] (retries) [chromium] › tests/e2e/visual-regression.spec.ts:44:11 › visual: deals-new › screenshot deals-new-1280px
+[1A[2K[233/231] (retries) [chromium] › tests/e2e/visual-regression.spec.ts:44:11 › visual: actions › screenshot actions-375px
+[1A[2K[234/231] (retries) [chromium] › tests/e2e/visual-regression.spec.ts:44:11 › visual: actions › screenshot actions-768px
+[1A[2K[235/231] (retries) [chromium] › tests/e2e/visual-regression.spec.ts:44:11 › visual: actions › screenshot actions-1280px
+[1A[2K[236/231] (retries) [chromium] › tests/e2e/visual-regression.spec.ts:44:11 › visual: quarantine › screenshot quarantine-375px
+[1A[2K[237/231] (retries) [chromium] › tests/e2e/visual-regression.spec.ts:44:11 › visual: quarantine › screenshot quarantine-768px
+[1A[2K[238/231] (retries) [chromium] › tests/e2e/visual-regression.spec.ts:44:11 › visual: quarantine › screenshot quarantine-1280px
+[1A[2K[239/231] (retries) [chromium] › tests/e2e/visual-regression.spec.ts:44:11 › visual: chat › screenshot chat-375px
+[1A[2K[240/231] (retries) [chromium] › tests/e2e/visual-regression.spec.ts:44:11 › visual: chat › screenshot chat-768px
+[1A[2K[241/231] (retries) [chromium] › tests/e2e/visual-regression.spec.ts:44:11 › visual: chat › screenshot chat-1280px
+[1A[2K[242/231] (retries) [chromium] › tests/e2e/visual-regression.spec.ts:44:11 › visual: settings › screenshot settings-375px
+[1A[2K[243/231] (retries) [chromium] › tests/e2e/visual-regression.spec.ts:44:11 › visual: settings › screenshot settings-768px
+[1A[2K[244/231] (retries) [chromium] › tests/e2e/visual-regression.spec.ts:44:11 › visual: settings › screenshot settings-1280px
+[1A[2K[245/231] (retries) [chromium] › tests/e2e/visual-regression.spec.ts:44:11 › visual: onboarding › screenshot onboarding-375px
+[1A[2K[246/231] (retries) [chromium] › tests/e2e/visual-regression.spec.ts:44:11 › visual: onboarding › screenshot onboarding-768px
+[1A[2K[247/231] (retries) [chromium] › tests/e2e/visual-regression.spec.ts:44:11 › visual: onboarding › screenshot onboarding-1280px
+[1A[2K[248/231] (retries) [chromium] › tests/e2e/visual-regression.spec.ts:44:11 › visual: hq › screenshot hq-375px
+[1A[2K[249/231] (retries) [chromium] › tests/e2e/visual-regression.spec.ts:44:11 › visual: hq › screenshot hq-768px
+[1A[2K[250/231] (retries) [chromium] › tests/e2e/visual-regression.spec.ts:44:11 › visual: hq › screenshot hq-1280px
+[1A[2K[251/231] (retries) [chromium] › tests/e2e/visual-regression.spec.ts:44:11 › visual: agent-activity › screenshot agent-activity-375px
+[1A[2K[252/231] (retries) [chromium] › tests/e2e/visual-regression.spec.ts:44:11 › visual: agent-activity › screenshot agent-activity-768px
+[1A[2K[253/231] (retries) [chromium] › tests/e2e/visual-regression.spec.ts:44:11 › visual: agent-activity › screenshot agent-activity-1280px
+[1A[2K  22 failed
+    [chromium] › tests/e2e/chat-interaction-closure.spec.ts:4:7 › Chat Interaction Closure (M-04) › provider selector visible at all breakpoints 
+    [chromium] › tests/e2e/chat-interaction-closure.spec.ts:15:7 › Chat Interaction Closure (M-04) › scope and deal selectors visible at all breakpoints 
+    [chromium] › tests/e2e/chat-interaction-closure.spec.ts:26:7 › Chat Interaction Closure (M-04) › evidence panel toggles on desktop 
+    [chromium] › tests/e2e/chat-interaction-closure.spec.ts:46:7 › Chat Interaction Closure (M-04) › debug panel toggles on desktop 
+    [chromium] › tests/e2e/chat-interaction-closure.spec.ts:63:7 › Chat Interaction Closure (M-04) › mobile: evidence toggles via dropdown menu 
+    [chromium] › tests/e2e/chat-interaction-closure.spec.ts:81:7 › Chat Interaction Closure (M-04) › mobile: debug toggles via dropdown menu 
+    [chromium] › tests/e2e/chat-interaction-closure.spec.ts:96:7 › Chat Interaction Closure (M-04) › mobile: history sheet opens from dropdown 
+    [chromium] › tests/e2e/dashboard-responsive-counts.spec.ts:27:7 › Dashboard — Today & Next Up Responsive (F-19) › 1280px: no regression in Today & Next Up 
+    [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:37:5 › F-02: agent drawer has "Full chat" link 
+    [chromium] › tests/e2e/deal-routing-create.spec.ts:12:7 › deal routing and create › /deals/new form creates deal and redirects 
+    [chromium] › tests/e2e/deal-workspace-mobile-readability.spec.ts:7:7 › Deal Workspace Mobile Readability (F-08 Closure) › 375px: card values visible alongside labels 
+    [chromium] › tests/e2e/deal-workspace-mobile-readability.spec.ts:55:7 › Deal Workspace Mobile Readability (F-08 Closure) › 768px: cards show values without clipping 
+    [chromium] › tests/e2e/no-dead-ui.spec.ts:107:9 › REC-041: No Dead UI › /actions — click buttons without errors 
+    [chromium] › tests/e2e/no-dead-ui.spec.ts:107:9 › REC-041: No Dead UI › /settings — click buttons without errors 
+    [chromium] › tests/e2e/no-dead-ui.spec.ts:107:9 › REC-041: No Dead UI › /hq — click buttons without errors 
+    [chromium] › tests/e2e/onboarding-responsive-polish.spec.ts:6:7 › Onboarding — Stepper Labels Responsive (F-18) › 375px: current step label visible, non-current labels hidden 
+    [chromium] › tests/e2e/phase-coverage.spec.ts:18:7 › Phase 1: Settings › settings page loads with section navigation 
+    [chromium] › tests/e2e/phase-coverage.spec.ts:150:7 › Phase 5: Page Audits › /hq page loads with stats and pipeline 
+    [chromium] › tests/e2e/phase-coverage.spec.ts:160:7 › Phase 5: Page Audits › /agent/activity page loads with timeline 
+    [chromium] › tests/e2e/quarantine-mobile-responsiveness.spec.ts:6:7 › Quarantine — Mobile Responsiveness (F-13) › 375px: decision controls visible below queue 
+    [chromium] › tests/e2e/quarantine-mobile-responsiveness.spec.ts:22:7 › Quarantine — Mobile Responsiveness (F-13) › 768px: both panels side-by-side with all controls visible 
+    [chromium] › tests/e2e/quarantine-mobile-responsiveness.spec.ts:35:7 › Quarantine — Mobile Responsiveness (F-13) › 1280px: full layout no regression 
+  7 skipped
+  202 passed (25.1m)
+EXIT_CODE=1

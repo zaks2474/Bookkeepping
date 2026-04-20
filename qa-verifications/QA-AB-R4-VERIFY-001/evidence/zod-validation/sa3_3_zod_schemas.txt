@@ -1,0 +1,24 @@
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/layout/user-nav.tsx:99:        const parsed = JSON.parse(stored);
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/forms/demo-form.tsx:24:const demoFormSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/forms/demo-form.tsx:26:  name: z.string().min(2, 'Name must be at least 2 characters'),
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/forms/demo-form.tsx:27:  email: z.string().email('Invalid email address'),
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/forms/demo-form.tsx:29:  password: z.string().min(8, 'Password must be at least 8 characters'),
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/forms/demo-form.tsx:32:  bio: z.string().min(10, 'Bio must be at least 10 characters'),
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/forms/demo-form.tsx:35:  country: z.string().min(1, 'Please select a country'),
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/forms/demo-form.tsx:38:  interests: z.array(z.string()).min(1, 'Select at least one interest'),
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/forms/demo-form.tsx:41:  gender: z.string().min(1, 'Please select gender'),
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/ApprovalCheckpoint.tsx:330:                    setModifiedInputs(JSON.parse(e.target.value));
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/useOnboardingState.ts:120:          const parsed: PersistedOnboarding = JSON.parse(stored);
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/use-realtime-events.ts:272:                  data: JSON.parse(currentEvent.data),
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/use-realtime-events.ts:489:          const data = JSON.parse(event.data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:104:const StoredMessageSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:105:  id: z.string(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:106:  role: z.enum(['user', 'assistant']),
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:107:  content: z.string(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:108:  timestamp: z.string(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:113:  warnings: z.array(z.string()).optional(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:116:const StoredSessionSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:118:  sessionId: z.string().nullable(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:119:  scopeType: z.enum(['global', 'deal', 'document']),
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:120:  selectedDealId: z.string(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:123:  savedAt: z.string(),

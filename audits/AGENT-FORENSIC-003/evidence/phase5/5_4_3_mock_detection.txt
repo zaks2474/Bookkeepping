@@ -1,0 +1,6 @@
+=== CHECK 5.4.3: Mock Detection ===
+Timestamp: 2026-02-03T13:21:55-06:00
+
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/agent/activity/route.ts:19:    status: 'idle' as AgentStatus,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/agent/activity/route.ts:21:    recent: [],
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/agent/activity/route.ts:29:    recentRuns: [],

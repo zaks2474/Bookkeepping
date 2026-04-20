@@ -1,0 +1,7 @@
+113:                        thread_id, turn_number, user_id,
+135:                    ON CONFLICT (thread_id, turn_number) DO UPDATE SET
+196:    async def get_snapshot(self, thread_id: str, turn_number: int) -> dict | None:
+202:                    "SELECT * FROM turn_snapshots WHERE thread_id = $1 AND turn_number = $2",
+203:                    thread_id, turn_number,
+207:            logger.warning("snapshot_get_failed", thread_id=thread_id, turn=turn_number, error=str(e))
+217:                    SELECT id, thread_id, turn_number, user_id, model_name,

@@ -1,0 +1,13 @@
+=== legal_hold_locks table definition ===
+Found in AGENT-API migrations (not backend): 
+  /home/zaks/zakops-agent-api/apps/agent-api/migrations/029_legal_hold.sql
+Lines 9-17: CREATE TABLE IF NOT EXISTS legal_hold_locks (
+  id SERIAL PRIMARY KEY,
+  thread_id TEXT NOT NULL,
+  hold_type VARCHAR(50) NOT NULL,
+  hold_reason TEXT,
+  set_by VARCHAR(255) NOT NULL,
+  set_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  released_at TIMESTAMPTZ NULL
+);
+RESULT: PASS — legal_hold_locks table exists with all required columns

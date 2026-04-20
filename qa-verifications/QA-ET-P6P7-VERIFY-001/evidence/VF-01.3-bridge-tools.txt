@@ -1,0 +1,6 @@
+def zakops_get_deal_status(deal_id: str) -> dict:
+    log_tool_call("zakops_get_deal_status", {"deal_id": deal_id})
+def zakops_list_recent_events(
+    log_tool_call("zakops_list_recent_events", {"deal_id": deal_id, "limit": limit})
+def zakops_report_task_result(
+    log_tool_call("zakops_report_task_result", {

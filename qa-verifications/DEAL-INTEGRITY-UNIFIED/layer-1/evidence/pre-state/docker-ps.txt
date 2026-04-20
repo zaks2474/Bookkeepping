@@ -1,0 +1,23 @@
+NAMES                            IMAGE                                PORTS                                         STATUS
+zakops-backend-backend-1         zakops-backend-backend               0.0.0.0:8091->8091/tcp, [::]:8091->8091/tcp   Up 20 hours (healthy)
+zakops-backend-postgres-1        postgres:15-alpine                   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp   Up 2 days (healthy)
+zakops-backend-outbox-worker-1   zakops-backend-outbox-worker         8091/tcp                                      Up 4 days (healthy)
+zakops-postgres                  postgres:15-alpine                   0.0.0.0:5435->5432/tcp, [::]:5435->5432/tcp   Up 4 days (healthy)
+zakops-agent-api                 agent-api-agent-api                  0.0.0.0:8095->8000/tcp, [::]:8095->8000/tcp   Up 19 hours (healthy)
+zakops-agent-db                  pgvector/pgvector:pg16               5432/tcp                                      Up 4 days (healthy)
+zakops-backend-langfuse-1        langfuse/langfuse:2                  0.0.0.0:3001->3000/tcp, [::]:3001->3000/tcp   Up 4 days (unhealthy)
+openwebui                        ghcr.io/open-webui/open-webui:main   0.0.0.0:3000->8080/tcp, [::]:3000->8080/tcp   Up 6 days (healthy)
+vllm-qwen                        vllm/vllm-openai:latest              0.0.0.0:8000->8000/tcp, [::]:8000->8000/tcp   Up 6 days
+rag-rest-api                     zaks-llm-rag-rest-api                0.0.0.0:8052->8080/tcp, [::]:8052->8080/tcp   Up 5 days
+rag-db                           pgvector/pgvector:pg17               0.0.0.0:5434->5432/tcp, [::]:5434->5432/tcp   Up 6 days
+zakops-redis-1                   redis:7-alpine                       0.0.0.0:6379->6379/tcp, [::]:6379->6379/tcp   Up 6 days (healthy)
+---ALL POSTGRES (including stopped)---
+zakops-backend-postgres-1        postgres:15-alpine                   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp   Up 2 days (healthy)
+zakops-postgres                  postgres:15-alpine                   0.0.0.0:5435->5432/tcp, [::]:5435->5432/tcp   Up 4 days (healthy)
+zakops-postgres-1                postgres:15-alpine                                                                 Exited (1) 4 days ago
+---VOLUMES---
+agent-api_agent-postgres-data
+crawl4ai-rag_postgres_data
+docker_postgres-data
+docker_postgres_data
+zakops_postgres_data

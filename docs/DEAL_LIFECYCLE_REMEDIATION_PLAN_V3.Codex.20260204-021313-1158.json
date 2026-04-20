@@ -1,0 +1,988 @@
+{
+  "agent_identity": {
+    "agent_name": "Codex",
+    "run_id": "20260204-021313-1158",
+    "date_time": "2026-02-04T02:13:16Z",
+    "repo_revision": "a09538f04ed278c32ad6f2a037069b353bf5f797"
+  },
+  "decision_set": [
+    {
+      "topic": "Source-of-truth DB model (eliminate split-brain)",
+      "options": [
+        {
+          "name": "A) Single canonical Postgres (zakops.deals + related tables)",
+          "pros": [
+            "Eliminates split-brain",
+            "Single audit trail",
+            "Simpler ops/backup"
+          ],
+          "cons": [
+            "Migration effort",
+            "Need clear schema for DataRoom + embeddings refs"
+          ]
+        },
+        {
+          "name": "B) Multiple stores with sync (event sourcing)",
+          "pros": [
+            "Specialized stores",
+            "Decoupled services"
+          ],
+          "cons": [
+            "Complexity",
+            "Consistency risk remains",
+            "Harder to prove truth"
+          ]
+        },
+        {
+          "name": "C) Keep current split",
+          "pros": [
+            "No immediate refactor"
+          ],
+          "cons": [
+            "Violates end-state",
+            "Ongoing data loss and inconsistency"
+          ]
+        }
+      ],
+      "recommendation": "Choose A. Make Postgres the single source of truth for deal state; other stores are derived/indexed only.",
+      "migration": [
+        "Add explicit columns for dataroom_path, external_ids, and canonical deal_id mapping in Postgres.",
+        "One-time migration: ingest deal_registry.json into Postgres with deterministic ID mapping.",
+        "Refactor all writers (email ingestion, executors, agent tools) to use Postgres APIs.",
+        "Deprecate and remove JSON registry + SQLite action store after parity tests pass."
+      ],
+      "verification": [
+        "Create deal via API, email ingestion, and agent tool; verify single Postgres row and consistent deal_id.",
+        "Ripgrep shows no writes to deal_registry.json or SQLite action store.",
+        "Dashboards, agents, and backend all read from Postgres only."
+      ]
+    },
+    {
+      "topic": "Deal taxonomy + stage model (canonical stages and transitions)",
+      "options": [
+        {
+          "name": "A) Canonical stages from workflow.py with explicit transition rules",
+          "pros": [
+            "Matches active backend",
+            "Deterministic lifecycle",
+            "Easy to validate"
+          ],
+          "cons": [
+            "Requires migration of legacy labels"
+          ]
+        },
+        {
+          "name": "B) Use legacy deal_state_machine stages",
+          "pros": [
+            "Matches some legacy scripts"
+          ],
+          "cons": [
+            "Not aligned with current backend",
+            "Rework DB constraints"
+          ]
+        },
+        {
+          "name": "C) Per-pipeline custom stages",
+          "pros": [
+            "Flexibility"
+          ],
+          "cons": [
+            "Higher complexity",
+            "Harder to enforce invariants"
+          ]
+        }
+      ],
+      "recommendation": "Choose A. Align DB constraints and defaults to canonical stages and provide mapping for legacy labels.",
+      "migration": [
+        "Update DB default stage from 'lead' to 'inbound'.",
+        "Add migration script to map legacy stages into canonical stages.",
+        "Remove/retire legacy deal_state_machine.py or mark as archived."
+      ],
+      "verification": [
+        "DB constraint matches canonical list; no rows with non-canonical stage.",
+        "Transition endpoint rejects invalid transitions with 409.",
+        "UI and agent use the same canonical stage list."
+      ]
+    },
+    {
+      "topic": "Agent tool contract boundaries",
+      "options": [
+        {
+          "name": "A) Agent uses backend APIs only (no direct DB writes)",
+          "pros": [
+            "Single source of truth",
+            "Centralized auth + validation",
+            "Auditable"
+          ],
+          "cons": [
+            "Requires robust APIs and auth"
+          ]
+        },
+        {
+          "name": "B) Agent writes to DB directly",
+          "pros": [
+            "Lower latency"
+          ],
+          "cons": [
+            "Bypasses validation",
+            "Harder to audit",
+            "Breaks separation"
+          ]
+        },
+        {
+          "name": "C) Agent owns separate store and syncs",
+          "pros": [
+            "Isolation"
+          ],
+          "cons": [
+            "Split-brain risk"
+          ]
+        }
+      ],
+      "recommendation": "Choose A. Agent tools must call backend APIs and include correlation_id + HITL as required.",
+      "migration": [
+        "Add create_deal tool that calls backend /api/deals with HITL approval.",
+        "Ensure all existing tools include correlation_id headers and actor info.",
+        "Block direct DB writes from agent service."
+      ],
+      "verification": [
+        "Agent tool calls produce backend audit events with correlation_id.",
+        "No agent code references DB credentials or direct connections."
+      ]
+    },
+    {
+      "topic": "Email ingestion architecture",
+      "options": [
+        {
+          "name": "A) Event-driven ingestion (IMAP/SMTP -> queue -> triage -> quarantine -> deal update)",
+          "pros": [
+            "Scalable",
+            "Idempotent",
+            "Near real-time"
+          ],
+          "cons": [
+            "Infrastructure complexity"
+          ]
+        },
+        {
+          "name": "B) Cron-based polling (current pattern)",
+          "pros": [
+            "Simple to deploy"
+          ],
+          "cons": [
+            "Batch delays",
+            "Operational drift"
+          ]
+        },
+        {
+          "name": "C) Manual upload only",
+          "pros": [
+            "No infrastructure"
+          ],
+          "cons": [
+            "Breaks end-state"
+          ]
+        }
+      ],
+      "recommendation": "Implement B immediately as a bridge, then evolve to A once canonical data path is stable.",
+      "migration": [
+        "Point ingestion output to Postgres quarantine + deal tables.",
+        "Add idempotency on message_id and body_hash.",
+        "Attach emails and extracted artifacts to deal record; store files in DataRoom."
+      ],
+      "verification": [
+        "Synthetic email appears as quarantine item and is linked to a deal after approval.",
+        "Attachments stored under deal folder; RAG indexing reflects new content."
+      ]
+    },
+    {
+      "topic": "RAG/embeddings architecture",
+      "options": [
+        {
+          "name": "A) Central RAG service with vector store keyed by deal_id",
+          "pros": [
+            "Fast retrieval",
+            "Consistent with single truth"
+          ],
+          "cons": [
+            "Requires indexing pipeline"
+          ]
+        },
+        {
+          "name": "B) Agent-local embeddings",
+          "pros": [
+            "Simpler agent runtime"
+          ],
+          "cons": [
+            "Inconsistent context",
+            "No shared truth"
+          ]
+        },
+        {
+          "name": "C) No embeddings",
+          "pros": [
+            "Low complexity"
+          ],
+          "cons": [
+            "Violates end-state"
+          ]
+        }
+      ],
+      "recommendation": "Choose A. Embed only canonical deal artifacts and store metadata in Postgres.",
+      "migration": [
+        "Define indexing pipeline triggered on new emails/attachments/notes.",
+        "Add reindex_deal action and automated nightly refresh.",
+        "Expose RAG health endpoint and fail-closed behavior."
+      ],
+      "verification": [
+        "search_deals returns expected hits for known content.",
+        "RAG health endpoint returns OK and indexing metrics."
+      ]
+    },
+    {
+      "topic": "HITL approval persistence + auditability",
+      "options": [
+        {
+          "name": "A) Store approvals in backend DB with agent references",
+          "pros": [
+            "Unified audit trail",
+            "Queryable by deal"
+          ],
+          "cons": [
+            "Migration from agent DB"
+          ]
+        },
+        {
+          "name": "B) Keep approvals only in agent DB",
+          "pros": [
+            "Minimal change"
+          ],
+          "cons": [
+            "No unified traceability"
+          ]
+        },
+        {
+          "name": "C) Ephemeral approvals",
+          "pros": [
+            "Low storage"
+          ],
+          "cons": [
+            "No auditability"
+          ]
+        }
+      ],
+      "recommendation": "Choose A. Mirror approvals into backend with correlation_id and deal_id.",
+      "migration": [
+        "Add approvals table in backend and replicate current approvals on write.",
+        "Update approval APIs to emit audit events tied to deal_id and correlation_id."
+      ],
+      "verification": [
+        "Approval records visible in backend with correlation_id.",
+        "Audit trail links agent action to deal_events."
+      ]
+    },
+    {
+      "topic": "Auth model (dashboard, backend, agent)",
+      "options": [
+        {
+          "name": "A) OIDC/JWT for users + service tokens for internal services",
+          "pros": [
+            "Industry standard",
+            "User attribution",
+            "RBAC support"
+          ],
+          "cons": [
+            "Requires auth provider integration"
+          ]
+        },
+        {
+          "name": "B) Static API keys for UI",
+          "pros": [
+            "Simple"
+          ],
+          "cons": [
+            "No user attribution",
+            "Security risk"
+          ]
+        },
+        {
+          "name": "C) No auth",
+          "pros": [
+            "None"
+          ],
+          "cons": [
+            "Unacceptable"
+          ]
+        }
+      ],
+      "recommendation": "Choose A with local dev fallback. Enforce JWT on backend and attach user identity to deal_events.",
+      "migration": [
+        "Add auth middleware to dashboard and backend.",
+        "Add RBAC policy for deal actions and admin actions.",
+        "Propagate user_id to audit and event tables."
+      ],
+      "verification": [
+        "Unauthenticated requests fail with 401/403.",
+        "Audit logs include user_id for all writes."
+      ]
+    }
+  ],
+  "phases": [
+    {
+      "name": "Phase 0: Stop the Bleeding & Observability Baseline",
+      "objective": "Establish security guardrails and end-to-end traceability; eliminate silent failures.",
+      "issues": [
+        "ZK-ISSUE-0005",
+        "ZK-ISSUE-0011",
+        "ZK-ISSUE-0018",
+        "ZK-ISSUE-0010"
+      ],
+      "tasks": [
+        "Add dashboard authentication (JWT/OIDC) and user identity propagation (ZK-ISSUE-0005).",
+        "Add correlation_id propagation dashboard -> backend -> agent and persist in deal_events + audit_log (ZK-ISSUE-0011).",
+        "Add structured logging + error surfacing and explicit health checks for RAG/email ingestion (ZK-ISSUE-0010).",
+        "Fix dashboard Zod handling to avoid silent drops; log schema mismatch (ZK-ISSUE-0018)."
+      ],
+      "gates": [
+        "All write endpoints require auth; correlation_id visible across logs; schema mismatches logged."
+      ],
+      "acceptance_criteria": [
+        "401/403 returned for unauthenticated dashboard access.",
+        "Every write request contains correlation_id and user_id.",
+        "RAG/email health endpoints return explicit status (OK/FAIL)."
+      ],
+      "evidence_required": [
+        "Auth middleware logs + curl results",
+        "Sample trace showing correlation_id across services",
+        "Health check outputs"
+      ]
+    },
+    {
+      "name": "Phase 1: Data Truth Unification",
+      "objective": "Eliminate split-brain persistence and unify actions/deals in Postgres.",
+      "issues": [
+        "ZK-ISSUE-0001",
+        "ZK-ISSUE-0008",
+        "ZK-ISSUE-0014"
+      ],
+      "tasks": [
+        "Design canonical deal schema fields (including dataroom_path and external_ids).",
+        "Migrate JSON deal_registry into Postgres; keep id mapping and provenance (ZK-ISSUE-0001).",
+        "Refactor CreateDealFromEmailExecutor to write to Postgres and remove sys.path hack (ZK-ISSUE-0014).",
+        "Migrate actions engine to use Postgres zakops.actions; retire SQLite store (ZK-ISSUE-0008)."
+      ],
+      "gates": [
+        "Creating a deal via any path writes a single Postgres row; no JSON or SQLite writes."
+      ],
+      "acceptance_criteria": [
+        "deal_registry.json not written by any process",
+        "SQLite action DB unused",
+        "Postgres is sole source for deals and actions"
+      ],
+      "evidence_required": [
+        "Migration logs",
+        "DB queries showing consistent counts",
+        "ripgrep results for legacy write paths"
+      ]
+    },
+    {
+      "name": "Phase 2: Contract Alignment (UI, Backend, Agent)",
+      "objective": "Align API contracts and ensure UI/agent calls hit active backend endpoints.",
+      "issues": [
+        "ZK-ISSUE-0006",
+        "ZK-ISSUE-0012",
+        "ZK-ISSUE-0009",
+        "ZK-ISSUE-0018"
+      ],
+      "tasks": [
+        "Update dashboard to call /api/quarantine/{id}/process instead of legacy /resolve (ZK-ISSUE-0006).",
+        "Implement or align notes endpoint in orchestration API and update UI (ZK-ISSUE-0012).",
+        "Add agent create_deal tool with HITL and backend validation (ZK-ISSUE-0009).",
+        "Generate and consume OpenAPI client to reduce schema drift; harden Zod schemas (ZK-ISSUE-0018)."
+      ],
+      "gates": [
+        "No 404s for UI core flows; agent tool contract tested against backend."
+      ],
+      "acceptance_criteria": [
+        "Quarantine approve works from UI",
+        "Deal notes persist",
+        "Agent create_deal works only with approval"
+      ],
+      "evidence_required": [
+        "Curl tests for updated endpoints",
+        "UI integration tests",
+        "Agent tool logs"
+      ]
+    },
+    {
+      "name": "Phase 3: Deal Lifecycle Correctness",
+      "objective": "Make quarantine, stages, and transitions correct and deterministic.",
+      "issues": [
+        "ZK-ISSUE-0003",
+        "ZK-ISSUE-0007",
+        "ZK-ISSUE-0016",
+        "ZK-ISSUE-0022"
+      ],
+      "tasks": [
+        "Align stage taxonomy across DB, backend workflow, UI, and agent; fix default stage (ZK-ISSUE-0007).",
+        "Implement atomic quarantine approval -> deal creation/linking with idempotency (ZK-ISSUE-0003).",
+        "Add duplicate deal detection (unique constraint or semantic match) (ZK-ISSUE-0016).",
+        "Add archive/restore endpoints in orchestration API (ZK-ISSUE-0022)."
+      ],
+      "gates": [
+        "Approving quarantine creates a deal; stage transitions validated; archive/restore works."
+      ],
+      "acceptance_criteria": [
+        "No deals with invalid stages",
+        "Duplicate creation returns 409 or merges",
+        "Archive/restore toggles deleted flag"
+      ],
+      "evidence_required": [
+        "DB queries for stage validity",
+        "Quarantine approve end-to-end test",
+        "Archive/restore curl tests"
+      ]
+    },
+    {
+      "name": "Phase 4: Deal Knowledge System (Email, DataRoom, RAG, Actions)",
+      "objective": "Turn each deal into a living knowledge object with email/attachments/RAG integration.",
+      "issues": [
+        "ZK-ISSUE-0002",
+        "ZK-ISSUE-0004",
+        "ZK-ISSUE-0010",
+        "ZK-ISSUE-0013",
+        "ZK-ISSUE-0019",
+        "ZK-ISSUE-0021"
+      ],
+      "tasks": [
+        "Re-enable email ingestion targeting Postgres quarantine/deals and attach to deals (ZK-ISSUE-0002).",
+        "Create DataRoom folder scaffolding on deal creation; store path in DB (ZK-ISSUE-0004).",
+        "Wire action executors to UI and workflows with tracking (ZK-ISSUE-0019).",
+        "Implement /api/actions/capabilities and /metrics from registry (ZK-ISSUE-0013).",
+        "Implement RAG indexing pipeline and validate search_deals (ZK-ISSUE-0010).",
+        "Add scheduling/reminders framework for follow-ups and SLAs (ZK-ISSUE-0021)."
+      ],
+      "gates": [
+        "Email -> quarantine -> deal update -> RAG searchable; DataRoom folders created."
+      ],
+      "acceptance_criteria": [
+        "New emails appear under correct deal",
+        "Deal folder exists for new deal",
+        "Actions capabilities endpoint returns data"
+      ],
+      "evidence_required": [
+        "Email ingestion logs",
+        "Folder existence checks",
+        "RAG search output"
+      ]
+    },
+    {
+      "name": "Phase 5: Hardening & Real-time UX",
+      "objective": "Operational hardening, expiry, retention, and realtime updates.",
+      "issues": [
+        "ZK-ISSUE-0015",
+        "ZK-ISSUE-0017",
+        "ZK-ISSUE-0020"
+      ],
+      "tasks": [
+        "Add approval expiry background job and metrics (ZK-ISSUE-0015).",
+        "Define and implement retention/cleanup policy for archived/junk deals (ZK-ISSUE-0017).",
+        "Implement SSE/WebSocket stream for realtime updates (ZK-ISSUE-0020)."
+      ],
+      "gates": [
+        "Expired approvals auto-transition; UI updates via SSE without polling."
+      ],
+      "acceptance_criteria": [
+        "Pending approvals older than TTL become expired",
+        "Archived deals cleaned according to policy",
+        "SSE endpoint streams deal updates"
+      ],
+      "evidence_required": [
+        "Cron/job logs",
+        "DB counts before/after cleanup",
+        "SSE client output"
+      ]
+    },
+    {
+      "name": "Phase 6: Legacy Decommission & Final Proof",
+      "objective": "Remove legacy services, paths, and dead endpoints; prove no references remain.",
+      "issues": [
+        "ZK-ISSUE-0001",
+        "ZK-ISSUE-0008",
+        "ZK-ISSUE-0014",
+        "ZK-ISSUE-0006",
+        "ZK-ISSUE-0012"
+      ],
+      "tasks": [
+        "Remove deal_lifecycle API and legacy endpoints (/resolve, /note, /archive) after replacements exist.",
+        "Delete or archive /home/zaks/scripts legacy registry/state machine modules.",
+        "Remove JSON deal_registry and SQLite action DB; add CI guard to prevent reintroduction.",
+        "Confirm no sys.path hacks or direct legacy imports exist."
+      ],
+      "gates": [
+        "rg finds no legacy references; services only expose canonical endpoints."
+      ],
+      "acceptance_criteria": [
+        "Legacy endpoints return 404",
+        "No references to deal_registry.json or scripts path",
+        "CI checks pass"
+      ],
+      "evidence_required": [
+        "rg output",
+        "Service route listings",
+        "Deployment diffs"
+      ]
+    }
+  ],
+  "coverage_matrix": [
+    {
+      "issue_id": "ZK-ISSUE-0001",
+      "phase": "Phase 1",
+      "tasks": [
+        "Migrate JSON registry to Postgres",
+        "Remove split-brain writers"
+      ],
+      "verification": [
+        "Create deal via all paths -> single Postgres row",
+        "No writes to deal_registry.json"
+      ],
+      "done": "Postgres only, JSON/legacy unused"
+    },
+    {
+      "issue_id": "ZK-ISSUE-0002",
+      "phase": "Phase 4",
+      "tasks": [
+        "Enable ingestion pipeline",
+        "Write to Postgres quarantine/deal tables"
+      ],
+      "verification": [
+        "Cron/queue run creates quarantine items",
+        "Email linked to deal"
+      ],
+      "done": "Ingestion active and producing rows"
+    },
+    {
+      "issue_id": "ZK-ISSUE-0003",
+      "phase": "Phase 3",
+      "tasks": [
+        "Approve quarantine -> create deal",
+        "Idempotency guard"
+      ],
+      "verification": [
+        "Approve item yields new deal row"
+      ],
+      "done": "Single action creates deal and links quarantine"
+    },
+    {
+      "issue_id": "ZK-ISSUE-0004",
+      "phase": "Phase 4",
+      "tasks": [
+        "Create DataRoom folders on deal creation"
+      ],
+      "verification": [
+        "Folder exists for new deal"
+      ],
+      "done": "Deal has folder and path stored"
+    },
+    {
+      "issue_id": "ZK-ISSUE-0005",
+      "phase": "Phase 0",
+      "tasks": [
+        "Add dashboard auth"
+      ],
+      "verification": [
+        "Unauth requests fail with 401/403"
+      ],
+      "done": "Only authenticated users access dashboard"
+    },
+    {
+      "issue_id": "ZK-ISSUE-0006",
+      "phase": "Phase 2",
+      "tasks": [
+        "Update UI to /process"
+      ],
+      "verification": [
+        "POST /process returns 200"
+      ],
+      "done": "UI resolves quarantine without 404"
+    },
+    {
+      "issue_id": "ZK-ISSUE-0007",
+      "phase": "Phase 3",
+      "tasks": [
+        "Align stage taxonomy",
+        "Fix DB default"
+      ],
+      "verification": [
+        "No invalid stages in DB"
+      ],
+      "done": "All components use canonical stages"
+    },
+    {
+      "issue_id": "ZK-ISSUE-0008",
+      "phase": "Phase 1",
+      "tasks": [
+        "Migrate actions engine to Postgres"
+      ],
+      "verification": [
+        "Actions appear in zakops.actions only"
+      ],
+      "done": "SQLite action DB unused"
+    },
+    {
+      "issue_id": "ZK-ISSUE-0009",
+      "phase": "Phase 2",
+      "tasks": [
+        "Add create_deal agent tool with HITL"
+      ],
+      "verification": [
+        "Agent create_deal works after approval"
+      ],
+      "done": "Agent can create deals via backend"
+    },
+    {
+      "issue_id": "ZK-ISSUE-0010",
+      "phase": "Phase 4",
+      "tasks": [
+        "RAG health checks",
+        "Index deals"
+      ],
+      "verification": [
+        "search_deals returns results"
+      ],
+      "done": "RAG service verified and indexed"
+    },
+    {
+      "issue_id": "ZK-ISSUE-0011",
+      "phase": "Phase 0",
+      "tasks": [
+        "Add correlation_id propagation"
+      ],
+      "verification": [
+        "Same correlation_id appears in agent + backend logs"
+      ],
+      "done": "Full traceability across services"
+    },
+    {
+      "issue_id": "ZK-ISSUE-0012",
+      "phase": "Phase 2",
+      "tasks": [
+        "Add notes endpoint in orchestration or update UI"
+      ],
+      "verification": [
+        "POST /api/deals/{id}/note returns 200"
+      ],
+      "done": "Notes endpoint matches UI"
+    },
+    {
+      "issue_id": "ZK-ISSUE-0013",
+      "phase": "Phase 4",
+      "tasks": [
+        "Implement /actions/capabilities and /metrics"
+      ],
+      "verification": [
+        "Endpoints return data (not 501)"
+      ],
+      "done": "Capabilities and metrics visible"
+    },
+    {
+      "issue_id": "ZK-ISSUE-0014",
+      "phase": "Phase 1",
+      "tasks": [
+        "Remove sys.path hack and legacy imports"
+      ],
+      "verification": [
+        "rg shows no sys.path hack"
+      ],
+      "done": "Executors use canonical backend code"
+    },
+    {
+      "issue_id": "ZK-ISSUE-0015",
+      "phase": "Phase 5",
+      "tasks": [
+        "Add approval expiry background job"
+      ],
+      "verification": [
+        "Pending approvals auto-expire"
+      ],
+      "done": "No stale approvals remain"
+    },
+    {
+      "issue_id": "ZK-ISSUE-0016",
+      "phase": "Phase 3",
+      "tasks": [
+        "Add duplicate detection"
+      ],
+      "verification": [
+        "Duplicate create returns 409"
+      ],
+      "done": "Duplicates prevented or merged"
+    },
+    {
+      "issue_id": "ZK-ISSUE-0017",
+      "phase": "Phase 5",
+      "tasks": [
+        "Implement retention/cleanup policy"
+      ],
+      "verification": [
+        "Archived deals cleaned after policy"
+      ],
+      "done": "Retention job in place"
+    },
+    {
+      "issue_id": "ZK-ISSUE-0018",
+      "phase": "Phase 2",
+      "tasks": [
+        "Zod passthrough + schema sync"
+      ],
+      "verification": [
+        "Schema mismatches logged"
+      ],
+      "done": "No silent drop of deals"
+    },
+    {
+      "issue_id": "ZK-ISSUE-0019",
+      "phase": "Phase 4",
+      "tasks": [
+        "Wire action executors into workflows"
+      ],
+      "verification": [
+        "Executor run creates action record"
+      ],
+      "done": "Executors accessible and tracked"
+    },
+    {
+      "issue_id": "ZK-ISSUE-0020",
+      "phase": "Phase 5",
+      "tasks": [
+        "Implement SSE/WebSocket updates"
+      ],
+      "verification": [
+        "/api/events/stream returns events"
+      ],
+      "done": "UI receives realtime updates"
+    },
+    {
+      "issue_id": "ZK-ISSUE-0021",
+      "phase": "Phase 4",
+      "tasks": [
+        "Add scheduling/reminders"
+      ],
+      "verification": [
+        "Reminders fire for overdue deals"
+      ],
+      "done": "Scheduler running with notifications"
+    },
+    {
+      "issue_id": "ZK-ISSUE-0022",
+      "phase": "Phase 3",
+      "tasks": [
+        "Add archive/restore endpoints"
+      ],
+      "verification": [
+        "/archive and /restore endpoints work"
+      ],
+      "done": "Archive/restore supported"
+    }
+  ],
+  "prioritized_backlog": [
+    {
+      "id": "ZK-ISSUE-0001",
+      "priority": "P0",
+      "effort": "L",
+      "owner": "backend/data",
+      "dependencies": "Decision: source-of-truth DB",
+      "verification": "Single Postgres row created from all paths",
+      "outcome": "Split-brain eliminated"
+    },
+    {
+      "id": "ZK-ISSUE-0002",
+      "priority": "P0",
+      "effort": "M",
+      "owner": "infra/data",
+      "dependencies": "Phase 1 + Phase 3",
+      "verification": "Ingestion creates quarantine items",
+      "outcome": "Email ingestion active"
+    },
+    {
+      "id": "ZK-ISSUE-0003",
+      "priority": "P1",
+      "effort": "M",
+      "owner": "backend",
+      "dependencies": "Phase 1",
+      "verification": "Approve -> deal created",
+      "outcome": "Quarantine approval creates deal"
+    },
+    {
+      "id": "ZK-ISSUE-0004",
+      "priority": "P1",
+      "effort": "M",
+      "owner": "backend/infra",
+      "dependencies": "Phase 1",
+      "verification": "Folder created for new deal",
+      "outcome": "DataRoom folders consistent"
+    },
+    {
+      "id": "ZK-ISSUE-0005",
+      "priority": "P1",
+      "effort": "M",
+      "owner": "frontend/security",
+      "dependencies": "Auth decision",
+      "verification": "Unauthorized access blocked",
+      "outcome": "Dashboard secured"
+    },
+    {
+      "id": "ZK-ISSUE-0006",
+      "priority": "P1",
+      "effort": "S",
+      "owner": "frontend/backend",
+      "dependencies": "Phase 2",
+      "verification": "/process endpoint works",
+      "outcome": "Quarantine UI works"
+    },
+    {
+      "id": "ZK-ISSUE-0007",
+      "priority": "P1",
+      "effort": "M",
+      "owner": "backend/data",
+      "dependencies": "Deal taxonomy decision",
+      "verification": "Stage mismatch eliminated",
+      "outcome": "Single stage model"
+    },
+    {
+      "id": "ZK-ISSUE-0008",
+      "priority": "P1",
+      "effort": "M",
+      "owner": "backend/data",
+      "dependencies": "Phase 1",
+      "verification": "Actions stored in Postgres",
+      "outcome": "Unified actions"
+    },
+    {
+      "id": "ZK-ISSUE-0009",
+      "priority": "P2",
+      "effort": "S",
+      "owner": "agent/backend",
+      "dependencies": "Phase 2",
+      "verification": "Agent create_deal tool works",
+      "outcome": "Agent can create deals with HITL"
+    },
+    {
+      "id": "ZK-ISSUE-0010",
+      "priority": "P2",
+      "effort": "M",
+      "owner": "infra/agent",
+      "dependencies": "Phase 4",
+      "verification": "RAG health OK + search_deals returns results",
+      "outcome": "RAG integration verified"
+    },
+    {
+      "id": "ZK-ISSUE-0011",
+      "priority": "P2",
+      "effort": "M",
+      "owner": "backend/agent",
+      "dependencies": "Phase 0",
+      "verification": "correlation_id links logs",
+      "outcome": "Unified audit trail"
+    },
+    {
+      "id": "ZK-ISSUE-0012",
+      "priority": "P2",
+      "effort": "S",
+      "owner": "frontend/backend",
+      "dependencies": "Phase 2",
+      "verification": "Notes endpoint works",
+      "outcome": "Deal notes functional"
+    },
+    {
+      "id": "ZK-ISSUE-0013",
+      "priority": "P2",
+      "effort": "S",
+      "owner": "backend",
+      "dependencies": "Phase 4",
+      "verification": "Capabilities/metrics return 200",
+      "outcome": "Actions UI functional"
+    },
+    {
+      "id": "ZK-ISSUE-0014",
+      "priority": "P2",
+      "effort": "S",
+      "owner": "backend",
+      "dependencies": "Phase 1",
+      "verification": "No sys.path hacks",
+      "outcome": "Legacy hacks removed"
+    },
+    {
+      "id": "ZK-ISSUE-0015",
+      "priority": "P3",
+      "effort": "S",
+      "owner": "agent/backend",
+      "dependencies": "Phase 5",
+      "verification": "Expired approvals auto-closed",
+      "outcome": "Approval queue clean"
+    },
+    {
+      "id": "ZK-ISSUE-0016",
+      "priority": "P2",
+      "effort": "S",
+      "owner": "backend/data",
+      "dependencies": "Phase 3",
+      "verification": "Duplicate create returns 409",
+      "outcome": "Duplicate deals prevented"
+    },
+    {
+      "id": "ZK-ISSUE-0017",
+      "priority": "P3",
+      "effort": "M",
+      "owner": "backend/infra",
+      "dependencies": "Phase 5",
+      "verification": "Cleanup job removes aged deals",
+      "outcome": "Retention policy enforced"
+    },
+    {
+      "id": "ZK-ISSUE-0018",
+      "priority": "P2",
+      "effort": "S",
+      "owner": "frontend",
+      "dependencies": "Phase 2",
+      "verification": "Schema mismatch logged",
+      "outcome": "No silent UI drops"
+    },
+    {
+      "id": "ZK-ISSUE-0019",
+      "priority": "P2",
+      "effort": "L",
+      "owner": "backend/agent",
+      "dependencies": "Phase 4",
+      "verification": "Executors wired + tracked",
+      "outcome": "Actions usable"
+    },
+    {
+      "id": "ZK-ISSUE-0020",
+      "priority": "P2",
+      "effort": "M",
+      "owner": "backend/frontend",
+      "dependencies": "Phase 5",
+      "verification": "SSE streams updates",
+      "outcome": "Realtime updates"
+    },
+    {
+      "id": "ZK-ISSUE-0021",
+      "priority": "P2",
+      "effort": "M",
+      "owner": "backend",
+      "dependencies": "Phase 4",
+      "verification": "Reminders fire",
+      "outcome": "Scheduling available"
+    },
+    {
+      "id": "ZK-ISSUE-0022",
+      "priority": "P3",
+      "effort": "S",
+      "owner": "backend",
+      "dependencies": "Phase 3",
+      "verification": "Archive/restore endpoints work",
+      "outcome": "Archive supported"
+    }
+  ]
+}

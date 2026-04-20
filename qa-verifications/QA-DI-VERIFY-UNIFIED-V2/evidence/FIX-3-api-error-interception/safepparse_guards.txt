@@ -1,0 +1,4 @@
+=== F3.3: safeParse pre-guards ===
+safeParse calls: 19
+Platform-level guard: isErrorPayload() in apiFetch (covers all downstream calls)
+VERDICT: PASS (platform-level interception covers all safeParse calls)

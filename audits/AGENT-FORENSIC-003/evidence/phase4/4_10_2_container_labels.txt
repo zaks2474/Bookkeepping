@@ -1,0 +1,19 @@
+=== CHECK 4.10.2: Container/Volume Labeling ===
+Timestamp: 2026-02-03T13:19:28-06:00
+
+=== Postgres Containers ===
+NAMES     STATUS    PORTS
+NAMES                       STATUS                  PORTS
+zakops-backend-postgres-1   Up 2 hours (healthy)    
+docker-postgres-1           Created                 
+zakops-postgres-1           Up 27 hours (healthy)   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp
+NAMES             STATUS                  PORTS
+zakops-agent-db   Up 32 hours (healthy)   5432/tcp
+rag-db            Up 32 hours             0.0.0.0:5434->5432/tcp, [::]:5434->5432/tcp
+
+=== Docker Volumes (db/postgres/agent/backend) ===
+local     3f5510cf4de2a5619e9c59b8aabe0eda246111d1cf21741db864db5e92a35ff3
+local     agent-api_agent-postgres-data
+local     crawl4ai-rag_postgres_data
+local     docker_postgres-data
+local     zakops_postgres_data

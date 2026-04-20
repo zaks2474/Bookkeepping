@@ -1,0 +1,19 @@
+=== VF-01: AUTOSYNC Markers in All 3 Target Files (AC-1) ===
+
+1. /home/zaks/.codex/AGENTS.md
+   - Line 125: <!-- AUTOSYNC:surface_table_start --> ✓
+   - Line 145: <!-- AUTOSYNC:surface_table_end --> ✓
+   - Marker count: 2 ✓
+
+2. /home/zaks/zakops-agent-api/.agents/AGENTS.md
+   - Line 72: <!-- AUTOSYNC:surface_table_start --> ✓
+   - Line 92: <!-- AUTOSYNC:surface_table_end --> ✓
+   - Marker count: 2 ✓
+   - Detailed S1-S8 descriptions at lines 32-68 are OUTSIDE markers (preserved) ✓
+
+3. /home/zaks/zakops-agent-api/GEMINI.md
+   - Line 13: <!-- AUTOSYNC:surface_table_start --> ✓
+   - Line 33: <!-- AUTOSYNC:surface_table_end --> ✓
+   - Marker count: 2 ✓
+
+VERDICT: PASS — All 3 files have exactly 2 markers each

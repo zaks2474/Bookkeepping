@@ -1,0 +1,3 @@
+/home/zaks/zakops-backend/src/api/orchestration/main.py:273:    injection_metadata: dict | None = None  # LangSmith run_id, agent version, etc.
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1516:    if item.injection_metadata:
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1517:        raw_content["injection_metadata"] = item.injection_metadata

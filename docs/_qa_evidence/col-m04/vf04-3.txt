@@ -1,0 +1,2 @@
+CREATE INDEX IF NOT EXISTS idx_entity_graph_name ON zakops.deal_entity_graph(entity_type, normalized_name);
+CREATE INDEX IF NOT EXISTS idx_entity_graph_deal ON zakops.deal_entity_graph(deal_id);

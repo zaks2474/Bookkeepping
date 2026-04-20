@@ -1,0 +1,44 @@
+=== QA-2.4: T1.6 Action Engine ===
+--- TEST 1: actions table in Postgres ---
+                                       Table "zakops.actions"
+      Column       |           Type           | Collation | Nullable |           Default            
+-------------------+--------------------------+-----------+----------+------------------------------
+ action_id         | character varying(50)    |           | not null | 
+ deal_id           | character varying(20)    |           |          | 
+ correlation_id    | uuid                     |           |          | 
+ action_type       | character varying(100)   |           | not null | 
+ title             | character varying(255)   |           |          | 
+ description       | text                     |           |          | 
+ status            | character varying(50)    |           |          | 'pending'::character varying
+ priority          | integer                  |           |          | 0
+ agent_type        | character varying(100)   |           |          | 
+ agent_config      | jsonb                    |           |          | '{}'::jsonb
+ result            | jsonb                    |           |          | '{}'::jsonb
+ error_message     | text                     |           |          | 
+ requires_approval | boolean                  |           |          | false
+ approved_by       | uuid                     |           |          | 
+ approved_at       | timestamp with time zone |           |          | 
+ created_at        | timestamp with time zone |           | not null | now()
+ updated_at        | timestamp with time zone |           | not null | now()
+ started_at        | timestamp with time zone |           |          | 
+ completed_at      | timestamp with time zone |           |          | 
+ trace_id          | uuid                     |           |          | 
+ causation_id      | uuid                     |           |          | 
+ operator_id       | uuid                     |           |          | 
+ run_id            | uuid                     |           |          | 
+ idempotency_key   | character varying(64)    |           |          | 
+ initiator_type    | character varying(32)    |           |          | 'user'::character varying
+ reasoning         | text                     |           |          | 
+ reviewed_at       | timestamp with time zone |           |          | 
+
+--- TEST 2: Actions count in Postgres ---
+ action_count 
+--------------
+            0
+(1 row)
+
+
+--- TEST 3: No SQLite for deal state ---
+PASS: No SQLite file for deal state
+
+=== QA-2.4 VERDICT: PASS ===

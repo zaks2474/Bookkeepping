@@ -1,0 +1,5 @@
+Line 131: async def record_history(self, deal_id, version, snapshot, trigger_type, ...)
+---
+Writes to: zakops.deal_brain_history (line 145)
+Version tracking: version parameter (line 134), ON CONFLICT (deal_id, version) DO NOTHING (line 148)
+VERDICT: PASS

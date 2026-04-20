@@ -1,0 +1,5 @@
+316:            highlighted={highlightedStat === 'runs'}
+318:              document.getElementById('runs-section')?.scrollIntoView({ behavior: 'smooth' });
+347:            highlightedSection && highlightedSection !== 'runs' && 'ring-2 ring-primary bg-primary/5 p-2 -m-2'
+414:          id="runs-section"
+417:            highlightedStat === 'runs' && 'ring-2 ring-primary bg-primary/5 p-2 -m-2'

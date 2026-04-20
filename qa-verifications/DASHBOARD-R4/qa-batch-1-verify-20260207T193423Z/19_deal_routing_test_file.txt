@@ -1,0 +1,27 @@
+import { test, expect } from '@playwright/test';
+
+test.describe('deal routing and create', () => {
+  test('navigate to /deals/new shows create form', async ({ page }) => {
+    await page.goto('/deals/new');
+    await expect(page.locator('body')).toBeVisible();
+    // The create form should have a deal name input and submit button
+    await expect(page.getByTestId('deal-name-input')).toBeVisible();
+    await expect(page.getByTestId('create-deal-submit')).toBeVisible();
+  });
+
+  test('/deals/new form creates deal and redirects', async ({ page }) => {
+    await page.goto('/deals/new');
+    await page.getByTestId('deal-name-input').fill('Playwright Test Deal');
+    await page.getByTestId('create-deal-submit').click();
+    // Should redirect to /deals/DL-XXXX
+    await page.waitForURL(/\/deals\/DL-\d+/, { timeout: 10000 });
+    await expect(page.locator('body')).toBeVisible();
+  });
+
+  test('/deals/GLOBAL shows invalid ID page', async ({ page }) => {
+    await page.goto('/deals/GLOBAL');
+    await expect(page.locator('body')).toBeVisible();
+    // Should show "Invalid Deal ID" text, not "Failed to load deal"
+    await expect(page.getByText('Invalid Deal ID')).toBeVisible({ timeout: 5000 });
+  });
+});

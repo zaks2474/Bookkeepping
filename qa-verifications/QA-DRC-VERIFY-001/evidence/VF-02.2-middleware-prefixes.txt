@@ -1,0 +1,15 @@
+  const handledByRoutes = [
+    '/api/actions/',
+    '/api/chat',
+    '/api/events',
+    '/api/agent/',
+    '/api/alerts',
+    '/api/checkpoints',
+    '/api/deferred-actions',
+    '/api/pipeline',
+    '/api/quarantine/health',
+    '/api/quarantine/',
+    '/api/settings/',
+    '/api/onboarding',
+    '/api/user',
+  ];

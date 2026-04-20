@@ -1,0 +1,2 @@
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:288:SELECT create_monthly_partitions('turn_snapshots', 3);
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:289:SELECT create_monthly_partitions('cost_ledger', 3);

@@ -1,0 +1,39 @@
+=== R0.10: Phantom Success Bug Reproduction Evidence ===
+
+Thread ID: qa-phantom-1770098432
+Timestamp: 2026-02-03T06:01:26Z
+
+--- Log Sequence (from docker logs zakops-agent-api) ---
+
+06:01:26.394927Z - approval_claimed_atomic
+06:01:26.404798Z - tool_execution_claimed
+06:01:26.408041Z - approval_gate_interrupt (pending_tools=['transition_deal'])
+06:01:26.411137Z - resume_after_approval_success (3ms after interrupt!)
+06:01:26.418247Z - approval_approved
+
+--- MISSING Logs (never appear) ---
+- executing_approved_tool
+- tool_execution_success
+- transition_deal_verified_success
+- Any call to backend API
+
+--- Analysis ---
+
+Time from interrupt to "success": ~3ms
+This is impossible for a real tool execution that would need:
+  - HTTP call to backend API (typical latency: 50-500ms)
+  - Database transaction on backend
+  - Response parsing
+
+The graph.ainvoke() with interrupt_resume returns immediately
+WITHOUT routing to execute_approved_tools node.
+
+--- Root Cause Confirmed ---
+
+The LangGraph resume does NOT work as implemented:
+1. ainvoke(interrupt_resume={...}) does not pass the value to interrupt()
+2. The approval_gate node is not reached again after resume
+3. Graph returns existing state without executing tool
+4. Code assumes success at agent.py:407,452
+
+=== VERDICT: BUG CONFIRMED ===

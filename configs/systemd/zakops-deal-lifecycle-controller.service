@@ -1,0 +1,14 @@
+[Unit]
+Description=ZakOps Deal Lifecycle Controller (propose-only)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=zaks
+WorkingDirectory=/home/zaks/scripts
+Environment=PYTHONUNBUFFERED=1
+Environment=DATAROOM_ROOT=/home/zaks/DataRoom
+Environment=ZAKOPS_STATE_DB=/home/zaks/DataRoom/.deal-registry/ingest_state.db
+ExecStart=/usr/bin/python3 /home/zaks/scripts/deal_lifecycle_controller.py
+

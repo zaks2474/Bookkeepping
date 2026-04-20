@@ -1,0 +1,5 @@
+=== DROP-C5: PG-006 (/deals STATUSES missing 'archived') ===
+VERDICT: ADDRESSED
+Evidence: V-L3.5 confirms deals/page.tsx uses ALL_STAGES_ORDERED for
+stage filter (includes archived) and status filter includes 'archived'.
+The PG-006 gap has been resolved.

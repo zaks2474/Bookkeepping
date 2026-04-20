@@ -1,0 +1,41 @@
+{
+  "verdict": "FAIL",
+  "cycle": 1,
+  "early_exit": false,
+  "summary": "Gate failed due to pre-existing TypeScript errors. Additionally, a key acceptance criterion was missed: `/apps/dashboard/src/app/dashboard/page.tsx` was not refactored to use the new centralized `getAgentActivity` API call, which was a primary objective of GAP-003.",
+  "blockers": [
+    {
+      "file": "N/A",
+      "symptom": "The verification gate failed with exit code 1, caused by pre-existing TypeScript errors reported by `npx tsc --noEmit`.",
+      "resolution": "All TypeScript errors must be resolved for the quality gate to pass."
+    }
+  ],
+  "majors": [
+    {
+      "file": "/apps/dashboard/src/app/dashboard/page.tsx",
+      "symptom": "The acceptance criteria requires `/apps/dashboard/src/app/dashboard/page.tsx` to use the new `getAgentActivity()` function, but the builder report states 'No changes needed' because it uses a sub-component with its own hook. This fails to meet the centralization requirement.",
+      "resolution": "Refactor `/apps/dashboard/src/app/dashboard/page.tsx` to use the centralized `getAgentActivity()` function directly, removing the old fetch implementation."
+    }
+  ],
+  "minors": [],
+  "spec_compliance": {
+    "endpoints_match": true,
+    "schemas_match": true,
+    "status_strings_match": true,
+    "auth_matches": true,
+    "db_mode_matches": true,
+    "streaming_matches": true,
+    "local_llm_lane_verified": true,
+    "mocks_disabled_for_gates": true
+  },
+  "next_actions_for_builder": [
+    "Resolve all pre-existing TypeScript errors to ensure `npx tsc --noEmit` passes.",
+    "Refactor `/apps/dashboard/src/app/dashboard/page.tsx` to directly import and use the `getAgentActivity()` function from `/apps/dashboard/src/lib/api.ts`."
+  ],
+  "evidence": [
+    "Gate exit code: 1",
+    "Builder Report: 'Pre-existing TypeScript errors found (not in new code)'",
+    "Builder Report: '/apps/dashboard/src/app/dashboard/page.tsx - No changes needed - Uses AgentActivityWidget component which has its own hook'",
+    "Acceptance Criteria: '[ ] /apps/dashboard/src/app/dashboard/page.tsx uses `getAgentActivity()` instead of raw fetch'"
+  ]
+}

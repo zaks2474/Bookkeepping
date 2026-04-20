@@ -1,0 +1,21 @@
+=== VF-02.5 E2E BOARD + EXPORT ASSERTIONS ===
+
+Playwright --grep 'board|export' matched ZERO tests in dashboard-worldclass-remediation.spec.ts
+
+Available tests in that spec:
+  [chromium] › dashboard-worldclass-remediation.spec.ts:22:5 › F-01: dashboard page loads with scroll container
+  [chromium] › dashboard-worldclass-remediation.spec.ts:37:5 › F-02: agent drawer has "Full chat" link
+  [chromium] › dashboard-worldclass-remediation.spec.ts:53:5 › F-03: no toast appears during passive dashboard use
+  [chromium] › dashboard-worldclass-remediation.spec.ts:67:5 › F-04: deals page loads without runtime crash
+  [chromium] › dashboard-worldclass-remediation.spec.ts:83:5 › F-05: quarantine page loads without ghost characters in inputs
+  [chromium] › dashboard-worldclass-remediation.spec.ts:107:5 › F-06: chat page has history toggle button
+  [chromium] › dashboard-worldclass-remediation.spec.ts:117:5 › F-08: onboarding page exists and loads
+  [chromium] › dashboard-worldclass-remediation.spec.ts:128:5 › F-09: settings page loads with all sections
+  [chromium] › dashboard-worldclass-remediation.spec.ts:140:5 › F-10: settings page has back-to-dashboard link
+  [chromium] › dashboard-worldclass-remediation.spec.ts:154:5 › F-10: settings page content is scrollable
+  [chromium] › dashboard-worldclass-remediation.spec.ts:175:5 › chat page has provider selector and scope controls
+
+Closest match: F-04 'deals page loads without runtime crash' (covers board load path)
+No export-specific E2E test exists in this spec.
+
+Verdict: INFO — no E2E tests matched --grep 'board|export'

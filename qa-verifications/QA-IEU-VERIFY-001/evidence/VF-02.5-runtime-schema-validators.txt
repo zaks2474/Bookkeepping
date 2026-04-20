@@ -1,0 +1,73 @@
+=== VF-02.5 RUNTIME SCHEMA VALIDATOR EXECUTION ===
+=== Performance Budget Schema Validation ===
+
+  PASS: PERFORMANCE-BUDGET.md exists
+  PASS: Schema file exists
+  PASS: Section found: API Latency
+  PASS: Section found: Bundle Size
+  PASS: Section found: Payload Size
+  PASS: Section found: Spec Size
+  PASS: Section found: Ownership
+  PASS: Has millisecond/second targets (8 references)
+  PASS: Has megabyte targets (2 references)
+  PASS: Has kilobyte targets (8 references)
+  PASS: Threshold count: 16 (minimum 5)
+  PASS: Measurement methodology documented
+  PASS: Advisory/strict mode semantics documented
+
+Performance Budget Schema Validation: PASS (13 pass, 0 fail, 0 warn)
+=== Governance Anchor Schema Validation ===
+
+  PASS: Schema file exists
+
+--- design-system.md ---
+  PASS: design-system.md exists
+  PASS: design-system.md has frontmatter
+  PASS: Anchor: Skill Preload
+  PASS: Anchor: Responsive Breakpoint
+  PASS: Anchor: Z-Index
+  PASS: Anchor: Dark Mode
+  PASS: Anchor: Animation Performance
+  PASS: Anchor: State Management
+  PASS: Anchor: Anti-convergence
+  PASS: Anchor: Data Fetching
+  PASS: Anchor: Error Handling
+  PASS: Anchor: CSS Architecture
+  PASS: Anchor: Import Discipline
+  design-system.md: 11/11 anchors
+
+--- accessibility.md ---
+  PASS: accessibility.md exists
+  PASS: accessibility.md has frontmatter
+  PASS: Anchor: Semantic Structure
+  PASS: Anchor: Keyboard Navigation
+  PASS: Anchor: Color Contrast
+  PASS: Anchor: ARIA
+  PASS: Anchor: Reduced Motion
+  accessibility.md: 5/5 anchors
+
+--- component-patterns.md ---
+  PASS: component-patterns.md exists
+  PASS: component-patterns.md has frontmatter
+  PASS: Anchor: Server vs Client
+  PASS: Anchor: Loading.*Empty.*Error
+  PASS: Anchor: Suspense
+  PASS: Anchor: State Ownership
+  PASS: Anchor: Composability
+  component-patterns.md: 5/5 anchors
+
+Governance Anchor Schema Validation: PASS (28 pass, 0 fail, 0 warn)
+=== Manifest Contract Section Schema Validation ===
+
+  PASS: Manifest file exists
+  PASS: Schema file exists
+  PASS: Contract Surfaces header found
+  PASS: Header references 14 surfaces
+  PASS: Entry count: 14 (expected 14)
+  PASS: All surface IDs S1-S14 present
+  PASS: All entries have valid status (present or PASS)
+  PASS: Generation timestamp present
+  PASS: All S10-S14 labels present (5/5)
+
+Manifest Contract Section Validation: PASS (9 pass, 0 fail, 0 warn)
+EXIT=0

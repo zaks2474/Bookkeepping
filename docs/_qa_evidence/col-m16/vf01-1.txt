@@ -1,0 +1,9 @@
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/chatbot.py:398:    format: str = Query("markdown", regex="^(markdown|json)$"),
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/export_service.py:7:GET /api/v1/chatbot/threads/{id}/export?format=markdown
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/export_service.py:26:        fmt: str = "markdown",
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/export_service.py:33:            fmt: Export format — "markdown" (MVP) or "json"
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/export_service.py:51:        # Default: markdown
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/export_service.py:52:        content = self._export_markdown(thread, messages)
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/export_service.py:56:            "content_type": "text/markdown",
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/export_service.py:59:    def _export_markdown(self, thread, messages) -> str:
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/export_service.py:201:        export = await self.export_thread(thread_id, user_id, fmt="markdown")

@@ -1,0 +1,27 @@
+=== CHECK 4.9.1: Pre-Chaos Approval Creation ===
+Timestamp: 2026-02-03T13:17:21-06:00
+Thread ID: forensic-003-chaos-1770146241
+
+Invoke Response:
+{
+    "thread_id": "forensic-003-chaos-1770146241",
+    "status": "awaiting_approval",
+    "content": null,
+    "pending_approval": {
+        "approval_id": "b407e12b-d18a-4291-841c-84eaa9a6b3bf",
+        "tool": "transition_deal",
+        "args": {
+            "deal_id": "DL-CHAOS",
+            "from_stage": "inbound",
+            "to_stage": "screening",
+            "reason": "chaos test"
+        },
+        "permission_tier": "CRITICAL",
+        "requested_by": "chaos-test",
+        "requested_at": "2026-02-03T19:17:23.022656Z"
+    },
+    "actions_taken": [],
+    "error": null
+}
+
+Approval ID from response: b407e12b-d18a-4291-841c-84eaa9a6b3bf

@@ -1,0 +1,27 @@
+=== QA-4.5: T3.7 Approval Audit ===
+--- approval_audit table in backend ---
+time="2026-02-04T01:53:26-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-04T01:53:26-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+service "postgres" is not running
+
+--- audit_log table in agent DB ---
+time="2026-02-04T01:53:27-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-04T01:53:27-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+                                    Table "public.audit_log"
+      Column       |           Type           | Collation | Nullable |         Default          
+-------------------+--------------------------+-----------+----------+--------------------------
+ id                | character varying(36)    |           | not null | uuid_generate_v4()::text
+ created_at        | timestamp with time zone |           | not null | now()
+ actor_id          | character varying(255)   |           | not null | 
+ event_type        | character varying(100)   |           | not null | 
+ thread_id         | character varying(255)   |           |          | 
+ approval_id       | character varying(36)    |           |          | 
+ tool_execution_id | character varying(36)    |           |          | 
+ payload           | jsonb                    |           | not null | '{}'::jsonb
+Indexes:
+    "audit_log_pkey" PRIMARY KEY, btree (id)
+    "idx_audit_log_actor_id" btree (actor_id)
+    "idx_audit_log_approval_id" btree (approval_id)
+    "idx_audit_log_created_at" btree (created_at)
+    "idx_audit_log_event_type" btree (event_type)
+    "idx_audit_log_thread_id" btree (thread_id)

@@ -1,0 +1,32 @@
+=== VF-05.2 CHAT HISTORY SESSION RECALL ===
+44:  getChatSession,
+126:  sessionId: z.string().nullable(),
+137:function saveSession(
+138:  sessionId: string | null,
+147:      sessionId,
+177:function loadSession(): StoredSession | null {
+201:  const [sessionId, setSessionId] = useState<string | null>(null);
+254:    const restoreSession = async () => {
+255:      // First, try localStorage to get sessionId
+256:      const stored = loadSession();
+257:      const storedSessionId = stored?.sessionId;
+259:      // If we have a sessionId, try loading from backend (SQLite-backed)
+262:          const backendSession = await getChatSession(storedSessionId);
+295:        setSessionId(stored.sessionId);
+315:    restoreSession();
+321:      saveSession(sessionId, scopeType, selectedDealId, messages, lastTimings);
+323:  }, [messages, sessionId, scopeType, selectedDealId, lastTimings, isInitialized]);
+464:        sessionId || undefined,
+645:    if (!sessionId) {
+656:        sessionId,
+771:    const archiveId = sessionId || `local-${Date.now()}`;
+773:    const currentData = loadSession();
+815:      setSessionId(archived.sessionId);
+838:          {sessionId && (
+840:              Session: {sessionId}
+920:            New Chat
+967:              activeSessionId={sessionId}
+1122:              sessionId={sessionId}
+1546:  sessionId,
+1552:  sessionId: string | null;
+1575:            <span className='font-mono'>{sessionId || 'none'}</span>

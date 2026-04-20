@@ -1,0 +1,26 @@
+=== CHECK 4.10.1: DB Identity Proof ===
+Timestamp: 2026-02-03T13:19:19-06:00
+
+=== Agent API Database ===
+Container: zakops-agent-api
+DATABASE_URL (masked):
+postgresql:***@db:5432/zakops_agent
+
+DB Identity Query:
+ current_database | inet_server_port 
+------------------+------------------
+ zakops_agent     |                 
+(1 row)
+
+
+=== Backend API Database ===
+Container: zakops-backend-backend-1
+DATABASE_URL (masked):
+postgresql:***@postgres:5432/zakops
+
+DB Identity Query:
+ current_database | inet_server_port 
+------------------+------------------
+ zakops           |                 
+(1 row)
+

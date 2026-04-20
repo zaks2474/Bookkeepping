@@ -1,0 +1,8 @@
+=== VF-03.1 DEAL ID REGEX ===
+84:function isValidDealId(id: string): boolean {
+86:  // Allow DL- pattern (digits or alphanumeric) or UUID
+87:  if (/^DL-[A-Za-z0-9]+$/i.test(id)) return true;
+96:  const validDealId = isValidDealId(dealId);
+--- Verify regex accepts alphanumeric ---
+regex_suffix_pattern=[A-Za-z0-9]+
+accepts_alpha=True

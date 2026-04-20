@@ -2,10 +2,9 @@
 
 Short, task-focused instructions. Fill in blanks and add more tasks as needed.
 
-## Restart Claude Code API
-1) `sudo systemctl restart claude-code-api`
-2) Verify: `curl -fsS http://localhost:8090/health`
-3) Check logs: `journalctl -u claude-code-api -n 100`
+## Restart Claude Code API (DECOMMISSIONED)
+> **Port 8090 is decommissioned.** The Claude Code FastAPI wrapper is no longer in use.
+> Chat is now handled by the Agent API at port 8095 via the dashboard at port 3003.
 
 ## Refresh snapshots manually
 1) `cd /home/zaks/bookkeeping`
@@ -29,7 +28,7 @@ Short, task-focused instructions. Fill in blanks and add more tasks as needed.
 2) `docker compose ls` (if compose stacks)
 3) Ports: `cat snapshots/docker-ports.txt`
 4) Networks: `cat snapshots/docker-networks-detail.txt`
-5) Health: `cd /home/zaks/bookkeeping && make health` (checks Claude API 8090, OpenWebUI 3000, vLLM 8000, ZakOps API 8080, RAG REST 8052; compose ps)
+5) Health: `cd /home/zaks/bookkeeping && make health` (checks Backend 8091, Dashboard 3003, Agent 8095, OpenWebUI 3000, vLLM 8000, RAG REST 8052; compose ps)
 
 ## Switch ZakOps API to Orchestrator mode (Phase 2)
 1) Enable orchestrator (router defaults to rules):
@@ -54,6 +53,25 @@ Short, task-focused instructions. Fill in blanks and add more tasks as needed.
 ## Add a new service entry to catalog
 1) Edit `docs/SERVICE-CATALOG.md`
 2) Add name, port, start/stop, config path, data path, logs, notes
+
+## Sync Dashboard Types (Hybrid Guardrail)
+1) `cd /home/zaks && make sync-types`
+2) Verify: exit 0 means OpenAPI fetch + codegen + format + tsc all passed
+3) If codegen fails: check backend is running (`curl -sf http://localhost:8091/health`)
+4) If tsc fails: fix type errors in `types/api.ts` (manual refinements may need updating)
+5) If OpenAPI spec changed: review `api-types.generated.ts` diff before committing
+
+## Troubleshoot Codegen Pipeline
+- **Backend not running:** `cd /home/zaks/zakops-agent-api && COMPOSE_PROJECT_NAME=zakops docker compose up -d --no-deps backend`
+- **Postgres restart loop:** Use `docker compose up -d --no-deps backend` (skips postgres dependency)
+- **Types out of sync:** Run `make sync-types` — codegen takes ~90-120ms
+- **Manual type mismatch:** Check `types/api.ts` hybrid types — nested interfaces (DealIdentifiers, CompanyInfo, etc.) may need updating if backend schema changed
+- **CI drift gate fails:** Run `make sync-types` locally and commit the updated `api-types.generated.ts`
+
+## Run Full Infrastructure Validation
+1) `cd /home/zaks && make validate-all`
+2) Runs: infra-check + sync-types + rag-routing + secret scan + enforcement audit
+3) All gates must PASS — investigate any failures before proceeding
 
 ## After moving networks (IP changed)
 1) `cd /home/zaks/bookkeeping && make health`
@@ -196,71 +214,37 @@ Short, task-focused instructions. Fill in blanks and add more tasks as needed.
 
 ## ZakOps Chat / LLM Operations
 
-### Check Chat health (all providers)
-1) `curl -s http://localhost:8090/api/chat/llm-health | jq`
-2) Look for `status: "healthy"` and `healthy_providers` list
-3) If `diagnostics` array present, review issues and `recommendations`
+> **Note:** The old Claude Code FastAPI wrapper on port 8090 is **decommissioned**.
+> Chat is now handled by the **Agent API** (port 8095) via the **Dashboard** (port 3003).
+> The agent uses Qwen 2.5 32B-Instruct-AWQ via local vLLM with LangGraph tool orchestration.
 
-### Verify vLLM model configuration
+### Check Agent API health
+1) `curl -s http://localhost:8095/health | jq`
+2) Check agent chat: open http://localhost:3003/chat in browser
+
+### Verify vLLM model
 1) Check running model: `curl -s http://localhost:8000/v1/models | jq '.data[0].id'`
-2) Check configured model in chat:
-   - `grep VLLM_MODEL /home/zaks/scripts/chat_llm_provider.py | head -1`
-   - `grep VLLM_MODEL /home/zaks/scripts/chat_orchestrator.py | head -1`
-3) Models must match! If mismatch, set env var:
-   - `export VLLM_MODEL="Qwen/Qwen2.5-32B-Instruct-AWQ"` (or actual model name)
-   - Or set `DEFAULT_MODEL` env var which is used as fallback
+2) vLLM serves Qwen2.5-32B-Instruct-AWQ on port 8000
+3) Agent API connects to vLLM internally via Docker network
 
-### Environment variables for Chat
-```bash
-# vLLM configuration (single source of truth)
-OPENAI_API_BASE=http://localhost:8000/v1     # Base URL for OpenAI-compatible API
-VLLM_MODEL=Qwen/Qwen2.5-32B-Instruct-AWQ     # Model name (must match vLLM)
-VLLM_TIMEOUT_MS=120000                        # Timeout (2 min)
+### Agent Chat timeout
+- Dashboard timeout: `AGENT_LOCAL_TIMEOUT` in `apps/dashboard/.env.local` (current: 180000ms = 3 min)
+- Agent needs ~108s for tool-using conversations (two LLM round-trips)
+- If chat returns "AI agent service is currently unavailable", increase timeout
 
-# Cloud LLM (Gemini) - disabled by default
-ALLOW_CLOUD_DEFAULT=false                     # Set true to enable Gemini
-GEMINI_API_KEY=...                           # Or use ~/.gemini_api file
-GEMINI_DAILY_BUDGET=5.0                      # USD per day
-GEMINI_RPM_LIMIT=60                          # Requests per minute
+### Test Chat
+1) Send a message via the dashboard at http://localhost:3003/chat
+2) Or test agent directly: `curl -s -X POST http://localhost:8095/api/v1/chatbot/chat -H 'Content-Type: application/json' -H 'Authorization: Bearer <token>' -d '{"messages":[{"role":"user","content":"How many deals do we have?"}]}'`
 
-# Feature flags
-CHAT_CACHE_ENABLED=true                      # Evidence caching
-CHAT_DETERMINISTIC_EXTENDED=true             # Extended pattern matching
-```
+### Troubleshoot Chat failures
+1) Check agent logs: `cd /home/zaks/zakops-agent-api && COMPOSE_PROJECT_NAME=zakops docker compose logs agent-api --tail=50`
+2) Check vLLM: `docker ps | grep vllm` and `curl -s http://localhost:8000/v1/models`
+3) Check dashboard logs for timeout errors
+4) Common issues:
+   - Timeout too short (increase `AGENT_LOCAL_TIMEOUT`)
+   - vLLM not running or OOM
+   - Agent API container not started
 
-### Restart Chat after config changes
-1) `sudo systemctl restart claude-code-api`
-2) Verify: `curl -s http://localhost:8090/api/chat/llm-health | jq '.status'`
-
-### Test deterministic queries (no LLM needed)
-1) Deal counts: `curl -s -X POST http://localhost:8090/api/chat/complete -H 'Content-Type: application/json' -d '{"query":"how many deals","scope":{"type":"global"}}' | jq '.model_used, .content'`
-2) Actions due: Same with query `"actions due today"`
-3) Should show `model_used: "direct-api"`
-
-### Test LLM queries
-1) `curl -s -X POST http://localhost:8090/api/chat/complete -H 'Content-Type: application/json' -d '{"query":"analyze the risk profile","scope":{"type":"global"}}' | jq '.model_used, .content[:100]'`
-2) Should show `model_used: "vllm"` or similar
-3) If shows `model_used: "degraded"`, check health endpoint for errors
-
-### Clear chat cache
-1) Cache stats: `curl -s http://localhost:8090/api/chat/llm-health | jq '.cache'`
-2) Cache is in-memory, restart API to clear:
-   - `sudo systemctl restart claude-code-api`
-
-### Troubleshoot "All providers failed"
-1) Check health: `curl -s http://localhost:8090/api/chat/llm-health | jq '.diagnostics, .recommendations'`
-2) Common issues:
-   - Model mismatch: Configured model doesn't exist in vLLM
-   - vLLM not running: `docker ps | grep vllm`
-   - Port mismatch: Check `OPENAI_API_BASE` vs actual vLLM port
-3) Test vLLM directly:
-   - `curl -s http://localhost:8000/v1/models | jq '.data[].id'`
-   - Should return model name
-
-### Run Chat smoke tests
-1) `cd /home/zaks/zakops-dashboard && ./smoke-test.sh`
-2) Checks: pages, API proxy, chat endpoints, deterministic queries, SSE progress, LLM path
-
-### View Chat performance benchmarks
-1) `cd /home/zaks/scripts && python3 chat_benchmark.py run`
-2) Or via Makefile: `cd /home/zaks/zakops-dashboard && make perf`
+### Run QA smoke tests
+1) `cd /home/zaks/zakops-agent-api/apps/backend && bash scripts/qa_smoke.sh`
+2) Checks: health endpoints, API responses, golden paths

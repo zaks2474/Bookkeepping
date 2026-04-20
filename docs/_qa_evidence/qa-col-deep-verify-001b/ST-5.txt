@@ -1,0 +1,5 @@
+=== Exponential decay in drift_detection.py ===
+137:        decayed = base_confidence * math.exp(-decay_rate * days_since)
+
+=== Import math or numpy ===
+12:import math

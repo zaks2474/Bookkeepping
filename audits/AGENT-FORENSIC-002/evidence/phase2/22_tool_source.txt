@@ -1,0 +1,103 @@
+=== STEP 2.2: Tool Source Inspection ===
+--- Find all tool definitions ---
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:54:@tool(args_schema=TransitionDealInput)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:152:@tool(args_schema=GetDealInput)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:198:@tool(args_schema=SearchDealsInput)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/__init__.py:8:from langchain_core.tools.base import BaseTool
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/__init__.py:17:tools: list[BaseTool] = [
+--- Tool file listing ---
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py
+--- Graph tool binding ---
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:92:        self.llm_service.bind_tools(tools)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:297:                pending_tools=[tc.tool_name for tc in state.pending_tool_calls],
+--- HITL tool list (which tools require approval?) ---
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:3:Extended to support HITL (Human-in-the-Loop) workflow with approval gates
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:4:for sensitive tool executions like transition_deal.
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:54:from app.models.approval import Approval, ApprovalStatus, ToolExecution
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:59:from app.schemas.agent import HITL_TOOLS, requires_approval
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:73:APPROVAL_TIMEOUT = int(getattr(settings, 'HITL_APPROVAL_TIMEOUT_SECONDS', 3600))
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:85:    and HITL approval gates.
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:220:            # Check for tool calls that require approval
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:222:                hitl_calls = [tc for tc in response_message.tool_calls if requires_approval(tc["name"])]
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:223:                if hitl_calls:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:224:                    # Store pending tool calls and go to approval gate
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:231:                        for tc in hitl_calls
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:237:                            "approval_status": "pending",
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:239:                        goto="approval_gate"
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:242:                    # Regular tool calls, no approval needed
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:277:    async def _approval_gate(self, state: GraphState, config: RunnableConfig) -> Command:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:278:        """Approval gate node - interrupts execution for HITL approval.
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:280:        This node is triggered when tool calls require human approval.
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:292:        if state.approval_status == "pending":
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:293:            # Interrupt and wait for approval
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:295:                "approval_gate_interrupt",
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:301:            approval_result = interrupt({
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:302:                "type": "approval_required",
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:308:            if approval_result.get("approved"):
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:310:                    update={"approval_status": "approved"},
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:315:                rejection_reason = approval_result.get("reason", "Action was rejected by user")
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:322:                        "approval_status": "rejected",
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:328:        elif state.approval_status == "approved":
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:332:            # No pending approval, continue normally
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:407:                "approval_status": None,
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:413:        """Create and configure the LangGraph workflow with HITL support.
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:423:                graph_builder.add_node("chat", self._chat, ends=["tool_call", "approval_gate", END])
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:425:                graph_builder.add_node("approval_gate", self._approval_gate, ends=["execute_approved_tools", "chat", END])
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:442:                # Compile with interrupt_before for approval gate
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:445:                    interrupt_before=["approval_gate"],  # HITL interrupt point
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:450:                    "graph_created_with_hitl",
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:454:                    interrupt_before=["approval_gate"],
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:466:    async def invoke_with_hitl(
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:473:        """Invoke the agent with HITL support.
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:475:        This method processes a message and may return a pending approval
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:476:        if the agent attempts to use a tool that requires human approval.
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:487:                - pending_approval: Approval info (if HITL triggered)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:519:            # Check if we hit an interrupt (pending approval)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:522:            if state.next and "approval_gate" in state.next:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:523:                # HITL interrupt - pending approval
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:526:                # Create approval record in database
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:531:                        approval = Approval(
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:542:                        db.add(approval)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:545:                        approval_id = approval.id
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:546:                        approval_tool_name = approval.tool_name
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:547:                        approval_tool_args = json.loads(approval.tool_args)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:548:                        approval_expires_at = approval.expires_at
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:549:                        approval_created_at = approval.created_at
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:552:                        "pending_approval": {
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:553:                            "approval_id": approval_id,
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:554:                            "tool_name": approval_tool_name,
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:555:                            "tool_args": approval_tool_args,
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:556:                            "description": f"Approve execution of {approval_tool_name}?",
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:557:                            "expires_at": approval_expires_at,
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:558:                            "requested_at": approval_created_at,
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:594:            logger.exception("invoke_with_hitl_failed", error=str(e))
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:597:    async def resume_after_approval(
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:603:        approval_id: str,
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:605:        """Resume the agent after approval is granted.
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:612:            approval_id: ID of the approval record
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:631:            # Resume with approval granted
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:635:                interrupt_resume={"approved": True, "approval_id": approval_id},
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:653:                "resume_after_approval_success",
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:655:                approval_id=approval_id,
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:661:            logger.error(f"resume_after_approval failed: {str(e)}", exc_info=True)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:4:including transition_deal which requires HITL approval.
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:63:    This is a sensitive operation that requires human approval (HITL).
+--- DEAL_API_URL usage in tool code ---
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:20:DEAL_API_URL = os.getenv("DEAL_API_URL", "http://host.docker.internal:8091")
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:86:                f"{DEAL_API_URL}/api/deals/{deal_id}/transition",
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:130:                "deal_api_unavailable_mock_response",
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:140:                "deal_api_unavailable_fail_closed",
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:145:            raise httpx.ConnectError(f"Deal API unavailable at {DEAL_API_URL} and mocks disabled")
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:166:            response = await client.get(f"{DEAL_API_URL}/api/deals/{deal_id}")
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:186:            "deal_api_unavailable_fail_closed",
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:191:        raise httpx.ConnectError(f"Deal API unavailable at {DEAL_API_URL} and mocks disabled")
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/resilience.py:7:- Backend API (:8091)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/resilience.py:81:    "deal_api": ServiceConfig(
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/resilience.py:83:        base_url="${DEAL_API_URL:-http://host.docker.internal:8091}",
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/resilience.py:231:        service_name: Name of the service (deal_api, rag_rest, mcp, vllm, langfuse)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/config.py:239:        self.DEAL_API_URL = os.getenv("DEAL_API_URL", "http://host.docker.internal:8091")
+EXPECTED: 4 tools. ACTUAL: [count from grep]. DISCREPANCY: [Y/N]
+\n--- SUPPLEMENT: Tool count ---
+Detected @tool definitions: 3
+EXPECTED: 4 tools. ACTUAL: 3. DISCREPANCY: Y

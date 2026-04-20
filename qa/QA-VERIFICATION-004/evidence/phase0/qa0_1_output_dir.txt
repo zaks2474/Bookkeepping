@@ -1,0 +1,79 @@
+=== QA-0.1: Output Directory ===
+✅ REMEDIATION_DIR exists
+total 40
+drwxr-xr-x 5 root root  4096 Feb  3 15:04 .
+drwxr-xr-x 6 root root  4096 Feb  3 14:43 ..
+-rw-r--r-- 1 root root  7123 Feb  3 15:04 AGENT_REMEDIATION_004_REPORT.md
+-rw-r--r-- 1 root root 11408 Feb  3 15:02 changelog.md
+drwxr-xr-x 2 root root  4096 Feb  3 14:43 changes
+drwxr-xr-x 5 root root  4096 Feb  3 14:43 evidence
+drwxr-xr-x 2 root root  4096 Feb  3 15:03 matrices
+
+=== Available Remediations ===
+
+=== Required subdirectories ===
+--- evidence/before ---
+total 60
+drwxr-xr-x 2 root root 4096 Feb  3 14:59 .
+drwxr-xr-x 5 root root 4096 Feb  3 14:43 ..
+-rw-r--r-- 1 root root 1173 Feb  3 14:43 r0_1_agent_health.txt
+-rw-r--r-- 1 root root  274 Feb  3 14:43 r0_2_activity_before.txt
+-rw-r--r-- 1 root root 1538 Feb  3 14:43 r0_2_activity_source_before.txt
+-rw-r--r-- 1 root root 1433 Feb  3 14:43 r0_3_jsonparse_before.txt
+-rw-r--r-- 1 root root 6016 Feb  3 14:43 r0_4_approval_error_handling_before.txt
+-rw-r--r-- 1 root root 6648 Feb  3 14:44 r0_5_expiry_worker_before.txt
+-rw-r--r-- 1 root root 2841 Feb  3 14:44 r0_6_db_sot.txt
+-rw-r--r-- 1 root root 4849 Feb  3 14:44 r0_7_endpoint_sweep.txt
+-rw-r--r-- 1 root root 1430 Feb  3 14:56 r2_c1_postgres_inventory.txt
+-rw-r--r-- 1 root root  346 Feb  3 14:59 r3_a1_approval_shape.txt
+--- evidence/after ---
+total 120
+drwxr-xr-x 2 root root  4096 Feb  3 15:00 .
+drwxr-xr-x 5 root root  4096 Feb  3 14:43 ..
+-rw-r--r-- 1 root root 28665 Feb  3 14:48 r1_a4_activity_after.txt
+-rw-r--r-- 1 root root    75 Feb  3 14:48 r1_a4_activity_no_mock.txt
+-rw-r--r-- 1 root root  2057 Feb  3 14:49 r1_b3_chat_storage.txt
+-rw-r--r-- 1 root root  2383 Feb  3 14:49 r1_b3_jsonparse_after.txt
+-rw-r--r-- 1 root root  5063 Feb  3 14:49 r1_b3_jsonparse_safety.txt
+-rw-r--r-- 1 root root  2948 Feb  3 14:50 r1_c_prereq_semantics.txt
+-rw-r--r-- 1 root root   160 Feb  3 14:53 r2_a4_expiry_approve.txt
+-rw-r--r-- 1 root root   426 Feb  3 14:53 r2_a4_expiry_create.txt
+-rw-r--r-- 1 root root   428 Feb  3 14:53 r2_a4_expiry_create2.txt
+-rw-r--r-- 1 root root   861 Feb  3 14:54 r2_a4_expiry_final.txt
+-rw-r--r-- 1 root root   470 Feb  3 14:53 r2_a4_expiry_status.txt
+-rw-r--r-- 1 root root    99 Feb  3 14:54 r2_a4_expiry_test.txt
+-rw-r--r-- 1 root root  1448 Feb  3 14:57 r2_b1_approval_statuses.txt
+-rw-r--r-- 1 root root  1548 Feb  3 14:57 r2_b3_error_state_checklist.md
+-rw-r--r-- 1 root root  1828 Feb  3 14:56 r2_c3_postgres_after.txt
+-rw-r--r-- 1 root root   780 Feb  3 15:00 r3_a4_approval_validate.txt
+-rw-r--r-- 1 root root   222 Feb  3 15:00 r3_b1_mdv2_shape.txt
+-rw-r--r-- 1 root root   134 Feb  3 15:00 r3_b1_v1_shape.txt
+-rw-r--r-- 1 root root  2409 Feb  3 15:00 r3_c1_deal_chat_scoping.txt
+-rw-r--r-- 1 root root  2468 Feb  3 15:00 r3_d1_realtime_current.txt
+-rw-r--r-- 1 root root  1090 Feb  3 15:00 r3_d2_websocket_ticket.md
+--- evidence/regression ---
+total 56
+drwxr-xr-x 2 root root 4096 Feb  3 15:00 .
+drwxr-xr-x 5 root root 4096 Feb  3 14:43 ..
+-rw-r--r-- 1 root root  541 Feb  3 14:51 r1_reg1_approve.txt
+-rw-r--r-- 1 root root  713 Feb  3 14:51 r1_reg1_create.txt
+-rw-r--r-- 1 root root   72 Feb  3 14:51 r1_reg1_double.txt
+-rw-r--r-- 1 root root  222 Feb  3 14:51 r1_reg2_sse.txt
+-rw-r--r-- 1 root root 1264 Feb  3 14:51 r1_reg3_triple.txt
+-rw-r--r-- 1 root root  474 Feb  3 14:58 r2_reg1_approve.txt
+-rw-r--r-- 1 root root  636 Feb  3 14:58 r2_reg1_create.txt
+-rw-r--r-- 1 root root  431 Feb  3 14:58 r2_reg2_chat.txt
+-rw-r--r-- 1 root root  631 Feb  3 15:00 r3_reg1_final_triple.txt
+-rw-r--r-- 1 root root  423 Feb  3 15:00 r3_reg2_chat.txt
+-rw-r--r-- 1 root root  170 Feb  3 15:00 r3_reg3_activity.txt
+-rw-r--r-- 1 root root   76 Feb  3 15:00 r3_reg4_approvals.txt
+--- changes ---
+total 8
+drwxr-xr-x 2 root root 4096 Feb  3 14:43 .
+drwxr-xr-x 5 root root 4096 Feb  3 15:04 ..
+--- matrices ---
+total 16
+drwxr-xr-x 2 root root 4096 Feb  3 15:03 .
+drwxr-xr-x 5 root root 4096 Feb  3 15:04 ..
+-rw-r--r-- 1 root root 4043 Feb  3 15:03 finding_to_fix_matrix.md
+-rw-r--r-- 1 root root 3542 Feb  3 15:03 regression_matrix.md

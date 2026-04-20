@@ -1,0 +1,72 @@
+=== QA-2.2: JSON.parse Safety ===
+--- TEST 1: Storage utility file ---
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/storage-utils.ts
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/schemas/approval.ts
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/parsers.ts
+
+--- TEST 2: Unwrapped JSON.parse ---
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1181:            const parsedData = JSON.parse(currentData);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent/providers/local.ts:196:              const data = JSON.parse(line.slice(6));
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/settings/provider-settings.ts:87:      const parsed = JSON.parse(stored) as Partial<ProviderSettings>;
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/storage-utils.ts:38:      parsed = JSON.parse(raw);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/parsers.ts:28:        const parsed = JSON.parse(value);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/parsers.ts:74:        const parsed = JSON.parse(value);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-client.ts:460:        const data = JSON.parse(event.data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/use-realtime-events.ts:272:                  data: JSON.parse(currentEvent.data),
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/use-realtime-events.ts:489:          const data = JSON.parse(event.data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/useOnboardingState.ts:120:          const parsed: PersistedOnboarding = JSON.parse(stored);
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/ApprovalCheckpoint.tsx:330:                    setModifiedInputs(JSON.parse(e.target.value));
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/layout/user-nav.tsx:99:        const parsed = JSON.parse(stored);
+
+--- TEST 3: Storage utility content ---
+/**
+ * Safe localStorage utilities with Zod validation and quarantine
+ *
+ * F003-P1-002 + RT-STORE-1 Remediation:
+ * - Schema validation with Zod safeParse
+ * - Version checking for migrations
+ * - Corrupt data quarantine (delete on parse/schema failure)
+ * - Console.warn (not error) to avoid breaking error tracking
+ */
+
+import { z } from 'zod';
+
+/**
+ * Safely load data from localStorage with Zod validation.
+ *
+ * RT-STORE-1 Requirements:
+ * 1. If parse fails: DELETE the key, return fallback
+ * 2. If schema fails: DELETE the key, return fallback
+ * 3. If version mismatch: DELETE the key, return fallback
+ * 4. Console.warn on quarantine (not error)
+ *
+ * @param key - localStorage key
+ * @param schema - Zod schema to validate against
+ * @param options - { version: expected version number, fallback: default value }
+ */
+export function loadFromStorage<T>(
+  key: string,
+  schema: z.ZodSchema<T>,
+  options: { version: number; fallback: T }
+): T {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return options.fallback;
+
+    // Try to parse JSON
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(raw);
+    } catch {
+      console.warn(`[storage-utils] JSON parse failed for ${key}, quarantining`);
+      localStorage.removeItem(key);
+      return options.fallback;
+    }
+
+    // Check version (if schema expects a version field)
+    if (
+      typeof parsed === 'object' &&
+      parsed !== null &&
+      'version' in parsed &&
+      (parsed as Record<string, unknown>).version !== options.version

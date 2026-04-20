@@ -1,0 +1,9 @@
+=== V4 SCRIPT DISPOSITION CHECK ===
+PASS: schema-diff.sh deleted
+PASS: detect-phantom-endpoints.sh deleted
+PASS: dashboard-network-capture.sh deleted
+PASS: sse-validation.sh deleted
+---
+PASS: rag-routing-proof.sh exists (157 lines)
+PASS: generate-manifest.sh exists (156 lines)
+PASS: validate-enforcement.sh exists (205 lines)

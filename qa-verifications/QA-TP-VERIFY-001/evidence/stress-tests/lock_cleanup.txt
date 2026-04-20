@@ -1,0 +1,17 @@
+=== ST-1: Lock file cleanup ===
+29:LOCKFILE="/tmp/tripass.lock"
+516:acquire_lock() {
+518:  if [ -f "$LOCKFILE" ]; then
+520:    existing=$(cat "$LOCKFILE")
+522:    log_err "Remove $LOCKFILE if this is stale."
+525:  echo "$run_id" > "$LOCKFILE"
+528:release_lock() {
+529:  rm -f "$LOCKFILE"
+609:  acquire_lock "$run_id"
+610:  trap 'release_lock' EXIT
+736:    release_lock
+827:    release_lock
+981:    # Show lock status
+982:    if [ -f "$LOCKFILE" ]; then
+983:      echo "ACTIVE LOCK: $(cat "$LOCKFILE")"
+

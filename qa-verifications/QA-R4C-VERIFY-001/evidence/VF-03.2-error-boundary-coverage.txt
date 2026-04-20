@@ -1,0 +1,17 @@
+=== VF-03.2 ERROR BOUNDARY COVERAGE ===
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/error.tsx
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/error.tsx
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/error.tsx
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/error.tsx
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/settings/error.tsx
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/error.tsx
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/error.tsx
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/error.tsx
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/error.tsx
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/new/error.tsx
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/onboarding/error.tsx
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/error.tsx
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/ui-test/error.tsx
+Count: 13 error.tsx files
+Routes covered: root, dashboard, deals, deals/[id], deals/new, actions, quarantine, settings, hq, agent/activity, chat, onboarding, ui-test
+PASS

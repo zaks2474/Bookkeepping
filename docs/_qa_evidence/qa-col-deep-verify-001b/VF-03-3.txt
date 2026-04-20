@@ -1,0 +1,12 @@
+23:class CritiqueResult(BaseModel):
+25:    issues: list[str] = Field(default_factory=list)
+44:    ) -> CritiqueResult:
+53:            CritiqueResult with issues, severity, and optional revision
+55:        issues = []
+78:                issues.append(f"Unsupported claim: {claim[:100]}")
+87:                    issues.append(f"Potential contradiction with brain fact: {fact[:100]}")
+102:        should_revise = severity in ("medium", "high") and len(issues) > 0
+104:        result = CritiqueResult(
+105:            issues=issues[:10],  # Cap at 10 issues
+112:        if issues:
+116:                issues_count=len(issues),

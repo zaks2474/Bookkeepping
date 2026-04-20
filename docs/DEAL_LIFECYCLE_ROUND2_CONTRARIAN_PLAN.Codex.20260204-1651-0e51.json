@@ -1,0 +1,254 @@
+{
+  "agent_identity": {
+    "agent_name": "Codex",
+    "run_id": "20260204-1651-0e51",
+    "date_time": "2026-02-04T16:58:52+00:00",
+    "repo_revision": "559a5d1f5c6d22adfd90fd767191dcd421f8732a",
+    "dashboard_zod_errors_checked": true
+  },
+  "inputs": {
+    "v2_issues": "/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_HONEST_ASSESSMENT_V2.md",
+    "v3_index": "/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3.md",
+    "v3_final": "/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3_FINAL.md",
+    "v3_eval": "/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_EVAL_V3.md",
+    "qa_baseline_primary": "/home/zaks/bookkeeping/qa/QA-VERIFICATION-006/QA_VERIFICATION_006_REPORT.md",
+    "qa_baseline_secondary": "/home/zaks/bookkeeping/qa/QA-VERIFICATION-006-ENHANCED/QA_VERIFICATION_006_REPORT.md"
+  },
+  "soft_pass": [
+    {
+      "issue_id": "ZK-ISSUE-0020",
+      "qa_claim": "SSE code exists",
+      "evidence": [
+        "/home/zaks/zakops-backend/src/api/orchestration/routers/events.py:56-75",
+        "/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/events/route.ts:13-17",
+        "/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/use-realtime-events.ts:240-305"
+      ],
+      "hard_pass": "SSE endpoint returns valid stream, UI receives events without console errors"
+    },
+    {
+      "issue_id": "ZK-ISSUE-0018",
+      "qa_claim": "Zod passthrough/safeParse",
+      "evidence": [
+        "/home/zaks/zakops-agent-api/apps/dashboard/src/types/api/generated.ts:59-76",
+        "/home/zaks/zakops-backend/src/api/orchestration/main.py:154-166",
+        "/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:420-425"
+      ],
+      "hard_pass": "Generated TS client + Zod match OpenAPI; CI contract gate enforced"
+    },
+    {
+      "issue_id": "ZK-ISSUE-0016",
+      "qa_claim": "Unique constraint; duplicate returns 500",
+      "evidence": [
+        "/home/zaks/zakops-backend/src/api/orchestration/main.py:551-589",
+        "/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:487-493"
+      ],
+      "hard_pass": "Idempotency-Key enforced; duplicates return 200/409 with structured JSON"
+    },
+    {
+      "issue_id": "ZK-ISSUE-0011",
+      "qa_claim": "Correlation infra exists",
+      "evidence": [
+        "/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-client.ts:43-69",
+        "/home/zaks/zakops-agent-api/apps/dashboard/src/middleware.ts:28-83"
+      ],
+      "hard_pass": "Trace_id propagated from browser through backend to DB events"
+    },
+    {
+      "issue_id": "ZK-ISSUE-0001",
+      "qa_claim": "Split-brain eliminated",
+      "evidence": [
+        "/home/zaks/zakops-backend/src/core/database/adapter.py:54-80",
+        "/home/zaks/zakops-backend/src/core/chat_evidence_builder.py:261-266",
+        "/home/zaks/zakops-backend/src/actions/engine/store.py:26-28"
+      ],
+      "hard_pass": "Legacy JSON/SQLite removed or isolated; CI guardrails"
+    },
+    {
+      "issue_id": "ZK-ISSUE-0007",
+      "qa_claim": "DB default inbound",
+      "evidence": [
+        "/home/zaks/zakops-backend/db/init/001_base_tables.sql:35-36",
+        "/home/zaks/zakops-backend/db/migrations/023_stage_check_constraint.sql:5-7"
+      ],
+      "hard_pass": "DB default inbound verified; migration ensures consistency"
+    },
+    {
+      "issue_id": "ZK-ISSUE-0013",
+      "qa_claim": "Capabilities/metrics 200",
+      "evidence": [
+        "/home/zaks/zakops-backend/src/api/orchestration/main.py:921-941",
+        "/home/zaks/zakops-backend/src/api/orchestration/routers/actions.py:15-164"
+      ],
+      "hard_pass": "Single definitive route implementation; integration tests"
+    }
+  ],
+  "deferred_or_unverified": [
+    "ZK-ISSUE-0010 (RAG columns): add last_indexed_at/content_hash",
+    "ZK-ISSUE-0011 (Correlation population) runtime proof",
+    "Legacy refs remain (8090, JSON/SQLite) \u2014 must fully decommission",
+    "CONTRACT-AUDIT-V1 (unexecuted)",
+    "QA-CA-V1 (unexecuted)"
+  ],
+  "scorecard": {
+    "layer1_architecture_clarity": {
+      "current": 5,
+      "target": 9
+    },
+    "layer2_data_integrity": {
+      "current": 5,
+      "target": 9
+    },
+    "layer3_contracts": {
+      "current": 3,
+      "target": 9
+    },
+    "layer4_agent_boundaries": {
+      "current": 6,
+      "target": 9
+    },
+    "layer5_observability": {
+      "current": 5,
+      "target": 9
+    },
+    "layer6_security_auth": {
+      "current": 6,
+      "target": 9
+    },
+    "layer7_ux_correctness": {
+      "current": 4,
+      "target": 9
+    },
+    "layer8_email_ingestion": {
+      "current": 5,
+      "target": 9
+    },
+    "layer9_rag_integrity": {
+      "current": 4,
+      "target": 9
+    },
+    "layer10_operational": {
+      "current": 5,
+      "target": 9
+    }
+  },
+  "upgrades": [
+    {
+      "id": "ZK-UPG-0001",
+      "title": "Generated TypeScript Client from OpenAPI",
+      "priority": "P0"
+    },
+    {
+      "id": "ZK-UPG-0002",
+      "title": "Transactional Outbox",
+      "priority": "P1"
+    },
+    {
+      "id": "ZK-UPG-0003",
+      "title": "Idempotency Layer",
+      "priority": "P0"
+    },
+    {
+      "id": "ZK-UPG-0004",
+      "title": "Deal Lifecycle Transition Ledger",
+      "priority": "P1"
+    },
+    {
+      "id": "ZK-UPG-0005",
+      "title": "OpenTelemetry Integration",
+      "priority": "P2"
+    },
+    {
+      "id": "ZK-UPG-0006",
+      "title": "Contract Testing CI Gate",
+      "priority": "P0"
+    },
+    {
+      "id": "ZK-UPG-0007",
+      "title": "Circuit Breakers",
+      "priority": "P2"
+    },
+    {
+      "id": "ZK-UPG-0008",
+      "title": "Schema Migration Safety",
+      "priority": "P2"
+    },
+    {
+      "id": "ZK-UPG-0009",
+      "title": "Agent Evaluation Framework",
+      "priority": "P2"
+    },
+    {
+      "id": "ZK-UPG-0010",
+      "title": "Safe Decommissioning Guardrails",
+      "priority": "P1"
+    }
+  ],
+  "execution_plan": [
+    {
+      "phase": "R2-0",
+      "objective": "Baseline snapshot across 5 layers",
+      "gate": "All 5 layers documented"
+    },
+    {
+      "phase": "R2-1",
+      "objective": "ZodError eradication",
+      "gate": "Zero console errors"
+    },
+    {
+      "phase": "R2-2",
+      "objective": "Idempotency + error semantics",
+      "gate": "No 500s on duplicates"
+    },
+    {
+      "phase": "R2-3",
+      "objective": "Deferred item closure",
+      "gate": "RAG columns + correlation proof"
+    },
+    {
+      "phase": "R2-4",
+      "objective": "Transactional outbox",
+      "gate": "Outbox delivers reliably"
+    },
+    {
+      "phase": "R2-5",
+      "objective": "State machine + transition ledger",
+      "gate": "422 on invalid transitions"
+    },
+    {
+      "phase": "R2-6",
+      "objective": "Observability hardening",
+      "gate": "Trace spans end-to-end"
+    },
+    {
+      "phase": "R2-7",
+      "objective": "Contract testing + CI gates",
+      "gate": "CI fails on mismatch"
+    },
+    {
+      "phase": "R2-8",
+      "objective": "Agent evaluation + adversarial QA",
+      "gate": ">=18/20 golden scenarios"
+    },
+    {
+      "phase": "R2-9",
+      "objective": "Regression proofing",
+      "gate": "22 regression tests exist"
+    }
+  ],
+  "adversarial_scenarios": [
+    "ADV-01",
+    "ADV-02",
+    "ADV-03",
+    "ADV-04",
+    "ADV-05",
+    "ADV-06",
+    "ADV-07",
+    "ADV-08",
+    "ADV-09",
+    "ADV-10"
+  ],
+  "known_unexecuted_work": [
+    "CONTRACT-AUDIT-V1",
+    "QA-CA-V1"
+  ]
+}

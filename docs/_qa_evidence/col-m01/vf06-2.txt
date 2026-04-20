@@ -1,0 +1,1 @@
+    thread_id       VARCHAR(255) NOT NULL REFERENCES chat_threads(id) ON DELETE CASCADE,

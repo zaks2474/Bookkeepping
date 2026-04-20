@@ -1,0 +1,81 @@
+31-
+32-def _hash_request(method: str, path: str, body: bytes) -> str:
+33-    """Create a hash of the request for duplicate detection."""
+34:    content = f"{method}:{path}:{body.decode('utf-8', errors='replace')}"
+35-    return hashlib.sha256(content.encode()).hexdigest()
+36-
+37-
+38-class IdempotencyMiddleware(BaseHTTPMiddleware):
+39-    """
+40-    Middleware that provides idempotent write operations.
+41-
+42-    Usage:
+43-        Include `Idempotency-Key: <unique-key>` header on POST/PUT/PATCH requests.
+44-        Duplicate requests with the same key return cached responses.
+--
+95-                        return JSONResponse(
+96-                            status_code=409,
+97-                            content={
+98:                                "error": "conflict",
+99-                                "message": "Request with this idempotency key is currently being processed",
+100-                                "idempotency_key": idempotency_key,
+101-                            },
+102-                            headers={"X-Idempotency-Status": "processing"}
+103-                        )
+104-
+105-                    if row['response_status'] is not None:
+106-                        # Return cached response
+107-                        # response_body is stored as JSONB - parse if string, use directly if dict
+108-                        cached_body = row['response_body']
+--
+111-                            try:
+112-                                cached_body = json.loads(cached_body)
+113-                                logger.info("[IdempotencyMiddleware] Parsed string to dict")
+114:                            except json.JSONDecodeError:
+115-                                logger.warning("[IdempotencyMiddleware] Could not parse cached_body as JSON")
+116:                                pass  # Keep as string if not valid JSON
+117-                        return JSONResponse(
+118-                            status_code=row['response_status'],
+119-                            content=cached_body,
+120-                            headers={"X-Idempotency-Status": "cached"}
+121-                        )
+122-
+123-                # Mark as processing or create new record
+124-                if row:
+125-                    await conn.execute(
+126-                        """
+--
+144-                        request.url.path,
+145-                        request.method
+146-                    )
+147:        except Exception as e:
+148-            # F-9: Fail-closed — do NOT silently proceed without idempotency
+149:            logger.error(f"[IdempotencyMiddleware] DB error checking key: {e}")
+150-            return JSONResponse(
+151-                status_code=503,
+152-                content={
+153:                    "error": "service_unavailable",
+154-                    "message": "Idempotency check failed — retry with same Idempotency-Key",
+155-                },
+156-                headers={"Retry-After": "5"}
+---returns---
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:6:- If key exists and not expired, returns cached response
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:35:    return hashlib.sha256(content.encode()).hexdigest()
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:44:        Duplicate requests with the same key return cached responses.
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:54:            return await call_next(request)
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:62:            return await call_next(request)
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:73:            return await call_next(request)
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:94:                        # Request is being processed - return 409 Conflict
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:95:                        return JSONResponse(
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:117:                        return JSONResponse(
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:150:            return JSONResponse(
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:191:                return Response(
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:219:        return response
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:230:        return 0
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:239:            return count
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:242:        return 0
+---ANALYSIS---
+Line 147-156: except Exception handler returns JSONResponse(status_code=503) = FAIL-CLOSED
+Line 148 comment: 'F-9: Fail-closed — do NOT silently proceed without idempotency'
+Line 116: 'pass' is only for JSON parse failure of cached_body (non-critical, keeps string)
+VERDICT: Fail-closed semantics confirmed.

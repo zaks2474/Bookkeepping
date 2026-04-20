@@ -1,0 +1,16 @@
+=== STEP 2.16: Correlation IDs (GPT RT-12) ===
+--- Check for trace/correlation ID in agent response headers ---
+x-request-id: c9361880
+--- Check agent logs for trace/request ID ---
+--- Check backend logs for same ID ---
+backend-1  | {"timestamp": "2026-02-02T16:28:26.565393Z", "level": "WARNING", "logger": "src.api.shared.middleware.error_handler", "message": "Validation Error: 1 field(s)", "trace_id": "no-trace", "span_id": null, "path": "/api/deals", "errors": [{"field": "body.canonical_name", "message": "String should have at most 255 characters", "code": "string_too_long"}]}
+backend-1  | {"timestamp": "2026-02-02T16:28:26.735130Z", "level": "WARNING", "logger": "src.api.shared.middleware.error_handler", "message": "Validation Error: 1 field(s)", "trace_id": "no-trace", "span_id": null, "path": "/api/deals", "errors": [{"field": "body.stage", "message": "Input should be 'inbound', 'screening', 'qualified', 'loi', 'diligence', 'closing', 'portfolio', 'junk' or 'archived'", "code": "literal_error"}]}
+backend-1  | {"timestamp": "2026-02-02T16:28:26.740925Z", "level": "INFO", "logger": "src.api.shared.sse", "message": "SSE Manager initialized: max_per_user=5, max_total=1000, stale_timeout=120s", "trace_id": "no-trace", "span_id": null}
+backend-1  | {"timestamp": "2026-02-02T16:28:26.740974Z", "level": "INFO", "logger": "src.api.shared.sse", "message": "Started SSE stale connection cleanup task", "trace_id": "no-trace", "span_id": null}
+backend-1  | {"timestamp": "2026-02-02T16:28:26.809116Z", "level": "WARNING", "logger": "src.core.deals.workflow", "message": "Failed to publish stage change event: badly formed hexadecimal UUID string", "trace_id": "no-trace", "span_id": null}
+backend-1  | {"timestamp": "2026-02-02T16:28:26.809168Z", "level": "INFO", "logger": "src.core.deals.workflow", "message": "Deal DL-0033 transitioned: inbound -> screening", "trace_id": "no-trace", "span_id": null}
+backend-1  | {"timestamp": "2026-02-02T16:28:26.848314Z", "level": "WARNING", "logger": "src.api.shared.middleware.error_handler", "message": "Validation Error: 1 field(s)", "trace_id": "no-trace", "span_id": null, "path": "/api/deals", "errors": [{"field": "body.canonical_name", "message": "Field required", "code": "missing"}]}
+backend-1  | {"timestamp": "2026-02-02T16:28:26.853963Z", "level": "WARNING", "logger": "src.api.shared.middleware.error_handler", "message": "Validation Error: 1 field(s)", "trace_id": "no-trace", "span_id": null, "path": "/api/deals", "errors": [{"field": "body", "message": "Input should be a valid dictionary or object to extract fields from", "code": "model_attributes_type"}]}
+backend-1  | {"timestamp": "2026-02-03T02:15:22.869617Z", "level": "WARNING", "logger": "src.api.shared.middleware.error_handler", "message": "Validation Error: 1 field(s)", "trace_id": "no-trace", "span_id": null, "path": "/api/auth/register", "errors": [{"field": "body.69", "message": "JSON decode error", "code": "json_invalid"}]}
+backend-1  | {"timestamp": "2026-02-03T02:15:22.877828Z", "level": "WARNING", "logger": "src.api.shared.middleware.error_handler", "message": "Validation Error: 1 field(s)", "trace_id": "no-trace", "span_id": null, "path": "/api/auth/login", "errors": [{"field": "body.69", "message": "JSON decode error", "code": "json_invalid"}]}
+If no correlation IDs found: FILE AS FINDING (observability gap).

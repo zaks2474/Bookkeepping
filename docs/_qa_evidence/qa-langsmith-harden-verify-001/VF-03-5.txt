@@ -1,0 +1,2 @@
+315:                self._fetch_registry(bundle, deal_id),
+432:    async def _fetch_registry(self, bundle: EvidenceBundle, deal_id: str):

@@ -1,0 +1,6 @@
+=== VF-06.2 CLAUDE SURFACE TABLE GUARD ===
+-rwxr-xr-x 1 zaks zaks 2187 Feb 10 16:17 /home/zaks/zakops-agent-api/tools/infra/validate-claude-surface-table.sh
+31:HEADER=$(grep -i "Contract Surfaces" "$CLAUDE_FILE" 2>/dev/null | head -1) || HEADER=""
+3:# Checks for S10-S14 entries and correct total
+46:# Check 4: S10-S14 entries present
+63:  pass "All S10-S14 labels present ($NS_FOUND/${#NEW_SURFACES[@]})"

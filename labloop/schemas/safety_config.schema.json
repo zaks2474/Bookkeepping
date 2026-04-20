@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Lab Loop Safety Configuration",
+  "description": "Blast-radius controls and security guardrails for Builder operations",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "protected_paths": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Glob patterns for paths Builder must never modify",
+      "default": [
+        ".env",
+        ".env.*",
+        "**/.env",
+        "**/secrets/**",
+        "**/credentials/**",
+        "**/*.pem",
+        "**/*.key",
+        "**/config/production.*"
+      ]
+    },
+    "decision_locked_paths": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Paths that are architecturally locked - require explicit human approval",
+      "default": []
+    },
+    "command_denylist": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Commands Builder must never execute (regex patterns)",
+      "default": [
+        "^rm\\s+-rf\\s+/",
+        "^rm\\s+-rf\\s+~",
+        "^rm\\s+-rf\\s+\\$HOME",
+        "^sudo\\s+rm",
+        "^chmod\\s+777",
+        "^curl.*\\|.*sh",
+        "^wget.*\\|.*sh",
+        "^eval\\s+",
+        "^:(){ :|:& };:",
+        "^dd\\s+if=",
+        "^mkfs\\.",
+        "^shutdown",
+        "^reboot",
+        "^init\\s+[0-6]"
+      ]
+    },
+    "command_allowlist": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "If set, ONLY these command patterns are allowed (regex patterns)",
+      "default": null
+    },
+    "diff_limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "max_files_per_cycle": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 20,
+          "description": "Maximum files Builder can modify per cycle"
+        },
+        "max_lines_per_cycle": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 500,
+          "description": "Maximum total lines changed per cycle"
+        },
+        "max_lines_per_file": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 300,
+          "description": "Maximum lines changed in a single file"
+        },
+        "escalate_on_exceed": {
+          "type": "boolean",
+          "default": true,
+          "description": "Stop and escalate if limits exceeded, vs warn and continue"
+        }
+      }
+    },
+    "repo_cleanliness": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "require_clean_start": {
+          "type": "boolean",
+          "default": false,
+          "description": "Require git status --porcelain clean at loop start"
+        },
+        "auto_stash": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically stash uncommitted changes at start"
+        },
+        "max_uncommitted_files": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 50,
+          "description": "Maximum uncommitted files before warning/stopping"
+        }
+      }
+    },
+    "secrets_redaction": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Redact secrets from logs and escalation packets"
+        },
+        "patterns": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Regex patterns to redact",
+          "default": [
+            "(?i)(api[_-]?key|apikey)[\"'=:\\s]+[\"']?[a-zA-Z0-9_-]{20,}",
+            "(?i)(secret|password|passwd|pwd)[\"'=:\\s]+[\"']?[^\\s\"']{8,}",
+            "(?i)(token|bearer)[\"'=:\\s]+[\"']?[a-zA-Z0-9_.-]{20,}",
+            "(?i)authorization[\"':\\s]+bearer\\s+[a-zA-Z0-9_.-]+",
+            "(?i)(aws_secret|aws_access)[a-zA-Z_]*[\"'=:\\s]+[\"']?[A-Za-z0-9/+=]{20,}",
+            "-----BEGIN [A-Z ]+ KEY-----",
+            "ghp_[a-zA-Z0-9]{36}",
+            "sk-[a-zA-Z0-9]{48}",
+            "xox[baprs]-[a-zA-Z0-9-]+"
+          ]
+        },
+        "replacement": {
+          "type": "string",
+          "default": "[REDACTED]"
+        }
+      }
+    }
+  }
+}

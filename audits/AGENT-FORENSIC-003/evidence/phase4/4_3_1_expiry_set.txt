@@ -1,0 +1,20 @@
+=== CHECK 4.3.1: Approval Expiry Verification ===
+Timestamp: 2026-02-03T13:09:37-06:00
+Command: SELECT id, status, created_at, expires_at, EXTRACT(EPOCH FROM (expires_at - created_at)) as ttl_seconds FROM approvals WHERE expires_at IS NOT NULL ORDER BY created_at DESC LIMIT 10;
+
+time="2026-02-03T13:09:37-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-03T13:09:37-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+                  id                  |  status  |          created_at           |          expires_at           | ttl_seconds 
+--------------------------------------+----------+-------------------------------+-------------------------------+-------------
+ 4d05f27e-9caf-4be8-8375-5b70ea8c568d | rejected | 2026-02-03 19:08:43.931735+00 | 2026-02-03 20:08:43.931618+00 | 3599.999883
+ b652bc7f-39b4-4da3-8692-da2ac76267be | approved | 2026-02-03 19:07:46.219601+00 | 2026-02-03 20:07:46.219357+00 | 3599.999756
+ 23c61e51-5de9-4df2-98ce-38ffa3f729aa | approved | 2026-02-03 17:52:24.881519+00 | 2026-02-03 18:52:24.88139+00  | 3599.999871
+ 6ff7e4e0-2be1-4cea-886b-43f2e79e25b6 | approved | 2026-02-03 17:51:42.601966+00 | 2026-02-03 18:51:42.601844+00 | 3599.999878
+ 92fad3cf-c459-486a-b96e-4a589d125d3b | approved | 2026-02-03 17:51:22.959412+00 | 2026-02-03 18:51:22.959116+00 | 3599.999704
+ b47fb835-96f3-4c4d-8d7e-ab822885b2fe | approved | 2026-02-03 17:51:04.823875+00 | 2026-02-03 18:51:04.82377+00  | 3599.999895
+ f86e9790-d896-48ed-9dcc-421d27273ad2 | approved | 2026-02-03 17:50:13.498733+00 | 2026-02-03 18:50:13.498603+00 | 3599.999870
+ 55e4ef95-fe74-4e54-bee9-8b284d27c8d4 | approved | 2026-02-03 17:49:26.586068+00 | 2026-02-03 18:49:26.585915+00 | 3599.999847
+ 0d717cb3-74de-401b-a37b-055ed573cc08 | approved | 2026-02-03 17:45:19.938095+00 | 2026-02-03 18:45:19.937958+00 | 3599.999863
+ cc10ec86-a0bf-4728-8469-35e9b044d4a0 | approved | 2026-02-03 17:43:55.594623+00 | 2026-02-03 18:43:55.594494+00 | 3599.999871
+(10 rows)
+

@@ -1,0 +1,18 @@
+82:DISABLE_LONG_TERM_MEMORY = os.getenv("DISABLE_LONG_TERM_MEMORY", "true").lower() == "true"
+108:    async def _long_term_memory(self) -> AsyncMemory:
+168:        if DISABLE_LONG_TERM_MEMORY:
+169:            logger.debug("long_term_memory_disabled", user_id=user_id)
+172:            memory = await self._long_term_memory()
+179:    async def _update_long_term_memory(self, user_id: str, messages: list[dict], metadata: dict = None) -> None:
+182:        if DISABLE_LONG_TERM_MEMORY:
+183:            logger.debug("long_term_memory_disabled_skip_update", user_id=user_id)
+186:            memory = await self._long_term_memory()
+188:            logger.info("long_term_memory_updated_successfully", user_id=user_id)
+190:            logger.exception("failed_to_update_long_term_memory", user_id=user_id, error=str(e))
+209:        SYSTEM_PROMPT = load_system_prompt(long_term_memory=state.long_term_memory)
+688:                    "long_term_memory": relevant_memory,
+760:                self._update_long_term_memory(
+936:                input={"messages": dump_messages(messages), "long_term_memory": relevant_memory},
+940:                self._update_long_term_memory(
+974:                {"messages": dump_messages(messages), "long_term_memory": relevant_memory},
+994:                    self._update_long_term_memory(

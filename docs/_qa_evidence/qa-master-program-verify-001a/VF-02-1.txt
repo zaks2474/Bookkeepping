@@ -1,0 +1,2 @@
+/home/zaks/zakops-backend/db/migrations/029_quarantine_hardening.sql:6:--   1. UNIQUE constraint on message_id (DB-level dedup safety net)
+/home/zaks/zakops-backend/db/migrations/029_quarantine_hardening.sql:18:    ADD CONSTRAINT uq_quarantine_message_id UNIQUE (message_id);

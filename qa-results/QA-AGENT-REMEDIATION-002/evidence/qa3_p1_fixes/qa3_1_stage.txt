@@ -1,0 +1,56 @@
+=== QA-3.1: F-004 — Stage Taxonomy ===
+--- from_stage in tool code ---
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:45:    NOTE (F-003 RT-2): from_stage is ADVISORY only. The tool fetches
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:51:    from_stage: str = Field(..., description="Advisory: current stage (tool will verify)")
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:72:    from_stage: str,
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:83:    - Fetches current stage from backend as ground truth (from_stage is advisory)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:89:        from_stage: Advisory current stage (tool verifies against backend)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:99:        from_stage=from_stage,
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:123:            actual_from_stage = deal_data.get("stage", "unknown")
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:126:            # Log if LLM's from_stage mismatches actual
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:127:            if from_stage.lower() != actual_from_stage.lower():
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:129:                    "transition_deal_from_stage_mismatch",
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:131:                    llm_from_stage=from_stage,
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:132:                    actual_from_stage=actual_from_stage,
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:136:            if actual_from_stage.lower() == to_stage_lower:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:139:                    "error": f"Deal {deal_id} is already at stage '{actual_from_stage}'",
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:140:                    "current_stage": actual_from_stage,
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:154:                            "from_stage": actual_from_stage,  # Use actual, not LLM's
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:223:                old_stage=actual_from_stage,
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:230:                "old_stage": actual_from_stage,
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:241:                from_stage=from_stage,
+
+--- VALID_STAGES enum ---
+VALID_STAGES = frozenset([
+    "inbound", "screening", "qualified", "loi",
+    "diligence", "closing", "portfolio", "junk", "archived"
+])
+
+
+--
+    if to_stage_lower not in VALID_STAGES:
+        error_msg = f"Invalid target stage '{to_stage}'. Valid stages: {', '.join(sorted(VALID_STAGES))}"
+        logger.warning("transition_deal_invalid_stage", deal_id=deal_id, to_stage=to_stage)
+        return json.dumps({"ok": False, "error": error_msg, "validation_failed": True})
+
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+
+--- System prompt stage guidance ---
+**Valid deal pipeline stages (use ONLY these exact names):**
+- inbound, screening, qualified, loi, diligence, closing, portfolio, junk, archived
+
+**IMPORTANT stage name rules:**
+- NEVER use "due_diligence" — the correct name is "diligence"
+- NEVER use "closed_won" or "closed_lost" — use "portfolio" for won deals
+- NEVER use "negotiation" or "proposal" — these are not valid stages
+
+**Using transition_deal:**
+- The tool fetches the deal's current stage automatically — you don't need to know it beforehand
+- Only specify the deal_id and target stage
+
+--- Invalid stage references check ---
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:345:                    "results": [{"id": "deal-001", "title": "Sample Deal", "stage": "proposal"}],
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/prompts/system.md:22:- NEVER use "due_diligence" — the correct name is "diligence"
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/prompts/system.md:23:- NEVER use "closed_won" or "closed_lost" — use "portfolio" for won deals
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/prompts/system.md:24:- NEVER use "negotiation" or "proposal" — these are not valid stages

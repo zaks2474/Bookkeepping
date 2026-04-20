@@ -1,0 +1,6 @@
+RAW_HTTPX_PATTERN_HITS=16
+ALL_ARE_EXCEPTION_HANDLERS=YES
+  - 8x httpx.HTTPStatusError (except clauses catching BackendClient errors)
+  - 8x httpx.ConnectError (except clauses catching connection failures)
+ACTUAL_RAW_HTTPX_CALLS=0 (no httpx.get, httpx.post, AsyncClient instantiation)
+VERDICT: PASS — all HTTP goes through BackendClient, httpx refs are only exception handlers

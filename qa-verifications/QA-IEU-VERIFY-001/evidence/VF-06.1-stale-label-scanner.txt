@@ -1,0 +1,8 @@
+=== VF-06.1 STALE LABEL SCANNER ===
+-rwxr-xr-x 1 root root 2164 Feb 10 16:18 /home/zaks/zakops-agent-api/tools/infra/scan-stale-surface-labels.sh
+10:STALE_COUNTS=("7 surfaces" "8 surfaces" "9 surfaces" "10 surfaces" "11 surfaces" "12 surfaces" "13 surfaces")
+25:  "/home/zaks/.claude/hooks/stop.sh"
+26:  "$REPO_ROOT/.github/workflows/ci.yml"
+27:  "$REPO_ROOT/CLAUDE.md"
+28:  "$REPO_ROOT/tools/infra/validate-contract-surfaces.sh"
+47:      # Skip comments that discuss historical counts (e.g., "was 9 surfaces")

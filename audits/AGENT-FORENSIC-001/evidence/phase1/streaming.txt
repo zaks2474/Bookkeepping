@@ -1,0 +1,32 @@
+AGENT-FORENSIC-001 Phase 1 — Step 1.11: SSE/WebSocket Audit
+=============================================================
+Date: 2026-02-02
+
+STREAMING ENDPOINTS:
+
+1. POST /api/v1/chatbot/chat/stream (chatbot.py:73)
+   - Auth: Required (Bearer or X-Service-Token)
+   - SSE format: data: {"content": str, "done": bool}
+   - Uses agent.get_stream_response() which uses LangGraph astream()
+   - Final event: {"content": "", "done": true}
+   - Error handling: errors sent as SSE data with done=true
+
+2. POST /api/v1/agent/invoke/stream (agent.py:756)
+   - Auth: NONE
+   - SSE format: event: start|content|awaiting_approval|end|error
+   - data: JSON payload per event type
+   - Headers: Cache-Control: no-cache, Connection: keep-alive, X-Accel-Buffering: no
+
+NO WebSocket endpoints found.
+
+ANALYSIS:
+[PASS] SSE streams use StreamingResponse with proper headers
+[PASS] Error events are sent within the stream (not as HTTP error responses)
+[WARN] /agent/invoke/stream has NO auth — anyone can open a streaming connection to the LLM
+[WARN] SSE error events include raw exception messages: str(e)
+       → agent.py:820: yield f"event: error\ndata: {{\"error\": \"{str(e)}\"}}\n\n"
+       → Potential information leak via error details
+[WARN] No connection timeout on SSE streams — could hold connections indefinitely
+[WARN] No stream event validation — LLM output is not sanitized before streaming
+[INFO] chatbot stream properly wraps error in StreamResponse model
+[INFO] X-Accel-Buffering: no correctly set for nginx proxy compatibility

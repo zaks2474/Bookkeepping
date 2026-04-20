@@ -1,0 +1,21 @@
+=== ST-2 FIXTURE PASS FAIL CYCLE ===
+GATE_RESULT:crlf:PASS
+GATE_RESULT:ownership:PASS
+GATE_RESULT:typescript:PASS
+GATE_RESULT:overall:PASS
+GATE_RESULT:crlf:FAIL
+GATE_RESULT:ownership:FAIL
+GATE_RESULT:typescript:PASS
+GATE_RESULT:overall:FAIL
+Task quality gates FAILED:
+
+GATE 1 FAIL — CRLF detected in files:
+/tmp/qa-cce2-st2/bad.sh
+Fix: sed -i 's/$//' <file>
+
+GATE 2 FAIL — Root-owned hook files:
+/tmp/qa-cce2-st2/bad.sh
+Fix: sudo chown zaks:zaks <file>
+
+
+rc_clean=0 rc_bad=2

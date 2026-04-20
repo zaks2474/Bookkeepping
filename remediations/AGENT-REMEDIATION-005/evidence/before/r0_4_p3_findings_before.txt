@@ -1,0 +1,36 @@
+=== R0.4 P3 FINDINGS BEFORE STATE ===
+--- F-003: audit_log triggers ---
+time="2026-02-03T18:18:15-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-03T18:18:15-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+ trigger_name | event_manipulation | action_statement 
+--------------+--------------------+------------------
+(0 rows)
+
+
+--- F-004/F-005: Exposed diagnostic endpoints ---
+Testing /docs:
+  HTTP_CODE: 200
+Testing /redoc:
+  HTTP_CODE: 200
+Testing /openapi.json:
+  HTTP_CODE: 404
+Testing /metrics:
+  HTTP_CODE: 200
+
+--- F-006: Docker log config ---
+{
+    "Type": "json-file",
+    "Config": {}
+}
+
+--- F-007: audit_log size ---
+time="2026-02-03T18:18:15-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-03T18:18:15-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+ total_rows |         oldest_entry          |         newest_entry          | table_size 
+------------+-------------------------------+-------------------------------+------------
+        150 | 2026-02-03 02:12:37.999731+00 | 2026-02-03 22:54:16.241466+00 | 176 kB
+(1 row)
+
+
+--- F-008: Server version disclosure ---
+server: uvicorn

@@ -1,0 +1,10 @@
+=== VF-05.5 COMPLETION EVIDENCE F-02 F-06 ===
+17:| AC-5 | Quarantine Input Determinism | PASS | `quarantine/page.tsx`: localStorage read once on mount, write only after successful action |
+20:| AC-8 | Ask Agent Drawer Quality | PASS | `AgentDrawer.tsx`: redesigned with avatars, QuickAction buttons, "Full chat" link, auto-scroll |
+21:| AC-9 | Chat Information Architecture | PASS | `chat/page.tsx`: ChatHistoryRail, session archive, history toggle, improved provider selector |
+33:| F-02 | Ask Agent drawer weak UX | Redesigned drawer: icon header, user/agent avatars, QuickAction empty state, "Full chat" link |
+37:| F-06 | Chat lacks history rail | New `ChatHistoryRail` component + `chat-history.ts` session archive utility |
+49:| `src/lib/chat/chat-history.ts` | Session archive management (max 20 sessions, localStorage) |
+50:| `src/components/chat/ChatHistoryRail.tsx` | Collapsible session history sidebar |
+66:| `src/app/chat/page.tsx` | History rail integration, session archive/restore, history toggle button |
+95:| 4 | Ask Agent + Chat UX Hardening | XL | COMPLETE |

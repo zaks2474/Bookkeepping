@@ -1,0 +1,8 @@
+75:from app.core.security.output_validation import sanitize_llm_output
+233:            reason="failed_validation_pattern"
+240:        R3 REMEDIATION [P3.1]: Added tenant isolation validation.
+266:        R3 REMEDIATION [P3.1]: Added tenant isolation validation.
+292:        Includes tenant isolation validation.
+469:                    logger.error("tool_call_missing_name", tool_call=str(tool_call)[:200])
+473:                                "Malformed tool call: missing 'name' field",
+484:                    logger.warning("tool_call_missing_id", tool_name=tool_name, generated_id=tool_call_id)

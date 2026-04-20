@@ -1,0 +1,416 @@
+=== ST-1 VALIDATE-ENHANCEMENTS DETERMINISM ===
+[36m=== Enhancement Validation Suite ===[0m
+=== Performance Budget Schema Validation ===
+
+  PASS: PERFORMANCE-BUDGET.md exists
+  PASS: Schema file exists
+  PASS: Section found: API Latency
+  PASS: Section found: Bundle Size
+  PASS: Section found: Payload Size
+  PASS: Section found: Spec Size
+  PASS: Section found: Ownership
+  PASS: Has millisecond/second targets (8 references)
+  PASS: Has megabyte targets (2 references)
+  PASS: Has kilobyte targets (8 references)
+  PASS: Threshold count: 16 (minimum 5)
+  PASS: Measurement methodology documented
+  PASS: Advisory/strict mode semantics documented
+
+Performance Budget Schema Validation: PASS (13 pass, 0 fail, 0 warn)
+=== Governance Anchor Schema Validation ===
+
+  PASS: Schema file exists
+
+--- design-system.md ---
+  PASS: design-system.md exists
+  PASS: design-system.md has frontmatter
+  PASS: Anchor: Skill Preload
+  PASS: Anchor: Responsive Breakpoint
+  PASS: Anchor: Z-Index
+  PASS: Anchor: Dark Mode
+  PASS: Anchor: Animation Performance
+  PASS: Anchor: State Management
+  PASS: Anchor: Anti-convergence
+  PASS: Anchor: Data Fetching
+  PASS: Anchor: Error Handling
+  PASS: Anchor: CSS Architecture
+  PASS: Anchor: Import Discipline
+  design-system.md: 11/11 anchors
+
+--- accessibility.md ---
+  PASS: accessibility.md exists
+  PASS: accessibility.md has frontmatter
+  PASS: Anchor: Semantic Structure
+  PASS: Anchor: Keyboard Navigation
+  PASS: Anchor: Color Contrast
+  PASS: Anchor: ARIA
+  PASS: Anchor: Reduced Motion
+  accessibility.md: 5/5 anchors
+
+--- component-patterns.md ---
+  PASS: component-patterns.md exists
+  PASS: component-patterns.md has frontmatter
+  PASS: Anchor: Server vs Client
+  PASS: Anchor: Loading.*Empty.*Error
+  PASS: Anchor: Suspense
+  PASS: Anchor: State Ownership
+  PASS: Anchor: Composability
+  component-patterns.md: 5/5 anchors
+
+Governance Anchor Schema Validation: PASS (28 pass, 0 fail, 0 warn)
+=== Manifest Contract Section Schema Validation ===
+
+  PASS: Manifest file exists
+  PASS: Schema file exists
+  PASS: Contract Surfaces header found
+  PASS: Header references 14 surfaces
+  PASS: Entry count: 14 (expected 14)
+  PASS: All surface IDs S1-S14 present
+  PASS: All entries have valid status (present or PASS)
+  PASS: Generation timestamp present
+  PASS: All S10-S14 labels present (5/5)
+
+Manifest Contract Section Validation: PASS (9 pass, 0 fail, 0 warn)
+=== Stop Hook Self-Test ===
+
+  PASS: Hook file exists
+
+--- Detection Branch Analysis ---
+  PASS: Branch 1: env-override (MONOREPO_ROOT_OVERRIDE)
+  PASS: Branch 2: git-rev-parse
+  PASS: Branch 3: known-path-fallback
+
+--- Fail-Closed Semantics ---
+  PASS: Fail-closed: 9 exit-2 markers (gate failures block stop)
+  PASS: Explicit skip reasons: 3 SKIP messages
+
+--- Gate Label Verification ---
+  PASS: Label: Gate A present
+  PASS: Label: Gate B present
+  PASS: Label: Gate E present
+
+--- Time Budget ---
+  PASS: Time budget enforcement: 3 checks
+
+--- Gate E Scanner Fallback ---
+  PASS: Gate E: rg scanner check present
+  PASS: Gate E: grep fallback present
+
+--- Signature Validation ---
+  PASS: Makefile signature check: validate-fast target lookup
+
+--- Runtime Branch Tests ---
+  PASS: Runtime: env-override branch works
+  PASS: Runtime: known-path-fallback branch works
+
+Stop Hook Self-Test: PASS (15 pass, 0 fail, 0 warn)
+=== Gate E Scanner Test Harness ===
+
+  PASS: Clean file (no httpx) (exit=0, expected=0)
+  PASS: Violation file (httpx.AsyncClient) (exit=1, expected=1)
+  PASS: Empty file (no content) (exit=0, expected=0)
+  PASS: Missing target file (exit=1, expected=1)
+
+Gate E Scanner Test Harness: 4/4 passed
+=== Surface 10-14 Validator Test Harness ===
+
+--- Pass Cases (real artifacts) ---
+  PASS: Surface 10: Dependency Health (pass case, exit=0)
+  PASS: Surface 11: Env Registry (pass case, exit=0)
+  PASS: Surface 12: Error Taxonomy (pass case, exit=0)
+  PASS: Surface 13: Test Coverage (pass case, exit=0)
+  PASS: Surface 14: Performance Budget (pass case, exit=0)
+
+--- Fail Cases (bad artifact paths via temp copies) ---
+  PASS: Surface 10: Missing topology (fail case, exit=1 != 0)
+  PASS: Surface 11: Missing env crossref (fail case, exit=1 != 0)
+  PASS: Surface 12: Missing error shapes (fail case, exit=1 != 0)
+  PASS: Surface 13: Missing test coverage (fail case, exit=1 != 0)
+  PASS: Surface 14: Missing perf budget (fail case, exit=1 != 0)
+
+--- Structural: Fail-Closed Exit Paths ---
+  PASS: Surface 10 fail paths — 24 fail/exit paths (structural check)
+  PASS: Surface 11 fail paths — 16 fail/exit paths (structural check)
+  PASS: Surface 12 fail paths — 22 fail/exit paths (structural check)
+  PASS: Surface 13 fail paths — 20 fail/exit paths (structural check)
+  PASS: Surface 14 fail paths — 18 fail/exit paths (structural check)
+
+Surface 10-14 Test Harness: 15/15 passed
+[32mEnhancement validation suite passed[0m
+[36m=== Enhancement Validation Suite ===[0m
+=== Performance Budget Schema Validation ===
+
+  PASS: PERFORMANCE-BUDGET.md exists
+  PASS: Schema file exists
+  PASS: Section found: API Latency
+  PASS: Section found: Bundle Size
+  PASS: Section found: Payload Size
+  PASS: Section found: Spec Size
+  PASS: Section found: Ownership
+  PASS: Has millisecond/second targets (8 references)
+  PASS: Has megabyte targets (2 references)
+  PASS: Has kilobyte targets (8 references)
+  PASS: Threshold count: 16 (minimum 5)
+  PASS: Measurement methodology documented
+  PASS: Advisory/strict mode semantics documented
+
+Performance Budget Schema Validation: PASS (13 pass, 0 fail, 0 warn)
+=== Governance Anchor Schema Validation ===
+
+  PASS: Schema file exists
+
+--- design-system.md ---
+  PASS: design-system.md exists
+  PASS: design-system.md has frontmatter
+  PASS: Anchor: Skill Preload
+  PASS: Anchor: Responsive Breakpoint
+  PASS: Anchor: Z-Index
+  PASS: Anchor: Dark Mode
+  PASS: Anchor: Animation Performance
+  PASS: Anchor: State Management
+  PASS: Anchor: Anti-convergence
+  PASS: Anchor: Data Fetching
+  PASS: Anchor: Error Handling
+  PASS: Anchor: CSS Architecture
+  PASS: Anchor: Import Discipline
+  design-system.md: 11/11 anchors
+
+--- accessibility.md ---
+  PASS: accessibility.md exists
+  PASS: accessibility.md has frontmatter
+  PASS: Anchor: Semantic Structure
+  PASS: Anchor: Keyboard Navigation
+  PASS: Anchor: Color Contrast
+  PASS: Anchor: ARIA
+  PASS: Anchor: Reduced Motion
+  accessibility.md: 5/5 anchors
+
+--- component-patterns.md ---
+  PASS: component-patterns.md exists
+  PASS: component-patterns.md has frontmatter
+  PASS: Anchor: Server vs Client
+  PASS: Anchor: Loading.*Empty.*Error
+  PASS: Anchor: Suspense
+  PASS: Anchor: State Ownership
+  PASS: Anchor: Composability
+  component-patterns.md: 5/5 anchors
+
+Governance Anchor Schema Validation: PASS (28 pass, 0 fail, 0 warn)
+=== Manifest Contract Section Schema Validation ===
+
+  PASS: Manifest file exists
+  PASS: Schema file exists
+  PASS: Contract Surfaces header found
+  PASS: Header references 14 surfaces
+  PASS: Entry count: 14 (expected 14)
+  PASS: All surface IDs S1-S14 present
+  PASS: All entries have valid status (present or PASS)
+  PASS: Generation timestamp present
+  PASS: All S10-S14 labels present (5/5)
+
+Manifest Contract Section Validation: PASS (9 pass, 0 fail, 0 warn)
+=== Stop Hook Self-Test ===
+
+  PASS: Hook file exists
+
+--- Detection Branch Analysis ---
+  PASS: Branch 1: env-override (MONOREPO_ROOT_OVERRIDE)
+  PASS: Branch 2: git-rev-parse
+  PASS: Branch 3: known-path-fallback
+
+--- Fail-Closed Semantics ---
+  PASS: Fail-closed: 9 exit-2 markers (gate failures block stop)
+  PASS: Explicit skip reasons: 3 SKIP messages
+
+--- Gate Label Verification ---
+  PASS: Label: Gate A present
+  PASS: Label: Gate B present
+  PASS: Label: Gate E present
+
+--- Time Budget ---
+  PASS: Time budget enforcement: 3 checks
+
+--- Gate E Scanner Fallback ---
+  PASS: Gate E: rg scanner check present
+  PASS: Gate E: grep fallback present
+
+--- Signature Validation ---
+  PASS: Makefile signature check: validate-fast target lookup
+
+--- Runtime Branch Tests ---
+  PASS: Runtime: env-override branch works
+  PASS: Runtime: known-path-fallback branch works
+
+Stop Hook Self-Test: PASS (15 pass, 0 fail, 0 warn)
+=== Gate E Scanner Test Harness ===
+
+  PASS: Clean file (no httpx) (exit=0, expected=0)
+  PASS: Violation file (httpx.AsyncClient) (exit=1, expected=1)
+  PASS: Empty file (no content) (exit=0, expected=0)
+  PASS: Missing target file (exit=1, expected=1)
+
+Gate E Scanner Test Harness: 4/4 passed
+=== Surface 10-14 Validator Test Harness ===
+
+--- Pass Cases (real artifacts) ---
+  PASS: Surface 10: Dependency Health (pass case, exit=0)
+  PASS: Surface 11: Env Registry (pass case, exit=0)
+  PASS: Surface 12: Error Taxonomy (pass case, exit=0)
+  PASS: Surface 13: Test Coverage (pass case, exit=0)
+  PASS: Surface 14: Performance Budget (pass case, exit=0)
+
+--- Fail Cases (bad artifact paths via temp copies) ---
+  PASS: Surface 10: Missing topology (fail case, exit=1 != 0)
+  PASS: Surface 11: Missing env crossref (fail case, exit=1 != 0)
+  PASS: Surface 12: Missing error shapes (fail case, exit=1 != 0)
+  PASS: Surface 13: Missing test coverage (fail case, exit=1 != 0)
+  PASS: Surface 14: Missing perf budget (fail case, exit=1 != 0)
+
+--- Structural: Fail-Closed Exit Paths ---
+  PASS: Surface 10 fail paths — 24 fail/exit paths (structural check)
+  PASS: Surface 11 fail paths — 16 fail/exit paths (structural check)
+  PASS: Surface 12 fail paths — 22 fail/exit paths (structural check)
+  PASS: Surface 13 fail paths — 20 fail/exit paths (structural check)
+  PASS: Surface 14 fail paths — 18 fail/exit paths (structural check)
+
+Surface 10-14 Test Harness: 15/15 passed
+[32mEnhancement validation suite passed[0m
+[36m=== Enhancement Validation Suite ===[0m
+=== Performance Budget Schema Validation ===
+
+  PASS: PERFORMANCE-BUDGET.md exists
+  PASS: Schema file exists
+  PASS: Section found: API Latency
+  PASS: Section found: Bundle Size
+  PASS: Section found: Payload Size
+  PASS: Section found: Spec Size
+  PASS: Section found: Ownership
+  PASS: Has millisecond/second targets (8 references)
+  PASS: Has megabyte targets (2 references)
+  PASS: Has kilobyte targets (8 references)
+  PASS: Threshold count: 16 (minimum 5)
+  PASS: Measurement methodology documented
+  PASS: Advisory/strict mode semantics documented
+
+Performance Budget Schema Validation: PASS (13 pass, 0 fail, 0 warn)
+=== Governance Anchor Schema Validation ===
+
+  PASS: Schema file exists
+
+--- design-system.md ---
+  PASS: design-system.md exists
+  PASS: design-system.md has frontmatter
+  PASS: Anchor: Skill Preload
+  PASS: Anchor: Responsive Breakpoint
+  PASS: Anchor: Z-Index
+  PASS: Anchor: Dark Mode
+  PASS: Anchor: Animation Performance
+  PASS: Anchor: State Management
+  PASS: Anchor: Anti-convergence
+  PASS: Anchor: Data Fetching
+  PASS: Anchor: Error Handling
+  PASS: Anchor: CSS Architecture
+  PASS: Anchor: Import Discipline
+  design-system.md: 11/11 anchors
+
+--- accessibility.md ---
+  PASS: accessibility.md exists
+  PASS: accessibility.md has frontmatter
+  PASS: Anchor: Semantic Structure
+  PASS: Anchor: Keyboard Navigation
+  PASS: Anchor: Color Contrast
+  PASS: Anchor: ARIA
+  PASS: Anchor: Reduced Motion
+  accessibility.md: 5/5 anchors
+
+--- component-patterns.md ---
+  PASS: component-patterns.md exists
+  PASS: component-patterns.md has frontmatter
+  PASS: Anchor: Server vs Client
+  PASS: Anchor: Loading.*Empty.*Error
+  PASS: Anchor: Suspense
+  PASS: Anchor: State Ownership
+  PASS: Anchor: Composability
+  component-patterns.md: 5/5 anchors
+
+Governance Anchor Schema Validation: PASS (28 pass, 0 fail, 0 warn)
+=== Manifest Contract Section Schema Validation ===
+
+  PASS: Manifest file exists
+  PASS: Schema file exists
+  PASS: Contract Surfaces header found
+  PASS: Header references 14 surfaces
+  PASS: Entry count: 14 (expected 14)
+  PASS: All surface IDs S1-S14 present
+  PASS: All entries have valid status (present or PASS)
+  PASS: Generation timestamp present
+  PASS: All S10-S14 labels present (5/5)
+
+Manifest Contract Section Validation: PASS (9 pass, 0 fail, 0 warn)
+=== Stop Hook Self-Test ===
+
+  PASS: Hook file exists
+
+--- Detection Branch Analysis ---
+  PASS: Branch 1: env-override (MONOREPO_ROOT_OVERRIDE)
+  PASS: Branch 2: git-rev-parse
+  PASS: Branch 3: known-path-fallback
+
+--- Fail-Closed Semantics ---
+  PASS: Fail-closed: 9 exit-2 markers (gate failures block stop)
+  PASS: Explicit skip reasons: 3 SKIP messages
+
+--- Gate Label Verification ---
+  PASS: Label: Gate A present
+  PASS: Label: Gate B present
+  PASS: Label: Gate E present
+
+--- Time Budget ---
+  PASS: Time budget enforcement: 3 checks
+
+--- Gate E Scanner Fallback ---
+  PASS: Gate E: rg scanner check present
+  PASS: Gate E: grep fallback present
+
+--- Signature Validation ---
+  PASS: Makefile signature check: validate-fast target lookup
+
+--- Runtime Branch Tests ---
+  PASS: Runtime: env-override branch works
+  PASS: Runtime: known-path-fallback branch works
+
+Stop Hook Self-Test: PASS (15 pass, 0 fail, 0 warn)
+=== Gate E Scanner Test Harness ===
+
+  PASS: Clean file (no httpx) (exit=0, expected=0)
+  PASS: Violation file (httpx.AsyncClient) (exit=1, expected=1)
+  PASS: Empty file (no content) (exit=0, expected=0)
+  PASS: Missing target file (exit=1, expected=1)
+
+Gate E Scanner Test Harness: 4/4 passed
+=== Surface 10-14 Validator Test Harness ===
+
+--- Pass Cases (real artifacts) ---
+  PASS: Surface 10: Dependency Health (pass case, exit=0)
+  PASS: Surface 11: Env Registry (pass case, exit=0)
+  PASS: Surface 12: Error Taxonomy (pass case, exit=0)
+  PASS: Surface 13: Test Coverage (pass case, exit=0)
+  PASS: Surface 14: Performance Budget (pass case, exit=0)
+
+--- Fail Cases (bad artifact paths via temp copies) ---
+  PASS: Surface 10: Missing topology (fail case, exit=1 != 0)
+  PASS: Surface 11: Missing env crossref (fail case, exit=1 != 0)
+  PASS: Surface 12: Missing error shapes (fail case, exit=1 != 0)
+  PASS: Surface 13: Missing test coverage (fail case, exit=1 != 0)
+  PASS: Surface 14: Missing perf budget (fail case, exit=1 != 0)
+
+--- Structural: Fail-Closed Exit Paths ---
+  PASS: Surface 10 fail paths — 24 fail/exit paths (structural check)
+  PASS: Surface 11 fail paths — 16 fail/exit paths (structural check)
+  PASS: Surface 12 fail paths — 22 fail/exit paths (structural check)
+  PASS: Surface 13 fail paths — 20 fail/exit paths (structural check)
+  PASS: Surface 14 fail paths — 18 fail/exit paths (structural check)
+
+Surface 10-14 Test Harness: 15/15 passed
+[32mEnhancement validation suite passed[0m
+EXIT=0

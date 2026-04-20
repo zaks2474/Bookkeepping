@@ -1,0 +1,88 @@
+{
+  "model_id": "GPT 5.2",
+  "timestamp_utc": "2026-01-24T03:31:07Z",
+  "stop_ship": [
+    {
+      "id": "SS-01",
+      "issue": "Pass-1 docs claim APPROVED/EXECUTION-READY status without authoritative approval",
+      "required_fix": "Replace status language with gate-based evidence requirements; remove approval claims"
+    },
+    {
+      "id": "SS-02",
+      "issue": "Langfuse compliance drift (cloud fallback allowed without labeling noncompliance)",
+      "required_fix": "Make self-hosted Langfuse at :3001 a Phase-1 DoD gate; label cloud fallback as dev-only and noncompliant"
+    },
+    {
+      "id": "SS-03",
+      "issue": "Plaintext-at-rest risk is not converted into a deterministic hard gate",
+      "required_fix": "Implement PII canary gate scanning logs/traces/DB and fail closed before production exposure"
+    },
+    {
+      "id": "SS-04",
+      "issue": "Plans reference non-existent gate scripts/tests without an explicit creation contract",
+      "required_fix": "Consolidate gates into bring_up_tests.sh or explicitly create every referenced script with artifacts + PASS markers"
+    },
+    {
+      "id": "SS-05",
+      "issue": "Unverified infra assumptions treated as facts (e.g., RAG REST healthy)",
+      "required_fix": "Mark as UNVERIFIED and add contract probe gates that write artifacts"
+    }
+  ],
+  "contradictions": [
+    {
+      "id": "C-01",
+      "between": ["S_Claude_OPUS_4.5.md", "DECISION-LOCK-FILE.md"],
+      "resolution_rule": "Decision Lock wins: Langfuse must be self-hosted at :3001 for Phase-1 DoD"
+    },
+    {
+      "id": "C-02",
+      "between": ["S_Gemini_3.0.md", "QA_REPORT.md"],
+      "resolution_rule": "QA observed auth semantics: missing/invalid claims -> 401; insufficient role -> 403"
+    },
+    {
+      "id": "C-03",
+      "between": ["ZakOps-Scaffold-Master-Plan-v2.md", "ZakOps-Ultimate-Master-Document-v2.md"],
+      "resolution_rule": "Scaffold plan wins per authority order: retrieval is exclusively via RAG REST; Agent must not query pgvector directly"
+    }
+  ],
+  "missing": [
+    {
+      "id": "M-01",
+      "gap": "No proof tools hit real Deal API vs mocks",
+      "impact": "False-green tests; integration drift",
+      "fix": "Add a no-mocks gate (ALLOW_TOOL_MOCKS=false) and verify Deal API state change + record artifact"
+    },
+    {
+      "id": "M-02",
+      "gap": "No contract probes for Deal API / RAG REST / MCP",
+      "impact": "Breakage due to unknown endpoints/schemas",
+      "fix": "Implement container-side probe scripts that write contract artifacts under gate_artifacts"
+    },
+    {
+      "id": "M-03",
+      "gap": "Audit immutability is not proven with DB-level enforcement gate",
+      "impact": "Audit trail can be tampered with",
+      "fix": "Add DB rule + gate script that attempts UPDATE/DELETE and expects failure"
+    },
+    {
+      "id": "M-04",
+      "gap": "No-raw-content policy is not end-to-end across logs/traces/DB",
+      "impact": "PII/data leakage risk",
+      "fix": "Add PII canary gates scanning logs/traces/DB and fail closed"
+    }
+  ],
+  "gate_problems": [
+    {
+      "id": "G-01",
+      "gate": "Referenced scripts (ports/env lint, soak, queue, routing, etc.)",
+      "problem": "Many are not present in repo; gates are not runnable",
+      "fix": "Consolidate into bring_up_tests.sh or create scripts with deterministic artifacts and non-zero exit on failure"
+    },
+    {
+      "id": "G-02",
+      "gate": "Langfuse gate",
+      "problem": "Some plans allow cloud fallback without labeling noncompliance",
+      "fix": "Require self-hosted :3001 health + trace creation as Phase-1 DoD; treat cloud as dev-only"
+    }
+  ]
+}

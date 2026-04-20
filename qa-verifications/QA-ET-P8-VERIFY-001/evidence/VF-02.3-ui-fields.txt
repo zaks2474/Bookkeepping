@@ -1,0 +1,4 @@
+                  {selectedItem?.triage_summary && (
+                      {selectedItem.triage_summary}
+                  {selectedItem?.field_confidences && Object.keys(selectedItem.field_confidences).length > 0 && (
+                          {Object.entries(selectedItem.field_confidences).map(([field, score]) => (

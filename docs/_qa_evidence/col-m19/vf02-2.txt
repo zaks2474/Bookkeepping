@@ -1,0 +1,10 @@
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1172:                    ? `Ask about ${deals.find((d) => d.deal_id === selectedDealId)?.canonical_name || selectedDealId}...`
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx:333:                      placeholder='Search deals...'
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-types.generated.ts:1750:         * @description Search deals by name, company, or content with cursor-based pagination.
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealChat.tsx:245:              placeholder="Ask about this deal..."
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/global-search.tsx:277:    // Search deals
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/global-search.tsx:358:        Search deals...
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/global-search.tsx:371:          placeholder='Search deals...'
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/AgentDrawer.tsx:151:                ? `Ask about ${state.context.dealName}`
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/AgentDrawer.tsx:237:                {dealId ? `Ask about ${dealName || 'this deal'}` : 'Ask Agent'}
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/AgentDrawer.tsx:307:            placeholder={dealId ? `Ask about ${dealName || 'this deal'}...` : 'Ask the agent...'}

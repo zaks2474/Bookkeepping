@@ -1,0 +1,8 @@
+=== VF-01.2 BASELINE INTEGRITY ===
+59:| ENH-1 | Dedicated `make qa-cce-verify` | No target exists | Makefile target + runner script |
+60:| ENH-2 | Hook contract lint (`validate-claude-hook-config.py`) | No validator exists | Python validator for settings.json |
+61:| ENH-3 | Compact-recovery JSON test harness | No harness exists | Shell test script |
+62:| ENH-4 | Deterministic fixture mode in `task-completed.sh` | Hardcoded paths only | `TASK_COMPLETED_TARGETS` env var |
+63:| ENH-5 | Machine-readable gate markers in `task-completed.sh` | Human text only | `GATE_RESULT:*` lines |
+64:| ENH-7 | Configurable snapshot retention in `pre-compact.sh` | Hardcoded `10` | `SNAPSHOT_RETENTION` env var (default 10) |
+65:| ENH-10 | Objective post-compact context quality assertions | No validation | Non-empty + key paths + changes markers |

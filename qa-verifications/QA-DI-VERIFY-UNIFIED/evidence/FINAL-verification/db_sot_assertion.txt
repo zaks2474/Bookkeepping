@@ -1,0 +1,58 @@
+===============================================================
+DB SOURCE-OF-TRUTH PROOF
+Generated: $(date -u +%Y-%m-%dT%H:%M:%SZ)
+Mission: QA-DI-VERIFY-UNIFIED
+===============================================================
+
+CHECK 1: Running DB Containers
+-------------------------------
+zakops-backend-postgres-1  0.0.0.0:5432->5432/tcp  (main: zakops DB)
+zakops-agent-db            5432/tcp                 (agent: zakops_agent DB)
+rag-db                     0.0.0.0:5434->5432/tcp   (rag: crawlrag DB)
+
+CHECK 2: Backend API DATABASE_URL
+----------------------------------
+postgresql://zakops:***@postgres:5432/zakops
+VERDICT: PASS — connects to zakops DB on internal Docker network name 'postgres'
+
+CHECK 3: Agent API DATABASE_URL
+--------------------------------
+/home/zaks/zakops-agent-api/apps/agent-api/.env.development:
+DATABASE_URL=postgresql://agent:***@db:5432/zakops_agent
+VERDICT: PASS — connects to zakops_agent DB via 'db' alias
+
+CHECK 4: RAG/LLM DATABASE_URL
+-------------------------------
+From docker-compose.yml line 98:
+POSTGRES_URL=postgresql://postgres:***@rag-db:5432/crawlrag
+Note: No DATABASE_URL in .env files; config is in docker-compose.yml directly
+VERDICT: PASS — connects to crawlrag DB via 'rag-db' container
+
+CHECK 5: Live SQL Identity
+---------------------------
+5a) zakops DB:
+   db_name=zakops, schema=zakops
+   VERDICT: PASS
+
+5b) zakops_agent DB:
+   db_name=zakops_agent, schema=public
+   VERDICT: PASS
+   Note: zakops_agent is on separate container 'zakops-agent-db', not on zakops-backend-postgres-1
+
+5c) crawlrag DB:
+   db_name=crawlrag, schema=public
+   VERDICT: PASS
+
+CHECK 6: Port 5435 References — Must be ZERO
+----------------------------------------------
+Result: 0 matches (grep exit code 1 = no matches)
+VERDICT: PASS — no stale port 5435 references in any .env files
+
+===============================================================
+OVERALL DB SOT VERDICT: PASS (6/6 checks green)
+===============================================================
+Three separate PostgreSQL instances confirmed:
+  1. zakops-backend-postgres-1 (port 5432) -> zakops DB (schema: zakops)
+  2. zakops-agent-db (internal 5432)       -> zakops_agent DB (schema: public)
+  3. rag-db (port 5434)                    -> crawlrag DB (schema: public)
+All DSNs verified. No stale port references. Each service connects to its correct DB.

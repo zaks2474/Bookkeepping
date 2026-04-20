@@ -1,0 +1,3 @@
+/home/zaks/zakops-backend/db/migrations/029_quarantine_hardening.sql:9:--   4. Add source_type column (distinguish email vs manual vs api)
+/home/zaks/zakops-backend/db/migrations/029_quarantine_hardening.sql:31:    ADD COLUMN IF NOT EXISTS source_type VARCHAR(50) DEFAULT 'email';
+/home/zaks/zakops-backend/db/migrations/029_quarantine_hardening_rollback.sql:7:ALTER TABLE zakops.quarantine_items DROP COLUMN IF EXISTS source_type;

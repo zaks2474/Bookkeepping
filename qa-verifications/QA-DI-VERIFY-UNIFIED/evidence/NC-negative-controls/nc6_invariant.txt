@@ -1,0 +1,40 @@
+================================================================================
+NC-6: COUNT INVARIANT SABOTAGE — INSERT Impossible State
+================================================================================
+Timestamp: 2026-02-08
+
+TEST 1: INSERT without deal_id
+Command:
+  INSERT INTO zakops.deals (canonical_name, display_name, status, stage, deleted)
+  VALUES ('nc6-test', 'NC6 Test', 'active', 'archived', false);
+
+Result: ERROR — null value in column "deal_id" violates not-null constraint
+  The trigger auto-corrected stage to 'archived' and status to 'archived' BEFORE
+  the not-null check failed. Failing row shows: status=archived, stage=archived.
+
+TEST 2: INSERT with deal_id (within transaction, rolled back)
+Command:
+  BEGIN;
+  INSERT INTO zakops.deals (deal_id, canonical_name, display_name, status, stage, deleted)
+  VALUES ('NC6-TEST-001', 'nc6-test', 'NC6 Test', 'active', 'archived', false);
+  SELECT deal_id, status, stage, deleted FROM zakops.deals WHERE deal_id = 'NC6-TEST-001';
+  ROLLBACK;
+
+Result: INSERT succeeded — trigger auto-corrected to status='archived', stage='archived'
+  Stored row: deal_id=NC6-TEST-001, status=archived, stage=archived, deleted=f
+
+BEHAVIOR ANALYSIS:
+The system does NOT reject the INSERT outright. Instead:
+1. The enforce_deal_lifecycle trigger fires BEFORE INSERT
+2. It auto-corrects status='active' → status='archived' when stage='archived'
+3. The CHECK constraint then validates the corrected state (passes)
+4. Row is inserted with corrected values
+
+This means: the impossible state (active+archived) NEVER persists in the DB.
+The trigger acts as a guardrail, not a hard reject.
+
+ROLLBACK confirmed — no persistent test data.
+
+VERDICT: PASS (with nuance) — The impossible state is NOT rejected with an error,
+but it IS prevented from persisting. The trigger auto-corrects to a valid state.
+This is a "correct by construction" approach rather than "reject invalid input".

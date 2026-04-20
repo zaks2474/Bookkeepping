@@ -1,0 +1,29 @@
+=== VF-02.6 BEFORE-TASK CONSISTENCY ===
+     1	# Before Task — Surface Integrity Gate
+     2	
+     3	Run this BEFORE starting any task that modifies code.
+     4	
+     5	## Steps:
+     6	
+     7	1. Run boot diagnostics (if not already run this session):
+     8	   ```bash
+     9	   bash /home/zaks/.claude/hooks/session-start.sh
+    10	   ```
+    11	
+    12	2. Run surface validation:
+    13	   ```bash
+    14	   make validate-contract-surfaces
+    15	   ```
+    16	
+    17	3. Run codegen freshness check:
+    18	   ```bash
+    19	   make validate-local
+    20	   ```
+    21	
+    22	4. If ANY check fails, fix BEFORE proceeding:
+    23	   - Stale codegen? → `make sync-all-types`
+    24	   - Missing generated files? → `make sync-all-types`
+    25	   - Surface count mismatch? → Investigate and fix
+    26	   - Sentinel drift? → `/update-memory`
+    27	
+    28	5. Only proceed with the actual task after ALL checks pass.

@@ -1,0 +1,7 @@
+src/app/chat/page.tsx:51:import { z } from 'zod';
+src/lib/api.ts:11:import { z } from 'zod';
+src/lib/storage-utils.ts:11:import { z } from 'zod';
+src/components/forms/demo-form.tsx:4:import { zodResolver } from '@hookform/resolvers/zod';
+src/components/forms/demo-form.tsx:5:import * as z from 'zod';
+Zod imports outside approved modules:
+6

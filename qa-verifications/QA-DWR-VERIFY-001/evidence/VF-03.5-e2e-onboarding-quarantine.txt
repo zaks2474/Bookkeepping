@@ -1,0 +1,12 @@
+=== VF-03.5 E2E ONBOARDING + QUARANTINE ===
+
+> zakops-dashboard@1.0.0 test:e2e
+> playwright test tests/e2e/dashboard-worldclass-remediation.spec.ts --grep onboarding|quarantine
+
+
+Running 2 tests using 1 worker
+
+  ✓  1 [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:83:5 › F-05: quarantine page loads without ghost characters in inputs (8.2s)
+  ✓  2 [chromium] › tests/e2e/dashboard-worldclass-remediation.spec.ts:117:5 › F-08: onboarding page exists and loads (14.7s)
+
+  2 passed (23.9s)

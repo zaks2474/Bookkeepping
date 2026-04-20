@@ -1,0 +1,1 @@
+    if not await is_flag_enabled("email_triage_writes_enabled", pool, default=True):

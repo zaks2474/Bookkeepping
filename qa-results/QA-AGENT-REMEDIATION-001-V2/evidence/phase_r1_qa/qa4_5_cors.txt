@@ -1,0 +1,60 @@
+QA-4.5: UF-010 CORS Configuration
+===================================
+
+Test 1: CORS Configuration Source Code
+---------------------------------------
+File: /home/zaks/zakops-agent-api/apps/agent-api/app/main.py
+Lines 119-134:
+
+# Set up CORS middleware (UF-010: explicit origins instead of wildcard)
+_cors_origins = settings.ALLOWED_ORIGINS
+if _cors_origins == ["*"]:
+    # Replace wildcard with known origins for credential-bearing requests
+    _cors_origins = [
+        "http://localhost:3003",
+        "http://localhost:3000",
+    ]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=_cors_origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+Test 2: Live CORS Testing - Malicious Origin
+----------------------------------------------
+Request: curl -s -D - http://localhost:8095/ -H "Origin: https://evil.attacker.com"
+Response Headers:
+    access-control-allow-credentials: true
+
+ANALYSIS:
+- NO access-control-allow-origin header returned for evil.attacker.com
+- Only access-control-allow-credentials header present
+- Browser will block the request due to missing allow-origin header
+
+Test 3: Live CORS Testing - Allowed Origin
+-------------------------------------------
+Request: curl -s -D - http://localhost:8095/ -H "Origin: http://localhost:3003"
+Response Headers:
+    access-control-allow-credentials: true
+    access-control-allow-origin: http://localhost:3003
+
+ANALYSIS:
+- access-control-allow-origin header correctly echoes allowed origin
+- access-control-allow-credentials: true allows cookies/auth headers
+- Correctly configured for legitimate cross-origin requests
+
+VERDICT: PASS
+Evidence:
+- CORS configuration uses explicit origin list (lines 120-126)
+- Wildcard ["*"] is replaced with explicit localhost origins
+- Malicious origins are rejected (no allow-origin header sent)
+- Allowed origins receive proper CORS headers
+- allow_credentials=True is safe with explicit origins (not wildcard)
+
+Security Assessment: SECURE
+- No wildcard CORS policy in production
+- Explicit origin whitelist prevents unauthorized cross-origin access
+- Credential-bearing requests properly restricted to known origins

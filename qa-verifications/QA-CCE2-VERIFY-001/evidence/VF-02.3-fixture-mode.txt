@@ -1,0 +1,5 @@
+=== VF-02.3 FIXTURE MODE ===
+5:# Fixture mode: set TASK_COMPLETED_TARGETS to a comma-separated list of files
+18:if [ -n "${TASK_COMPLETED_TARGETS:-}" ]; then
+20:  IFS=',' read -ra TARGET_FILES <<< "$TASK_COMPLETED_TARGETS"
+87:if [ "${#TS_CANDIDATES[@]}" -gt 0 ] && [ -z "${TASK_COMPLETED_TARGETS:-}" ]; then

@@ -1,0 +1,14 @@
+=== Phase R1X: JWT OWASP Hardening ===
+
+1. Algorithm allow-list: algorithms=[settings.JWT_ALGORITHM] (HS256) — PASS
+2. alg=none: python-jose rejects — PASS
+3. exp validated: ExpiredSignatureError caught — PASS
+4. nbf: Not used (optional per RFC 7519) — N/A
+5. iss validated: issuer=AGENT_JWT_ISSUER — PASS
+6. aud validated: audience=AGENT_JWT_AUDIENCE — PASS
+7. Signature verified: tampered JWT → 401 — PASS
+8. Key not hardcoded: env var — PASS
+9. Generic 401: all failures identical message — PASS
+10. Key strength: configurable — PASS
+11. Token lifetime: 1 hour default — PASS
+12. Library: python-jose (deferred UF-012) — DEFERRED

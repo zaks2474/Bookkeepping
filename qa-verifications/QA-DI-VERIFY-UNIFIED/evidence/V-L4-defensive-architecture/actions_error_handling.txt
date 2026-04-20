@@ -1,0 +1,72 @@
+=== V-L4: Error Handling - actions/page.tsx ===
+Date: 2026-02-09T04:54:55Z
+
+File: /home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx
+
+>> allSettled matches:
+184:      // DEAL-INTEGRITY-UNIFIED L4: Promise.allSettled for graceful degradation
+185:      const results = await Promise.allSettled([
+
+>> catch matches:
+152:      } catch (err) {
+200:    } catch (err) {
+247:      } catch (err) {
+364:    } catch (err) {
+389:    } catch (err) {
+405:    } catch (err) {
+422:    } catch (err) {
+438:    } catch (err) {
+482:    } catch (err) {
+504:    } catch (err) {
+546:    } catch (err) {
+565:    } catch (err) {
+
+>> error/Error matches:
+119:  const [error, setError] = useState<string | null>(null);
+154:        console.error('API check failed:', err);
+182:    setError(null);
+195:      else console.error('Failed to load actions:', results[0].reason);
+197:      else console.error('Failed to load capabilities:', results[1].reason);
+199:      else console.error('Failed to load metrics:', results[2].reason);
+201:      setError(err instanceof Error ? err.message : 'Failed to load actions');
+241:              toast.error(`Action failed: ${action.error?.message || 'Unknown error'}`);
+248:        console.error('Polling error:', err);
+249:        // Don't stop polling on transient errors
+352:  // Action handlers - return { success, error } for inline display
+353:  const handleApprove = async (actionId: string, approvedBy: string): Promise<{ success: boolean; error?: string }> => {
+362:        return { success: false, error: result.error || 'Failed to approve action' };
+365:      const message = err instanceof Error ? err.message : 'Failed to approve action';
+366:      return { success: false, error: message };
+370:  const handleRun = async (actionId: string): Promise<{ success: boolean; error?: string; reason?: string }> => {
+381:          toast.info(result.error || 'Action already in progress');
+386:          return { success: false, error: result.error || 'Failed to run action', reason: result.reason };
+390:      const message = err instanceof Error ? err.message : 'Failed to run action';
+391:      return { success: false, error: message };
+395:  const handleCancel = async (actionId: string, reason?: string): Promise<{ success: boolean; error?: string }> => {
+403:        return { success: false, error: result.error || 'Failed to cancel action' };
+406:      const message = err instanceof Error ? err.message : 'Failed to cancel action';
+407:      return { success: false, error: message };
+411:  const handleRetry = async (actionId: string): Promise<{ success: boolean; error?: string }> => {
+420:        return { success: false, error: result.error || 'Failed to retry action' };
+423:      const message = err instanceof Error ? err.message : 'Failed to retry action';
+424:      return { success: false, error: message };
+428:  const handleUpdateInputs = async (actionId: string, inputs: Record<string, unknown>): Promise<{ success: boolean; error?: string }> => {
+436:        return { success: false, error: result.error || 'Failed to update inputs' };
+439:      const message = err instanceof Error ? err.message : 'Failed to update inputs';
+440:      return { success: false, error: message };
+452:    const { valid, errors } = validateFormValues(createInputs, createCapability.input_schema);
+454:      toast.error('Validation errors: ' + errors.join(', '));
+480:        toast.error(result.error || 'Failed to create action');
+483:      toast.error(err instanceof Error ? err.message : 'Failed to create action');
+496:        toast.error(result.error || 'Failed to clear actions');
+505:      toast.error(err instanceof Error ? err.message : 'Failed to clear actions');
+540:        toast.error(result.error || 'Failed to archive actions');
+547:      toast.error('Failed to archive actions');
+559:        toast.error(result.error || 'Failed to delete actions');
+566:      toast.error('Failed to delete actions');
+572:  // Error state
+573:  if (error) {
+578:        <p className="text-muted-foreground">{error}</p>
+
+>> fallback matches:
+775:      {/* Fallback metrics when Kinetic API not available - Clickable to filter */}

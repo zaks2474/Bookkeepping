@@ -1,0 +1,6 @@
+    raw_completion          TEXT,
+    proposals_extracted     JSONB DEFAULT '[]'::jsonb,
+    citations_extracted     JSONB DEFAULT '[]'::jsonb,
+    max_completion_tokens   INTEGER,
+    prompt_tokens           INTEGER,
+    total_tokens            INTEGER,

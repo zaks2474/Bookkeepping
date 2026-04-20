@@ -1,0 +1,31 @@
+=== VF-02.5 RUN SURFACE10 ===
+[36m=== Surface 10 Validation ===[0m
+=== SURFACE 10: DEPENDENCY HEALTH CONTRACT ===
+
+--- Check 1: Source Artifact ---
+  PASS: SERVICE-TOPOLOGY.md exists (95 lines)
+
+--- Check 2: Service Config File Resolution ---
+  PASS: Dashboard — app directory exists
+  PASS: Backend — docker-compose exists
+  PASS: Agent API — docker-compose exists
+  PASS: RAG — repository directory exists
+
+--- Check 3: Health Endpoint Source Resolution ---
+  PASS: Backend health router exists
+  PASS: Agent API main.py exists (health endpoint source)
+  PASS: Dashboard middleware exists (502 handler)
+  PASS: Resilience config exists (circuit breaker source)
+
+--- Check 4: Forbidden Port 8090 ---
+  PASS: No active port 8090 references (2 decommissioned warnings OK)
+
+--- Check 5: Canonical Port Alignment ---
+  PASS: Dashboard port 3003 documented
+  PASS: Backend port 8091 documented
+  PASS: Agent port 8095 documented
+  PASS: RAG port 8052 documented
+
+================================
+PASS: SURFACE 10 DEPENDENCY HEALTH CONTRACT (0 warning(s))
+[32mSurface 10 validation passed[0m

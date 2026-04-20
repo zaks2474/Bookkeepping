@@ -1,0 +1,21 @@
+=== V2 SPEC LIFECYCLE AUTOMATION ===
+Date: 2026-02-06
+
+Spec Freshness Bot: .github/workflows/spec-freshness-bot.yml
+  - Schedule: Daily (cron)
+  - Manual dispatch: workflow_dispatch
+  - Action: Generates spec from backend, compares canonical JSON, opens PR if drift detected
+
+Export Script: scripts/export_openapi.py (in zakops-backend)
+  - Generates OpenAPI spec from FastAPI app without starting server
+  - Uses sort_keys=True for deterministic output
+
+Contract Drift Check: make check-contract-drift
+  - Uses jq -S for canonical JSON comparison
+  - Compares live backend spec vs committed spec
+  - EXIT 0 = no drift, EXIT 1 = drift detected
+
+Spec Update Pipeline:
+  1. make update-spec — fetch live spec and commit
+  2. make sync-types — regenerate TypeScript types
+  3. tsc --noEmit — verify compilation

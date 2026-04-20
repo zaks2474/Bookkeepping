@@ -1,0 +1,34 @@
+=== ARCH-3: Plugin Awareness ===
+--- ARCH-3.1: frontend-design plugin check ---
+35:FRONTEND_DESIGN_PLUGIN=""
+161:  # Frontend design plugin
+162:  if [ -f "/mnt/skills/public/frontend-design/SKILL.md" ]; then
+163:    FRONTEND_DESIGN_PLUGIN="/mnt/skills/public/frontend-design/SKILL.md"
+177:## Plugin Availability
+179:| Plugin | Path | Available |
+181:| frontend-design | ${FRONTEND_DESIGN_PLUGIN:-NOT FOUND} | $([ -n "$FRONTEND_DESIGN_PLUGIN" ] && echo "YES" || echo "NO") |
+195:  [ -n "$FRONTEND_DESIGN_PLUGIN" ] && log "frontend-design plugin: available" || log_warn "frontend-design plugin: not found"
+629:  # Plugin warning for design mode
+630:  if [ "$mode" = "design" ] && [ -z "$FRONTEND_DESIGN_PLUGIN" ]; then
+
+--- ARCH-3.2: Plugin status in 00_context ---
+# CLI Discovery Report
+## Generated: 2026-02-09T21:17:37Z
+
+| Tool | Path | Available |
+|------|------|-----------|
+| Gemini CLI | /root/.npm-global/bin/gemini | YES |
+| Codex CLI | /root/.npm-global/bin/codex | YES |
+| Claude CLI | /usr/local/bin/claude | YES |
+
+## Plugin Availability
+
+| Plugin | Path | Available |
+|--------|------|-----------|
+| frontend-design | NOT FOUND | NO |
+
+## Versions
+- Gemini: 0.27.0
+- Codex: codex-cli 0.92.0
+- Claude: 2.1.37 (Claude Code)
+

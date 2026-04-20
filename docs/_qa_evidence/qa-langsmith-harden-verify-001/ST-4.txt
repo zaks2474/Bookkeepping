@@ -1,0 +1,3 @@
+22:INJECTION_PATHS = ("/api/quarantine",)
+39:        is_injection_path = any(path.startswith(p) for p in INJECTION_PATHS)
+VERDICT: Uses startswith (covers sub-paths like /api/quarantine/123), not exact match. PASS.

@@ -1,0 +1,4 @@
+APIKeyMiddleware imported and registered:
+  /home/zaks/zakops-backend/src/api/shared/middleware/__init__.py:16:from .apikey import APIKeyMiddleware
+  /home/zaks/zakops-backend/src/api/orchestration/main.py:35:    APIKeyMiddleware,
+  /home/zaks/zakops-backend/src/api/orchestration/main.py:466:app.add_middleware(APIKeyMiddleware)

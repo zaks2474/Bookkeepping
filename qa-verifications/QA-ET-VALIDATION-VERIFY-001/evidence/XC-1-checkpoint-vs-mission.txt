@@ -1,0 +1,28 @@
+=== XC-1 CHECKPOINT VS MISSION ===
+13:| P0 — Safety & Perimeter | COMPLETE | 2026-02-14 | 11/12 PASS, 1 deferred |
+14:| P1 — Canonical Schema | NOT STARTED | — | — |
+15:| P2 — Quarantine UX | NOT STARTED | — | — |
+16:| P3 — Agent Configuration | NOT STARTED | — | — |
+17:| P4 — Deal Promotion | NOT STARTED | — | — |
+18:| P5 — Auto-Routing | NOT STARTED | — | — |
+19:| P6 — Collaboration Contract | NOT STARTED | — | — |
+20:| P7 — Security & Hardening | NOT STARTED | — | — |
+21:| P8 — Operational Excellence | NOT STARTED | — | — |
+34:| P0-01 | Feature flags table + runtime admin API | Migration 032 applied; GET/PUT /api/admin/flags working |
+35:| P0-02 | Kill switch wired before quarantine write path | 503 returned when `email_triage_writes_enabled=false` |
+36:| P0-03 | Shadow mode flag-driven source_type in bridge | `_get_flag("shadow_mode")` with 60s TTL cache replaces hardcoded value |
+37:| P0-04 | Idempotency verified (5 concurrent identical POSTs) | 5 POSTs with same message_id → exactly 1 DB record |
+38:| P0-05 | Correlation ID end-to-end | correlation_id in quarantine record, logs, and tool response |
+39:| P0-06 | Auth bypass removed from bridge | Bearer token required on all REST endpoints |
+40:| P0-07 | Key rotation runbook created | `/home/zaks/bookkeeping/docs/KEY-ROTATION-RUNBOOK.md` |
+41:| P0-08 | ZAKOPS_ENV environment variable | Logged at startup, defaults to "development" |
+42:| P0-09 | Migration number safety check | Confirmed 032 was free before creating SQL |
+189:## Phase 0 - Safety and Perimeter
+240:## Phase 1 - Canonical Schema and Contract Enforcement
+284:## Phase 2 - Quarantine UX Operationalization
+330:## Phase 3 - Email Triage Agent Configuration
+369:## Phase 4 - Quarantine to Deal Promotion Pipeline
+418:## Phase 5 - Auto-Routing
+455:## Phase 6 - Collaboration Contract
+494:## Phase 7 - Security and Hardening
+531:## Phase 8 - Operational Excellence Gate

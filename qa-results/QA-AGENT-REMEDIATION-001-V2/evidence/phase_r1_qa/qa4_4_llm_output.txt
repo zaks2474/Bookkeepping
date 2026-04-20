@@ -1,0 +1,85 @@
+QA-4.4: UF-004 LLM Output Validation
+=====================================
+
+Test 1: Import Verification
+----------------------------
+File: /home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py
+Line 69: from app.core.security.output_validation import sanitize_llm_output
+
+VERIFIED: sanitize_llm_output is properly imported
+
+Test 2: Usage in invoke_with_hitl (non-streaming)
+--------------------------------------------------
+File: /home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py
+Lines 572-580:
+    # Sanitize LLM output before returning (UF-004)
+    if response_text:
+        sanitization_result = sanitize_llm_output(response_text)
+        if sanitization_result.was_modified:
+            logger.warning(
+                "llm_output_sanitized",
+                modifications=sanitization_result.modifications,
+                thread_id=thread_id,
+            )
+        response_text = sanitization_result.sanitized
+
+VERIFIED: Called in invoke_with_hitl at line 573
+
+Test 3: Usage in resume_after_approval
+---------------------------------------
+File: /home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py
+Lines 646-650:
+    # Sanitize LLM output (UF-004)
+    if response_text:
+        sanitization_result = sanitize_llm_output(response_text)
+        if sanitization_result.was_modified:
+            logger.warning("llm_output_sanitized_on_resume", modifications=sanitization_result.modifications)
+        response_text = sanitization_result.sanitized
+
+VERIFIED: Called in resume_after_approval at line 647
+
+Test 4: Usage in Streaming Path (get_stream_response)
+-----------------------------------------------------
+File: /home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py
+Lines 785-791:
+    # UF-004: Sanitize streaming tokens before yielding
+    content = token.content
+    if content:
+        sanitization_result = sanitize_llm_output(content)
+        if sanitization_result.was_modified:
+            logger.warning("llm_stream_output_sanitized", session_id=session_id)
+        content = sanitization_result.sanitized
+    yield content
+
+VERIFIED: Called in streaming path at line 788
+This covers the previously identified gap in streaming responses.
+
+Test 5: Sanitization Implementation Review
+-------------------------------------------
+File: /home/zaks/zakops-agent-api/apps/agent-api/app/core/security/output_validation.py
+Function: sanitize_llm_output (lines 95-136)
+
+Sanitization Steps:
+1. Detects suspicious patterns (XSS, injection attempts, path traversal)
+2. HTML escapes content using html.escape() to prevent XSS
+3. Length limiting (100KB max) to prevent response flooding
+4. Logs modifications for monitoring
+
+Patterns Detected:
+- Script injection: <script>, javascript:, on*= event handlers
+- HTML injection: <iframe>, <object>, <embed>, <form>
+- SQL injection: DROP TABLE, DELETE FROM, '1'='1', -- comments
+- Path traversal: ../, ..\
+
+VERDICT: PASS
+Evidence:
+- sanitize_llm_output is imported correctly (line 69)
+- Called in invoke_with_hitl (line 573) ✓
+- Called in resume_after_approval (line 647) ✓
+- Called in streaming path get_stream_response (line 788) ✓
+- All LLM output paths are covered, including the streaming path
+- Implementation includes HTML escaping, pattern detection, and length limiting
+- Modifications are logged for monitoring and alerting
+
+Security Coverage: COMPLETE
+All LLM output paths (both synchronous and streaming) are properly sanitized.

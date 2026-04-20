@@ -1,0 +1,36 @@
+=== PRE-1.2: Service DB Targets ===
+
+--- Agent API DATABASE_URL ---
+postgresql:***@db:5432/zakops_agent
+
+--- Agent API: Actual DB Connection ---
+ current_database | current_user | inet_server_addr | inet_server_port 
+------------------+--------------+------------------+------------------
+ zakops_agent     | agent        |                  |                 
+(1 row)
+
+--- Backend: Actual DB Connection ---
+ current_database | current_user | inet_server_addr | inet_server_port 
+------------------+--------------+------------------+------------------
+ zakops           | zakops       |                  |                 
+(1 row)
+
+--- Agent API: Tables visible (should NOT see 'deals') ---
+ Schema |         Name          | Type  | Owner 
+--------+-----------------------+-------+-------
+ public | approvals             | table | agent
+ public | audit_log             | table | agent
+ public | checkpoint_blobs      | table | agent
+ public | checkpoint_migrations | table | agent
+ public | checkpoint_writes     | table | agent
+ public | checkpoints           | table | agent
+ public | session               | table | agent
+ public | tool_executions       | table | agent
+ public | user                  | table | agent
+
+PASS: Agent DB does NOT contain 'deals' table — proper isolation
+
+--- Backend: Tables visible (should see 'deals') ---
+ zakops | deals                   | table | zakops
+
+PASS: Backend DB contains 'deals' table

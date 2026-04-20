@@ -1,0 +1,703 @@
+[
+  {
+    "id": "ZK-AUD-0001",
+    "title": "Multiple competing ZakOps stacks / unclear source of truth",
+    "description": "Overlapping ZakOps stacks and backend-ish codepaths create ambiguity about which service is authoritative for deals, quarantine, actions, and tool execution.",
+    "sources": [
+      {
+        "report": "A",
+        "quote": "Key contrarian fact: you have multiple “backend-ish” codepaths in-repo, but the only backend actually serving :8091 is zakops-backend/."
+      },
+      {
+        "report": "B",
+        "quote": "There are two separate \"ZakOps\" systems running simultaneously."
+      }
+    ],
+    "category": "legacy_decommission",
+    "severity": "P1",
+    "owner_type": "devops",
+    "evidence": [
+      "Report A: backend observed on http://localhost:8091 built from zakops-backend/; zakops-agent-api/apps/backend exists but not serving :8091.",
+      "Report B: legacy /home/zaks/Zaks-llm/ stack with zakops-api on port 8080."
+    ],
+    "remediation_actions": [
+      "Decide and document the single authoritative ZakOps runtime (which API owns deals/quarantine/actions).",
+      "Decommission, disable, or explicitly scope legacy services (e.g., zakops-api:8080) to remove ambiguity.",
+      "Remove or clearly label unused backend-looking codepaths (e.g., zakops-agent-api/apps/backend).",
+      "Align scripts/docs to the authoritative ports/services."
+    ],
+    "dependencies": [
+      "ZK-AUD-0002",
+      "ZK-AUD-0016"
+    ],
+    "verification_steps": [
+      "Run `docker ps` and confirm only intended ZakOps services are running.",
+      "Run `ss -lntp` and confirm only expected ports are listening.",
+      "Confirm dashboard/agent base URLs target the chosen authoritative backend."
+    ],
+    "definition_of_done": "One declared authoritative API for deals/quarantine/actions; non-authoritative stacks are stopped or formally documented as legacy/bridge; onboarding docs match the runtime.",
+    "conflicts": [
+      "Report A says :8091 is served by zakops-backend; Report B describes backend as part of the zakops-agent-api monorepo. Needs runtime verification of which stack is standard."
+    ],
+    "needs_verification": true
+  },
+  {
+    "id": "ZK-AUD-0002",
+    "title": "Port & URL configuration drift (8090/8091/9200) + docker-compose conflicts",
+    "description": "Inconsistent ports across env files, Docker defaults, docs, and clients plus docker-compose port collisions prevent deterministic operation and cause misrouting.",
+    "sources": [
+      {
+        "report": "A",
+        "quote": "Port 8090 is still referenced widely in docs/scripts/config despite V3 claiming it’s decommissioned."
+      },
+      {
+        "report": "B",
+        "quote": "Port conflict: both backend services claim 8091."
+      }
+    ],
+    "category": "env_config",
+    "severity": "P0",
+    "owner_type": "devops",
+    "evidence": [
+      "Report B: backend-orchestration mapped to 8091:8091 (same as deal-lifecycle) not 9200:9200; cannot run both from compose.",
+      "Report B: .env.example uses 8090; Dockerfile.api defaults 8090; scripts/dev.sh uses 8091; runtime is 8091 but defaults conflict.",
+      "Report B: apps/dashboard/src/lib/agent-client.ts defaults to port 9200 if NEXT_PUBLIC_API_URL missing.",
+      "Report A: 8090 appears in zakops-backend/.env.example and env (ZAKOPS_DEAL_API_URL); legacy MCP server hard-coded to :8090."
+    ],
+    "remediation_actions": [
+      "Fix docker-compose port mappings so lifecycle and orchestration can run without collisions (e.g., 8091 and 9200).",
+      "Normalize .env.example, Docker defaults, and dev scripts to a single port set aligned with runtime.",
+      "Fix dashboard client fallbacks (agent-client.ts) to target the correct API/port.",
+      "Remove/cordon legacy 8090 references (env/docs/tools, hard-coded MCP server)."
+    ],
+    "dependencies": [
+      "ZK-AUD-0001"
+    ],
+    "verification_steps": [
+      "Run `docker compose up -d` and confirm no port binding errors.",
+      "Run `curl http://localhost:8091/health/ready` (if present) and verify success.",
+      "Run `curl http://localhost:9200/health/ready` (if intended) and verify success.",
+      "Start dashboard without NEXT_PUBLIC_API_URL and confirm it does not silently call the wrong port."
+    ],
+    "definition_of_done": "Compose starts intended services without collisions; examples/defaults match runtime; no active runtime path relies on 8090 unless explicitly documented as legacy.",
+    "conflicts": [],
+    "needs_verification": true
+  },
+  {
+    "id": "ZK-AUD-0003",
+    "title": "Dashboard hides failures (mock endpoints + fail-open empty responses)",
+    "description": "Dashboard can return empty/mock data when backend is unreachable and can show mock agent activity, masking outages and breaking operator situational awareness.",
+    "sources": [
+      {
+        "report": "A",
+        "quote": "Several Dashboard API routes “fail open” and return empty/mock data on backend errors (pipeline, checkpoints, delete action, etc.)"
+      },
+      {
+        "report": "B",
+        "quote": "If backend not running, dashboard silently returns empty arrays (graceful degradation hides failures)."
+      }
+    ],
+    "category": "reliability",
+    "severity": "P1",
+    "owner_type": "frontend",
+    "evidence": [
+      "Report A: mock agent activity endpoint zakops-agent-api/apps/dashboard/src/app/api/agent/activity/route.ts.",
+      "Report B: dashboard hides backend outage by returning empty arrays."
+    ],
+    "remediation_actions": [
+      "Add explicit backend connectivity/health indicator in the UI.",
+      "Gate mock/fail-open behavior behind a clear demo-mode flag or remove it for production.",
+      "Surface backend errors (banner/toast) instead of silent empty arrays."
+    ],
+    "dependencies": [
+      "ZK-AUD-0002"
+    ],
+    "verification_steps": [
+      "Stop backend and confirm UI shows 'disconnected' state rather than empty lists.",
+      "Restart backend and confirm UI returns to connected state with real data."
+    ],
+    "definition_of_done": "UI differentiates 'no data' vs 'system down'; mock endpoints removed or explicitly gated; backend errors are visible to operators.",
+    "conflicts": [],
+    "needs_verification": false
+  },
+  {
+    "id": "ZK-AUD-0004",
+    "title": "Deal stage taxonomy inconsistent across UI and backend",
+    "description": "Multiple incompatible stage enumerations exist across UI types, backend workflow, and UI create form, causing inconsistent sorting/filtering/transitions and unclear semantics.",
+    "sources": [
+      {
+        "report": "A",
+        "quote": "Multiple, conflicting stage models across UI + backend."
+      }
+    ],
+    "category": "data_flow",
+    "severity": "P1",
+    "owner_type": "product",
+    "evidence": [
+      "Report A: UI stages in zakops-agent-api/apps/dashboard/src/types/execution-contracts.ts.",
+      "Report A: backend stages in zakops-backend/src/core/deals/workflow.py.",
+      "Report A: UI create form stages in zakops-agent-api/apps/dashboard/src/app/deals/new/page.tsx."
+    ],
+    "remediation_actions": [
+      "Choose a canonical stage taxonomy and document stage meanings.",
+      "Align backend workflow validation and all UI stage lists to the canonical taxonomy.",
+      "Migrate existing deal stage values that don't match the canonical list."
+    ],
+    "dependencies": [
+      "ZK-AUD-0005"
+    ],
+    "verification_steps": [
+      "Verify UI dropdowns/kanban columns and backend validation accept the same stage values.",
+      "Transition multiple deals and verify resulting stages match across DB and UI."
+    ],
+    "definition_of_done": "Single canonical stage taxonomy across backend and UI; no DB stage values outside the canonical set.",
+    "conflicts": [],
+    "needs_verification": false
+  },
+  {
+    "id": "ZK-AUD-0005",
+    "title": "Deal transition API contract mismatch (to_stage vs new_stage)",
+    "description": "Dashboard sends {to_stage, approved_by} while backend expects {new_stage}, causing UI stage transitions to fail (HTTP 400).",
+    "sources": [
+      {
+        "report": "A",
+        "quote": "Deal stage transitions from UI: UI sends {to_stage, approved_by} but backend expects {new_stage}."
+      }
+    ],
+    "category": "ui_backend_wiring",
+    "severity": "P0",
+    "owner_type": "frontend",
+    "evidence": [
+      "Report A: UI transitionDeal() in zakops-agent-api/apps/dashboard/src/lib/api.ts sends to_stage/approved_by.",
+      "Report A: backend expects new_stage in zakops-backend/src/api/orchestration/routers/workflow.py."
+    ],
+    "remediation_actions": [
+      "Update dashboard transitionDeal() to send new_stage (or add a server-side adapter translating payloads).",
+      "Add a contract test preventing payload drift."
+    ],
+    "dependencies": [
+      "ZK-AUD-0004"
+    ],
+    "verification_steps": [
+      "Trigger a transition from the UI and confirm 2xx (no HTTP 400).",
+      "Call `POST /api/deals/{deal_id}/transition` with {\"new_stage\": ...} and confirm success."
+    ],
+    "definition_of_done": "Stage transitions succeed from UI and are reflected in backend events/history.",
+    "conflicts": [],
+    "needs_verification": false
+  },
+  {
+    "id": "ZK-AUD-0006",
+    "title": "/api/threads/* broken (DB env var mismatch + missing schema) blocks approvals/runs UX",
+    "description": "Dashboard runs/approvals UX calls backend /api/threads/*, but Report A says these endpoints 500 due to missing ZAKOPS_DATABASE_URL and missing zakops.agent_threads table.",
+    "sources": [
+      {
+        "report": "A",
+        "quote": "Backend /api/threads is wired to a DB URL env var that is not set + schema not present."
+      }
+    ],
+    "category": "agent_api",
+    "severity": "P0",
+    "owner_type": "backend",
+    "evidence": [
+      "Report A: zakops-backend/src/api/orchestration/agent_invocation.py uses ZAKOPS_DATABASE_URL (not DATABASE_URL).",
+      "Report A: backend container does not set ZAKOPS_DATABASE_URL; endpoints 500.",
+      "Report A: missing zakops.agent_threads migration/table."
+    ],
+    "remediation_actions": [
+      "Decide whether backend /api/threads is intended; either fix it or remove it and rewire the dashboard to the working approvals system.",
+      "If keeping: standardize on DATABASE_URL (or set ZAKOPS_DATABASE_URL consistently) and add the missing zakops.agent_threads migration.",
+      "If removing: delete endpoints and update dashboard code that calls /api/threads/*."
+    ],
+    "dependencies": [
+      "ZK-AUD-0016",
+      "ZK-AUD-0002"
+    ],
+    "verification_steps": [
+      "Call the /api/threads/* endpoints used by the UI and confirm 2xx (no 500).",
+      "End-to-end: create an approval from the agent, approve in UI, and confirm graph resumes."
+    ],
+    "definition_of_done": "/api/threads/* no longer returns 500 in the intended runtime; approvals/runs UX works end-to-end against the chosen authoritative approvals implementation.",
+    "conflicts": [
+      "Report B asserts HITL approvals work (agent-api flow) while Report A asserts dashboard approvals wired to backend /api/threads are dead. Requires verification and a single chosen approvals system."
+    ],
+    "needs_verification": true
+  },
+  {
+    "id": "ZK-AUD-0007",
+    "title": "Agent approvals DB functions not auto-applied (001_approvals.sql)",
+    "description": "Agent API relies on PL/pgSQL functions for approval recovery, but these live in apps/agent-api/migrations/001_approvals.sql and must be manually applied.",
+    "sources": [
+      {
+        "report": "B",
+        "quote": "Migration SQL not auto-executed… functions cleanup_expired_approvals, reclaim_stale_claims… must be manually applied."
+      }
+    ],
+    "category": "db",
+    "severity": "P1",
+    "owner_type": "agent",
+    "evidence": [
+      "Report B: apps/agent-api/migrations/001_approvals.sql contains required PL/pgSQL functions.",
+      "Report B: HITL recovery depends on these functions."
+    ],
+    "remediation_actions": [
+      "Apply apps/agent-api/migrations/001_approvals.sql to the actual Agent API database.",
+      "Automate applying this SQL during deployments/service startup."
+    ],
+    "dependencies": [
+      "ZK-AUD-0016"
+    ],
+    "verification_steps": [
+      "Query DB to confirm cleanup_expired_approvals and reclaim_stale_claims exist.",
+      "Exercise approval workflow and validate stale claim recovery behavior."
+    ],
+    "definition_of_done": "Required PL/pgSQL functions exist in the correct DB across environments; approval recovery works after restarts/crashes.",
+    "conflicts": [],
+    "needs_verification": true
+  },
+  {
+    "id": "ZK-AUD-0008",
+    "title": "Backend search endpoints crash due to schema mismatch (/api/search/actions, /api/search/global)",
+    "description": "Backend search routers reference non-existent columns (actions.inputs, actions.risk_level) and crash with 500s; schema uses agent_config JSON instead.",
+    "sources": [
+      {
+        "report": "A",
+        "quote": "Queries reference zakops.actions.inputs and zakops.actions.risk_level, but table uses agent_config and stores risk inside JSON."
+      }
+    ],
+    "category": "endpoints",
+    "severity": "P1",
+    "owner_type": "backend",
+    "evidence": [
+      "Report A: zakops-backend/src/api/orchestration/routers/search.py.",
+      "Report A: /api/search/actions and /api/search/global throw 500."
+    ],
+    "remediation_actions": [
+      "Update search.py queries to match current actions schema (use agent_config JSON extraction).",
+      "Add regression tests for /api/search/actions and /api/search/global."
+    ],
+    "dependencies": [],
+    "verification_steps": [
+      "Call /api/search/actions and confirm 200 (no 500).",
+      "Call /api/search/global and confirm 200 (no 500)."
+    ],
+    "definition_of_done": "Search endpoints return valid responses against current DB schema without 500 errors.",
+    "conflicts": [],
+    "needs_verification": false
+  },
+  {
+    "id": "ZK-AUD-0009",
+    "title": "LLM + integration configuration brittle (wrong base URL, missing secrets, fragile fallback)",
+    "description": "LLM/integration env uses localhost inside containers, keys are empty/placeholders, and provider fallback can lead to 'All providers failed' errors when vLLM is down.",
+    "sources": [
+      {
+        "report": "A",
+        "quote": "OPENAI_API_BASE=http://localhost:8000/v1 (wrong inside container; should use a reachable host/alias)."
+      },
+      {
+        "report": "B",
+        "quote": "If vLLM is down, circular fallback tries OpenAI (needs API key)… All providers failed."
+      }
+    ],
+    "category": "env_config",
+    "severity": "P1",
+    "owner_type": "devops",
+    "evidence": [
+      "Report A: missing/placeholder values for LANGSMITH_API_KEY, Gmail OAuth client id/secret, TOKEN_ENCRYPTION_KEY; incorrect OPENAI_API_BASE inside container.",
+      "Report B: executors depend on vLLM; failure mode when vLLM down triggers OpenAI fallback requiring API key."
+    ],
+    "remediation_actions": [
+      "Fix container-to-container LLM base URL (do not use localhost inside containers for vLLM).",
+      "Provide required secrets/keys or explicitly disable integrations not in use (LangSmith, Gmail OAuth, encryption key).",
+      "Make provider fallback policy explicit (disable OpenAI fallback if no key; return clear error when vLLM unavailable).",
+      "Add startup-time env validation (fail fast when required config is missing)."
+    ],
+    "dependencies": [
+      "ZK-AUD-0002",
+      "ZK-AUD-0016"
+    ],
+    "verification_steps": [
+      "With vLLM up: run a tool/executor and confirm success.",
+      "With vLLM down: confirm deterministic behavior (expected fallback or clear error), not circular provider attempts."
+    ],
+    "definition_of_done": "No localhost cross-container LLM calls; required secrets present or integrations disabled; deterministic and observable provider failure behavior.",
+    "conflicts": [],
+    "needs_verification": true
+  },
+  {
+    "id": "ZK-AUD-0010",
+    "title": "Email/DataRoom → Quarantine → Deal bridge missing (filesystem→DB ingestion gap)",
+    "description": "Inbound email/files may land in DataRoom or email endpoints exist, but there is no reliable automated bridge populating quarantine_items in Postgres for operator triage and deal creation.",
+    "sources": [
+      {
+        "report": "A",
+        "quote": "No evidence of a running email ingestion loop populating quarantine."
+      },
+      {
+        "report": "B",
+        "quote": "No automatic bridge from filesystem → quarantine_items DB table."
+      }
+    ],
+    "category": "data_flow",
+    "severity": "P0",
+    "owner_type": "backend",
+    "evidence": [
+      "Report A: backend exposes /api/integrations/email/* and /api/quarantine*; table zakops.quarantine_items exists.",
+      "Report B: sync_acquisition_emails.py writes to /home/zaks/DataRoom/00-PIPELINE/Inbound/{deal}/; backend in docker does not mount DataRoom."
+    ],
+    "remediation_actions": [
+      "Choose ingestion strategy (DB-first or filesystem-first) and document it.",
+      "If filesystem-first: add DataRoom volume mounts to backend container and implement a bridge job that creates quarantine_items from inbound files.",
+      "Operationalize ingestion (poller/webhook) to populate zakops.inbox and zakops.quarantine_items.",
+      "Add ingestion observability (processed counts, failures, quarantine created)."
+    ],
+    "dependencies": [
+      "ZK-AUD-0016",
+      "ZK-AUD-0001"
+    ],
+    "verification_steps": [
+      "Send test email with attachment and confirm a new quarantine_items row appears and is visible in /quarantine UI.",
+      "Approve the item and confirm a deal record is created."
+    ],
+    "definition_of_done": "Inbound email/files automatically create quarantine items; operator can approve/reject and see deterministic results (deal created or rejected) without manual DB inserts.",
+    "conflicts": [],
+    "needs_verification": false
+  },
+  {
+    "id": "ZK-AUD-0011",
+    "title": "Quarantine UI/back-end contract mismatch (UI treats quarantine as actions; backend exposes /api/quarantine)",
+    "description": "Dashboard quarantine page assumes quarantine items are actions and calls /api/actions/{id}/execute, but backend quarantine is a different model and action execution endpoints are not exposed (per Report A).",
+    "sources": [
+      {
+        "report": "A",
+        "quote": "Quarantine page assumes “quarantine items are actions” and tries POST /api/actions/{id}/execute… backend quarantine is a different model (/api/quarantine/*)."
+      }
+    ],
+    "category": "ui_backend_wiring",
+    "severity": "P0",
+    "owner_type": "frontend",
+    "evidence": [
+      "Report A: zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx calls /api/actions/{id}/execute.",
+      "Report A: backend quarantine endpoints exist under /api/quarantine/*."
+    ],
+    "remediation_actions": [
+      "Pick canonical quarantine model: first-class quarantine_items (/api/quarantine/*) OR action-based quarantine.",
+      "Align dashboard quarantine page to canonical backend contract; remove calls to non-existent endpoints.",
+      "Add end-to-end test: create quarantine item → approve → expected deal/action result."
+    ],
+    "dependencies": [
+      "ZK-AUD-0010",
+      "ZK-AUD-0012"
+    ],
+    "verification_steps": [
+      "Approve/reject a quarantine item from UI and confirm backend processes it without 4xx/5xx.",
+      "Confirm resulting DB state change and UI updates."
+    ],
+    "definition_of_done": "Quarantine approve/reject works end-to-end; UI only calls implemented endpoints; canonical quarantine model is documented.",
+    "conflicts": [],
+    "needs_verification": true
+  },
+  {
+    "id": "ZK-AUD-0012",
+    "title": "Actions/outbox processing not running end-to-end (empty actions table, missing worker)",
+    "description": "Action execution depends on background workers (outbox processor and/or actions_runner.py), but workers are not running in the observed stack and action pipeline is not demonstrably functioning.",
+    "sources": [
+      {
+        "report": "A",
+        "quote": "The actions table is currently empty… outbox worker… not running right now… /health/ready returns outbox_processor: not running."
+      },
+      {
+        "report": "B",
+        "quote": "actions_runner.py must be running as separate process."
+      }
+    ],
+    "category": "background_jobs",
+    "severity": "P0",
+    "owner_type": "backend",
+    "evidence": [
+      "Report A: zakops-backend/docker-compose.yml defines outbox-worker but it is not running; /health/ready indicates outbox_processor not running; actions table empty.",
+      "Report B: actions_runner.py must run as separate process/container; in dev must be started manually."
+    ],
+    "remediation_actions": [
+      "Ensure required worker(s) run by default in the standard compose/dev workflow; make /health/ready green for processors.",
+      "Define and document a single action lifecycle contract (create, lease, execute, retry, terminal states).",
+      "Add a smoke test: create action → observe lease acquisition → observe completion/failure status."
+    ],
+    "dependencies": [
+      "ZK-AUD-0011",
+      "ZK-AUD-0002"
+    ],
+    "verification_steps": [
+      "Create a test action and confirm DB row appears and worker transitions status to a terminal state.",
+      "Check /health/ready (if present) reports processors running."
+    ],
+    "definition_of_done": "Workers run by default; actions created by UI/agent execute reliably and reach terminal states; health checks reflect running processors.",
+    "conflicts": [],
+    "needs_verification": true
+  },
+  {
+    "id": "ZK-AUD-0013",
+    "title": "Chat proposal execution stubbed (HTTP 501)",
+    "description": "Dashboard route /api/chat/execute-proposal is explicitly unimplemented and returns 501, blocking 'approve from chat' execution.",
+    "sources": [
+      {
+        "report": "A",
+        "quote": "Chat proposal execution is explicitly unimplemented… always returns 501 (placeholder)."
+      }
+    ],
+    "category": "endpoints",
+    "severity": "P2",
+    "owner_type": "frontend",
+    "evidence": [
+      "Report A: zakops-agent-api/apps/dashboard/src/app/api/chat/execute-proposal/route.ts returns 501 placeholder."
+    ],
+    "remediation_actions": [
+      "Implement execute-proposal to trigger the corresponding backend action/quarantine operation, or remove the UI affordance until supported.",
+      "Add an end-to-end test verifying proposal approval triggers execution."
+    ],
+    "dependencies": [
+      "ZK-AUD-0012"
+    ],
+    "verification_steps": [
+      "Call POST /api/chat/execute-proposal and confirm 2xx and real execution (or feature removed)."
+    ],
+    "definition_of_done": "Proposals can be executed successfully from chat, or the feature is removed/disabled with clear messaging.",
+    "conflicts": [],
+    "needs_verification": false
+  },
+  {
+    "id": "ZK-AUD-0014",
+    "title": "Backend /api/agent/invoke deal_id type mismatch (expects UUID; real IDs are strings)",
+    "description": "Chat fallback calls /api/agent/invoke but backend expects UUID deal_id while real deal IDs are strings (e.g., DL-0012).",
+    "sources": [
+      {
+        "report": "A",
+        "quote": "backend expects UUID deal_id; real deal ids are strings like DL-0012."
+      }
+    ],
+    "category": "endpoints",
+    "severity": "P2",
+    "owner_type": "backend",
+    "evidence": [
+      "Report A: chat route fallback uses /api/agent/invoke; deal IDs are strings like DL-0012."
+    ],
+    "remediation_actions": [
+      "Accept the real deal ID format in /api/agent/invoke or translate string IDs to internal UUIDs if present.",
+      "Add contract tests ensuring /api/agent/invoke supports the system's deal ID format."
+    ],
+    "dependencies": [
+      "ZK-AUD-0016"
+    ],
+    "verification_steps": [
+      "Invoke /api/agent/invoke with a DL-#### deal_id and confirm success."
+    ],
+    "definition_of_done": "Chat fallback works with real deal IDs used by the system.",
+    "conflicts": [],
+    "needs_verification": false
+  },
+  {
+    "id": "ZK-AUD-0015",
+    "title": "Redis configured but unused (remove or implement intentionally)",
+    "description": "Redis is included in compose/env but Report B states it is not used by backend/agent code; architecture/docs claims about Redis may be false.",
+    "sources": [
+      {
+        "report": "B",
+        "quote": "Redis runs but is NOT actually used in application code."
+      }
+    ],
+    "category": "architecture",
+    "severity": "P2",
+    "owner_type": "devops",
+    "evidence": [
+      "Report B: docker-compose includes Redis and REDIS_URL env, but no Redis client usage in Python backend/agent code."
+    ],
+    "remediation_actions": [
+      "Decide: remove Redis from compose/docs OR implement Redis-backed caching/session/queue features intentionally.",
+      "If removed, update docs that claim Redis supports sessions/queues/cache."
+    ],
+    "dependencies": [],
+    "verification_steps": [
+      "Code audit: confirm whether any Redis client is used.",
+      "If removed: run stack and confirm no missing Redis dependency.",
+      "If implemented: demonstrate the Redis-backed feature works and is documented."
+    ],
+    "definition_of_done": "Redis is either actively used with documented responsibilities or removed from default runtime and docs.",
+    "conflicts": [
+      "Report A lists Redis as running and describes backend as backed by PostgreSQL + Redis, while Report B asserts Redis is not used in code. Requires verification and a decision."
+    ],
+    "needs_verification": true
+  },
+  {
+    "id": "ZK-AUD-0016",
+    "title": "Database configuration sprawl & migration uncertainty (risk of wrong DB connections)",
+    "description": "Multiple DBs and dangerous defaults (e.g., agent default food_order_db) can cause services to connect to or write into unintended databases; no single migration command guarantees schema correctness.",
+    "sources": [
+      {
+        "report": "A",
+        "quote": "Backend /api/threads uses ZAKOPS_DATABASE_URL (not DATABASE_URL)… schema lacks zakops.agent_threads migration/table."
+      },
+      {
+        "report": "B",
+        "quote": "There is no single migration command that sets up all schemas correctly."
+      }
+    ],
+    "category": "db",
+    "severity": "P0",
+    "owner_type": "data",
+    "evidence": [
+      "Report B: multiple DBs (zakops, zakops_agent, food_order_db, crawlrag, SQLite legacy).",
+      "Report B: agent DB default food_order_db at apps/agent-api/app/core/config.py:180.",
+      "Report A: DB env mismatch and missing tables for backend threads path."
+    ],
+    "remediation_actions": [
+      "Decide authoritative DB topology (single Postgres+DB preferred) and document per-service schema usage.",
+      "Remove dangerous defaults (fix agent default DB; fail fast when env missing).",
+      "Create a unified migration entrypoint that initializes all required tables/functions for backend and agent.",
+      "Enforce DB wiring in CI (prevent drift)."
+    ],
+    "dependencies": [
+      "ZK-AUD-0001",
+      "ZK-AUD-0002"
+    ],
+    "verification_steps": [
+      "Bring up a fresh environment and run one migration command to reach known-good schemas/functions.",
+      "Start services with minimal env and confirm they connect to intended DB(s) only (no silent defaults)."
+    ],
+    "definition_of_done": "Services cannot start while pointing at unintended DBs; one documented migration command provisions a fresh environment end-to-end.",
+    "conflicts": [],
+    "needs_verification": true
+  },
+  {
+    "id": "ZK-AUD-0017",
+    "title": "Auth disabled by default (backend + agent) / dev-mode operator auto-created",
+    "description": "Auth is disabled by default in backend and agent; dev-mode middleware creates a mock operator and no real session management is active, creating a production security risk if not explicitly gated.",
+    "sources": [
+      {
+        "report": "B",
+        "quote": "AUTH_REQUIRED defaults to false… Auth middleware creates a mock \"dev\" operator… No real session management is active in dev mode."
+      }
+    ],
+    "category": "auth",
+    "severity": "P1",
+    "owner_type": "security",
+    "evidence": [
+      "Report B: AUTH_REQUIRED=false and AGENT_JWT_ENFORCE=false defaults; mock dev operator behavior."
+    ],
+    "remediation_actions": [
+      "Create explicit dev vs prod profiles; require auth in prod with no mock operator.",
+      "Enforce AUTH_REQUIRED=true and AGENT_JWT_ENFORCE=true in production deployments.",
+      "Add CI smoke tests ensuring prod profile blocks unauthenticated requests."
+    ],
+    "dependencies": [
+      "ZK-AUD-0018"
+    ],
+    "verification_steps": [
+      "In prod profile, call key endpoints without auth and confirm 401/403.",
+      "In dev profile, confirm local development remains usable."
+    ],
+    "definition_of_done": "Production profile rejects unauthenticated access; dev profile behavior is explicitly documented and gated.",
+    "conflicts": [],
+    "needs_verification": false
+  },
+  {
+    "id": "ZK-AUD-0018",
+    "title": "Hardcoded DASHBOARD_SERVICE_TOKEN in compose/.env (secret hygiene issue)",
+    "description": "A dashboard service token is committed in docker-compose and .env.local, requiring removal and rotation.",
+    "sources": [
+      {
+        "report": "B",
+        "quote": "DASHBOARD_SERVICE_TOKEN hardcoded in docker-compose… token is in the compose file and .env.local."
+      }
+    ],
+    "category": "security",
+    "severity": "P1",
+    "owner_type": "security",
+    "evidence": [
+      "Report B: deployments/docker/docker-compose.yml:20,77 and .env.local contain the token."
+    ],
+    "remediation_actions": [
+      "Remove the token from versioned files and rotate it.",
+      "Load the token from a secrets-only mechanism (env-only or secret manager).",
+      "Add secret scanning to prevent reintroduction."
+    ],
+    "dependencies": [
+      "ZK-AUD-0017"
+    ],
+    "verification_steps": [
+      "Confirm token value is absent from tracked files.",
+      "Confirm rotated token works when loaded from secrets in runtime."
+    ],
+    "definition_of_done": "No committed secrets in compose/.env; token rotated and sourced securely.",
+    "conflicts": [],
+    "needs_verification": false
+  },
+  {
+    "id": "ZK-AUD-0019",
+    "title": "Observability stack defined but not proven working (metrics/dashboards may be stale)",
+    "description": "Observability components exist (Prometheus/Grafana/Loki/Promtail; OTEL deps installed) but it's unclear whether they run and whether apps emit usable metrics/logs; dashboards may not match reality.",
+    "sources": [
+      {
+        "report": "B",
+        "quote": "Prometheus, Grafana, Loki, and Promtail are defined in docker-compose but… Prometheus scrape targets point to services that may not expose /metrics."
+      }
+    ],
+    "category": "logging_observability",
+    "severity": "P2",
+    "owner_type": "devops",
+    "evidence": [
+      "Report B: ops/observability/ configs and grafana dashboards exist; OTEL instrumentation installed; Langfuse keys empty in .env.development."
+    ],
+    "remediation_actions": [
+      "Verify which observability containers run in the standard stack.",
+      "Ensure services expose metrics endpoints or OTEL exporters that Prometheus can scrape.",
+      "Validate and update Grafana dashboards to match actual metrics.",
+      "Configure Langfuse/LangSmith only if required and ensure keys are present when enabled."
+    ],
+    "dependencies": [
+      "ZK-AUD-0003"
+    ],
+    "verification_steps": [
+      "Confirm Prometheus scrape targets are up and metrics are collected.",
+      "Open Grafana dashboards and confirm live data populates."
+    ],
+    "definition_of_done": "Service health and key workflow metrics are observable; dashboards and scrape targets match the running system.",
+    "conflicts": [],
+    "needs_verification": true
+  },
+  {
+    "id": "ZK-AUD-0020",
+    "title": "Unverified/aspirational infra and quality gates (CI status unknown; gates/chaos/blue-green may not match runtime)",
+    "description": "Readiness artifacts exist (CI workflows, gates, chaos scripts, blue/green deployments), but their validity against the current runtime is unknown or aspirational; docs also contain mismatches (agent tool count).",
+    "sources": [
+      {
+        "report": "B",
+        "quote": "Whether they pass is unknown — likely many would fail against current runtime."
+      }
+    ],
+    "category": "testing",
+    "severity": "P3",
+    "owner_type": "devops",
+    "evidence": [
+      "Report B: deployments/bluegreen/, tools/gates/, tools/chaos/, .github/workflows/ci.yml and deploy.yaml exist; pass/green status unknown.",
+      "Report B: docs mismatch—agent has 5 tools but V3 says 4."
+    ],
+    "remediation_actions": [
+      "Run CI and record failures; fix what is required for the declared standard stack.",
+      "Run tools/gates scripts and triage failures; update scripts referencing decommissioned ports/services.",
+      "Decide if blue/green and chaos tooling are in-scope; archive/remove if not maintained.",
+      "Update docs to reflect actual agent tool count and runtime realities."
+    ],
+    "dependencies": [
+      "ZK-AUD-0002",
+      "ZK-AUD-0001"
+    ],
+    "verification_steps": [
+      "Run quality gates against the declared standard stack and confirm pass.",
+      "Ensure CI pipeline is green for the declared standard stack."
+    ],
+    "definition_of_done": "A verified, maintained set of readiness gates exists and matches the current runtime; CI and gate results are routinely tracked.",
+    "conflicts": [],
+    "needs_verification": true
+  }
+]
+

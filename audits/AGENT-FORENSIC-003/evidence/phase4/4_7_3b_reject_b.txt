@@ -1,0 +1,22 @@
+=== CHECK 4.7.3b: Reject Thread B's approval ===
+Timestamp: 2026-02-03T13:17:37-06:00
+Approval ID: 3f1a9e2d-7697-44cc-885c-d3e88f84ede7
+Thread ID: forensic-003-multi-b-1770146198
+
+=== API Call: POST /api/v1/agent/approvals/{id}:reject ===
+Using actor_id: multi-test-b (matches creation actor)
+{
+    "thread_id": "forensic-003-multi-b-1770146198",
+    "status": "completed",
+    "content": "Action rejected: Multi-approval isolation test - intentional rejection",
+    "pending_approval": null,
+    "actions_taken": [],
+    "error": null
+}
+
+=== Verify approval state changed ===
+                  id                  |            thread_id            |  status  |          resolved_at          | resolved_by  |                   rejection_reason                    
+--------------------------------------+---------------------------------+----------+-------------------------------+--------------+-------------------------------------------------------
+ 3f1a9e2d-7697-44cc-885c-d3e88f84ede7 | forensic-003-multi-b-1770146198 | rejected | 2026-02-03 19:17:37.727792+00 | multi-test-b | Multi-approval isolation test - intentional rejection
+(1 row)
+

@@ -1,0 +1,6 @@
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1258:@app.post("/api/actions/bulk/delete")
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1259:async def bulk_delete_actions(
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1630:@app.post("/api/quarantine/bulk-delete")
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1631:async def bulk_delete_quarantine_items(
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:943:  return apiFetch(`/api/quarantine/bulk-delete`, {
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1951:  return apiFetch('/api/actions/bulk/delete', {

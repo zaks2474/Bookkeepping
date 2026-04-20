@@ -1,0 +1,9 @@
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/chat/MarkdownMessage.tsx:5:import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/chat/MarkdownMessage.tsx:16:export function MarkdownMessage({ content, className }: { content: string; className?: string }) {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/chat/MarkdownMessage.tsx:21:        rehypePlugins={[[rehypeSanitize, sanitizeSchema]]}
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/AgentDrawer.tsx:28:import { MarkdownMessage } from '@/components/chat/MarkdownMessage';
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/AgentDrawer.tsx:249:                  <MarkdownMessage content={msg.content} className="text-sm" />
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealChat.tsx:44:import { MarkdownMessage } from '@/components/chat/MarkdownMessage';
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealChat.tsx:350:          <MarkdownMessage content={message.content} className="text-sm" />
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:6:import { MarkdownMessage } from '@/components/chat/MarkdownMessage';
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1052:        <MarkdownMessage content={message.content || ''} className='text-sm' />

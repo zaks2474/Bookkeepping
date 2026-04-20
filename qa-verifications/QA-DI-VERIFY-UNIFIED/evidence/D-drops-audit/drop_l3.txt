@@ -1,0 +1,8 @@
+=== DROP-L3: Dashboard Page Coverage Matrix ===
+VERDICT: ACCEPTED-LOW
+Evidence: No formal page x feature x status matrix was created.
+However, Layers 3 and 4 systematically verify each page:
+- L3.3-L3.6: /hq, /dashboard, /deals (stage config + server counts + filters)
+- L4.2-L4.5: /hq, /dashboard, /deals/[id], /actions (allSettled + degradation)
+- L3.12: Parity test (API deals = pipeline summary = 31)
+Equivalent coverage exists across gates but not in matrix form.

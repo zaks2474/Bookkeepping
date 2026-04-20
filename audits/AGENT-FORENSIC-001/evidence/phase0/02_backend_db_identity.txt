@@ -1,0 +1,32 @@
+=== STEP 0.3: Backend DB Identity ===
+        tablename        
+-------------------------
+ actions
+ agent_context
+ agent_context_summaries
+ agent_deal_metadata
+ agent_initiated_actions
+ agent_reasoning_chains
+ agent_runs
+ agent_tool_calls
+ artifacts
+ deal_aliases
+ deal_events
+ deals
+ email_accounts
+ email_attachments
+ email_messages
+ email_threads
+ execution_checkpoints
+ idempotency_keys
+ inbox
+ oauth_states
+ operators
+ outbox
+ quarantine_items
+ schema_migrations
+ sender_profiles
+ sse_connections
+(26 rows)
+
+SPLIT-BRAIN CHECK: Agent tables (user,session,approvals) vs Backend tables (deals,actions,quarantine)

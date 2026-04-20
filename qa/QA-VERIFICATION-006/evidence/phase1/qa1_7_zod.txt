@@ -1,0 +1,46 @@
+=== QA-1.7: T0.11+T0.12 Zod Schemas ===
+--- TEST 1: Zod .passthrough() ---
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-schemas.ts:61:}).passthrough();
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-schemas.ts:70:}).passthrough();
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-schemas.ts:81:}).passthrough();
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-schemas.ts:92:}).passthrough();
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:84:}).passthrough();
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:89:// REMEDIATION-V3 [ZK-ISSUE-0018]: Added .passthrough() to avoid silent field drops
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:102:  }).passthrough().nullable().optional(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:106:  }).passthrough().nullable().optional(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:115:  }).passthrough().nullable().optional(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:121:  }).passthrough().nullable().optional(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:127:}).passthrough();
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:132:// REMEDIATION-V3 [ZK-ISSUE-0018]: Added .passthrough() to avoid silent field drops
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:142:}).passthrough();
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:147:// REMEDIATION-V3 [ZK-ISSUE-0018]: Added .passthrough() to avoid silent field drops
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:156:}).passthrough();
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:161:// REMEDIATION-V3 [ZK-ISSUE-0018]: Added .passthrough() to avoid silent field drops
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:182:}).passthrough();
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:187:// REMEDIATION-V3 [ZK-ISSUE-0018]: Added .passthrough() to avoid silent field drops
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:192:}).passthrough();
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:220:}).passthrough();
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:231:}).passthrough();
+
+--- TEST 2: Schema validation logging ---
+414:  const parsed = DealsResponseSchema.safeParse(data);
+469:    const parsed = DealDetailSchema.safeParse(data);
+521:  const parsed = EventsResponseSchema.safeParse(data);
+621:  const parsed = ActionsResponseSchema.safeParse(data);
+639:  const parsed = ActionsResponseSchema.safeParse(data);
+657:  const parsed = QuarantineResponseSchema.safeParse(data);
+676:    const parsed = QuarantineHealthSchema.safeParse(data);
+728:  const parsed = QuarantineResponseSchema.safeParse(data);
+747:    const parsed = QuarantinePreviewSchema.safeParse(data);
+856:    const parsed = DealMaterialsSchema.safeParse(data);
+873:  const parsed = AlertsResponseSchema.safeParse(data);
+892:    const parsed = ClassificationMetricsSchema.safeParse(data);
+912:    const parsed = CheckpointsResponseSchema.safeParse(data);
+935:    const parsed = PipelineResponseSchema.safeParse(data);
+1548:    const parsed = KineticActionsResponseSchema.safeParse(data);
+1592:    const parsed = KineticActionSchema.safeParse(data);
+1706:    const parsed = CapabilitiesResponseSchema.safeParse(data);
+1730:    const parsed = ActionMetricsSchema.safeParse(data);
+1895:    const parsed = AgentActivityResponseSchema.safeParse(data);
+
+--- TEST 3: Strict schemas ---

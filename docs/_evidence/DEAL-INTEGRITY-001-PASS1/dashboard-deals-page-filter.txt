@@ -1,0 +1,91 @@
+
+type SortField = 'canonical_name' | 'stage' | 'broker' | 'days_since_update' | 'priority';
+type SortOrder = 'asc' | 'desc';
+type ViewMode = 'table' | 'board';
+
+export default function DealsPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const [deals, setDeals] = useState<Deal[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const [selectedDealIds, setSelectedDealIds] = useState<Set<string>>(new Set());
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleteTargetIds, setDeleteTargetIds] = useState<string[]>([]);
+  const [deleting, setDeleting] = useState(false);
+
+  // View mode from URL
+  const initialView = (searchParams.get('view') as ViewMode) || 'table';
+  const [viewMode, setViewMode] = useState<ViewMode>(initialView);
+
+  // Filters from URL (convert empty to sentinel for Select component)
+  const stageFilterRaw = searchParams.get('stage') || '';
+  const statusFilterRaw = searchParams.get('status') || 'active';
+  const searchQuery = searchParams.get('q') || '';
+
+  // For Select value binding (Select doesn't accept empty string)
+  const stageFilter = stageFilterRaw || ALL_FILTER;
+  const statusFilter = statusFilterRaw || ALL_FILTER;
+
+  // Sort state
+  const [sortField, setSortField] = useState<SortField>('days_since_update');
+  const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
+
+  const fetchData = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const params: Record<string, string> = {};
+      if (stageFilterRaw) params.stage = stageFilterRaw;
+      if (statusFilterRaw) params.status = statusFilterRaw;
+      const data = await getDeals(params);
+      setDeals(data);
+      setSelectedDealIds(new Set());
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load deals');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [stageFilterRaw, statusFilterRaw]);
+
+  // Update URL params (convert sentinel back to empty for URL)
+  const updateFilter = (key: string, value: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    const actualValue = value === ALL_FILTER ? '' : value;
+    if (actualValue) {
+      params.set(key, actualValue);
+    } else {
+      params.delete(key);
+    }
+    router.push(`/deals?${params.toString()}`);
+  };
+
+  // Update view mode
+  const updateViewMode = (mode: ViewMode) => {
+    setViewMode(mode);
+    const params = new URLSearchParams(searchParams.toString());
+    if (mode === 'table') {
+      params.delete('view');
+    } else {
+      params.set('view', mode);
+    }
+    router.push(`/deals?${params.toString()}`);
+  };
+
+  // Filter by search query
+  const filteredDeals = deals.filter(deal => {
+    if (!searchQuery) return true;
+    const q = searchQuery.toLowerCase();
+    return (
+      deal.canonical_name?.toLowerCase().includes(q) ||
+      deal.deal_id.toLowerCase().includes(q) ||
+      deal.broker?.toLowerCase().includes(q)
+    );
+  });
+

@@ -1,0 +1,9 @@
+=== VF-01.1 NO NESTED BUTTON ===
+--- Checking outer element is div role=button, not <button> ---
+88:              role='button'
+89:              tabIndex={0}
+91:              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelectSession(session.id); } }}
+--- Ensuring no raw <button> wrapping session items ---
+outer_button_count=0
+--- Inner <Button> (shadcn) for delete should remain ---
+102:                <Button

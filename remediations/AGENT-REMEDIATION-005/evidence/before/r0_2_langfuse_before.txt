@@ -1,0 +1,24 @@
+=== R0.2 LANGFUSE CONFIGURATION STATE ===
+--- .env Langfuse vars ---
+(none found)
+--- .env.example Langfuse vars ---
+# Langfuse Settings
+LANGFUSE_PUBLIC_KEY="your-langfuse-public-key"
+LANGFUSE_SECRET_KEY="your-langfuse-secret-key"
+LANGFUSE_HOST=https://cloud.langfuse.com
+--- Langfuse imports in code ---
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:27:from langfuse.langchain import CallbackHandler
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/resilience.py:11:- Langfuse (:3001)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/resilience.py:169:    "langfuse": ServiceConfig(
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/resilience.py:170:        name="Langfuse Tracing",
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/resilience.py:231:        service_name: Name of the service (deal_api, rag_rest, mcp, vllm, langfuse)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/config.py:138:            "DESCRIPTION", "A production-ready FastAPI template with LangGraph and Langfuse integration"
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/config.py:146:        # Langfuse Configuration
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/config.py:149:        self.LANGFUSE_HOST = os.getenv("LANGFUSE_HOST", "https://cloud.langfuse.com")
+/home/zaks/zakops-agent-api/apps/agent-api/app/main.py:20:from langfuse import Langfuse
+/home/zaks/zakops-agent-api/apps/agent-api/app/main.py:39:# Initialize Langfuse
+/home/zaks/zakops-agent-api/apps/agent-api/app/main.py:40:langfuse = Langfuse(
+/home/zaks/zakops-agent-api/apps/agent-api/app/main.py:43:    host=os.getenv("LANGFUSE_HOST", "https://cloud.langfuse.com"),
+--- Langfuse in dependencies ---
+/home/zaks/zakops-agent-api/apps/agent-api/pyproject.toml:    "langfuse==3.9.1",
+(none found)

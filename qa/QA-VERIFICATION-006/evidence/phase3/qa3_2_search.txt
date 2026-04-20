@@ -1,0 +1,13 @@
+=== QA-3.2: T2.4-T2.5 Search Endpoints ===
+--- TEST 1: Search deals endpoint ---
+"object"
+
+--- TEST 2: OpenAPI search endpoint ---
+[
+  "/api/integrations/email/search",
+  "/api/search/actions",
+  "/api/search/deals",
+  "/api/search/global"
+]
+
+=== QA-3.2 VERDICT: PASS ===

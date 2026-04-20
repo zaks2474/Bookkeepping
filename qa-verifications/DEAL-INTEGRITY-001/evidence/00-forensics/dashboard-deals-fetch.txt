@@ -1,0 +1,30 @@
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:40:  getDeals,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:323:        const dealList = await getDeals({ status: 'active' });
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:6:  getDeals,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:39:        getDeals({ status: 'active' }),
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:355:          Endpoint: /api/deals/{dealId}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx:50:import { archiveDeal, bulkArchiveDeals, getDeals, type Deal } from '@/lib/api';
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx:112:      const data = await getDeals(params);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/route.ts:29:    const response = await fetch(`${BACKEND_URL}/api/deals?status=active`, {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/alerts/route.ts:17:      fetch(backendUrl('/api/deals?status=active'), { headers: hdrs }),
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/pipeline/route.ts:28:      fetch(backendUrl('/api/deals'), {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/page.tsx:19:  getDeals,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/page.tsx:84:        getDeals({ status: 'active' }),
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:426:export async function getDeals(params?: {
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:437:  const endpoint = `/api/deals${query ? `?${query}` : ''}`;
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:463:  return apiFetch('/api/deals', {
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:477:  return apiFetch(`/api/deals/${encodeURIComponent(dealId)}/archive`, {
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:493:  return apiFetch(`/api/deals/bulk-archive`, {
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:509:    const data = await apiFetch<unknown>(`/api/deals/${dealId}`);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:561:  const data = await apiFetch<unknown>(`/api/deals/${dealId}/events${query}`);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:580:    return await apiFetch<unknown>(`/api/deals/${dealId}/case-file`);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:638:    return await apiFetch<DealEnrichment>(`/api/deals/${dealId}/enrichment`);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:900:    const data = await apiFetch<unknown>(`/api/deals/${dealId}/materials`);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1007:  return apiFetch(`/api/deals/${dealId}/transition${qs ? `?${qs}` : ''}`, {
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1024:  return apiFetch(`/api/deals/${dealId}/notes`, {
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/action-registry.ts:13:  "deals.list": { endpoint: "/api/deals", method: "GET" },
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/action-registry.ts:14:  "deals.create": { endpoint: "/api/deals", method: "POST" },
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/action-registry.ts:15:  "deals.detail": { endpoint: "/api/deals/:id", method: "GET" },
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/action-registry.ts:16:  "deals.update": { endpoint: "/api/deals/:id", method: "PUT" },
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/action-registry.ts:17:  "deals.archive": { endpoint: "/api/deals/:id/archive", method: "POST" },
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/action-registry.ts:18:  "deals.transition": { endpoint: "/api/deals/:id/transition", method: "POST" },

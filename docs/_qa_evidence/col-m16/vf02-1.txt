@@ -1,0 +1,3 @@
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/chatbot.py:394:@router.get("/threads/{thread_id}/export")
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/chatbot.py:403:    COL-DESIGN-SPEC-V2 Section 12.2: GET /api/v1/chatbot/threads/{id}/export
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/chatbot.py:407:        result = await export_service.export_thread(thread_id, user_id, fmt=format)

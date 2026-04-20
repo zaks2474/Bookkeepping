@@ -1,0 +1,12 @@
+=== QA-3.3: T2.6-T2.7 Quarantine Processing ===
+--- TEST 1: Quarantine list endpoint ---
+"array"
+
+--- TEST 2: Quarantine process endpoint in OpenAPI ---
+[
+  "/api/quarantine",
+  "/api/quarantine/{item_id}",
+  "/api/quarantine/{item_id}/process"
+]
+
+=== QA-3.3 VERDICT: PASS ===

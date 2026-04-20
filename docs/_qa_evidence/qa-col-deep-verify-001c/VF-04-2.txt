@@ -1,0 +1,10 @@
+---workflow.py---
+5:R2-5: Added deal_transitions ledger for audit trail.
+227:        # R2-5: Write to deal_transitions ledger for audit trail
+231:            INSERT INTO zakops.deal_transitions (
+382:        deal_transitions table.
+398:            FROM zakops.deal_transitions
+---quarantine_section---
+NO deal_transitions INSERT found in process_quarantine function (lines 1697-1861)
+Deal creation uses inline INSERT INTO zakops.deals with audit_trail JSON, plus record_deal_event()
+transition_deal_state() is used for archive/restore but NOT for quarantine-to-deal promotion

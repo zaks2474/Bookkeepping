@@ -1,0 +1,11 @@
+=== A2.6 ===
+37:# Agent timeouts (seconds)
+38:GEMINI_TIMEOUT=900
+39:CODEX_TIMEOUT=900
+40:CLAUDE_TIMEOUT=900
+234:  timeout "$CLAUDE_TIMEOUT" "$CLAUDE_CLI" -p \
+242:      echo "The Claude agent did not produce output within the timeout." >> "$output_file"
+258:  timeout "$GEMINI_TIMEOUT" cat "$prompt_file" | "$GEMINI_CLI" \
+264:      echo "The Gemini agent did not produce output within the timeout." >> "$output_file"
+281:  timeout "$CODEX_TIMEOUT" "$CODEX_CLI" exec \
+288:      echo "The Codex agent did not produce output within the timeout." >> "$output_file"

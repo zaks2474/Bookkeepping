@@ -1,0 +1,16 @@
+=== QA-5.5: T4.12 SSE ===
+/home/zaks/zakops-backend/src/api/shared/sse_broadcast.py:2:SSE Broadcast Layer (Phase 18.6, 18.7)
+/home/zaks/zakops-backend/src/api/shared/sse_broadcast.py:4:Provides multi-instance event distribution for SSE.
+/home/zaks/zakops-backend/src/api/shared/sse_broadcast.py:53:SSE_MODE = os.getenv("ZAKOPS_SSE_MODE", "single_instance")
+/home/zaks/zakops-backend/src/api/shared/sse_broadcast.py:55:SSE_CHANNEL = "zakops:sse:events"
+/home/zaks/zakops-backend/src/api/shared/sse_broadcast.py:86:    Events are broadcast directly to the local SSE manager.
+/home/zaks/zakops-backend/src/api/shared/sse_broadcast.py:94:        logger.info("SSE broadcast: single_instance mode (direct)")
+/home/zaks/zakops-backend/src/api/shared/sse_broadcast.py:115:    def __init__(self, redis_url: str = REDIS_URL, channel: str = SSE_CHANNEL):
+/home/zaks/zakops-backend/src/api/shared/sse_broadcast.py:139:        logger.info(f"SSE broadcast: multi_instance mode (Redis: {self.redis_url})")
+/home/zaks/zakops-backend/src/api/shared/sse_broadcast.py:173:                        logger.warning(f"Invalid JSON in SSE broadcast: {message['data']}")
+/home/zaks/zakops-backend/src/api/shared/sse_broadcast.py:206:            logger.info("SSE broadcast: multi_instance mode (PostgreSQL LISTEN/NOTIFY)")
+/home/zaks/zakops-backend/src/api/shared/sse_broadcast.py:285:    Reads ZAKOPS_SSE_MODE environment variable:
+/home/zaks/zakops-backend/src/api/shared/sse_broadcast.py:290:    mode = SSE_MODE.lower()
+/home/zaks/zakops-backend/src/api/shared/sse_broadcast.py:299:        logger.warning(f"Unknown SSE mode '{mode}', defaulting to single_instance")
+/home/zaks/zakops-backend/src/api/shared/sse_auth.py:2:SSE Authentication & Authorization (Phase 18.0)
+/home/zaks/zakops-backend/src/api/shared/sse_auth.py:4:Ensures SSE connections are:

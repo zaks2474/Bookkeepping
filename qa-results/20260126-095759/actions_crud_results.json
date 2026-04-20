@@ -1,0 +1,31 @@
+{
+  "test_suite": "Actions CRUD",
+  "timestamp": "2026-01-26T10:01:12.266753",
+  "tests": [
+    {
+      "id": "1.2.1",
+      "name": "READ Actions (List)",
+      "passed": true,
+      "timestamp": "2026-01-26T10:01:12.270228",
+      "details": {
+        "status_code": 200,
+        "data_type": "list",
+        "count": 0
+      }
+    },
+    {
+      "id": "1.2.2",
+      "name": "READ Actions (Filtered)",
+      "passed": true,
+      "timestamp": "2026-01-26T10:01:12.272493",
+      "details": {
+        "filter": "status=pending_approval",
+        "status_code": 200
+      }
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "total": 2
+  }
+}

@@ -1,0 +1,19 @@
+=== STEP 1.2: Health & Root ===
+HTTP/1.1 200 OK
+date: Mon, 02 Feb 2026 22:09:57 GMT
+server: uvicorn
+content-length: 135
+content-type: application/json
+x-request-id: 48eb7b2e
+x-response-time: 0.001s
+
+{"name":"ZakOps Agent API","version":"1.0.0","status":"healthy","environment":"development","swagger_url":"/docs","redoc_url":"/redoc"}
+HTTP/1.1 200 OK
+date: Mon, 02 Feb 2026 22:09:57 GMT
+server: uvicorn
+content-length: 159
+content-type: application/json
+x-request-id: 6345aa8c
+x-response-time: 0.003s
+
+{"status":"healthy","version":"1.0.0","environment":"development","components":{"api":"healthy","database":"healthy"},"timestamp":"2026-02-02T22:09:58.062387"}

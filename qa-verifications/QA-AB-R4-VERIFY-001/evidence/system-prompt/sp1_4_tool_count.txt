@@ -1,0 +1,23 @@
+============================================================
+R3 REMEDIATION [P2.4]: Prompt Tool List Validation
+============================================================
+
+Running in CI mode (using static tool list)
+
+Known tools (8):
+  - duckduckgo_search
+  - transition_deal [HITL]
+  - get_deal
+  - list_deals
+  - search_deals
+  - create_deal [HITL]
+  - add_note [HITL]
+  - get_deal_health
+
+❌ FAIL: Prompt tool list does NOT match known tools
+
+  Missing in prompt: {'duckduckgo_search'}
+
+To fix:
+  1. Update app/core/prompts/system.md to include all tools
+  2. Or update KNOWN_TOOLS in this script if tools were added

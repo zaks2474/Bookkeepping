@@ -1,0 +1,22 @@
+=== VF-02.2 PERFORMANCE SCHEMA VALIDATOR SEMANTICS ===
+2:# validate-performance-budget-schema.sh — Schema-backed validation for PERFORMANCE-BUDGET.md
+3:# Surface 14 enhancement: ensures document has required sections and threshold counts
+6:BUDGET_FILE="${BUDGET_FILE:-/home/zaks/bookkeeping/docs/PERFORMANCE-BUDGET.md}"
+7:SCHEMA_FILE="$(dirname "$0")/schemas/performance-budget.schema.json"
+9:PASS=0
+10:FAIL=0
+13:pass() { echo "  PASS: $1"; PASS=$((PASS + 1)); }
+14:fail() { echo "  FAIL: $1"; FAIL=$((FAIL + 1)); }
+22:  fail "PERFORMANCE-BUDGET.md not found at $BUDGET_FILE"
+24:  echo "Performance Budget Schema Validation: FAIL ($PASS pass, $FAIL fail)"
+25:  exit 1
+27:pass "PERFORMANCE-BUDGET.md exists"
+33:  echo "Performance Budget Schema Validation: FAIL ($PASS pass, $FAIL fail)"
+34:  exit 1
+71:# Check 5: Minimum threshold count (table rows with < or > threshold markers)
+76:  fail "Insufficient thresholds: $THRESHOLD_COUNT (minimum 5 required)"
+87:if grep -qi "advisory\|strict" "$BUDGET_FILE" 2>/dev/null; then
+88:  pass "Advisory/strict mode semantics documented"
+90:  warn "No advisory/strict mode documentation"
+94:echo "Performance Budget Schema Validation: $([ "$FAIL" -eq 0 ] && echo "PASS" || echo "FAIL") ($PASS pass, $FAIL fail, $WARN warn)"
+95:exit "$FAIL"

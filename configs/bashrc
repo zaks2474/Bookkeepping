@@ -2,6 +2,10 @@
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 
+# Exports needed by non-interactive shells (Claude Code Bash tool, tripass.sh, etc.)
+export PATH="/root/.opencode/bin:/root/.npm-global/bin:$HOME/.local/bin:$PATH"
+export GEMINI_API_KEY="AIzaSyArbzYwXT_umvg0EdnbIWPBlZPRnz-ID-s"
+
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
@@ -104,3 +108,6 @@ export PATH=~/.npm-global/bin:$PATH
 export GEMINI_API_KEY="AIzaSyArbzYwXT_umvg0EdnbIWPBlZPRnz-ID-s"
 source /home/zaks/bookkeeping/labloop/labloop.profile.sh
 export PATH="$HOME/.local/bin:$PATH"
+
+# Gemini API key for TriPass pipeline
+export GEMINI_API_KEY="AIzaSyArbzYwXT_umvg0EdnbIWPBlZPRnz-ID-s"

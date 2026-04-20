@@ -1,0 +1,8 @@
+63:    to_stage: str = Field(..., description="Target stage to transition the deal to. Valid: inbound, screening, qualified, loi, diligence, closing, portfolio, junk, archived")
+90:    stage: str = Field(default="inbound", description="Initial stage for the deal. Valid: inbound, screening, qualified, loi, diligence, closing, portfolio, junk, archived")
+334:            # R3 REMEDIATION [P1.6]: Use valid stage enum
+338:                    "stage": "qualified",  # Fixed: was "qualification"
+386:            # R3 REMEDIATION [P1.6]: Use valid stage enum
+389:                    "results": [{"id": "deal-001", "title": "Sample Deal", "stage": "loi"}],  # Fixed: was "proposal"
+558:# R3 REMEDIATION [P1.3]: Added idempotency key
+584:        # R3 REMEDIATION [P1.3]: Generate idempotency key for note creation

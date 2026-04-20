@@ -1,0 +1,58 @@
+=== STEP 1.10: Multi-User Isolation (GPT 1.D) ===
+--- Register forensic-002 ---
+HTTP/1.1 200 OK
+date: Mon, 02 Feb 2026 22:16:30 GMT
+server: uvicorn
+content-length: 314
+content-type: application/json
+x-request-id: 7341d734
+x-response-time: 0.187s
+
+{
+  "id": 2,
+  "email": "forensic-002@zakops.com",
+  "token": {
+    "access_token": "eyJh****qhrk",
+    "token_type": "bearer",
+    "expires_at": "2026-03-04T22:16:31.467885Z"
+  }
+}
+
+--- Login forensic-002 ---
+HTTP/1.1 200 OK
+date: Mon, 02 Feb 2026 22:16:30 GMT
+server: uvicorn
+content-length: 263
+content-type: application/json
+x-request-id: 29e47b56
+x-response-time: 0.173s
+
+{
+  "access_token": "eyJh****eyHI",
+  "token_type": "bearer",
+  "expires_at": "2026-03-04T22:16:31.645783Z"
+}
+
+--- Create session for user B ---
+HTTP/1.1 200 OK
+date: Mon, 02 Feb 2026 22:16:30 GMT
+server: uvicorn
+content-length: 428
+content-type: application/json
+x-request-id: 229c8777
+x-response-time: 0.009s
+
+{
+  "session_id": "a279e56f-3e79-4335-bff4-f76f12844406",
+  "name": "",
+  "token": {
+    "access_token": "eyJh****qbaU",
+    "token_type": "bearer",
+    "expires_at": "2026-03-04T22:16:31.680047Z"
+  }
+}
+
+User A accessing User B session (a279e56f-3e79-4335-bff4-f76f12844406):
+GET B's session as A: 405
+DELETE B's session as A: 404
+200 = CRITICAL P0! 403/404 = PASS

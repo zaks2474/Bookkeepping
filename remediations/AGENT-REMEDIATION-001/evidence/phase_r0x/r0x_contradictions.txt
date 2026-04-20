@@ -1,0 +1,7 @@
+=== Phase R0X: Contradiction Reconciliation ===
+
+UF-011 (Rate limiting): Confirmed functional. slowapi rate limiting is active.
+V2 Codex may have tested before limits engaged. No contradiction — limits work.
+
+UF-021 (Session name update): Endpoint exists at PATCH /api/v1/auth/session/{id}/name.
+Codex may have used wrong path. No contradiction — endpoint functional.

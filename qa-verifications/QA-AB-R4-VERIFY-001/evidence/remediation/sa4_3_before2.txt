@@ -1,0 +1,20 @@
+
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/home/zaks/zakops-agent-api/apps/dashboard/qa_r4_zod_parse.ts' imported from /home/zaks/zakops-agent-api/apps/dashboard/
+    at finalizeResolution (node:internal/modules/esm/resolve:283:11)
+    at moduleResolve (node:internal/modules/esm/resolve:952:10)
+    at defaultResolve (node:internal/modules/esm/resolve:1188:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at resolveBase (file:///home/zaks/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/esm/index.mjs?1770317681229:2:3744)
+    at async resolveDirectory (file:///home/zaks/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/esm/index.mjs?1770317681229:2:4237)
+    at async resolve (file:///home/zaks/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/esm/index.mjs?1770317681229:2:5355)
+    at async nextResolve (node:internal/modules/esm/hooks:864:22)
+    at async Hooks.resolve (node:internal/modules/esm/hooks:306:24)
+    at async handleMessage (node:internal/modules/esm/worker:196:18) {
+  code: 'ERR_MODULE_NOT_FOUND',
+  url: 'file:///home/zaks/zakops-agent-api/apps/dashboard/qa_r4_zod_parse.ts'
+}
+
+Node.js v20.19.5

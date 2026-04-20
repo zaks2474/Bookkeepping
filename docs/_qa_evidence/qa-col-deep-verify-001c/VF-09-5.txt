@@ -1,0 +1,4 @@
+=== GDPR purge report model ===
+GdprPurgeReport fields: user_id, deleted_count, skipped_count, 
+  skipped_thread_ids, deleted_thread_ids, errors, started_at, completed_at
+RESULT: PASS — Complete report model with counts and IDs

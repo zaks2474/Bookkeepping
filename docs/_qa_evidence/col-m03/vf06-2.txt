@@ -1,0 +1,2 @@
+    permanent: bool = Query(False),
+    """Delete a thread (soft by default, hard if permanent=true).

@@ -1,0 +1,4 @@
+=== XC-1 MAKE TARGET RUNNER CONSISTENCY ===
+479:qa-cce-verify: ## Run QA verification suite for Claude Code hook enhancements (CLAUDE-CODE-ENHANCE-002)
+481:	@bash /home/zaks/bookkeeping/scripts/run-qa-cce-verify.sh
+runner exists

@@ -1,0 +1,503 @@
+{
+  "agent_identity": {
+    "agent_name": "Codex",
+    "run_id": "20260204-1958-c47151",
+    "date_time": "2026-02-04T19:58:24Z",
+    "repo_revision": "559a5d1f5c6d22adfd90fd767191dcd421f8732a"
+  },
+  "sources": {
+    "round3_index": "/home/zaks/bookkeeping/docs/AGENT_BRAIN_ROUND3_FORENSIC.md",
+    "pass1_report": "/home/zaks/bookkeeping/docs/AGENT_BRAIN_ROUND3_EVAL.PASS1.Claude-Opus.20260204-2045-p1r3.md",
+    "qa_baseline": "NOT FOUND (QA_VERIFICATION_006_REPORT.md)"
+  },
+  "failure_modes": [
+    {
+      "id": 1,
+      "failure_mode": "Destructive create_deal executes without HITL approval",
+      "detection": "Approvals table has no pending approval while audit_log shows create_deal side effects; golden trace expecting pending_approval fails",
+      "mitigation": "Add create_deal to HITL_TOOLS and enforce requires_approval",
+      "rollback": "Disable create_deal tool or feature-flag write tools to require manual approval",
+      "source": "ZK-BRAIN-ISSUE-0001"
+    },
+    {
+      "id": 2,
+      "failure_mode": "Agent answers deal facts without grounding (hallucinates/stale data)",
+      "detection": "LLM response contains deal stage/amount without preceding get_deal/search_deals tool call; golden trace grounding tests fail",
+      "mitigation": "Enforce grounding policy in prompt and graph (must call get_deal before deal answers)",
+      "rollback": "Force read-only mode: block deal-specific answers unless tool call succeeded",
+      "source": "ZK-BRAIN-ISSUE-0002"
+    },
+    {
+      "id": 3,
+      "failure_mode": "No tracing in production due to missing Langfuse config",
+      "detection": "Langfuse dashboard has no traces; startup logs show missing LANGFUSE keys",
+      "mitigation": "Configure LANGFUSE_PUBLIC_KEY/SECRET and add startup health check",
+      "rollback": "Enable local trace sink or OpenTelemetry exporter until Langfuse is configured",
+      "source": "ZK-BRAIN-ISSUE-0003"
+    },
+    {
+      "id": 4,
+      "failure_mode": "Actor impersonation via service-token requests",
+      "detection": "Audit log shows actor_id not matching authenticated service token claims; adversarial test passes with fake actor_id",
+      "mitigation": "Validate actor_id against auth claims; enforce tenant scoping",
+      "rollback": "Disable service-token endpoints or restrict to internal service identity only",
+      "source": "ZK-BRAIN-ISSUE-0004"
+    },
+    {
+      "id": 5,
+      "failure_mode": "Agent is amnesic because long-term memory disabled",
+      "detection": "Memory store empty; DISABLE_LONG_TERM_MEMORY=true; agent fails to recall prior info in evals",
+      "mitigation": "Enable mem0/pgvector and verify retention settings",
+      "rollback": "Use deal context loader as minimal persistent memory (DB-backed)",
+      "source": "ZK-BRAIN-ISSUE-0005"
+    },
+    {
+      "id": 6,
+      "failure_mode": "No deal-scoped memory; agent forgets deal-specific history",
+      "detection": "Deal follow-up questions require re-specifying deal context; evals show missing recall",
+      "mitigation": "Implement deal-scoped memory and DealContext loader",
+      "rollback": "Force explicit get_deal + recent_notes tool calls per turn",
+      "source": "ZK-BRAIN-ISSUE-0006"
+    },
+    {
+      "id": 7,
+      "failure_mode": "Prompt lacks M&A intelligence; bad stage reasoning",
+      "detection": "Agent suggests invalid transitions or omits M&A terms in scenario tests",
+      "mitigation": "Rewrite system prompt with M&A taxonomy, allowed transitions, and examples",
+      "rollback": "Add validation guardrails in transition tool; block invalid transitions",
+      "source": "ZK-BRAIN-ISSUE-0007"
+    },
+    {
+      "id": 8,
+      "failure_mode": "Tool call loop with no budget leads to runaway execution",
+      "detection": "Repeated tool calls in logs; request exceeds timeout; high tool_call_count",
+      "mitigation": "Add tool call budget per turn and per conversation; hard-stop with error",
+      "rollback": "Throttle tool calls and enforce max tokens",
+      "source": "ZK-BRAIN-ISSUE-0008"
+    },
+    {
+      "id": 9,
+      "failure_mode": "Prompt changes are untraceable (no versioning)",
+      "detection": "Cannot identify which prompt version produced a response in logs",
+      "mitigation": "Add prompt version header and hash; log per request",
+      "rollback": "Pin prompt to last known good version; block deployment without version",
+      "source": "ZK-BRAIN-ISSUE-0009"
+    },
+    {
+      "id": 10,
+      "failure_mode": "Evals are not gating deployments (CI missing)",
+      "detection": "CI pipeline allows merge despite golden trace failures",
+      "mitigation": "Add CI gate with golden_trace_runner and fail on regressions",
+      "rollback": "Manual release freeze until evals pass",
+      "source": "ZK-BRAIN-ISSUE-0010"
+    },
+    {
+      "id": 11,
+      "failure_mode": "No correlation_id propagation (debugging impossible)",
+      "detection": "Logs cannot be tied across UI -> agent -> backend; missing X-Correlation-ID",
+      "mitigation": "Add middleware to ingest/propagate correlation_id and inject into tool calls",
+      "rollback": "Use request_id as temporary correlation until full propagation",
+      "source": "ZK-BRAIN-ISSUE-0011"
+    },
+    {
+      "id": 12,
+      "failure_mode": "Non-idempotent write tools cause duplicate creates/notes",
+      "detection": "Duplicate deals/notes with same payload in DB; retries correlate with duplicates",
+      "mitigation": "Add idempotency_key for create_deal/add_note and backend enforcement",
+      "rollback": "Disable retries for write tools; manual dedupe job",
+      "source": "ZK-BRAIN-ISSUE-0012"
+    },
+    {
+      "id": 13,
+      "failure_mode": "Tool output schema mismatch (plain strings on errors)",
+      "detection": "Tool outputs are not JSON; LLM misparses errors and proceeds",
+      "mitigation": "Standardize ToolResult schema with success/data/error",
+      "rollback": "Force error outputs to be JSON-wrapped before passing to LLM",
+      "source": "ZK-BRAIN-ISSUE-0013"
+    },
+    {
+      "id": 14,
+      "failure_mode": "mem0 hard-depends on OpenAI even when local-vLLM required",
+      "detection": "OpenAI API calls during local-only deployments; missing API key failures",
+      "mitigation": "Make mem0 provider configurable and support local embeddings",
+      "rollback": "Disable mem0 and rely on DB-backed DealContext",
+      "source": "ZK-BRAIN-ISSUE-0014"
+    },
+    {
+      "id": 15,
+      "failure_mode": "Tool exceptions crash the agent (no try/except)",
+      "detection": "Unhandled exception stack traces from _tool_call; 500 responses",
+      "mitigation": "Wrap tool calls with try/except; return ToolResult error",
+      "rollback": "Feature-flag error-resilient mode to bypass tool calls",
+      "source": "ZK-BRAIN-ISSUE-0015"
+    },
+    {
+      "id": 16,
+      "failure_mode": "RAG results stale or unverifiable (no provenance/freshness)",
+      "detection": "RAG responses lack source metadata or timestamps; user reports stale data",
+      "mitigation": "Require provenance metadata and freshness checks on RAG results",
+      "rollback": "Fallback to DB queries or require manual confirmation",
+      "source": "ZK-BRAIN-ISSUE-0016"
+    },
+    {
+      "id": 17,
+      "failure_mode": "No decision ledger for non-HITL actions",
+      "detection": "Cannot reconstruct why a tool was called; audit_log lacks reasoning",
+      "mitigation": "Add decision_ledger table logging tool decisions and outcomes",
+      "rollback": "Increase verbose logging for tool selection reasoning",
+      "source": "ZK-BRAIN-ISSUE-0017"
+    },
+    {
+      "id": 18,
+      "failure_mode": "Prompt/tool list drift (hardcoded tool list)",
+      "detection": "System prompt lists tools that differ from registry; tool errors in logs",
+      "mitigation": "Generate tool list dynamically from registry; prompt template uses runtime tool names",
+      "rollback": "Add CI check to diff prompt tool list against registry",
+      "source": "ZK-BRAIN-ISSUE-0018"
+    },
+    {
+      "id": 19,
+      "failure_mode": "No response logging (cannot audit output quality)",
+      "detection": "No stored responses for post-incident review; logs only inputs",
+      "mitigation": "Add response logging with redaction and retention policy",
+      "rollback": "Enable temporary debug logging for selected sessions",
+      "source": "ZK-BRAIN-ISSUE-0019"
+    },
+    {
+      "id": 20,
+      "failure_mode": "Eval coverage too small (10 traces) misses regressions",
+      "detection": "New defects appear despite passing evals; eval set <30 cases",
+      "mitigation": "Expand golden traces and add adversarial suite",
+      "rollback": "Manual QA hold on releases until suite expanded",
+      "source": "ZK-BRAIN-ISSUE-0020"
+    },
+    {
+      "id": 21,
+      "failure_mode": "Stage transition rules missing in prompt",
+      "detection": "Agent suggests invalid transitions in scenario tests",
+      "mitigation": "Add stage transition matrix to prompt and enforce in tools",
+      "rollback": "Hard-block invalid transitions at tool level",
+      "source": "ZK-BRAIN-ISSUE-0021"
+    },
+    {
+      "id": 22,
+      "failure_mode": "Dev mocks use invalid stage names causing test drift",
+      "detection": "Local tests show stage values not in enum; mismatch with prod",
+      "mitigation": "Fix mock data to use valid stage enums",
+      "rollback": "Disable mocks and require integration tests",
+      "source": "ZK-BRAIN-ISSUE-0022"
+    },
+    {
+      "id": 23,
+      "failure_mode": "No deal health scoring; agent cannot triage pipeline risk",
+      "detection": "Agent responses lack health indicators; no health score computed",
+      "mitigation": "Implement deal health scoring and expose in DealContext",
+      "rollback": "Manual scoring in UI until agent scoring exists",
+      "source": "ZK-BRAIN-ISSUE-0023"
+    },
+    {
+      "id": 24,
+      "failure_mode": "No next-step recommendations; weak deal guidance",
+      "detection": "Agent replies are generic; no stage-aware next steps",
+      "mitigation": "Add stage-aware action suggestions in prompt/DealContext",
+      "rollback": "Link to static playbooks as interim guidance",
+      "source": "ZK-BRAIN-ISSUE-0024"
+    },
+    {
+      "id": 25,
+      "failure_mode": "LLM reasoning not captured; audit trails incomplete",
+      "detection": "No stored reasoning metadata; cannot explain tool choice",
+      "mitigation": "Capture reasoning metadata in decision ledger (tools_considered, rationale)",
+      "rollback": "Capture minimal rationale fields in audit_log",
+      "source": "ZK-BRAIN-ISSUE-0025"
+    },
+    {
+      "id": 26,
+      "failure_mode": "RAG outage or errors appear as empty results (false negatives)",
+      "detection": "RAG service down but agent says 'no deals found'; error logs in search_deals",
+      "mitigation": "Circuit breaker + explicit error surfaced to LLM; fallback to DB search",
+      "rollback": "Disable search_deals tool and use direct DB lookup",
+      "source": "Codex report FM-6 / Gemini contrarian risk #5"
+    },
+    {
+      "id": 27,
+      "failure_mode": "Multiple HITL tool calls in one response drop all but first",
+      "detection": "LLM emits multiple HITL tool calls; only first executed; others ignored",
+      "mitigation": "Queue all HITL tool calls or enforce single-tool-call policy",
+      "rollback": "Reject multi-tool-call responses and request single action",
+      "source": "Codex report FM-21"
+    },
+    {
+      "id": 28,
+      "failure_mode": "Stale approvals never expire (zombie approvals)",
+      "detection": "Approvals remain pending/claimed beyond TTL; no expiry job runs",
+      "mitigation": "Add background expiry job and enforce TTL on resume",
+      "rollback": "Manual cleanup script; disable long-lived approvals",
+      "source": "Codex report FM-7"
+    },
+    {
+      "id": 29,
+      "failure_mode": "Prompt injection causes policy bypass",
+      "detection": "Adversarial prompt tests override tool usage or HITL rules",
+      "mitigation": "Add prompt injection guardrails and evaluate with adversarial suite",
+      "rollback": "Disable high-risk tools for untrusted inputs",
+      "source": "Claude-Opus report contrarian risk #5 / Gemini contrarian risk #3"
+    },
+    {
+      "id": 30,
+      "failure_mode": "Malformed tool call JSON from model breaks parsing",
+      "detection": "LLM outputs invalid tool call JSON; tool parser errors in logs",
+      "mitigation": "Add robust tool call parser with repair or re-ask pattern",
+      "rollback": "Fallback to non-tool response with explicit error",
+      "source": "Claude-Opus report contrarian risk #10"
+    }
+  ],
+  "patch_set": [
+    {
+      "patch": "P0-HITL-001",
+      "change": "Add create_deal (and any other write tools like add_note if required) to HITL_TOOLS and enforce in requires_approval logic",
+      "where": "Phase 0: Safety/HITL Enforcement section (HITL gating subsection)",
+      "verification": "Golden trace: create_deal request returns pending_approval; audit_log shows approval required",
+      "sources": [
+        "ZK-BRAIN-ISSUE-0001"
+      ]
+    },
+    {
+      "patch": "P0-AUTH-001",
+      "change": "Validate actor_id against authenticated service token/JWT claims; enforce tenant scoping; log mismatches",
+      "where": "Phase 0: Auth & Security section",
+      "verification": "Adversarial test: fake actor_id returns 403; audit log records auth mismatch",
+      "sources": [
+        "ZK-BRAIN-ISSUE-0004"
+      ]
+    },
+    {
+      "patch": "P0-GROUND-001",
+      "change": "Add grounding enforcement: system prompt rule + graph guard that requires get_deal/search_deals before deal-specific answers",
+      "where": "Phase 0: Grounding & Data Truth section",
+      "verification": "Grounding gate test: asking deal stage must trigger get_deal tool call before response",
+      "sources": [
+        "ZK-BRAIN-ISSUE-0002"
+      ]
+    },
+    {
+      "patch": "P1-TOOL-001",
+      "change": "Standardize ToolResult schema (success/data/error/metadata); remove plain-string error returns; add try/except wrapper",
+      "where": "Phase 1: Tool Contract Reliability section",
+      "verification": "Unit tests confirm errors return ToolResult.success=false; no raw exceptions bubble",
+      "sources": [
+        "ZK-BRAIN-ISSUE-0013",
+        "ZK-BRAIN-ISSUE-0015"
+      ]
+    },
+    {
+      "patch": "P1-IDEMP-001",
+      "change": "Add idempotency_key to create_deal/add_note payloads; enforce in backend",
+      "where": "Phase 1: Idempotency & Retry Safety section",
+      "verification": "Idempotency tests: double-call yields same record id; no duplicates",
+      "sources": [
+        "ZK-BRAIN-ISSUE-0012"
+      ]
+    },
+    {
+      "patch": "P1-BUDGET-001",
+      "change": "Implement tool call budget and context/token budget in GraphState; stop after N calls",
+      "where": "Phase 1: Loop/Budget Control section",
+      "verification": "Loop test halts at max tool calls and returns controlled error",
+      "sources": [
+        "ZK-BRAIN-ISSUE-0008"
+      ]
+    },
+    {
+      "patch": "P1-OBS-001",
+      "change": "Add correlation_id middleware and propagate to backend headers; configure Langfuse/OTel",
+      "where": "Phase 1: Observability & Tracing section",
+      "verification": "Log query shows same correlation_id across UI->agent->backend; traces visible in Langfuse",
+      "sources": [
+        "ZK-BRAIN-ISSUE-0011",
+        "ZK-BRAIN-ISSUE-0003"
+      ]
+    },
+    {
+      "patch": "P1-PROMPT-001",
+      "change": "Add prompt versioning + hash; generate tool list dynamically to avoid drift",
+      "where": "Phase 1: Prompt Governance section",
+      "verification": "Prompt version logged per request; CI check ensures registry/tool list match",
+      "sources": [
+        "ZK-BRAIN-ISSUE-0009",
+        "ZK-BRAIN-ISSUE-0018"
+      ]
+    },
+    {
+      "patch": "P2-MEM-001",
+      "change": "Enable long-term memory; implement deal-scoped memory + DealContext object",
+      "where": "Phase 2: Memory & Deal Intelligence section",
+      "verification": "Deal follow-up queries use stored context; memory retrieval scoped by deal_id",
+      "sources": [
+        "ZK-BRAIN-ISSUE-0005",
+        "ZK-BRAIN-ISSUE-0006"
+      ]
+    },
+    {
+      "patch": "P2-RAG-001",
+      "change": "Add RAG provenance/freshness metadata and fallback path when RAG down",
+      "where": "Phase 2: RAG Reliability section",
+      "verification": "RAG-down test returns explicit error and uses DB fallback; responses include provenance",
+      "sources": [
+        "ZK-BRAIN-ISSUE-0016"
+      ]
+    },
+    {
+      "patch": "P2-DEC-001",
+      "change": "Create decision ledger for non-HITL actions; capture reasoning metadata",
+      "where": "Phase 2: Decision Ledger & Audit section",
+      "verification": "Every tool call inserts ledger row with trace_id and rationale",
+      "sources": [
+        "ZK-BRAIN-ISSUE-0017",
+        "ZK-BRAIN-ISSUE-0025",
+        "ZK-BRAIN-ISSUE-0019"
+      ]
+    },
+    {
+      "patch": "P2-EVAL-001",
+      "change": "Expand golden traces to >=30; add CI gate + adversarial suite (prompt injection, malformed tool calls, outages)",
+      "where": "Phase 2: Evals & Regression section",
+      "verification": "CI fails on any golden trace regression; adversarial suite executed",
+      "sources": [
+        "ZK-BRAIN-ISSUE-0010",
+        "ZK-BRAIN-ISSUE-0020"
+      ]
+    },
+    {
+      "patch": "P2-STAGE-001",
+      "change": "Add stage transition rules and stage-aware recommendations to prompt + DealContext",
+      "where": "Phase 2: Stage Intelligence section",
+      "verification": "Scenario tests show valid transitions only; next-step recommendations present",
+      "sources": [
+        "ZK-BRAIN-ISSUE-0021",
+        "ZK-BRAIN-ISSUE-0024"
+      ]
+    },
+    {
+      "patch": "P2-INTEL-001",
+      "change": "Add deal health scoring and surface in responses",
+      "where": "Phase 2: Deal Intelligence section",
+      "verification": "Health score computed for deals and included in DealContext",
+      "sources": [
+        "ZK-BRAIN-ISSUE-0023"
+      ]
+    },
+    {
+      "patch": "P2-PROVIDER-001",
+      "change": "Make mem0 provider configurable; support local embeddings; remove hard OpenAI dependency",
+      "where": "Phase 2: Provider Abstraction section",
+      "verification": "Local-only deployment passes without OpenAI key; golden traces succeed",
+      "sources": [
+        "ZK-BRAIN-ISSUE-0014"
+      ]
+    },
+    {
+      "patch": "P3-MOCK-001",
+      "change": "Fix invalid dev mocks (stage enums) to align with production taxonomy",
+      "where": "Phase 3: Test/Dev Parity section",
+      "verification": "Dev mocks use valid stage enums; unit tests pass",
+      "sources": [
+        "ZK-BRAIN-ISSUE-0022"
+      ]
+    }
+  ],
+  "tough_gates": [
+    {
+      "gate": "Gate A: Tool unit tests + ToolResult schema",
+      "requirements": [
+        "All tools return ToolResult with success/data/error",
+        "Schema validation tests for each tool input",
+        "Error handling returns success=false (no raw exceptions)"
+      ],
+      "evidence": "Unit test logs + sample ToolResult payloads",
+      "sources": [
+        "ZK-BRAIN-ISSUE-0013",
+        "ZK-BRAIN-ISSUE-0015"
+      ]
+    },
+    {
+      "gate": "Gate B: HITL enforcement tests",
+      "requirements": [
+        "create_deal and transition_deal require approval",
+        "Bypass attempts fail and are audited"
+      ],
+      "evidence": "Golden trace for create_deal returns pending_approval; audit_log shows approval required",
+      "sources": [
+        "ZK-BRAIN-ISSUE-0001"
+      ]
+    },
+    {
+      "gate": "Gate C: Grounding tests",
+      "requirements": [
+        "Deal fact questions must call get_deal/search_deals",
+        "No answer if tool call fails"
+      ],
+      "evidence": "Scenario tests show tool call before answer; responses blocked on tool failure",
+      "sources": [
+        "ZK-BRAIN-ISSUE-0002"
+      ]
+    },
+    {
+      "gate": "Gate D: Idempotency/retry tests",
+      "requirements": [
+        "create_deal/add_note double-call yields no duplicates",
+        "Backend enforces idempotency key"
+      ],
+      "evidence": "DB queries show single record after double-call",
+      "sources": [
+        "ZK-BRAIN-ISSUE-0012"
+      ]
+    },
+    {
+      "gate": "Gate E: Auth impersonation tests",
+      "requirements": [
+        "actor_id must match auth claims",
+        "Cross-tenant access returns 403"
+      ],
+      "evidence": "Adversarial test logs; audit entry for mismatch",
+      "sources": [
+        "ZK-BRAIN-ISSUE-0004"
+      ]
+    },
+    {
+      "gate": "Gate F: Observability proof",
+      "requirements": [
+        "correlation_id present in UI, agent, backend logs",
+        "Langfuse/OTel traces visible for agent_turn + tool_execution"
+      ],
+      "evidence": "Trace sample with shared correlation_id across services",
+      "sources": [
+        "ZK-BRAIN-ISSUE-0011",
+        "ZK-BRAIN-ISSUE-0003"
+      ]
+    },
+    {
+      "gate": "Gate G: Eval regression gate in CI",
+      "requirements": [
+        "golden_trace_runner in CI",
+        ">=30 golden traces",
+        "adversarial suite for prompt injection, malformed tool calls, outages"
+      ],
+      "evidence": "CI logs show eval run; failures block merge",
+      "sources": [
+        "ZK-BRAIN-ISSUE-0010",
+        "ZK-BRAIN-ISSUE-0020"
+      ]
+    }
+  ],
+  "ship_criteria": [
+    "All P0/P1 issues closed with verified evidence",
+    "Gates A-G pass in CI and staging",
+    "Grounding compliance >= 99% on golden traces",
+    "HITL compliance 100% for destructive tools",
+    "Idempotency tests show 0 duplicates across retries",
+    "Correlation ID present end-to-end in logs and traces",
+    "Langfuse/OTel traces available for 95%+ of requests",
+    "Adversarial suite passes (prompt injection, RAG outage, malformed tool calls)"
+  ]
+}

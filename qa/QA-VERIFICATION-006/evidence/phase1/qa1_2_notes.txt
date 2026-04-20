@@ -1,0 +1,21 @@
+=== QA-1.2: T0.2+T0.3 Notes Endpoint ===
+--- TEST 1: Dashboard notes path ---
+474:        console.debug('[API] Deal schema validation notes:', parsed.error.issues.map(i => `${i.path.join('.')}: ${i.message}`).join(', '));
+979:  return apiFetch(`/api/deals/${dealId}/notes`, {
+
+--- TEST 2: Backend notes endpoint ---
+/home/zaks/zakops-backend/src/api/orchestration/main.py:752:@app.post("/api/deals/{deal_id}/notes", status_code=201)
+
+--- TEST 3: Live POST /notes ---
+Test deal: DL-0002
+{
+    "error": "unauthorized",
+    "message": "Invalid or missing API key"
+}
+--- Corrected TEST 3: Live POST /notes ---
+{"detail":"Deal DL-0002 not found"}
+HTTP_CODE: 404
+
+--- Corrected TEST 3 (valid deal DL-0049) ---
+{"success":true,"event_id":"f91f26d8-4727-44d1-bf09-6cbcfc548f3d"}
+HTTP_CODE: 201

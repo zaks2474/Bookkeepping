@@ -1,0 +1,24 @@
+===============================================================
+DROP-C7: make sync-all-types as Mandatory Gate
+===============================================================
+
+Layer-by-layer check for sync-all-types/sync-types/sync-agent/sync-backend
+references in completion reports:
+
+Layer 1: NO REFERENCE
+Layer 2: NO REFERENCE
+Layer 3: REFERENCED
+  Line 21: L3-9 | PASS | `make sync-all-types` completed successfully — all 4 surfaces regenerated
+  Line 51: `make sync-all-types` — All 4 surfaces regenerated: TS types, backend models, agent types, RAG models
+Layer 4: NO REFERENCE
+Layer 5: NO REFERENCE
+Layer 6: NO REFERENCE
+
+VERDICT: NEEDS_REMEDIATION
+- Only Layer 3 explicitly references sync-all-types as a gate
+- Layers 1, 2, 4, 5, 6 do not document running sync-all-types
+- Per the Infrastructure Awareness Protocol V5, sync-types should be run
+  pre-task and post-task for any cross-layer change
+- Layers 1 (DSN consolidation) and 2 (data model) likely did not affect
+  contract surfaces, which may explain the omission
+- However, Layers 4 (frontend) and 5 (API) definitely should have run it

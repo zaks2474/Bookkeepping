@@ -1,0 +1,128 @@
+- generic [active] [ref=e1]:
+  - region "Notifications alt+T"
+  - main [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - button "Toggle Sidebar" [ref=e6]:
+          - img
+          - generic [ref=e7]: Toggle Sidebar
+        - navigation "breadcrumb" [ref=e8]:
+          - list [ref=e9]:
+            - link "Agent Activity" [disabled] [ref=e10]
+      - generic [ref=e11]:
+        - button [ref=e131]:
+          - img
+        - button [ref=e12]:
+          - generic [ref=e14]:
+            - img
+        - button "Toggle theme" [ref=e15]:
+          - img
+          - generic [ref=e16]: Toggle theme
+    - generic [ref=e17]:
+      - generic [ref=e18]:
+        - generic [ref=e19]:
+          - heading "Agent Activity" [level=1] [ref=e20]:
+            - img [ref=e21]
+            - text: Agent Activity
+          - paragraph [ref=e25]: View all agent actions and history
+        - generic [ref=e26]:
+          - generic [ref=e27]:
+            - img
+            - text: Idle
+          - button "Refresh" [ref=e133]:
+            - img
+            - text: Refresh
+      - generic [ref=e134]:
+        - generic [ref=e136] [cursor=pointer]:
+          - generic [ref=e137]: Tools Called Today
+          - generic [ref=e138]: "0"
+        - generic [ref=e140] [cursor=pointer]:
+          - generic [ref=e141]: Approvals Processed
+          - generic [ref=e142]: "0"
+        - generic [ref=e144] [cursor=pointer]:
+          - generic [ref=e145]: Deals Analyzed
+          - generic [ref=e146]: "0"
+        - generic [ref=e148] [cursor=pointer]:
+          - generic [ref=e149]: Runs (24h)
+          - generic [ref=e150]: "0"
+      - generic [ref=e29]:
+        - img [ref=e30]
+        - textbox "Search activity..." [ref=e33]
+      - generic:
+        - generic:
+          - generic:
+            - tablist [ref=e37]:
+              - tab "All Activity" [selected] [ref=e38]:
+                - img
+                - text: All Activity
+              - tab "Deals" [ref=e39]:
+                - img
+                - text: Deals
+              - tab "Documents" [ref=e40]:
+                - img
+                - text: Documents
+              - tab "Communications" [ref=e41]:
+                - img
+                - text: Communications
+              - tab "Approvals" [ref=e42]:
+                - img
+                - text: Approvals
+            - generic [ref=e154]:
+              - generic [ref=e158] [cursor=pointer]:
+                - img [ref=e160]
+                - generic [ref=e163]:
+                  - paragraph [ref=e164]: Approval granted
+                  - generic [ref=e166]: 6 days ago
+              - generic [ref=e170] [cursor=pointer]:
+                - img [ref=e172]
+                - generic [ref=e176]:
+                  - paragraph [ref=e177]: Tool execution completed
+                  - generic [ref=e179]: 6 days ago
+              - generic [ref=e183] [cursor=pointer]:
+                - img [ref=e185]
+                - generic [ref=e189]:
+                  - paragraph [ref=e190]: "Tool execution started: create_deal"
+                  - generic [ref=e192]: 6 days ago
+              - generic [ref=e196] [cursor=pointer]:
+                - img [ref=e198]
+                - generic [ref=e202]:
+                  - paragraph [ref=e203]: "Approval processing started: create_deal"
+                  - generic [ref=e205]: 6 days ago
+              - generic [ref=e209] [cursor=pointer]:
+                - img [ref=e211]
+                - generic [ref=e214]:
+                  - paragraph [ref=e215]: Approval granted
+                  - generic [ref=e217]: 7 days ago
+              - generic [ref=e221] [cursor=pointer]:
+                - img [ref=e223]
+                - generic [ref=e227]:
+                  - paragraph [ref=e228]: Tool execution completed
+                  - generic [ref=e230]: 7 days ago
+              - generic [ref=e234] [cursor=pointer]:
+                - img [ref=e236]
+                - generic [ref=e240]:
+                  - paragraph [ref=e241]: "Tool execution started: transition_deal"
+                  - generic [ref=e243]: 7 days ago
+              - generic [ref=e247] [cursor=pointer]:
+                - img [ref=e249]
+                - generic [ref=e253]:
+                  - paragraph [ref=e254]: "Approval processing started: transition_deal"
+                  - generic [ref=e256]: 7 days ago
+              - generic [ref=e260] [cursor=pointer]:
+                - img [ref=e262]
+                - generic [ref=e265]:
+                  - paragraph [ref=e266]: Approval requested
+                  - generic [ref=e268]: 8 days ago
+              - generic [ref=e272] [cursor=pointer]:
+                - img [ref=e274]
+                - generic [ref=e277]:
+                  - paragraph [ref=e278]: Approval requested
+                  - generic [ref=e280]: 8 days ago
+        - generic [ref=e50]:
+          - heading "Recent Runs" [level=2] [ref=e52]
+          - generic [ref=e282]:
+            - img [ref=e283]
+            - paragraph [ref=e287]: No runs found
+  - button "Open Next.js Dev Tools" [ref=e293] [cursor=pointer]:
+    - img [ref=e294]
+  - alert [ref=e297]

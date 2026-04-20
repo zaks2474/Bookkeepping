@@ -1,0 +1,3 @@
+ERROR:  relation "deals" does not exist
+LINE 1: SELECT COUNT(*) FROM deals WHERE name ILIKE '%Acme%' OR name...
+                             ^

@@ -1,0 +1,40 @@
+/home/zaks/zakops-backend/src/actions/executors/deal_create_from_email.py:235:                        "status": "active",
+/home/zaks/zakops-backend/src/core/actions/executor.py:268:            "SELECT * FROM zakops.deals WHERE deal_id = $1",
+/home/zaks/zakops-backend/src/core/chat_benchmark.py:120:        "query": prompt.query,
+/home/zaks/zakops-backend/src/core/deal_registry.py:124:    status: str = "active"  # active, inactive, merged, archived, junk
+/home/zaks/zakops-backend/src/core/deal_registry.py:487:                if deal.status not in ('active', 'inactive'):
+/home/zaks/zakops-backend/src/core/deal_registry.py:515:                if deal.status not in ('active', 'inactive'):
+/home/zaks/zakops-backend/src/core/deal_registry.py:547:            if deal.status not in ('active', 'inactive'):
+/home/zaks/zakops-backend/src/core/deal_registry.py:577:                if deal.status not in ('active', 'inactive'):
+/home/zaks/zakops-backend/src/core/deal_registry.py:619:                if deal.status not in ('active', 'inactive'):
+/home/zaks/zakops-backend/src/core/deal_registry.py:650:            if deal.status not in ('active', 'inactive'):
+/home/zaks/zakops-backend/src/core/deal_registry.py:693:            if deal.status not in ('active', 'inactive'):
+/home/zaks/zakops-backend/src/core/deal_registry.py:803:                    status=deal_data.get('status', 'active'),
+/home/zaks/zakops-backend/src/core/deal_registry.py:1033:            deal.status = "archived"
+/home/zaks/zakops-backend/src/core/deal_registry.py:1155:        deal.status = deal.status or "active"
+/home/zaks/zakops-backend/src/core/deal_registry.py:1288:                        status="active",
+/home/zaks/zakops-backend/src/core/deal_registry.py:1357:                    status="junk" if is_junk else "active",
+/home/zaks/zakops-backend/src/core/deal_registry.py:1394:                    status="active",
+/home/zaks/zakops-backend/src/core/integrations/email/gmail.py:287:        if query.query:
+/home/zaks/zakops-backend/src/core/integrations/email/gmail.py:288:            q_parts.append(query.query)
+/home/zaks/zakops-backend/src/core/hitl/checkpoint.py:533:            status=CheckpointStatus(row.get("status", "active")),
+/home/zaks/zakops-backend/src/core/agent/tools.py:210:                "SELECT * FROM zakops.deals WHERE deal_id = $1",
+/home/zaks/zakops-backend/src/core/deals/workflow.py:89:            "SELECT stage FROM zakops.deals WHERE deal_id = $1",
+/home/zaks/zakops-backend/src/core/deals/workflow.py:177:            "SELECT stage FROM zakops.deals WHERE deal_id = $1",
+/home/zaks/zakops-backend/src/core/deals/workflow.py:369:            WHERE deleted = FALSE AND status = 'active'
+/home/zaks/zakops-backend/src/core/deals/workflow.py:388:            "SELECT deal_id FROM zakops.deals WHERE deal_id = $1",
+/home/zaks/zakops-backend/src/core/database/adapter.py:98:        rows = await db.fetch("SELECT * FROM deals WHERE id = $1", deal_id)
+/home/zaks/zakops-backend/src/core/retention/cleanup.py:333:                    SELECT COUNT(*) as count FROM zakops.deals
+/home/zaks/zakops-backend/src/core/events/handlers.py:172:            "SELECT folder_path FROM zakops.deals WHERE deal_id = $1",
+/home/zaks/zakops-backend/src/core/events/__init__.py:38:from .query import (
+/home/zaks/zakops-backend/src/api/orchestration/routers/email.py:373:        query=body.query,
+/home/zaks/zakops-backend/src/api/orchestration/routers/timeline.py:36:        "SELECT deal_id FROM zakops.deals WHERE deal_id = $1",
+/home/zaks/zakops-backend/src/api/orchestration/routers/timeline.py:189:        "SELECT deal_id, canonical_name, stage, status FROM zakops.deals WHERE deal_id = $1",
+/home/zaks/zakops-backend/src/api/orchestration/main.py:111:    status: str = "active"
+/home/zaks/zakops-backend/src/api/orchestration/main.py:469:    status: str | None = Query("active", description="Filter by status"),
+/home/zaks/zakops-backend/src/api/orchestration/main.py:661:            "SELECT * FROM zakops.deals WHERE deal_id = $1",
+/home/zaks/zakops-backend/src/api/orchestration/main.py:744:            "SELECT deal_id FROM zakops.deals WHERE deal_id = $1 AND deleted = FALSE",
+/home/zaks/zakops-backend/src/api/orchestration/main.py:796:            "SELECT deal_id FROM zakops.deals WHERE deal_id = $1 AND deleted = FALSE",
+/home/zaks/zakops-backend/src/api/orchestration/main.py:846:            "SELECT deal_id FROM zakops.deals WHERE deal_id = $1 AND deleted = FALSE",
+/home/zaks/zakops-backend/src/api/orchestration/main.py:876:            "SELECT deal_id, stage FROM zakops.deals WHERE deal_id = $1 AND deleted = FALSE",
+/home/zaks/zakops-backend/src/api/orchestration/main.py:920:            "SELECT deal_id, stage FROM zakops.deals WHERE deal_id = $1 AND deleted = FALSE",

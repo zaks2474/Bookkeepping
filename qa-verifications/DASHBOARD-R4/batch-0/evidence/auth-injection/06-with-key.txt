@@ -1,0 +1,14 @@
+HTTP/1.1 200 OK
+date: Sun, 08 Feb 2026 00:26:33 GMT
+server: uvicorn
+content-length: 63
+content-type: application/json
+x-trace-id: c2cc833361da48eeaa16067a30dd3ee8
+x-correlation-id: 81d52799-cb19-4014-a476-967a9e26738b
+x-response-time: 27ms
+x-content-type-options: nosniff
+x-frame-options: DENY
+x-xss-protection: 1; mode=block
+referrer-policy: strict-origin-when-cross-origin
+
+{"success":true,"deal_id":"DL-0061","previous_stage":"inbound"}

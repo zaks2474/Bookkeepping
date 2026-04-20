@@ -1,0 +1,4443 @@
+7c7
+<     "/api/actions": {
+---
+>     "/api/auth/login": {
+13a14,15
+>         get?: never;
+>         put?: never;
+15,16c17,20
+<          * List Actions
+<          * @description List actions with optional filtering.
+---
+>          * Login
+>          * @description Login with email and password.
+>          *
+>          *     Returns operator info and sets session cookie.
+18c22,36
+<         get: operations["list_actions_api_actions_get"];
+---
+>         post: operations["login_api_auth_login_post"];
+>         delete?: never;
+>         options?: never;
+>         head?: never;
+>         patch?: never;
+>         trace?: never;
+>     };
+>     "/api/auth/logout": {
+>         parameters: {
+>             query?: never;
+>             header?: never;
+>             path?: never;
+>             cookie?: never;
+>         };
+>         get?: never;
+20c38,42
+<         post?: never;
+---
+>         /**
+>          * Logout
+>          * @description Logout and invalidate session.
+>          */
+>         post: operations["logout_api_auth_logout_post"];
+27c49
+<     "/api/actions/capabilities": {
+---
+>     "/api/auth/me": {
+35,36c57,58
+<          * Get Action Capabilities
+<          * @description List available action capabilities. Not yet implemented.
+---
+>          * Get Current User
+>          * @description Get the current authenticated operator.
+38c60
+<         get: operations["get_action_capabilities_api_actions_capabilities_get"];
+---
+>         get: operations["get_current_user_api_auth_me_get"];
+47c69
+<     "/api/actions/metrics": {
+---
+>     "/api/auth/register": {
+53a76,77
+>         get?: never;
+>         put?: never;
+55,56c79,82
+<          * Get Action Metrics
+<          * @description Get action performance metrics. Not yet implemented.
+---
+>          * Register
+>          * @description Register a new operator.
+>          *
+>          *     Note: In production, this should be admin-only or disabled.
+58,60c84
+<         get: operations["get_action_metrics_api_actions_metrics_get"];
+<         put?: never;
+<         post?: never;
+---
+>         post: operations["register_api_auth_register_post"];
+67c91
+<     "/api/actions/quarantine": {
+---
+>     "/api/auth/check": {
+75,76c99,102
+<          * List Quarantine Actions
+<          * @description Alias for /api/quarantine to preserve R2 QA expectations.
+---
+>          * Check Auth
+>          * @description Check if the current session is authenticated.
+>          *
+>          *     Returns authentication status without requiring auth.
+78c104
+<         get: operations["list_quarantine_actions_api_actions_quarantine_get"];
+---
+>         get: operations["check_auth_api_auth_check_get"];
+87c113
+<     "/api/actions/{action_id}": {
+---
+>     "/health": {
+95,96c121,124
+<          * Get Action
+<          * @description Get a single action by ID.
+---
+>          * Health Check
+>          * @description Basic health check.
+>          *
+>          *     Returns 200 if the service is running.
+98c126
+<         get: operations["get_action_api_actions__action_id__get"];
+---
+>         get: operations["health_check_health_get"];
+107c135
+<     "/api/actions/{action_id}/approve": {
+---
+>     "/health/live": {
+114,115d141
+<         get?: never;
+<         put?: never;
+117,118c143,147
+<          * Approve Action
+<          * @description Approve a pending action.
+---
+>          * Liveness Check
+>          * @description Kubernetes liveness probe.
+>          *
+>          *     Returns 200 if the process is alive.
+>          *     Used by k8s to determine if the container should be restarted.
+120c149,151
+<         post: operations["approve_action_api_actions__action_id__approve_post"];
+---
+>         get: operations["liveness_check_health_live_get"];
+>         put?: never;
+>         post?: never;
+127c158
+<     "/api/actions/{action_id}/reject": {
+---
+>     "/health/ready": {
+134,135d164
+<         get?: never;
+<         put?: never;
+137,138c166,170
+<          * Reject Action
+<          * @description Reject a pending action.
+---
+>          * Readiness Check
+>          * @description Kubernetes readiness probe.
+>          *
+>          *     Returns 200 if the service is ready to accept traffic.
+>          *     Checks database connectivity and other dependencies.
+140c172,174
+<         post: operations["reject_action_api_actions__action_id__reject_post"];
+---
+>         get: operations["readiness_check_health_ready_get"];
+>         put?: never;
+>         post?: never;
+147c181
+<     "/api/admin/dlq": {
+---
+>     "/health/startup": {
+155,156c189,193
+<          * List Dlq Entries
+<          * @description List Dead Letter Queue entries.
+---
+>          * Startup Check
+>          * @description Kubernetes startup probe.
+>          *
+>          *     Returns 200 if the service has completed initialization.
+>          *     Used by k8s to determine when the container is ready to receive probes.
+158c195
+<         get: operations["list_dlq_entries_api_admin_dlq_get"];
+---
+>         get: operations["startup_check_health_startup_get"];
+167c204
+<     "/api/admin/dlq/purge-old": {
+---
+>     "/api/version": {
+174,175d210
+<         get?: never;
+<         put?: never;
+177,178c212,215
+<          * Purge Old Dlq
+<          * @description Purge DLQ entries older than specified days.
+---
+>          * Get Version
+>          * @description Get build version information.
+>          *
+>          *     Returns version, git commit, and build time for deployment verification.
+180c217,219
+<         post: operations["purge_old_dlq_api_admin_dlq_purge_old_post"];
+---
+>         get: operations["get_version_api_version_get"];
+>         put?: never;
+>         post?: never;
+187c226
+<     "/api/admin/dlq/retry-all": {
+---
+>     "/health/detailed": {
+194,195d232
+<         get?: never;
+<         put?: never;
+197,198c234,237
+<          * Retry All Dlq
+<          * @description Retry all DLQ entries.
+---
+>          * Detailed Health Check
+>          * @description Detailed health check with system information.
+>          *
+>          *     Note: Should be protected in production.
+200c239,241
+<         post: operations["retry_all_dlq_api_admin_dlq_retry_all_post"];
+---
+>         get: operations["detailed_health_check_health_detailed_get"];
+>         put?: never;
+>         post?: never;
+207c248
+<     "/api/admin/dlq/stats": {
+---
+>     "/health/metrics": {
+215,216c256,260
+<          * Dlq Stats
+<          * @description Get DLQ statistics.
+---
+>          * Get Metrics
+>          * @description R2-9: Get request metrics for monitoring.
+>          *
+>          *     Returns:
+>          *         Request counts, error rates, and average response times.
+218c262
+<         get: operations["dlq_stats_api_admin_dlq_stats_get"];
+---
+>         get: operations["get_metrics_health_metrics_get"];
+227c271
+<     "/api/admin/dlq/{entry_id}": {
+---
+>     "/api/agent/invoke": {
+236d279
+<         post?: never;
+238,239c281,289
+<          * Purge Dlq Entry
+<          * @description Permanently delete a DLQ entry.
+---
+>          * Invoke Agent Endpoint
+>          * @description Invoke the agent for a deal.
+>          *
+>          *     The agent will:
+>          *     1. Analyze the deal based on the task
+>          *     2. Execute relevant tools
+>          *     3. Create actions for human review
+>          *
+>          *     Events are emitted in real-time via SSE.
+241c291,292
+<         delete: operations["purge_dlq_entry_api_admin_dlq__entry_id__delete"];
+---
+>         post: operations["invoke_agent_endpoint_api_agent_invoke_post"];
+>         delete?: never;
+247c298
+<     "/api/admin/dlq/{entry_id}/retry": {
+---
+>     "/api/agent/runs": {
+254,255d304
+<         get?: never;
+<         put?: never;
+257,258c306,307
+<          * Retry Dlq Entry
+<          * @description Retry a specific DLQ entry.
+---
+>          * List Agent Runs
+>          * @description List agent runs with optional filtering.
+260c309,311
+<         post: operations["retry_dlq_entry_api_admin_dlq__entry_id__retry_post"];
+---
+>         get: operations["list_agent_runs_api_agent_runs_get"];
+>         put?: never;
+>         post?: never;
+267c318
+<     "/api/admin/outbox/stats": {
+---
+>     "/api/agent/runs/{run_id}": {
+275,276c326,327
+<          * Outbox Stats
+<          * @description Get outbox queue statistics.
+---
+>          * Get Agent Run
+>          * @description Get details of a specific agent run.
+278c329
+<         get: operations["outbox_stats_api_admin_outbox_stats_get"];
+---
+>         get: operations["get_agent_run_api_agent_runs__run_id__get"];
+287c338
+<     "/api/admin/retention/cleanup": {
+---
+>     "/api/agent/tools": {
+294,295d344
+<         get?: never;
+<         put?: never;
+297,301c346,347
+<          * Run Retention Cleanup Endpoint
+<          * @description R2-10: Run retention cleanup job.
+<          *
+<          *     WARNING: With dry_run=false, this will permanently delete/archive data
+<          *     according to the retention policy.
+---
+>          * List Available Tools
+>          * @description List all available tools for agent execution.
+303c349,351
+<         post: operations["run_retention_cleanup_endpoint_api_admin_retention_cleanup_post"];
+---
+>         get: operations["list_available_tools_api_agent_tools_get"];
+>         put?: never;
+>         post?: never;
+310c358
+<     "/api/admin/retention/stats": {
+---
+>     "/api/agent/langsmith/invoke": {
+316a365,366
+>         get?: never;
+>         put?: never;
+318,319c368,369
+<          * Retention Stats
+<          * @description R2-10: Get retention statistics (items eligible for cleanup).
+---
+>          * Invoke Langsmith Agent
+>          * @description Invoke the LangSmith-powered AI agent with a task.
+321c371,380
+<          *     Returns count of items that would be cleaned up by each policy.
+---
+>          *     The agent uses Claude models with automatic fallback and tracing:
+>          *     - Primary model: claude-sonnet-4-20250514
+>          *     - Fallback model: claude-haiku-4-20250514
+>          *
+>          *     Task types:
+>          *     - tool_orchestration: Full agent with tools (default)
+>          *     - document_analysis: Document-focused analysis
+>          *     - deal_insights: Deal-specific recommendations
+>          *     - quick_response: Fast, cost-effective responses
+>          *     - summarization: Content summarization
+323,325c382
+<         get: operations["retention_stats_api_admin_retention_stats_get"];
+<         put?: never;
+<         post?: never;
+---
+>         post: operations["invoke_langsmith_agent_api_agent_langsmith_invoke_post"];
+332c389
+<     "/api/admin/sse/stats": {
+---
+>     "/api/agent/langsmith/invoke/stream": {
+338a396,397
+>         get?: never;
+>         put?: never;
+340,341c399,402
+<          * Sse Stats
+<          * @description Get SSE connection statistics.
+---
+>          * Invoke Langsmith Agent Stream
+>          * @description Invoke the LangSmith agent with streaming response.
+>          *
+>          *     Returns Server-Sent Events (SSE) with tokens as they are generated.
+343,345c404
+<         get: operations["sse_stats_api_admin_sse_stats_get"];
+<         put?: never;
+<         post?: never;
+---
+>         post: operations["invoke_langsmith_agent_stream_api_agent_langsmith_invoke_stream_post"];
+352c411
+<     "/api/admin/system/health": {
+---
+>     "/api/agent/models": {
+360,361c419,422
+<          * System Health
+<          * @description Get comprehensive system health status.
+---
+>          * List Models
+>          * @description List available models for agent execution.
+>          *
+>          *     Returns models with their capabilities, costs, and current configuration.
+363c424
+<         get: operations["system_health_api_admin_system_health_get"];
+---
+>         get: operations["list_models_api_agent_models_get"];
+372c433
+<     "/api/agent/activity": {
+---
+>     "/api/agent/langsmith/health": {
+380,381c441,447
+<          * List Agent Activity
+<          * @description List recent agent activity by deal (view-backed).
+---
+>          * Langsmith Agent Health
+>          * @description Check LangSmith agent health and configuration.
+>          *
+>          *     Returns:
+>          *     - Model registry configuration
+>          *     - Tool count
+>          *     - LangSmith tracing status
+383c449
+<         get: operations["list_agent_activity_api_agent_activity_get"];
+---
+>         get: operations["langsmith_agent_health_api_agent_langsmith_health_get"];
+392c458
+<     "/api/agent/invoke": {
+---
+>     "/api/admin/dlq": {
+399,400d464
+<         get?: never;
+<         put?: never;
+402,410c466,467
+<          * Invoke Agent Endpoint
+<          * @description Invoke the agent for a deal.
+<          *
+<          *     The agent will:
+<          *     1. Analyze the deal based on the task
+<          *     2. Execute relevant tools
+<          *     3. Create actions for human review
+<          *
+<          *     Events are emitted in real-time via SSE.
+---
+>          * List Dlq Entries
+>          * @description List Dead Letter Queue entries.
+412c469,471
+<         post: operations["invoke_agent_endpoint_api_agent_invoke_post"];
+---
+>         get: operations["list_dlq_entries_api_admin_dlq_get"];
+>         put?: never;
+>         post?: never;
+419c478
+<     "/api/agent/langsmith/health": {
+---
+>     "/api/admin/dlq/stats": {
+427,433c486,487
+<          * Langsmith Agent Health
+<          * @description Check LangSmith agent health and configuration.
+<          *
+<          *     Returns:
+<          *     - Model registry configuration
+<          *     - Tool count
+<          *     - LangSmith tracing status
+---
+>          * Dlq Stats
+>          * @description Get DLQ statistics.
+435c489
+<         get: operations["langsmith_agent_health_api_agent_langsmith_health_get"];
+---
+>         get: operations["dlq_stats_api_admin_dlq_stats_get"];
+444c498
+<     "/api/agent/langsmith/invoke": {
+---
+>     "/api/admin/dlq/{entry_id}/retry": {
+454,466c508,509
+<          * Invoke Langsmith Agent
+<          * @description Invoke the LangSmith-powered AI agent with a task.
+<          *
+<          *     The agent uses Claude models with automatic fallback and tracing:
+<          *     - Primary model: claude-sonnet-4-20250514
+<          *     - Fallback model: claude-haiku-4-20250514
+<          *
+<          *     Task types:
+<          *     - tool_orchestration: Full agent with tools (default)
+<          *     - document_analysis: Document-focused analysis
+<          *     - deal_insights: Deal-specific recommendations
+<          *     - quick_response: Fast, cost-effective responses
+<          *     - summarization: Content summarization
+---
+>          * Retry Dlq Entry
+>          * @description Retry a specific DLQ entry.
+468c511
+<         post: operations["invoke_langsmith_agent_api_agent_langsmith_invoke_post"];
+---
+>         post: operations["retry_dlq_entry_api_admin_dlq__entry_id__retry_post"];
+475c518
+<     "/api/agent/langsmith/invoke/stream": {
+---
+>     "/api/admin/dlq/retry-all": {
+485,488c528,529
+<          * Invoke Langsmith Agent Stream
+<          * @description Invoke the LangSmith agent with streaming response.
+<          *
+<          *     Returns Server-Sent Events (SSE) with tokens as they are generated.
+---
+>          * Retry All Dlq
+>          * @description Retry all DLQ entries.
+490c531
+<         post: operations["invoke_langsmith_agent_stream_api_agent_langsmith_invoke_stream_post"];
+---
+>         post: operations["retry_all_dlq_api_admin_dlq_retry_all_post"];
+497c538
+<     "/api/agent/models": {
+---
+>     "/api/admin/dlq/{entry_id}": {
+504,510c545
+<         /**
+<          * List Models
+<          * @description List available models for agent execution.
+<          *
+<          *     Returns models with their capabilities, costs, and current configuration.
+<          */
+<         get: operations["list_models_api_agent_models_get"];
+---
+>         get?: never;
+513c548,552
+<         delete?: never;
+---
+>         /**
+>          * Purge Dlq Entry
+>          * @description Permanently delete a DLQ entry.
+>          */
+>         delete: operations["purge_dlq_entry_api_admin_dlq__entry_id__delete"];
+519c558
+<     "/api/agent/runs": {
+---
+>     "/api/admin/dlq/purge-old": {
+525a565,566
+>         get?: never;
+>         put?: never;
+527,528c568,569
+<          * List Agent Runs
+<          * @description List agent runs with optional filtering.
+---
+>          * Purge Old Dlq
+>          * @description Purge DLQ entries older than specified days.
+530,532c571
+<         get: operations["list_agent_runs_api_agent_runs_get"];
+<         put?: never;
+<         post?: never;
+---
+>         post: operations["purge_old_dlq_api_admin_dlq_purge_old_post"];
+539c578
+<     "/api/agent/runs/{run_id}": {
+---
+>     "/api/admin/outbox/stats": {
+547,548c586,587
+<          * Get Agent Run
+<          * @description Get details of a specific agent run.
+---
+>          * Outbox Stats
+>          * @description Get outbox queue statistics.
+550c589
+<         get: operations["get_agent_run_api_agent_runs__run_id__get"];
+---
+>         get: operations["outbox_stats_api_admin_outbox_stats_get"];
+559c598
+<     "/api/agent/tools": {
+---
+>     "/api/admin/sse/stats": {
+567,568c606,607
+<          * List Available Tools
+<          * @description List all available tools for agent execution.
+---
+>          * Sse Stats
+>          * @description Get SSE connection statistics.
+570c609
+<         get: operations["list_available_tools_api_agent_tools_get"];
+---
+>         get: operations["sse_stats_api_admin_sse_stats_get"];
+579c618
+<     "/api/auth/check": {
+---
+>     "/api/admin/system/health": {
+587,590c626,627
+<          * Check Auth
+<          * @description Check if the current session is authenticated.
+<          *
+<          *     Returns authentication status without requiring auth.
+---
+>          * System Health
+>          * @description Get comprehensive system health status.
+592c629
+<         get: operations["check_auth_api_auth_check_get"];
+---
+>         get: operations["system_health_api_admin_system_health_get"];
+601c638
+<     "/api/auth/login": {
+---
+>     "/api/admin/retention/stats": {
+608,609d644
+<         get?: never;
+<         put?: never;
+611,612c646,647
+<          * Login
+<          * @description Login with email and password.
+---
+>          * Retention Stats
+>          * @description R2-10: Get retention statistics (items eligible for cleanup).
+614c649
+<          *     Returns operator info and sets session cookie.
+---
+>          *     Returns count of items that would be cleaned up by each policy.
+616c651,653
+<         post: operations["login_api_auth_login_post"];
+---
+>         get: operations["retention_stats_api_admin_retention_stats_get"];
+>         put?: never;
+>         post?: never;
+623c660
+<     "/api/auth/logout": {
+---
+>     "/api/admin/retention/cleanup": {
+633,634c670,674
+<          * Logout
+<          * @description Logout and invalidate session.
+---
+>          * Run Retention Cleanup Endpoint
+>          * @description R2-10: Run retention cleanup job.
+>          *
+>          *     WARNING: With dry_run=false, this will permanently delete/archive data
+>          *     according to the retention policy.
+636c676
+<         post: operations["logout_api_auth_logout_post"];
+---
+>         post: operations["run_retention_cleanup_endpoint_api_admin_retention_cleanup_post"];
+643c683
+<     "/api/auth/me": {
+---
+>     "/api/deals/{deal_id}/valid-transitions": {
+651,652c691,692
+<          * Get Current User
+<          * @description Get the current authenticated operator.
+---
+>          * Get Valid Transitions
+>          * @description Get valid stage transitions for a deal.
+654c694
+<         get: operations["get_current_user_api_auth_me_get"];
+---
+>         get: operations["get_valid_transitions_api_deals__deal_id__valid_transitions_get"];
+663c703
+<     "/api/auth/register": {
+---
+>     "/api/deals/{deal_id}/transition": {
+673,674c713,714
+<          * Register
+<          * @description Register a new operator.
+---
+>          * Transition Deal Stage
+>          * @description Transition a deal to a new stage.
+676c716,724
+<          *     Note: In production, this should be admin-only or disabled.
+---
+>          *     Idempotency:
+>          *         Provide X-Idempotency-Key header or idempotency_key in body.
+>          *         Same key within 24 hours returns the original result without changes.
+>          *
+>          *     User Attribution (R2-9):
+>          *         If authenticated, uses operator email/id. Falls back to transitioned_by query param.
+>          *
+>          *     Returns:
+>          *         TransitionResponse with idempotent_hit=true if cached.
+678c726
+<         post: operations["register_api_auth_register_post"];
+---
+>         post: operations["transition_deal_stage_api_deals__deal_id__transition_post"];
+685c733
+<     "/api/chat/execute-proposal": {
+---
+>     "/api/deals/{deal_id}/stage-history": {
+692,693d739
+<         get?: never;
+<         put?: never;
+695,702c741,742
+<          * Execute Proposal
+<          * @description Execute an approved chat proposal.
+<          *
+<          *     Proposals are generated by the chat orchestrator during conversation.
+<          *     This endpoint approves or rejects them, triggering the corresponding
+<          *     backend action (stage transition, note creation, action creation, etc.).
+<          *
+<          *     Returns 501 until the chat orchestrator is fully wired.
+---
+>          * Get Stage History
+>          * @description Get stage transition history for a deal (from deal_events).
+704c744,746
+<         post: operations["execute_proposal_api_chat_execute_proposal_post"];
+---
+>         get: operations["get_stage_history_api_deals__deal_id__stage_history_get"];
+>         put?: never;
+>         post?: never;
+711c753
+<     "/api/chat/session/{session_id}": {
+---
+>     "/api/deals/{deal_id}/transitions": {
+719,720c761,765
+<          * Get Chat Session
+<          * @description Get chat session history.
+---
+>          * Get Transitions
+>          * @description R2-5: Get transition ledger entries for a deal.
+>          *
+>          *     Returns chronological list of all stage transitions from the
+>          *     deal_transitions audit table.
+722c767
+<         get: operations["get_chat_session_api_chat_session__session_id__get"];
+---
+>         get: operations["get_transitions_api_deals__deal_id__transitions_get"];
+731c776
+<     "/api/deals": {
+---
+>     "/api/deals/stages/summary": {
+739,740c784,785
+<          * List Deals
+<          * @description List all deals with optional filtering.
+---
+>          * Get Stages Summary
+>          * @description Get count of deals in each stage.
+742c787
+<         get: operations["list_deals_api_deals_get"];
+---
+>         get: operations["get_stages_summary_api_deals_stages_summary_get"];
+744,748c789
+<         /**
+<          * Create Deal
+<          * @description Create a new deal.
+<          */
+<         post: operations["create_deal_api_deals_post"];
+---
+>         post?: never;
+755c796
+<     "/api/deals/by-alias": {
+---
+>     "/api/search/deals": {
+763,764c804,805
+<          * Get Deal By Alias
+<          * @description Look up a deal by its alias (e.g., gmail_message_id).
+---
+>          * Search Deals
+>          * @description Search deals by name, company, or content with cursor-based pagination.
+766,767c807,815
+<          *     Returns the deal if found, or 404 if no mapping exists.
+<          *     This endpoint is used by executors to check for existing email->deal mappings.
+---
+>          *     Cursor pagination ensures stable results even when data changes between requests.
+>          *     Use the next_cursor from the response in subsequent requests to get the next page.
+>          *
+>          *     Example:
+>          *         # First request
+>          *         GET /api/search/deals?q=acme&limit=10
+>          *
+>          *         # Next page (use next_cursor from response)
+>          *         GET /api/search/deals?q=acme&limit=10&cursor=eyJpZCI6...
+769c817
+<         get: operations["get_deal_by_alias_api_deals_by_alias_get"];
+---
+>         get: operations["search_deals_api_search_deals_get"];
+778c826
+<     "/api/deals/stages/summary": {
+---
+>     "/api/search/actions": {
+786,787c834,835
+<          * Get Stages Summary
+<          * @description Get count of deals in each stage.
+---
+>          * Search Actions
+>          * @description Search actions with cursor-based pagination.
+789c837
+<         get: operations["get_stages_summary_api_deals_stages_summary_get"];
+---
+>         get: operations["search_actions_api_search_actions_get"];
+798c846
+<     "/api/deals/{deal_id}": {
+---
+>     "/api/search/global": {
+806,807c854,858
+<          * Get Deal
+<          * @description Get a single deal by ID.
+---
+>          * Global Search
+>          * @description Search across all entity types.
+>          *
+>          *     Returns top results from deals and actions without pagination
+>          *     (use specific endpoints for paginated results).
+809c860
+<         get: operations["get_deal_api_deals__deal_id__get"];
+---
+>         get: operations["global_search_api_search_global_get"];
+814a866,875
+>         patch?: never;
+>         trace?: never;
+>     };
+>     "/api/deals/{deal_id}/timeline": {
+>         parameters: {
+>             query?: never;
+>             header?: never;
+>             path?: never;
+>             cookie?: never;
+>         };
+816,817c877,884
+<          * Update Deal
+<          * @description Update an existing deal.
+---
+>          * Get Deal Timeline
+>          * @description Get unified activity timeline for a deal.
+>          *
+>          *     Includes:
+>          *     - Stage changes
+>          *     - Actions (created, approved, completed)
+>          *     - Agent runs
+>          *     - Events
+819c886,892
+<         patch: operations["update_deal_api_deals__deal_id__patch"];
+---
+>         get: operations["get_deal_timeline_api_deals__deal_id__timeline_get"];
+>         put?: never;
+>         post?: never;
+>         delete?: never;
+>         options?: never;
+>         head?: never;
+>         patch?: never;
+842c915
+<     "/api/deals/{deal_id}/aliases": {
+---
+>     "/api/integrations/email/gmail/auth": {
+850,857c923,924
+<          * Get Deal Aliases
+<          * @description Get aliases for a deal.
+<          */
+<         get: operations["get_deal_aliases_api_deals__deal_id__aliases_get"];
+<         put?: never;
+<         /**
+<          * Add Deal Alias
+<          * @description Add an alias to a deal (e.g., gmail_message_id for email mapping).
+---
+>          * Get Gmail Auth Url
+>          * @description Get Gmail OAuth authorization URL.
+859,861c926,927
+<          *     This is used by executors to create email-to-deal mappings.
+<          *     If the alias already exists for this deal, returns 200 (idempotent).
+<          *     If the alias exists for a different deal, returns 409 (conflict).
+---
+>          *     Initiates the OAuth flow by generating an authorization URL
+>          *     that the user should be redirected to.
+863c929,931
+<         post: operations["add_deal_alias_api_deals__deal_id__aliases_post"];
+---
+>         get: operations["get_gmail_auth_url_api_integrations_email_gmail_auth_get"];
+>         put?: never;
+>         post?: never;
+870c938
+<     "/api/deals/{deal_id}/archive": {
+---
+>     "/api/integrations/email/gmail/callback": {
+877,878d944
+<         get?: never;
+<         put?: never;
+880,881c946,949
+<          * Archive Deal
+<          * @description Archive a deal by moving it to archived stage.
+---
+>          * Gmail Oauth Callback
+>          * @description Handle Gmail OAuth callback.
+>          *
+>          *     Exchanges the authorization code for tokens and saves the account.
+883c951,953
+<         post: operations["archive_deal_api_deals__deal_id__archive_post"];
+---
+>         get: operations["gmail_oauth_callback_api_integrations_email_gmail_callback_get"];
+>         put?: never;
+>         post?: never;
+890c960
+<     "/api/deals/{deal_id}/events": {
+---
+>     "/api/integrations/email/accounts": {
+898,899c968,969
+<          * Get Deal Events
+<          * @description Get event history for a deal.
+---
+>          * List Email Accounts
+>          * @description List all connected email accounts for the current user.
+901c971
+<         get: operations["get_deal_events_api_deals__deal_id__events_get"];
+---
+>         get: operations["list_email_accounts_api_integrations_email_accounts_get"];
+910c980
+<     "/api/deals/{deal_id}/notes": {
+---
+>     "/api/integrations/email/accounts/{email_address}": {
+917,921c987
+<         /**
+<          * Get Deal Notes
+<          * @description Get notes for a deal from its event history.
+<          */
+<         get: operations["get_deal_notes_api_deals__deal_id__notes_get"];
+---
+>         get?: never;
+922a989
+>         post?: never;
+924,925c991,992
+<          * Add Deal Note
+<          * @description Add a note to a deal's event history.
+---
+>          * Disconnect Email Account
+>          * @description Disconnect an email account.
+927,928c994
+<         post: operations["add_deal_note_api_deals__deal_id__notes_post"];
+<         delete?: never;
+---
+>         delete: operations["disconnect_email_account_api_integrations_email_accounts__email_address__delete"];
+934c1000
+<     "/api/deals/{deal_id}/restore": {
+---
+>     "/api/integrations/email/send": {
+944,945c1010,1014
+<          * Restore Deal
+<          * @description Restore a deal from archived status to a specified stage.
+---
+>          * Send Email
+>          * @description Send an email.
+>          *
+>          *     Sends an email through the specified account and optionally links
+>          *     the thread to a deal.
+947c1016
+<         post: operations["restore_deal_api_deals__deal_id__restore_post"];
+---
+>         post: operations["send_email_api_integrations_email_send_post"];
+954c1023
+<     "/api/deals/{deal_id}/stage-history": {
+---
+>     "/api/integrations/email/inbox": {
+962,963c1031,1032
+<          * Get Stage History
+<          * @description Get stage transition history for a deal (from deal_events).
+---
+>          * Get Inbox
+>          * @description Get inbox messages for an email account.
+965c1034
+<         get: operations["get_stage_history_api_deals__deal_id__stage_history_get"];
+---
+>         get: operations["get_inbox_api_integrations_email_inbox_get"];
+974c1043
+<     "/api/deals/{deal_id}/timeline": {
+---
+>     "/api/integrations/email/threads/{thread_id}": {
+982,989c1051,1052
+<          * Get Deal Timeline
+<          * @description Get unified activity timeline for a deal.
+<          *
+<          *     Includes:
+<          *     - Stage changes
+<          *     - Actions (created, approved, completed)
+<          *     - Agent runs
+<          *     - Events
+---
+>          * Get Email Thread
+>          * @description Get an email thread with all messages.
+991c1054
+<         get: operations["get_deal_timeline_api_deals__deal_id__timeline_get"];
+---
+>         get: operations["get_email_thread_api_integrations_email_threads__thread_id__get"];
+1000c1063
+<     "/api/deals/{deal_id}/transition": {
+---
+>     "/api/integrations/email/search": {
+1010,1021c1073,1074
+<          * Transition Deal Stage
+<          * @description Transition a deal to a new stage.
+<          *
+<          *     Idempotency:
+<          *         Provide X-Idempotency-Key header or idempotency_key in body.
+<          *         Same key within 24 hours returns the original result without changes.
+<          *
+<          *     User Attribution (R2-9):
+<          *         If authenticated, uses operator email/id. Falls back to transitioned_by query param.
+<          *
+<          *     Returns:
+<          *         TransitionResponse with idempotent_hit=true if cached.
+---
+>          * Search Emails
+>          * @description Search emails with query parameters.
+1023c1076
+<         post: operations["transition_deal_stage_api_deals__deal_id__transition_post"];
+---
+>         post: operations["search_emails_api_integrations_email_search_post"];
+1030c1083
+<     "/api/deals/{deal_id}/transitions": {
+---
+>     "/api/integrations/email/deals/{deal_id}/threads": {
+1038,1042c1091,1092
+<          * Get Transitions
+<          * @description R2-5: Get transition ledger entries for a deal.
+<          *
+<          *     Returns chronological list of all stage transitions from the
+<          *     deal_transitions audit table.
+---
+>          * Get Deal Email Threads
+>          * @description Get all email threads linked to a deal.
+1044c1094
+<         get: operations["get_transitions_api_deals__deal_id__transitions_get"];
+---
+>         get: operations["get_deal_email_threads_api_integrations_email_deals__deal_id__threads_get"];
+1053c1103
+<     "/api/deals/{deal_id}/valid-transitions": {
+---
+>     "/api/integrations/email/threads/link": {
+1059a1110,1111
+>         get?: never;
+>         put?: never;
+1061,1062c1113,1114
+<          * Get Valid Transitions
+<          * @description Get valid stage transitions for a deal.
+---
+>          * Link Thread To Deal
+>          * @description Manually link an email thread to a deal.
+1064,1066c1116
+<         get: operations["get_valid_transitions_api_deals__deal_id__valid_transitions_get"];
+<         put?: never;
+<         post?: never;
+---
+>         post: operations["link_thread_to_deal_api_integrations_email_threads_link_post"];
+1073c1123
+<     "/api/events": {
+---
+>     "/api/integrations/email/threads/{thread_id}/link": {
+1080,1086c1130
+<         /**
+<          * List Events
+<          * @description List recent events.
+<          *
+<          *     Returns events from the replay buffer, filtered by correlation_id and/or event_type.
+<          */
+<         get: operations["list_events_api_events_get"];
+---
+>         get?: never;
+1089c1133,1137
+<         delete?: never;
+---
+>         /**
+>          * Unlink Thread From Deal
+>          * @description Remove deal link from a thread.
+>          */
+>         delete: operations["unlink_thread_from_deal_api_integrations_email_threads__thread_id__link_delete"];
+1095c1143
+<     "/api/events/broadcast": {
+---
+>     "/api/chat/execute-proposal": {
+1105,1106c1153,1154
+<          * Broadcast Event
+<          * @description Manually broadcast an event (admin/testing only).
+---
+>          * Execute Proposal
+>          * @description Execute an approved chat proposal.
+1108,1109c1156,1160
+<          *     This endpoint is for testing SSE functionality.
+<          *     In production, events should be published through the event system.
+---
+>          *     Proposals are generated by the chat orchestrator during conversation.
+>          *     This endpoint approves or rejects them, triggering the corresponding
+>          *     backend action (stage transition, note creation, action creation, etc.).
+>          *
+>          *     Returns 501 until the chat orchestrator is fully wired.
+1111c1162
+<         post: operations["broadcast_event_api_events_broadcast_post"];
+---
+>         post: operations["execute_proposal_api_chat_execute_proposal_post"];
+1118c1169
+<     "/api/events/stats": {
+---
+>     "/api/chat/session/{session_id}": {
+1126,1127c1177,1178
+<          * Sse Stats
+<          * @description Get SSE manager statistics.
+---
+>          * Get Chat Session
+>          * @description Get chat session history.
+1129c1180
+<         get: operations["sse_stats_api_events_stats_get"];
+---
+>         get: operations["get_chat_session_api_chat_session__session_id__get"];
+1162c1213
+<     "/api/integrations/email/accounts": {
+---
+>     "/api/events/stats": {
+1170,1171c1221,1222
+<          * List Email Accounts
+<          * @description List all connected email accounts for the current user.
+---
+>          * Sse Stats
+>          * @description Get SSE manager statistics.
+1173c1224
+<         get: operations["list_email_accounts_api_integrations_email_accounts_get"];
+---
+>         get: operations["sse_stats_api_events_stats_get"];
+1182,1202c1233
+<     "/api/integrations/email/accounts/{email_address}": {
+<         parameters: {
+<             query?: never;
+<             header?: never;
+<             path?: never;
+<             cookie?: never;
+<         };
+<         get?: never;
+<         put?: never;
+<         post?: never;
+<         /**
+<          * Disconnect Email Account
+<          * @description Disconnect an email account.
+<          */
+<         delete: operations["disconnect_email_account_api_integrations_email_accounts__email_address__delete"];
+<         options?: never;
+<         head?: never;
+<         patch?: never;
+<         trace?: never;
+<     };
+<     "/api/integrations/email/deals/{deal_id}/threads": {
+---
+>     "/api/events": {
+1210,1211c1241,1244
+<          * Get Deal Email Threads
+<          * @description Get all email threads linked to a deal.
+---
+>          * List Events
+>          * @description List recent events.
+>          *
+>          *     Returns events from the replay buffer, filtered by correlation_id and/or event_type.
+1213c1246
+<         get: operations["get_deal_email_threads_api_integrations_email_deals__deal_id__threads_get"];
+---
+>         get: operations["list_events_api_events_get"];
+1222c1255
+<     "/api/integrations/email/gmail/auth": {
+---
+>     "/api/events/broadcast": {
+1228a1262,1263
+>         get?: never;
+>         put?: never;
+1230,1231c1265,1266
+<          * Get Gmail Auth Url
+<          * @description Get Gmail OAuth authorization URL.
+---
+>          * Broadcast Event
+>          * @description Manually broadcast an event (admin/testing only).
+1233,1234c1268,1269
+<          *     Initiates the OAuth flow by generating an authorization URL
+<          *     that the user should be redirected to.
+---
+>          *     This endpoint is for testing SSE functionality.
+>          *     In production, events should be published through the event system.
+1236,1238c1271
+<         get: operations["get_gmail_auth_url_api_integrations_email_gmail_auth_get"];
+<         put?: never;
+<         post?: never;
+---
+>         post: operations["broadcast_event_api_events_broadcast_post"];
+1245c1278
+<     "/api/integrations/email/gmail/callback": {
+---
+>     "/api/actions/capabilities": {
+1253,1256c1286,1287
+<          * Gmail Oauth Callback
+<          * @description Handle Gmail OAuth callback.
+<          *
+<          *     Exchanges the authorization code for tokens and saves the account.
+---
+>          * Get Action Capabilities
+>          * @description List available action capabilities. Not yet implemented.
+1258c1289
+<         get: operations["gmail_oauth_callback_api_integrations_email_gmail_callback_get"];
+---
+>         get: operations["get_action_capabilities_api_actions_capabilities_get"];
+1267c1298
+<     "/api/integrations/email/inbox": {
+---
+>     "/api/actions/metrics": {
+1275,1276c1306,1307
+<          * Get Inbox
+<          * @description Get inbox messages for an email account.
+---
+>          * Get Action Metrics
+>          * @description Get action performance metrics. Not yet implemented.
+1278c1309
+<         get: operations["get_inbox_api_integrations_email_inbox_get"];
+---
+>         get: operations["get_action_metrics_api_actions_metrics_get"];
+1287c1318
+<     "/api/integrations/email/search": {
+---
+>     "/api/deals": {
+1294c1325,1329
+<         get?: never;
+---
+>         /**
+>          * List Deals
+>          * @description List all deals with optional filtering.
+>          */
+>         get: operations["list_deals_api_deals_get"];
+1297,1298c1332,1333
+<          * Search Emails
+<          * @description Search emails with query parameters.
+---
+>          * Create Deal
+>          * @description Create a new deal.
+1300c1335
+<         post: operations["search_emails_api_integrations_email_search_post"];
+---
+>         post: operations["create_deal_api_deals_post"];
+1307c1342
+<     "/api/integrations/email/send": {
+---
+>     "/api/deals/by-alias": {
+1314,1315d1348
+<         get?: never;
+<         put?: never;
+1317,1318c1350,1351
+<          * Send Email
+<          * @description Send an email.
+---
+>          * Get Deal By Alias
+>          * @description Look up a deal by its alias (e.g., gmail_message_id).
+1320,1321c1353,1354
+<          *     Sends an email through the specified account and optionally links
+<          *     the thread to a deal.
+---
+>          *     Returns the deal if found, or 404 if no mapping exists.
+>          *     This endpoint is used by executors to check for existing email->deal mappings.
+1323c1356,1358
+<         post: operations["send_email_api_integrations_email_send_post"];
+---
+>         get: operations["get_deal_by_alias_api_deals_by_alias_get"];
+>         put?: never;
+>         post?: never;
+1330c1365
+<     "/api/integrations/email/threads/link": {
+---
+>     "/api/deals/{deal_id}": {
+1337,1338d1371
+<         get?: never;
+<         put?: never;
+1340,1341c1373,1374
+<          * Link Thread To Deal
+<          * @description Manually link an email thread to a deal.
+---
+>          * Get Deal
+>          * @description Get a single deal by ID.
+1343c1376,1378
+<         post: operations["link_thread_to_deal_api_integrations_email_threads_link_post"];
+---
+>         get: operations["get_deal_api_deals__deal_id__get"];
+>         put?: never;
+>         post?: never;
+1347c1382,1386
+<         patch?: never;
+---
+>         /**
+>          * Update Deal
+>          * @description Update an existing deal.
+>          */
+>         patch: operations["update_deal_api_deals__deal_id__patch"];
+1350c1389
+<     "/api/integrations/email/threads/{thread_id}": {
+---
+>     "/api/deals/{deal_id}/events": {
+1358,1359c1397,1398
+<          * Get Email Thread
+<          * @description Get an email thread with all messages.
+---
+>          * Get Deal Events
+>          * @description Get event history for a deal.
+1361c1400
+<         get: operations["get_email_thread_api_integrations_email_threads__thread_id__get"];
+---
+>         get: operations["get_deal_events_api_deals__deal_id__events_get"];
+1370c1409
+<     "/api/integrations/email/threads/{thread_id}/link": {
+---
+>     "/api/deals/{deal_id}/aliases": {
+1377c1416,1420
+<         get?: never;
+---
+>         /**
+>          * Get Deal Aliases
+>          * @description Get aliases for a deal.
+>          */
+>         get: operations["get_deal_aliases_api_deals__deal_id__aliases_get"];
+1379d1421
+<         post?: never;
+1381,1382c1423,1428
+<          * Unlink Thread From Deal
+<          * @description Remove deal link from a thread.
+---
+>          * Add Deal Alias
+>          * @description Add an alias to a deal (e.g., gmail_message_id for email mapping).
+>          *
+>          *     This is used by executors to create email-to-deal mappings.
+>          *     If the alias already exists for this deal, returns 200 (idempotent).
+>          *     If the alias exists for a different deal, returns 409 (conflict).
+1384c1430,1431
+<         delete: operations["unlink_thread_from_deal_api_integrations_email_threads__thread_id__link_delete"];
+---
+>         post: operations["add_deal_alias_api_deals__deal_id__aliases_post"];
+>         delete?: never;
+1390c1437
+<     "/api/pending-tool-approvals": {
+---
+>     "/api/deals/{deal_id}/notes": {
+1398,1399c1445,1446
+<          * Api Pending Tool Approvals
+<          * @description List all pending tool approvals across all threads.
+---
+>          * Get Deal Notes
+>          * @description Get notes for a deal from its event history.
+1401c1448
+<         get: operations["api_pending_tool_approvals_api_pending_tool_approvals_get"];
+---
+>         get: operations["get_deal_notes_api_deals__deal_id__notes_get"];
+1403c1450,1454
+<         post?: never;
+---
+>         /**
+>          * Add Deal Note
+>          * @description Add a note to a deal's event history.
+>          */
+>         post: operations["add_deal_note_api_deals__deal_id__notes_post"];
+1410c1461
+<     "/api/pipeline/stats": {
+---
+>     "/api/deals/{deal_id}/archive": {
+1416a1468,1469
+>         get?: never;
+>         put?: never;
+1418,1419c1471,1472
+<          * Get Pipeline Stats
+<          * @description Get overall pipeline statistics.
+---
+>          * Archive Deal
+>          * @description Archive a deal by moving it to archived stage.
+1421,1423c1474
+<         get: operations["get_pipeline_stats_api_pipeline_stats_get"];
+<         put?: never;
+<         post?: never;
+---
+>         post: operations["archive_deal_api_deals__deal_id__archive_post"];
+1430c1481
+<     "/api/pipeline/summary": {
+---
+>     "/api/deals/{deal_id}/restore": {
+1436a1488,1489
+>         get?: never;
+>         put?: never;
+1438,1439c1491,1492
+<          * Get Pipeline Summary
+<          * @description Get pipeline summary with deal counts per stage.
+---
+>          * Restore Deal
+>          * @description Restore a deal from archived status to a specified stage.
+1441,1443c1494
+<         get: operations["get_pipeline_summary_api_pipeline_summary_get"];
+<         put?: never;
+<         post?: never;
+---
+>         post: operations["restore_deal_api_deals__deal_id__restore_post"];
+1450c1501
+<     "/api/quarantine": {
+---
+>     "/api/actions/quarantine": {
+1458,1459c1509,1510
+<          * List Quarantine
+<          * @description List quarantine items.
+---
+>          * List Quarantine Actions
+>          * @description Alias for /api/quarantine to preserve R2 QA expectations.
+1461c1512
+<         get: operations["list_quarantine_api_quarantine_get"];
+---
+>         get: operations["list_quarantine_actions_api_actions_quarantine_get"];
+1463,1471c1514
+<         /**
+<          * Create Quarantine Item
+<          * @description Create a quarantine item from the email ingestion pipeline.
+<          *
+<          *     This is the bridge endpoint for REMEDIATION-001 (decision 5C):
+<          *     email_ingestion pipeline calls this to insert emails into quarantine
+<          *     instead of writing to a local JSON/SQLite file.
+<          */
+<         post: operations["create_quarantine_item_api_quarantine_post"];
+---
+>         post?: never;
+1478c1521
+<     "/api/quarantine/health": {
+---
+>     "/api/actions": {
+1486,1487c1529,1530
+<          * Quarantine Health
+<          * @description Lightweight quarantine health check.
+---
+>          * List Actions
+>          * @description List actions with optional filtering.
+1489c1532
+<         get: operations["quarantine_health_api_quarantine_health_get"];
+---
+>         get: operations["list_actions_api_actions_get"];
+1498c1541
+<     "/api/quarantine/{item_id}": {
+---
+>     "/api/actions/{action_id}": {
+1506,1507c1549,1550
+<          * Get Quarantine Item
+<          * @description Get a single quarantine item.
+---
+>          * Get Action
+>          * @description Get a single action by ID.
+1509c1552
+<         get: operations["get_quarantine_item_api_quarantine__item_id__get"];
+---
+>         get: operations["get_action_api_actions__action_id__get"];
+1518c1561
+<     "/api/quarantine/{item_id}/process": {
+---
+>     "/api/actions/{action_id}/approve": {
+1528,1532c1571,1572
+<          * Process Quarantine
+<          * @description Process a quarantine item (approve or reject).
+<          *
+<          *     R2-3a.1: When approving without an explicit deal_id, atomically create
+<          *     a new deal from the quarantine item data.
+---
+>          * Approve Action
+>          * @description Approve a pending action.
+1534c1574
+<         post: operations["process_quarantine_api_quarantine__item_id__process_post"];
+---
+>         post: operations["approve_action_api_actions__action_id__approve_post"];
+1541c1581
+<     "/api/search/actions": {
+---
+>     "/api/actions/{action_id}/reject": {
+1547a1588,1589
+>         get?: never;
+>         put?: never;
+1549,1550c1591,1592
+<          * Search Actions
+<          * @description Search actions with cursor-based pagination.
+---
+>          * Reject Action
+>          * @description Reject a pending action.
+1552,1554c1594
+<         get: operations["search_actions_api_search_actions_get"];
+<         put?: never;
+<         post?: never;
+---
+>         post: operations["reject_action_api_actions__action_id__reject_post"];
+1561c1601
+<     "/api/search/deals": {
+---
+>     "/api/quarantine": {
+1569,1580c1609,1610
+<          * Search Deals
+<          * @description Search deals by name, company, or content with cursor-based pagination.
+<          *
+<          *     Cursor pagination ensures stable results even when data changes between requests.
+<          *     Use the next_cursor from the response in subsequent requests to get the next page.
+<          *
+<          *     Example:
+<          *         # First request
+<          *         GET /api/search/deals?q=acme&limit=10
+<          *
+<          *         # Next page (use next_cursor from response)
+<          *         GET /api/search/deals?q=acme&limit=10&cursor=eyJpZCI6...
+---
+>          * List Quarantine
+>          * @description List quarantine items.
+1582c1612
+<         get: operations["search_deals_api_search_deals_get"];
+---
+>         get: operations["list_quarantine_api_quarantine_get"];
+1584,1597d1613
+<         post?: never;
+<         delete?: never;
+<         options?: never;
+<         head?: never;
+<         patch?: never;
+<         trace?: never;
+<     };
+<     "/api/search/global": {
+<         parameters: {
+<             query?: never;
+<             header?: never;
+<             path?: never;
+<             cookie?: never;
+<         };
+1599,1600c1615,1616
+<          * Global Search
+<          * @description Search across all entity types.
+---
+>          * Create Quarantine Item
+>          * @description Create a quarantine item from the email ingestion pipeline.
+1602,1603c1618,1620
+<          *     Returns top results from deals and actions without pagination
+<          *     (use specific endpoints for paginated results).
+---
+>          *     This is the bridge endpoint for REMEDIATION-001 (decision 5C):
+>          *     email_ingestion pipeline calls this to insert emails into quarantine
+>          *     instead of writing to a local JSON/SQLite file.
+1605,1607c1622
+<         get: operations["global_search_api_search_global_get"];
+<         put?: never;
+<         post?: never;
+---
+>         post: operations["create_quarantine_item_api_quarantine_post"];
+1614c1629
+<     "/api/senders": {
+---
+>     "/api/quarantine/health": {
+1622,1623c1637,1638
+<          * List Senders
+<          * @description List sender profiles.
+---
+>          * Quarantine Health
+>          * @description Lightweight quarantine health check.
+1625c1640
+<         get: operations["list_senders_api_senders_get"];
+---
+>         get: operations["quarantine_health_api_quarantine_health_get"];
+1634c1649
+<     "/api/senders/{email}": {
+---
+>     "/api/quarantine/{item_id}": {
+1642,1643c1657,1658
+<          * Get Sender
+<          * @description Get a sender profile by email.
+---
+>          * Get Quarantine Item
+>          * @description Get a single quarantine item.
+1645c1660
+<         get: operations["get_sender_api_senders__email__get"];
+---
+>         get: operations["get_quarantine_item_api_quarantine__item_id__get"];
+1654c1669
+<     "/api/version": {
+---
+>     "/api/quarantine/{item_id}/process": {
+1660a1676,1677
+>         get?: never;
+>         put?: never;
+1662,1663c1679,1680
+<          * Get Version
+<          * @description Get build version information.
+---
+>          * Process Quarantine
+>          * @description Process a quarantine item (approve or reject).
+1665c1682,1683
+<          *     Returns version, git commit, and build time for deployment verification.
+---
+>          *     R2-3a.1: When approving without an explicit deal_id, atomically create
+>          *     a new deal from the quarantine item data.
+1667,1669c1685
+<         get: operations["get_version_api_version_get"];
+<         put?: never;
+<         post?: never;
+---
+>         post: operations["process_quarantine_api_quarantine__item_id__process_post"];
+1676c1692
+<     "/health": {
+---
+>     "/api/pipeline/summary": {
+1684,1687c1700,1701
+<          * Health Check
+<          * @description Basic health check.
+<          *
+<          *     Returns 200 if the service is running.
+---
+>          * Get Pipeline Summary
+>          * @description Get pipeline summary with deal counts per stage.
+1689c1703
+<         get: operations["health_check_health_get"];
+---
+>         get: operations["get_pipeline_summary_api_pipeline_summary_get"];
+1698c1712
+<     "/health/detailed": {
+---
+>     "/api/pipeline/stats": {
+1706,1709c1720,1721
+<          * Detailed Health Check
+<          * @description Detailed health check with system information.
+<          *
+<          *     Note: Should be protected in production.
+---
+>          * Get Pipeline Stats
+>          * @description Get overall pipeline statistics.
+1711c1723
+<         get: operations["detailed_health_check_health_detailed_get"];
+---
+>         get: operations["get_pipeline_stats_api_pipeline_stats_get"];
+1720c1732
+<     "/health/live": {
+---
+>     "/api/pending-tool-approvals": {
+1728,1732c1740,1741
+<          * Liveness Check
+<          * @description Kubernetes liveness probe.
+<          *
+<          *     Returns 200 if the process is alive.
+<          *     Used by k8s to determine if the container should be restarted.
+---
+>          * Api Pending Tool Approvals
+>          * @description List all pending tool approvals across all threads.
+1734c1743
+<         get: operations["liveness_check_health_live_get"];
+---
+>         get: operations["api_pending_tool_approvals_api_pending_tool_approvals_get"];
+1743c1752
+<     "/health/metrics": {
+---
+>     "/api/senders": {
+1751,1755c1760,1761
+<          * Get Metrics
+<          * @description R2-9: Get request metrics for monitoring.
+<          *
+<          *     Returns:
+<          *         Request counts, error rates, and average response times.
+---
+>          * List Senders
+>          * @description List sender profiles.
+1757c1763
+<         get: operations["get_metrics_health_metrics_get"];
+---
+>         get: operations["list_senders_api_senders_get"];
+1766c1772
+<     "/health/ready": {
+---
+>     "/api/senders/{email}": {
+1774,1778c1780,1781
+<          * Readiness Check
+<          * @description Kubernetes readiness probe.
+<          *
+<          *     Returns 200 if the service is ready to accept traffic.
+<          *     Checks database connectivity and other dependencies.
+---
+>          * Get Sender
+>          * @description Get a sender profile by email.
+1780c1783
+<         get: operations["readiness_check_health_ready_get"];
+---
+>         get: operations["get_sender_api_senders__email__get"];
+1789c1792
+<     "/health/startup": {
+---
+>     "/api/agent/activity": {
+1797,1801c1800,1801
+<          * Startup Check
+<          * @description Kubernetes startup probe.
+<          *
+<          *     Returns 200 if the service has completed initialization.
+<          *     Used by k8s to determine when the container is ready to receive probes.
+---
+>          * List Agent Activity
+>          * @description List recent agent activity by deal (view-backed).
+1803c1803
+<         get: operations["startup_check_health_startup_get"];
+---
+>         get: operations["list_agent_activity_api_agent_activity_get"];
+1828,1829d1827
+<             /** Reason */
+<             reason: string;
+1834a1833,1834
+>             /** Reason */
+>             reason: string;
+1840,1841c1840,1841
+<             /** Action Type */
+<             action_type: string;
+---
+>             /** Deal Id */
+>             deal_id: string | null;
+1843a1844,1851
+>             /** Action Type */
+>             action_type: string;
+>             /** Title */
+>             title: string;
+>             /** Summary */
+>             summary: string | null;
+>             /** Status */
+>             status: string;
+1849,1854c1857,1865
+<             /** Deal Id */
+<             deal_id: string | null;
+<             /** Deal Name */
+<             deal_name?: string | null;
+<             /** Deal Stage */
+<             deal_stage?: string | null;
+---
+>             /**
+>              * Updated At
+>              * Format: date-time
+>              */
+>             updated_at: string;
+>             /** Risk Level */
+>             risk_level: string;
+>             /** Requires Human Review */
+>             requires_human_review: boolean;
+1863,1877c1874,1877
+<             /** Requires Human Review */
+<             requires_human_review: boolean;
+<             /** Risk Level */
+<             risk_level: string;
+<             /** Status */
+<             status: string;
+<             /** Summary */
+<             summary: string | null;
+<             /** Title */
+<             title: string;
+<             /**
+<              * Updated At
+<              * Format: date-time
+<              */
+<             updated_at: string;
+---
+>             /** Deal Name */
+>             deal_name?: string | null;
+>             /** Deal Stage */
+>             deal_stage?: string | null;
+1883a1884,1887
+>             /** Results */
+>             results: components["schemas"]["ActionSearchResult"][];
+>             /** Next Cursor */
+>             next_cursor?: string | null;
+1889,1892d1892
+<             /** Limit */
+<             limit: number;
+<             /** Next Cursor */
+<             next_cursor?: string | null;
+1895,1896c1895,1896
+<             /** Results */
+<             results: components["schemas"]["ActionSearchResult"][];
+---
+>             /** Limit */
+>             limit: number;
+1905,1908d1904
+<             /** Action Type */
+<             action_type: string;
+<             /** Created At */
+<             created_at: string;
+1911,1914c1907,1908
+<             /** Risk Level */
+<             risk_level: string;
+<             /** Status */
+<             status: string;
+---
+>             /** Action Type */
+>             action_type: string;
+1916a1911,1916
+>             /** Status */
+>             status: string;
+>             /** Risk Level */
+>             risk_level: string;
+>             /** Created At */
+>             created_at: string;
+1934,1935c1934,1935
+<              * Actions Created
+<              * @default []
+---
+>              * Run Id
+>              * Format: uuid
+1937,1939c1937
+<             actions_created: string[];
+<             /** Completed At */
+<             completed_at?: string | null;
+---
+>             run_id: string;
+1945,1955c1943,1945
+<             /** Error */
+<             error?: string | null;
+<             /** Result */
+<             result?: {
+<                 [key: string]: unknown;
+<             } | null;
+<             /**
+<              * Run Id
+<              * Format: uuid
+<              */
+<             run_id: string;
+---
+>             status: components["schemas"]["AgentRunStatus"];
+>             /** Trace Id */
+>             trace_id: string;
+1961c1951,1952
+<             status: components["schemas"]["AgentRunStatus"];
+---
+>             /** Completed At */
+>             completed_at?: string | null;
+1967,1968c1958,1968
+<             /** Trace Id */
+<             trace_id: string;
+---
+>             /**
+>              * Actions Created
+>              * @default []
+>              */
+>             actions_created: string[];
+>             /** Result */
+>             result?: {
+>                 [key: string]: unknown;
+>             } | null;
+>             /** Error */
+>             error?: string | null;
+2001,2004d2000
+<             /** Broker */
+<             broker?: {
+<                 [key: string]: unknown;
+<             } | null;
+2007,2010d2002
+<             /** Company Info */
+<             company_info?: {
+<                 [key: string]: unknown;
+<             } | null;
+2015,2022d2006
+<             /** Identifiers */
+<             identifiers?: {
+<                 [key: string]: unknown;
+<             } | null;
+<             /** Metadata */
+<             metadata?: {
+<                 [key: string]: unknown;
+<             } | null;
+2033a2018,2033
+>             /** Identifiers */
+>             identifiers?: {
+>                 [key: string]: unknown;
+>             } | null;
+>             /** Company Info */
+>             company_info?: {
+>                 [key: string]: unknown;
+>             } | null;
+>             /** Broker */
+>             broker?: {
+>                 [key: string]: unknown;
+>             } | null;
+>             /** Metadata */
+>             metadata?: {
+>                 [key: string]: unknown;
+>             } | null;
+2037,2038d2036
+<             /** Actor */
+<             actor?: string | null;
+2040,2041c2038,2039
+<              * Created At
+<              * Format: date-time
+---
+>              * Id
+>              * Format: uuid
+2043c2041
+<             created_at: string;
+---
+>             id: string;
+2046,2049d2043
+<             /** Details */
+<             details?: {
+<                 [key: string]: unknown;
+<             } | null;
+2052,2056d2045
+<             /**
+<              * Id
+<              * Format: uuid
+<              */
+<             id: string;
+2059,2073c2048,2051
+<         };
+<         /** DealResponse */
+<         DealResponse: {
+<             /** Action Count */
+<             action_count?: number | null;
+<             /** Alias Count */
+<             alias_count?: number | null;
+<             /** Broker */
+<             broker: {
+<                 [key: string]: unknown;
+<             };
+<             /** Canonical Name */
+<             canonical_name: string;
+<             /** Company Info */
+<             company_info: {
+---
+>             /** Actor */
+>             actor?: string | null;
+>             /** Details */
+>             details?: {
+2075c2053
+<             };
+---
+>             } | null;
+2081,2082c2059,2061
+<             /** Days Since Update */
+<             days_since_update?: number | null;
+---
+>         };
+>         /** DealResponse */
+>         DealResponse: {
+2084a2064,2065
+>             /** Canonical Name */
+>             canonical_name: string;
+2088a2070,2073
+>             /** Stage */
+>             stage: string;
+>             /** Status */
+>             status: string;
+2092a2078,2085
+>             /** Company Info */
+>             company_info: {
+>                 [key: string]: unknown;
+>             };
+>             /** Broker */
+>             broker: {
+>                 [key: string]: unknown;
+>             };
+2097,2100c2090,2094
+<             /** Stage */
+<             stage: string;
+<             /** Status */
+<             status: string;
+---
+>             /**
+>              * Created At
+>              * Format: date-time
+>              */
+>             created_at: string;
+2105a2100,2105
+>             /** Days Since Update */
+>             days_since_update?: number | null;
+>             /** Action Count */
+>             action_count?: number | null;
+>             /** Alias Count */
+>             alias_count?: number | null;
+2111a2112,2115
+>             /** Results */
+>             results: components["schemas"]["DealSearchResult"][];
+>             /** Next Cursor */
+>             next_cursor?: string | null;
+2117,2122d2120
+<             /** Limit */
+<             limit: number;
+<             /** Next Cursor */
+<             next_cursor?: string | null;
+<             /** Offset */
+<             offset?: number | null;
+2125,2126d2122
+<             /** Results */
+<             results: components["schemas"]["DealSearchResult"][];
+2128a2125,2128
+>             /** Limit */
+>             limit: number;
+>             /** Offset */
+>             offset?: number | null;
+2134a2135,2136
+>             /** Deal Id */
+>             deal_id: string;
+2139,2142d2140
+<             /** Created At */
+<             created_at: string;
+<             /** Deal Id */
+<             deal_id: string;
+2146a2145,2146
+>             /** Created At */
+>             created_at: string;
+2155,2156d2154
+<             /** Count */
+<             count: number;
+2158a2157,2158
+>             /** Count */
+>             count: number;
+2162,2165d2161
+<             /** Broker */
+<             broker?: {
+<                 [key: string]: unknown;
+<             } | null;
+2168,2171d2163
+<             /** Company Info */
+<             company_info?: {
+<                 [key: string]: unknown;
+<             } | null;
+2175a2168,2171
+>             /** Stage */
+>             stage?: ("inbound" | "screening" | "qualified" | "loi" | "diligence" | "closing" | "portfolio" | "junk" | "archived") | null;
+>             /** Status */
+>             status?: string | null;
+2179a2176,2183
+>             /** Company Info */
+>             company_info?: {
+>                 [key: string]: unknown;
+>             } | null;
+>             /** Broker */
+>             broker?: {
+>                 [key: string]: unknown;
+>             } | null;
+2184,2187d2187
+<             /** Stage */
+<             stage?: ("inbound" | "screening" | "qualified" | "loi" | "diligence" | "closing" | "portfolio" | "junk" | "archived") | null;
+<             /** Status */
+<             status?: string | null;
+2194,2197d2193
+<             /** Created At */
+<             created_at?: string | null;
+<             /** Email Address */
+<             email_address: string;
+2200,2201d2195
+<             /** Is Active */
+<             is_active: boolean;
+2203a2198,2203
+>             /** Email Address */
+>             email_address: string;
+>             /** Is Active */
+>             is_active: boolean;
+>             /** Created At */
+>             created_at?: string | null;
+2210,2217d2209
+<             /** Body Preview */
+<             body_preview: string;
+<             /** Cc Addresses */
+<             cc_addresses: string[];
+<             /** From Address */
+<             from_address: string;
+<             /** Has Attachments */
+<             has_attachments: boolean;
+2220,2221c2212,2223
+<             /** Is Outbound */
+<             is_outbound: boolean;
+---
+>             /** Thread Id */
+>             thread_id: string;
+>             /** From Address */
+>             from_address: string;
+>             /** To Addresses */
+>             to_addresses: string[];
+>             /** Cc Addresses */
+>             cc_addresses: string[];
+>             /** Subject */
+>             subject: string;
+>             /** Body Preview */
+>             body_preview: string;
+2227,2232c2229,2232
+<             /** Subject */
+<             subject: string;
+<             /** Thread Id */
+<             thread_id: string;
+<             /** To Addresses */
+<             to_addresses: string[];
+---
+>             /** Is Outbound */
+>             is_outbound: boolean;
+>             /** Has Attachments */
+>             has_attachments: boolean;
+2239,2240d2238
+<             /** Deal Id */
+<             deal_id: string | null;
+2242a2241,2246
+>             /** Thread Id */
+>             thread_id: string;
+>             /** Deal Id */
+>             deal_id: string | null;
+>             /** Subject */
+>             subject: string;
+2254,2288d2257
+<             /** Subject */
+<             subject: string;
+<             /** Thread Id */
+<             thread_id: string;
+<         };
+<         ErrorResponse: {
+<             error?: {
+<                 /**
+<                  * @description Machine-readable error code
+<                  * @example NOT_FOUND
+<                  */
+<                 code: string;
+<                 /** @description Additional error details for validation errors */
+<                 details?: {
+<                     /** @description Error code for this field */
+<                     code?: string;
+<                     /** @description Field path that caused the error */
+<                     field?: string;
+<                     /** @description Error message for this field */
+<                     message?: string;
+<                 }[] | null;
+<                 /**
+<                  * @description Human-readable error message
+<                  * @example Resource not found
+<                  */
+<                 message: string;
+<                 /**
+<                  * Format: date-time
+<                  * @description When the error occurred
+<                  */
+<                 timestamp?: string;
+<                 /** @description Unique trace ID for debugging */
+<                 trace_id?: string;
+<             };
+<             meta?: components["schemas"]["ResponseMeta"];
+2295,2296c2264,2267
+<             /** Correlation Id */
+<             correlation_id?: string | null;
+---
+>             /** Id */
+>             id: string;
+>             /** Type */
+>             type: string;
+2301,2302c2272,2273
+<             /** Id */
+<             id: string;
+---
+>             /** Correlation Id */
+>             correlation_id?: string | null;
+2305,2306d2275
+<             /** Type */
+<             type: string;
+2313,2314d2281
+<             /** Count */
+<             count: number;
+2316a2284,2285
+>             /** Count */
+>             count: number;
+2328,2329d2296
+<             /** Count */
+<             count: number;
+2331a2299,2300
+>             /** Count */
+>             count: number;
+2338,2341d2306
+<             /** Context */
+<             context?: {
+<                 [key: string]: unknown;
+<             } | null;
+2348a2314,2317
+>             /** Context */
+>             context?: {
+>                 [key: string]: unknown;
+>             } | null;
+2355a2325,2329
+>              * Task
+>              * @description The task for the agent to perform
+>              */
+>             task: string;
+>             /**
+2363,2373d2336
+<              * Stream
+<              * @description Whether to stream the response
+<              * @default false
+<              */
+<             stream: boolean;
+<             /**
+<              * Task
+<              * @description The task for the agent to perform
+<              */
+<             task: string;
+<             /**
+2378a2342,2347
+>             /**
+>              * Stream
+>              * @description Whether to stream the response
+>              * @default false
+>              */
+>             stream: boolean;
+2385,2399d2353
+<             /** Duration Ms */
+<             duration_ms?: number | null;
+<             /** Error */
+<             error?: string | null;
+<             /** Fallback Reason */
+<             fallback_reason?: string | null;
+<             /**
+<              * Is Fallback
+<              * @default false
+<              */
+<             is_fallback: boolean;
+<             /** Model Used */
+<             model_used: string;
+<             /** Response */
+<             response?: string | null;
+2401a2356,2359
+>             /** Response */
+>             response?: string | null;
+>             /** Error */
+>             error?: string | null;
+2415a2374,2382
+>             /** Model Used */
+>             model_used: string;
+>             /**
+>              * Is Fallback
+>              * @default false
+>              */
+>             is_fallback: boolean;
+>             /** Fallback Reason */
+>             fallback_reason?: string | null;
+2417a2385,2386
+>             /** Duration Ms */
+>             duration_ms?: number | null;
+2423a2393,2394
+>             /** Thread Id */
+>             thread_id: string;
+2431,2450d2401
+<             /** Thread Id */
+<             thread_id: string;
+<         };
+<         ListResponse: {
+<             /** @description List of items */
+<             data?: unknown[];
+<             meta?: {
+<                 /** @description Whether more items exist */
+<                 has_more: boolean;
+<                 /** @description Maximum items per page */
+<                 limit: number;
+<                 /** @description Current offset */
+<                 offset: number;
+<                 /** Format: date-time */
+<                 timestamp?: string;
+<                 /** @description Total number of items */
+<                 total: number;
+<                 /** @description Unique trace ID */
+<                 trace_id: string;
+<             };
+2486a2438,2439
+>             /** Content */
+>             content: string;
+2492,2493d2444
+<             /** Content */
+<             content: string;
+2500,2503d2450
+<             /** Email */
+<             email?: string | null;
+<             /** Message */
+<             message: string;
+2505a2453,2456
+>             /** Message */
+>             message: string;
+>             /** Email */
+>             email?: string | null;
+2512,2513d2462
+<             /** Email */
+<             email: string;
+2515a2465,2466
+>             /** Email */
+>             email: string;
+2521,2530d2471
+<         PaginatedResponse: {
+<             data?: Record<string, never>[];
+<             meta?: components["schemas"]["ResponseMeta"];
+<             pagination?: {
+<                 page?: number;
+<                 per_page?: number;
+<                 total?: number;
+<                 total_pages?: number;
+<             };
+<         };
+2533,2536d2473
+<             /** Avg Days In Stage */
+<             avg_days_in_stage: number | null;
+<             /** Count */
+<             count: number;
+2538a2476,2479
+>             /** Count */
+>             count: number;
+>             /** Avg Days In Stage */
+>             avg_days_in_stage: number | null;
+2541a2483,2488
+>             /** Proposal Id */
+>             proposal_id: string;
+>             /** Approved By */
+>             approved_by: string;
+>             /** Session Id */
+>             session_id: string;
+2548,2551d2494
+<             /** Approved By */
+<             approved_by: string;
+<             /** Proposal Id */
+<             proposal_id: string;
+2554,2555d2496
+<             /** Session Id */
+<             session_id: string;
+2575,2589d2515
+<             /** Broker Name */
+<             broker_name?: string | null;
+<             /**
+<              * Classification
+<              * @default unknown
+<              */
+<             classification: string;
+<             /** Company Name */
+<             company_name?: string | null;
+<             /** Confidence */
+<             confidence?: number | null;
+<             /** Email Subject */
+<             email_subject?: string | null;
+<             /** Is Broker */
+<             is_broker?: boolean | null;
+2592,2595c2518,2519
+<             /** Raw Body */
+<             raw_body?: string | null;
+<             /** Received At */
+<             received_at?: string | null;
+---
+>             /** Email Subject */
+>             email_subject?: string | null;
+2598,2599d2521
+<             /** Sender Company */
+<             sender_company?: string | null;
+2602,2603c2524,2530
+<             /** Sender Name */
+<             sender_name?: string | null;
+---
+>             /** Received At */
+>             received_at?: string | null;
+>             /**
+>              * Classification
+>              * @default unknown
+>              */
+>             classification: string;
+2608a2536,2549
+>             /** Confidence */
+>             confidence?: number | null;
+>             /** Company Name */
+>             company_name?: string | null;
+>             /** Broker Name */
+>             broker_name?: string | null;
+>             /** Sender Name */
+>             sender_name?: string | null;
+>             /** Sender Company */
+>             sender_company?: string | null;
+>             /** Is Broker */
+>             is_broker?: boolean | null;
+>             /** Raw Body */
+>             raw_body?: string | null;
+2614,2617d2554
+<             /** Deal Id */
+<             deal_id?: string | null;
+<             /** Notes */
+<             notes?: string | null;
+2622a2560,2563
+>             /** Deal Id */
+>             deal_id?: string | null;
+>             /** Notes */
+>             notes?: string | null;
+2626,2627c2567,2578
+<             /** Broker Name */
+<             broker_name: string | null;
+---
+>             /** Id */
+>             id: string;
+>             /** Message Id */
+>             message_id: string | null;
+>             /** Email Subject */
+>             email_subject: string | null;
+>             /** Sender */
+>             sender: string | null;
+>             /** Sender Domain */
+>             sender_domain: string | null;
+>             /** Received At */
+>             received_at: string | null;
+2630,2631c2581,2582
+<             /** Company Name */
+<             company_name: string | null;
+---
+>             /** Urgency */
+>             urgency: string;
+2633a2585,2590
+>             /** Company Name */
+>             company_name: string | null;
+>             /** Broker Name */
+>             broker_name: string | null;
+>             /** Status */
+>             status: string;
+2639,2654d2595
+<             /** Email Subject */
+<             email_subject: string | null;
+<             /** Id */
+<             id: string;
+<             /** Is Broker */
+<             is_broker?: boolean | null;
+<             /** Message Id */
+<             message_id: string | null;
+<             /** Received At */
+<             received_at: string | null;
+<             /** Sender */
+<             sender: string | null;
+<             /** Sender Company */
+<             sender_company?: string | null;
+<             /** Sender Domain */
+<             sender_domain: string | null;
+2657,2660c2598,2601
+<             /** Status */
+<             status: string;
+<             /** Urgency */
+<             urgency: string;
+---
+>             /** Sender Company */
+>             sender_company?: string | null;
+>             /** Is Broker */
+>             is_broker?: boolean | null;
+2672,2673d2612
+<             /** Name */
+<             name: string;
+2676,2689c2615,2616
+<         };
+<         ResponseMeta: {
+<             /** @description Correlation ID for related requests */
+<             correlation_id?: string | null;
+<             /**
+<              * Format: date-time
+<              * @description Response timestamp
+<              */
+<             timestamp: string;
+<             /**
+<              * Format: uuid
+<              * @description Unique trace ID for this request
+<              */
+<             trace_id: string;
+---
+>             /** Name */
+>             name: string;
+2715a2643,2650
+>             /** Query */
+>             query?: string | null;
+>             /** From Address */
+>             from_address?: string | null;
+>             /** To Address */
+>             to_address?: string | null;
+>             /** Subject */
+>             subject?: string | null;
+2720,2721d2654
+<             /** From Address */
+<             from_address?: string | null;
+2729,2734d2661
+<             /** Query */
+<             query?: string | null;
+<             /** Subject */
+<             subject?: string | null;
+<             /** To Address */
+<             to_address?: string | null;
+2741,2742c2668,2671
+<             /** Bcc */
+<             bcc?: string[];
+---
+>             /** To */
+>             to: string[];
+>             /** Subject */
+>             subject: string;
+2746a2676,2677
+>             /** Bcc */
+>             bcc?: string[];
+2748a2680,2681
+>             /** Reply To Thread Id */
+>             reply_to_thread_id?: string | null;
+2754,2759d2686
+<             /** Reply To Thread Id */
+<             reply_to_thread_id?: string | null;
+<             /** Subject */
+<             subject: string;
+<             /** To */
+<             to: string[];
+2766,2767d2692
+<             /** Message Id */
+<             message_id: string;
+2769a2695,2696
+>             /** Message Id */
+>             message_id: string;
+2773,2777d2699
+<         SuccessResponse: {
+<             /** @description Response data (type varies by endpoint) */
+<             data?: unknown;
+<             meta?: components["schemas"]["ResponseMeta"];
+<         };
+2787a2710,2715
+>             /** Tool Name */
+>             tool_name: string;
+>             /** Tool Input */
+>             tool_input: {
+>                 [key: string]: unknown;
+>             };
+2793,2798d2720
+<             /** Tool Input */
+<             tool_input: {
+<                 [key: string]: unknown;
+<             };
+<             /** Tool Name */
+<             tool_name: string;
+2805,2806d2726
+<             /** Description */
+<             description: string;
+2808a2729,2730
+>             /** Description */
+>             description: string;
+2813,2814d2734
+<             /** Requires Approval */
+<             requires_approval: boolean;
+2816a2737,2738
+>             /** Requires Approval */
+>             requires_approval: boolean;
+2822a2745,2748
+>             /** New Stage */
+>             new_stage: string;
+>             /** Reason */
+>             reason?: string | null;
+2828,2831d2753
+<             /** New Stage */
+<             new_stage: string;
+<             /** Reason */
+<             reason?: string | null;
+2841a2764,2769
+>             /** To Stage */
+>             to_stage: string;
+>             /** Success */
+>             success: boolean;
+>             /** Timestamp */
+>             timestamp: string;
+2847,2852d2774
+<             /** Success */
+<             success: boolean;
+<             /** Timestamp */
+<             timestamp: string;
+<             /** To Stage */
+<             to_stage: string;
+2859,2860d2780
+<             /** Current Stage */
+<             current_stage?: string | null;
+2862a2783,2784
+>             /** Current Stage */
+>             current_stage?: string | null;
+2868,2871d2789
+<             /** Context */
+<             ctx?: Record<string, never>;
+<             /** Input */
+<             input?: unknown;
+2877a2796,2877
+>             /** Input */
+>             input?: unknown;
+>             /** Context */
+>             ctx?: Record<string, never>;
+>         };
+>         ErrorResponse: {
+>             error?: {
+>                 /**
+>                  * @description Machine-readable error code
+>                  * @example NOT_FOUND
+>                  */
+>                 code: string;
+>                 /**
+>                  * @description Human-readable error message
+>                  * @example Resource not found
+>                  */
+>                 message: string;
+>                 /** @description Additional error details for validation errors */
+>                 details?: {
+>                     /** @description Field path that caused the error */
+>                     field?: string;
+>                     /** @description Error message for this field */
+>                     message?: string;
+>                     /** @description Error code for this field */
+>                     code?: string;
+>                 }[] | null;
+>                 /** @description Unique trace ID for debugging */
+>                 trace_id?: string;
+>                 /**
+>                  * Format: date-time
+>                  * @description When the error occurred
+>                  */
+>                 timestamp?: string;
+>             };
+>             meta?: components["schemas"]["ResponseMeta"];
+>         };
+>         ResponseMeta: {
+>             /**
+>              * Format: uuid
+>              * @description Unique trace ID for this request
+>              */
+>             trace_id: string;
+>             /** @description Correlation ID for related requests */
+>             correlation_id?: string | null;
+>             /**
+>              * Format: date-time
+>              * @description Response timestamp
+>              */
+>             timestamp: string;
+>         };
+>         SuccessResponse: {
+>             /** @description Response data (type varies by endpoint) */
+>             data?: unknown;
+>             meta?: components["schemas"]["ResponseMeta"];
+>         };
+>         ListResponse: {
+>             /** @description List of items */
+>             data?: unknown[];
+>             meta?: {
+>                 /** @description Total number of items */
+>                 total: number;
+>                 /** @description Maximum items per page */
+>                 limit: number;
+>                 /** @description Current offset */
+>                 offset: number;
+>                 /** @description Whether more items exist */
+>                 has_more: boolean;
+>                 /** @description Unique trace ID */
+>                 trace_id: string;
+>                 /** Format: date-time */
+>                 timestamp?: string;
+>             };
+>         };
+>         PaginatedResponse: {
+>             data?: Record<string, never>[];
+>             meta?: components["schemas"]["ResponseMeta"];
+>             pagination?: {
+>                 total?: number;
+>                 page?: number;
+>                 per_page?: number;
+>                 total_pages?: number;
+>             };
+2888c2888
+<     list_actions_api_actions_get: {
+---
+>     login_api_auth_login_post: {
+2890,2899c2890
+<             query?: {
+<                 /** @description Filter by status */
+<                 status?: string | null;
+<                 /** @description Filter by deal */
+<                 deal_id?: string | null;
+<                 /** @description Show only pending actions */
+<                 pending_only?: boolean;
+<                 limit?: number;
+<                 offset?: number;
+<             };
+---
+>             query?: never;
+2904c2895,2899
+<         requestBody?: never;
+---
+>         requestBody: {
+>             content: {
+>                 "application/json": components["schemas"]["LoginRequest"];
+>             };
+>         };
+2912c2907
+<                     "application/json": components["schemas"]["ActionResponse"][];
+---
+>                     "application/json": components["schemas"]["LoginResponse"];
+2926c2921
+<     get_action_capabilities_api_actions_capabilities_get: {
+---
+>     logout_api_auth_logout_post: {
+2941c2936
+<                     "application/json": unknown;
+---
+>                     "application/json": components["schemas"]["LogoutResponse"];
+2946c2941
+<     get_action_metrics_api_actions_metrics_get: {
+---
+>     get_current_user_api_auth_me_get: {
+2961c2956
+<                     "application/json": unknown;
+---
+>                     "application/json": components["schemas"]["OperatorResponse"];
+2966c2961
+<     list_quarantine_actions_api_actions_quarantine_get: {
+---
+>     register_api_auth_register_post: {
+2968,2975c2963
+<             query?: {
+<                 /** @description Filter by status */
+<                 status?: string | null;
+<                 /** @description Filter by classification */
+<                 classification?: string | null;
+<                 limit?: number;
+<                 offset?: number;
+<             };
+---
+>             query?: never;
+2980c2968,2972
+<         requestBody?: never;
+---
+>         requestBody: {
+>             content: {
+>                 "application/json": components["schemas"]["RegisterRequest"];
+>             };
+>         };
+2988c2980
+<                     "application/json": components["schemas"]["QuarantineResponse"][];
+---
+>                     "application/json": components["schemas"]["OperatorResponse"];
+3002c2994
+<     get_action_api_actions__action_id__get: {
+---
+>     check_auth_api_auth_check_get: {
+3006,3008c2998
+<             path: {
+<                 action_id: string;
+<             };
+---
+>             path?: never;
+3019c3009
+<                     "application/json": components["schemas"]["ActionResponse"];
+---
+>                     "application/json": unknown;
+3022,3023c3012,3024
+<             /** @description Validation Error */
+<             422: {
+---
+>         };
+>     };
+>     health_check_health_get: {
+>         parameters: {
+>             query?: never;
+>             header?: never;
+>             path?: never;
+>             cookie?: never;
+>         };
+>         requestBody?: never;
+>         responses: {
+>             /** @description Successful Response */
+>             200: {
+3028c3029,3031
+<                     "application/json": components["schemas"]["HTTPValidationError"];
+---
+>                     "application/json": {
+>                         [key: string]: unknown;
+>                     };
+3033c3036
+<     approve_action_api_actions__action_id__approve_post: {
+---
+>     liveness_check_health_live_get: {
+3037,3039c3040
+<             path: {
+<                 action_id: string;
+<             };
+---
+>             path?: never;
+3042,3046c3043
+<         requestBody: {
+<             content: {
+<                 "application/json": components["schemas"]["ActionApprove"];
+<             };
+<         };
+---
+>         requestBody?: never;
+3054c3051,3053
+<                     "application/json": unknown;
+---
+>                     "application/json": {
+>                         [key: string]: string;
+>                     };
+3057,3058c3056,3068
+<             /** @description Validation Error */
+<             422: {
+---
+>         };
+>     };
+>     readiness_check_health_ready_get: {
+>         parameters: {
+>             query?: never;
+>             header?: never;
+>             path?: never;
+>             cookie?: never;
+>         };
+>         requestBody?: never;
+>         responses: {
+>             /** @description Successful Response */
+>             200: {
+3063c3073,3075
+<                     "application/json": components["schemas"]["HTTPValidationError"];
+---
+>                     "application/json": {
+>                         [key: string]: unknown;
+>                     };
+3068c3080
+<     reject_action_api_actions__action_id__reject_post: {
+---
+>     startup_check_health_startup_get: {
+3072,3074c3084
+<             path: {
+<                 action_id: string;
+<             };
+---
+>             path?: never;
+3077,3081c3087
+<         requestBody: {
+<             content: {
+<                 "application/json": components["schemas"]["ActionReject"];
+<             };
+<         };
+---
+>         requestBody?: never;
+3089c3095,3097
+<                     "application/json": unknown;
+---
+>                     "application/json": {
+>                         [key: string]: unknown;
+>                     };
+3092,3093c3100,3112
+<             /** @description Validation Error */
+<             422: {
+---
+>         };
+>     };
+>     get_version_api_version_get: {
+>         parameters: {
+>             query?: never;
+>             header?: never;
+>             path?: never;
+>             cookie?: never;
+>         };
+>         requestBody?: never;
+>         responses: {
+>             /** @description Successful Response */
+>             200: {
+3098c3117,3119
+<                     "application/json": components["schemas"]["HTTPValidationError"];
+---
+>                     "application/json": {
+>                         [key: string]: unknown;
+>                     };
+3103c3124
+<     list_dlq_entries_api_admin_dlq_get: {
+---
+>     detailed_health_check_health_detailed_get: {
+3105,3109c3126
+<             query?: {
+<                 limit?: number;
+<                 offset?: number;
+<                 correlation_id?: string | null;
+<             };
+---
+>             query?: never;
+3122c3139,3141
+<                     "application/json": unknown;
+---
+>                     "application/json": {
+>                         [key: string]: unknown;
+>                     };
+3125,3126c3144,3156
+<             /** @description Validation Error */
+<             422: {
+---
+>         };
+>     };
+>     get_metrics_health_metrics_get: {
+>         parameters: {
+>             query?: never;
+>             header?: never;
+>             path?: never;
+>             cookie?: never;
+>         };
+>         requestBody?: never;
+>         responses: {
+>             /** @description Successful Response */
+>             200: {
+3131c3161,3163
+<                     "application/json": components["schemas"]["HTTPValidationError"];
+---
+>                     "application/json": {
+>                         [key: string]: unknown;
+>                     };
+3136c3168
+<     purge_old_dlq_api_admin_dlq_purge_old_post: {
+---
+>     invoke_agent_endpoint_api_agent_invoke_post: {
+3145c3177
+<                 "application/json": components["schemas"]["PurgeRequest"];
+---
+>                 "application/json": components["schemas"]["InvokeRequest"];
+3155c3187
+<                     "application/json": unknown;
+---
+>                     "application/json": components["schemas"]["AgentRunResponse"];
+3169c3201
+<     retry_all_dlq_api_admin_dlq_retry_all_post: {
+---
+>     list_agent_runs_api_agent_runs_get: {
+3172c3204,3207
+<                 correlation_id?: string | null;
+---
+>                 /** @description Filter by deal ID */
+>                 deal_id?: string | null;
+>                 limit?: number;
+>                 offset?: number;
+3186c3221,3223
+<                     "application/json": unknown;
+---
+>                     "application/json": {
+>                         [key: string]: unknown;
+>                     }[];
+3200c3237
+<     dlq_stats_api_admin_dlq_stats_get: {
+---
+>     get_agent_run_api_agent_runs__run_id__get: {
+3204c3241,3243
+<             path?: never;
+---
+>             path: {
+>                 run_id: string;
+>             };
+3215c3254,3265
+<                     "application/json": unknown;
+---
+>                     "application/json": {
+>                         [key: string]: unknown;
+>                     };
+>                 };
+>             };
+>             /** @description Validation Error */
+>             422: {
+>                 headers: {
+>                     [name: string]: unknown;
+>                 };
+>                 content: {
+>                     "application/json": components["schemas"]["HTTPValidationError"];
+3220c3270
+<     purge_dlq_entry_api_admin_dlq__entry_id__delete: {
+---
+>     list_available_tools_api_agent_tools_get: {
+3224,3226c3274
+<             path: {
+<                 entry_id: string;
+<             };
+---
+>             path?: never;
+3237,3246c3285
+<                     "application/json": unknown;
+<                 };
+<             };
+<             /** @description Validation Error */
+<             422: {
+<                 headers: {
+<                     [name: string]: unknown;
+<                 };
+<                 content: {
+<                     "application/json": components["schemas"]["HTTPValidationError"];
+---
+>                     "application/json": components["schemas"]["ToolSchema"][];
+3251c3290
+<     retry_dlq_entry_api_admin_dlq__entry_id__retry_post: {
+---
+>     invoke_langsmith_agent_api_agent_langsmith_invoke_post: {
+3254,3256c3293,3295
+<             header?: never;
+<             path: {
+<                 entry_id: string;
+---
+>             header?: {
+>                 "X-Trace-ID"?: string | null;
+>                 "X-Correlation-ID"?: string | null;
+3257a3297
+>             path?: never;
+3262c3302
+<                 "application/json": components["schemas"]["RetryRequest"];
+---
+>                 "application/json": components["schemas"]["LangSmithInvokeRequest"];
+3272c3312
+<                     "application/json": unknown;
+---
+>                     "application/json": components["schemas"]["LangSmithInvokeResponse"];
+3286c3326
+<     outbox_stats_api_admin_outbox_stats_get: {
+---
+>     invoke_langsmith_agent_stream_api_agent_langsmith_invoke_stream_post: {
+3289c3329,3331
+<             header?: never;
+---
+>             header?: {
+>                 "X-Trace-ID"?: string | null;
+>             };
+3293,3310c3335,3337
+<         requestBody?: never;
+<         responses: {
+<             /** @description Successful Response */
+<             200: {
+<                 headers: {
+<                     [name: string]: unknown;
+<                 };
+<                 content: {
+<                     "application/json": unknown;
+<                 };
+<             };
+<         };
+<     };
+<     run_retention_cleanup_endpoint_api_admin_retention_cleanup_post: {
+<         parameters: {
+<             query?: {
+<                 /** @description If true, only report what would be deleted */
+<                 dry_run?: boolean;
+---
+>         requestBody: {
+>             content: {
+>                 "application/json": components["schemas"]["LangSmithInvokeRequest"];
+3312,3314d3338
+<             header?: never;
+<             path?: never;
+<             cookie?: never;
+3316d3339
+<         requestBody?: never;
+3338c3361
+<     retention_stats_api_admin_retention_stats_get: {
+---
+>     list_models_api_agent_models_get: {
+3358c3381
+<     sse_stats_api_admin_sse_stats_get: {
+---
+>     langsmith_agent_health_api_agent_langsmith_health_get: {
+3378c3401
+<     system_health_api_admin_system_health_get: {
+---
+>     list_dlq_entries_api_admin_dlq_get: {
+3380c3403,3407
+<             query?: never;
+---
+>             query?: {
+>                 limit?: number;
+>                 offset?: number;
+>                 correlation_id?: string | null;
+>             };
+3395a3423,3431
+>             /** @description Validation Error */
+>             422: {
+>                 headers: {
+>                     [name: string]: unknown;
+>                 };
+>                 content: {
+>                     "application/json": components["schemas"]["HTTPValidationError"];
+>                 };
+>             };
+3398c3434
+<     list_agent_activity_api_agent_activity_get: {
+---
+>     dlq_stats_api_admin_dlq_stats_get: {
+3400,3402c3436
+<             query?: {
+<                 limit?: number;
+<             };
+---
+>             query?: never;
+3418,3426d3451
+<             /** @description Validation Error */
+<             422: {
+<                 headers: {
+<                     [name: string]: unknown;
+<                 };
+<                 content: {
+<                     "application/json": components["schemas"]["HTTPValidationError"];
+<                 };
+<             };
+3429c3454
+<     invoke_agent_endpoint_api_agent_invoke_post: {
+---
+>     retry_dlq_entry_api_admin_dlq__entry_id__retry_post: {
+3433c3458,3460
+<             path?: never;
+---
+>             path: {
+>                 entry_id: string;
+>             };
+3438c3465
+<                 "application/json": components["schemas"]["InvokeRequest"];
+---
+>                 "application/json": components["schemas"]["RetryRequest"];
+3448c3475
+<                     "application/json": components["schemas"]["AgentRunResponse"];
+---
+>                     "application/json": unknown;
+3462c3489
+<     langsmith_agent_health_api_agent_langsmith_health_get: {
+---
+>     retry_all_dlq_api_admin_dlq_retry_all_post: {
+3464c3491,3493
+<             query?: never;
+---
+>             query?: {
+>                 correlation_id?: string | null;
+>             };
+3479a3509,3517
+>             /** @description Validation Error */
+>             422: {
+>                 headers: {
+>                     [name: string]: unknown;
+>                 };
+>                 content: {
+>                     "application/json": components["schemas"]["HTTPValidationError"];
+>                 };
+>             };
+3482c3520
+<     invoke_langsmith_agent_api_agent_langsmith_invoke_post: {
+---
+>     purge_dlq_entry_api_admin_dlq__entry_id__delete: {
+3485,3487c3523,3525
+<             header?: {
+<                 "X-Trace-ID"?: string | null;
+<                 "X-Correlation-ID"?: string | null;
+---
+>             header?: never;
+>             path: {
+>                 entry_id: string;
+3489d3526
+<             path?: never;
+3492,3496c3529
+<         requestBody: {
+<             content: {
+<                 "application/json": components["schemas"]["LangSmithInvokeRequest"];
+<             };
+<         };
+---
+>         requestBody?: never;
+3504c3537
+<                     "application/json": components["schemas"]["LangSmithInvokeResponse"];
+---
+>                     "application/json": unknown;
+3518c3551
+<     invoke_langsmith_agent_stream_api_agent_langsmith_invoke_stream_post: {
+---
+>     purge_old_dlq_api_admin_dlq_purge_old_post: {
+3521,3523c3554
+<             header?: {
+<                 "X-Trace-ID"?: string | null;
+<             };
+---
+>             header?: never;
+3529c3560
+<                 "application/json": components["schemas"]["LangSmithInvokeRequest"];
+---
+>                 "application/json": components["schemas"]["PurgeRequest"];
+3553c3584
+<     list_models_api_agent_models_get: {
+---
+>     outbox_stats_api_admin_outbox_stats_get: {
+3573,3609c3604
+<     list_agent_runs_api_agent_runs_get: {
+<         parameters: {
+<             query?: {
+<                 /** @description Filter by deal ID */
+<                 deal_id?: string | null;
+<                 limit?: number;
+<                 offset?: number;
+<             };
+<             header?: never;
+<             path?: never;
+<             cookie?: never;
+<         };
+<         requestBody?: never;
+<         responses: {
+<             /** @description Successful Response */
+<             200: {
+<                 headers: {
+<                     [name: string]: unknown;
+<                 };
+<                 content: {
+<                     "application/json": {
+<                         [key: string]: unknown;
+<                     }[];
+<                 };
+<             };
+<             /** @description Validation Error */
+<             422: {
+<                 headers: {
+<                     [name: string]: unknown;
+<                 };
+<                 content: {
+<                     "application/json": components["schemas"]["HTTPValidationError"];
+<                 };
+<             };
+<         };
+<     };
+<     get_agent_run_api_agent_runs__run_id__get: {
+---
+>     sse_stats_api_admin_sse_stats_get: {
+3613,3615c3608
+<             path: {
+<                 run_id: string;
+<             };
+---
+>             path?: never;
+3626,3637c3619
+<                     "application/json": {
+<                         [key: string]: unknown;
+<                     };
+<                 };
+<             };
+<             /** @description Validation Error */
+<             422: {
+<                 headers: {
+<                     [name: string]: unknown;
+<                 };
+<                 content: {
+<                     "application/json": components["schemas"]["HTTPValidationError"];
+---
+>                     "application/json": unknown;
+3642c3624
+<     list_available_tools_api_agent_tools_get: {
+---
+>     system_health_api_admin_system_health_get: {
+3657c3639
+<                     "application/json": components["schemas"]["ToolSchema"][];
+---
+>                     "application/json": unknown;
+3662c3644
+<     check_auth_api_auth_check_get: {
+---
+>     retention_stats_api_admin_retention_stats_get: {
+3682c3664
+<     login_api_auth_login_post: {
+---
+>     run_retention_cleanup_endpoint_api_admin_retention_cleanup_post: {
+3684c3666,3669
+<             query?: never;
+---
+>             query?: {
+>                 /** @description If true, only report what would be deleted */
+>                 dry_run?: boolean;
+>             };
+3689,3693c3674
+<         requestBody: {
+<             content: {
+<                 "application/json": components["schemas"]["LoginRequest"];
+<             };
+<         };
+---
+>         requestBody?: never;
+3701c3682
+<                     "application/json": components["schemas"]["LoginResponse"];
+---
+>                     "application/json": unknown;
+3715c3696
+<     logout_api_auth_logout_post: {
+---
+>     get_valid_transitions_api_deals__deal_id__valid_transitions_get: {
+3719c3700,3702
+<             path?: never;
+---
+>             path: {
+>                 deal_id: string;
+>             };
+3730c3713
+<                     "application/json": components["schemas"]["LogoutResponse"];
+---
+>                     "application/json": components["schemas"]["ValidTransitionsResponse"];
+3733,3745c3716,3717
+<         };
+<     };
+<     get_current_user_api_auth_me_get: {
+<         parameters: {
+<             query?: never;
+<             header?: never;
+<             path?: never;
+<             cookie?: never;
+<         };
+<         requestBody?: never;
+<         responses: {
+<             /** @description Successful Response */
+<             200: {
+---
+>             /** @description Validation Error */
+>             422: {
+3750c3722
+<                     "application/json": components["schemas"]["OperatorResponse"];
+---
+>                     "application/json": components["schemas"]["HTTPValidationError"];
+3755c3727
+<     register_api_auth_register_post: {
+---
+>     transition_deal_stage_api_deals__deal_id__transition_post: {
+3757,3759c3729,3739
+<             query?: never;
+<             header?: never;
+<             path?: never;
+---
+>             query?: {
+>                 /** @description User performing the transition */
+>                 transitioned_by?: string | null;
+>             };
+>             header?: {
+>                 "X-Idempotency-Key"?: string | null;
+>                 "X-Trace-ID"?: string | null;
+>             };
+>             path: {
+>                 deal_id: string;
+>             };
+3764c3744
+<                 "application/json": components["schemas"]["RegisterRequest"];
+---
+>                 "application/json": components["schemas"]["TransitionRequest"];
+3774c3754
+<                     "application/json": components["schemas"]["OperatorResponse"];
+---
+>                     "application/json": components["schemas"]["TransitionResponse"];
+3788c3768
+<     execute_proposal_api_chat_execute_proposal_post: {
+---
+>     get_stage_history_api_deals__deal_id__stage_history_get: {
+3792,3797c3772,3773
+<             path?: never;
+<             cookie?: never;
+<         };
+<         requestBody: {
+<             content: {
+<                 "application/json": components["schemas"]["ProposalExecuteRequest"];
+---
+>             path: {
+>                 deal_id: string;
+3798a3775
+>             cookie?: never;
+3799a3777
+>         requestBody?: never;
+3821c3799
+<     get_chat_session_api_chat_session__session_id__get: {
+---
+>     get_transitions_api_deals__deal_id__transitions_get: {
+3826c3804
+<                 session_id: string;
+---
+>                 deal_id: string;
+3852c3830
+<     list_deals_api_deals_get: {
+---
+>     get_stages_summary_api_deals_stages_summary_get: {
+3854c3832,3854
+<             query?: {
+---
+>             query?: never;
+>             header?: never;
+>             path?: never;
+>             cookie?: never;
+>         };
+>         requestBody?: never;
+>         responses: {
+>             /** @description Successful Response */
+>             200: {
+>                 headers: {
+>                     [name: string]: unknown;
+>                 };
+>                 content: {
+>                     "application/json": unknown;
+>                 };
+>             };
+>         };
+>     };
+>     search_deals_api_search_deals_get: {
+>         parameters: {
+>             query: {
+>                 /** @description Search query */
+>                 q: string;
+3859,3860c3859
+<                 /** @description Search in name */
+<                 search?: string | null;
+---
+>                 /** @description Results per page */
+3862c3861,3864
+<                 offset?: number;
+---
+>                 /** @description Pagination cursor from previous response */
+>                 cursor?: string | null;
+>                 /** @description Legacy offset (use cursor instead) */
+>                 offset?: number | null;
+3876c3878
+<                     "application/json": components["schemas"]["DealResponse"][];
+---
+>                     "application/json": components["schemas"]["DealSearchResponse"];
+3890c3892
+<     create_deal_api_deals_post: {
+---
+>     search_actions_api_search_actions_get: {
+3892c3894,3907
+<             query?: never;
+---
+>             query: {
+>                 /** @description Search query */
+>                 q: string;
+>                 /** @description Filter by status */
+>                 status?: string | null;
+>                 /** @description Filter by action type */
+>                 action_type?: string | null;
+>                 /** @description Filter by deal ID */
+>                 deal_id?: string | null;
+>                 /** @description Results per page */
+>                 limit?: number;
+>                 /** @description Pagination cursor */
+>                 cursor?: string | null;
+>             };
+3897,3901c3912
+<         requestBody: {
+<             content: {
+<                 "application/json": components["schemas"]["DealCreate"];
+<             };
+<         };
+---
+>         requestBody?: never;
+3909c3920
+<                     "application/json": components["schemas"]["DealResponse"];
+---
+>                     "application/json": components["schemas"]["ActionSearchResponse"];
+3923c3934
+<     get_deal_by_alias_api_deals_by_alias_get: {
+---
+>     global_search_api_search_global_get: {
+3926,3929c3937,3940
+<                 /** @description Alias value to search for */
+<                 alias: string;
+<                 /** @description Type of alias */
+<                 alias_type?: string;
+---
+>                 /** @description Search query */
+>                 q: string;
+>                 /** @description Results per type */
+>                 limit?: number;
+3957c3968
+<     get_stages_summary_api_deals_stages_summary_get: {
+---
+>     get_deal_timeline_api_deals__deal_id__timeline_get: {
+3959c3970,3975
+<             query?: never;
+---
+>             query?: {
+>                 limit?: number;
+>                 before?: string | null;
+>                 /** @description Filter by type: stage_change, action, agent_run, event */
+>                 activity_type?: string | null;
+>             };
+3961c3977,3979
+<             path?: never;
+---
+>             path: {
+>                 deal_id: string;
+>             };
+3974a3993,4001
+>             /** @description Validation Error */
+>             422: {
+>                 headers: {
+>                     [name: string]: unknown;
+>                 };
+>                 content: {
+>                     "application/json": components["schemas"]["HTTPValidationError"];
+>                 };
+>             };
+3977c4004
+<     get_deal_api_deals__deal_id__get: {
+---
+>     get_deal_activity_summary_api_deals__deal_id__activity_summary_get: {
+3994c4021
+<                     "application/json": components["schemas"]["DealResponse"];
+---
+>                     "application/json": unknown;
+4008c4035
+<     update_deal_api_deals__deal_id__patch: {
+---
+>     get_gmail_auth_url_api_integrations_email_gmail_auth_get: {
+4012,4014c4039
+<             path: {
+<                 deal_id: string;
+<             };
+---
+>             path?: never;
+4017,4021c4042
+<         requestBody: {
+<             content: {
+<                 "application/json": components["schemas"]["DealUpdate"];
+<             };
+<         };
+---
+>         requestBody?: never;
+4029,4038c4050
+<                     "application/json": components["schemas"]["DealResponse"];
+<                 };
+<             };
+<             /** @description Validation Error */
+<             422: {
+<                 headers: {
+<                     [name: string]: unknown;
+<                 };
+<                 content: {
+<                     "application/json": components["schemas"]["HTTPValidationError"];
+---
+>                     "application/json": components["schemas"]["AuthUrlResponse"];
+4043c4055
+<     get_deal_activity_summary_api_deals__deal_id__activity_summary_get: {
+---
+>     gmail_oauth_callback_api_integrations_email_gmail_callback_get: {
+4045,4048c4057,4061
+<             query?: never;
+<             header?: never;
+<             path: {
+<                 deal_id: string;
+---
+>             query: {
+>                 /** @description Authorization code from Google */
+>                 code: string;
+>                 /** @description State token for CSRF protection */
+>                 state: string;
+4049a4063,4064
+>             header?: never;
+>             path?: never;
+4060c4075
+<                     "application/json": unknown;
+---
+>                     "application/json": components["schemas"]["OAuthCallbackResponse"];
+4074c4089
+<     get_deal_aliases_api_deals__deal_id__aliases_get: {
+---
+>     list_email_accounts_api_integrations_email_accounts_get: {
+4078,4080c4093
+<             path: {
+<                 deal_id: string;
+<             };
+---
+>             path?: never;
+4091,4100c4104
+<                     "application/json": unknown;
+<                 };
+<             };
+<             /** @description Validation Error */
+<             422: {
+<                 headers: {
+<                     [name: string]: unknown;
+<                 };
+<                 content: {
+<                     "application/json": components["schemas"]["HTTPValidationError"];
+---
+>                     "application/json": components["schemas"]["EmailAccountResponse"][];
+4105c4109
+<     add_deal_alias_api_deals__deal_id__aliases_post: {
+---
+>     disconnect_email_account_api_integrations_email_accounts__email_address__delete: {
+4110c4114
+<                 deal_id: string;
+---
+>                 email_address: string;
+4114,4118c4118
+<         requestBody: {
+<             content: {
+<                 "application/json": components["schemas"]["AliasCreate"];
+<             };
+<         };
+---
+>         requestBody?: never;
+4121c4121
+<             201: {
+---
+>             200: {
+4140c4140
+<     archive_deal_api_deals__deal_id__archive_post: {
+---
+>     send_email_api_integrations_email_send_post: {
+4142,4145c4142,4144
+<             query?: never;
+<             header?: never;
+<             path: {
+<                 deal_id: string;
+---
+>             query: {
+>                 /** @description Email account to send from */
+>                 account_email: string;
+4146a4146,4147
+>             header?: never;
+>             path?: never;
+4149c4150,4154
+<         requestBody?: never;
+---
+>         requestBody: {
+>             content: {
+>                 "application/json": components["schemas"]["SendEmailBody"];
+>             };
+>         };
+4157c4162
+<                     "application/json": unknown;
+---
+>                     "application/json": components["schemas"]["SendEmailResponse"];
+4171c4176
+<     get_deal_events_api_deals__deal_id__events_get: {
+---
+>     get_inbox_api_integrations_email_inbox_get: {
+4173,4174c4178,4181
+<             query?: {
+<                 limit?: number;
+---
+>             query: {
+>                 /** @description Email account */
+>                 account_email: string;
+>                 max_results?: number;
+4177,4179c4184
+<             path: {
+<                 deal_id: string;
+<             };
+---
+>             path?: never;
+4190c4195
+<                     "application/json": components["schemas"]["DealEvent"][];
+---
+>                     "application/json": components["schemas"]["InboxResponse"];
+4204c4209
+<     get_deal_notes_api_deals__deal_id__notes_get: {
+---
+>     get_email_thread_api_integrations_email_threads__thread_id__get: {
+4206,4208c4211,4213
+<             query?: {
+<                 limit?: number;
+<                 offset?: number;
+---
+>             query: {
+>                 /** @description Email account */
+>                 account_email: string;
+4212c4217
+<                 deal_id: string;
+---
+>                 thread_id: string;
+4224c4229
+<                     "application/json": unknown;
+---
+>                     "application/json": components["schemas"]["EmailThreadResponse"];
+4238c4243
+<     add_deal_note_api_deals__deal_id__notes_post: {
+---
+>     search_emails_api_integrations_email_search_post: {
+4240,4243c4245,4247
+<             query?: never;
+<             header?: never;
+<             path: {
+<                 deal_id: string;
+---
+>             query: {
+>                 /** @description Email account */
+>                 account_email: string;
+4244a4249,4250
+>             header?: never;
+>             path?: never;
+4249c4255
+<                 "application/json": components["schemas"]["NoteCreate"];
+---
+>                 "application/json": components["schemas"]["SearchEmailBody"];
+4254c4260
+<             201: {
+---
+>             200: {
+4259c4265
+<                     "application/json": unknown;
+---
+>                     "application/json": components["schemas"]["InboxResponse"];
+4273c4279
+<     restore_deal_api_deals__deal_id__restore_post: {
+---
+>     get_deal_email_threads_api_integrations_email_deals__deal_id__threads_get: {
+4275,4277c4281
+<             query?: {
+<                 target_stage?: "inbound" | "screening" | "qualified" | "loi" | "diligence" | "closing" | "portfolio" | "junk" | "archived";
+<             };
+---
+>             query?: never;
+4292c4296
+<                     "application/json": unknown;
+---
+>                     "application/json": components["schemas"]["DealThreadsResponse"];
+4306c4310
+<     get_stage_history_api_deals__deal_id__stage_history_get: {
+---
+>     link_thread_to_deal_api_integrations_email_threads_link_post: {
+4310,4312c4314
+<             path: {
+<                 deal_id: string;
+<             };
+---
+>             path?: never;
+4315c4317,4321
+<         requestBody?: never;
+---
+>         requestBody: {
+>             content: {
+>                 "application/json": components["schemas"]["LinkThreadBody"];
+>             };
+>         };
+4337c4343
+<     get_deal_timeline_api_deals__deal_id__timeline_get: {
+---
+>     unlink_thread_from_deal_api_integrations_email_threads__thread_id__link_delete: {
+4339,4344c4345
+<             query?: {
+<                 limit?: number;
+<                 before?: string | null;
+<                 /** @description Filter by type: stage_change, action, agent_run, event */
+<                 activity_type?: string | null;
+<             };
+---
+>             query?: never;
+4347c4348
+<                 deal_id: string;
+---
+>                 thread_id: string;
+4373c4374
+<     transition_deal_stage_api_deals__deal_id__transition_post: {
+---
+>     execute_proposal_api_chat_execute_proposal_post: {
+4375,4385c4376,4378
+<             query?: {
+<                 /** @description User performing the transition */
+<                 transitioned_by?: string | null;
+<             };
+<             header?: {
+<                 "X-Idempotency-Key"?: string | null;
+<                 "X-Trace-ID"?: string | null;
+<             };
+<             path: {
+<                 deal_id: string;
+<             };
+---
+>             query?: never;
+>             header?: never;
+>             path?: never;
+4390c4383
+<                 "application/json": components["schemas"]["TransitionRequest"];
+---
+>                 "application/json": components["schemas"]["ProposalExecuteRequest"];
+4400c4393
+<                     "application/json": components["schemas"]["TransitionResponse"];
+---
+>                     "application/json": unknown;
+4414c4407
+<     get_transitions_api_deals__deal_id__transitions_get: {
+---
+>     get_chat_session_api_chat_session__session_id__get: {
+4419c4412
+<                 deal_id: string;
+---
+>                 session_id: string;
+4445c4438
+<     get_valid_transitions_api_deals__deal_id__valid_transitions_get: {
+---
+>     event_stream_api_events_stream_get: {
+4447,4450c4440,4444
+<             query?: never;
+<             header?: never;
+<             path: {
+<                 deal_id: string;
+---
+>             query?: {
+>                 /** @description Filter by correlation_id (e.g., deal_id) */
+>                 correlation_id?: string | null;
+>                 /** @description Last received event ID for replay */
+>                 last_event_id?: string | null;
+4451a4446,4449
+>             header?: {
+>                 "Last-Event-ID"?: string | null;
+>             };
+>             path?: never;
+4462c4460
+<                     "application/json": components["schemas"]["ValidTransitionsResponse"];
+---
+>                     "application/json": unknown;
+4475a4474,4493
+>     sse_stats_api_events_stats_get: {
+>         parameters: {
+>             query?: never;
+>             header?: never;
+>             path?: never;
+>             cookie?: never;
+>         };
+>         requestBody?: never;
+>         responses: {
+>             /** @description Successful Response */
+>             200: {
+>                 headers: {
+>                     [name: string]: unknown;
+>                 };
+>                 content: {
+>                     "application/json": components["schemas"]["SSEStatsResponse"];
+>                 };
+>             };
+>         };
+>     };
+4546c4564
+<     sse_stats_api_events_stats_get: {
+---
+>     get_action_capabilities_api_actions_capabilities_get: {
+4561,4587d4578
+<                     "application/json": components["schemas"]["SSEStatsResponse"];
+<                 };
+<             };
+<         };
+<     };
+<     event_stream_api_events_stream_get: {
+<         parameters: {
+<             query?: {
+<                 /** @description Filter by correlation_id (e.g., deal_id) */
+<                 correlation_id?: string | null;
+<                 /** @description Last received event ID for replay */
+<                 last_event_id?: string | null;
+<             };
+<             header?: {
+<                 "Last-Event-ID"?: string | null;
+<             };
+<             path?: never;
+<             cookie?: never;
+<         };
+<         requestBody?: never;
+<         responses: {
+<             /** @description Successful Response */
+<             200: {
+<                 headers: {
+<                     [name: string]: unknown;
+<                 };
+<                 content: {
+4591,4599d4581
+<             /** @description Validation Error */
+<             422: {
+<                 headers: {
+<                     [name: string]: unknown;
+<                 };
+<                 content: {
+<                     "application/json": components["schemas"]["HTTPValidationError"];
+<                 };
+<             };
+4602c4584
+<     list_email_accounts_api_integrations_email_accounts_get: {
+---
+>     get_action_metrics_api_actions_metrics_get: {
+4617c4599
+<                     "application/json": components["schemas"]["EmailAccountResponse"][];
+---
+>                     "application/json": unknown;
+4622c4604
+<     disconnect_email_account_api_integrations_email_accounts__email_address__delete: {
+---
+>     list_deals_api_deals_get: {
+4624,4627c4606,4614
+<             query?: never;
+<             header?: never;
+<             path: {
+<                 email_address: string;
+---
+>             query?: {
+>                 /** @description Filter by stage */
+>                 stage?: string | null;
+>                 /** @description Filter by status */
+>                 status?: string | null;
+>                 /** @description Search in name */
+>                 search?: string | null;
+>                 limit?: number;
+>                 offset?: number;
+4628a4616,4617
+>             header?: never;
+>             path?: never;
+4639c4628
+<                     "application/json": unknown;
+---
+>                     "application/json": components["schemas"]["DealResponse"][];
+4653c4642
+<     get_deal_email_threads_api_integrations_email_deals__deal_id__threads_get: {
+---
+>     create_deal_api_deals_post: {
+4657,4659c4646
+<             path: {
+<                 deal_id: string;
+<             };
+---
+>             path?: never;
+4662c4649,4653
+<         requestBody?: never;
+---
+>         requestBody: {
+>             content: {
+>                 "application/json": components["schemas"]["DealCreate"];
+>             };
+>         };
+4670c4661
+<                     "application/json": components["schemas"]["DealThreadsResponse"];
+---
+>                     "application/json": components["schemas"]["DealResponse"];
+4684c4675
+<     get_gmail_auth_url_api_integrations_email_gmail_auth_get: {
+---
+>     get_deal_by_alias_api_deals_by_alias_get: {
+4686c4677,4682
+<             query?: never;
+---
+>             query: {
+>                 /** @description Alias value to search for */
+>                 alias: string;
+>                 /** @description Type of alias */
+>                 alias_type?: string;
+>             };
+4699c4695,4704
+<                     "application/json": components["schemas"]["AuthUrlResponse"];
+---
+>                     "application/json": unknown;
+>                 };
+>             };
+>             /** @description Validation Error */
+>             422: {
+>                 headers: {
+>                     [name: string]: unknown;
+>                 };
+>                 content: {
+>                     "application/json": components["schemas"]["HTTPValidationError"];
+4704c4709
+<     gmail_oauth_callback_api_integrations_email_gmail_callback_get: {
+---
+>     get_deal_api_deals__deal_id__get: {
+4706,4711c4711
+<             query: {
+<                 /** @description Authorization code from Google */
+<                 code: string;
+<                 /** @description State token for CSRF protection */
+<                 state: string;
+<             };
+---
+>             query?: never;
+4713c4713,4715
+<             path?: never;
+---
+>             path: {
+>                 deal_id: string;
+>             };
+4724c4726
+<                     "application/json": components["schemas"]["OAuthCallbackResponse"];
+---
+>                     "application/json": components["schemas"]["DealResponse"];
+4738c4740
+<     get_inbox_api_integrations_email_inbox_get: {
+---
+>     update_deal_api_deals__deal_id__patch: {
+4740,4744c4742
+<             query: {
+<                 /** @description Email account */
+<                 account_email: string;
+<                 max_results?: number;
+<             };
+---
+>             query?: never;
+4746c4744,4746
+<             path?: never;
+---
+>             path: {
+>                 deal_id: string;
+>             };
+4749c4749,4753
+<         requestBody?: never;
+---
+>         requestBody: {
+>             content: {
+>                 "application/json": components["schemas"]["DealUpdate"];
+>             };
+>         };
+4757c4761
+<                     "application/json": components["schemas"]["InboxResponse"];
+---
+>                     "application/json": components["schemas"]["DealResponse"];
+4771c4775
+<     search_emails_api_integrations_email_search_post: {
+---
+>     get_deal_events_api_deals__deal_id__events_get: {
+4773,4775c4777,4778
+<             query: {
+<                 /** @description Email account */
+<                 account_email: string;
+---
+>             query?: {
+>                 limit?: number;
+4778,4783c4781,4782
+<             path?: never;
+<             cookie?: never;
+<         };
+<         requestBody: {
+<             content: {
+<                 "application/json": components["schemas"]["SearchEmailBody"];
+---
+>             path: {
+>                 deal_id: string;
+4784a4784
+>             cookie?: never;
+4785a4786
+>         requestBody?: never;
+4793c4794
+<                     "application/json": components["schemas"]["InboxResponse"];
+---
+>                     "application/json": components["schemas"]["DealEvent"][];
+4807c4808
+<     send_email_api_integrations_email_send_post: {
+---
+>     get_deal_aliases_api_deals__deal_id__aliases_get: {
+4809,4812c4810
+<             query: {
+<                 /** @description Email account to send from */
+<                 account_email: string;
+<             };
+---
+>             query?: never;
+4814,4819c4812,4813
+<             path?: never;
+<             cookie?: never;
+<         };
+<         requestBody: {
+<             content: {
+<                 "application/json": components["schemas"]["SendEmailBody"];
+---
+>             path: {
+>                 deal_id: string;
+4820a4815
+>             cookie?: never;
+4821a4817
+>         requestBody?: never;
+4829c4825
+<                     "application/json": components["schemas"]["SendEmailResponse"];
+---
+>                     "application/json": unknown;
+4843c4839
+<     link_thread_to_deal_api_integrations_email_threads_link_post: {
+---
+>     add_deal_alias_api_deals__deal_id__aliases_post: {
+4847c4843,4845
+<             path?: never;
+---
+>             path: {
+>                 deal_id: string;
+>             };
+4852c4850
+<                 "application/json": components["schemas"]["LinkThreadBody"];
+---
+>                 "application/json": components["schemas"]["AliasCreate"];
+4857c4855
+<             200: {
+---
+>             201: {
+4876c4874
+<     get_email_thread_api_integrations_email_threads__thread_id__get: {
+---
+>     get_deal_notes_api_deals__deal_id__notes_get: {
+4878,4880c4876,4878
+<             query: {
+<                 /** @description Email account */
+<                 account_email: string;
+---
+>             query?: {
+>                 limit?: number;
+>                 offset?: number;
+4884c4882
+<                 thread_id: string;
+---
+>                 deal_id: string;
+4896c4894
+<                     "application/json": components["schemas"]["EmailThreadResponse"];
+---
+>                     "application/json": unknown;
+4910c4908
+<     unlink_thread_from_deal_api_integrations_email_threads__thread_id__link_delete: {
+---
+>     add_deal_note_api_deals__deal_id__notes_post: {
+4915c4913
+<                 thread_id: string;
+---
+>                 deal_id: string;
+4919c4917,4921
+<         requestBody?: never;
+---
+>         requestBody: {
+>             content: {
+>                 "application/json": components["schemas"]["NoteCreate"];
+>             };
+>         };
+4922c4924
+<             200: {
+---
+>             201: {
+4941c4943
+<     api_pending_tool_approvals_api_pending_tool_approvals_get: {
+---
+>     archive_deal_api_deals__deal_id__archive_post: {
+4943,4945c4945
+<             query?: {
+<                 limit?: number;
+<             };
+---
+>             query?: never;
+4947c4947,4949
+<             path?: never;
+---
+>             path: {
+>                 deal_id: string;
+>             };
+4972c4974
+<     get_pipeline_stats_api_pipeline_stats_get: {
+---
+>     restore_deal_api_deals__deal_id__restore_post: {
+4974c4976,4978
+<             query?: never;
+---
+>             query?: {
+>                 target_stage?: "inbound" | "screening" | "qualified" | "loi" | "diligence" | "closing" | "portfolio" | "junk" | "archived";
+>             };
+4976c4980,4982
+<             path?: never;
+---
+>             path: {
+>                 deal_id: string;
+>             };
+4990,5002c4996,4997
+<         };
+<     };
+<     get_pipeline_summary_api_pipeline_summary_get: {
+<         parameters: {
+<             query?: never;
+<             header?: never;
+<             path?: never;
+<             cookie?: never;
+<         };
+<         requestBody?: never;
+<         responses: {
+<             /** @description Successful Response */
+<             200: {
+---
+>             /** @description Validation Error */
+>             422: {
+5007c5002
+<                     "application/json": components["schemas"]["PipelineSummary"][];
+---
+>                     "application/json": components["schemas"]["HTTPValidationError"];
+5012c5007
+<     list_quarantine_api_quarantine_get: {
+---
+>     list_quarantine_actions_api_actions_quarantine_get: {
+5048c5043
+<     create_quarantine_item_api_quarantine_post: {
+---
+>     list_actions_api_actions_get: {
+5050c5045,5054
+<             query?: never;
+---
+>             query?: {
+>                 /** @description Filter by status */
+>                 status?: string | null;
+>                 /** @description Filter by deal */
+>                 deal_id?: string | null;
+>                 /** @description Show only pending actions */
+>                 pending_only?: boolean;
+>                 limit?: number;
+>                 offset?: number;
+>             };
+5055,5059c5059
+<         requestBody: {
+<             content: {
+<                 "application/json": components["schemas"]["QuarantineCreate"];
+<             };
+<         };
+---
+>         requestBody?: never;
+5062c5062
+<             201: {
+---
+>             200: {
+5067c5067
+<                     "application/json": components["schemas"]["QuarantineResponse"];
+---
+>                     "application/json": components["schemas"]["ActionResponse"][];
+5081c5081
+<     quarantine_health_api_quarantine_health_get: {
+---
+>     get_action_api_actions__action_id__get: {
+5085c5085,5087
+<             path?: never;
+---
+>             path: {
+>                 action_id: string;
+>             };
+5096c5098,5107
+<                     "application/json": unknown;
+---
+>                     "application/json": components["schemas"]["ActionResponse"];
+>                 };
+>             };
+>             /** @description Validation Error */
+>             422: {
+>                 headers: {
+>                     [name: string]: unknown;
+>                 };
+>                 content: {
+>                     "application/json": components["schemas"]["HTTPValidationError"];
+5101c5112
+<     get_quarantine_item_api_quarantine__item_id__get: {
+---
+>     approve_action_api_actions__action_id__approve_post: {
+5106c5117
+<                 item_id: string;
+---
+>                 action_id: string;
+5110c5121,5125
+<         requestBody?: never;
+---
+>         requestBody: {
+>             content: {
+>                 "application/json": components["schemas"]["ActionApprove"];
+>             };
+>         };
+5118c5133
+<                     "application/json": components["schemas"]["QuarantineResponse"];
+---
+>                     "application/json": unknown;
+5132c5147
+<     process_quarantine_api_quarantine__item_id__process_post: {
+---
+>     reject_action_api_actions__action_id__reject_post: {
+5137c5152
+<                 item_id: string;
+---
+>                 action_id: string;
+5143c5158
+<                 "application/json": components["schemas"]["QuarantineProcess"];
+---
+>                 "application/json": components["schemas"]["ActionReject"];
+5167c5182
+<     search_actions_api_search_actions_get: {
+---
+>     list_quarantine_api_quarantine_get: {
+5169,5171c5184
+<             query: {
+<                 /** @description Search query */
+<                 q: string;
+---
+>             query?: {
+5174,5178c5187,5188
+<                 /** @description Filter by action type */
+<                 action_type?: string | null;
+<                 /** @description Filter by deal ID */
+<                 deal_id?: string | null;
+<                 /** @description Results per page */
+---
+>                 /** @description Filter by classification */
+>                 classification?: string | null;
+5180,5181c5190
+<                 /** @description Pagination cursor */
+<                 cursor?: string | null;
+---
+>                 offset?: number;
+5195c5204
+<                     "application/json": components["schemas"]["ActionSearchResponse"];
+---
+>                     "application/json": components["schemas"]["QuarantineResponse"][];
+5209c5218
+<     search_deals_api_search_deals_get: {
+---
+>     create_quarantine_item_api_quarantine_post: {
+5211,5224c5220
+<             query: {
+<                 /** @description Search query */
+<                 q: string;
+<                 /** @description Filter by stage */
+<                 stage?: string | null;
+<                 /** @description Filter by status */
+<                 status?: string | null;
+<                 /** @description Results per page */
+<                 limit?: number;
+<                 /** @description Pagination cursor from previous response */
+<                 cursor?: string | null;
+<                 /** @description Legacy offset (use cursor instead) */
+<                 offset?: number | null;
+<             };
+---
+>             query?: never;
+5229c5225,5229
+<         requestBody?: never;
+---
+>         requestBody: {
+>             content: {
+>                 "application/json": components["schemas"]["QuarantineCreate"];
+>             };
+>         };
+5232c5232
+<             200: {
+---
+>             201: {
+5237c5237
+<                     "application/json": components["schemas"]["DealSearchResponse"];
+---
+>                     "application/json": components["schemas"]["QuarantineResponse"];
+5251c5251
+<     global_search_api_search_global_get: {
+---
+>     quarantine_health_api_quarantine_health_get: {
+5253,5258c5253
+<             query: {
+<                 /** @description Search query */
+<                 q: string;
+<                 /** @description Results per type */
+<                 limit?: number;
+<             };
+---
+>             query?: never;
+5274,5282d5268
+<             /** @description Validation Error */
+<             422: {
+<                 headers: {
+<                     [name: string]: unknown;
+<                 };
+<                 content: {
+<                     "application/json": components["schemas"]["HTTPValidationError"];
+<                 };
+<             };
+5285c5271
+<     list_senders_api_senders_get: {
+---
+>     get_quarantine_item_api_quarantine__item_id__get: {
+5287,5290c5273
+<             query?: {
+<                 classification?: string | null;
+<                 limit?: number;
+<             };
+---
+>             query?: never;
+5292c5275,5277
+<             path?: never;
+---
+>             path: {
+>                 item_id: string;
+>             };
+5303c5288
+<                     "application/json": unknown;
+---
+>                     "application/json": components["schemas"]["QuarantineResponse"];
+5317c5302
+<     get_sender_api_senders__email__get: {
+---
+>     process_quarantine_api_quarantine__item_id__process_post: {
+5322c5307
+<                 email: string;
+---
+>                 item_id: string;
+5326c5311,5315
+<         requestBody?: never;
+---
+>         requestBody: {
+>             content: {
+>                 "application/json": components["schemas"]["QuarantineProcess"];
+>             };
+>         };
+5348c5337
+<     get_version_api_version_get: {
+---
+>     get_pipeline_summary_api_pipeline_summary_get: {
+5363,5365c5352
+<                     "application/json": {
+<                         [key: string]: unknown;
+<                     };
+---
+>                     "application/json": components["schemas"]["PipelineSummary"][];
+5370c5357
+<     health_check_health_get: {
+---
+>     get_pipeline_stats_api_pipeline_stats_get: {
+5385,5387c5372
+<                     "application/json": {
+<                         [key: string]: unknown;
+<                     };
+---
+>                     "application/json": unknown;
+5392c5377
+<     detailed_health_check_health_detailed_get: {
+---
+>     api_pending_tool_approvals_api_pending_tool_approvals_get: {
+5394c5379,5381
+<             query?: never;
+---
+>             query?: {
+>                 limit?: number;
+>             };
+5407,5409c5394
+<                     "application/json": {
+<                         [key: string]: unknown;
+<                     };
+---
+>                     "application/json": unknown;
+5412,5424c5397,5398
+<         };
+<     };
+<     liveness_check_health_live_get: {
+<         parameters: {
+<             query?: never;
+<             header?: never;
+<             path?: never;
+<             cookie?: never;
+<         };
+<         requestBody?: never;
+<         responses: {
+<             /** @description Successful Response */
+<             200: {
+---
+>             /** @description Validation Error */
+>             422: {
+5429,5431c5403
+<                     "application/json": {
+<                         [key: string]: string;
+<                     };
+---
+>                     "application/json": components["schemas"]["HTTPValidationError"];
+5436c5408
+<     get_metrics_health_metrics_get: {
+---
+>     list_senders_api_senders_get: {
+5438c5410,5413
+<             query?: never;
+---
+>             query?: {
+>                 classification?: string | null;
+>                 limit?: number;
+>             };
+5451,5453c5426,5435
+<                     "application/json": {
+<                         [key: string]: unknown;
+<                     };
+---
+>                     "application/json": unknown;
+>                 };
+>             };
+>             /** @description Validation Error */
+>             422: {
+>                 headers: {
+>                     [name: string]: unknown;
+>                 };
+>                 content: {
+>                     "application/json": components["schemas"]["HTTPValidationError"];
+5458c5440
+<     readiness_check_health_ready_get: {
+---
+>     get_sender_api_senders__email__get: {
+5462c5444,5446
+<             path?: never;
+---
+>             path: {
+>                 email: string;
+>             };
+5473,5475c5457,5466
+<                     "application/json": {
+<                         [key: string]: unknown;
+<                     };
+---
+>                     "application/json": unknown;
+>                 };
+>             };
+>             /** @description Validation Error */
+>             422: {
+>                 headers: {
+>                     [name: string]: unknown;
+>                 };
+>                 content: {
+>                     "application/json": components["schemas"]["HTTPValidationError"];
+5480c5471
+<     startup_check_health_startup_get: {
+---
+>     list_agent_activity_api_agent_activity_get: {
+5482c5473,5475
+<             query?: never;
+---
+>             query?: {
+>                 limit?: number;
+>             };
+5495,5497c5488,5497
+<                     "application/json": {
+<                         [key: string]: unknown;
+<                     };
+---
+>                     "application/json": unknown;
+>                 };
+>             };
+>             /** @description Validation Error */
+>             422: {
+>                 headers: {
+>                     [name: string]: unknown;
+>                 };
+>                 content: {
+>                     "application/json": components["schemas"]["HTTPValidationError"];

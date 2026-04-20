@@ -1,0 +1,31 @@
+=== VF-01.2 REQUIRED COLUMNS ===
+11:    ADD COLUMN IF NOT EXISTS email_subject VARCHAR(500),
+12:    ADD COLUMN IF NOT EXISTS sender_name VARCHAR(255),
+13:    ADD COLUMN IF NOT EXISTS sender_domain VARCHAR(255),
+14:    ADD COLUMN IF NOT EXISTS sender_company VARCHAR(255),
+15:    ADD COLUMN IF NOT EXISTS broker_name VARCHAR(255);
+19:    ADD COLUMN IF NOT EXISTS email_body_snippet TEXT,
+20:    ADD COLUMN IF NOT EXISTS triage_summary TEXT;
+22:-- Threading and versioning
+24:    ADD COLUMN IF NOT EXISTS source_thread_id VARCHAR(255),
+25:    ADD COLUMN IF NOT EXISTS schema_version VARCHAR(20),
+26:    ADD COLUMN IF NOT EXISTS tool_version VARCHAR(20),
+27:    ADD COLUMN IF NOT EXISTS prompt_version VARCHAR(100);
+31:    ADD COLUMN IF NOT EXISTS langsmith_run_id VARCHAR(255),
+32:    ADD COLUMN IF NOT EXISTS langsmith_trace_url TEXT;
+36:    ADD COLUMN IF NOT EXISTS extraction_evidence JSONB DEFAULT '{}',
+37:    ADD COLUMN IF NOT EXISTS field_confidences JSONB DEFAULT '{}',
+38:    ADD COLUMN IF NOT EXISTS attachments JSONB DEFAULT '[]';
+42:    ADD COLUMN IF NOT EXISTS company_name VARCHAR(255),
+43:    ADD COLUMN IF NOT EXISTS urgency VARCHAR(20) DEFAULT 'normal';
+47:    ADD COLUMN IF NOT EXISTS version INTEGER NOT NULL DEFAULT 1;
+50:-- `email_subject` is the canonical display field for LangSmith items.
+51:-- Queries should use COALESCE(email_subject, subject) for transitional rendering.
+54:CREATE INDEX IF NOT EXISTS idx_qi_source_thread_id
+55:    ON zakops.quarantine_items(source_thread_id)
+56:    WHERE source_thread_id IS NOT NULL;
+58:CREATE INDEX IF NOT EXISTS idx_qi_schema_version
+59:    ON zakops.quarantine_items(schema_version);
+61:CREATE INDEX IF NOT EXISTS idx_qi_urgency
+62:    ON zakops.quarantine_items(urgency);
+65:-- Note: confidence and received_at columns already exist from prior migrations.

@@ -1,0 +1,3 @@
+170:            status_code=429,
+171:            detail="Too many requests. Please slow down.",
+172:            headers={"Retry-After": "60", "X-RateLimit-Remaining": str(remaining)}

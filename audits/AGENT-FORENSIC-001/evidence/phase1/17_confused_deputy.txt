@@ -1,0 +1,7 @@
+=== STEP 1.8: Confused Deputy (GPT 1.B) ===
+Service token on JWT-only endpoints:
+/api/v1/auth/sessions (service token): 401
+JWT on service-token endpoints:
+/agent/invoke (JWT only): 200
+Both headers:
+/agent/invoke (both): 200

@@ -1,0 +1,11 @@
+=== VF-05.3 CRLF INJECTION BLOCK TEST ===
+rc=2
+Task quality gates FAILED:
+
+GATE 1 FAIL — CRLF detected in files:
+/home/zaks/.claude/hooks/qa-cce-crlf-test.sh
+Fix: sed -i 's/$//' <file>
+
+GATE 2 FAIL — Root-owned hook files (created in last hour):
+/home/zaks/.claude/hooks/qa-cce-crlf-test.sh
+Fix: sudo chown zaks:zaks <file>

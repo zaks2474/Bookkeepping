@@ -1,0 +1,8 @@
+● zakops-email-triage.timer - ZakOps Email Triage (hourly)
+     Loaded: loaded (/etc/systemd/system/zakops-email-triage.timer; enabled; preset: enabled)
+     Active: active (waiting) since Wed 2026-02-04 14:05:58 CST; 24h ago
+    Trigger: Thu 2026-02-05 15:02:19 CST; 47min left
+   Triggers: ● zakops-email-triage.service
+
+Feb 04 14:05:58 Zako systemd[1]: Started zakops-email-triage.timer - ZakOps Email Triage (hourly).
+enabled

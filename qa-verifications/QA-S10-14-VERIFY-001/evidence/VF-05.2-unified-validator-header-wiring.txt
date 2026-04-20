@@ -1,0 +1,27 @@
+=== VF-05.2 UNIFIED VALIDATOR HEADER/WIRING ===
+3:# Validates all 14 contract surfaces: freshness, bridge imports, typed SDK, TypeScript,
+174:# CHECK 6: Surface 10 — Dependency Health
+178:echo "--- Surface 10: Dependency Health ---"
+183:    echo "  PASS: Surface 10: Dependency health check passed"
+185:    echo "  FAIL: Surface 10: Dependency health check failed"
+189:  echo "  WARN: Surface 10: validate-surface10.sh not found — skipping"
+193:# CHECK 7: Surface 11 — Env Registry
+197:echo "--- Surface 11: Env Registry ---"
+202:    echo "  PASS: Surface 11: Env registry check passed"
+204:    echo "  FAIL: Surface 11: Env registry check failed"
+208:  echo "  WARN: Surface 11: validate-surface11.sh not found — skipping"
+212:# CHECK 8: Surface 12 — Error Taxonomy
+216:echo "--- Surface 12: Error Taxonomy ---"
+221:    echo "  PASS: Surface 12: Error taxonomy check passed"
+223:    echo "  FAIL: Surface 12: Error taxonomy check failed"
+227:  echo "  WARN: Surface 12: validate-surface12.sh not found — skipping"
+231:# CHECK 9: Surface 13 — Test Coverage
+235:echo "--- Surface 13: Test Coverage ---"
+240:    echo "  PASS: Surface 13: Test coverage check passed"
+242:    echo "  FAIL: Surface 13: Test coverage check failed"
+246:  echo "  WARN: Surface 13: validate-surface13.sh not found — skipping"
+250:# CHECK 10: Surface 14 — Performance Budget
+254:echo "--- Surface 14: Performance Budget ---"
+259:    echo "  PASS: Surface 14: Performance budget check passed"
+261:    echo "  FAIL: Surface 14: Performance budget check failed"
+265:  echo "  WARN: Surface 14: validate-surface14.sh not found — skipping"

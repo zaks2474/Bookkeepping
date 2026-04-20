@@ -1,0 +1,48 @@
+=== AUTO-COLLECTED EVIDENCE (Cycle 1) ===
+Timestamp: 2026-01-25T08:16:33Z
+
+--- git status ---
+ M Makefile
+?? .test_venv/
+?? apps/agent-api/evals/datasets/tool_selection/
+?? apps/agent-api/evals/golden_trace.schema.json
+?? apps/agent-api/evals/golden_trace_runner.py
+?? apps/agent-api/evals/golden_traces/
+?? apps/agent-api/tests/
+?? apps/dashboard/src/components/audit/
+?? artifacts/quality/
+?? docs/agent/
+?? docs/risk/
+?? docs/slos/
+?? docs/ux/
+?? tools/gates/golden_trace_gate.sh
+?? tools/gates/owasp_llm_gate.sh
+?? tools/gates/phase0_risk_gate.sh
+?? tools/gates/phase0_slo_gate.sh
+?? tools/gates/phase2_trust_ux_gate.sh
+?? tools/quality/
+
+--- Recent changes (git diff --stat) ---
+ Makefile                              | 29 +++++++++++++++++++++++++++++
+ apps/dashboard/Dockerfile             |  8 +++++++-
+ deployments/docker/docker-compose.yml |  8 +-------
+ 3 files changed, 37 insertions(+), 8 deletions(-)
+
+--- Directory listing (top-level) ---
+total 68
+drwxr-xr-x 12 zaks zaks 4096 Jan 25 02:14 .
+drwxrwx--- 45 zaks zaks 4096 Jan 23 18:09 ..
+drwxr-xr-x  8 zaks zaks 4096 Jan 25 02:16 .git
+drwxr-xr-x  3 zaks zaks 4096 Jan 22 23:19 .github
+-rw-r--r--  1 root root 2890 Jan 24 23:20 .gitignore
+drwxr-xr-x  5 root root 4096 Jan 25 02:12 .test_venv
+-rw-r--r--  1 zaks zaks 1075 Jan 22 23:19 LICENSE
+-rw-r--r--  1 root root 7168 Jan 25 02:14 Makefile
+-rw-r--r--  1 root root 2521 Jan 25 00:44 README.md
+drwxr-xr-x  5 root root 4096 Jan 24 23:18 apps
+drwxr-xr-x  5 root root 4096 Jan 25 02:03 artifacts
+drwxr-xr-x  3 root root 4096 Jan 24 23:15 deployments
+drwxr-xr-x 11 zaks zaks 4096 Jan 25 02:14 docs
+drwxr-xr-x  4 root root 4096 Jan 24 23:15 ops
+drwxr-xr-x  3 root root 4096 Jan 24 23:15 packages
+drwxr-xr-x  6 root root 4096 Jan 25 02:03 tools

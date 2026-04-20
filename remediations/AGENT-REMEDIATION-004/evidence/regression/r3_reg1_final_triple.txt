@@ -1,0 +1,15 @@
+=== R3.REG.1: Full HITL Lifecycle ===
+Approval ID: 0f33e3c5-6015-4180-9996-b01c79dd980b
+=== Approve ===
+{"thread_id":"remediation-004-shape-1770152376","status":"completed","content":"The deal with ID DL-CHAOS has been successfully moved from the &quot;loi&quot; stage to the &quot;diligence&quot; stage.","pending_approval":null,"actions_taken":[{"tool":"transition_deal","result":{"ok":true,"deal_id":"DL-CHAOS","old_stage":"loi","new_stage":"diligence","backend_status":200,"updated_at":"2026-02-03T21:00:48.387389Z"}}],"error":null}
+=== Triple-Proof ===
+  status  
+----------
+ approved
+(1 row)
+
+ success 
+---------
+ t
+(1 row)
+

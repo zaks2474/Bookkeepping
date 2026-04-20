@@ -1,0 +1,5 @@
+=== RT10: SKIP RISK CHECK ===
+346:		{ echo "$(YELLOW)Backend not reachable — skipping$(RESET)"; exit 0; }
+376:		echo "$(YELLOW)Backend not available — skipping contract-drift check$(RESET)"; \
+Skip/disable/mock/stub count in Makefile: 2
+PASS: No critical skip risks found

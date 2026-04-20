@@ -1,0 +1,29 @@
+=== CHECK 5.5.4: Approval Schema ===
+Timestamp: 2026-02-03T13:22:06-06:00
+
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent-client.ts:84:export interface PendingToolApproval {
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent/toolGateway.ts:80:export interface ApprovalRequest {
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent/index.ts:40:  type ApprovalRequest,
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api.ts:362:export interface ApprovalResponse {
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/events.ts:152:export interface ActionApprovalRequestedEvent extends BaseEvent {
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/events.ts:342:export interface AgentWaitingApprovalEvent extends BaseEvent {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/approvals/ApprovalPreview.tsx:31:interface ApprovalPreviewProps {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/approvals/ApprovalCard.tsx:44:import type { PendingToolApproval } from '@/lib/agent-client';
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/approvals/ApprovalCard.tsx:51:type ToolCallLike = AgentToolCall | PendingToolApproval;
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/approvals/ApprovalCard.tsx:53:interface ApprovalCardProps {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/approvals/ApprovalQueue.tsx:41:import type { PendingToolApproval } from '@/lib/agent-client';
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/approvals/ApprovalQueue.tsx:50:interface ApprovalQueueProps {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/approvals/ApprovalQueue.tsx:58:interface GroupedApprovals {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/approvals/ApprovalBadge.tsx:26:interface ApprovalBadgeProps {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/approvals/ApprovalBadge.tsx:96:interface ApprovalDotProps {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/AgentRunTimeline.tsx:134:        type: isPendingApproval ? 'approval' : 'tool_call',
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/hooks/useApprovalFlow.ts:15:  type PendingToolApproval,
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/hooks/useApprovalFlow.ts:23:export interface ApprovalAction {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/hooks/useApprovalFlow.ts:31:export interface ApprovalResult {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/hooks/useApprovalFlow.ts:37:export interface UseApprovalFlowOptions {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/hooks/useApprovalFlow.ts:44:export interface ApprovalFlowState {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/ApprovalCheckpoint.tsx:52:interface ApprovalCheckpointProps {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/index.ts:40:  type ApprovalAction,
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/index.ts:41:  type ApprovalResult,
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/index.ts:42:  type UseApprovalFlowOptions,
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/index.ts:43:  type ApprovalFlowState,

@@ -1,0 +1,284 @@
+{
+  "agent_identity": {
+    "agent_name": "Claude-Opus",
+    "run_id": "20260204-1835-p1r2",
+    "date_time": "2026-02-04T18:35:00Z",
+    "repo_revision": "2a68de172c7faf1df6f53357f4b43b0161d5dd32"
+  },
+  "coverage_matrix": {
+    "v2_issues_total": 22,
+    "v2_issues_mapped": 14,
+    "v2_issues_missing": 8,
+    "missing_issues": [
+      "ZK-ISSUE-0003",
+      "ZK-ISSUE-0004",
+      "ZK-ISSUE-0006",
+      "ZK-ISSUE-0012",
+      "ZK-ISSUE-0015",
+      "ZK-ISSUE-0017",
+      "ZK-ISSUE-0019",
+      "ZK-ISSUE-0021",
+      "ZK-ISSUE-0022"
+    ],
+    "issues": [
+      {"id": "ZK-ISSUE-0001", "severity": "P0", "title": "Split-brain persistence", "status": "ADDRESSED", "plans": ["Codex"]},
+      {"id": "ZK-ISSUE-0002", "severity": "P0", "title": "Email ingestion disabled", "status": "PARTIAL", "plans": ["Codex"]},
+      {"id": "ZK-ISSUE-0003", "severity": "P1", "title": "Quarantine approval no deal", "status": "MISSING", "plans": []},
+      {"id": "ZK-ISSUE-0004", "severity": "P1", "title": "No DataRoom folders", "status": "MISSING", "plans": []},
+      {"id": "ZK-ISSUE-0005", "severity": "P1", "title": "No authentication", "status": "PARTIAL", "plans": ["Codex"]},
+      {"id": "ZK-ISSUE-0006", "severity": "P1", "title": "Wrong quarantine endpoint", "status": "MISSING", "plans": []},
+      {"id": "ZK-ISSUE-0007", "severity": "P1", "title": "Stage taxonomy conflicts", "status": "ADDRESSED", "plans": ["Opus", "Codex"]},
+      {"id": "ZK-ISSUE-0008", "severity": "P1", "title": "Actions split Postgres/SQLite", "status": "ADDRESSED", "plans": ["Codex"]},
+      {"id": "ZK-ISSUE-0009", "severity": "P2", "title": "Agent cannot create deals", "status": "PARTIAL", "plans": ["Codex"]},
+      {"id": "ZK-ISSUE-0010", "severity": "P2", "title": "RAG search unverified", "status": "ADDRESSED", "plans": ["Codex", "Gemini"]},
+      {"id": "ZK-ISSUE-0011", "severity": "P2", "title": "No event correlation", "status": "ADDRESSED", "plans": ["Codex"]},
+      {"id": "ZK-ISSUE-0012", "severity": "P2", "title": "Deal notes endpoint mismatch", "status": "MISSING", "plans": []},
+      {"id": "ZK-ISSUE-0013", "severity": "P2", "title": "Capabilities/metrics 501", "status": "ADDRESSED", "plans": ["Codex"]},
+      {"id": "ZK-ISSUE-0014", "severity": "P2", "title": "sys.path hack", "status": "ADDRESSED", "plans": ["Opus", "Gemini"]},
+      {"id": "ZK-ISSUE-0015", "severity": "P3", "title": "No approval expiry job", "status": "MISSING", "plans": []},
+      {"id": "ZK-ISSUE-0016", "severity": "P2", "title": "No duplicate detection", "status": "ADDRESSED", "plans": ["Codex", "Gemini"]},
+      {"id": "ZK-ISSUE-0017", "severity": "P3", "title": "No retention policy", "status": "MISSING", "plans": []},
+      {"id": "ZK-ISSUE-0018", "severity": "P2", "title": "Zod schema mismatch", "status": "ADDRESSED", "plans": ["Opus", "Codex", "Gemini"]},
+      {"id": "ZK-ISSUE-0019", "severity": "P2", "title": "Executors unwired", "status": "MISSING", "plans": []},
+      {"id": "ZK-ISSUE-0020", "severity": "P2", "title": "SSE not implemented", "status": "ADDRESSED", "plans": ["Codex"]},
+      {"id": "ZK-ISSUE-0021", "severity": "P2", "title": "No scheduling/reminders", "status": "MISSING", "plans": []},
+      {"id": "ZK-ISSUE-0022", "severity": "P3", "title": "Archive/restore missing", "status": "MISSING", "plans": []}
+    ]
+  },
+  "upgrade_register": {
+    "raw_count": 24,
+    "deduplicated_count": 13,
+    "upgrades": [
+      {
+        "merged_id": "UPG-001",
+        "title": "Generated TypeScript Client from OpenAPI",
+        "proposed_by": ["Opus", "Codex", "Gemini"],
+        "priority": "P0",
+        "execution_phase": "R2-1",
+        "verification": "Contract CI gate fails on mismatch"
+      },
+      {
+        "merged_id": "UPG-002",
+        "title": "Idempotency-Key on All Write Endpoints",
+        "proposed_by": ["Codex", "Gemini"],
+        "priority": "P0",
+        "execution_phase": "R2-2",
+        "verification": "Duplicate POST returns same response"
+      },
+      {
+        "merged_id": "UPG-003",
+        "title": "Transactional Outbox for Side-Effects",
+        "proposed_by": ["Codex", "Gemini"],
+        "priority": "P1",
+        "execution_phase": "R2-4",
+        "verification": "Chaos test; outbox processed in <=5s"
+      },
+      {
+        "merged_id": "UPG-004",
+        "title": "Contract Testing CI Gate",
+        "proposed_by": ["Opus", "Codex", "Gemini"],
+        "priority": "P2",
+        "execution_phase": "R2-7",
+        "verification": "CI fails on schema mismatch"
+      },
+      {
+        "merged_id": "UPG-005",
+        "title": "RAG Circuit Breaker",
+        "proposed_by": ["Codex", "Gemini"],
+        "priority": "P2",
+        "execution_phase": "R2-6",
+        "verification": "Graceful fallback on RAG outage"
+      },
+      {
+        "merged_id": "UPG-006",
+        "title": "ActionStatus Enum Alignment",
+        "proposed_by": ["Opus"],
+        "priority": "P0",
+        "execution_phase": "R2-1",
+        "verification": "Actions list displays correct status"
+      },
+      {
+        "merged_id": "UPG-007",
+        "title": "Trim ActionSchema Phantom Fields",
+        "proposed_by": ["Opus"],
+        "priority": "P1",
+        "execution_phase": "R2-1",
+        "verification": "ActionSchema matches ActionResponse"
+      },
+      {
+        "merged_id": "UPG-008",
+        "title": "Replace Silent Failures with User Errors",
+        "proposed_by": ["Opus", "Gemini"],
+        "priority": "P1",
+        "execution_phase": "R2-1",
+        "verification": "Schema mismatch shows user-visible error"
+      },
+      {
+        "merged_id": "UPG-009",
+        "title": "Deal Transition Ledger",
+        "proposed_by": ["Codex"],
+        "priority": "P1",
+        "execution_phase": "R2-5",
+        "verification": "Invalid transition returns 422; ledger row exists"
+      },
+      {
+        "merged_id": "UPG-010",
+        "title": "OpenTelemetry Integration",
+        "proposed_by": ["Codex"],
+        "priority": "P2",
+        "execution_phase": "R2-6",
+        "verification": "Trace visible in Jaeger/Zipkin"
+      },
+      {
+        "merged_id": "UPG-011",
+        "title": "Safe Decommissioning Guardrails",
+        "proposed_by": ["Codex"],
+        "priority": "P1",
+        "execution_phase": "R2-9",
+        "verification": "rg gate fails on legacy patterns"
+      },
+      {
+        "merged_id": "UPG-012",
+        "title": "Schema Migration Safety",
+        "proposed_by": ["Codex"],
+        "priority": "P2",
+        "execution_phase": "R2-9",
+        "verification": "Migration rollback succeeds in CI"
+      },
+      {
+        "merged_id": "UPG-013",
+        "title": "Agent Evaluation Framework",
+        "proposed_by": ["Codex"],
+        "priority": "P2",
+        "execution_phase": "R2-8",
+        "verification": ">=18/20 scenarios pass"
+      }
+    ]
+  },
+  "plan_scorecards": {
+    "opus": {
+      "coverage_completeness": 2,
+      "contrarian_depth": 5,
+      "sequencing_clarity": 3,
+      "verification_toughness": 4,
+      "executability": 4,
+      "alignment": 3,
+      "total": 21,
+      "max": 30
+    },
+    "codex": {
+      "coverage_completeness": 4,
+      "contrarian_depth": 5,
+      "sequencing_clarity": 5,
+      "verification_toughness": 5,
+      "executability": 4,
+      "alignment": 5,
+      "total": 28,
+      "max": 30
+    },
+    "gemini": {
+      "coverage_completeness": 2,
+      "contrarian_depth": 4,
+      "sequencing_clarity": 4,
+      "verification_toughness": 3,
+      "executability": 5,
+      "alignment": 3,
+      "total": 21,
+      "max": 30
+    }
+  },
+  "conflicts": [
+    {
+      "id": "CONFLICT-001",
+      "title": "Generated Client vs Manual Fix",
+      "positions": {
+        "opus": "Trim/align existing schemas manually",
+        "codex": "Generate client from OpenAPI; delete manual schemas",
+        "gemini": "Delete duplicates, import from api-schemas.ts"
+      },
+      "resolution_evidence": "Benchmark time-to-fix for manual vs generation"
+    },
+    {
+      "id": "CONFLICT-002",
+      "title": "ActionStatus Naming",
+      "positions": {
+        "opus": "Align RUNNING/PROCESSING either direction",
+        "codex": "Not explicitly mentioned",
+        "gemini": "Not explicitly mentioned"
+      },
+      "resolution_evidence": "Check user-facing UI copy"
+    },
+    {
+      "id": "CONFLICT-003",
+      "title": "Scope of R2 Remediation",
+      "positions": {
+        "opus": "Narrow: Layer 4-5 only",
+        "codex": "Wide: All 10 layers",
+        "gemini": "Medium: Client + idempotency"
+      },
+      "resolution_evidence": "Decide if R2 is focused sprint or platform upgrade"
+    }
+  ],
+  "unproven_items": [
+    {
+      "id": "UNPROVEN-001",
+      "claim": "Zod schemas aligned",
+      "runtime_test": "Open Dashboard, capture DevTools Console, grep for ZodError",
+      "evidence_path": "Screenshot or console log"
+    },
+    {
+      "id": "UNPROVEN-002",
+      "claim": "SSE works",
+      "runtime_test": "curl /api/events/stream returns SSE frames; Dashboard connects",
+      "evidence_path": "curl output + Network tab screenshot"
+    },
+    {
+      "id": "UNPROVEN-003",
+      "claim": "Idempotency implemented",
+      "runtime_test": "POST with same key twice; second returns 200 identical response",
+      "evidence_path": "curl output"
+    },
+    {
+      "id": "UNPROVEN-004",
+      "claim": "Legacy paths deleted",
+      "runtime_test": "rg for sqlite/json returns empty",
+      "evidence_path": "rg output"
+    },
+    {
+      "id": "UNPROVEN-005",
+      "claim": "Correlation IDs propagate",
+      "runtime_test": "Make request with X-Correlation-ID, grep logs and deal_events",
+      "evidence_path": "Log sample + SQL query"
+    },
+    {
+      "id": "UNPROVEN-006",
+      "claim": "RAG circuit breaker",
+      "runtime_test": "Stop RAG service, call search_deals, verify graceful fallback",
+      "evidence_path": "Error response"
+    },
+    {
+      "id": "UNPROVEN-007",
+      "claim": "ActionStatus displays correctly",
+      "runtime_test": "Create PROCESSING action, verify Dashboard shows correct status",
+      "evidence_path": "Dashboard screenshot"
+    },
+    {
+      "id": "UNPROVEN-008",
+      "claim": "Stage default is inbound",
+      "runtime_test": "SELECT column_default for stage column",
+      "evidence_path": "SQL query result"
+    }
+  ],
+  "consensus_items": [
+    "Generated client from OpenAPI",
+    "Idempotency-Key on writes",
+    "Contract CI gate",
+    "RAG circuit breaker"
+  ],
+  "divergent_items": [
+    "Deal Transition Ledger (Codex only)",
+    "OpenTelemetry (Codex only)",
+    "Agent Evaluation Framework (Codex only)",
+    "ActionStatus enum fix (Opus only)"
+  ]
+}

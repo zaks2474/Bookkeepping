@@ -1,0 +1,4 @@
+REM-001: Golden traces path mismatch
+- Issue: Mission default EVALS_ROOT (/home/zaks/zakops-agent-api/evals) does not exist.
+- Fix: Use actual evals path /home/zaks/zakops-agent-api/apps/agent-api/evals for inventory + trace validation.
+- Scope: Re-run V0.2, V1.4, V5.5, V5.6, VREG.4 with corrected path.

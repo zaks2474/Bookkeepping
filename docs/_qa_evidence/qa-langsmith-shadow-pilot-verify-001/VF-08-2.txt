@@ -1,0 +1,8 @@
+254:            deal = await client.get_deal(deal_id)
+312:            await client.transition_deal(
+333:            verify_deal = await client.get_deal(deal_id)
+427:        deal = await client.get_deal(deal_id)
+500:        response = await client.list_deals(stage=stage, status=status, limit=limit)
+601:        response = await client.list_deals()
+759:        deal = await client.create_deal(deal_create)
+1111:        deal = await client.get_deal(deal_id)

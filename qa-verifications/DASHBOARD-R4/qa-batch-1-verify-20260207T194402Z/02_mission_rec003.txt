@@ -1,0 +1,17 @@
+48:├── Day 2: DL-003 (Quarantine delete) — REC-003
+76:REC-003 (quarantine delete)─┼─→ REC-009 (approve uses same pattern)
+78:REC-005 (API key injection)─┴─→ All write recommendations (REC-002, REC-003, REC-004, REC-007, REC-011, REC-014, REC-019)
+93:REC-003 (quarantine delete)─┼─→ REC-009 (approve uses same pattern)
+95:REC-005 (API key injection)─┴─→ All write recommendations (REC-002, REC-003, REC-004, REC-007, REC-011, REC-014, REC-019)
+137:| DL-009 | Quarantine approve/reject calls actions endpoints instead of `/api/quarantine/{id}/process` | P1 | Quarantine approve/reject calls actions endpoints instead of `/api/quarantine/{id}/process` | Implement matching recommendation(s) for subsystem/action: Quarantine / Approve (see Recommendations Registry). | Gate 0 Preflight; API key wiring for write operations (REC-005) where applicable; backend endpoint must exist. | Gate 1 endpoint proof for Quarantine Approve; Gate 2 No-Dead-UI; relevant E2E test(s). | 01-endpoint-proofs.md; 03-e2e-results.txt; 04-no-dead-ui-results.txt |
+177:| REC-003 | Implement `POST /api/quarantine/{id}/delete` in backend + Next proxy | P0 | Implement `POST /api/quarantine/{id}/delete` in backend + Next proxy | Implement exactly as stated in the recommendation; update UI, Next.js API routes, and backend where needed. | Gate 0 Preflight; ensure target files/services are reachable; if write, ensure API key injection is in place (REC-005). | `curl -X POST /api/quarantine/test/delete` → 200 | 01-endpoint-proofs.md; 03-e2e-results.txt |
+183:| REC-009 | Wire approve/reject to `/api/quarantine/{id}/process` or implement execute endpoints | P1 | Wire approve/reject to `/api/quarantine/{id}/process` or implement execute endpoints | Implement exactly as stated in the recommendation; update UI, Next.js API routes, and backend where needed. | Gate 0 Preflight; ensure target files/services are reachable; if write, ensure API key injection is in place (REC-005). | Approve creates deal | 01-endpoint-proofs.md; 03-e2e-results.txt |
+283:- Must include: deals delete (single + bulk), quarantine delete, actions clear/delete, settings email config wiring, onboarding wiring, chat formatting.
+294:curl -i -X POST "$BASE_DASHBOARD/api/quarantine/$QUAR_ID/delete"
+404:| `quarantine-delete-404-proxy` | DL-003 | Quarantine delete returns 404; proxy route and backend endpoint missing | Claude, Codex, Gemini | Quarantine | Delete | 404 | `/api/quarantine/[id]/delete` |
+474:| `quarantine-approve-wrong_endpoint-proxy` | DL-009 | Quarantine approve/reject calls actions endpoints instead of `/api/quarantine/{id}/process` | Codex | Quarantine | Approve | Wrong Endpoint | Quarantine hooks |
+529:| `quarantine-delete-implement_endpoint` | REC-003 | Implement `POST /api/quarantine/{id}/delete` in backend + Next proxy | Backend + `/api/quarantine/[id]/delete/route.ts` | `curl -X POST /api/quarantine/test/delete` → 200 | All |
+540:| `quarantine-approve-fix_endpoint` | REC-009 | Wire approve/reject to `/api/quarantine/{id}/process` or implement execute endpoints | Quarantine hooks | Approve creates deal | Codex |
+918:├── Day 2: DL-003 (Quarantine delete) — REC-003
+946:REC-003 (quarantine delete)─┼─→ REC-009 (approve uses same pattern)
+948:REC-005 (API key injection)─┴─→ All write recommendations (REC-002, REC-003, REC-004, REC-007, REC-011, REC-014, REC-019)

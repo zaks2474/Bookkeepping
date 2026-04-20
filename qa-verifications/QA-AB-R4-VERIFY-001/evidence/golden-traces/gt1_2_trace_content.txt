@@ -1,0 +1,17 @@
+=== GT-032 ===
+4:  "name": "Count all deals in pipeline",
+5:  "description": "User asks how many deals they have - should use list_deals, NOT search_deals",
+7:  "tags": ["list_deals", "count", "pipeline", "R4-remediation"],
+9:    "user_message": "How many deals do I have in my pipeline?",
+15:        "tool_name": "list_deals",
+=== GT-033 ===
+5:  "description": "User asks for deals in a specific stage - should use list_deals with stage filter",
+7:  "tags": ["list_deals", "stage_filter", "screening", "R4-remediation"],
+15:        "tool_name": "list_deals",
+29:        "tool_name": "list_deals",
+=== GT-034 ===
+5:  "description": "User asks for pipeline overview with stage breakdown - should use list_deals and provide stage counts",
+7:  "tags": ["list_deals", "pipeline", "breakdown", "R4-remediation"],
+9:    "user_message": "Show my pipeline. Break it down by stage.",
+15:        "tool_name": "list_deals",
+26:        "tool_name": "list_deals",

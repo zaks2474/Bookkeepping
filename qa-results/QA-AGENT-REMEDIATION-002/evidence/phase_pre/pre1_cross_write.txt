@@ -1,0 +1,18 @@
+=== PRE-1.3: Cross-Write Prevention ===
+
+--- Agent user trying to access zakops DB (should FAIL) ---
+psql: error: connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: FATAL:  database "zakops" does not exist
+
+PASS: Agent DB container does not have 'zakops' database — physically isolated
+
+--- Backend user trying to access zakops_agent DB (should FAIL) ---
+Backend postgres container does not have zakops_agent database
+
+PASS: Backend DB container does not have 'zakops_agent' database — physically isolated
+
+=== PRE-1 VERDICT ===
+PASS: DB Source of Truth verified
+- Agent API → zakops_agent DB on zakops-agent-db container
+- Backend → zakops DB on zakops-backend-postgres-1 container  
+- Physical isolation: Each DB container only has its own database
+- No split-brain risk detected

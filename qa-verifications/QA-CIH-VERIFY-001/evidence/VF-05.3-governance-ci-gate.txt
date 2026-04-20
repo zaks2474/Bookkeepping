@@ -1,0 +1,5 @@
+=== VF-05.3 FRONTEND GOVERNANCE CI GATE ===
+39:              - 'tools/infra/validate-rule-frontmatter.sh'
+40:              - 'tools/infra/validate-frontend-governance.sh'
+283:          bash tools/infra/validate-rule-frontmatter.sh
+284:          bash tools/infra/validate-frontend-governance.sh

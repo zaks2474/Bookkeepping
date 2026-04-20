@@ -1,0 +1,24 @@
+# Endpoints Without Response Schema
+
+## Finding: All 13 are GET endpoints (not POST as strategy predicted)
+## Impact: Lower risk — these are admin/stats/health endpoints, not data mutation
+
+GET /api/actions/capabilities       — returns capability definitions
+GET /api/actions/metrics            — returns action metrics
+GET /api/admin/dlq/stats            — dead letter queue stats
+GET /api/admin/outbox/stats         — outbox worker stats
+GET /api/admin/retention/stats      — data retention stats
+GET /api/admin/sse/stats            — SSE connection stats
+GET /api/admin/system/health        — detailed system health
+GET /api/agent/langsmith/health     — LangSmith health check
+GET /api/agent/models               — available AI models
+GET /api/auth/check                 — session check
+GET /api/deals/stages/summary       — deal stage summary
+GET /api/pipeline/stats             — pipeline statistics
+GET /api/quarantine/health          — quarantine health
+
+## Recommendation: DEFER adding response_model to these endpoints
+## Rationale: All are admin/diagnostic endpoints. Adding response_model is
+## a backend change that requires creating Pydantic models for each.
+## These endpoints are not used by core dashboard components.
+## Manual exceptions: 0 (no POST endpoints need manual Zod wrappers)

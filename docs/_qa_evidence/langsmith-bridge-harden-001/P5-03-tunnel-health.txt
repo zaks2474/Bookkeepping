@@ -1,0 +1,13 @@
+{
+    "status": "healthy",
+    "timestamp": "2026-02-14T12:11:05.229435+00:00",
+    "checks": {
+        "bridge": "healthy",
+        "deal_api": "healthy",
+        "rag_api": "healthy",
+        "dataroom": "healthy"
+    },
+    "mcp_version": "fastmcp",
+    "transport": "sse",
+    "transport_switch": "Change transport='sse' to 'streamable-http' in create_app() for /mcp"
+}

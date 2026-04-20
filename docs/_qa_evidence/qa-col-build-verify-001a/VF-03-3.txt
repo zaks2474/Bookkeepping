@@ -1,0 +1,11 @@
+@router.post("/admin/counterfactual")
+async def counterfactual_analysis(
+    body: CounterfactualRequest,
+    session: Session = Depends(get_current_session),
+):
+    """COL-V2 S6.5: Counterfactual analysis — 'what if' on historical turns."""
+    _require_admin(session)
+    from app.services.counterfactual_service import counterfactual_service
+    result = await counterfactual_service.analyze(
+        body.thread_id, body.turn_number, body.modified_inputs,
+    )

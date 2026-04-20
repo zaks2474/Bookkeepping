@@ -1,0 +1,15 @@
+=== QA-2.2: T1.2+T1.3 Migration ===
+--- deal_registry.json ---
+ls: cannot access '/home/zaks/DataRoom/.deal-registry/deal_registry.json': No such file or directory
+wc: /home/zaks/DataRoom/.deal-registry/deal_registry.json: No such file or directory
+
+--- Postgres deal count ---
+ deal_count 
+------------
+         31
+(1 row)
+
+
+--- Migration scripts ---
+/home/zaks/.tmp/zakops_scaffold_candidates/aegra/scripts/migrate.py
+/home/zaks/scripts/migrations/migrate_thread_mappings.py

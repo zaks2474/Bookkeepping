@@ -1,0 +1,3 @@
+/home/zaks/zakops-backend/mcp_server/archived/server_sse.py:233:        total_value = 0
+/home/zaks/zakops-backend/mcp_server/archived/server_sse.py:237:            total_value += deal.get("value", 0) or 0
+/home/zaks/zakops-backend/mcp_server/archived/server_sse.py:242:            "total_pipeline_value": total_value,

@@ -1,0 +1,6 @@
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/rag_rest.py:13:import httpx
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/rag_rest.py:100:        self._client: Optional[httpx.AsyncClient] = None
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/rag_rest.py:102:    async def _get_client(self) -> httpx.AsyncClient:
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/rag_rest.py:105:            self._client = httpx.AsyncClient(
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/llm.py:461:        import httpx
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/llm.py:479:            async with httpx.AsyncClient(timeout=60.0) as client:

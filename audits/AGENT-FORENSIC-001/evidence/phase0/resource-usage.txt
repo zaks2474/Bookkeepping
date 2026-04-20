@@ -1,0 +1,14 @@
+CONTAINER ID   NAME                             CPU %     MEM USAGE / LIMIT     MEM %     NET I/O           BLOCK I/O         PIDS
+2a74f7d7c66f   zakops-backend-backend-1         0.14%     117.8MiB / 31.04GiB   0.37%     4.31MB / 3.3MB    7.39MB / 1MB      5
+2eb1011dbc38   zakops-backend-postgres-1        0.00%     21MiB / 31.04GiB      0.07%     0B / 0B           5.7MB / 233kB     6
+f4fa69697ded   zakops-backend-redis-1           0.25%     4.297MiB / 31.04GiB   0.01%     0B / 0B           561kB / 0B        6
+6af854539c76   zakops-backend-langfuse-1        0.00%     0B / 0B               0.00%     0B / 0B           0B / 0B           0
+7f761dff02f0   zakops-backend-outbox-worker-1   0.05%     32.79MiB / 31.04GiB   0.10%     5.83MB / 8.41MB   4.67MB / 180kB    2
+1bbe6c37d624   zakops-agent-api                 0.17%     260.8MiB / 31.04GiB   0.82%     4.48MB / 3.41MB   83.7MB / 43.7MB   37
+dc7e3254455b   zakops-agent-db                  0.00%     70.27MiB / 31.04GiB   0.22%     2.61MB / 1.46MB   46.8MB / 6MB      17
+89134be5caa9   openwebui                        0.14%     759.7MiB / 31.04GiB   2.39%     25.3kB / 2.05kB   644MB / 193kB     78
+dcfa8cb2d579   vllm-qwen                        1.06%     2.596GiB / 31.04GiB   8.36%     1.23MB / 188kB    20.4GB / 360kB    197
+967c9101c32f   rag-rest-api                     0.15%     57MiB / 31.04GiB      0.18%     27.6kB / 13.1kB   39.5MB / 0B       2
+be34edc22b1d   rag-db                           0.00%     28.96MiB / 31.04GiB   0.09%     4.28kB / 655B     23.2MB / 119kB    6
+501c6760ea7d   zakops-postgres-1                0.03%     41.81MiB / 31.04GiB   0.13%     9.85MB / 7.3MB    1.91MB / 20.2MB   12
+d0e5fa431983   zakops-redis-1                   0.27%     13.02MiB / 31.04GiB   0.04%     25.4kB / 490B     12.9MB / 0B       6

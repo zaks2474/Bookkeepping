@@ -1,0 +1,24 @@
+AGENT-FORENSIC-001 Phase 1 — Step 1.7: Error Handling
+======================================================
+Date: 2026-02-02
+
+LIVE TEST RESULTS:
+
+Test                    | Status | Response Body
+------------------------|--------|---------------------------------------------
+Invalid route (404)     | 404    | {"detail":"Not Found"}
+Wrong method (405)      | 405    | {"detail":"Method Not Allowed"}
+Malformed JSON          | 422    | {"detail":"Validation error","errors":[{"field":"1","message":"JSON decode error"}]}
+Missing required fields | 422    | {"detail":"Validation error","errors":[{"field":"email","message":"Field required"},...]}
+
+ANALYSIS:
+
+[PASS] 404 responses are clean — no stack traces, no path disclosure
+[PASS] 405 responses are clean
+[PASS] Validation errors use custom handler (main.py:83-111) — formatted nicely
+[PASS] No stack traces leaked in error responses
+[WARN] 500 errors pass exception message to client: raise HTTPException(status_code=500, detail=str(e))
+       Found in: agent.py:205, agent.py:472-475, agent.py:486, chatbot.py:70, chatbot.py:168
+       → Internal error messages (DB connection strings, Python tracebacks) could leak via detail=str(e)
+[PASS] Custom validation exception handler strips "body" from field location paths
+[INFO] Logging includes exc_info=True in error handlers (good for debugging, not exposed to client)

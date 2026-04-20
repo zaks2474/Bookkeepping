@@ -1,0 +1,7 @@
+16:# Configurable similarity thresholds (B1.4 / B3-03)
+31:    score: float  # 0.0-1.0 similarity estimate
+97:        # Keyword overlap as similarity proxy (no embedding model needed)
+98:        score = _keyword_similarity(claim_text, source_text)
+133:def _keyword_similarity(text_a: str, text_b: str) -> float:
+134:    """Simple keyword-based similarity (proxy for embedding cosine).
+136:    Computes Jaccard similarity on significant words.

@@ -1,0 +1,6 @@
+570:@router.get("/sentiment/{deal_id}")
+571:async def get_sentiment_trend(
+575:    """COL-V2 C22: Get sentiment trend for a deal.
+577:    Returns the current sentiment score, average, trend direction,
+580:    from app.services.sentiment_coach import sentiment_coach
+581:    trend = sentiment_coach.get_trend(deal_id)

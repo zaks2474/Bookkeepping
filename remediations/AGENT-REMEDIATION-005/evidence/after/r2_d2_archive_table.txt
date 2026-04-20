@@ -1,0 +1,8 @@
+=== R2.D.2: Create audit_log_archive table ===
+CREATE TABLE
+             List of relations
+ Schema |       Name        | Type  | Owner 
+--------+-------------------+-------+-------
+ public | audit_log_archive | table | agent
+(1 row)
+

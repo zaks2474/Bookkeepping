@@ -1,0 +1,9 @@
+8:- Slack webhook (optional)
+67:        slack_webhook_url: str | None = None,
+71:        self.slack_webhook_url = slack_webhook_url or os.getenv("SLACK_WEBHOOK_URL")
+129:        if self.slack_webhook_url:
+130:            await self._send_slack(alert)
+134:    async def _send_slack(self, alert: Alert):
+135:        """Send alert to Slack webhook."""
+177:                    self.slack_webhook_url,
+182:                    logger.warning(f"[R2-9] Slack webhook failed: {response.status_code}")

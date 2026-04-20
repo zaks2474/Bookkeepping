@@ -1,0 +1,12 @@
+3:Extended to support HITL (Human-in-the-Loop) workflow with approval gates
+65:from app.schemas.agent import HITL_TOOLS, requires_approval
+94:APPROVAL_TIMEOUT = int(getattr(settings, 'HITL_APPROVAL_TIMEOUT_SECONDS', 3600))
+109:    and HITL approval gates.
+746:        """Approval gate node - interrupts execution for HITL approval.
+857:                    # R3 REMEDIATION [D-7]: Log HITL decision to decision ledger
+868:                                trigger_type=TriggerType.HITL_RESUME,
+916:        """Create and configure the LangGraph workflow with HITL support.
+948:                    interrupt_before=["approval_gate"],  # HITL interrupt point
+976:        """Invoke the agent with HITL support.
+990:                - pending_approval: Approval info (if HITL triggered)
+1067:                # HITL interrupt - pending approval

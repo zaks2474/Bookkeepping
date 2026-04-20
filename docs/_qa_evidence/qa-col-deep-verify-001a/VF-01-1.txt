@@ -1,0 +1,10 @@
+Migration file: /home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql
+user_identity_map: 1 occurrence(s)
+chat_threads: 1 occurrence(s)
+chat_messages: 1 occurrence(s)
+thread_ownership: 1 occurrence(s)
+session_summaries: 1 occurrence(s)
+turn_snapshots: 2 occurrence(s)
+cost_ledger: 2 occurrence(s)
+deal_budgets: 1 occurrence(s)
+cross_db_outbox: 1 occurrence(s)

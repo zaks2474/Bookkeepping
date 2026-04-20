@@ -1,0 +1,3 @@
+CREATE INDEX IF NOT EXISTS idx_cost_deal ON cost_ledger(deal_id) WHERE deal_id IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_cost_user ON cost_ledger(user_id);
+CREATE INDEX IF NOT EXISTS idx_cost_date ON cost_ledger(created_at);

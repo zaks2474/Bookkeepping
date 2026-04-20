@@ -1,0 +1,3 @@
+=== A7.7 ===
+tripass-run: ## Run TriPass pipeline (usage: make tripass-run MISSION=<file> MODE=forensic)
+	@bash $(TRIPASS_TOOL) run $(MISSION) --mode $(or $(MODE),forensic) $(if $(REPOS),--repos $(REPOS)) $(if $(SKIP_PASS4),--skip-pass4) $(if $(GENERATE_ONLY),--generate-only)

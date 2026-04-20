@@ -1,0 +1,5 @@
+4:Uses drift_detection.compute_decay_confidence() to score facts by recency
+12:from app.services.drift_detection import compute_decay_confidence
+16:DECAY_THRESHOLD = 0.5
+48:            decayed_confidence = compute_decay_confidence(fact)
+49:            if decayed_confidence < DECAY_THRESHOLD:

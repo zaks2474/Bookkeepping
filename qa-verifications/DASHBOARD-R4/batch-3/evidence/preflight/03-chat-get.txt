@@ -1,0 +1,10 @@
+HTTP/1.1 200 OK
+x-correlation-id: corr-mld4zi8x-xoccevf6
+vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+content-type: application/json
+Date: Sun, 08 Feb 2026 02:41:16 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+
+{"status":"available","provider":"local","agent_api":"http://localhost:8095","agent_health":{"status":"healthy","version":"1.0.0","environment":"development","components":{"api":"healthy","database":"healthy","tracing":"disabled"},"timestamp":"2026-02-08T02:41:16.414679"},"note":"Chat is handled by Agent Provider. Authentication is configured."}

@@ -1,0 +1,37 @@
+=== CI Workflow Change (RT6) ===
+File: /home/zaks/zakops-agent-api/.github/workflows/ci.yml
+Date: 2026-02-06
+
+BEFORE (lines 78-86):
+      - name: Type check (regression gate)
+        run: |
+          ERRORS=$(uv run mypy app/ --ignore-missing-imports --explicit-package-bases 2>&1 | grep -c "error:" || true)
+          BASELINE=83
+          echo "mypy errors: $ERRORS (baseline: $BASELINE)"
+          if [ "$ERRORS" -gt "$BASELINE" ]; then
+            echo "::error::mypy error count ($ERRORS) exceeds baseline ($BASELINE)"
+            exit 1
+          fi
+
+AFTER (lines 78-89):
+      - name: Type check (regression gate)
+        run: |
+          OUTPUT=$(uv run mypy app/ --ignore-missing-imports --explicit-package-bases 2>&1)
+          echo "$OUTPUT"
+          ERRORS=$(echo "$OUTPUT" | grep -oP 'Found \K[0-9]+(?= error)' || echo "0")
+          if [ -z "$ERRORS" ]; then ERRORS=0; fi
+          BASELINE=$(head -1 ../../tools/type_baselines/mypy_baseline.txt)
+          echo "mypy errors: $ERRORS (baseline: $BASELINE)"
+          if [ "$ERRORS" -gt "$BASELINE" ]; then
+            echo "::error::mypy error count ($ERRORS) exceeds baseline ($BASELINE)"
+            exit 1
+          fi
+
+CHANGES:
+1. Captures full mypy output and echoes it (visibility in CI logs)
+2. Parses "Found N error" summary line via grep -oP instead of counting "error:" lines
+   - Old method double-counted lines containing "error:" in messages AND summary
+   - New method uses mypy's own summary for accurate count
+3. Reads baseline from external file (tools/type_baselines/mypy_baseline.txt)
+   instead of inline constant — single-file update path
+4. Handles edge case where grep finds no match (defaults to 0)

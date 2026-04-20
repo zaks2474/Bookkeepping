@@ -1,0 +1,6 @@
+{"detail":"Authentication required"}
+HTTP: 401
+
+=== EXPECTED BEHAVIOR ===
+Should return 401/403 or structured auth error
+Should NOT expose internal errors or stack traces

@@ -1,0 +1,18 @@
+6: * Sidebar panel showing memory tier counts:
+11: * All counts are server-side — no client-side .length counting.
+28:  count: number;
+35:  /** Server-provided count of working memory messages */
+36:  workingCount: number;
+37:  /** Server-provided count of recall items (brain facts + summaries) */
+38:  recallCount: number;
+39:  /** Server-provided count of archival items */
+40:  archivalCount: number;
+51:  workingCount,
+52:  recallCount,
+53:  archivalCount,
+61:      count: workingCount,
+68:      count: recallCount,
+75:      count: archivalCount,
+82:  const totalItems = workingCount + recallCount + archivalCount;
+105:          {totalItems} total items across {tiers.filter((t) => t.count > 0).length} tiers
+121:                {tier.count}

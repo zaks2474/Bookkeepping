@@ -1,0 +1,11 @@
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/node_registry.py:9:    registry.register("financial_analysis", FinancialAnalystNode)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/node_registry.py:10:    node = registry.get("financial_analysis")
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/node_registry.py:70:    name = "financial_analysis"
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/node_registry.py:72:    domains = ["financial_analysis", "valuation", "metrics", "comparison"]
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/node_registry.py:110:    name = "risk_assessment"
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/node_registry.py:112:    domains = ["risk_assessment", "risk", "mitigation", "compliance"]
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/node_registry.py:143:    name = "deal_memory"
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/node_registry.py:145:    domains = ["deal_memory", "history", "precedent", "facts"]
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/node_registry.py:260:            "financial_analysis": [
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/node_registry.py:264:            "risk_assessment": [
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/node_registry.py:268:            "deal_memory": [

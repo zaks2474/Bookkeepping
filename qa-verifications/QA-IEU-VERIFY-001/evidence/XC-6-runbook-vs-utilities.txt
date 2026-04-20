@@ -1,0 +1,18 @@
+=== XC-6 RUNBOOK VS UTILITY FILES ===
+10:**Script:** `/home/zaks/bookkeeping/scripts/qa-scaffold.sh`
+17:bash /home/zaks/bookkeeping/scripts/qa-scaffold.sh QA-IEU-VERIFY-001 --dry-run
+20:bash /home/zaks/bookkeeping/scripts/qa-scaffold.sh QA-IEU-VERIFY-001
+32:**Script:** `/home/zaks/bookkeeping/scripts/check-ac-coverage.py`
+38:python3 /home/zaks/bookkeeping/scripts/check-ac-coverage.py \
+51:**Script:** `/home/zaks/bookkeeping/scripts/generate-reconciliation-table.py`
+58:python3 /home/zaks/bookkeeping/scripts/generate-reconciliation-table.py
+61:python3 /home/zaks/bookkeeping/scripts/generate-reconciliation-table.py --before 9 --after 14
+70:**Script:** `/home/zaks/bookkeeping/scripts/governance-changelog-helper.sh`
+76:bash /home/zaks/bookkeeping/scripts/governance-changelog-helper.sh
+92:**Script:** `/home/zaks/bookkeeping/scripts/compare-frontend-skill-vs-rule.py`
+98:python3 /home/zaks/bookkeeping/scripts/compare-frontend-skill-vs-rule.py
+-rwxr-xr-x 1 zaks zaks 2254 Feb 10 16:18 /home/zaks/bookkeeping/scripts/check-ac-coverage.py
+-rwxr-xr-x 1 zaks zaks 3357 Feb 10 16:19 /home/zaks/bookkeeping/scripts/compare-frontend-skill-vs-rule.py
+-rwxr-xr-x 1 root root 2732 Feb 10 16:21 /home/zaks/bookkeeping/scripts/generate-reconciliation-table.py
+-rwxr-xr-x 1 zaks zaks 1406 Feb 10 16:19 /home/zaks/bookkeeping/scripts/governance-changelog-helper.sh
+-rwxr-xr-x 1 zaks zaks 2403 Feb 10 16:19 /home/zaks/bookkeeping/scripts/qa-scaffold.sh

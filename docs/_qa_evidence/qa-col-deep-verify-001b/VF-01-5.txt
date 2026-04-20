@@ -1,0 +1,6 @@
+3:Rolling summarization every 5 turns + recall memory builder.
+102:                     open_questions, covers_turns, model_used, memory_tier)
+105:                     :open_questions, :covers_turns, :model_used, 'recall')
+276:async def build_recall_memory(
+280:    """Build recall memory context for injection into system prompt.
+325:    """Fetch Deal Brain facts for recall memory injection.

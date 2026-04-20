@@ -1,0 +1,45 @@
+=== VF-02.1 ACCESSIBILITY RULE PRESENCE ===
+-rw-r--r-- 1 zaks zaks 2162 Feb 10 12:28 /home/zaks/zakops-agent-api/.claude/rules/accessibility.md
+---
+paths:
+  - "apps/dashboard/src/components/**"
+  - "apps/dashboard/src/app/**"
+  - "apps/dashboard/src/styles/**"
+  - "apps/dashboard/src/hooks/**"
+---
+
+# Accessibility Standards — Dashboard
+
+## Semantic Structure
+- Use semantic HTML elements (`<nav>`, `<main>`, `<section>`, `<article>`, `<aside>`, `<header>`, `<footer>`) over generic `<div>` wrappers
+- Headings must follow document hierarchy (`h1` > `h2` > `h3`) — never skip levels for styling
+- Lists of items use `<ul>`/`<ol>`, not chains of `<div>`
+- Tables for tabular data use `<table>` with `<thead>`/`<tbody>`, not grid divs
+
+## Keyboard Navigation and Focus Management
+- All interactive elements must be keyboard-reachable (Tab/Shift+Tab)
+- Custom interactive elements need `tabIndex={0}` and `onKeyDown` handlers
+- Modals must trap focus inside and return focus to trigger on close
+- Skip-navigation links for page-level layout (skip to main content)
+- Visible focus indicators — never `outline: none` without a visible replacement
+
+## Color Contrast
+- Target WCAG AA minimum: 4.5:1 for normal text, 3:1 for large text (18px+ bold or 24px+)
+- UI controls and graphical objects: 3:1 against adjacent colors
+- Do not convey information by color alone — pair with icons, text, or patterns
+
+## ARIA Usage
+- Prefer native HTML semantics over ARIA (`<button>` over `<div role="button">`)
+- When ARIA is necessary: `aria-label` for icon-only buttons, `aria-live` for dynamic content updates, `aria-expanded` for collapsible sections
+- Form inputs must have associated `<label>` elements or `aria-label`
+- Do not use `aria-hidden="true"` on focusable elements
+
+## Reduced Motion
+- Wrap non-essential animations with `prefers-reduced-motion` media query
+- Essential state-change animations (e.g., loading spinners) may remain but should be simplified
+- Pattern: `@media (prefers-reduced-motion: reduce) { .animated { animation: none; transition: none; } }`
+
+## Image and Media
+- All `<img>` elements require `alt` text (empty `alt=""` for decorative images)
+- SVG icons used as interactive elements need `aria-label` or `<title>` inside
+- Auto-playing media is prohibited without user initiation

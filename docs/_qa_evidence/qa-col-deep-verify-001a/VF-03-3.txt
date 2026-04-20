@@ -1,0 +1,6 @@
+Line 270: @router.post('/threads', status_code=201)
+Line 271: async def create_thread(...)
+Line 291: thread = await chat_repository.create_thread(user_id=user_id, scope_type=body.scope_type, deal_id=body.deal_id, title=body.title)
+---
+Comment at line 290: # Repository creates both chat_threads and thread_ownership rows.
+VERDICT: PASS

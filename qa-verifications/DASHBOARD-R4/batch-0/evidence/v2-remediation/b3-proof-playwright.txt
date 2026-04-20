@@ -1,0 +1,35 @@
+=== Playwright browser check ===
+Version 1.58.2
+
+=== Browser locations ===
+Root cache:
+chromium-1194
+chromium-1208
+chromium_headless_shell-1194
+chromium_headless_shell-1208
+ffmpeg-1011
+Zaks cache:
+chromium-1194
+chromium-1208
+chromium_headless_shell-1194
+chromium_headless_shell-1208
+ffmpeg-1011
+
+=== Test list ===
+Listing tests:
+  [chromium] › smoke.spec.ts:3:5 › smoke: dashboard loads
+Total: 1 test in 1 file
+
+=== Smoke test run ===
+
+Running 1 test using 1 worker
+
+  ✓  1 [chromium] › tests/e2e/smoke.spec.ts:3:5 › smoke: dashboard loads (1.4s)
+
+  1 passed (2.1s)
+
+=== test-results ownership ===
+total 12
+drwxr-xr-x  2 root root 4096 Feb  7 18:59 .
+drwxr-xr-x 19 zaks zaks 4096 Feb  7 18:59 ..
+-rw-r--r--  1 root root   45 Feb  7 18:59 .last-run.json

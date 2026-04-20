@@ -1,0 +1,37 @@
+=== XC-6 COMPLETION RECONCILIATION TABLE ===
+1:# SURFACES-10-14-REGISTER-001 — Completion Report
+14:- Evidence: `/home/zaks/bookkeeping/docs/SURFACES-10-14-REGISTER-001-BASELINE.md`
+36:### Phase 5: Surface 14 Contract (Performance Budget) — PASS
+38:- Created: `tools/infra/validate-surface14.sh`
+40:- `make validate-surface14`: PASS (1 advisory warning — dev-mode main-app.js >2MB, expected)
+42:### Phase 6: Unified 14-Surface Wiring — PASS
+43:- Updated: `.claude/rules/contract-surfaces.md` — 14 surfaces with full entries
+44:- Updated: `tools/infra/validate-contract-surfaces.sh` — extended from 9 to 14 checks
+46:- `make validate-contract-surfaces`: PASS (ALL 14 CONTRACT SURFACE CHECKS PASSED)
+49:- Updated: `tools/infra/generate-manifest.sh` — S10-S14 entries added
+50:- Updated: `CLAUDE.md` — Contract Surfaces table expanded to 14 (updated last per constraint)
+52:- `make infra-snapshot`: PASS — manifest shows 14 surfaces (S1-S14 all PASS)
+53:- Boot diagnostics: CHECK 2 PASS — "Surface count consistent (14 everywhere)"
+56:- `make validate-local`: PASS (sync + lint + 14 surfaces + tsc + agent config + SSE)
+57:- `make validate-contract-surfaces`: 14/14 PASS
+58:- `make infra-snapshot`: 14 surfaces in manifest
+67:| `.claude/rules/contract-surfaces.md` | 9 | 14 |
+68:| `tools/infra/validate-contract-surfaces.sh` | 9 | 14 |
+69:| `INFRASTRUCTURE_MANIFEST.md` | 9 | 14 |
+70:| `CLAUDE.md` | 9 | 14 |
+83:| AC-6 | Surface 14 contract created | PASS | `PERFORMANCE-BUDGET.md` exists with 16 thresholds, 4 budget sections |
+84:| AC-7 | Surface 14 validator live | PASS | `make validate-surface14` runs advisory; STRICT=1 for enforcement |
+85:| AC-8 | Unified validation at 14 | PASS | `make validate-contract-surfaces` outputs "ALL 14 CONTRACT SURFACE CHECKS PASSED" |
+86:| AC-9 | Manifest coverage at 14 | PASS | `make infra-snapshot` produces 14-surface section (S1-S14 all PASS) |
+87:| AC-10 | Count reconciliation | PASS | All 4 authoritative sources show 14 (reconciliation table above) |
+101:| `tools/infra/validate-surface14.sh` | Surface 14 performance budget validator |
+102:| `/home/zaks/bookkeeping/docs/PERFORMANCE-BUDGET.md` | Surface 14 source artifact |
+103:| `/home/zaks/bookkeeping/docs/SURFACES-10-14-REGISTER-001-BASELINE.md` | Baseline evidence |
+104:| `/home/zaks/bookkeeping/docs/SURFACES-10-14-REGISTER-001-COMPLETION.md` | This file |
+110:| `.claude/rules/contract-surfaces.md` | Surfaces 10-14 registered with full entries |
+111:| `tools/infra/validate-contract-surfaces.sh` | Extended from 9 to 14 surface checks |
+112:| `Makefile` | Added validate-surface10..14 targets; updated aggregate comments |
+113:| `/home/zaks/tools/infra/generate-manifest.sh` | Extended manifest to 14 surfaces |
+114:| `CLAUDE.md` | Contract surface table expanded to 14 |
+115:| `INFRASTRUCTURE_MANIFEST.md` | Regenerated with 14 surfaces |
+128:*End of Completion Report — SURFACES-10-14-REGISTER-001*

@@ -1,0 +1,99 @@
+================================================================================
+AGENT-FORENSIC-004 - Phase 6 Check 6.1: Logging Config Audit
+================================================================================
+Date: 2026-02-03
+Auditor: Claude Opus 4.5 (Automated)
+Status: PASS
+================================================================================
+
+SOURCE FILE: /home/zaks/zakops-agent-api/apps/agent-api/app/core/logging.py
+
+1. JSON FORMAT CONFIGURATION
+----------------------------
+Location: Lines 281-291
+
+Production JSON logging is properly configured:
+```python
+structlog.configure(
+    processors=[
+        *shared_processors,
+        structlog.processors.JSONRenderer(),
+    ],
+    wrapper_class=structlog.stdlib.BoundLogger,
+    logger_factory=structlog.stdlib.LoggerFactory(),
+    cache_logger_on_first_use=True,
+)
+```
+
+Environment-based format switching (Lines 269-291):
+- LOG_FORMAT == "console": Uses ConsoleRenderer for development
+- LOG_FORMAT == "json": Uses JSONRenderer for production
+
+2. LOG LEVELS
+-------------
+Configuration in config.py (Lines 173-176):
+- LOG_DIR = Path from env or "logs"
+- LOG_LEVEL = INFO (default), DEBUG in development/test
+- LOG_FORMAT = "json" or "console"
+
+Environment-specific levels (config.py Lines 252-275):
+- DEVELOPMENT: DEBUG level, console format
+- STAGING: INFO level
+- PRODUCTION: WARNING level
+- TEST: DEBUG level, console format
+
+3. SENSITIVE FIELD FILTERING
+-----------------------------
+Location: Lines 34-92
+
+SENSITIVE_FIELDS defined (Lines 34-38):
+```python
+SENSITIVE_FIELDS = {
+    "content", "query", "prompt", "response", "message", "text",
+    "tool_args", "args", "result", "tool_result", "output",
+}
+```
+
+sanitize_content_for_log function (Lines 41-73):
+- Never logs raw content per "Decision Lock Section 5"
+- Returns only hash (SHA256 truncated to 16 chars) + length
+- Preview only in development mode
+
+sanitize_event_dict processor (Lines 76-92):
+- Applied to all log events via structlog processor chain
+- Automatically sanitizes any field matching SENSITIVE_FIELDS
+
+4. STRUCTLOG PROCESSORS
+-----------------------
+Location: Lines 192-234
+
+Processor chain includes:
+1. filter_by_level - Filter logs by level
+2. add_logger_name - Add logger name
+3. add_log_level - Add log level
+4. PositionalArgumentsFormatter - Format positional args
+5. TimeStamper(fmt="iso") - ISO timestamp format
+6. StackInfoRenderer - Stack traces
+7. format_exc_info - Exception info
+8. UnicodeDecoder - Unicode handling
+9. add_context_to_event_dict - Request context (user_id, session_id)
+10. sanitize_event_dict - SENSITIVE FIELD FILTERING
+11. CallsiteParameterAdder (dev only) - File/line info
+12. Environment info injection
+
+5. FILE LOGGING
+---------------
+JsonlFileHandler class (Lines 154-189):
+- Writes to daily JSONL files: {env}-{YYYY-MM-DD}.jsonl
+- Includes: timestamp, level, message, module, function, filename, line, environment
+
+VERIFICATION:
+- JSON format: CONFIGURED (JSONRenderer for production)
+- Log levels: CONFIGURED (environment-specific)
+- Sensitive filtering: IMPLEMENTED (hash+length only per Decision Lock Section 5)
+- Context binding: IMPLEMENTED (session_id, user_id, request_id)
+
+RESULT: PASS
+- Structlog properly configured with JSON output for production
+- Sensitive field filtering implemented per security policy
+- Log levels appropriately configured per environment

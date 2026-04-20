@@ -1,0 +1,22 @@
+=== VF-07: Stop Hook Integration (AC-6) ===
+
+File: /home/zaks/.claude/hooks/stop.sh (lines 142-149)
+
+Code:
+  # ── Agent Config Sync (non-fatal, 5s timeout) ──
+  AGENT_SYNC="/home/zaks/zakops-agent-api/tools/infra/sync-agent-configs.sh"
+  if [ -f "$AGENT_SYNC" ] && [ -x "$AGENT_SYNC" ]; then
+    echo "Running agent-config-sync..."
+    timeout 5 bash "$AGENT_SYNC" 2>&1 || {
+      echo "WARNING: agent-config-sync failed (non-fatal)."
+    }
+  fi
+
+Checks:
+- File existence check: [ -f "$AGENT_SYNC" ] ✓
+- Executable check: [ -x "$AGENT_SYNC" ] ✓
+- 5s timeout: timeout 5 ✓
+- Non-fatal: || { echo "WARNING..." } ✓ (does not exit 1)
+- Placed after memory-sync (line 142 > memory-sync block) ✓
+
+VERDICT: PASS — Non-fatal, 5s timeout, proper guards

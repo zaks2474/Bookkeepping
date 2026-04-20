@@ -1,0 +1,11 @@
+apps/agent-api/scripts/migrate_chat_data.py:14:    python -m scripts.migrate_chat_data [--dry-run] [--verbose]
+apps/agent-api/scripts/migrate_chat_data.py:61:def migrate_sqlite_users(pg_conn, sqlite_path: str, dry_run: bool):
+apps/agent-api/scripts/migrate_chat_data.py:90:        if dry_run:
+apps/agent-api/scripts/migrate_chat_data.py:108:    if not dry_run:
+apps/agent-api/scripts/migrate_chat_data.py:115:def migrate_sqlite_sessions(pg_conn, sqlite_path: str, dry_run: bool):
+apps/agent-api/scripts/migrate_chat_data.py:151:        if dry_run:
+apps/agent-api/scripts/migrate_chat_data.py:177:    if not dry_run:
+apps/agent-api/scripts/migrate_chat_data.py:186:    parser.add_argument("--dry-run", action="store_true", help="Show what would be done without making changes")
+apps/agent-api/scripts/migrate_chat_data.py:198:    if args.dry_run:
+apps/agent-api/scripts/migrate_chat_data.py:207:        migrate_sqlite_users(pg_conn, args.sqlite_path, args.dry_run)
+apps/agent-api/scripts/migrate_chat_data.py:210:        migrate_sqlite_sessions(pg_conn, args.sqlite_path, args.dry_run)

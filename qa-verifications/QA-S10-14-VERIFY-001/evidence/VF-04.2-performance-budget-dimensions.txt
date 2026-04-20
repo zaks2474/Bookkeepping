@@ -1,0 +1,10 @@
+=== VF-04.2 PERFORMANCE BUDGET DIMENSIONS ===
+5:Defines explicit performance thresholds for ZakOps services. This document is the source-of-truth artifact for Surface 14 (Performance Budget Contract).
+9:Thresholds are enforced in **advisory mode** by default. Strict mode enforcement is available for CI gating when enabled via `STRICT=1`.
+29:| Main JS bundle (`main-app.js`) | < 2 MB | `wc -c .next/static/chunks/main-app.js` |
+53:| API latency | Backend team |
+61:- **Online (live):** API latency and payload sizes checked when services are running (`make validate-live`)
+62:- **Advisory vs Strict:** Default is advisory (WARN on threshold breach). Set `STRICT=1` for CI enforcement (FAIL on breach).
+71:2. **Load testing thresholds** — concurrent user limits and degradation curves
+72:3. **Memory budgets** — per-service RSS limits
+73:4. **Database query time budgets** — per-query P95 targets

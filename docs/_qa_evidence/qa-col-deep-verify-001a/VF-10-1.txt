@@ -1,0 +1,5 @@
+File: /home/zaks/zakops-agent-api/apps/agent-api/app/core/security/canary_tokens.py
+---
+Line 46: def inject_canary(self, text, source_id, deal_id='', sensitivity='high') -> str:
+Also module-level wrapper at line 91: def inject_canary(text, source_id, deal_id='', sensitivity='high') -> str:
+VERDICT: PASS

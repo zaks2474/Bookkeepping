@@ -1,0 +1,6581 @@
+{
+  "components": {
+    "schemas": {
+      "ActionApprove": {
+        "properties": {
+          "approved_by": {
+            "default": "ui_user",
+            "title": "Approved By",
+            "type": "string"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          }
+        },
+        "title": "ActionApprove",
+        "type": "object"
+      },
+      "ActionReject": {
+        "properties": {
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          },
+          "rejected_by": {
+            "default": "ui_user",
+            "title": "Rejected By",
+            "type": "string"
+          }
+        },
+        "required": [
+          "reason"
+        ],
+        "title": "ActionReject",
+        "type": "object"
+      },
+      "ActionResponse": {
+        "properties": {
+          "action_id": {
+            "title": "Action Id",
+            "type": "string"
+          },
+          "action_type": {
+            "title": "Action Type",
+            "type": "string"
+          },
+          "capability_id": {
+            "title": "Capability Id",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "deal_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deal Id"
+          },
+          "deal_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deal Name"
+          },
+          "deal_stage": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deal Stage"
+          },
+          "inputs": {
+            "additionalProperties": true,
+            "title": "Inputs",
+            "type": "object"
+          },
+          "outputs": {
+            "additionalProperties": true,
+            "title": "Outputs",
+            "type": "object"
+          },
+          "requires_human_review": {
+            "title": "Requires Human Review",
+            "type": "boolean"
+          },
+          "risk_level": {
+            "title": "Risk Level",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Summary"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "action_id",
+          "deal_id",
+          "capability_id",
+          "action_type",
+          "title",
+          "summary",
+          "status",
+          "created_at",
+          "updated_at",
+          "risk_level",
+          "requires_human_review",
+          "inputs",
+          "outputs"
+        ],
+        "title": "ActionResponse",
+        "type": "object"
+      },
+      "ActionSearchResponse": {
+        "description": "Response from action search.",
+        "properties": {
+          "has_more": {
+            "default": false,
+            "title": "Has More",
+            "type": "boolean"
+          },
+          "limit": {
+            "title": "Limit",
+            "type": "integer"
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Cursor"
+          },
+          "query": {
+            "title": "Query",
+            "type": "string"
+          },
+          "results": {
+            "items": {
+              "$ref": "#/components/schemas/ActionSearchResult"
+            },
+            "title": "Results",
+            "type": "array"
+          }
+        },
+        "required": [
+          "results",
+          "query",
+          "limit"
+        ],
+        "title": "ActionSearchResponse",
+        "type": "object"
+      },
+      "ActionSearchResult": {
+        "description": "Action search result.",
+        "properties": {
+          "action_id": {
+            "title": "Action Id",
+            "type": "string"
+          },
+          "action_type": {
+            "title": "Action Type",
+            "type": "string"
+          },
+          "created_at": {
+            "title": "Created At",
+            "type": "string"
+          },
+          "deal_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deal Id"
+          },
+          "risk_level": {
+            "title": "Risk Level",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          }
+        },
+        "required": [
+          "action_id",
+          "action_type",
+          "status",
+          "risk_level",
+          "created_at"
+        ],
+        "title": "ActionSearchResult",
+        "type": "object"
+      },
+      "AgentRunResponse": {
+        "description": "Response from an agent run.",
+        "example": {
+          "actions_created": [],
+          "completed_at": "2026-01-19T12:00:05Z",
+          "deal_id": "123e4567-e89b-12d3-a456-426614174000",
+          "run_id": "123e4567-e89b-12d3-a456-426614174001",
+          "started_at": "2026-01-19T12:00:00Z",
+          "status": "completed",
+          "tool_calls": [],
+          "trace_id": "trace-abc-123"
+        },
+        "properties": {
+          "actions_created": {
+            "default": [],
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "title": "Actions Created",
+            "type": "array"
+          },
+          "completed_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completed At"
+          },
+          "deal_id": {
+            "format": "uuid",
+            "title": "Deal Id",
+            "type": "string"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "result": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Result"
+          },
+          "run_id": {
+            "format": "uuid",
+            "title": "Run Id",
+            "type": "string"
+          },
+          "started_at": {
+            "format": "date-time",
+            "title": "Started At",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/AgentRunStatus"
+          },
+          "tool_calls": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/ToolCall"
+            },
+            "title": "Tool Calls",
+            "type": "array"
+          },
+          "trace_id": {
+            "title": "Trace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "run_id",
+          "deal_id",
+          "status",
+          "trace_id",
+          "started_at"
+        ],
+        "title": "AgentRunResponse",
+        "type": "object"
+      },
+      "AgentRunStatus": {
+        "description": "Status of an agent run.",
+        "enum": [
+          "pending",
+          "running",
+          "completed",
+          "failed",
+          "cancelled"
+        ],
+        "title": "AgentRunStatus",
+        "type": "string"
+      },
+      "AuthUrlResponse": {
+        "description": "OAuth authorization URL response.",
+        "properties": {
+          "auth_url": {
+            "title": "Auth Url",
+            "type": "string"
+          },
+          "state": {
+            "title": "State",
+            "type": "string"
+          }
+        },
+        "required": [
+          "auth_url",
+          "state"
+        ],
+        "title": "AuthUrlResponse",
+        "type": "object"
+      },
+      "DealCreate": {
+        "properties": {
+          "broker": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Broker"
+          },
+          "canonical_name": {
+            "title": "Canonical Name",
+            "type": "string"
+          },
+          "company_info": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Company Info"
+          },
+          "display_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Display Name"
+          },
+          "folder_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Folder Path"
+          },
+          "identifiers": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Identifiers"
+          },
+          "metadata": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Metadata"
+          },
+          "stage": {
+            "default": "inbound",
+            "title": "Stage",
+            "type": "string"
+          },
+          "status": {
+            "default": "active",
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "canonical_name"
+        ],
+        "title": "DealCreate",
+        "type": "object"
+      },
+      "DealEvent": {
+        "properties": {
+          "actor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actor"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "deal_id": {
+            "title": "Deal Id",
+            "type": "string"
+          },
+          "details": {
+            "additionalProperties": true,
+            "title": "Details",
+            "type": "object"
+          },
+          "event_type": {
+            "title": "Event Type",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "deal_id",
+          "event_type",
+          "source",
+          "actor",
+          "details",
+          "created_at"
+        ],
+        "title": "DealEvent",
+        "type": "object"
+      },
+      "DealResponse": {
+        "properties": {
+          "action_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Action Count"
+          },
+          "alias_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alias Count"
+          },
+          "broker": {
+            "additionalProperties": true,
+            "title": "Broker",
+            "type": "object"
+          },
+          "canonical_name": {
+            "title": "Canonical Name",
+            "type": "string"
+          },
+          "company_info": {
+            "additionalProperties": true,
+            "title": "Company Info",
+            "type": "object"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "days_since_update": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Days Since Update"
+          },
+          "deal_id": {
+            "title": "Deal Id",
+            "type": "string"
+          },
+          "display_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Display Name"
+          },
+          "email_thread_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Email Thread Ids",
+            "type": "array"
+          },
+          "folder_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Folder Path"
+          },
+          "identifiers": {
+            "additionalProperties": true,
+            "title": "Identifiers",
+            "type": "object"
+          },
+          "metadata": {
+            "additionalProperties": true,
+            "title": "Metadata",
+            "type": "object"
+          },
+          "stage": {
+            "title": "Stage",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "deal_id",
+          "canonical_name",
+          "display_name",
+          "folder_path",
+          "stage",
+          "status",
+          "identifiers",
+          "company_info",
+          "broker",
+          "metadata",
+          "email_thread_ids",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "DealResponse",
+        "type": "object"
+      },
+      "DealSearchResponse": {
+        "description": "Response from deal search.",
+        "properties": {
+          "has_more": {
+            "default": false,
+            "title": "Has More",
+            "type": "boolean"
+          },
+          "limit": {
+            "title": "Limit",
+            "type": "integer"
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Cursor"
+          },
+          "offset": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Offset"
+          },
+          "query": {
+            "title": "Query",
+            "type": "string"
+          },
+          "results": {
+            "items": {
+              "$ref": "#/components/schemas/DealSearchResult"
+            },
+            "title": "Results",
+            "type": "array"
+          },
+          "total": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Total"
+          }
+        },
+        "required": [
+          "results",
+          "query",
+          "limit"
+        ],
+        "title": "DealSearchResponse",
+        "type": "object"
+      },
+      "DealSearchResult": {
+        "description": "Deal search result.",
+        "properties": {
+          "canonical_name": {
+            "title": "Canonical Name",
+            "type": "string"
+          },
+          "company_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Company Name"
+          },
+          "created_at": {
+            "title": "Created At",
+            "type": "string"
+          },
+          "deal_id": {
+            "title": "Deal Id",
+            "type": "string"
+          },
+          "stage": {
+            "title": "Stage",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          }
+        },
+        "required": [
+          "deal_id",
+          "canonical_name",
+          "stage",
+          "status",
+          "created_at"
+        ],
+        "title": "DealSearchResult",
+        "type": "object"
+      },
+      "DealThreadsResponse": {
+        "description": "Deal threads response.",
+        "properties": {
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "threads": {
+            "items": {
+              "$ref": "#/components/schemas/EmailThreadResponse"
+            },
+            "title": "Threads",
+            "type": "array"
+          }
+        },
+        "required": [
+          "threads",
+          "count"
+        ],
+        "title": "DealThreadsResponse",
+        "type": "object"
+      },
+      "DealUpdate": {
+        "properties": {
+          "broker": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Broker"
+          },
+          "canonical_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Canonical Name"
+          },
+          "company_info": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Company Info"
+          },
+          "display_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Display Name"
+          },
+          "folder_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Folder Path"
+          },
+          "identifiers": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Identifiers"
+          },
+          "metadata": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Metadata"
+          },
+          "stage": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stage"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status"
+          }
+        },
+        "title": "DealUpdate",
+        "type": "object"
+      },
+      "EmailAccountResponse": {
+        "description": "Email account response.",
+        "properties": {
+          "created_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "email_address": {
+            "title": "Email Address",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "is_active": {
+            "title": "Is Active",
+            "type": "boolean"
+          },
+          "provider": {
+            "title": "Provider",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "provider",
+          "email_address",
+          "is_active"
+        ],
+        "title": "EmailAccountResponse",
+        "type": "object"
+      },
+      "EmailMessageResponse": {
+        "description": "Email message response.",
+        "properties": {
+          "body_preview": {
+            "title": "Body Preview",
+            "type": "string"
+          },
+          "cc_addresses": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Cc Addresses",
+            "type": "array"
+          },
+          "from_address": {
+            "title": "From Address",
+            "type": "string"
+          },
+          "has_attachments": {
+            "title": "Has Attachments",
+            "type": "boolean"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "is_outbound": {
+            "title": "Is Outbound",
+            "type": "boolean"
+          },
+          "sent_at": {
+            "format": "date-time",
+            "title": "Sent At",
+            "type": "string"
+          },
+          "subject": {
+            "title": "Subject",
+            "type": "string"
+          },
+          "thread_id": {
+            "title": "Thread Id",
+            "type": "string"
+          },
+          "to_addresses": {
+            "items": {
+              "type": "string"
+            },
+            "title": "To Addresses",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "thread_id",
+          "from_address",
+          "to_addresses",
+          "cc_addresses",
+          "subject",
+          "body_preview",
+          "sent_at",
+          "is_outbound",
+          "has_attachments"
+        ],
+        "title": "EmailMessageResponse",
+        "type": "object"
+      },
+      "EmailThreadResponse": {
+        "description": "Email thread response.",
+        "properties": {
+          "deal_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deal Id"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "last_message_at": {
+            "format": "date-time",
+            "title": "Last Message At",
+            "type": "string"
+          },
+          "message_count": {
+            "title": "Message Count",
+            "type": "integer"
+          },
+          "participants": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Participants",
+            "type": "array"
+          },
+          "provider": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Provider"
+          },
+          "subject": {
+            "title": "Subject",
+            "type": "string"
+          },
+          "thread_id": {
+            "title": "Thread Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "thread_id",
+          "deal_id",
+          "subject",
+          "last_message_at",
+          "message_count",
+          "participants"
+        ],
+        "title": "EmailThreadResponse",
+        "type": "object"
+      },
+      "ErrorResponse": {
+        "properties": {
+          "error": {
+            "properties": {
+              "code": {
+                "description": "Machine-readable error code",
+                "example": "NOT_FOUND",
+                "type": "string"
+              },
+              "details": {
+                "description": "Additional error details for validation errors",
+                "items": {
+                  "properties": {
+                    "code": {
+                      "description": "Error code for this field",
+                      "type": "string"
+                    },
+                    "field": {
+                      "description": "Field path that caused the error",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Error message for this field",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "nullable": true,
+                "type": "array"
+              },
+              "message": {
+                "description": "Human-readable error message",
+                "example": "Resource not found",
+                "type": "string"
+              },
+              "timestamp": {
+                "description": "When the error occurred",
+                "format": "date-time",
+                "type": "string"
+              },
+              "trace_id": {
+                "description": "Unique trace ID for debugging",
+                "type": "string"
+              }
+            },
+            "required": [
+              "code",
+              "message"
+            ],
+            "type": "object"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ResponseMeta"
+          }
+        },
+        "type": "object"
+      },
+      "EventResponse": {
+        "description": "Event response model.",
+        "properties": {
+          "correlation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Correlation Id"
+          },
+          "data": {
+            "additionalProperties": true,
+            "title": "Data",
+            "type": "object"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "timestamp": {
+            "title": "Timestamp",
+            "type": "string"
+          },
+          "type": {
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "data",
+          "timestamp"
+        ],
+        "title": "EventResponse",
+        "type": "object"
+      },
+      "EventsListResponse": {
+        "description": "Events list response.",
+        "properties": {
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "events": {
+            "items": {
+              "$ref": "#/components/schemas/EventResponse"
+            },
+            "title": "Events",
+            "type": "array"
+          }
+        },
+        "required": [
+          "events",
+          "count"
+        ],
+        "title": "EventsListResponse",
+        "type": "object"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "InboxResponse": {
+        "description": "Inbox response.",
+        "properties": {
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "messages": {
+            "items": {
+              "$ref": "#/components/schemas/EmailMessageResponse"
+            },
+            "title": "Messages",
+            "type": "array"
+          }
+        },
+        "required": [
+          "messages",
+          "count"
+        ],
+        "title": "InboxResponse",
+        "type": "object"
+      },
+      "InvokeRequest": {
+        "description": "Request to invoke agent.",
+        "properties": {
+          "context": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Context"
+          },
+          "deal_id": {
+            "format": "uuid",
+            "title": "Deal Id",
+            "type": "string"
+          },
+          "task": {
+            "title": "Task",
+            "type": "string"
+          }
+        },
+        "required": [
+          "deal_id",
+          "task"
+        ],
+        "title": "InvokeRequest",
+        "type": "object"
+      },
+      "LangSmithInvokeRequest": {
+        "description": "Request to invoke LangSmith agent.",
+        "properties": {
+          "context": {
+            "additionalProperties": true,
+            "description": "Context for the task",
+            "title": "Context",
+            "type": "object"
+          },
+          "stream": {
+            "default": false,
+            "description": "Whether to stream the response",
+            "title": "Stream",
+            "type": "boolean"
+          },
+          "task": {
+            "description": "The task for the agent to perform",
+            "title": "Task",
+            "type": "string"
+          },
+          "task_type": {
+            "default": "tool_orchestration",
+            "description": "Type of task for model selection",
+            "title": "Task Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "task"
+        ],
+        "title": "LangSmithInvokeRequest",
+        "type": "object"
+      },
+      "LangSmithInvokeResponse": {
+        "description": "Response from LangSmith agent invocation.",
+        "properties": {
+          "duration_ms": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration Ms"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "fallback_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fallback Reason"
+          },
+          "is_fallback": {
+            "default": false,
+            "title": "Is Fallback",
+            "type": "boolean"
+          },
+          "model_used": {
+            "title": "Model Used",
+            "type": "string"
+          },
+          "response": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Response"
+          },
+          "success": {
+            "title": "Success",
+            "type": "boolean"
+          },
+          "tool_calls": {
+            "default": [],
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Tool Calls",
+            "type": "array"
+          },
+          "tool_results": {
+            "default": [],
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Tool Results",
+            "type": "array"
+          },
+          "trace_id": {
+            "title": "Trace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "success",
+          "model_used",
+          "trace_id"
+        ],
+        "title": "LangSmithInvokeResponse",
+        "type": "object"
+      },
+      "LinkThreadBody": {
+        "description": "Link thread to deal request.",
+        "properties": {
+          "deal_id": {
+            "title": "Deal Id",
+            "type": "string"
+          },
+          "provider": {
+            "default": "gmail",
+            "title": "Provider",
+            "type": "string"
+          },
+          "thread_id": {
+            "title": "Thread Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "thread_id",
+          "deal_id"
+        ],
+        "title": "LinkThreadBody",
+        "type": "object"
+      },
+      "ListResponse": {
+        "properties": {
+          "data": {
+            "description": "List of items",
+            "type": "array"
+          },
+          "meta": {
+            "properties": {
+              "has_more": {
+                "description": "Whether more items exist",
+                "type": "boolean"
+              },
+              "limit": {
+                "description": "Maximum items per page",
+                "type": "integer"
+              },
+              "offset": {
+                "description": "Current offset",
+                "type": "integer"
+              },
+              "timestamp": {
+                "format": "date-time",
+                "type": "string"
+              },
+              "total": {
+                "description": "Total number of items",
+                "type": "integer"
+              },
+              "trace_id": {
+                "description": "Unique trace ID",
+                "type": "string"
+              }
+            },
+            "required": [
+              "total",
+              "limit",
+              "offset",
+              "has_more",
+              "trace_id"
+            ],
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "LoginRequest": {
+        "description": "Login request body.",
+        "properties": {
+          "email": {
+            "format": "email",
+            "title": "Email",
+            "type": "string"
+          },
+          "password": {
+            "title": "Password",
+            "type": "string"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ],
+        "title": "LoginRequest",
+        "type": "object"
+      },
+      "LoginResponse": {
+        "description": "Login response model.",
+        "properties": {
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "operator": {
+            "$ref": "#/components/schemas/OperatorResponse"
+          }
+        },
+        "required": [
+          "message",
+          "operator"
+        ],
+        "title": "LoginResponse",
+        "type": "object"
+      },
+      "LogoutResponse": {
+        "description": "Logout response model.",
+        "properties": {
+          "message": {
+            "title": "Message",
+            "type": "string"
+          }
+        },
+        "required": [
+          "message"
+        ],
+        "title": "LogoutResponse",
+        "type": "object"
+      },
+      "OAuthCallbackResponse": {
+        "description": "OAuth callback response.",
+        "properties": {
+          "email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "success": {
+            "title": "Success",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "success",
+          "message"
+        ],
+        "title": "OAuthCallbackResponse",
+        "type": "object"
+      },
+      "OperatorResponse": {
+        "description": "Operator response model.",
+        "properties": {
+          "email": {
+            "title": "Email",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "role": {
+            "title": "Role",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "name",
+          "role"
+        ],
+        "title": "OperatorResponse",
+        "type": "object"
+      },
+      "PaginatedResponse": {
+        "properties": {
+          "data": {
+            "items": {
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ResponseMeta"
+          },
+          "pagination": {
+            "properties": {
+              "page": {
+                "type": "integer"
+              },
+              "per_page": {
+                "type": "integer"
+              },
+              "total": {
+                "type": "integer"
+              },
+              "total_pages": {
+                "type": "integer"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "PipelineSummary": {
+        "properties": {
+          "avg_days_in_stage": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avg Days In Stage"
+          },
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "stage": {
+            "title": "Stage",
+            "type": "string"
+          }
+        },
+        "required": [
+          "stage",
+          "count",
+          "avg_days_in_stage"
+        ],
+        "title": "PipelineSummary",
+        "type": "object"
+      },
+      "PurgeRequest": {
+        "description": "Request to purge DLQ entries.",
+        "properties": {
+          "days": {
+            "default": 30,
+            "title": "Days",
+            "type": "integer"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          }
+        },
+        "title": "PurgeRequest",
+        "type": "object"
+      },
+      "QuarantineProcess": {
+        "properties": {
+          "action": {
+            "pattern": "^(approve|reject)$",
+            "title": "Action",
+            "type": "string"
+          },
+          "deal_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deal Id"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "processed_by": {
+            "default": "ui_user",
+            "title": "Processed By",
+            "type": "string"
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "title": "QuarantineProcess",
+        "type": "object"
+      },
+      "QuarantineResponse": {
+        "properties": {
+          "broker_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Broker Name"
+          },
+          "classification": {
+            "title": "Classification",
+            "type": "string"
+          },
+          "company_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Company Name"
+          },
+          "confidence": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Confidence"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "email_subject": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email Subject"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "is_broker": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Broker"
+          },
+          "message_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message Id"
+          },
+          "received_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Received At"
+          },
+          "sender": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sender"
+          },
+          "sender_company": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sender Company"
+          },
+          "sender_domain": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sender Domain"
+          },
+          "sender_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sender Name"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "urgency": {
+            "title": "Urgency",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "message_id",
+          "email_subject",
+          "sender",
+          "sender_domain",
+          "received_at",
+          "classification",
+          "urgency",
+          "confidence",
+          "company_name",
+          "broker_name",
+          "status",
+          "created_at"
+        ],
+        "title": "QuarantineResponse",
+        "type": "object"
+      },
+      "RegisterRequest": {
+        "description": "Registration request body.",
+        "properties": {
+          "email": {
+            "format": "email",
+            "title": "Email",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "password": {
+            "title": "Password",
+            "type": "string"
+          }
+        },
+        "required": [
+          "email",
+          "password",
+          "name"
+        ],
+        "title": "RegisterRequest",
+        "type": "object"
+      },
+      "ResponseMeta": {
+        "properties": {
+          "correlation_id": {
+            "description": "Correlation ID for related requests",
+            "nullable": true,
+            "type": "string"
+          },
+          "timestamp": {
+            "description": "Response timestamp",
+            "format": "date-time",
+            "type": "string"
+          },
+          "trace_id": {
+            "description": "Unique trace ID for this request",
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "trace_id",
+          "timestamp"
+        ],
+        "type": "object"
+      },
+      "RetryRequest": {
+        "description": "Request to retry DLQ entry.",
+        "properties": {
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          }
+        },
+        "title": "RetryRequest",
+        "type": "object"
+      },
+      "RunCreate": {
+        "properties": {
+          "assistant_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Assistant Id"
+          },
+          "input_message": {
+            "title": "Input Message",
+            "type": "string"
+          },
+          "metadata": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Metadata"
+          },
+          "stream": {
+            "default": false,
+            "title": "Stream",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "input_message"
+        ],
+        "title": "RunCreate",
+        "type": "object"
+      },
+      "SSEStatsResponse": {
+        "description": "SSE statistics response.",
+        "properties": {
+          "active_connections": {
+            "title": "Active Connections",
+            "type": "integer"
+          },
+          "replay_buffer_size": {
+            "title": "Replay Buffer Size",
+            "type": "integer"
+          },
+          "total_sequence": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Total Sequence"
+          }
+        },
+        "required": [
+          "active_connections",
+          "replay_buffer_size"
+        ],
+        "title": "SSEStatsResponse",
+        "type": "object"
+      },
+      "SearchEmailBody": {
+        "description": "Email search request.",
+        "properties": {
+          "after": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "After"
+          },
+          "before": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Before"
+          },
+          "from_address": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "From Address"
+          },
+          "has_attachment": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Has Attachment"
+          },
+          "max_results": {
+            "default": 20,
+            "maximum": 100.0,
+            "title": "Max Results",
+            "type": "integer"
+          },
+          "query": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Query"
+          },
+          "subject": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subject"
+          },
+          "to_address": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "To Address"
+          }
+        },
+        "title": "SearchEmailBody",
+        "type": "object"
+      },
+      "SendEmailBody": {
+        "description": "Send email request body.",
+        "properties": {
+          "bcc": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Bcc",
+            "type": "array"
+          },
+          "body": {
+            "title": "Body",
+            "type": "string"
+          },
+          "cc": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Cc",
+            "type": "array"
+          },
+          "deal_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deal Id"
+          },
+          "is_html": {
+            "default": false,
+            "title": "Is Html",
+            "type": "boolean"
+          },
+          "reply_to_thread_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reply To Thread Id"
+          },
+          "subject": {
+            "minLength": 1,
+            "title": "Subject",
+            "type": "string"
+          },
+          "to": {
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "To",
+            "type": "array"
+          }
+        },
+        "required": [
+          "to",
+          "subject",
+          "body"
+        ],
+        "title": "SendEmailBody",
+        "type": "object"
+      },
+      "SendEmailResponse": {
+        "description": "Send email response.",
+        "properties": {
+          "message_id": {
+            "title": "Message Id",
+            "type": "string"
+          },
+          "success": {
+            "title": "Success",
+            "type": "boolean"
+          },
+          "thread_id": {
+            "title": "Thread Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "success",
+          "message_id",
+          "thread_id"
+        ],
+        "title": "SendEmailResponse",
+        "type": "object"
+      },
+      "SuccessResponse": {
+        "properties": {
+          "data": {
+            "description": "Response data (type varies by endpoint)"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ResponseMeta"
+          }
+        },
+        "type": "object"
+      },
+      "ThreadCreate": {
+        "properties": {
+          "assistant_id": {
+            "title": "Assistant Id",
+            "type": "string"
+          },
+          "deal_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deal Id"
+          },
+          "metadata": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Metadata"
+          },
+          "user_context": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User Context"
+          },
+          "user_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User Id"
+          }
+        },
+        "required": [
+          "assistant_id"
+        ],
+        "title": "ThreadCreate",
+        "type": "object"
+      },
+      "ToolCall": {
+        "description": "A tool call made by the agent.",
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "timestamp": {
+            "format": "date-time",
+            "title": "Timestamp",
+            "type": "string"
+          },
+          "tool_input": {
+            "additionalProperties": true,
+            "title": "Tool Input",
+            "type": "object"
+          },
+          "tool_name": {
+            "title": "Tool Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tool_name",
+          "tool_input"
+        ],
+        "title": "ToolCall",
+        "type": "object"
+      },
+      "ToolCallApprove": {
+        "properties": {
+          "approved_by": {
+            "default": "ui_user",
+            "title": "Approved By",
+            "type": "string"
+          }
+        },
+        "title": "ToolCallApprove",
+        "type": "object"
+      },
+      "ToolCallReject": {
+        "properties": {
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          },
+          "rejected_by": {
+            "default": "ui_user",
+            "title": "Rejected By",
+            "type": "string"
+          }
+        },
+        "required": [
+          "reason"
+        ],
+        "title": "ToolCallReject",
+        "type": "object"
+      },
+      "ToolSchema": {
+        "description": "Tool schema for API response.",
+        "properties": {
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "parameters": {
+            "additionalProperties": true,
+            "title": "Parameters",
+            "type": "object"
+          },
+          "requires_approval": {
+            "title": "Requires Approval",
+            "type": "boolean"
+          },
+          "risk_level": {
+            "title": "Risk Level",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "description",
+          "parameters",
+          "risk_level",
+          "requires_approval"
+        ],
+        "title": "ToolSchema",
+        "type": "object"
+      },
+      "TransitionRequest": {
+        "description": "Request to transition deal stage.",
+        "properties": {
+          "idempotency_key": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Unique key for safe retries. Same key within 24h returns cached result.",
+            "title": "Idempotency Key"
+          },
+          "new_stage": {
+            "title": "New Stage",
+            "type": "string"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          }
+        },
+        "required": [
+          "new_stage"
+        ],
+        "title": "TransitionRequest",
+        "type": "object"
+      },
+      "TransitionResponse": {
+        "description": "Response from stage transition.",
+        "properties": {
+          "deal_id": {
+            "title": "Deal Id",
+            "type": "string"
+          },
+          "from_stage": {
+            "title": "From Stage",
+            "type": "string"
+          },
+          "idempotent_hit": {
+            "default": false,
+            "title": "Idempotent Hit",
+            "type": "boolean"
+          },
+          "success": {
+            "title": "Success",
+            "type": "boolean"
+          },
+          "timestamp": {
+            "title": "Timestamp",
+            "type": "string"
+          },
+          "to_stage": {
+            "title": "To Stage",
+            "type": "string"
+          }
+        },
+        "required": [
+          "deal_id",
+          "from_stage",
+          "to_stage",
+          "success",
+          "timestamp"
+        ],
+        "title": "TransitionResponse",
+        "type": "object"
+      },
+      "ValidTransitionsResponse": {
+        "description": "Response with valid transitions.",
+        "properties": {
+          "current_stage": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Current Stage"
+          },
+          "deal_id": {
+            "title": "Deal Id",
+            "type": "string"
+          },
+          "valid_transitions": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Valid Transitions",
+            "type": "array"
+          }
+        },
+        "required": [
+          "deal_id",
+          "valid_transitions"
+        ],
+        "title": "ValidTransitionsResponse",
+        "type": "object"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "sessionAuth": {
+        "description": "Session cookie obtained from /api/auth/login",
+        "in": "cookie",
+        "name": "zakops_session",
+        "type": "apiKey"
+      }
+    }
+  },
+  "info": {
+    "description": "\n# ZakOps Deal Lifecycle OS API\n\nBackend services for the ZakOps autonomous deal management platform.\n\n## Overview\n\nZakOps provides AI-powered deal lifecycle management with:\n- **Deal Management** \u2014 Create, track, and manage deals through their lifecycle\n- **Agent Actions** \u2014 AI-generated actions with human-in-the-loop approval\n- **Document Storage** \u2014 Secure artifact storage with cloud support\n- **Real-time Events** \u2014 SSE streaming for live updates\n\n## Authentication\n\nAuthentication is session-based using cookies.\n\n```bash\n# Login\ncurl -X POST /api/auth/login \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"email\": \"user@example.com\", \"password\": \"secret\"}' \\\n  -c cookies.txt\n\n# Use session\ncurl /api/deals -b cookies.txt\n```\n\nIn development mode (`AUTH_REQUIRED=false`), authentication is optional.\n\n## Response Format\n\n### Success Response\n```json\n{\n  \"data\": { ... },\n  \"meta\": {\n    \"trace_id\": \"abc-123\",\n    \"correlation_id\": \"deal-456\",\n    \"timestamp\": \"2026-01-19T12:00:00Z\"\n  }\n}\n```\n\n### Error Response\n```json\n{\n  \"error\": {\n    \"code\": \"NOT_FOUND\",\n    \"message\": \"Deal not found\",\n    \"details\": null\n  },\n  \"meta\": {\n    \"trace_id\": \"abc-123\",\n    \"timestamp\": \"2026-01-19T12:00:00Z\"\n  }\n}\n```\n\n## Tracing\n\nInclude these headers for distributed tracing:\n- `X-Trace-ID` \u2014 Unique request identifier (auto-generated if not provided)\n- `X-Correlation-ID` \u2014 Business correlation ID (e.g., deal_id)\n\n## Error Codes\n\n| Code | HTTP Status | Description |\n|------|-------------|-------------|\n| `BAD_REQUEST` | 400 | Invalid request format |\n| `VALIDATION_ERROR` | 422 | Request validation failed |\n| `UNAUTHORIZED` | 401 | Authentication required |\n| `FORBIDDEN` | 403 | Permission denied |\n| `NOT_FOUND` | 404 | Resource not found |\n| `CONFLICT` | 409 | Resource conflict |\n| `INTERNAL_ERROR` | 500 | Server error |\n\n## Rate Limiting\n\nRate limiting is not currently enforced but may be added in future versions.\n\n## Webhooks\n\nWebhook support is planned for future releases.\n        ",
+    "title": "ZakOps API",
+    "version": "1.0.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/api/actions": {
+      "get": {
+        "description": "List actions with optional filtering.",
+        "operationId": "list_actions_api_actions_get",
+        "parameters": [
+          {
+            "description": "Filter by status",
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by status",
+              "title": "Status"
+            }
+          },
+          {
+            "description": "Filter by deal",
+            "in": "query",
+            "name": "deal_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by deal",
+              "title": "Deal Id"
+            }
+          },
+          {
+            "description": "Show only pending actions",
+            "in": "query",
+            "name": "pending_only",
+            "required": false,
+            "schema": {
+              "default": false,
+              "description": "Show only pending actions",
+              "title": "Pending Only",
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ActionResponse"
+                  },
+                  "title": "Response List Actions Api Actions Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Actions"
+      }
+    },
+    "/api/actions/{action_id}": {
+      "get": {
+        "description": "Get a single action by ID.",
+        "operationId": "get_action_api_actions__action_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "action_id",
+            "required": true,
+            "schema": {
+              "title": "Action Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Action"
+      }
+    },
+    "/api/actions/{action_id}/approve": {
+      "post": {
+        "description": "Approve a pending action.",
+        "operationId": "approve_action_api_actions__action_id__approve_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "action_id",
+            "required": true,
+            "schema": {
+              "title": "Action Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActionApprove"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Approve Action"
+      }
+    },
+    "/api/actions/{action_id}/reject": {
+      "post": {
+        "description": "Reject a pending action.",
+        "operationId": "reject_action_api_actions__action_id__reject_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "action_id",
+            "required": true,
+            "schema": {
+              "title": "Action Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActionReject"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Reject Action"
+      }
+    },
+    "/api/admin/dlq": {
+      "get": {
+        "description": "List Dead Letter Queue entries.",
+        "operationId": "list_dlq_entries_api_admin_dlq_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 100,
+              "maximum": 1000,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "correlation_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Correlation Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Dlq Entries",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/admin/dlq/purge-old": {
+      "post": {
+        "description": "Purge DLQ entries older than specified days.",
+        "operationId": "purge_old_dlq_api_admin_dlq_purge_old_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PurgeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Purge Old Dlq",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/admin/dlq/retry-all": {
+      "post": {
+        "description": "Retry all DLQ entries.",
+        "operationId": "retry_all_dlq_api_admin_dlq_retry_all_post",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "correlation_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Correlation Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Retry All Dlq",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/admin/dlq/stats": {
+      "get": {
+        "description": "Get DLQ statistics.",
+        "operationId": "dlq_stats_api_admin_dlq_stats_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Dlq Stats",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/admin/dlq/{entry_id}": {
+      "delete": {
+        "description": "Permanently delete a DLQ entry.",
+        "operationId": "purge_dlq_entry_api_admin_dlq__entry_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "entry_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Entry Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Purge Dlq Entry",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/admin/dlq/{entry_id}/retry": {
+      "post": {
+        "description": "Retry a specific DLQ entry.",
+        "operationId": "retry_dlq_entry_api_admin_dlq__entry_id__retry_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "entry_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Entry Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RetryRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Retry Dlq Entry",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/admin/outbox/stats": {
+      "get": {
+        "description": "Get outbox queue statistics.",
+        "operationId": "outbox_stats_api_admin_outbox_stats_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Outbox Stats",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/admin/sse/stats": {
+      "get": {
+        "description": "Get SSE connection statistics.",
+        "operationId": "sse_stats_api_admin_sse_stats_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Sse Stats",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/admin/system/health": {
+      "get": {
+        "description": "Get comprehensive system health status.",
+        "operationId": "system_health_api_admin_system_health_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "System Health",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/agent/invoke": {
+      "post": {
+        "description": "Invoke the agent for a deal.\n\nThe agent will:\n1. Analyze the deal based on the task\n2. Execute relevant tools\n3. Create actions for human review\n\nEvents are emitted in real-time via SSE.",
+        "operationId": "invoke_agent_endpoint_api_agent_invoke_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InvokeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentRunResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Invoke Agent Endpoint",
+        "tags": [
+          "agent"
+        ]
+      }
+    },
+    "/api/agent/langsmith/health": {
+      "get": {
+        "description": "Check LangSmith agent health and configuration.\n\nReturns:\n- Model registry configuration\n- Tool count\n- LangSmith tracing status",
+        "operationId": "langsmith_agent_health_api_agent_langsmith_health_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Langsmith Agent Health",
+        "tags": [
+          "agent"
+        ]
+      }
+    },
+    "/api/agent/langsmith/invoke": {
+      "post": {
+        "description": "Invoke the LangSmith-powered AI agent with a task.\n\nThe agent uses Claude models with automatic fallback and tracing:\n- Primary model: claude-sonnet-4-20250514\n- Fallback model: claude-haiku-4-20250514\n\nTask types:\n- tool_orchestration: Full agent with tools (default)\n- document_analysis: Document-focused analysis\n- deal_insights: Deal-specific recommendations\n- quick_response: Fast, cost-effective responses\n- summarization: Content summarization",
+        "operationId": "invoke_langsmith_agent_api_agent_langsmith_invoke_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Trace-ID",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Trace-Id"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Correlation-ID",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Correlation-Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LangSmithInvokeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LangSmithInvokeResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Invoke Langsmith Agent",
+        "tags": [
+          "agent"
+        ]
+      }
+    },
+    "/api/agent/langsmith/invoke/stream": {
+      "post": {
+        "description": "Invoke the LangSmith agent with streaming response.\n\nReturns Server-Sent Events (SSE) with tokens as they are generated.",
+        "operationId": "invoke_langsmith_agent_stream_api_agent_langsmith_invoke_stream_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Trace-ID",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Trace-Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LangSmithInvokeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Invoke Langsmith Agent Stream",
+        "tags": [
+          "agent"
+        ]
+      }
+    },
+    "/api/agent/models": {
+      "get": {
+        "description": "List available models for agent execution.\n\nReturns models with their capabilities, costs, and current configuration.",
+        "operationId": "list_models_api_agent_models_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List Models",
+        "tags": [
+          "agent"
+        ]
+      }
+    },
+    "/api/agent/runs": {
+      "get": {
+        "description": "List agent runs with optional filtering.",
+        "operationId": "list_agent_runs_api_agent_runs_get",
+        "parameters": [
+          {
+            "description": "Filter by deal ID",
+            "in": "query",
+            "name": "deal_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by deal ID",
+              "title": "Deal Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "additionalProperties": true,
+                    "type": "object"
+                  },
+                  "title": "Response List Agent Runs Api Agent Runs Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Agent Runs",
+        "tags": [
+          "agent"
+        ]
+      }
+    },
+    "/api/agent/runs/{run_id}": {
+      "get": {
+        "description": "Get details of a specific agent run.",
+        "operationId": "get_agent_run_api_agent_runs__run_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Get Agent Run Api Agent Runs  Run Id  Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Agent Run",
+        "tags": [
+          "agent"
+        ]
+      }
+    },
+    "/api/agent/tools": {
+      "get": {
+        "description": "List all available tools for agent execution.",
+        "operationId": "list_available_tools_api_agent_tools_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ToolSchema"
+                  },
+                  "title": "Response List Available Tools Api Agent Tools Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List Available Tools",
+        "tags": [
+          "agent"
+        ]
+      }
+    },
+    "/api/auth/check": {
+      "get": {
+        "description": "Check if the current session is authenticated.\n\nReturns authentication status without requiring auth.",
+        "operationId": "check_auth_api_auth_check_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Check Auth",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "description": "Login with email and password.\n\nReturns operator info and sets session cookie.",
+        "operationId": "login_api_auth_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Login",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "description": "Logout and invalidate session.",
+        "operationId": "logout_api_auth_logout_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogoutResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Logout",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/auth/me": {
+      "get": {
+        "description": "Get the current authenticated operator.",
+        "operationId": "get_current_user_api_auth_me_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperatorResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Current User",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/auth/register": {
+      "post": {
+        "description": "Register a new operator.\n\nNote: In production, this should be admin-only or disabled.",
+        "operationId": "register_api_auth_register_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperatorResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Register",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/deals": {
+      "get": {
+        "description": "List all deals with optional filtering.",
+        "operationId": "list_deals_api_deals_get",
+        "parameters": [
+          {
+            "description": "Filter by stage",
+            "in": "query",
+            "name": "stage",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by stage",
+              "title": "Stage"
+            }
+          },
+          {
+            "description": "Filter by status",
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": "active",
+              "description": "Filter by status",
+              "title": "Status"
+            }
+          },
+          {
+            "description": "Search in name",
+            "in": "query",
+            "name": "search",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Search in name",
+              "title": "Search"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/DealResponse"
+                  },
+                  "title": "Response List Deals Api Deals Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Deals"
+      },
+      "post": {
+        "description": "Create a new deal.",
+        "operationId": "create_deal_api_deals_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DealCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DealResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Deal"
+      }
+    },
+    "/api/deals/stages/summary": {
+      "get": {
+        "description": "Get count of deals in each stage.",
+        "operationId": "get_stages_summary_api_deals_stages_summary_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Stages Summary",
+        "tags": [
+          "workflow"
+        ]
+      }
+    },
+    "/api/deals/{deal_id}": {
+      "get": {
+        "description": "Get a single deal by ID.",
+        "operationId": "get_deal_api_deals__deal_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "deal_id",
+            "required": true,
+            "schema": {
+              "title": "Deal Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DealResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Deal"
+      },
+      "patch": {
+        "description": "Update an existing deal.",
+        "operationId": "update_deal_api_deals__deal_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "deal_id",
+            "required": true,
+            "schema": {
+              "title": "Deal Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DealUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DealResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Update Deal"
+      }
+    },
+    "/api/deals/{deal_id}/activity-summary": {
+      "get": {
+        "description": "Get activity summary counts for a deal.",
+        "operationId": "get_deal_activity_summary_api_deals__deal_id__activity_summary_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "deal_id",
+            "required": true,
+            "schema": {
+              "title": "Deal Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Deal Activity Summary",
+        "tags": [
+          "activity"
+        ]
+      }
+    },
+    "/api/deals/{deal_id}/aliases": {
+      "get": {
+        "description": "Get aliases for a deal.",
+        "operationId": "get_deal_aliases_api_deals__deal_id__aliases_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "deal_id",
+            "required": true,
+            "schema": {
+              "title": "Deal Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Deal Aliases"
+      }
+    },
+    "/api/deals/{deal_id}/events": {
+      "get": {
+        "description": "Get event history for a deal.",
+        "operationId": "get_deal_events_api_deals__deal_id__events_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "deal_id",
+            "required": true,
+            "schema": {
+              "title": "Deal Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/DealEvent"
+                  },
+                  "title": "Response Get Deal Events Api Deals  Deal Id  Events Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Deal Events"
+      }
+    },
+    "/api/deals/{deal_id}/stage-history": {
+      "get": {
+        "description": "Get stage transition history for a deal.",
+        "operationId": "get_stage_history_api_deals__deal_id__stage_history_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "deal_id",
+            "required": true,
+            "schema": {
+              "title": "Deal Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Stage History",
+        "tags": [
+          "workflow"
+        ]
+      }
+    },
+    "/api/deals/{deal_id}/timeline": {
+      "get": {
+        "description": "Get unified activity timeline for a deal.\n\nIncludes:\n- Stage changes\n- Actions (created, approved, completed)\n- Agent runs\n- Events",
+        "operationId": "get_deal_timeline_api_deals__deal_id__timeline_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "deal_id",
+            "required": true,
+            "schema": {
+              "title": "Deal Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "before",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Before"
+            }
+          },
+          {
+            "description": "Filter by type: stage_change, action, agent_run, event",
+            "in": "query",
+            "name": "activity_type",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by type: stage_change, action, agent_run, event",
+              "title": "Activity Type"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Deal Timeline",
+        "tags": [
+          "activity"
+        ]
+      }
+    },
+    "/api/deals/{deal_id}/transition": {
+      "post": {
+        "description": "Transition a deal to a new stage.\n\nIdempotency:\n    Provide X-Idempotency-Key header or idempotency_key in body.\n    Same key within 24 hours returns the original result without changes.\n\nReturns:\n    TransitionResponse with idempotent_hit=true if cached.",
+        "operationId": "transition_deal_stage_api_deals__deal_id__transition_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "deal_id",
+            "required": true,
+            "schema": {
+              "title": "Deal Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "User performing the transition",
+            "in": "query",
+            "name": "transitioned_by",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "User performing the transition",
+              "title": "Transitioned By"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Idempotency-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Idempotency-Key"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Trace-ID",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Trace-Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransitionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransitionResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Transition Deal Stage",
+        "tags": [
+          "workflow"
+        ]
+      }
+    },
+    "/api/deals/{deal_id}/valid-transitions": {
+      "get": {
+        "description": "Get valid stage transitions for a deal.",
+        "operationId": "get_valid_transitions_api_deals__deal_id__valid_transitions_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "deal_id",
+            "required": true,
+            "schema": {
+              "title": "Deal Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidTransitionsResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Valid Transitions",
+        "tags": [
+          "workflow"
+        ]
+      }
+    },
+    "/api/events": {
+      "get": {
+        "description": "List recent events.\n\nReturns events from the replay buffer, filtered by correlation_id and/or event_type.",
+        "operationId": "list_events_api_events_get",
+        "parameters": [
+          {
+            "description": "Filter by correlation_id",
+            "in": "query",
+            "name": "correlation_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by correlation_id",
+              "title": "Correlation Id"
+            }
+          },
+          {
+            "description": "Filter by event type",
+            "in": "query",
+            "name": "event_type",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by event type",
+              "title": "Event Type"
+            }
+          },
+          {
+            "description": "Max events to return",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "description": "Max events to return",
+              "maximum": 100,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventsListResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Events",
+        "tags": [
+          "events"
+        ]
+      }
+    },
+    "/api/events/broadcast": {
+      "post": {
+        "description": "Manually broadcast an event (admin/testing only).\n\nThis endpoint is for testing SSE functionality.\nIn production, events should be published through the event system.",
+        "operationId": "broadcast_event_api_events_broadcast_post",
+        "parameters": [
+          {
+            "description": "Event type",
+            "in": "query",
+            "name": "event_type",
+            "required": true,
+            "schema": {
+              "description": "Event type",
+              "title": "Event Type",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Correlation ID",
+            "in": "query",
+            "name": "correlation_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Correlation ID",
+              "title": "Correlation Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Broadcast Event",
+        "tags": [
+          "events"
+        ]
+      }
+    },
+    "/api/events/stats": {
+      "get": {
+        "description": "Get SSE manager statistics.",
+        "operationId": "sse_stats_api_events_stats_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SSEStatsResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Sse Stats",
+        "tags": [
+          "events"
+        ]
+      }
+    },
+    "/api/events/stream": {
+      "get": {
+        "description": "Server-Sent Events stream for real-time updates.\n\nSECURITY (Phase 18.0):\n- Authentication required when SSE_AUTH_REQUIRED=true\n- Validates user can access requested correlation_id\n- Filters events to only those user is authorized to see\n\nFeatures:\n- Filter by correlation_id to only receive relevant events\n- Reconnection support via Last-Event-ID header or query param\n- Automatic replay of missed events\n- 30-second heartbeat to keep connection alive\n\nExample:\n    const eventSource = new EventSource('/api/events/stream?correlation_id=deal-123');\n    eventSource.onmessage = (event) => {\n        const data = JSON.parse(event.data);\n        console.log(data.type, data.data);\n    };",
+        "operationId": "event_stream_api_events_stream_get",
+        "parameters": [
+          {
+            "description": "Filter by correlation_id (e.g., deal_id)",
+            "in": "query",
+            "name": "correlation_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by correlation_id (e.g., deal_id)",
+              "title": "Correlation Id"
+            }
+          },
+          {
+            "description": "Last received event ID for replay",
+            "in": "query",
+            "name": "last_event_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Last received event ID for replay",
+              "title": "Last Event Id"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Last-Event-ID",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Last-Event-Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Event Stream",
+        "tags": [
+          "events"
+        ]
+      }
+    },
+    "/api/integrations/email/accounts": {
+      "get": {
+        "description": "List all connected email accounts for the current user.",
+        "operationId": "list_email_accounts_api_integrations_email_accounts_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/EmailAccountResponse"
+                  },
+                  "title": "Response List Email Accounts Api Integrations Email Accounts Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List Email Accounts",
+        "tags": [
+          "email"
+        ]
+      }
+    },
+    "/api/integrations/email/accounts/{email_address}": {
+      "delete": {
+        "description": "Disconnect an email account.",
+        "operationId": "disconnect_email_account_api_integrations_email_accounts__email_address__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "email_address",
+            "required": true,
+            "schema": {
+              "title": "Email Address",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Disconnect Email Account",
+        "tags": [
+          "email"
+        ]
+      }
+    },
+    "/api/integrations/email/deals/{deal_id}/threads": {
+      "get": {
+        "description": "Get all email threads linked to a deal.",
+        "operationId": "get_deal_email_threads_api_integrations_email_deals__deal_id__threads_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "deal_id",
+            "required": true,
+            "schema": {
+              "title": "Deal Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DealThreadsResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Deal Email Threads",
+        "tags": [
+          "email"
+        ]
+      }
+    },
+    "/api/integrations/email/gmail/auth": {
+      "get": {
+        "description": "Get Gmail OAuth authorization URL.\n\nInitiates the OAuth flow by generating an authorization URL\nthat the user should be redirected to.",
+        "operationId": "get_gmail_auth_url_api_integrations_email_gmail_auth_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthUrlResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Gmail Auth Url",
+        "tags": [
+          "email"
+        ]
+      }
+    },
+    "/api/integrations/email/gmail/callback": {
+      "get": {
+        "description": "Handle Gmail OAuth callback.\n\nExchanges the authorization code for tokens and saves the account.",
+        "operationId": "gmail_oauth_callback_api_integrations_email_gmail_callback_get",
+        "parameters": [
+          {
+            "description": "Authorization code from Google",
+            "in": "query",
+            "name": "code",
+            "required": true,
+            "schema": {
+              "description": "Authorization code from Google",
+              "title": "Code",
+              "type": "string"
+            }
+          },
+          {
+            "description": "State token for CSRF protection",
+            "in": "query",
+            "name": "state",
+            "required": true,
+            "schema": {
+              "description": "State token for CSRF protection",
+              "title": "State",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OAuthCallbackResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Gmail Oauth Callback",
+        "tags": [
+          "email"
+        ]
+      }
+    },
+    "/api/integrations/email/inbox": {
+      "get": {
+        "description": "Get inbox messages for an email account.",
+        "operationId": "get_inbox_api_integrations_email_inbox_get",
+        "parameters": [
+          {
+            "description": "Email account",
+            "in": "query",
+            "name": "account_email",
+            "required": true,
+            "schema": {
+              "description": "Email account",
+              "title": "Account Email",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "max_results",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "maximum": 100,
+              "title": "Max Results",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InboxResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Inbox",
+        "tags": [
+          "email"
+        ]
+      }
+    },
+    "/api/integrations/email/search": {
+      "post": {
+        "description": "Search emails with query parameters.",
+        "operationId": "search_emails_api_integrations_email_search_post",
+        "parameters": [
+          {
+            "description": "Email account",
+            "in": "query",
+            "name": "account_email",
+            "required": true,
+            "schema": {
+              "description": "Email account",
+              "title": "Account Email",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchEmailBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InboxResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Search Emails",
+        "tags": [
+          "email"
+        ]
+      }
+    },
+    "/api/integrations/email/send": {
+      "post": {
+        "description": "Send an email.\n\nSends an email through the specified account and optionally links\nthe thread to a deal.",
+        "operationId": "send_email_api_integrations_email_send_post",
+        "parameters": [
+          {
+            "description": "Email account to send from",
+            "in": "query",
+            "name": "account_email",
+            "required": true,
+            "schema": {
+              "description": "Email account to send from",
+              "title": "Account Email",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendEmailBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SendEmailResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Send Email",
+        "tags": [
+          "email"
+        ]
+      }
+    },
+    "/api/integrations/email/threads/link": {
+      "post": {
+        "description": "Manually link an email thread to a deal.",
+        "operationId": "link_thread_to_deal_api_integrations_email_threads_link_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LinkThreadBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Link Thread To Deal",
+        "tags": [
+          "email"
+        ]
+      }
+    },
+    "/api/integrations/email/threads/{thread_id}": {
+      "get": {
+        "description": "Get an email thread with all messages.",
+        "operationId": "get_email_thread_api_integrations_email_threads__thread_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "thread_id",
+            "required": true,
+            "schema": {
+              "title": "Thread Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Email account",
+            "in": "query",
+            "name": "account_email",
+            "required": true,
+            "schema": {
+              "description": "Email account",
+              "title": "Account Email",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmailThreadResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Email Thread",
+        "tags": [
+          "email"
+        ]
+      }
+    },
+    "/api/integrations/email/threads/{thread_id}/link": {
+      "delete": {
+        "description": "Remove deal link from a thread.",
+        "operationId": "unlink_thread_from_deal_api_integrations_email_threads__thread_id__link_delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "thread_id",
+            "required": true,
+            "schema": {
+              "title": "Thread Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Unlink Thread From Deal",
+        "tags": [
+          "email"
+        ]
+      }
+    },
+    "/api/pending-tool-approvals": {
+      "get": {
+        "description": "List all pending tool approvals across all threads.",
+        "operationId": "api_pending_tool_approvals_api_pending_tool_approvals_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Api Pending Tool Approvals"
+      }
+    },
+    "/api/pipeline/stats": {
+      "get": {
+        "description": "Get overall pipeline statistics.",
+        "operationId": "get_pipeline_stats_api_pipeline_stats_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Pipeline Stats"
+      }
+    },
+    "/api/pipeline/summary": {
+      "get": {
+        "description": "Get pipeline summary with deal counts per stage.",
+        "operationId": "get_pipeline_summary_api_pipeline_summary_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/PipelineSummary"
+                  },
+                  "title": "Response Get Pipeline Summary Api Pipeline Summary Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Pipeline Summary"
+      }
+    },
+    "/api/quarantine": {
+      "get": {
+        "description": "List quarantine items.",
+        "operationId": "list_quarantine_api_quarantine_get",
+        "parameters": [
+          {
+            "description": "Filter by status",
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": "pending",
+              "description": "Filter by status",
+              "title": "Status"
+            }
+          },
+          {
+            "description": "Filter by classification",
+            "in": "query",
+            "name": "classification",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by classification",
+              "title": "Classification"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/QuarantineResponse"
+                  },
+                  "title": "Response List Quarantine Api Quarantine Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Quarantine"
+      }
+    },
+    "/api/quarantine/{item_id}": {
+      "get": {
+        "description": "Get a single quarantine item.",
+        "operationId": "get_quarantine_item_api_quarantine__item_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "title": "Item Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuarantineResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Quarantine Item"
+      }
+    },
+    "/api/quarantine/{item_id}/process": {
+      "post": {
+        "description": "Process a quarantine item (approve or reject).",
+        "operationId": "process_quarantine_api_quarantine__item_id__process_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "title": "Item Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuarantineProcess"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Process Quarantine"
+      }
+    },
+    "/api/search/actions": {
+      "get": {
+        "description": "Search actions with cursor-based pagination.",
+        "operationId": "search_actions_api_search_actions_get",
+        "parameters": [
+          {
+            "description": "Search query",
+            "in": "query",
+            "name": "q",
+            "required": true,
+            "schema": {
+              "description": "Search query",
+              "minLength": 1,
+              "title": "Q",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Filter by status",
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by status",
+              "title": "Status"
+            }
+          },
+          {
+            "description": "Filter by action type",
+            "in": "query",
+            "name": "action_type",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by action type",
+              "title": "Action Type"
+            }
+          },
+          {
+            "description": "Filter by deal ID",
+            "in": "query",
+            "name": "deal_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by deal ID",
+              "title": "Deal Id"
+            }
+          },
+          {
+            "description": "Results per page",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "description": "Results per page",
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Pagination cursor",
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Pagination cursor",
+              "title": "Cursor"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionSearchResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Search Actions",
+        "tags": [
+          "search"
+        ]
+      }
+    },
+    "/api/search/deals": {
+      "get": {
+        "description": "Search deals by name, company, or content with cursor-based pagination.\n\nCursor pagination ensures stable results even when data changes between requests.\nUse the next_cursor from the response in subsequent requests to get the next page.\n\nExample:\n    # First request\n    GET /api/search/deals?q=acme&limit=10\n\n    # Next page (use next_cursor from response)\n    GET /api/search/deals?q=acme&limit=10&cursor=eyJpZCI6...",
+        "operationId": "search_deals_api_search_deals_get",
+        "parameters": [
+          {
+            "description": "Search query",
+            "in": "query",
+            "name": "q",
+            "required": true,
+            "schema": {
+              "description": "Search query",
+              "minLength": 1,
+              "title": "Q",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Filter by stage",
+            "in": "query",
+            "name": "stage",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by stage",
+              "title": "Stage"
+            }
+          },
+          {
+            "description": "Filter by status",
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by status",
+              "title": "Status"
+            }
+          },
+          {
+            "description": "Results per page",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "description": "Results per page",
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Pagination cursor from previous response",
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Pagination cursor from previous response",
+              "title": "Cursor"
+            }
+          },
+          {
+            "description": "Legacy offset (use cursor instead)",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Legacy offset (use cursor instead)",
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DealSearchResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Search Deals",
+        "tags": [
+          "search"
+        ]
+      }
+    },
+    "/api/search/global": {
+      "get": {
+        "description": "Search across all entity types.\n\nReturns top results from deals and actions without pagination\n(use specific endpoints for paginated results).",
+        "operationId": "global_search_api_search_global_get",
+        "parameters": [
+          {
+            "description": "Search query",
+            "in": "query",
+            "name": "q",
+            "required": true,
+            "schema": {
+              "description": "Search query",
+              "minLength": 1,
+              "title": "Q",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Results per type",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 10,
+              "description": "Results per type",
+              "maximum": 50,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Global Search",
+        "tags": [
+          "search"
+        ]
+      }
+    },
+    "/api/senders": {
+      "get": {
+        "description": "List sender profiles.",
+        "operationId": "list_senders_api_senders_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "is_broker",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Is Broker"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Senders"
+      }
+    },
+    "/api/senders/{email}": {
+      "get": {
+        "description": "Get a sender profile by email.",
+        "operationId": "get_sender_api_senders__email__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "email",
+            "required": true,
+            "schema": {
+              "title": "Email",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Sender"
+      }
+    },
+    "/api/threads": {
+      "post": {
+        "description": "Create a new agent thread.",
+        "operationId": "api_create_thread_api_threads_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ThreadCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Api Create Thread"
+      }
+    },
+    "/api/threads/{thread_id}": {
+      "delete": {
+        "description": "Archive a thread.",
+        "operationId": "api_archive_thread_api_threads__thread_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "thread_id",
+            "required": true,
+            "schema": {
+              "title": "Thread Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Api Archive Thread"
+      },
+      "get": {
+        "description": "Get a thread by ID.",
+        "operationId": "api_get_thread_api_threads__thread_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "thread_id",
+            "required": true,
+            "schema": {
+              "title": "Thread Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Api Get Thread"
+      }
+    },
+    "/api/threads/{thread_id}/runs": {
+      "get": {
+        "description": "List runs for a thread.",
+        "operationId": "api_list_runs_api_threads__thread_id__runs_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "thread_id",
+            "required": true,
+            "schema": {
+              "title": "Thread Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Api List Runs"
+      },
+      "post": {
+        "description": "Create a new run within a thread.",
+        "operationId": "api_create_run_api_threads__thread_id__runs_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "thread_id",
+            "required": true,
+            "schema": {
+              "title": "Thread Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RunCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Api Create Run"
+      }
+    },
+    "/api/threads/{thread_id}/runs/stream": {
+      "post": {
+        "description": "Create a run and stream events via SSE.\n\nSupports resume via Last-Event-ID header or query parameter.",
+        "operationId": "api_create_and_stream_run_api_threads__thread_id__runs_stream_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "thread_id",
+            "required": true,
+            "schema": {
+              "title": "Thread Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "Last-Event-ID",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Last-Event-Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RunCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Api Create And Stream Run"
+      }
+    },
+    "/api/threads/{thread_id}/runs/{run_id}": {
+      "get": {
+        "description": "Get a run by ID.",
+        "operationId": "api_get_run_api_threads__thread_id__runs__run_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "thread_id",
+            "required": true,
+            "schema": {
+              "title": "Thread Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Api Get Run"
+      }
+    },
+    "/api/threads/{thread_id}/runs/{run_id}/events": {
+      "get": {
+        "description": "Get events for a run, optionally starting after a specific event.",
+        "operationId": "api_get_run_events_api_threads__thread_id__runs__run_id__events_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "thread_id",
+            "required": true,
+            "schema": {
+              "title": "Thread Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "title": "Run Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "last_event_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Last Event Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 100,
+              "maximum": 500,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Api Get Run Events"
+      }
+    },
+    "/api/threads/{thread_id}/runs/{run_id}/stream": {
+      "get": {
+        "description": "Stream events for an existing run via SSE.\n\nSupports resume via Last-Event-ID header or query parameter.",
+        "operationId": "api_stream_run_events_api_threads__thread_id__runs__run_id__stream_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "thread_id",
+            "required": true,
+            "schema": {
+              "title": "Thread Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "title": "Run Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "Last-Event-ID",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Last-Event-Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Api Stream Run Events"
+      }
+    },
+    "/api/threads/{thread_id}/runs/{run_id}/tool_calls": {
+      "get": {
+        "description": "List tool calls for a run.",
+        "operationId": "api_list_tool_calls_api_threads__thread_id__runs__run_id__tool_calls_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "thread_id",
+            "required": true,
+            "schema": {
+              "title": "Thread Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Api List Tool Calls"
+      }
+    },
+    "/api/threads/{thread_id}/runs/{run_id}/tool_calls/{tool_call_id}": {
+      "get": {
+        "description": "Get a tool call by ID.",
+        "operationId": "api_get_tool_call_api_threads__thread_id__runs__run_id__tool_calls__tool_call_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "thread_id",
+            "required": true,
+            "schema": {
+              "title": "Thread Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "title": "Run Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "tool_call_id",
+            "required": true,
+            "schema": {
+              "title": "Tool Call Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Api Get Tool Call"
+      }
+    },
+    "/api/threads/{thread_id}/runs/{run_id}/tool_calls/{tool_call_id}/approve": {
+      "post": {
+        "description": "Approve a pending tool call.",
+        "operationId": "api_approve_tool_call_api_threads__thread_id__runs__run_id__tool_calls__tool_call_id__approve_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "thread_id",
+            "required": true,
+            "schema": {
+              "title": "Thread Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "title": "Run Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "tool_call_id",
+            "required": true,
+            "schema": {
+              "title": "Tool Call Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ToolCallApprove"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Api Approve Tool Call"
+      }
+    },
+    "/api/threads/{thread_id}/runs/{run_id}/tool_calls/{tool_call_id}/reject": {
+      "post": {
+        "description": "Reject a pending tool call.",
+        "operationId": "api_reject_tool_call_api_threads__thread_id__runs__run_id__tool_calls__tool_call_id__reject_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "thread_id",
+            "required": true,
+            "schema": {
+              "title": "Thread Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "title": "Run Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "tool_call_id",
+            "required": true,
+            "schema": {
+              "title": "Tool Call Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ToolCallReject"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Api Reject Tool Call"
+      }
+    },
+    "/api/version": {
+      "get": {
+        "description": "Get build version information.\n\nReturns version, git commit, and build time for deployment verification.",
+        "operationId": "get_version_api_version_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Get Version Api Version Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Version",
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/health": {
+      "get": {
+        "description": "Basic health check.\n\nReturns 200 if the service is running.",
+        "operationId": "health_check_health_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Health Check Health Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Health Check",
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/health/detailed": {
+      "get": {
+        "description": "Detailed health check with system information.\n\nNote: Should be protected in production.",
+        "operationId": "detailed_health_check_health_detailed_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Detailed Health Check Health Detailed Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Detailed Health Check",
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/health/live": {
+      "get": {
+        "description": "Kubernetes liveness probe.\n\nReturns 200 if the process is alive.\nUsed by k8s to determine if the container should be restarted.",
+        "operationId": "liveness_check_health_live_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "title": "Response Liveness Check Health Live Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Liveness Check",
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/health/ready": {
+      "get": {
+        "description": "Kubernetes readiness probe.\n\nReturns 200 if the service is ready to accept traffic.\nChecks database connectivity and other dependencies.",
+        "operationId": "readiness_check_health_ready_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Readiness Check Health Ready Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Readiness Check",
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/health/startup": {
+      "get": {
+        "description": "Kubernetes startup probe.\n\nReturns 200 if the service has completed initialization.\nUsed by k8s to determine when the container is ready to receive probes.",
+        "operationId": "startup_check_health_startup_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Startup Check Health Startup Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Startup Check",
+        "tags": [
+          "health"
+        ]
+      }
+    }
+  },
+  "tags": [
+    {
+      "description": "Health and readiness checks",
+      "name": "health"
+    },
+    {
+      "description": "Authentication and session management",
+      "name": "auth"
+    },
+    {
+      "description": "Deal lifecycle management",
+      "name": "deals"
+    },
+    {
+      "description": "Agent actions and approvals",
+      "name": "actions"
+    },
+    {
+      "description": "Agent activity and events",
+      "name": "agent"
+    },
+    {
+      "description": "Human-in-the-loop workflows",
+      "name": "hitl"
+    },
+    {
+      "description": "Event streaming and history",
+      "name": "events"
+    },
+    {
+      "description": "Document and file storage",
+      "name": "artifacts"
+    }
+  ]
+}

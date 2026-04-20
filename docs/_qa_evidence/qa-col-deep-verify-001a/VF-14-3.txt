@@ -1,0 +1,6 @@
+Checking all rollback files for schema_migrations cleanup:
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store_rollback.sql: schema_migrations references = 1
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/030_partition_automation_rollback.sql: schema_migrations references = 1
+---
+028 rollback: /home/zaks/zakops-backend/db/migrations/028_deal_brain_rollback.sql
+13:DELETE FROM zakops.schema_migrations WHERE version = '028';

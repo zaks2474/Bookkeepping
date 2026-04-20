@@ -1,0 +1,48 @@
+=== QA-1.2: DB Source of Truth (UPGRADED) ===
+--- AGENT API DB IDENTITY ---
+   db_name    | db_user
+--------------+---------
+ zakops_agent | agent
+(1 row)
+
+--- BACKEND API DB IDENTITY ---
+ db_name | db_user
+---------+---------
+ zakops  | zakops
+(1 row)
+
+--- FINGERPRINT: Agent DB has 'approvals' table ---
+ approvals_count
+-----------------
+              46
+(1 row)
+
+--- FINGERPRINT: Backend DB has 'deals' table ---
+ deals_count
+-------------
+          20
+(1 row)
+
+--- CROSS-CHECK: Agent DB should NOT have 'deals' table ---
+ERROR:  relation "deals" does not exist
+LINE 1: SELECT COUNT(*) FROM deals;
+                             ^
+(EXPECTED ERROR - CONFIRMS SEPARATION)
+
+--- Postgres Container Inventory ---
+NAMES                       STATUS                  IMAGE
+zakops-backend-postgres-1   Up 5 hours (healthy)    postgres:15-alpine
+zakops-agent-db             Up 35 hours (healthy)   pgvector/pgvector:pg16
+rag-db                      Up 35 hours             pgvector/pgvector:pg17
+zakops-postgres-1           Up 30 hours (healthy)   postgres:15-alpine
+
+NOTE: 4 postgres containers exist:
+- zakops-postgres-1: Backend production DB (verified by API)
+- zakops-backend-postgres-1: Stale/unused - backend doesn't connect here
+- zakops-agent-db: Agent DB (verified)
+- rag-db: RAG vector store (unrelated)
+
+VERDICT: PASS
+- Agent DB: zakops_agent, has approvals (46), no deals ✓
+- Backend DB: zakops, has deals (20) ✓
+- Different databases confirmed ✓

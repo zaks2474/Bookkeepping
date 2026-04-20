@@ -1,0 +1,8 @@
+--- PG.4: /api/v1/sessions no auth ---
+HTTP 404
+NOTE: /api/v1/sessions not found; probing /api/v1/auth/sessions
+HTTP 401
+--- PG.5: /api/v1/sessions service-token (confused deputy) ---
+HTTP 404
+NOTE: /api/v1/sessions not found; probing /api/v1/auth/sessions
+HTTP 401

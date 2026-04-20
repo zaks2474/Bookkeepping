@@ -1,0 +1,13 @@
+  status  |   stage   | deleted | cnt 
+----------+-----------+---------+-----
+ active   | diligence | f       |   1
+ active   | inbound   | f       |  21
+ active   | loi       | f       |   1
+ active   | qualified | f       |   1
+ active   | screening | f       |   7
+ archived | archived  | f       |   6
+ deleted  | inbound   | t       |  10
+ deleted  | qualified | t       |   1
+ deleted  | screening | t       |   1
+(9 rows)
+

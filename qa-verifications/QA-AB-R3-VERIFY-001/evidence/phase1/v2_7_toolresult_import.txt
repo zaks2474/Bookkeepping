@@ -1,0 +1,18 @@
+61:from app.schemas import (
+65:from app.schemas.agent import HITL_TOOLS, requires_approval
+66:from app.schemas.graph import PendingToolCall
+76:from app.core.langgraph.tools.schemas import ToolResult
+417:        R3 REMEDIATION [P1.1/P1.2]: Added try/except and ToolResult schema.
+447:                    content=ToolResult.error_result(
+472:                            content=ToolResult.error_result(
+496:                                    content=ToolResult.error_result(
+509:                                content=ToolResult.error_result(
+523:                        content=ToolResult.error_result(
+536:                    result = ToolResult.error_result(
+553:                    # Convert legacy JSON string responses to ToolResult
+555:                        result = ToolResult.from_legacy(raw_result)
+561:                                result = ToolResult.success_result(raw_result)
+563:                                result = ToolResult.error_result(
+568:                            result = ToolResult.success_result(raw_result)
+570:                        result = ToolResult.success_result({"result": str(raw_result)})
+586:                result = ToolResult.error_result(

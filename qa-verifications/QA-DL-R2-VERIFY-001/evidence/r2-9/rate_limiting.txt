@@ -1,0 +1,11 @@
+62:    R2-9: Prevents alert storms by limiting alerts per key per time window.
+68:        rate_limit_seconds: int = 60,
+69:        rate_limit_per_key: int = 3,
+72:        self.rate_limit_seconds = rate_limit_seconds
+73:        self.rate_limit_per_key = rate_limit_per_key
+83:    def _is_rate_limited(self, key: str) -> bool:
+86:        cutoff = now - self.rate_limit_seconds
+94:        return len(self._alert_history[key]) >= self.rate_limit_per_key
+109:            if self._is_rate_limited(key):
+203:        window_seconds: int = 60
+214:                    "window_seconds": window_seconds

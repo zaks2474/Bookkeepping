@@ -1,0 +1,13 @@
+=== Completion report says fix at lines ~1566 and ~1610 ===
+1427:            q.id::text,
+1480:            q.id::text,
+1566:                """SELECT q.id::text, q.message_id, q.subject AS email_subject,
+1590:            RETURNING id::text, message_id, subject AS email_subject, sender,
+1610:                """SELECT q.id::text, q.message_id, q.subject AS email_subject,
+=== Lines 1566 and 1610 should contain id::text ===
+            row = await conn.fetchrow(
+                """SELECT q.id::text, q.message_id, q.subject AS email_subject,
+                          q.sender,
+            row = await conn.fetchrow(
+                """SELECT q.id::text, q.message_id, q.subject AS email_subject,
+                          q.sender,

@@ -1,0 +1,31 @@
+770: * Fetch quarantine items - ALWAYS returns an array
+774:    const data = await apiFetch<unknown>('/api/quarantine');
+787:    console.warn('Failed to fetch quarantine items:', error);
+793: * Fetch quarantine health status
+797:    const data = await apiFetch<unknown>('/api/quarantine/health');
+839:export async function getQuarantineQueue(params?: {
+840-  limit?: number;
+841-  offset?: number;
+842-  source_type?: string;
+843-}): Promise<QuarantineItem[]> {
+844-  try {
+845-    const searchParams = new URLSearchParams();
+846-    if (params?.limit != null) searchParams.set('limit', String(params.limit));
+847-    if (params?.offset != null) searchParams.set('offset', String(params.offset));
+848-    if (params?.source_type) searchParams.set('source_type', params.source_type);
+849-    const query = searchParams.toString();
+850-    const endpoint = `/api/actions/quarantine${query ? `?${query}` : ''}`;
+851-
+852-    const data = await apiFetch<unknown>(endpoint);
+853-    const parsed = QuarantineResponseSchema.safeParse(data);
+854-
+855-    if (!parsed.success) {
+856-      console.warn('Invalid quarantine queue response:', parsed.error);
+857-      return [];
+858-    }
+859-
+860-    if (Array.isArray(parsed.data)) {
+861-      return parsed.data;
+862-    }
+863-    return parsed.data.items;
+864-  } catch (error) {

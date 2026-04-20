@@ -1,0 +1,65 @@
+export type ActionStatus =
+  | 'pending'
+  | 'pending_approval'
+  | 'queued'
+  | 'ready'
+  | 'running'
+  | 'completed'
+  | 'failed'
+  | 'cancelled'
+  | 'rejected';
+
+export type RiskLevel = 'low' | 'medium' | 'high';
+
+export type ActionSource = 'chat' | 'ui' | 'system' | 'agent' | 'api';
+
+export interface Action {
+  action_id: string;
+  deal_id: string | null;
+  capability_id: string;
+  action_type: string;
+  title: string;
+--
+  status: ActionStatus;
+  created_at: string;
+  updated_at: string;
+  started_at: string | null;
+  completed_at: string | null;
+  scheduled_for: string | null;
+  duration_seconds: number | null;
+  created_by: string;
+  source: ActionSource;
+  risk_level: RiskLevel;
+  requires_human_review: boolean;
+  idempotency_key: string | null;
+  inputs: Record<string, unknown>;
+  outputs: Record<string, unknown>;
+  retry_count: number;
+  max_retries: number;
+  next_retry_at: string | null;
+  parent_action_id: string | null;
+  root_action_id: string | null;
+  chain_depth: number;
+  audit_trail: AuditEntry[];
+--
+  status?: ActionStatus;
+  deal_id?: string;
+  pending_only?: boolean;
+}
+
+export interface QuarantineListParams extends ListParams {
+  status?: QuarantineStatus;
+  classification?: QuarantineClassification;
+}
+
+export interface SenderListParams extends ListParams {
+  is_broker?: boolean;
+}
+
+export interface HealthResponse {
+  status: 'healthy' | 'unhealthy';
+  database: 'connected' | 'disconnected';
+  error?: string;
+}
+
+export interface ApprovalResponse {

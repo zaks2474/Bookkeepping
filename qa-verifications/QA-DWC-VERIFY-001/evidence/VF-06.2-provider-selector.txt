@@ -1,0 +1,10 @@
+103:  provider_used: string;
+104:  provider_fallback: boolean;
+105:  provider_reason?: string;
+256:  // Load saved provider preference
+483:        { provider: selectedProvider }
+650:    provider?: string;
+681:        const provider = typeof r.provider === 'string' ? r.provider : undefined;
+689:          provider,
+1338:                          const provider = r?.provider ?? draft?.provider;
+1353:                              {(provider || model) && (

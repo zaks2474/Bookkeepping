@@ -1,0 +1,4 @@
+=== V11.1 ===
+115:2. **Project-level config** (`.claude/` in repo) — Repo-specific rules, commands
+215:> **Note:** These are project-scoped command files (`.claude/commands/*.md`), distinct from Claude Code's built-in skills (plugins). Skills are platform-provided capabilities; commands are project-specific prompt files.
+269:Three custom agents are defined at `~/.claude/agents/` (**user-scoped**, not project-scoped — they follow the user, not the repo):

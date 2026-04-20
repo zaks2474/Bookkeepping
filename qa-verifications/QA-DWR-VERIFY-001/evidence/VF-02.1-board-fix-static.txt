@@ -1,0 +1,4 @@
+=== VF-02.1 BOARD FIX STATIC ===
+143:    const currentDeals: Deal[] = Array.isArray(rawDeals) ? rawDeals : ((rawDeals as any)?.deals ?? []);
+156:    currentDeals.forEach((deal) => {
+174:    const safeDeals = Array.isArray(deals) ? deals : ((deals as any)?.deals ?? []);

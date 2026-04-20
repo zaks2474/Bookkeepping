@@ -1,0 +1,10 @@
+=== STEP 2.9: Tool Error Handling ===
+--- Invalid deal ID ---
+{
+    "detail": "Authentication required"
+}
+--- Invalid stage transition ---
+{
+    "detail": "Authentication required"
+}
+CHECK: No raw 500, no stack trace in response body

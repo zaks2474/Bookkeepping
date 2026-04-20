@@ -1,0 +1,40 @@
+============================================================
+R3 REMEDIATION [P2.4]: Prompt Tool List Validation
+============================================================
+Loading environment: Environment.DEVELOPMENT
+Loaded environment from /home/zaks/zakops-agent-api/apps/agent-api/.env.development
+Traceback (most recent call last):
+  File "/tmp/qa_ab_r4_venv/lib/python3.12/site-packages/langchain_community/utilities/duckduckgo_search.py", line 49, in validate_environment
+    from ddgs import DDGS  # noqa: F401
+    ^^^^^^^^^^^^^^^^^^^^^
+ModuleNotFoundError: No module named 'ddgs'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/zaks/zakops-agent-api/apps/agent-api/scripts/validate_prompt_tools.py", line 128, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/zaks/zakops-agent-api/apps/agent-api/scripts/validate_prompt_tools.py", line 104, in main
+    tools = get_tool_list_from_registry()
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zaks/zakops-agent-api/apps/agent-api/app/core/prompts/__init__.py", line 97, in get_tool_list_from_registry
+    from app.core.langgraph.tools import tools
+  File "/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/__init__.py", line 14, in <module>
+    from .duckduckgo_search import duckduckgo_search_tool
+  File "/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/duckduckgo_search.py", line 10, in <module>
+    duckduckgo_search_tool = DuckDuckGoSearchResults(num_results=10, handle_tool_error=True)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/qa_ab_r4_venv/lib/python3.12/site-packages/langchain_core/tools/base.py", line 551, in __init__
+    super().__init__(**kwargs)
+  File "/tmp/qa_ab_r4_venv/lib/python3.12/site-packages/langchain_core/load/serializable.py", line 118, in __init__
+    super().__init__(*args, **kwargs)
+  File "/tmp/qa_ab_r4_venv/lib/python3.12/site-packages/pydantic/main.py", line 250, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/qa_ab_r4_venv/lib/python3.12/site-packages/pydantic/main.py", line 250, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/qa_ab_r4_venv/lib/python3.12/site-packages/langchain_community/utilities/duckduckgo_search.py", line 51, in validate_environment
+    raise ImportError(
+ImportError: Could not import ddgs python package. Please install it with `pip install -U ddgs`.

@@ -1,0 +1,3 @@
+49:| **201 Created** | New quarantine item created |
+50:| **200 OK** | Dedup hit — item with same `message_id` already exists |
+56:The 200 vs 201 distinction allows callers to measure injection vs deduplication rates.

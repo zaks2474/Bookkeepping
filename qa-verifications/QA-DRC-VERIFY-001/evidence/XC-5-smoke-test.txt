@@ -1,0 +1,13 @@
+=== Smoke test existence ===
+EXISTS
+=== Completion report claims: Playwright-based ===
+2 playwright references
+=== Implementation approach ===
+# smoke-test.sh — Playwright-based dashboard smoke test
+if ! curl -sf -o /dev/null -w '' --max-time 5 "$DASHBOARD_URL" 2>/dev/null; then
+  # Use curl to check if page loads (basic check)
+  HTTP_CODE=$(curl -sf -o /dev/null -w "%{http_code}" --max-time 10 "$PAGE_URL" 2>/dev/null) || HTTP_CODE="000"
+  # This is a lightweight check — full Playwright checks are below
+=== Page count ===
+9
+pages

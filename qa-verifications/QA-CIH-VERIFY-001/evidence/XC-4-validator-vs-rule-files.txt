@@ -1,0 +1,19 @@
+=== XC-4 VALIDATOR EXPECTATIONS VS RULE FILES ===
+-rw-r--r-- 1 zaks zaks 2162 Feb 10 12:28 /home/zaks/zakops-agent-api/.claude/rules/accessibility.md
+-rw-r--r-- 1 zaks zaks 2794 Feb 10 12:28 /home/zaks/zakops-agent-api/.claude/rules/component-patterns.md
+-rw-r--r-- 1 root root 7672 Feb 10 12:29 /home/zaks/zakops-agent-api/.claude/rules/design-system.md
+/home/zaks/zakops-agent-api/tools/infra/validate-rule-frontmatter.sh:20:  "design-system.md"
+/home/zaks/zakops-agent-api/tools/infra/validate-rule-frontmatter.sh:21:  "accessibility.md"
+/home/zaks/zakops-agent-api/tools/infra/validate-rule-frontmatter.sh:22:  "component-patterns.md"
+/home/zaks/zakops-agent-api/tools/infra/validate-frontend-governance.sh:18:# ── Check 1: design-system.md required section anchors ──
+/home/zaks/zakops-agent-api/tools/infra/validate-frontend-governance.sh:19:echo "--- design-system.md governance sections ---"
+/home/zaks/zakops-agent-api/tools/infra/validate-frontend-governance.sh:20:DS_RULE="$RULES_DIR/design-system.md"
+/home/zaks/zakops-agent-api/tools/infra/validate-frontend-governance.sh:22:  echo "  FAIL: design-system.md not found"
+/home/zaks/zakops-agent-api/tools/infra/validate-frontend-governance.sh:48:# ── Check 2: accessibility.md required anchors ──
+/home/zaks/zakops-agent-api/tools/infra/validate-frontend-governance.sh:50:echo "--- accessibility.md governance sections ---"
+/home/zaks/zakops-agent-api/tools/infra/validate-frontend-governance.sh:51:A11Y_RULE="$RULES_DIR/accessibility.md"
+/home/zaks/zakops-agent-api/tools/infra/validate-frontend-governance.sh:53:  echo "  FAIL: accessibility.md not found"
+/home/zaks/zakops-agent-api/tools/infra/validate-frontend-governance.sh:73:# ── Check 3: component-patterns.md required anchors ──
+/home/zaks/zakops-agent-api/tools/infra/validate-frontend-governance.sh:75:echo "--- component-patterns.md governance sections ---"
+/home/zaks/zakops-agent-api/tools/infra/validate-frontend-governance.sh:76:CP_RULE="$RULES_DIR/component-patterns.md"
+/home/zaks/zakops-agent-api/tools/infra/validate-frontend-governance.sh:78:  echo "  FAIL: component-patterns.md not found"

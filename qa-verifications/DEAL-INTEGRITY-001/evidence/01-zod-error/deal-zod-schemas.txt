@@ -1,0 +1,4 @@
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:72:export const DealSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:86:export type Deal = z.infer<typeof DealSchema>;
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:294:  deals: z.array(DealSchema),
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:295:}).or(z.array(DealSchema));

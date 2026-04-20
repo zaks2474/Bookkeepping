@@ -1,0 +1,30 @@
+=== PHASE 6: MCP CONTRACT ===
+
+V-P6.1: Active server count (must be 1)
+  Result: 1
+  Verdict: PASS
+
+V-P6.2: Archived servers
+  Result: server_http.py, server_sse.py (properly archived)
+  Verdict: PASS (informational)
+
+V-P6.3: Tool count (must be 12)
+  Result: 12 @mcp.tool decorators
+  Verdict: PASS
+
+V-P6.4: Schema classes (must be >= 12)
+  Result: 12 BaseModel classes
+  Verdict: PASS
+
+V-P6.5: Server validates inputs via tool_schemas?
+  Result: 0 references to ValidationError, model_validate, or tool_schemas
+  server.py does NOT import or use tool_schemas.py at all
+  Verdict: FAIL — tool_schemas.py exists but server.py does not use it for validation
+
+V-P6.6: Contract committed with 12 tools?
+  Result: Tools: 12
+  Verdict: PASS
+
+V-P6.7: README exists?
+  Result: EXISTS
+  Verdict: PASS

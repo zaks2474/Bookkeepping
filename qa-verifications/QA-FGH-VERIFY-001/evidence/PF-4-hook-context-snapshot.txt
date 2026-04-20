@@ -1,0 +1,111 @@
+=== PF-4 HOOK CONTEXT SNAPSHOT ===
+-rwxr-xr-x 1 root root 3795 Feb 10 12:27 /home/zaks/.claude/hooks/stop.sh
+#!/usr/bin/env bash
+# Stop Hook — Run validation when session ends (V5PP)
+# All output goes to stderr so Claude Code sees it properly
+# (stdout "No stderr output" message was causing infinite re-trigger loop)
+
+exec 1>&2  # Redirect all stdout to stderr
+
+echo "=== Session End Validation (Fast Tier) ==="
+
+# Only run if in a recognized project
+MONOREPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || echo "")
+if [ -n "$MONOREPO_ROOT" ] && [ -f "$MONOREPO_ROOT/Makefile" ] && grep -q "validate-fast" "$MONOREPO_ROOT/Makefile" 2>/dev/null; then
+  cd "$MONOREPO_ROOT"
+
+  START_TS=$(date +%s)
+
+  # Gate A — Fast offline validation (TypeScript + offline checks only)
+  echo "Gate A: validate-fast"
+  if ! timeout 12 make validate-fast 2>&1; then
+    echo "ERROR: Gate A failed. Blocking stop hook."
+    exit 2
+  fi
+  if [ $(( $(date +%s) - START_TS )) -gt 30 ]; then
+    echo "ERROR: Stop hook exceeded 30s budget after Gate A."
+    exit 2
+  fi
+
+  # Gate B — Contract surfaces (all 14, S1-S14)
+  echo "Gate B: validate-contract-surfaces (14 surfaces)"
+  if ! timeout 20 bash tools/infra/validate-contract-surfaces.sh 2>&1; then
+    echo "ERROR: Gate B failed. Blocking stop hook."
+    exit 2
+  fi
+  if [ $(( $(date +%s) - START_TS )) -gt 30 ]; then
+    echo "ERROR: Stop hook exceeded 30s budget after Gate B."
+    exit 2
+  fi
+
+  # Gate E — Raw httpx client usage in deal_tools.py (must be 0)
+  # PATH-resilient: prefers rg, falls back to grep -nE, fails closed on scanner error
+  echo "Gate E: raw httpx client usage check"
+  GATE_E_TARGET="apps/agent-api/app/core/langgraph/tools/deal_tools.py"
+  GATE_E_PATTERN="httpx\.(AsyncClient|get|post|put|patch|delete)"
+  if [ ! -f "$GATE_E_TARGET" ]; then
+    echo "ERROR: Gate E target file not found: $GATE_E_TARGET"
+    exit 2
+  fi
+  if command -v rg >/dev/null 2>&1; then
+    GATE_E_SCAN_CMD="rg -n"
+  elif command -v grep >/dev/null 2>&1; then
+    GATE_E_SCAN_CMD="grep -nE"
+  else
+    echo "ERROR: Gate E failed — no scanner available (neither rg nor grep in PATH). Fail closed."
+    exit 2
+  fi
+  GATE_E_OUTPUT=$($GATE_E_SCAN_CMD "$GATE_E_PATTERN" "$GATE_E_TARGET" 2>&1)
+  GATE_E_RC=$?
+  if [ "$GATE_E_RC" -eq 0 ]; then
+    # Matches found — violation
+    echo "ERROR: Gate E failed (raw httpx client usage found). Blocking stop hook."
+    echo "$GATE_E_OUTPUT"
+    exit 2
+  elif [ "$GATE_E_RC" -eq 1 ]; then
+    # No matches — clean
+    echo "  Gate E: PASS (no raw httpx usage)"
+  else
+    # Scanner error (rc >= 2) — fail closed
+    echo "ERROR: Gate E scanner error (exit $GATE_E_RC). Fail closed."
+    echo "$GATE_E_OUTPUT"
+    exit 2
+  fi
+  if [ $(( $(date +%s) - START_TS )) -gt 30 ]; then
+    echo "ERROR: Stop hook exceeded 30s budget after Gate E."
+    exit 2
+  fi
+
+  echo "All gates passed."
+else
+  echo "Not in a recognized project — skipping validation."
+fi
+
+# ── TriPass Active Run Check (non-fatal) ──
+TRIPASS_LOCK="/tmp/tripass.lock"
+if [ -f "$TRIPASS_LOCK" ]; then
+  TRIPASS_RUN_ID=$(cat "$TRIPASS_LOCK" 2>/dev/null)
+  echo "WARNING: TriPass run in progress: ${TRIPASS_RUN_ID}"
+  echo "Session ending mid-pipeline. Run may need manual completion."
+  # Log to session log for next session pickup
+  SESSION_LOG="/root/.claude/projects/-mnt-c-Users-mzsai/memory/session-log.md"
+  if [ -f "$SESSION_LOG" ]; then
+    sed -i "5a\\
+### $(date -u +\"%Y-%m-%dT%H:%M:%SZ\")\\
+- **TriPass:** INTERRUPTED — run ${TRIPASS_RUN_ID} was active when session ended\\
+" "$SESSION_LOG" 2>/dev/null || true
+  fi
+fi
+
+# ── Memory Sync (non-fatal, 10s timeout) ──
+MEMORY_SYNC="/home/zaks/.claude/hooks/memory-sync.sh"
+if [ -f "$MEMORY_SYNC" ] && [ -x "$MEMORY_SYNC" ]; then
+  echo "Running memory-sync..."
+  timeout 10 bash "$MEMORY_SYNC" 2>&1 || {
+    echo "WARNING: memory-sync failed (non-fatal)."
+  }
+fi
+
+exit 0
+alias rg='/root/.local/share/claude/versions/2.1.38 --ripgrep'
+/usr/bin/grep

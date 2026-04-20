@@ -1,0 +1,7 @@
+=== GDPR purge audit trail ===
+Line 79-86: INSERT INTO legal_hold_log for gdpr_skip events
+Line 115-122: INSERT INTO legal_hold_log for gdpr_delete events
+Line 50: logger.info("gdpr_purge_started")
+Line 88-93: logger.info("gdpr_purge_skip", thread_id, reason)
+Line 135-141: logger.info("gdpr_purge_complete", deleted, skipped, errors)
+RESULT: PASS — Full audit trail for both skips and deletes

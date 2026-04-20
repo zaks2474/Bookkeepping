@@ -1,0 +1,11 @@
+=== XC-1 CATALOG VS VALIDATORS ===
+66:### Surface 10: Dependency Health Contract
+77:### Surface 11: Secret & Environment Variable Registry Contract
+87:### Surface 12: Error Taxonomy Contract
+98:### Surface 13: Test Coverage Contract
+109:### Surface 14: Performance Budget Contract
+-rwxr-xr-x 1 zaks zaks 5102 Feb 10 11:48 /home/zaks/zakops-agent-api/tools/infra/validate-surface10.sh
+-rwxr-xr-x 1 zaks zaks 4806 Feb 10 11:47 /home/zaks/zakops-agent-api/tools/infra/validate-surface11.sh
+-rwxr-xr-x 1 zaks zaks 5043 Feb 10 11:49 /home/zaks/zakops-agent-api/tools/infra/validate-surface12.sh
+-rwxr-xr-x 1 zaks zaks 5146 Feb 10 11:49 /home/zaks/zakops-agent-api/tools/infra/validate-surface13.sh
+-rwxr-xr-x 1 zaks zaks 5766 Feb 10 11:50 /home/zaks/zakops-agent-api/tools/infra/validate-surface14.sh

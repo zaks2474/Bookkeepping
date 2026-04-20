@@ -1,0 +1,14 @@
+/home/zaks/zakops-agent-api/apps/agent-api/evals/main.py:128:    success_rate = 0
+/home/zaks/zakops-agent-api/apps/agent-api/evals/main.py:130:        success_rate = (report["successful_traces"] / report["total_traces"]) * 100
+/home/zaks/zakops-agent-api/apps/agent-api/evals/main.py:132:    if success_rate > 80:
+/home/zaks/zakops-agent-api/apps/agent-api/evals/main.py:134:    elif success_rate > 50:
+/home/zaks/zakops-agent-api/apps/agent-api/evals/main.py:140:        f"{Fore.CYAN}Success Rate:{Style.RESET_ALL} {status_color}{success_rate:.1f}%{Style.RESET_ALL} ({report['successful_traces']}/{report['total_traces']})"
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langfuse/experiment.py:900:                    "name": "processing_success_rate",
+/home/zaks/zakops-backend/src/actions/engine/store.py:1195:        success_rate = None
+/home/zaks/zakops-backend/src/actions/engine/store.py:1198:            success_rate = float(completed_24h) / float(denom)
+/home/zaks/zakops-backend/src/actions/engine/store.py:1211:            "success_rate": success_rate,
+/home/zaks/zakops-backend/src/core/chat_benchmark.py:65:    success_rate: float
+/home/zaks/zakops-backend/src/core/chat_benchmark.py:206:            success_rate=0,
+/home/zaks/zakops-backend/src/core/chat_benchmark.py:228:        success_rate=len(successful) / len(category_results) if category_results else 0,
+/home/zaks/zakops-backend/src/core/chat_benchmark.py:289:                f"{s.success_rate:.1%} | {s.cache_hit_rate:.1%} |"
+/home/zaks/zakops-backend/src/core/chat_benchmark.py:426:                print(f"{cat:15} p50={stats.p50_ms:5}ms  p95={stats.p95_ms:5}ms  success={stats.success_rate:.0%}")

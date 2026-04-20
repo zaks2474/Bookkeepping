@@ -1,0 +1,39 @@
+=== VF-01.2 BASELINE INVENTORY ===
+-rw-r--r-- 1 zaks zaks 6981 Feb 10 16:08 /home/zaks/bookkeeping/docs/INFRA-ENHANCEMENTS-UNIFIED-001-BASELINE.md
+110:## Enhancement Inventory
+112:### Source: QA-S10-14-VERIFY-001 (10 items)
+116:| ENH-1 | Machine-readable schema for PERFORMANCE-BUDGET.md + schema-lint gate | missing | No schema exists |
+117:| ENH-2 | Unit-test harness for validate-surface10..14.sh with fixture inputs | missing | No tests/ dir |
+118:| ENH-3 | Single `make validate-surfaces-new` meta-target for S10-S14 | missing | Not in Makefile |
+119:| ENH-4 | Manifest contract section schema validation (entry count + fields) | missing | No schema exists |
+120:| ENH-5 | CI check enforcing 4-way count equality at PR time | missing | Not in ci.yml |
+121:| ENH-6 | Regression guard for S10-S14 entries from CLAUDE.md | missing | No guard script |
+122:| ENH-7 | Stricter strict-mode contract for S14 in CI (advisory local, strict CI) | missing | Strict support exists in script but not wired in CI |
+123:| ENH-8 | Automated reconciliation-table generation in completion reports | missing | No automation |
+124:| ENH-9 | Pre-commit scan for stale surface-count strings in scripts/docs | missing | No scanner |
+125:| ENH-10 | QA helper command that scaffolds evidence files | missing | No scaffold tool |
+127:### Source: QA-FGH-VERIFY-001 (10 items)
+131:| ENH-1 | Dedicated unit tests for Gate E scanner branch/rc handling | missing | No test harness |
+132:| ENH-2 | CI lint for `.claude/rules/*.md` path frontmatter validity | partial | validate-rule-frontmatter.sh exists but not schema-backed |
+133:| ENH-3 | Rule-schema checker for governance anchors in design-system.md | missing | No schema file |
+134:| ENH-4 | `make validate-frontend-governance` aggregate target | already_done | Target exists in Makefile |
+135:| ENH-5 | Stop-hook self-test mode with constrained PATH emulation | missing | No self-test wrapper |
+136:| ENH-6 | Automated comparison report: frontend-design skill vs Category B | missing | No comparison tool |
+137:| ENH-7 | Changelog auto-insertion for governance rule updates | missing | No automation |
+138:| ENH-8 | Policy drift check: tooling policy vs settings.json live values | partial | check-governance-drift.sh exists but doesn't cover tooling policy vs settings |
+139:| ENH-9 | Pre-commit rule preventing stale surface count labels | missing | No scanner |
+140:| ENH-10 | QA scaffold command for evidence skeletons | missing | No scaffold tool |
+142:### Source: QA-CIH-VERIFY-001 (10 items)
+146:| ENH-1 | Unit-test harness for validate-gatee-scan.sh with fixtures | missing | No test harness |
+147:| ENH-2 | Reusable YAML lint step for workflow structural correctness | missing | Not in CI |
+148:| ENH-3 | Dedicated `make validate-hook-contract` target | missing | Not in Makefile |
+149:| ENH-4 | CI assertion that forbids inline Gate E snippets in workflow | missing | No prohibition guard |
+150:| ENH-5 | Machine-readable schema for governance anchor sets | missing | No schema file |
+151:| ENH-6 | Pre-commit guard for stale surface-count labels | missing | No scanner |
+152:| ENH-7 | Benchmark check for validate-frontend-governance runtime | missing | No benchmark check |
+153:| ENH-8 | Snapshot diff summarizer for manifest changes | missing | No automation |
+154:| ENH-9 | Automated AC coverage checker for completion reports | missing | No checker |
+155:| ENH-10 | QA scaffold command for CI-hardening evidence skeletons | missing | No scaffold tool |
+158:- **already_done:** 1 (QA-FGH ENH-4)
+159:- **partial:** 2 (QA-FGH ENH-2, ENH-8)
+160:- **missing:** 27

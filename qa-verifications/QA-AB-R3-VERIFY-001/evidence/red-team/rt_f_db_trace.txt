@@ -1,0 +1,7 @@
+ERROR:  column "trace_id" does not exist
+LINE 3:   WHERE trace_id = '0303a104e651436886fcdeef078a5400' OR cor...
+                ^
+ id | correlation_id | thread_id | created_at 
+----+----------------+-----------+------------
+(0 rows)
+

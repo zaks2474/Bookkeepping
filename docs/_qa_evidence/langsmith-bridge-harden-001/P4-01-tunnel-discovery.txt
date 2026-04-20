@@ -1,0 +1,20 @@
+TUNNEL SESSION: /messages/?session_id=4d567381a2e54ffe9c7105f80e9556bf
+
+TOOL_COUNT: 13
+TOOLS:
+  - zakops_list_deals
+  - zakops_get_deal
+  - zakops_update_deal_profile
+  - zakops_write_deal_artifact
+  - zakops_list_deal_artifacts
+  - zakops_list_quarantine
+  - zakops_inject_quarantine
+  - zakops_create_action
+  - zakops_get_action
+  - zakops_list_actions
+  - zakops_approve_quarantine
+  - rag_query_local
+  - rag_reindex_deal
+
+zakops_inject_quarantine present: True
+VERDICT: PASS

@@ -1,0 +1,30 @@
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:119:  const [error, setError] = useState<string | null>(null);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:182:    setError(null);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:197:      setError(err instanceof Error ? err.message : 'Failed to load actions');
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:589:          <AlertTitle>API Configuration Issue</AlertTitle>
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:196:  const [error, setError] = useState<string | null>(null);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:437:    setError(null);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:524:            setError(`Warnings: ${warnings.join(', ')}`);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:606:      setError(fullError);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:638:      setError('No session ID - please refresh and try again');
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:691:        setError(errorMsg);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:718:      setError(errorMsg);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:769:    setError(null);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:947:                    onClick={() => setError(null)}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:61:  const [error, setError] = useState<string | null>(null);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:80:    setError(null);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:86:      setError(err instanceof Error ? err.message : 'Failed to load quarantine');
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:114:  const [error, setError] = useState<string | null>(null);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:130:    setError(null);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:143:        setError('Deal not found');
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:155:      setError(err instanceof Error ? err.message : 'Failed to load deal');
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx:81:  const [error, setError] = useState<string | null>(null);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx:107:    setError(null);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx:116:      setError(err instanceof Error ? err.message : 'Failed to load deals');
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/completed-count/route.ts:54:      { count: 0, error: errorText || 'Failed to get count' },
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/page.tsx:70:  const [error, setError] = useState<string | null>(null);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/page.tsx:81:    setError(null);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/page.tsx:104:      setError(err instanceof Error ? err.message : 'Failed to load dashboard data');
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:513:      // Log validation issues as debug info (not errors - this is expected behavior)
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:515:        console.debug('[API] Deal schema validation notes:', parsed.error.issues.map(i => `${i.path.join('.')}: ${i.message}`).join(', '));
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/observability.ts:5: * to catch future issues like infinite re-renders.

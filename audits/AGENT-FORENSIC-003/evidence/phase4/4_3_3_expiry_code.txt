@@ -1,0 +1,14 @@
+=== CHECK 4.3.3: Code Path for Expiry Validation ===
+Timestamp: 2026-02-03T13:09:42-06:00
+Command: grep -rn expire|expir in app/api/ and app/core/langgraph/
+
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/agent.py:268:                      AND (expires_at IS NULL OR expires_at > :now)
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/agent.py:285:                    approval.expires_at and datetime.now(UTC) > approval.expires_at
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/agent.py:287:                    # Update to expired if not already
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/agent.py:291:                    raise HTTPException(status_code=400, detail="Approval has expired")
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/agent.py:673:                if not a.expires_at or datetime.now(UTC) < a.expires_at
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/auth.py:296:        return TokenResponse(access_token=token.access_token, token_type="bearer", expires_at=token.expires_at)
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/auth.py:327:            expires_at=token.expires_at.isoformat(),
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:540:                            expires_at=datetime.now(UTC) + timedelta(seconds=APPROVAL_TIMEOUT),
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:548:                        approval_expires_at = approval.expires_at
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:557:                            "expires_at": approval_expires_at,

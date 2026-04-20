@@ -1,0 +1,4 @@
+=== VF-05.5 TYPESCRIPT GATE CONTRACT ===
+29:TS_CHANGED=$(find /home/zaks/zakops-agent-api/apps/ -maxdepth 4 \( -name '*.ts' -o -name '*.tsx' \) -mmin -60 2>/dev/null | head -1)
+30:if [ -n "$TS_CHANGED" ]; then
+31:  TSC_OUTPUT=$(cd /home/zaks/zakops-agent-api/apps/dashboard && timeout 10 npx tsc --noEmit 2>&1) || {

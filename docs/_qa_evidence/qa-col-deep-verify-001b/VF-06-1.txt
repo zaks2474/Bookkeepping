@@ -1,0 +1,7 @@
+4:Replaces in-memory cost trackers with PostgreSQL cost_ledger table.
+22:    """Persistent cost ledger backed by PostgreSQL cost_ledger table."""
+29:    async def record_cost(
+49:                    INSERT INTO cost_ledger
+97:                text(f"SELECT COALESCE(SUM(cost_usd), 0) FROM cost_ledger {where}"),
+107:                    SELECT COALESCE(SUM(cost_usd), 0) FROM cost_ledger
+121:                    FROM cost_ledger

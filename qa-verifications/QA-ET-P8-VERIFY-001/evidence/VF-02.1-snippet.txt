@@ -1,0 +1,17 @@
+    email_body_snippet: str | None = None
+      schema_version, correlation_id, email_body_snippet, source_message_id)
+    email_body_snippet: str | None = None
+    "correlation_id", "email_body_snippet",
+            q.email_body_snippet,
+            q.email_body_snippet,
+        if not item.email_body_snippet:
+            missing.append("email_body_snippet")
+    # P1-05: Truncate email_body_snippet to 500 chars
+    email_body_snippet = item.email_body_snippet
+    if email_body_snippet and len(email_body_snippet) > 500:
+        email_body_snippet = email_body_snippet[:500]
+                                'email_body_snippet': email_body_snippet or '',
+               q.email_body_snippet, q.triage_summary, q.source_thread_id,
+                 sender_domain, sender_company, body_preview, email_body_snippet,
+                      email_body_snippet, triage_summary, source_thread_id,
+            email_body_snippet,  # $10

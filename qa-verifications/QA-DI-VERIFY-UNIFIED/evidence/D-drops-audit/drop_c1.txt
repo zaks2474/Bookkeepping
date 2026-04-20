@@ -1,0 +1,23 @@
+===============================================================
+DROP-C1: DI-ISSUE-001 Specific Integration Tests
+===============================================================
+
+Search: archive + status filtering in test files across BACKEND_ROOT and MONOREPO
+
+RESULTS:
+Found 5 relevant test assertions in:
+  /home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/deal-integrity.test.ts
+
+  Line 150: it('POST /api/deals/{id}/archive removes deal from active list')
+  Line 157: if (preDeal.stage === 'archived' || preDeal.status === 'archived')
+  Line 184: // Step 4: Verify the deal itself reports archived status
+  Line 399: // Query: deals where stage=archived but status is not archived
+  Line 404: WHERE (stage='archived' AND status<>'archived' AND deleted=false)
+
+Backend test files (zakops-backend/tests/): No matches found.
+
+VERDICT: PARTIAL PASS
+- Dashboard integration tests exist and specifically test archive+status filtering
+- No backend-specific test coverage for archive filtering (Python tests)
+- The frontend tests are comprehensive: they verify archive removes from active,
+  verify archived status, and detect stage/status mismatch (the exact DI-ISSUE-001 bug)

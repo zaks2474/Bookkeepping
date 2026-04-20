@@ -1,0 +1,4 @@
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:80:from app.core.security.injection_guard import scan_input
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:1005:        scan_result = scan_input(message)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:1320:            scan_result = scan_input(last_content)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/security/injection_guard.py:53:def scan_input(content: str) -> ScanResult:

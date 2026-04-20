@@ -1,0 +1,40 @@
+=== IT-1: Files Created (new) ===
+--- tripass orchestrator tool ---
+-rwxr-xr-x 1 root root 35660 Feb  9 15:17 /home/zaks/zakops-agent-api/tools/tripass/tripass.sh
+--- template files ---
+total 56
+drwxr-xr-x  2 zaks zaks  4096 Feb  9 14:53 .
+drwxr-xr-x 15 zaks zaks 32768 Feb  9 15:44 ..
+-rw-r--r--  1 zaks zaks  2235 Feb  9 14:52 pass1.md
+-rw-r--r--  1 zaks zaks  2268 Feb  9 14:52 pass2.md
+-rw-r--r--  1 zaks zaks  2673 Feb  9 14:53 pass3.md
+-rw-r--r--  1 zaks zaks  3091 Feb  9 14:53 pass4_metaqa.md
+--- SOP ---
+-rw-r--r-- 1 zaks zaks 8060 Feb  9 15:15 /home/zaks/bookkeeping/docs/TRIPASS_SOP.md
+--- Latest run pointer ---
+-rw-r--r-- 1 zaks zaks 198 Feb  9 15:17 /home/zaks/bookkeeping/docs/TRIPASS_LATEST_RUN.md
+
+=== IT-2: Files Modified (extended) ===
+--- Makefile: tripass targets ---
+4
+--- stop.sh: tripass awareness ---
+1
+--- memory-sync.sh: tripass metadata ---
+6
+
+=== IT-3: Files Read (sources of truth) ===
+--- Gemini/Codex wrapper scripts ---
+32:GEMINI_CLI=""
+33:CODEX_CLI=""
+147:  GEMINI_CLI=$(command -v gemini 2>/dev/null || echo "")
+148:  if [ -z "$GEMINI_CLI" ] && [ -x "/root/.npm-global/bin/gemini" ]; then
+149:    GEMINI_CLI="/root/.npm-global/bin/gemini"
+--- settings.json allow rules ---
+Bash(make sync-*)
+Bash(make validate-*)
+Bash(make infra-*)
+Bash(make update-*)
+
+=== IT-4: Slash command ---
+/home/zaks/zakops-agent-api/.claude/commands/tripass.md
+

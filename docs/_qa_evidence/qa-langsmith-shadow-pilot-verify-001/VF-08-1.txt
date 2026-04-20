@@ -1,0 +1,9 @@
+93:    async def get_deal(self, deal_id: str) -> DealResponse:
+106:        async with httpx.AsyncClient(timeout=self.timeout) as client:
+107:            response = await client.get(
+108:                f"{self.base_url}/api/deals/{deal_id}",
+109:                headers=self._headers(),
+110:            )
+111:            response.raise_for_status()
+113:                return DealResponse.model_validate(response.json())
+VERDICT: PASS — uses httpx.AsyncClient to GET /api/deals/{deal_id}, returns validated DealResponse

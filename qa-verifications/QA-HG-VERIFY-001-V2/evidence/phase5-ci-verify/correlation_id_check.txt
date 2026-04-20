@@ -1,0 +1,5 @@
+=== CORRELATION ID HEADER CHECK ===
+PASS /health: x-correlation-id: 20399cb5-4271-40ab-8654-573c7bcf7eb0
+PASS /api/deals: x-correlation-id: 06f37c80-e117-4361-92c7-b481e0e870d5
+PASS /api/actions: x-correlation-id: 766cb3a0-8933-45e7-a3e7-ca4990fb25f5
+PASS /api/events: x-correlation-id: 987b5f94-fa2d-43c1-9638-f2dead41e3b5

@@ -1,0 +1,14 @@
+1143:  'correct_brain_summary',
+2098:export async function getDealBrain(dealId: string): Promise<DealBrain | null> {
+2100:    const data = await apiFetch<DealBrain>(`/api/deals/${dealId}/brain`);
+2103:    console.warn('Failed to fetch deal brain:', error);
+2113:    return await apiFetch<{ success: boolean; version?: number }>(`/api/deals/${dealId}/brain/facts`, {
+2127:    return await apiFetch<{ success: boolean }>(`/api/deals/${dealId}/brain/facts/${encodeURIComponent(factKey)}`, {
+2141:    return await apiFetch<{ success: boolean }>(`/api/deals/${dealId}/brain/ghost/confirm`, {
+2155:    return await apiFetch<{ success: boolean }>(`/api/deals/${dealId}/brain/ghost/dismiss`, {
+2169:    return await apiFetch<{ success: boolean }>(`/api/deals/${dealId}/brain/summary`, {
+2194:      `/api/deals/${dealId}/brain/momentum${recompute ? '?recompute=true' : ''}`
+2217:    return await apiFetch<StallPrediction>(`/api/deals/${dealId}/brain/stall`);
+2266:  brain_version: number;
+2315:  brain_version: number;
+2320:    return await apiFetch<DevilsAdvocateResult>(`/api/deals/${dealId}/brain/challenge`);

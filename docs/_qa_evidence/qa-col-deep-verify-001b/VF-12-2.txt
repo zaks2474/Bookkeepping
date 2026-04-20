@@ -1,0 +1,46 @@
+4:Extensible registry for specialist nodes and capability plugins.
+5:Supports dynamic routing to specialist sub-graphs based on query classification.
+9:    registry.register("financial_analysis", FinancialAnalystNode)
+25:    """Result of classifying a query to a specialist domain."""
+35:    """Protocol for specialist capability nodes."""
+39:        """Unique name for this specialist."""
+44:        """Human-readable description of this specialist's capabilities."""
+49:        """Query domains this specialist handles."""
+53:        """Execute the specialist's analysis.
+67:class FinancialAnalystNode:
+102:            "specialist": self.name,
+107:class RiskAssessorNode:
+121:            f"You are a risk assessment specialist for M&A transactions.\n"
+135:            "specialist": self.name,
+140:class DealMemoryExpertNode:
+170:            "specialist": self.name,
+198:            f"You are a compliance and regulatory specialist for M&A transactions.\n"
+212:            "specialist": self.name,
+220:    """Registry for specialist capability nodes.
+222:    Provides dynamic routing to specialist sub-graphs.
+228:        # Register built-in specialists
+232:        """Register the built-in specialist nodes."""
+233:        self.register(FinancialAnalystNode())
+234:        self.register(RiskAssessorNode())
+235:        self.register(DealMemoryExpertNode())
+239:        """Register a specialist node."""
+243:        logger.debug("specialist_registered", name=node.name, domains=node.domains)
+246:        """Get a specialist by name."""
+250:        """Get a specialist by query domain."""
+256:    def list_specialists(self) -> list[dict[str, Any]]:
+257:        """List all registered specialists."""
+268:        """Classify query and route to appropriate specialist.
+270:        Returns specialist result if a match is found, None otherwise.
+284:            "specialist_routed",
+286:            specialist=node.name,
+295:        """Classify a query to a specialist domain using keyword matching.
+342:        """Synthesize multiple specialist results into a coherent response.
+345:        When multiple specialists contribute analyses, merge their outputs
+349:            results: List of specialist result dicts (each has response, specialist, confidence)
+352:            Synthesized response string combining all specialist insights.
+359:        parts = [f"**Combined Analysis** (from {len(results)} specialists):\n"]
+361:            specialist = r.get("specialist", "unknown")
+364:            parts.append(f"### {specialist} (confidence: {confidence:.0%})")
+369:            "specialist_synthesis",
+370:            specialist_count=len(results),
+371:            specialists=[r.get("specialist") for r in results],

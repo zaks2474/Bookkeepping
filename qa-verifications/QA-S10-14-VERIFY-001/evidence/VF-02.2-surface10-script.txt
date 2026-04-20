@@ -1,0 +1,82 @@
+=== VF-02.2 SURFACE10 SCRIPT ===
+-rwxr-xr-x 1 zaks zaks 5102 Feb 10 11:48 /home/zaks/zakops-agent-api/tools/infra/validate-surface10.sh
+#!/usr/bin/env bash
+# validate-surface10.sh — Surface 10: Dependency Health Contract
+# Validates SERVICE-TOPOLOGY.md against actual service definitions
+# CI-safe: does NOT require running services
+set -euo pipefail
+
+FAILURES=0
+WARNINGS=0
+
+TOPOLOGY_DOC="/home/zaks/bookkeeping/docs/SERVICE-TOPOLOGY.md"
+MONOREPO="/home/zaks/zakops-agent-api"
+BACKEND="/home/zaks/zakops-backend"
+RAG="/home/zaks/Zaks-llm"
+
+echo "=== SURFACE 10: DEPENDENCY HEALTH CONTRACT ==="
+echo ""
+
+# ── CHECK 1: Source artifact exists ──────────────────────────────────
+echo "--- Check 1: Source Artifact ---"
+if [ -f "$TOPOLOGY_DOC" ]; then
+  LINES=$(wc -l < "$TOPOLOGY_DOC")
+  echo "  PASS: SERVICE-TOPOLOGY.md exists ($LINES lines)"
+else
+  echo "  FAIL: SERVICE-TOPOLOGY.md not found at $TOPOLOGY_DOC"
+  FAILURES=$((FAILURES+1))
+  echo ""
+  echo "================================"
+  echo "FAIL: $FAILURES CHECK(S) FAILED"
+  exit 1
+fi
+
+# ── CHECK 2: Documented services have real config files ──────────────
+echo ""
+echo "--- Check 2: Service Config File Resolution ---"
+
+# Dashboard
+if [ -d "$MONOREPO/apps/dashboard" ]; then
+  echo "  PASS: Dashboard — app directory exists"
+else
+  echo "  FAIL: Dashboard — app directory missing ($MONOREPO/apps/dashboard)"
+  FAILURES=$((FAILURES+1))
+fi
+
+# Backend
+if [ -f "$BACKEND/docker-compose.yml" ] || [ -f "$BACKEND/docker-compose.yaml" ]; then
+  echo "  PASS: Backend — docker-compose exists"
+else
+  echo "  FAIL: Backend — docker-compose missing ($BACKEND/)"
+  FAILURES=$((FAILURES+1))
+fi
+
+# Agent API
+if [ -f "$MONOREPO/apps/agent-api/docker-compose.yml" ] || [ -f "$MONOREPO/apps/agent-api/docker-compose.yaml" ]; then
+  echo "  PASS: Agent API — docker-compose exists"
+else
+  echo "  FAIL: Agent API — docker-compose missing"
+  FAILURES=$((FAILURES+1))
+fi
+
+# RAG
+if [ -d "$RAG" ]; then
+  echo "  PASS: RAG — repository directory exists"
+else
+  echo "  WARN: RAG — repository directory not found ($RAG)"
+  WARNINGS=$((WARNINGS+1))
+fi
+
+# ── CHECK 3: Health endpoint source files exist ──────────────────────
+echo ""
+echo "--- Check 3: Health Endpoint Source Resolution ---"
+
+# Backend health router
+BACKEND_HEALTH="$BACKEND/src/api/shared/routers/health.py"
+if [ -f "$BACKEND_HEALTH" ]; then
+  echo "  PASS: Backend health router exists"
+else
+  echo "  FAIL: Backend health router missing ($BACKEND_HEALTH)"
+  FAILURES=$((FAILURES+1))
+fi
+

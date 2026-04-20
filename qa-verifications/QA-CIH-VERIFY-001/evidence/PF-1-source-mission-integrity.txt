@@ -1,0 +1,23 @@
+=== PF-1 SOURCE MISSION INTEGRITY ===
+678 /home/zaks/bookkeeping/docs/MISSION-CI-HARDENING-001.md
+213:## Phase 0 - Discovery and Baseline
+253:## Phase 1 - Mandatory Step 1: stop.sh Project Detection Fallback Hardening
+299:## Phase 2 - Add Repo-Local CI Governance Validation Scripts
+350:## Phase 3 - Add Aggregate Make Targets and Local/CI Parity
+394:## Phase 4 - CI Workflow Hardening and Gate Wiring
+435:## Phase 5 - Documentation and Policy Drift Safeguards
+477:## Phase 6 - Final Verification and Bookkeeping
+554:### AC-1: Baseline Evidence Captured
+557:### AC-2: Step 1 Completed
+560:### AC-3: Hook Detection Behavior Verified
+563:### AC-4: Rule Frontmatter Validator Implemented
+566:### AC-5: Governance Anchor Validator Implemented
+569:### AC-6: Scripted CI Gate E Validation Implemented
+572:### AC-7: Aggregate Make Target Added
+575:### AC-8: CI Workflow Enforces Governance
+578:### AC-9: Surface 9 and 14-Surface Baseline Preserved
+581:### AC-10: Documentation Updated
+584:### AC-11: No Regressions
+587:### AC-12: Bookkeeping Complete
+phase_count= 7
+ac_count= 12

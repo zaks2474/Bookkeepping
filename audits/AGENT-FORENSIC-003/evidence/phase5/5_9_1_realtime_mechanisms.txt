@@ -1,0 +1,23 @@
+=== CHECK 5.9.1: Real-Time Update Mechanisms ===
+Timestamp: 2026-02-03T13:22:22-06:00
+
+/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/e2e/integration.test.tsx:610:  it('WebSocket endpoint for global updates', () => {
+/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/setup.ts:12:    prefetch: vi.fn(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:97:const POLL_TIMEOUT_MS = 120000; // Stop polling after 2 minutes
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:141:  const pollingRef = useRef<{ actionId: string; startTime: number; intervalId: NodeJS.Timeout } | null>(null);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:203:  // Stop any active polling
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:205:    if (pollingRef.current) {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:206:      clearInterval(pollingRef.current.intervalId);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:207:      pollingRef.current = null;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:231:          // If terminal state, stop polling and show toast
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:245:        // Don't stop polling on transient errors
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:249:    // Start polling
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:250:    const intervalId = setInterval(poll, POLL_INTERVAL_MS);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:251:    pollingRef.current = { actionId, startTime, intervalId };
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:257:  // Cleanup polling on unmount
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:265:    const interval = setInterval(() => {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:354:        // Start polling to track any auto-execution
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:371:        // Start polling to track execution
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:412:        // Start polling to track execution
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:163:  const { data, isLoading, error, refetch } = useAgentActivity();
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:229:        <Button onClick={() => refetch()} variant="outline">

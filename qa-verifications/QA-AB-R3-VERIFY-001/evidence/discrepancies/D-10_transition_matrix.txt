@@ -1,0 +1,184 @@
+D-10 transition matrix enforcement
+
+    Uses extra='forbid' to reject unexpected fields (strict validation).
+
+    NOTE (F-003 RT-2): from_stage is ADVISORY only. The tool fetches
+    the actual current stage from the backend as ground truth.
+    """
+    model_config = ConfigDict(extra="forbid")
+
+    deal_id: str = Field(..., description="The unique identifier of the deal to transition")
+    from_stage: str = Field(..., description="Advisory: current stage (tool will verify)")
+    to_stage: str = Field(..., description="Target stage to transition the deal to. Valid: inbound, screening, qualified, loi, diligence, closing, portfolio, junk, archived")
+    reason: Optional[str] = Field(None, description="Reason for the transition")
+
+
+class GetDealInput(BaseModel):
+    """Input schema for get_deal tool."""
+
+    deal_id: str = Field(..., description="The unique identifier of the deal")
+
+
+class SearchDealsInput(BaseModel):
+    """Input schema for search_deals tool."""
+
+    query: str = Field(..., description="Search query for deals")
+    limit: int = Field(default=10, description="Maximum number of results")
+
+
+class CreateDealInput(BaseModel):
+    """Input schema for create_deal tool.
+
+    REMEDIATION-V3 [ZK-ISSUE-0009]: Creates a new deal in the system.
+    This tool requires HITL approval before execution.
+    """
+    model_config = ConfigDict(extra="forbid")
+
+    canonical_name: str = Field(..., description="The canonical name for the deal (e.g., company name)")
+    display_name: Optional[str] = Field(None, description="Optional display name for the deal")
+    stage: str = Field(default="inbound", description="Initial stage for the deal. Valid: inbound, screening, qualified, loi, diligence, closing, portfolio, junk, archived")
+    company_name: Optional[str] = Field(None, description="Company name if different from canonical name")
+    broker_name: Optional[str] = Field(None, description="Name of the broker associated with this deal")
+    broker_email: Optional[str] = Field(None, description="Email of the broker")
+    source: Optional[str] = Field(None, description="Source of the deal (e.g., 'email', 'referral', 'platform')")
+    notes: Optional[str] = Field(None, description="Initial notes about the deal")
+
+
+class AddNoteInput(BaseModel):
+    """Input schema for add_note tool.
+
+    REMEDIATION-V3 [ZK-ISSUE-0009]: Add a note to an existing deal.
+    """
+    deal_id: str = Field(..., description="The unique identifier of the deal")
+    content: str = Field(..., description="The content of the note")
+    category: str = Field(default="general", description="Category of the note (e.g., 'general', 'research', 'diligence')")
+
+
+@tool(args_schema=TransitionDealInput)
+async def transition_deal(
+    deal_id: str,
+    from_stage: str,
+    to_stage: str,
+    reason: Optional[str] = None,
+) -> str:
+    """Transition a deal from one stage to another.
+
+    This is a sensitive operation that requires human approval (HITL).
+    The deal will be moved from the current stage to the target stage.
+
+    F-003 REMEDIATION (RT-1, RT-2):
+    - Validates to_stage against valid enum BEFORE approval
+    - Fetches current stage from backend as ground truth (from_stage is advisory)
+    - After backend call, verifies stage actually changed (No-Illusions Gate)
+    - Returns structured result with backend HTTP status for audit
+
+    Args:
+        deal_id: The unique identifier of the deal
+        from_stage: Advisory current stage (tool verifies against backend)
+        to_stage: Target stage to transition to
+        reason: Optional reason for the transition
+
+    Returns:
+        str: JSON result with ok, error, backend_status, old_stage, new_stage
+
+                f"{DEAL_API_URL}/api/deals/{deal_id}/transition",
+                headers=headers,
+                json={
+                    "new_stage": to_stage_lower,
+                    "reason": reason,
+                    "idempotency_key": tool_idempotency_key(
+                        thread_id="agent",
+                        tool_name="transition_deal",
+                        tool_args={
+                            "deal_id": deal_id,
+                            "from_stage": actual_from_stage,  # Use actual, not LLM's
+                            "to_stage": to_stage_lower,
+                            "reason": reason,
+                        },
+                    ),
+                },
+            )
+
+            backend_status = response.status_code
+
+            if response.status_code != 200:
+                error_text = response.text
+                logger.error(
+                    "transition_deal_backend_rejected",
+                    deal_id=deal_id,
+                    status_code=backend_status,
+                    error=error_text,
+                )
+                return json.dumps({
+                    "ok": False,
+                    "error": f"Backend rejected transition: HTTP {backend_status} - {error_text}",
+                    "backend_status": backend_status,
+                })
+
+            # F-003 RT-1 No-Illusions Gate: Re-fetch and verify stage actually changed
+            verify_response = await client.get(f"{DEAL_API_URL}/api/deals/{deal_id}", headers=headers)
+            if verify_response.status_code != 200:
+                return json.dumps({
+                    "ok": False,
+                    "error": f"Could not verify transition: HTTP {verify_response.status_code}",
+                    "backend_status": backend_status,
+                    "verification_failed": True,
+                })
+
+            verify_data = verify_response.json()
+            after_stage = verify_data.get("stage", "unknown")
+            after_updated_at = verify_data.get("updated_at", "")
+
+            # NI-1: Stage must have changed to target
+            if after_stage.lower() != to_stage_lower:
+                logger.error(
+                    "transition_deal_phantom_success",
+                    deal_id=deal_id,
+                    expected_stage=to_stage_lower,
+                    actual_stage=after_stage,
+                    backend_status=backend_status,
+                )
+                return json.dumps({
+                    "ok": False,
+                    "error": f"Phantom success: backend returned 200 but stage is still '{after_stage}' (expected '{to_stage_lower}')",
+                    "backend_status": backend_status,
+                    "phantom_success": True,
+                    "expected_stage": to_stage_lower,
+                    "actual_stage": after_stage,
+                })
+
+            # NI-2: updated_at must have changed
+            if before_updated_at == after_updated_at and before_updated_at:
+                logger.warning(
+                    "transition_deal_no_updated_at_change",
+                    deal_id=deal_id,
+                    before_updated_at=before_updated_at,
+                    after_updated_at=after_updated_at,
+                )
+                # This is a warning, not a failure — updated_at might not change if already recent
+
+            logger.info(
+                "transition_deal_verified_success",
+                deal_id=deal_id,
+                old_stage=actual_from_stage,
+                new_stage=after_stage,
+                backend_status=backend_status,
+            )
+            return json.dumps({
+                "ok": True,
+                "deal_id": deal_id,
+                "old_stage": actual_from_stage,
+                "new_stage": after_stage,
+                "backend_status": backend_status,
+                "updated_at": after_updated_at,
+            })
+
+    except httpx.ConnectError:
+        if ENVIRONMENT == "development" and ALLOW_TOOL_MOCKS:
+            logger.warning(
+                "deal_api_unavailable_mock_response",
+                deal_id=deal_id,
+                from_stage=from_stage,
+                to_stage=to_stage,
+                environment=ENVIRONMENT,
+            )

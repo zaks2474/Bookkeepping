@@ -1,0 +1,4 @@
+Promise.allSettled usage in DealBrain.tsx:
+- Line 127: const [data, stall] = await Promise.allSettled([
+Uses Promise.allSettled (not Promise.all) — matches architectural mandate.
+RESULT: PASS

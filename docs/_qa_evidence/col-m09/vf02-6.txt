@@ -1,0 +1,3 @@
+apps/agent-api/app/services/chat_repository.py:232:                    "DELETE FROM cross_db_outbox WHERE payload::text LIKE :thread_ref"
+apps/agent-api/app/services/chat_repository.py:502:        """Queue a brain extraction event for the outbox worker."""
+apps/agent-api/app/services/chat_repository.py:506:                    INSERT INTO cross_db_outbox (event_type, payload, target_db)

@@ -1,0 +1,10 @@
+24:        "get_deal",
+25:        "get_deal_health",
+26:        "add_note",
+27:        "transition_deal",
+35:        "get_deal",
+36:        "get_deal_health",
+44:    "get_deal",
+45:    "get_deal_health",
+48:_OPERATOR_TOOLS = _VIEWER_TOOLS | frozenset(["add_note"])
+49:_APPROVER_TOOLS = _OPERATOR_TOOLS | frozenset(["transition_deal", "create_deal"])

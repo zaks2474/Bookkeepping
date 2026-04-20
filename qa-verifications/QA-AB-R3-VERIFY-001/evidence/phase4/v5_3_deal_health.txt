@@ -1,0 +1,13 @@
+817:def calculate_deal_health_score(deal_data: Dict[str, Any]) -> Dict[str, Any]:
+881:            logger.debug("deal_health_date_parse_error", error=str(e))
+905:            logger.debug("deal_health_date_parse_error", error=str(e))
+969:    """Input schema for get_deal_health tool."""
+975:async def get_deal_health(deal_id: str) -> str:
+989:    logger.info("get_deal_health_called", deal_id=deal_id)
+998:                health_result = calculate_deal_health_score(deal_data)
+1003:                    "deal_health_calculated",
+1042:        logger.error("get_deal_health_error", error=str(e))
+8:R3 REMEDIATION [P4.3]: Added get_deal_health tool for deal health scoring.
+20:    get_deal_health,
+30:    get_deal_health,
+7. **get_deal_health** - Get a health score (0-100) and recommendations for a deal

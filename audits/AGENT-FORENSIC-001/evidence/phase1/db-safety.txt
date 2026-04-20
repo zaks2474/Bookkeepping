@@ -1,0 +1,40 @@
+AGENT-FORENSIC-001 Phase 1 — Step 1.12: Database Query Safety
+==============================================================
+Date: 2026-02-02
+
+ORM USAGE:
+- Primary: SQLModel (SQLAlchemy-based ORM)
+- All user/session CRUD: ORM methods (select, get, add, commit)
+- Database service (services/database.py): 100% ORM — SAFE
+
+RAW SQL (sqlmodel.text()):
+Found in agent.py for atomic approval operations:
+
+1. _reclaim_stale_approvals (line 96):
+   text("UPDATE approvals SET status = 'pending' ... WHERE status = 'claimed' AND claimed_at < :threshold")
+   Params: {"threshold": stale_threshold}
+   → SAFE: parameterized
+
+2. approve_action (line 247):
+   text("UPDATE approvals SET status = 'claimed' ... WHERE id = :approval_id AND status = 'pending'")
+   Params: {"approval_id": approval_id, "claimed_at": ..., "now": ...}
+   → SAFE: parameterized, approval_id from path param (string)
+
+3. reject_action (line 518):
+   text("UPDATE approvals SET status = 'rejected' ... WHERE id = :approval_id AND status = 'pending'")
+   Params: {"approval_id": approval_id, ...}
+   → SAFE: parameterized
+
+RAW SQL (non-parameterized):
+4. clear_chat_history (graph.py:807):
+   await conn.execute(f"DELETE FROM {table} WHERE thread_id = %s", (session_id,))
+   → MIXED: thread_id is parameterized (%s), BUT table name is from settings.CHECKPOINT_TABLES
+   → The table names come from config (not user input), so SAFE in practice
+   → However, f-string table interpolation is a pattern to flag
+
+ANALYSIS:
+[PASS] All user-facing SQL queries use parameterized queries
+[PASS] ORM used for all standard CRUD operations
+[INFO] Raw SQL used only for atomic UPDATE...RETURNING patterns (necessary for race condition handling)
+[WARN] Table name interpolation in clear_chat_history (graph.py:807) — safe because source is config,
+       but violates defense-in-depth principle

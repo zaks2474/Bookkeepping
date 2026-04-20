@@ -1,0 +1,3 @@
+    monthly_limit_usd   NUMERIC(10,2) DEFAULT 10.00,
+    alert_threshold     NUMERIC(3,2) DEFAULT 0.80,
+    hard_cap            BOOLEAN DEFAULT FALSE,

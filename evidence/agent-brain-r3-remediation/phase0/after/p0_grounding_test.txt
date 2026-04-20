@@ -1,0 +1,15 @@
+=== P0.2 GROUNDING TEST EVIDENCE ===
+
+Request: What stage is deal DL-0048 in?
+
+Response:
+{"thread_id":"test-grounding-002","status":"completed","content":"I couldn't find any information on deal DL-0048. It seems the deal might not exist or there could be an issue with the deal ID. Could you please verify the deal ID and try again?","pending_approval":null,"actions_taken":[],"error":null}
+
+=== LOG EVIDENCE (get_deal CALLED before answering) ===
+[2026-02-04T21:55:59.280784Z] [info] get_deal_called deal_id=DL-0048
+HTTP Request: GET http://host.docker.internal:8091/api/deals/DL-0048 "HTTP/1.1 404 Not Found"
+
+VERDICT: PASS - Agent called get_deal before answering deal question
+- The grounding rules in the system prompt forced the agent to call get_deal
+- The backend returned 404 (deal not found)
+- Agent correctly reported it couldn't find the deal instead of hallucinating

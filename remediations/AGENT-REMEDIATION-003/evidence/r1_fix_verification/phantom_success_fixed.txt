@@ -1,0 +1,96 @@
+=== R1: Phantom Success Fix Verification ===
+
+Date: 2026-02-03
+Test Thread: test-success-1770137726
+
+--- BEFORE FIX (from logs 06:01:26) ---
+- approval_gate_interrupt at 06:01:26.408041Z
+- resume_after_approval_success at 06:01:26.411137Z (3ms later)
+- NO executing_approved_tool log
+- NO tool_execution_success log
+- API returned: {"ok": true} (PHANTOM SUCCESS)
+
+--- AFTER FIX ---
+Test 1 (deleted deal DL-0002):
+  - Tool executed and returned: {"ok": false, "error": "Could not fetch deal DL-0002: HTTP 404"}
+  - Real backend response, not phantom success
+
+Test 2 (valid deal DL-0020):
+  - Tool executed and returned: {"ok": false, "error": "Backend rejected transition: HTTP 401"}
+  - Real backend response (auth config issue), not phantom success
+
+--- FIX VERIFICATION ---
+1. LangGraph resume API fixed: interrupt_resume={} → Command(resume={})
+2. Tool result now extracted from ToolMessage in messages
+3. actual_success determined by tool_executed AND tool_result.ok
+4. API returns real tool_result instead of hardcoded {"ok": true}
+
+The 401 error is a separate agent→backend auth configuration issue.
+The CRITICAL FIX (eliminating phantom success) is VERIFIED.
+
+=== R1 VERDICT: PASS ===
+Phantom success bug is FIXED. Tool execution results are now truthful.
+
+--- ADDITIONAL TESTING (after auth fix) ---
+
+Test progression:
+1. BEFORE FIX: {"ok": true} without calling backend (PHANTOM SUCCESS)
+2. After LangGraph fix: {"ok": false, "error": "HTTP 404"} (tool executing, deleted deal)
+3. After auth fix (401→400→500):
+   - Auth working (ZAKOPS_API_KEY configured)
+   - Idempotency key length fixed (64 char max)
+   - Backend returning 500 due to schema issue ("details" column missing)
+
+Backend error is SEPARATE from agent phantom success bug:
+  asyncpg.exceptions.UndefinedColumnError: column "details" does not exist
+  Location: /app/src/core/deals/workflow.py:121
+
+=== FINAL VERDICT ===
+Phantom Success Bug: FIXED
+- Tools now execute and call backend
+- Real results returned (not hardcoded {"ok": true})
+- Auth configured (ZAKOPS_API_KEY)
+
+Backend Schema Bug: SEPARATE ISSUE (not part of AGENT-REMEDIATION-003)
+- "details" column missing in idempotency_records or similar table
+- This is a backend migration issue
+
+=== FINAL SUCCESSFUL TEST (2026-02-03T17:11) ===
+
+Thread ID: r1-final-1770138656
+
+BEFORE:
+  deal_id | stage     | updated_at
+  DL-0020 | qualified | 2026-02-02 16:15:29.206279+00
+
+Step 1: Invoke agent → awaiting_approval (approval_id: 383bbf4b-eb24-490e-a143-08ebe622c44f)
+Step 2: Approve action → 
+
+Result:
+{
+  "status": "completed",
+  "error": null,
+  "actions_taken": [
+    {
+      "tool": "transition_deal",
+      "result": {
+        "ok": true,
+        "deal_id": "DL-0020",
+        "old_stage": "qualified",
+        "new_stage": "loi",
+        "backend_status": 200,
+        "updated_at": "2026-02-03T17:11:01.367129Z"
+      }
+    }
+  ]
+}
+
+AFTER:
+  deal_id | stage | updated_at
+  DL-0020 | loi   | 2026-02-03 17:11:01.367129+00
+
+=== R1 PHASE COMPLETE ===
+- Phantom success bug: FIXED
+- Backend schema bug: FIXED (details → payload)
+- Agent→Backend auth: WORKING (ZAKOPS_API_KEY)
+- Full HITL flow: VERIFIED END-TO-END

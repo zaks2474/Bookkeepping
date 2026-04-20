@@ -1,0 +1,15 @@
+=== VF-02.4 EXPORT ROUTE REGRESSION TEST ===
+
+> zakops-dashboard@1.0.0 test
+> vitest run src/__tests__/settings-export-route.test.ts
+
+
+[1m[46m RUN [49m[22m [36mv4.0.17 [39m[90m/home/zaks/zakops-agent-api/apps/dashboard[39m
+
+ [32m✓[39m src/__tests__/settings-export-route.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m9 passed[39m[22m[90m (9)[39m
+[2m   Start at [22m 00:00:35
+[2m   Duration [22m 373ms[2m (transform 43ms, setup 23ms, import 34ms, tests 7ms, environment 237ms)[22m
+

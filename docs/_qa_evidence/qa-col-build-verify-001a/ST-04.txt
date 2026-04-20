@@ -1,0 +1,16 @@
+  message_chunk: MessageChunkEvent OK
+  message_complete: MessageCompleteEvent OK
+  thread_updated: ThreadUpdatedEvent OK
+  brain_updated: BrainUpdatedEvent OK
+  summary_generated: SummaryGeneratedEvent OK
+  injection_alert: InjectionAlertEvent OK
+  legal_hold_set: LegalHoldSetEvent OK
+  budget_warning: BudgetWarningEvent OK
+  cost_update: CostUpdateEvent OK
+  ghost_knowledge: GhostKnowledgeEvent OK
+  ghost_knowledge_flags: GhostKnowledgeFlagsEvent OK
+  momentum_update: MomentumUpdateEvent OK
+  tool_execution: ToolExecutionEvent OK
+  approval_required: ApprovalRequiredEvent OK
+  error: ErrorEvent OK
+Total: 15 event types -- all valid

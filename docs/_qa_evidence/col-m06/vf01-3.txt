@@ -1,0 +1,4 @@
+    passed: bool
+    patterns_found: list[str] = field(default_factory=list)
+15 regex patterns across 3 severity levels.
+    sanitized_content: Optional[str] = None

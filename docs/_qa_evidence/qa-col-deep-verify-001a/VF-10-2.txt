@@ -1,0 +1,4 @@
+Line 68: def verify_no_leakage(self, text: str) -> bool:
+  Calls detect_canary(), returns False if leaked (line 71-73)
+Module-level wrapper at line 99: def verify_no_leakage(text) -> bool:
+VERDICT: PASS

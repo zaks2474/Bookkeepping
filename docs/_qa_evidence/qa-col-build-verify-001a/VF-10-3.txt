@@ -1,0 +1,12 @@
+18:    deal_id: str
+36:    def record_sentiment(
+38:        deal_id: str,
+45:            deal_id: Deal identifier
+49:        self._scores[deal_id].append({
+54:    def get_trend(self, deal_id: str) -> SentimentTrend:
+59:        entries = self._scores.get(deal_id, [])
+61:            return SentimentTrend(deal_id=deal_id)
+86:            deal_id=deal_id,
+98:                deal_id=deal_id,
+106:    def reset(self, deal_id: str) -> None:
+108:        self._scores.pop(deal_id, None)

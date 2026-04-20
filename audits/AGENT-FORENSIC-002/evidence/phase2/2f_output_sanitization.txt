@@ -1,0 +1,15 @@
+=== STEP 2.15: Output Sanitization (GPT RT-11) ===
+--- Code: verify sanitize_llm_output is imported and called ---
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:69:from app.core.security.output_validation import sanitize_llm_output
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:573:                sanitization_result = sanitize_llm_output(response_text)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:647:                sanitization_result = sanitize_llm_output(response_text)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:788:                        sanitization_result = sanitize_llm_output(content)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/security/output_validation.py:159:                result[key] = sanitize_llm_output(value).sanitized
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/security/output_validation.py:168:                else sanitize_llm_output(item).sanitized
+--- Test: XSS in agent response ---
+{"detail":"Authentication required"}--- Check: raw <script> tags in response? ---
+1
+0 = PASS (sanitized). >0 = FAIL (XSS possible).
+\n--- SUPPLEMENT: response-only <script> check ---
+{"detail":"Authentication required"}
+script tag in response: False

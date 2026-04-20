@@ -1,0 +1,7 @@
+ * P2-03: Supports optimistic locking via expectedVersion.
+    expectedVersion?: number;
+        expected_version: options?.expectedVersion,
+  expectedVersion?: number;
+        expected_version: params.expectedVersion,
+  expectedVersion?: number;
+          expected_version: params.expectedVersion,

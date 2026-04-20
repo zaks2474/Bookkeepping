@@ -1,0 +1,28 @@
+=== VF-03.3 SURFACE10-14 HARNESS COVERAGE ===
+4:# Fail cases: creates temp copies with bad paths to verify fail-closed behavior
+6:set -euo pipefail
+15:run_pass_test() {
+32:    echo "  PASS: $name (pass case, exit=0)"
+35:    echo "  FAIL: $name (pass case, expected exit=0, got exit=$RC)"
+42:run_fail_test_via_sed() {
+67:    echo "  PASS: $name (fail case, exit=$RC != 0)"
+70:    echo "  FAIL: $name (fail case, expected non-zero exit, got exit=0)"
+77:check_fail_closed_structure() {
+85:    echo "  PASS: $name — $FAIL_COUNT fail/exit paths (structural check)"
+88:    echo "  FAIL: $name — only $FAIL_COUNT fail/exit paths (expected >=2)"
+97:run_pass_test "Surface 10: Dependency Health" "$INFRA_DIR/validate-surface10.sh"
+98:run_pass_test "Surface 11: Env Registry" "$INFRA_DIR/validate-surface11.sh"
+99:run_pass_test "Surface 12: Error Taxonomy" "$INFRA_DIR/validate-surface12.sh"
+100:run_pass_test "Surface 13: Test Coverage" "$INFRA_DIR/validate-surface13.sh"
+101:run_pass_test "Surface 14: Performance Budget" "$INFRA_DIR/validate-surface14.sh"
+105:run_fail_test_via_sed "Surface 10: Missing topology" "$INFRA_DIR/validate-surface10.sh" \
+108:run_fail_test_via_sed "Surface 11: Missing env crossref" "$INFRA_DIR/validate-surface11.sh" \
+111:run_fail_test_via_sed "Surface 12: Missing error shapes" "$INFRA_DIR/validate-surface12.sh" \
+114:run_fail_test_via_sed "Surface 13: Missing test coverage" "$INFRA_DIR/validate-surface13.sh" \
+117:run_fail_test_via_sed "Surface 14: Missing perf budget" "$INFRA_DIR/validate-surface14.sh" \
+122:check_fail_closed_structure "Surface 10 fail paths" "$INFRA_DIR/validate-surface10.sh"
+123:check_fail_closed_structure "Surface 11 fail paths" "$INFRA_DIR/validate-surface11.sh"
+124:check_fail_closed_structure "Surface 12 fail paths" "$INFRA_DIR/validate-surface12.sh"
+125:check_fail_closed_structure "Surface 13 fail paths" "$INFRA_DIR/validate-surface13.sh"
+126:check_fail_closed_structure "Surface 14 fail paths" "$INFRA_DIR/validate-surface14.sh"
+129:echo "Surface 10-14 Test Harness: $PASS/$TOTAL passed$([ "$FAIL" -gt 0 ] && echo ", $FAIL FAILED" || echo "")"

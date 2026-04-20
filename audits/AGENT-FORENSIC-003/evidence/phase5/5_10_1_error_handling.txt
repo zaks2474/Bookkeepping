@@ -1,0 +1,33 @@
+=== CHECK 5.10.1: Error Handling in Agent Path ===
+Timestamp: 2026-02-03T13:22:29-06:00
+
+/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/e2e/integration.test.tsx:28:      queries: { retry: false },
+/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/e2e/integration.test.tsx:29:      mutations: { retry: false },
+/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/e2e/integration.test.tsx:53:    error: null,
+/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/e2e/integration.test.tsx:67:    error: null,
+/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/e2e/integration.test.tsx:586:      'stream_error',
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:70:  retryKineticAction,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:119:  const [error, setError] = useState<string | null>(null);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:152:      } catch (err) {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:154:        console.error('API check failed:', err);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:182:    setError(null);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:196:    } catch (err) {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:197:      setError(err instanceof Error ? err.message : 'Failed to load actions');
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:211:  // Poll for action status until terminal or timeout
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:237:              toast.error(`Action failed: ${action.error?.message || 'Unknown error'}`);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:243:      } catch (err) {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:244:        console.error('Polling error:', err);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:245:        // Don't stop polling on transient errors
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:348:  // Action handlers - return { success, error } for inline display
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:349:  const handleApprove = async (actionId: string, approvedBy: string): Promise<{ success: boolean; error?: string }> => {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:358:        return { success: false, error: result.error || 'Failed to approve action' };
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:360:    } catch (err) {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:361:      const message = err instanceof Error ? err.message : 'Failed to approve action';
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:362:      return { success: false, error: message };
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:366:  const handleRun = async (actionId: string): Promise<{ success: boolean; error?: string; reason?: string }> => {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:377:          toast.info(result.error || 'Action already in progress');
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:382:          return { success: false, error: result.error || 'Failed to run action', reason: result.reason };
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:385:    } catch (err) {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:386:      const message = err instanceof Error ? err.message : 'Failed to run action';
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:387:      return { success: false, error: message };
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:391:  const handleCancel = async (actionId: string, reason?: string): Promise<{ success: boolean; error?: string }> => {

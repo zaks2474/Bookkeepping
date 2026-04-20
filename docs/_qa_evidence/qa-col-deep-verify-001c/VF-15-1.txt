@@ -1,0 +1,17 @@
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealBrain.tsx
+=== /home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealBrain.tsx ===
+7: * Shows: summary, facts, risks, decisions, assumptions, open items,
+71:type BrainTab = 'facts' | 'risks' | 'decisions' | 'assumptions' | 'open_items' | 'ghost' | 'entities';
+74:  { id: 'facts', label: 'Facts', icon: IconBulb },
+85:function confidenceStars(confidence: number): string {
+86:  const filled = Math.round(confidence * 5);
+109:  const [activeTab, setActiveTab] = useState<BrainTab>('facts');
+146:      confidence: 0.9,
+232:  const factCount = brain.facts.length;
+237:  const ghostCount = brain.ghost_facts.length;
+241:    facts: factCount,
+303:          {brain.summary_confidence !== null && brain.summary_confidence !== undefined && (
+306:              <span className='text-yellow-500'>{confidenceStars(brain.summary_confidence)}</span>
+307:              <span>({(brain.summary_confidence * 100).toFixed(0)}%)</span>
+337:          {activeTab === 'facts' && (
+346:              {brain.facts.length === 0 ? (

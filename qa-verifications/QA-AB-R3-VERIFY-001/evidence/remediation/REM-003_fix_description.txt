@@ -1,0 +1,3 @@
+REM-003: validate_prompt_tools CI mode invocation
+- Issue: Script invoked with --ci flag (unsupported). Dependencies missing in host, causing ImportError.
+- Fix: Run with CI=true env var to use static tool list and avoid deps.

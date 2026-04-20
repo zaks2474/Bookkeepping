@@ -1,0 +1,39 @@
+=== PF-4 HOOK + CI SNAPSHOT ===
+-rwxr-xr-x 1 root root 5182 Feb 10 15:31 /home/zaks/.claude/hooks/stop.sh
+-rw-r--r-- 1 root root 10906 Feb 10 15:36 /home/zaks/zakops-agent-api/.github/workflows/ci.yml
+10:# ── Project Detection (multi-path, CI-HARDENING-001 Step 1) ──
+11:# Order: 1) env override  2) git rev-parse  3) known path fallback
+17:if [ -n "${MONOREPO_ROOT_OVERRIDE:-}" ] && [ -d "$MONOREPO_ROOT_OVERRIDE" ]; then
+18:  MONOREPO_ROOT="$MONOREPO_ROOT_OVERRIDE"
+22:# 2) git rev-parse when available
+24:  MONOREPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || echo "")
+34:  DETECTION_METHOD="known-path-fallback"
+44:  # Gate A — Fast offline validation (TypeScript + offline checks only)
+45:  echo "Gate A: validate-fast"
+47:    echo "ERROR: Gate A failed. Blocking stop hook."
+51:    echo "ERROR: Stop hook exceeded 30s budget after Gate A."
+55:  # Gate B — Contract surfaces (all 14, S1-S14)
+56:  echo "Gate B: validate-contract-surfaces (14 surfaces)"
+58:    echo "ERROR: Gate B failed. Blocking stop hook."
+62:    echo "ERROR: Stop hook exceeded 30s budget after Gate B."
+66:  # Gate E — Raw httpx client usage in deal_tools.py (must be 0)
+68:  echo "Gate E: raw httpx client usage check"
+72:    echo "ERROR: Gate E target file not found: $GATE_E_TARGET"
+80:    echo "ERROR: Gate E failed — no scanner available (neither rg nor grep in PATH). Fail closed."
+87:    echo "ERROR: Gate E failed (raw httpx client usage found). Blocking stop hook."
+92:    echo "  Gate E: PASS (no raw httpx usage)"
+95:    echo "ERROR: Gate E scanner error (exit $GATE_E_RC). Fail closed."
+100:    echo "ERROR: Stop hook exceeded 30s budget after Gate E."
+114:  echo "Validation gates not executed."
+40:              - 'tools/infra/validate-frontend-governance.sh'
+41:              - 'tools/infra/validate-gatee-scan.sh'
+250:  plan-gates:
+269:      - name: Gate B — Contract Surfaces
+272:      - name: Gate C — Agent Config (Surface 8)
+275:      - name: Gate D — SSE Schema Validation
+278:      - name: Gate E — Raw httpx client usage (CI-HARDENING-001: script-based with fallback)
+279:        run: bash tools/infra/validate-gatee-scan.sh
+284:          bash tools/infra/validate-frontend-governance.sh
+287:  # Gate Check (Full Suite)
+290:    needs: [agent-api, dashboard, type-sync, contracts, plan-gates]
+302:             [[ "${{ needs.plan-gates.result }}" == "failure" ]]; then

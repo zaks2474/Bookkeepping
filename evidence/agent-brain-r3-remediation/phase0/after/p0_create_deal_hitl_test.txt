@@ -1,0 +1,18 @@
+{
+  "thread_id": "test-hitl-create-deal-007",
+  "status": "awaiting_approval",
+  "content": null,
+  "pending_approval": {
+    "approval_id": "c654db6b-6e33-4376-a2cb-4150d5d88de0",
+    "tool": "create_deal",
+    "args": {
+      "canonical_name": "Acme Corp",
+      "stage": "inbound"
+    },
+    "permission_tier": "CRITICAL",
+    "requested_by": "test-user-r3",
+    "requested_at": "2026-02-04T21:54:52.982512Z"
+  },
+  "actions_taken": [],
+  "error": null
+}

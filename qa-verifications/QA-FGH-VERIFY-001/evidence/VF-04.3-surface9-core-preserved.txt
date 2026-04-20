@@ -1,0 +1,19 @@
+=== VF-04.3 SURFACE9 CORE CHECKS PRESERVED ===
+14:# ── Check 1: No direct generated file imports ────────────────────────
+15:echo "Check 1: Import discipline (no direct generated file imports)"
+20:  echo "  FAIL: Direct generated file imports found:"
+24:  echo "  PASS: No direct generated file imports"
+27:# ── Check 2: No hardcoded stage arrays ───────────────────────────────
+28:echo "Check 2: Stage definitions (no hardcoded stage arrays)"
+31:  | grep -v "execution-contracts\|design-system-manifest\|node_modules\|__tests__" || true)
+34:  echo "  FAIL: Possible hardcoded stage arrays found:"
+38:  echo "  PASS: No hardcoded stage arrays detected"
+41:# ── Check 3: Promise.allSettled in page-level fetchers ───────────────
+42:echo "Check 3: Data fetching (Promise.allSettled usage)"
+48:    echo "  FAIL: $page uses Promise.all without Promise.allSettled"
+61:if [ -f "$DASHBOARD_SRC/types/design-system-manifest.ts" ]; then
+64:  echo "  FAIL: design-system-manifest.ts not found"
+70:if [ -f "/home/zaks/zakops-agent-api/.claude/rules/design-system.md" ]; then
+73:  echo "  FAIL: .claude/rules/design-system.md not found"
+101:DS_RULE="$RULES_DIR/design-system.md"
+120:  echo "  FAIL: Anti-convergence policy not found in design-system.md"

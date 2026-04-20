@@ -1,0 +1,8 @@
+=== TLS Check ===
+Agent API listens on HTTP (port 8000 internally, 8095 externally)
+No TLS-related env vars found in agent-api container
+LANGFUSE_HOST=https://cloud.langfuse.com
+Inter-service communication uses plain HTTP via host.docker.internal
+VLLM_BASE_URL, DEAL_API_URL, MCP_URL, RAG_REST_URL all use http://
+LANGFUSE_HOST uses https:// (external cloud service)
+CONCLUSION: No TLS for internal services. Only external Langfuse uses HTTPS.

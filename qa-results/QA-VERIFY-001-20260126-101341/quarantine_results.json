@@ -1,0 +1,83 @@
+{
+  "summary": {
+    "passed": 1,
+    "total": 3
+  },
+  "test_suite": "Backend Quarantine",
+  "tests": [
+    {
+      "details": {
+        "request": {
+          "elapsed_ms": 6,
+          "method": "GET",
+          "ok": true,
+          "request_json": null,
+          "response_headers": {
+            "content-length": "181",
+            "content-type": "application/json",
+            "date": "Mon, 26 Jan 2026 16:13:50 GMT",
+            "server": "uvicorn"
+          },
+          "response_json": {
+            "error": {
+              "code": "INTERNAL_ERROR",
+              "details": null,
+              "message": "An internal error occurred",
+              "timestamp": "2026-01-26T16:13:50.959849Z",
+              "trace_id": "903220bb-7d9d-4301-ae79-28b87c0aba79"
+            }
+          },
+          "response_text": "{\"error\":{\"code\":\"INTERNAL_ERROR\",\"message\":\"An internal error occurred\",\"details\":null,\"trace_id\":\"903220bb-7d9d-4301-ae79-28b87c0aba79\",\"timestamp\":\"2026-01-26T16:13:50.959849Z\"}}",
+          "status_code": 500,
+          "url": "http://localhost:8091/api/quarantine"
+        }
+      },
+      "id": "1.3.1",
+      "name": "List quarantine items (API)",
+      "passed": false,
+      "timestamp_utc": "2026-01-26T16:13:50.961890+00:00"
+    },
+    {
+      "details": {
+        "db_count": 0
+      },
+      "id": "1.3.2",
+      "name": "DB quarantine_items count query",
+      "passed": true,
+      "timestamp_utc": "2026-01-26T16:13:51.100568+00:00"
+    },
+    {
+      "details": {
+        "request": {
+          "elapsed_ms": 6,
+          "method": "GET",
+          "ok": true,
+          "request_json": null,
+          "response_headers": {
+            "content-length": "181",
+            "content-type": "application/json",
+            "date": "Mon, 26 Jan 2026 16:13:50 GMT",
+            "server": "uvicorn"
+          },
+          "response_json": {
+            "error": {
+              "code": "INTERNAL_ERROR",
+              "details": null,
+              "message": "An internal error occurred",
+              "timestamp": "2026-01-26T16:13:51.104673Z",
+              "trace_id": "0353cf45-e3bb-4ba4-93a9-c553d37e9416"
+            }
+          },
+          "response_text": "{\"error\":{\"code\":\"INTERNAL_ERROR\",\"message\":\"An internal error occurred\",\"details\":null,\"trace_id\":\"0353cf45-e3bb-4ba4-93a9-c553d37e9416\",\"timestamp\":\"2026-01-26T16:13:51.104673Z\"}}",
+          "status_code": 500,
+          "url": "http://localhost:8091/api/quarantine/qa-probe-id"
+        }
+      },
+      "id": "1.3.3",
+      "name": "Get quarantine item (endpoint existence)",
+      "passed": false,
+      "timestamp_utc": "2026-01-26T16:13:51.107107+00:00"
+    }
+  ],
+  "timestamp_utc": "2026-01-26T16:13:51.107119+00:00"
+}

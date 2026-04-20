@@ -1,0 +1,25 @@
+=== CHECK 4.1.1: Create a fresh HITL approval ===
+Command: curl -X POST http://localhost:8095/agent/invoke with X-Service-Token
+Thread: forensic-003-lifecycle-1770145664
+Deal: DL-CHAOS
+Timestamp: 2026-02-03T13:07:44-06:00
+
+{
+    "thread_id": "forensic-003-lifecycle-1770145664",
+    "status": "awaiting_approval",
+    "content": null,
+    "pending_approval": {
+        "approval_id": "b652bc7f-39b4-4da3-8692-da2ac76267be",
+        "tool": "transition_deal",
+        "args": {
+            "deal_id": "DL-CHAOS",
+            "from_stage": "inbound",
+            "to_stage": "screening"
+        },
+        "permission_tier": "CRITICAL",
+        "requested_by": "forensic-audit-user",
+        "requested_at": "2026-02-03T19:07:46.219601Z"
+    },
+    "actions_taken": [],
+    "error": null
+}

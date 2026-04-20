@@ -1,0 +1,145 @@
+{
+  "agent_identity": {
+    "agent_name": "Gemini-CLI",
+    "agent_version": "1.0",
+    "run_id": "20260204-0028-gemini",
+    "repo_revision": "unknown",
+    "date_time": "2026-02-04T00:28:00Z"
+  },
+  "deal_model": {
+    "status": "SPLIT_BRAIN",
+    "tables": [
+      "zakops.deals (PostgreSQL)",
+      "deal_registry.json (File System)"
+    ],
+    "fields": [
+      "deal_id",
+      "canonical_name",
+      "stage",
+      "status",
+      "identifiers",
+      "company_info",
+      "broker",
+      "metadata",
+      "folder_path"
+    ],
+    "source_of_truth": "AMBIGUOUS: API/Dashboard reads DB; Agents/Executors read/write JSON"
+  },
+  "states": [
+    "inbound",
+    "screening",
+    "qualified",
+    "loi",
+    "diligence",
+    "closing",
+    "portfolio",
+    "junk",
+    "archived"
+  ],
+  "transitions": [
+    {
+      "from": "inbound",
+      "to": ["screening", "junk", "archived"],
+      "trigger": "API/WorkflowEngine",
+      "entrypoint_ref": "zakops-backend/src/core/deals/workflow.py"
+    },
+    {
+      "from": "screening",
+      "to": ["qualified", "junk", "archived"],
+      "trigger": "API/WorkflowEngine",
+      "entrypoint_ref": "zakops-backend/src/core/deals/workflow.py"
+    },
+    {
+      "from": "qualified",
+      "to": ["loi", "junk", "archived"],
+      "trigger": "API/WorkflowEngine",
+      "entrypoint_ref": "zakops-backend/src/core/deals/workflow.py"
+    }
+  ],
+  "scenarios": [
+    {
+      "name": "New deal enters quarantine",
+      "expected": "Stored in DB, visible in UI",
+      "implemented_status": "PARTIALLY IMPLEMENTED",
+      "evidence_refs": [
+        "zakops-backend/src/api/orchestration/main.py::create_quarantine_item",
+        "zakops.quarantine_items table"
+      ]
+    },
+    {
+      "name": "Quarantine Approval",
+      "expected": "Updates status AND creates Deal",
+      "implemented_status": "BROKEN",
+      "evidence_refs": [
+        "zakops-backend/src/api/orchestration/main.py::process_quarantine"
+      ],
+      "notes": "Updates status to 'approved' but does NOT insert into zakops.deals"
+    },
+    {
+      "name": "Agent creates deal from email",
+      "expected": "Creates Deal in DB and Folders",
+      "implemented_status": "SPLIT_BRAIN",
+      "evidence_refs": [
+        "zakops-backend/src/actions/executors/deal_create_from_email.py"
+      ],
+      "notes": "Writes to deal_registry.json and File System. Does NOT write to zakops.deals."
+    },
+    {
+      "name": "Deal exists in DB but not visible in UI",
+      "expected": "Impossible",
+      "implemented_status": "UNLIKELY",
+      "evidence_refs": ["zakops-backend/src/api/orchestration/main.py::list_deals"],
+      "notes": "UI reads directly from DB."
+    },
+    {
+      "name": "Deal exists in JSON but not visible in UI",
+      "expected": "Impossible",
+      "implemented_status": "CONFIRMED ISSUE",
+      "evidence_refs": [
+        "scripts/deal_registry.py",
+        "zakops-backend/src/api/orchestration/main.py"
+      ],
+      "notes": "Agents writing to JSON are invisible to Dashboard reading DB."
+    }
+  ],
+  "gaps": [
+    {
+      "id": "GAP-001",
+      "title": "Split-Brain Data Persistence",
+      "severity": "P0",
+      "evidence_refs": [
+        "zakops-backend/src/api/orchestration/main.py",
+        "zakops-backend/src/actions/executors/deal_create_from_email.py"
+      ],
+      "remediation_steps": [
+        "Deprecate deal_registry.json",
+        "Update DealRegistry class to write to PostgreSQL",
+        "Ensure Action Executors use the DB-backed Registry"
+      ]
+    },
+    {
+      "id": "GAP-002",
+      "title": "Quarantine Approval Dead End",
+      "severity": "P1",
+      "evidence_refs": [
+        "zakops-backend/src/api/orchestration/main.py::process_quarantine"
+      ],
+      "remediation_steps": [
+        "Modify process_quarantine to optionally create a deal transactionally",
+        "Or trigger an async job to create the deal"
+      ]
+    }
+  ],
+  "comparison_to_prior": {
+    "new_findings": [
+      "Confirmed exact code path for split-brain in CreateDealFromEmailExecutor",
+      "Identified sys.path hack in backend code to load legacy scripts"
+    ],
+    "conflicts": [],
+    "confirmations": [
+      "Split-brain DB vs File System",
+      "Quarantine approval manual step missing automation",
+      "Deal stages match"
+    ]
+  }
+}

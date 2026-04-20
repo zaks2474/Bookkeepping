@@ -1,0 +1,18 @@
+P4-01 Validation Gates — DASHBOARD-R5-POLISH-002
+=================================================
+
+1. TypeScript Compilation Check
+   Command: cd /home/zaks/zakops-agent-api/apps/dashboard && npx tsc --noEmit
+   Result: PASS (exit 0, no errors)
+
+2. Local Validation (CI-safe, offline)
+   Command: cd /home/zaks/zakops-agent-api && make validate-local
+   Result: PASS — "All local validations passed"
+   Sub-gates:
+   - Redocly ignores: 57 (ceiling: 57) — at limit but passing
+   - Frontend governance validation: PASS (all anchors present)
+   - Gate E (raw httpx): PASS
+   - Rule frontmatter validation: PASS
+   - Port 8090 drift check: PASS
+
+Timestamp: 2026-02-12T12:59:00-06:00

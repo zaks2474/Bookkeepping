@@ -1,0 +1,79 @@
+=== AUTO-COLLECTED EVIDENCE (Cycle 1) ===
+Timestamp: 2026-01-25T18:54:19Z
+
+--- git status ---
+ M apps/dashboard/src/app/hq/page.tsx
+ M apps/dashboard/src/lib/api.ts
+ M artifacts/business/beta_readiness.json
+ M artifacts/business/demo_isolation_validation.json
+ M artifacts/business/success_metrics_validation.json
+ M artifacts/docs/demo_run.json
+ M artifacts/observability/canary_run.json
+ M artifacts/ops/bluegreen_verify.json
+ M artifacts/ops/runbook_lint.json
+ M artifacts/perf/thresholds_used.json
+ M artifacts/quality/risk_validation.json
+ M tools/load-tests/generated/thresholds.js
+?? .test_venv/
+?? apps/dashboard/src/app/dashboard/error.tsx
+?? apps/dashboard/src/app/dashboard/loading.tsx
+?? apps/dashboard/src/app/deals/error.tsx
+?? apps/dashboard/src/app/deals/loading.tsx
+?? apps/dashboard/src/app/hq/error.tsx
+?? apps/dashboard/src/app/hq/loading.tsx
+?? apps/dashboard/src/app/quarantine/error.tsx
+?? apps/dashboard/src/app/quarantine/loading.tsx
+?? apps/dashboard/src/components/ErrorBoundary.tsx
+?? apps/dashboard/src/components/LoadingSkeleton.tsx
+
+--- Recent changes (git diff --stat) ---
+ Makefile                                           |  55 ++++-
+ apps/dashboard/src/app/hq/page.tsx                 |   7 +-
+ apps/dashboard/src/lib/api.ts                      |  86 +++++++
+ artifacts/business/beta_readiness.json             |  92 +++++++
+ artifacts/business/demo_isolation_validation.json  |  82 +++++++
+ artifacts/business/success_metrics_validation.json |  10 +
+ artifacts/docs/demo_run.json                       |   2 +-
+ artifacts/observability/canary_run.json            |  10 +-
+ artifacts/ops/bluegreen_verify.json                |  90 +++++++
+ artifacts/ops/runbook_lint.json                    |  96 ++++++++
+ artifacts/perf/thresholds_used.json                |   2 +-
+ artifacts/quality/risk_validation.json             |   6 +-
+ db/migrations/001_feedback.sql                     |  48 ++++
+ deployments/bluegreen/README.md                    |  99 ++++++++
+ deployments/bluegreen/compose.blue.yml             | 119 +++++++++
+ deployments/bluegreen/compose.green.yml            | 119 +++++++++
+ deployments/bluegreen/proxy.yml                    |  40 +++
+ deployments/bluegreen/switch.sh                    | 202 +++++++++++++++
+ deployments/bluegreen/traefik-dynamic/routing.yml  |  89 +++++++
+ deployments/bluegreen/verify.sh                    | 205 ++++++++++++++++
+ deployments/demo/README.md                         | 101 ++++++++
+ deployments/demo/compose.demo.yml                  | 111 +++++++++
+ deployments/demo/reset_demo.sh                     | 116 +++++++++
+ deployments/docker/compose.restore.yml             |  33 +++
+ docs/business/BETA_CHANGELOG.md                    |  94 +++++++
+ docs/business/BETA_ONBOARDING.md                   | 114 +++++++++
+ docs/business/BETA_SUPPORT_PLAYBOOK.md             | 214 ++++++++++++++++
+ docs/business/SUCCESS_METRICS.md                   | 178 ++++++++++++++
+ .../grafana/dashboards/zakops_business.json        | 269 ++++++++++++++++++++
+ ops/runbooks/RUNBOOK_INDEX.md                      |  57 +++++
+
+--- Directory listing (top-level) ---
+total 76
+drwxr-xr-x 13 zaks zaks  4096 Jan 25 12:16 .
+drwxrwx--- 45 zaks zaks  4096 Jan 23 18:09 ..
+drwxr-xr-x  8 zaks zaks  4096 Jan 25 12:54 .git
+drwxr-xr-x  3 zaks zaks  4096 Jan 22 23:19 .github
+-rw-r--r--  1 root root  2890 Jan 24 23:20 .gitignore
+drwxr-xr-x  5 root root  4096 Jan 25 02:12 .test_venv
+-rw-r--r--  1 zaks zaks  1075 Jan 22 23:19 LICENSE
+-rw-r--r--  1 root root 10870 Jan 25 12:16 Makefile
+-rw-r--r--  1 root root  2521 Jan 25 00:44 README.md
+drwxr-xr-x  5 root root  4096 Jan 24 23:18 apps
+drwxr-xr-x 16 root root  4096 Jan 25 12:03 artifacts
+drwxr-xr-x  3 root root  4096 Jan 25 12:03 db
+drwxr-xr-x  5 root root  4096 Jan 25 12:03 deployments
+drwxr-xr-x 20 zaks zaks  4096 Jan 25 12:03 docs
+drwxr-xr-x  5 root root  4096 Jan 25 02:44 ops
+drwxr-xr-x  5 root root  4096 Jan 25 10:06 packages
+drwxr-xr-x 12 root root  4096 Jan 25 12:03 tools

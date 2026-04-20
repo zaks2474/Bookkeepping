@@ -1,0 +1,27 @@
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deals/DealBoard.tsx:17:import { useDeals, useTransitionDeal } from '@/lib/api-client';
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deals/DealBoard.tsx:134:  const { data: deals, isLoading, error } = useDeals({ status: 'active' });
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/global-search.tsx:194:      const res = await fetch('/api/deals?status=active');
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/page.tsx:19:  getDeals,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/page.tsx:84:        getDeals({ status: 'active' }),
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:40:  getDeals,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:323:        const dealList = await getDeals({ status: 'active' });
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api/generated.ts:285:  // GET /api/deals
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api/generated.ts:290:  // POST /api/deals
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api/generated.ts:295:  // GET /api/deals/{deal_id}
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api/generated.ts:300:  // PATCH /api/deals/{deal_id}
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api/generated.ts:305:  // GET /api/deals/{deal_id}/events
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api/generated.ts:310:  // GET /api/deals/{deal_id}/aliases
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api/generated.ts:452:  list_deals_api_deals_get: '/api/deals',
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api/generated.ts:453:  create_deal_api_deals_post: '/api/deals',
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api/generated.ts:454:  get_deal_api_deals__deal_id__get: '/api/deals/{deal_id}',
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api/generated.ts:455:  update_deal_api_deals__deal_id__patch: '/api/deals/{deal_id}',
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api/generated.ts:456:  get_deal_events_api_deals__deal_id__events_get: '/api/deals/{deal_id}/events',
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api/generated.ts:457:  get_deal_aliases_api_deals__deal_id__aliases_get: '/api/deals/{deal_id}/aliases',
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx:50:import { archiveDeal, bulkArchiveDeals, getDeals, type Deal } from '@/lib/api';
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx:112:      const data = await getDeals(params);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:6:  getDeals,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:39:        getDeals({ status: 'active' }),
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:355:          Endpoint: /api/deals/{dealId}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/pipeline/route.ts:28:      fetch(backendUrl('/api/deals'), {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/alerts/route.ts:17:      fetch(backendUrl('/api/deals?status=active'), { headers: hdrs }),
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/route.ts:29:    const response = await fetch(`${BACKEND_URL}/api/deals?status=active`, {

@@ -1,0 +1,698 @@
+=== Test 1: Agent API /agent/activity with auth ===
+{
+    "events": [
+        {
+            "id": "d8a5e114-c8a7-4f97-9ee7-94905c09132b",
+            "event_type": "approval_approved",
+            "label": "Approval granted",
+            "timestamp": "2026-02-03T19:18:03.721025+00:00",
+            "thread_id": "forensic-003-chaos-1770146241",
+            "approval_id": "b407e12b-d18a-4291-841c-84eaa9a6b3bf",
+            "tool_execution_id": null,
+            "tool_name": null
+        },
+        {
+            "id": "64b4b8a3-0d5d-4c24-af52-22bb726c9471",
+            "event_type": "tool_execution_completed",
+            "label": "Tool execution completed",
+            "timestamp": "2026-02-03T19:18:03.720964+00:00",
+            "thread_id": "forensic-003-chaos-1770146241",
+            "approval_id": "b407e12b-d18a-4291-841c-84eaa9a6b3bf",
+            "tool_execution_id": "d3f7d953-31af-4a21-80b5-fa0c37d1e308",
+            "tool_name": null
+        },
+        {
+            "id": "77e98ac1-f1ac-4ea9-9072-f067aa44e994",
+            "event_type": "tool_execution_started",
+            "label": "Tool execution started: transition_deal",
+            "timestamp": "2026-02-03T19:18:01.730369+00:00",
+            "thread_id": "forensic-003-chaos-1770146241",
+            "approval_id": "b407e12b-d18a-4291-841c-84eaa9a6b3bf",
+            "tool_execution_id": "d3f7d953-31af-4a21-80b5-fa0c37d1e308",
+            "tool_name": "transition_deal"
+        },
+        {
+            "id": "c0298361-c4ec-4945-bf59-29aac034ecfd",
+            "event_type": "approval_claimed",
+            "label": "Approval processing started: transition_deal",
+            "timestamp": "2026-02-03T19:18:01.691442+00:00",
+            "thread_id": "forensic-003-chaos-1770146241",
+            "approval_id": "b407e12b-d18a-4291-841c-84eaa9a6b3bf",
+            "tool_execution_id": null,
+            "tool_name": "transition_deal"
+        },
+        {
+            "id": "d8af46e5-2f53-4edc-a3c8-57dd9d641d60",
+            "event_type": "approval_rejected",
+            "label": "Approval rejected: transition_deal",
+            "timestamp": "2026-02-03T19:17:37.728431+00:00",
+            "thread_id": "forensic-003-multi-b-1770146198",
+            "approval_id": "3f1a9e2d-7697-44cc-885c-d3e88f84ede7",
+            "tool_execution_id": null,
+            "tool_name": "transition_deal"
+        }
+    ],
+    "stats": {
+        "total_events": 125,
+        "approvals_today": 65,
+        "tool_executions_today": 60,
+        "events_last_24h": 125
+    },
+    "pagination": {
+        "limit": 5,
+        "offset": 0,
+        "total": 125,
+        "has_more": true
+    }
+}
+
+=== Test 2: Agent API /agent/activity WITHOUT auth ===
+{"detail":"Authentication required"}
+HTTP_CODE: 401
+=== Test 3: Dashboard /api/agent/activity ===
+{
+    "status": "idle",
+    "lastActivity": {
+        "label": "Approval granted",
+        "timestamp": "2026-02-03T19:18:03.721025+00:00",
+        "threadId": "forensic-003-chaos-1770146241"
+    },
+    "recent": [
+        {
+            "id": "d8a5e114-c8a7-4f97-9ee7-94905c09132b",
+            "type": "approval.approved",
+            "label": "Approval granted",
+            "timestamp": "2026-02-03T19:18:03.721025+00:00",
+            "metadata": {
+                "threadId": "forensic-003-chaos-1770146241",
+                "approvalId": "b407e12b-d18a-4291-841c-84eaa9a6b3bf",
+                "toolExecutionId": null,
+                "toolName": null
+            }
+        },
+        {
+            "id": "64b4b8a3-0d5d-4c24-af52-22bb726c9471",
+            "type": "agent.tool_completed",
+            "label": "Tool execution completed",
+            "timestamp": "2026-02-03T19:18:03.720964+00:00",
+            "metadata": {
+                "threadId": "forensic-003-chaos-1770146241",
+                "approvalId": "b407e12b-d18a-4291-841c-84eaa9a6b3bf",
+                "toolExecutionId": "d3f7d953-31af-4a21-80b5-fa0c37d1e308",
+                "toolName": null
+            }
+        },
+        {
+            "id": "77e98ac1-f1ac-4ea9-9072-f067aa44e994",
+            "type": "agent.tool_called",
+            "label": "Tool execution started: transition_deal",
+            "timestamp": "2026-02-03T19:18:01.730369+00:00",
+            "metadata": {
+                "threadId": "forensic-003-chaos-1770146241",
+                "approvalId": "b407e12b-d18a-4291-841c-84eaa9a6b3bf",
+                "toolExecutionId": "d3f7d953-31af-4a21-80b5-fa0c37d1e308",
+                "toolName": "transition_deal"
+            }
+        },
+        {
+            "id": "c0298361-c4ec-4945-bf59-29aac034ecfd",
+            "type": "agent.run_started",
+            "label": "Approval processing started: transition_deal",
+            "timestamp": "2026-02-03T19:18:01.691442+00:00",
+            "metadata": {
+                "threadId": "forensic-003-chaos-1770146241",
+                "approvalId": "b407e12b-d18a-4291-841c-84eaa9a6b3bf",
+                "toolExecutionId": null,
+                "toolName": "transition_deal"
+            }
+        },
+        {
+            "id": "d8af46e5-2f53-4edc-a3c8-57dd9d641d60",
+            "type": "approval.rejected",
+            "label": "Approval rejected: transition_deal",
+            "timestamp": "2026-02-03T19:17:37.728431+00:00",
+            "metadata": {
+                "threadId": "forensic-003-multi-b-1770146198",
+                "approvalId": "3f1a9e2d-7697-44cc-885c-d3e88f84ede7",
+                "toolExecutionId": null,
+                "toolName": "transition_deal"
+            }
+        },
+        {
+            "id": "945f72b5-91be-405b-9efb-7bf34654dfe3",
+            "type": "approval.approved",
+            "label": "Approval granted",
+            "timestamp": "2026-02-03T19:17:31.618814+00:00",
+            "metadata": {
+                "threadId": "forensic-003-multi-a-1770146198",
+                "approvalId": "3d52c78e-780f-4d30-b30d-871ad8d29671",
+                "toolExecutionId": null,
+                "toolName": null
+            }
+        },
+        {
+            "id": "9b074a01-6fc1-436c-af3b-7c4aa29cb8b5",
+            "type": "agent.tool_completed",
+            "label": "Tool execution completed",
+            "timestamp": "2026-02-03T19:17:31.618748+00:00",
+            "metadata": {
+                "threadId": "forensic-003-multi-a-1770146198",
+                "approvalId": "3d52c78e-780f-4d30-b30d-871ad8d29671",
+                "toolExecutionId": "f671aa5e-4aea-4028-86de-33a6962753d8",
+                "toolName": null
+            }
+        },
+        {
+            "id": "48dcfb7f-c0d7-4a73-9dff-b8ead6747b56",
+            "type": "agent.tool_called",
+            "label": "Tool execution started: transition_deal",
+            "timestamp": "2026-02-03T19:17:30.367429+00:00",
+            "metadata": {
+                "threadId": "forensic-003-multi-a-1770146198",
+                "approvalId": "3d52c78e-780f-4d30-b30d-871ad8d29671",
+                "toolExecutionId": "f671aa5e-4aea-4028-86de-33a6962753d8",
+                "toolName": "transition_deal"
+            }
+        },
+        {
+            "id": "c56ab515-bdc9-4a18-b3fa-189ddbb63cdd",
+            "type": "agent.run_started",
+            "label": "Approval processing started: transition_deal",
+            "timestamp": "2026-02-03T19:17:30.361085+00:00",
+            "metadata": {
+                "threadId": "forensic-003-multi-a-1770146198",
+                "approvalId": "3d52c78e-780f-4d30-b30d-871ad8d29671",
+                "toolExecutionId": null,
+                "toolName": "transition_deal"
+            }
+        },
+        {
+            "id": "b6b6888e-e514-4f28-bbaa-230e3697276f",
+            "type": "approval.approved",
+            "label": "Approval granted",
+            "timestamp": "2026-02-03T19:13:38.052168+00:00",
+            "metadata": {
+                "threadId": "forensic-003-spam-1770145999",
+                "approvalId": "7b65f288-fb5f-40b7-aa90-61d11a25bdca",
+                "toolExecutionId": null,
+                "toolName": null
+            }
+        },
+        {
+            "id": "440e950b-fc6b-4d91-9e79-c6e729b0520c",
+            "type": "agent.tool_completed",
+            "label": "Tool execution completed",
+            "timestamp": "2026-02-03T19:13:38.052096+00:00",
+            "metadata": {
+                "threadId": "forensic-003-spam-1770145999",
+                "approvalId": "7b65f288-fb5f-40b7-aa90-61d11a25bdca",
+                "toolExecutionId": "21917288-d0cb-429f-85a8-bafdd7ac3103",
+                "toolName": null
+            }
+        },
+        {
+            "id": "b03360be-1b35-43c0-935f-1d37dc2cb97b",
+            "type": "agent.tool_called",
+            "label": "Tool execution started: transition_deal",
+            "timestamp": "2026-02-03T19:13:35.221457+00:00",
+            "metadata": {
+                "threadId": "forensic-003-spam-1770145999",
+                "approvalId": "7b65f288-fb5f-40b7-aa90-61d11a25bdca",
+                "toolExecutionId": "21917288-d0cb-429f-85a8-bafdd7ac3103",
+                "toolName": "transition_deal"
+            }
+        },
+        {
+            "id": "8ddb7792-cbbd-4fc3-bf4f-7ca785a673e9",
+            "type": "agent.run_started",
+            "label": "Approval processing started: transition_deal",
+            "timestamp": "2026-02-03T19:13:35.209877+00:00",
+            "metadata": {
+                "threadId": "forensic-003-spam-1770145999",
+                "approvalId": "7b65f288-fb5f-40b7-aa90-61d11a25bdca",
+                "toolExecutionId": null,
+                "toolName": "transition_deal"
+            }
+        },
+        {
+            "id": "a5e254b2-a3a7-488f-8944-231528ff86bc",
+            "type": "approval.approved",
+            "label": "Approval granted",
+            "timestamp": "2026-02-03T19:12:52.887129+00:00",
+            "metadata": {
+                "threadId": "forensic-003-race-1770145817",
+                "approvalId": "505b8aeb-66aa-47ad-b19d-845c8e0551d4",
+                "toolExecutionId": null,
+                "toolName": null
+            }
+        },
+        {
+            "id": "f3140cc4-5482-44e0-b9cd-9160e547a08a",
+            "type": "agent.tool_completed",
+            "label": "Tool execution completed",
+            "timestamp": "2026-02-03T19:12:52.887059+00:00",
+            "metadata": {
+                "threadId": "forensic-003-race-1770145817",
+                "approvalId": "505b8aeb-66aa-47ad-b19d-845c8e0551d4",
+                "toolExecutionId": "bb24742d-9df6-4be7-89e7-f0d16a4f006c",
+                "toolName": null
+            }
+        },
+        {
+            "id": "7aeda8ae-a534-4a20-8cf6-b460eef26e56",
+            "type": "agent.tool_called",
+            "label": "Tool execution started: transition_deal",
+            "timestamp": "2026-02-03T19:12:49.193330+00:00",
+            "metadata": {
+                "threadId": "forensic-003-race-1770145817",
+                "approvalId": "505b8aeb-66aa-47ad-b19d-845c8e0551d4",
+                "toolExecutionId": "bb24742d-9df6-4be7-89e7-f0d16a4f006c",
+                "toolName": "transition_deal"
+            }
+        },
+        {
+            "id": "a0bcbbf4-68e2-4037-a788-c19012ff5852",
+            "type": "agent.run_started",
+            "label": "Approval processing started: transition_deal",
+            "timestamp": "2026-02-03T19:12:49.184678+00:00",
+            "metadata": {
+                "threadId": "forensic-003-race-1770145817",
+                "approvalId": "505b8aeb-66aa-47ad-b19d-845c8e0551d4",
+                "toolExecutionId": null,
+                "toolName": "transition_deal"
+            }
+        },
+        {
+            "id": "55a89207-983d-4c92-bd9c-fca78d5fc1f2",
+            "type": "approval.rejected",
+            "label": "Approval rejected: transition_deal",
+            "timestamp": "2026-02-03T19:08:52.209399+00:00",
+            "metadata": {
+                "threadId": "forensic-003-reject-1770145722",
+                "approvalId": "4d05f27e-9caf-4be8-8375-5b70ea8c568d",
+                "toolExecutionId": null,
+                "toolName": "transition_deal"
+            }
+        },
+        {
+            "id": "c70033a0-3be2-4eb6-b0fd-f72ee4a88904",
+            "type": "approval.approved",
+            "label": "Approval granted",
+            "timestamp": "2026-02-03T19:08:24.119474+00:00",
+            "metadata": {
+                "threadId": "forensic-003-lifecycle-1770145664",
+                "approvalId": "b652bc7f-39b4-4da3-8692-da2ac76267be",
+                "toolExecutionId": null,
+                "toolName": null
+            }
+        },
+        {
+            "id": "b85c9d02-b1cc-4357-901d-8ab4c28a6902",
+            "type": "agent.tool_completed",
+            "label": "Tool execution completed",
+            "timestamp": "2026-02-03T19:08:24.119407+00:00",
+            "metadata": {
+                "threadId": "forensic-003-lifecycle-1770145664",
+                "approvalId": "b652bc7f-39b4-4da3-8692-da2ac76267be",
+                "toolExecutionId": "28652097-633f-484a-bac3-f43a42ae4e50",
+                "toolName": null
+            }
+        },
+        {
+            "id": "5d7fda74-0517-4559-b9e4-32a38fdcb909",
+            "type": "agent.tool_called",
+            "label": "Tool execution started: transition_deal",
+            "timestamp": "2026-02-03T19:08:22.689033+00:00",
+            "metadata": {
+                "threadId": "forensic-003-lifecycle-1770145664",
+                "approvalId": "b652bc7f-39b4-4da3-8692-da2ac76267be",
+                "toolExecutionId": "28652097-633f-484a-bac3-f43a42ae4e50",
+                "toolName": "transition_deal"
+            }
+        },
+        {
+            "id": "d8cd178a-39ad-4d4c-89f9-ee092e3d854c",
+            "type": "agent.run_started",
+            "label": "Approval processing started: transition_deal",
+            "timestamp": "2026-02-03T19:08:22.675481+00:00",
+            "metadata": {
+                "threadId": "forensic-003-lifecycle-1770145664",
+                "approvalId": "b652bc7f-39b4-4da3-8692-da2ac76267be",
+                "toolExecutionId": null,
+                "toolName": "transition_deal"
+            }
+        },
+        {
+            "id": "ba957fd0-75d3-45b1-b4f9-2e632e1c4d57",
+            "type": "approval.approved",
+            "label": "Approval granted",
+            "timestamp": "2026-02-03T17:52:30.174247+00:00",
+            "metadata": {
+                "threadId": "qa003-chaos-1770141142",
+                "approvalId": "23c61e51-5de9-4df2-98ce-38ffa3f729aa",
+                "toolExecutionId": null,
+                "toolName": null
+            }
+        },
+        {
+            "id": "083c54b6-c62b-4c85-b5f3-ddac726fb2c8",
+            "type": "agent.tool_completed",
+            "label": "Tool execution completed",
+            "timestamp": "2026-02-03T17:52:30.174173+00:00",
+            "metadata": {
+                "threadId": "qa003-chaos-1770141142",
+                "approvalId": "23c61e51-5de9-4df2-98ce-38ffa3f729aa",
+                "toolExecutionId": "0ea77c55-6faf-4f8f-8996-245d3a664156",
+                "toolName": null
+            }
+        },
+        {
+            "id": "b638b642-287f-4b12-94de-05fe8310d419",
+            "type": "agent.tool_called",
+            "label": "Tool execution started: transition_deal",
+            "timestamp": "2026-02-03T17:52:28.016425+00:00",
+            "metadata": {
+                "threadId": "qa003-chaos-1770141142",
+                "approvalId": "23c61e51-5de9-4df2-98ce-38ffa3f729aa",
+                "toolExecutionId": "0ea77c55-6faf-4f8f-8996-245d3a664156",
+                "toolName": "transition_deal"
+            }
+        },
+        {
+            "id": "c2623871-52f4-464e-9f9e-7ef41352eb99",
+            "type": "agent.run_started",
+            "label": "Approval processing started: transition_deal",
+            "timestamp": "2026-02-03T17:52:28.009915+00:00",
+            "metadata": {
+                "threadId": "qa003-chaos-1770141142",
+                "approvalId": "23c61e51-5de9-4df2-98ce-38ffa3f729aa",
+                "toolExecutionId": null,
+                "toolName": "transition_deal"
+            }
+        },
+        {
+            "id": "55944115-82bb-4858-940f-21ffe0fb6ac3",
+            "type": "approval.approved",
+            "label": "Approval granted",
+            "timestamp": "2026-02-03T17:51:44.855080+00:00",
+            "metadata": {
+                "threadId": "qa003-error-1770141100",
+                "approvalId": "6ff7e4e0-2be1-4cea-886b-43f2e79e25b6",
+                "toolExecutionId": null,
+                "toolName": null
+            }
+        },
+        {
+            "id": "153e23ff-969b-421f-8531-b019ea2c3173",
+            "type": "agent.tool_completed",
+            "label": "Tool execution completed",
+            "timestamp": "2026-02-03T17:51:44.855015+00:00",
+            "metadata": {
+                "threadId": "qa003-error-1770141100",
+                "approvalId": "6ff7e4e0-2be1-4cea-886b-43f2e79e25b6",
+                "toolExecutionId": "a55101ff-9ad6-4f34-951c-5d724d559099",
+                "toolName": null
+            }
+        },
+        {
+            "id": "7ff410b7-e385-4715-b38e-4491090efc33",
+            "type": "agent.tool_called",
+            "label": "Tool execution started: transition_deal",
+            "timestamp": "2026-02-03T17:51:42.629095+00:00",
+            "metadata": {
+                "threadId": "qa003-error-1770141100",
+                "approvalId": "6ff7e4e0-2be1-4cea-886b-43f2e79e25b6",
+                "toolExecutionId": "a55101ff-9ad6-4f34-951c-5d724d559099",
+                "toolName": "transition_deal"
+            }
+        },
+        {
+            "id": "b087cb74-2c21-4986-8eb7-55983c685c19",
+            "type": "agent.run_started",
+            "label": "Approval processing started: transition_deal",
+            "timestamp": "2026-02-03T17:51:42.623286+00:00",
+            "metadata": {
+                "threadId": "qa003-error-1770141100",
+                "approvalId": "6ff7e4e0-2be1-4cea-886b-43f2e79e25b6",
+                "toolExecutionId": null,
+                "toolName": "transition_deal"
+            }
+        },
+        {
+            "id": "306e1e24-d665-4052-a059-330fea2e5e10",
+            "type": "approval.approved",
+            "label": "Approval granted",
+            "timestamp": "2026-02-03T17:51:24.662149+00:00",
+            "metadata": {
+                "threadId": "qa003-idem2-1770141080",
+                "approvalId": "92fad3cf-c459-486a-b96e-4a589d125d3b",
+                "toolExecutionId": null,
+                "toolName": null
+            }
+        },
+        {
+            "id": "99b5c476-22d4-4a3b-a4ab-f8141221fa1f",
+            "type": "agent.tool_completed",
+            "label": "Tool execution completed",
+            "timestamp": "2026-02-03T17:51:24.662087+00:00",
+            "metadata": {
+                "threadId": "qa003-idem2-1770141080",
+                "approvalId": "92fad3cf-c459-486a-b96e-4a589d125d3b",
+                "toolExecutionId": "4f09387a-a262-4de3-8d1d-13eec3093fb0",
+                "toolName": null
+            }
+        },
+        {
+            "id": "4d1810f5-ae2c-4c8b-80fa-19d36ae15cff",
+            "type": "agent.tool_called",
+            "label": "Tool execution started: transition_deal",
+            "timestamp": "2026-02-03T17:51:22.985799+00:00",
+            "metadata": {
+                "threadId": "qa003-idem2-1770141080",
+                "approvalId": "92fad3cf-c459-486a-b96e-4a589d125d3b",
+                "toolExecutionId": "4f09387a-a262-4de3-8d1d-13eec3093fb0",
+                "toolName": "transition_deal"
+            }
+        },
+        {
+            "id": "4d1b4eda-60e9-42c4-b378-0becee89570b",
+            "type": "agent.run_started",
+            "label": "Approval processing started: transition_deal",
+            "timestamp": "2026-02-03T17:51:22.979773+00:00",
+            "metadata": {
+                "threadId": "qa003-idem2-1770141080",
+                "approvalId": "92fad3cf-c459-486a-b96e-4a589d125d3b",
+                "toolExecutionId": null,
+                "toolName": "transition_deal"
+            }
+        },
+        {
+            "id": "59f1b1e9-efbd-4f5e-9c44-26c132cd4bf1",
+            "type": "approval.approved",
+            "label": "Approval granted",
+            "timestamp": "2026-02-03T17:51:06.286758+00:00",
+            "metadata": {
+                "threadId": "qa003-idempotency-1770141062",
+                "approvalId": "b47fb835-96f3-4c4d-8d7e-ab822885b2fe",
+                "toolExecutionId": null,
+                "toolName": null
+            }
+        },
+        {
+            "id": "73d26f93-5125-430c-ace2-40b3ea5a3f63",
+            "type": "agent.tool_completed",
+            "label": "Tool execution completed",
+            "timestamp": "2026-02-03T17:51:06.286691+00:00",
+            "metadata": {
+                "threadId": "qa003-idempotency-1770141062",
+                "approvalId": "b47fb835-96f3-4c4d-8d7e-ab822885b2fe",
+                "toolExecutionId": "09564623-5042-4de9-9a54-f85d4a6228b7",
+                "toolName": null
+            }
+        },
+        {
+            "id": "438216ac-8345-48dc-bf19-fcd2f20b8ac6",
+            "type": "agent.tool_called",
+            "label": "Tool execution started: transition_deal",
+            "timestamp": "2026-02-03T17:51:04.848429+00:00",
+            "metadata": {
+                "threadId": "qa003-idempotency-1770141062",
+                "approvalId": "b47fb835-96f3-4c4d-8d7e-ab822885b2fe",
+                "toolExecutionId": "09564623-5042-4de9-9a54-f85d4a6228b7",
+                "toolName": "transition_deal"
+            }
+        },
+        {
+            "id": "d1d65604-475a-4e28-b551-c67dd78c1884",
+            "type": "agent.run_started",
+            "label": "Approval processing started: transition_deal",
+            "timestamp": "2026-02-03T17:51:04.841898+00:00",
+            "metadata": {
+                "threadId": "qa003-idempotency-1770141062",
+                "approvalId": "b47fb835-96f3-4c4d-8d7e-ab822885b2fe",
+                "toolExecutionId": null,
+                "toolName": "transition_deal"
+            }
+        },
+        {
+            "id": "fbaddc2b-1734-4cfd-9bc9-466ce82bdd82",
+            "type": "approval.approved",
+            "label": "Approval granted",
+            "timestamp": "2026-02-03T17:50:15.110238+00:00",
+            "metadata": {
+                "threadId": "qa003-final-1770141011",
+                "approvalId": "f86e9790-d896-48ed-9dcc-421d27273ad2",
+                "toolExecutionId": null,
+                "toolName": null
+            }
+        },
+        {
+            "id": "c05e9bb1-641a-4e86-aeeb-bab7dbe42ff0",
+            "type": "agent.tool_completed",
+            "label": "Tool execution completed",
+            "timestamp": "2026-02-03T17:50:15.110162+00:00",
+            "metadata": {
+                "threadId": "qa003-final-1770141011",
+                "approvalId": "f86e9790-d896-48ed-9dcc-421d27273ad2",
+                "toolExecutionId": "f06475dd-5f67-447b-9710-2ca8ce016e18",
+                "toolName": null
+            }
+        },
+        {
+            "id": "36cbd213-c147-4495-a87d-78a8b629455e",
+            "type": "agent.tool_called",
+            "label": "Tool execution started: transition_deal",
+            "timestamp": "2026-02-03T17:50:13.669704+00:00",
+            "metadata": {
+                "threadId": "qa003-final-1770141011",
+                "approvalId": "f86e9790-d896-48ed-9dcc-421d27273ad2",
+                "toolExecutionId": "f06475dd-5f67-447b-9710-2ca8ce016e18",
+                "toolName": "transition_deal"
+            }
+        },
+        {
+            "id": "3df21ffd-db24-4bbb-b991-b03b6e94c7b1",
+            "type": "agent.run_started",
+            "label": "Approval processing started: transition_deal",
+            "timestamp": "2026-02-03T17:50:13.662250+00:00",
+            "metadata": {
+                "threadId": "qa003-final-1770141011",
+                "approvalId": "f86e9790-d896-48ed-9dcc-421d27273ad2",
+                "toolExecutionId": null,
+                "toolName": "transition_deal"
+            }
+        },
+        {
+            "id": "e2688264-32e5-46c3-9910-454fa219b8c0",
+            "type": "approval.approved",
+            "label": "Approval granted",
+            "timestamp": "2026-02-03T17:49:28.435805+00:00",
+            "metadata": {
+                "threadId": "qa003-final-1770140964",
+                "approvalId": "55e4ef95-fe74-4e54-bee9-8b284d27c8d4",
+                "toolExecutionId": null,
+                "toolName": null
+            }
+        },
+        {
+            "id": "d963115b-b2ad-4955-8c58-75d9f1658b57",
+            "type": "agent.tool_completed",
+            "label": "Tool execution completed",
+            "timestamp": "2026-02-03T17:49:28.435744+00:00",
+            "metadata": {
+                "threadId": "qa003-final-1770140964",
+                "approvalId": "55e4ef95-fe74-4e54-bee9-8b284d27c8d4",
+                "toolExecutionId": "339c3ebc-4745-461c-ae74-fecd90d1d036",
+                "toolName": null
+            }
+        },
+        {
+            "id": "65591101-8eea-4ff9-aea5-6753530b1e73",
+            "type": "agent.tool_called",
+            "label": "Tool execution started: transition_deal",
+            "timestamp": "2026-02-03T17:49:26.703070+00:00",
+            "metadata": {
+                "threadId": "qa003-final-1770140964",
+                "approvalId": "55e4ef95-fe74-4e54-bee9-8b284d27c8d4",
+                "toolExecutionId": "339c3ebc-4745-461c-ae74-fecd90d1d036",
+                "toolName": "transition_deal"
+            }
+        },
+        {
+            "id": "72552372-2264-4b25-b8ff-71c4fa8d492b",
+            "type": "agent.run_started",
+            "label": "Approval processing started: transition_deal",
+            "timestamp": "2026-02-03T17:49:26.696081+00:00",
+            "metadata": {
+                "threadId": "qa003-final-1770140964",
+                "approvalId": "55e4ef95-fe74-4e54-bee9-8b284d27c8d4",
+                "toolExecutionId": null,
+                "toolName": "transition_deal"
+            }
+        },
+        {
+            "id": "2da2667f-84db-47fa-b031-808ccf6c061a",
+            "type": "approval.approved",
+            "label": "Approval granted",
+            "timestamp": "2026-02-03T17:45:21.783229+00:00",
+            "metadata": {
+                "threadId": "qa003-v2-1770140717",
+                "approvalId": "0d717cb3-74de-401b-a37b-055ed573cc08",
+                "toolExecutionId": null,
+                "toolName": null
+            }
+        },
+        {
+            "id": "02a42dd0-281d-4871-bddf-2833e1136b64",
+            "type": "agent.tool_completed",
+            "label": "Tool execution completed",
+            "timestamp": "2026-02-03T17:45:21.783160+00:00",
+            "metadata": {
+                "threadId": "qa003-v2-1770140717",
+                "approvalId": "0d717cb3-74de-401b-a37b-055ed573cc08",
+                "toolExecutionId": "53680253-6e91-41ab-8dd7-8a4006a3f625",
+                "toolName": null
+            }
+        },
+        {
+            "id": "8435d38d-4dcf-43ca-badb-910416f494ac",
+            "type": "agent.tool_called",
+            "label": "Tool execution started: transition_deal",
+            "timestamp": "2026-02-03T17:45:20.085102+00:00",
+            "metadata": {
+                "threadId": "qa003-v2-1770140717",
+                "approvalId": "0d717cb3-74de-401b-a37b-055ed573cc08",
+                "toolExecutionId": "53680253-6e91-41ab-8dd7-8a4006a3f625",
+                "toolName": "transition_deal"
+            }
+        },
+        {
+            "id": "e4c64a4b-a8b5-406c-a851-68ebfe4b6d56",
+            "type": "agent.run_started",
+            "label": "Approval processing started: transition_deal",
+            "timestamp": "2026-02-03T17:45:20.047354+00:00",
+            "metadata": {
+                "threadId": "qa003-v2-1770140717",
+                "approvalId": "0d717cb3-74de-401b-a37b-055ed573cc08",
+                "toolExecutionId": null,
+                "toolName": "transition_deal"
+            }
+        }
+    ],
+    "stats": {
+        "toolsCalledToday": 60,
+        "approvalsProcessed": 65,
+        "dealsAnalyzed": 0,
+        "runsCompleted24h": 125
+    },
+    "recentRuns": []
+}
+
+=== Cross-validate: audit_log recent events ===
+        event_type        |          created_at           
+--------------------------+-------------------------------
+ approval_approved        | 2026-02-03 19:18:03.721025+00
+ tool_execution_completed | 2026-02-03 19:18:03.720964+00
+ tool_execution_started   | 2026-02-03 19:18:01.730369+00
+(3 rows)
+

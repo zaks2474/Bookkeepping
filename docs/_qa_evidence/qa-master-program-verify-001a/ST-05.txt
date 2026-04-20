@@ -1,0 +1,17 @@
+=== 029_quarantine_hardening_rollback.sql ===
+-- 029_quarantine_hardening_rollback.sql
+-- Rollback for 029_quarantine_hardening.sql
+
+BEGIN;
+
+DROP INDEX IF EXISTS zakops.idx_quarantine_correlation_id;
+ALTER TABLE zakops.quarantine_items DROP COLUMN IF EXISTS source_type;
+ALTER TABLE zakops.quarantine_items DROP COLUMN IF EXISTS correlation_id;
+ALTER TABLE zakops.quarantine_items DROP CONSTRAINT IF EXISTS chk_quarantine_status;
+ALTER TABLE zakops.quarantine_items DROP CONSTRAINT IF EXISTS uq_quarantine_message_id;
+=== 030_email_config_rollback.sql ===
+-- 030_email_config_rollback.sql
+
+BEGIN;
+ALTER TABLE zakops.user_preferences DROP COLUMN IF EXISTS email_config;
+COMMIT;

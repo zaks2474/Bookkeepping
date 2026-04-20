@@ -1,0 +1,5 @@
+    thread_id       VARCHAR(255) NOT NULL REFERENCES chat_threads(id) ON DELETE CASCADE,
+                    REFERENCES chat_threads(id) ON DELETE CASCADE,
+    thread_id       VARCHAR(255) NOT NULL REFERENCES chat_threads(id) ON DELETE CASCADE,
+    thread_id               VARCHAR(255) NOT NULL REFERENCES chat_threads(id) ON DELETE CASCADE,
+    thread_id       VARCHAR(255) REFERENCES chat_threads(id) ON DELETE SET NULL,

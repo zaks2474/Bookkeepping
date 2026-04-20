@@ -1,0 +1,7 @@
+14:from datetime import datetime, timedelta, UTC
+73:        # COL-V2 S15.5: Auto-expire proposals older than 24 hours (B3-04)
+81:                if datetime.now(UTC) - created_dt > timedelta(hours=24):
+83:                        message_id, proposal_id, "expired",
+84:                        by="system", extra={"reason": "Proposal expired after 24 hours"},
+86:                    return {"success": False, "error": "Proposal expired (older than 24 hours)"}
+88:                pass  # If created_at is unparseable, skip expiration check

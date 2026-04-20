@@ -1,0 +1,211 @@
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:59:        # 1. Load the proposal with FOR UPDATE lock
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py:560:        Uses SELECT ... FOR UPDATE to prevent lost updates on JSONB path.
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py:565:            # FOR UPDATE lock on the row
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py:567:                text("SELECT proposals FROM chat_messages WHERE id = :id FOR UPDATE"),
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/cache.py:434:    def _configure_pipeline_for_update(
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/cache.py:499:                self._configure_pipeline_for_update(key, pipe, return_val, self.ttl)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/cache.py:581:                self._configure_pipeline_for_update(key, pipe, return_val, self.ttl)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/mssql/base.py:2387:    def for_update_clause(self, select, **kw):
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/mssql/base.py:2388:        # "FOR UPDATE" is only allowed on "DECLARE CURSOR" which
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/oracle/base.py:788:    "ANY TABLE INDEX FOR UPDATE WHERE CHECK SMALLINT WITH DELETE "
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/oracle/base.py:1262:                # add expressions to accommodate FOR UPDATE OF
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/oracle/base.py:1263:                for_update = select._for_update_arg
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/oracle/base.py:1264:                if for_update is not None and for_update.of:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/oracle/base.py:1265:                    for_update = for_update._clone()
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/oracle/base.py:1266:                    for_update._copy_internals()
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/oracle/base.py:1268:                    for elem in for_update.of:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/oracle/base.py:1298:                # add expressions to accommodate FOR UPDATE OF
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/oracle/base.py:1299:                if for_update is not None and for_update.of:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/oracle/base.py:1301:                    for_update.of = [
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/oracle/base.py:1302:                        adapter.traverse(elem) for elem in for_update.of
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/oracle/base.py:1327:                    limitselect._for_update_arg = for_update
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/oracle/base.py:1336:                    if for_update is not None and for_update.of:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/oracle/base.py:1338:                        for elem in for_update.of:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/oracle/base.py:1359:                    if for_update is not None and for_update.of:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/oracle/base.py:1361:                        for_update.of = [
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/oracle/base.py:1362:                            adapter.traverse(elem) for elem in for_update.of
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/oracle/base.py:1369:                    offsetselect._for_update_arg = for_update
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/oracle/base.py:1380:    def for_update_clause(self, select, **kw):
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/oracle/base.py:1384:        tmp = " FOR UPDATE"
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/oracle/base.py:1386:        if select._for_update_arg.of:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/oracle/base.py:1388:                self.process(elem, **kw) for elem in select._for_update_arg.of
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/oracle/base.py:1391:        if select._for_update_arg.nowait:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/oracle/base.py:1393:        if select._for_update_arg.skip_locked:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/sqlite/base.py:1426:    def for_update_clause(self, select, **kw):
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/sqlite/base.py:1427:        # sqlite has no "FOR UPDATE" AFAICT
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/mysql/base.py:1688:    def for_update_clause(self, select, **kw):
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/mysql/base.py:1689:        if select._for_update_arg.read:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/mysql/base.py:1692:            tmp = " FOR UPDATE"
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/mysql/base.py:1694:        if select._for_update_arg.of and self.dialect.supports_for_update_of:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/mysql/base.py:1696:            for c in select._for_update_arg.of:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/mysql/base.py:1704:        if select._for_update_arg.nowait:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/mysql/base.py:1707:        if select._for_update_arg.skip_locked:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/mysql/base.py:2544:    supports_for_update_of = False  # default for MySQL ...
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/mysql/base.py:2946:        self.supports_for_update_of = (
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/postgresql/base.py:2015:    def for_update_clause(self, select, **kw):
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/postgresql/base.py:2016:        if select._for_update_arg.read:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/postgresql/base.py:2017:            if select._for_update_arg.key_share:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/postgresql/base.py:2021:        elif select._for_update_arg.key_share:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/postgresql/base.py:2024:            tmp = " FOR UPDATE"
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/postgresql/base.py:2026:        if select._for_update_arg.of:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/postgresql/base.py:2028:            for c in select._for_update_arg.of:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/postgresql/base.py:2037:        if select._for_update_arg.nowait:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/postgresql/base.py:2039:        if select._for_update_arg.skip_locked:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/schema.py:1857:            ``for_update=True``.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/schema.py:2141:                onupdate = ColumnDefault(onupdate, for_update=True)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/schema.py:2150:                server_default = server_default._as_for_update(False)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/schema.py:2159:                server_onupdate = server_onupdate._as_for_update(True)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/schema.py:2163:                    server_onupdate, for_update=True
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/schema.py:3366:    def __init__(self, for_update: bool = False) -> None:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/schema.py:3367:        self.for_update = for_update
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/schema.py:3373:        if self.for_update:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/schema.py:3433:        cls, arg: Callable[..., Any], for_update: bool = ...
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/schema.py:3438:        cls, arg: ColumnElement[Any], for_update: bool = ...
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/schema.py:3445:    def __new__(cls, arg: object, for_update: bool = ...) -> ColumnDefault: ...
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/schema.py:3448:        cls, arg: Any = None, for_update: bool = False
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/schema.py:3503:    def __init__(self, arg: Any, for_update: bool = False) -> None:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/schema.py:3504:        self.for_update = for_update
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/schema.py:3509:            arg=self.arg, for_update=self.for_update
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/schema.py:3523:    for_update = False
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/schema.py:3568:        for_update: bool = False,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/schema.py:3570:        self.for_update = for_update
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/schema.py:3575:            arg=self.arg, for_update=self.for_update
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/schema.py:3604:        for_update: bool = False,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/schema.py:3606:        self.for_update = for_update
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/schema.py:3610:        return CallableColumnDefault(arg=self.arg, for_update=self.for_update)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/schema.py:3762:        for_update: bool = False,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/schema.py:3888:        :param for_update: Indicates this :class:`.Sequence`, when associated
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/schema.py:3895:        DefaultGenerator.__init__(self, for_update=for_update)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/schema.py:3957:            for_update=self.for_update,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/schema.py:4015:    def __init__(self, for_update: bool = False) -> None:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/schema.py:4016:        self.for_update = for_update
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/schema.py:4018:    def _as_for_update(self, for_update: bool) -> FetchedValue:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/schema.py:4019:        if for_update == self.for_update:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/schema.py:4022:            return self._clone(for_update)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/schema.py:4025:        return FetchedValue(self.for_update)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/schema.py:4027:    def _clone(self, for_update: bool) -> Self:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/schema.py:4031:        n.for_update = for_update
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/schema.py:4038:        if self.for_update:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/schema.py:4074:        for_update: bool = False,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/schema.py:4078:        super().__init__(for_update)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/schema.py:4084:            arg=self.arg, for_update=self.for_update, _reflected=self.reflected
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/schema.py:4088:        return "DefaultClause(%r, for_update=%r)" % (self.arg, self.for_update)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/schema.py:6040:    def _as_for_update(self, for_update: bool) -> FetchedValue:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/schema.py:6193:    def _as_for_update(self, for_update: bool) -> FetchedValue:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/selectable.py:3246:        cls, with_for_update: ForUpdateParameter
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/selectable.py:3248:        if isinstance(with_for_update, ForUpdateArg):
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/selectable.py:3249:            return with_for_update
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/selectable.py:3250:        elif with_for_update in (None, False):
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/selectable.py:3252:        elif with_for_update is True:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/selectable.py:3255:            return ForUpdateArg(**cast("Dict[str, Any]", with_for_update))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/selectable.py:3283:        :meth:`_expression.Select.for_update`.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/selectable.py:3952:    _for_update_arg: Optional[ForUpdateArg] = None
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/selectable.py:3958:    def with_for_update(
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/selectable.py:3967:        """Specify a ``FOR UPDATE`` clause for this
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/selectable.py:3972:            stmt = select(table).with_for_update(nowait=True)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/selectable.py:3979:            SELECT table.a, table.b FROM table FOR UPDATE NOWAIT
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/selectable.py:3986:            SELECT table.a, table.b FROM table FOR UPDATE
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/selectable.py:3989:        the suffix ``FOR UPDATE``.   Additional arguments can then be
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/selectable.py:3993:        :param nowait: boolean; will render ``FOR UPDATE NOWAIT`` on Oracle
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/selectable.py:4003:         into a ``FOR UPDATE OF`` clause; supported by PostgreSQL, Oracle
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/selectable.py:4007:        :param skip_locked: boolean, will render ``FOR UPDATE SKIP LOCKED`` on
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/selectable.py:4016:        self._for_update_arg = ForUpdateArg(
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/selectable.py:4486:            ("_for_update_arg", InternalTraversal.dp_clauseelement),
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/selectable.py:5301:            ("_for_update_arg", InternalTraversal.dp_clauseelement),
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/compiler.py:5061:        if select._for_update_arg is not None:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/compiler.py:5062:            text += self.for_update_clause(select, **kwargs)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/compiler.py:5174:    def for_update_clause(self, select, **kw):
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/compiler.py:5175:        return " FOR UPDATE"
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/base.py:148:                or (not default.for_update and default.is_sentinel)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/engine/default.py:253:    supports_for_update_of = False
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/testing/suite/test_results.py:333:        ("for_update_expr", True, select(1).with_for_update(), True),
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/testing/suite/test_results.py:336:            "for_update_string",
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/testing/suite/test_results.py:338:            lambda stringify: stringify("SELECT 1 FOR UPDATE"),
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/ext/asyncio/scoping.py:961:        with_for_update: ForUpdateParameter = None,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/ext/asyncio/scoping.py:986:            with_for_update=with_for_update,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/ext/asyncio/scoping.py:1128:        with_for_update: ForUpdateParameter = None,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/ext/asyncio/scoping.py:1153:            with_for_update=with_for_update,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/ext/asyncio/scoping.py:1166:        with_for_update: ForUpdateParameter = None,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/ext/asyncio/scoping.py:1195:            with_for_update=with_for_update,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/ext/asyncio/session.py:315:        with_for_update: ForUpdateParameter = None,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/ext/asyncio/session.py:335:            with_for_update=with_for_update,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/ext/asyncio/session.py:592:        with_for_update: ForUpdateParameter = None,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/ext/asyncio/session.py:612:            with_for_update=with_for_update,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/ext/asyncio/session.py:624:        with_for_update: ForUpdateParameter = None,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/ext/asyncio/session.py:648:            with_for_update=with_for_update,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/context.py:958:    _for_update_arg = None
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/context.py:1352:        self._for_update_arg = query._for_update_arg
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/context.py:1607:        # put FOR UPDATE on the inner query, where MySQL will honor it,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/context.py:1617:            for_update=self._for_update_arg,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/context.py:1638:        # Oracle Database however does not allow FOR UPDATE on the subquery,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/context.py:1643:            self._for_update_arg is not None
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/context.py:1644:            and self._for_update_arg.of is None
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/context.py:1646:            statement._for_update_arg = self._for_update_arg
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/context.py:1678:            for_update=self._for_update_arg,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/context.py:1698:        for_update,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/context.py:1750:        statement._for_update_arg = for_update
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/scoping.py:947:        with_for_update: ForUpdateParameter = None,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/scoping.py:1026:        :param with_for_update: optional boolean ``True`` indicating FOR UPDATE
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/scoping.py:1028:          indicate a more specific set of FOR UPDATE flags for the SELECT;
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/scoping.py:1030:          :meth:`_query.Query.with_for_update`.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/scoping.py:1063:            with_for_update=with_for_update,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/scoping.py:1076:        with_for_update: ForUpdateParameter = None,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/scoping.py:1113:            with_for_update=with_for_update,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/scoping.py:1687:        with_for_update: ForUpdateParameter = None,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/scoping.py:1744:        :param with_for_update: optional boolean ``True`` indicating FOR UPDATE
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/scoping.py:1746:          indicate a more specific set of FOR UPDATE flags for the SELECT;
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/scoping.py:1748:          :meth:`_query.Query.with_for_update`.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/scoping.py:1768:            with_for_update=with_for_update,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/session.py:3071:        with_for_update: ForUpdateParameter = None,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/session.py:3123:        :param with_for_update: optional boolean ``True`` indicating FOR UPDATE
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/session.py:3125:          indicate a more specific set of FOR UPDATE flags for the SELECT;
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/session.py:3127:          :meth:`_query.Query.with_for_update`.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/session.py:3157:        if with_for_update == {}:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/session.py:3159:                "with_for_update should be the boolean value "
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/session.py:3164:        with_for_update = ForUpdateArg._from_argument(with_for_update)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/session.py:3173:                with_for_update=with_for_update,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/session.py:3590:        with_for_update: ForUpdateParameter = None,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/session.py:3664:        :param with_for_update: optional boolean ``True`` indicating FOR UPDATE
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/session.py:3666:          indicate a more specific set of FOR UPDATE flags for the SELECT;
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/session.py:3668:          :meth:`_query.Query.with_for_update`.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/session.py:3700:            with_for_update=with_for_update,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/session.py:3713:        with_for_update: ForUpdateParameter = None,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/session.py:3744:            with_for_update=with_for_update,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/session.py:3765:        with_for_update: ForUpdateParameter = None,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/session.py:3836:            and with_for_update is None
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/session.py:3867:        if with_for_update is not None:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/session.py:3868:            statement._for_update_arg = ForUpdateArg._from_argument(
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/session.py:3869:                with_for_update
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/query.py:198:    _for_update_arg: Optional[ForUpdateArg] = None
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/query.py:1140:            with_for_update=self._for_update_arg,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/query.py:1774:    def with_for_update(
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/query.py:1785:        ``FOR UPDATE`` clause.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/query.py:1788:        :meth:`_expression.GenerativeSelect.with_for_update`.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/query.py:1790:        the resulting ``SELECT`` statement will have a ``FOR UPDATE`` clause
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/query.py:1792:        options such as ``FOR UPDATE NOWAIT`` or ``LOCK IN SHARE MODE``
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/query.py:1800:                .with_for_update(nowait=True, of=User)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/query.py:1807:            SELECT users.id AS users_id FROM users FOR UPDATE OF users NOWAIT
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/query.py:1811:            Using ``with_for_update`` in the context of eager loading
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/query.py:1814:            database backends.  When ``with_for_update`` is successfully used
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/query.py:1820:           :meth:`_orm.Query.with_for_update` method.   The purpose of
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/query.py:1827:            :meth:`_expression.GenerativeSelect.with_for_update`
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/query.py:1836:        self._for_update_arg = ForUpdateArg(
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/loading.py:494:    with_for_update: Optional[ForUpdateArg] = None,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/loading.py:515:        with_for_update=with_for_update,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/loading.py:533:    with_for_update: Optional[ForUpdateArg] = None,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/loading.py:596:    if with_for_update is not None:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/loading.py:598:        q._for_update_arg = with_for_update
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/loading.py:599:    elif query._for_update_arg is not None:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/loading.py:601:        q._for_update_arg = query._for_update_arg
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/api/points_api.py:454:    def _build_for_update_vectors(
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/api/points_api.py:734:        return await self._build_for_update_vectors(
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/api/points_api.py:970:        return self._build_for_update_vectors(
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/api/collections_api.py:166:    def _build_for_update_collection(
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/api/collections_api.py:266:        return await self._build_for_update_collection(
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/api/collections_api.py:341:        return self._build_for_update_collection(
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/api/distributed_api.py:182:    def _build_for_update_collection_cluster(
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/api/distributed_api.py:279:        return await self._build_for_update_collection_cluster(
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/api/distributed_api.py:354:        return self._build_for_update_collection_cluster(
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/api/aliases_api.py:89:    def _build_for_update_aliases(
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/api/aliases_api.py:137:        return await self._build_for_update_aliases(
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/api/aliases_api.py:168:        return self._build_for_update_aliases(

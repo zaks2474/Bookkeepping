@@ -1,0 +1,34 @@
+=== R2.C.1: Postgres Container Inventory ===
+NAMES                            IMAGE                                STATUS                              PORTS
+zakops-backend-postgres-1        postgres:15-alpine                   Up 4 hours (healthy)                
+zakops-agent-db                  pgvector/pgvector:pg16               Up 34 hours (healthy)               5432/tcp
+rag-db                           pgvector/pgvector:pg17               Up 34 hours                         0.0.0.0:5434->5432/tcp, [::]:5434->5432/tcp
+docker-postgres-1                postgres:16-alpine                   Created                             
+zakops-postgres-1                postgres:15-alpine                   Up 29 hours (healthy)               0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp
+
+=== Container Details ===
+--- zakops-backend-postgres-1 ---
+Project: zakops-backend
+Service: postgres
+Config: /home/zaks/zakops-backend/docker-compose.yml
+
+--- zakops-agent-db ---
+Project: agent-api
+Service: db
+Config: /home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml
+
+--- rag-db ---
+Project: crawl4ai-rag
+Service: rag-db
+Config: /root/mcp-servers/crawl4ai-rag/docker-compose.yml
+
+--- docker-postgres-1 ---
+Project: docker
+Service: postgres
+Config: /home/zaks/zakops-agent-api/deployments/docker/docker-compose.yml
+
+--- zakops-postgres-1 ---
+Project: zakops
+Service: postgres
+Config: /home/zaks/zakops-backend/docker-compose.yml
+

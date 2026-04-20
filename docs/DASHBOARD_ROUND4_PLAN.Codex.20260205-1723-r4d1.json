@@ -1,0 +1,186 @@
+{
+  "agent_identity": {
+    "agent_name": "Codex",
+    "run_id": "20260205-1723-r4d1",
+    "date_time": "2026-02-05T17:23:20Z",
+    "repo_revision_dashboard": "b96b33c5547258663123a637dcff741c96b028c9",
+    "repo_revision_backend": "2a68de172c7faf1df6f53357f4b43b0161d5dd32",
+    "repo_revision_agent_api": "b96b33c5547258663123a637dcff741c96b028c9"
+  },
+  "gates": {
+    "gate_a_contract": {
+      "name": "Contract Gate (Dashboard <-> API)",
+      "requirements": [
+        "Define endpoint, method, request/response schema, and auth for every UI action",
+        "Fail build if UI calls a non-existent route or wrong method"
+      ]
+    },
+    "gate_b_e2e": {
+      "name": "E2E Gate (Playwright)",
+      "requirements": [
+        "Deals list loads and detail loads",
+        "Bulk delete deals works",
+        "Quarantine approve/reject/delete works",
+        "Actions clear-completed works",
+        "Onboarding email settings opens and saves",
+        "Chat renders markdown correctly"
+      ]
+    },
+    "gate_c_observability": {
+      "name": "Observability Gate",
+      "requirements": [
+        "Every UI action emits correlation_id",
+        "Backend logs include same correlation_id"
+      ]
+    },
+    "gate_d_no_dead_ui": {
+      "name": "No Dead UI Gate",
+      "requirements": [
+        "Static scan finds no empty/TODO onClick",
+        "No UI calls to unknown routes"
+      ]
+    }
+  },
+  "phases": [
+    {
+      "name": "R4-0",
+      "title": "Baseline Contract Inventory",
+      "objective": "Produce definitive UI action map and verify against backend routes.",
+      "tasks": [
+        "Enumerate all fetch/apiFetch/agentClient calls and map to actions",
+        "Export backend route list and compare to UI map",
+        "Script curl checks for each action endpoint and record 404/405"
+      ],
+      "dependencies": [],
+      "risks": ["Incomplete mapping hides failures"],
+      "gate": "gate_a_contract",
+      "acceptance_criteria": [
+        "Machine-readable action->endpoint map exists",
+        "Every endpoint has backend handler"
+      ],
+      "evidence_required": ["route inventory", "diff report", "curl outputs"]
+    },
+    {
+      "name": "R4-1",
+      "title": "Endpoint Contract Stabilization",
+      "objective": "Fix route/method mismatches and reserved slug routing.",
+      "tasks": [
+        "Add /deals/new route or guard reserved slugs in /deals/[id]",
+        "Implement /api/deals/bulk-archive or adjust UI to loop single archive",
+        "Normalize API key injection for all write requests",
+        "Fix /api/actions/clear-completed and bulk endpoints or remove buttons"
+      ],
+      "dependencies": ["Auth model decision", "Backend write endpoints"],
+      "risks": ["Breaking existing write paths"],
+      "gate": "gate_a_contract + gate_d_no_dead_ui",
+      "acceptance_criteria": [
+        "No 404/405 for core actions",
+        "Reserved slugs render correct UI"
+      ],
+      "evidence_required": ["curl proofs for endpoints", "Playwright /deals/new and bulk delete"]
+    },
+    {
+      "name": "R4-2",
+      "title": "Quarantine Workflow Fix",
+      "objective": "Approvals and previews operate on canonical quarantine endpoints.",
+      "tasks": [
+        "Switch approve/reject to /api/quarantine/{id}/process or implement action execute endpoints",
+        "Fix preview endpoint to /api/quarantine/{id}",
+        "Implement delete/hide or remove delete UI"
+      ],
+      "dependencies": ["Quarantine schema", "Deal creation logic"],
+      "risks": ["Partial state transitions"],
+      "gate": "gate_b_e2e + gate_c_observability",
+      "acceptance_criteria": [
+        "Approve creates deal and removes item",
+        "Preview loads",
+        "Delete works or removed"
+      ],
+      "evidence_required": ["curl POST /api/quarantine/{id}/process returns deal_id", "UI shows new deal"]
+    },
+    {
+      "name": "R4-3",
+      "title": "Actions Execution + Bulk Ops",
+      "objective": "Ensure action lifecycle endpoints exist and UI uses them.",
+      "tasks": [
+        "Implement /api/actions/{id}/execute|cancel|retry|update",
+        "Implement /api/actions/clear-completed and bulk endpoints or adjust UI",
+        "Resolve /api/actions/capabilities conflict"
+      ],
+      "dependencies": ["Action engine", "Worker queue", "Audit trail"],
+      "risks": ["Side effects", "Idempotency gaps"],
+      "gate": "gate_a_contract + gate_b_e2e",
+      "acceptance_criteria": ["No 405 for action operations", "Metrics render"],
+      "evidence_required": ["curl tests", "UI status updates"]
+    },
+    {
+      "name": "R4-4",
+      "title": "Chat UX + Truth",
+      "objective": "Correct rendering and align agent data source with UI.",
+      "tasks": [
+        "Add markdown renderer and sanitize output",
+        "Add provenance indicators and RAG freshness badges",
+        "Ensure agent deal count uses DB counts or reindex before responding"
+      ],
+      "dependencies": ["RAG indexing pipeline", "UI components"],
+      "risks": ["XSS if unsanitized markdown"],
+      "gate": "gate_b_e2e",
+      "acceptance_criteria": ["Markdown renders", "Deal counts match or are labeled"],
+      "evidence_required": ["chat screenshot", "curl /api/deals and RAG stats"]
+    },
+    {
+      "name": "R4-5",
+      "title": "Settings + Onboarding Product Hardening",
+      "objective": "Real email integration and durable settings.",
+      "tasks": [
+        "Build email integration settings using /api/integrations/email/*",
+        "Replace mock onboarding email with real OAuth",
+        "Persist onboarding state to backend",
+        "Fix provider test endpoint to use /health"
+      ],
+      "dependencies": ["Auth/session model", "OAuth credentials"],
+      "risks": ["OAuth complexity", "Secrets handling"],
+      "gate": "gate_b_e2e + gate_a_contract",
+      "acceptance_criteria": ["Email connect persists", "Settings show connected accounts"],
+      "evidence_required": ["Email API responses", "UI confirmation"]
+    },
+    {
+      "name": "R4-6",
+      "title": "Observability + Regression Proof",
+      "objective": "Prevent regressions and add traceability.",
+      "tasks": [
+        "Add correlation_id header from UI to backend",
+        "Add Playwright suite for critical actions",
+        "Add No Dead UI static scan in CI"
+      ],
+      "dependencies": ["Logging formats"],
+      "risks": ["Performance overhead"],
+      "gate": "gate_c_observability + gate_b_e2e",
+      "acceptance_criteria": ["Trace ID visible in dashboard and backend logs"],
+      "evidence_required": ["Log excerpts with matching IDs"]
+    }
+  ],
+  "issue_to_phase_mapping": {
+    "L-01": "R4-1",
+    "L-02": "R4-1",
+    "L-03": "R4-1",
+    "L-04": "R4-2",
+    "L-05": "R4-2",
+    "L-06": "R4-3",
+    "L-07": "R4-3",
+    "L-08": "R4-5",
+    "L-09": "R4-5",
+    "L-10": "R4-5",
+    "L-11": "R4-4",
+    "L-12": "R4-4",
+    "L-13": "R4-6",
+    "L-14": "R4-3",
+    "L-15": "R4-1"
+  },
+  "proof_artifacts_required": [
+    "contract map file",
+    "curl outputs for endpoints",
+    "Playwright test logs",
+    "log correlation samples"
+  ]
+}

@@ -1,0 +1,45 @@
+=== V1.4 GT-011/012/013/017/019 validation ===
+VALID: GT-011
+VALID: GT-012
+VALID: GT-013
+VALID: GT-017
+VALID: GT-019
+
+=== V5.5 All golden traces validation ===
+VALID: GT-028
+VALID: GT-029
+VALID: GT-030
+VALID: GT-031
+Summary: PASS=0 FAIL=0 MISSING=0
+
+=== V5.6 Golden trace runner (CI mode) ===
+
+------------------------------------------------------------
+Total: 31
+Passed: 31
+Failed: 0
+Pass Rate: 100.0%
+------------------------------------------------------------
+✅ Golden Trace Evaluation PASSED
+
+=== VREG.4 Golden trace runner (CI mode, tail) ===
+✅ PASS GT-020: Add note to deal
+✅ PASS GT-021: M&A terminology question
+✅ PASS GT-022: Stage transition - loi to due_diligence
+✅ PASS GT-023: Mark deal as closed lost
+✅ PASS GT-024: Web search for industry information
+✅ PASS GT-025: Multiple deal query
+✅ PASS GT-026: Grounding - deal contacts query
+✅ PASS GT-027: ZakOps platform question
+✅ PASS GT-028: Create deal request
+✅ PASS GT-029: Transition to closed won
+✅ PASS GT-030: Deal history query
+✅ PASS GT-031: Invalid backward transition
+
+------------------------------------------------------------
+Total: 31
+Passed: 31
+Failed: 0
+Pass Rate: 100.0%
+------------------------------------------------------------
+✅ Golden Trace Evaluation PASSED

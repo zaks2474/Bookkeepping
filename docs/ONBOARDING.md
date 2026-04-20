@@ -1,256 +1,435 @@
-# Onboarding
+# ZakOps Operator Onboarding
 
-Quick orientation for new operators.
+Complete orientation for operators and Claude Code sessions.
 
-## Prereqs
-- User in `docker` group (or use `sudo` for docker).
-- bash available (`capture.sh` auto-switches to bash if invoked differently).
-- Access to relevant repos/services (OpenWebUI, Claude CLI).
+---
 
-## Key locations
-- Bookkeeping: `/home/zaks/bookkeeping`
-- **Change Log**: `/home/zaks/bookkeeping/CHANGES.md` (record ALL environment changes here)
-- Snapshots: `/home/zaks/bookkeeping/snapshots`
-- Logs: `/home/zaks/bookkeeping/logs` (`capture.log`, `cron.log`)
-- Config copies: `/home/zaks/bookkeeping/configs`
-- Docs: `/home/zaks/bookkeeping/docs`
+## 1. Prerequisites
 
-## Common commands
-- Run snapshot: `cd /home/zaks/bookkeeping && make snapshot`
-- Tail capture log: `make logs`
-- Health checks: `make health` (checks Backend API 8091, Agent API 8095, OpenWebUI 3000, vLLM 8000, RAG REST 8052 via `/rag/stats`, compose ps; edit `scripts/health.sh` as services change)
-- DataRoom dashboard: `/home/zaks/scripts/dataroom_dashboard.sh`
-- Run SharePoint sync now: `bash /home/zaks/scripts/run_sharepoint_sync.sh`
-- Run RAG index now: `bash /home/zaks/scripts/run_rag_index.sh`
-- Cron schedules: `crontab -l` (bookkeeping) and `/etc/cron.d/dataroom-automation` (DataRoom SharePoint+RAG)
+- User in `docker` group (or use `sudo` for docker)
+- bash available (`capture.sh` auto-switches to bash if invoked differently)
+- Access to relevant repos/services (OpenWebUI, Claude CLI)
+- Node.js, npm, Python 3.12+, uv, Docker
 
-## Services (summary)
-- Dashboard: http://localhost:3003 (Next.js, bare process)
-- Backend API: http://localhost:8091 (FastAPI, Docker `zakops-backend-1`)
-- Agent API: http://localhost:8095 (LangGraph + vLLM)
-- OpenWebUI: http://localhost:3000
-- RAG REST: http://localhost:8052
-- MCP Server: port 9100 (`/home/zaks/zakops-backend/mcp_server/`)
-- vLLM: http://localhost:8000 (Qwen2.5-32B-Instruct-AWQ)
-- PostgreSQL: localhost:5432 (DBs: zakops, zakops_agent, crawlrag)
-- **Port 8090**: DECOMMISSIONED — do not use
-- Docker: `docker ps`, see `snapshots/docker-*.txt` for ports/networks
-- Post-move checklist: `docs/POST-MOVE-CHECKLIST.md`
+## 2. Architecture Overview
 
-## Notes on secrets
-- Secrets/keys/.env are excluded by design. Keep them outside git and load via env files or systemd `EnvironmentFile`.
-- Treat as secrets (never commit/sync): `/home/zaks/Zaks-llm/sharepoint-mcp-server/config.json`, OpenWebUI `webui.db`, `/home/zaks/.git-access-tokens`.
-- LangSmith tracing must be enabled in safe mode only (inputs/outputs hidden). See `docs/LANGSMITH-SAFE-TRACING.md`.
+### Repositories
 
-## Next steps
-- Read `docs/SERVICE-CATALOG.md` and `docs/RUNBOOKS.md`.
-- Update catalog entries with real start/stop commands, data paths, log paths.
-- Add health checks in `scripts/health.sh` for each critical service.
+| Repository | Path | Stack | Purpose |
+|-----------|------|-------|---------|
+| Monorepo | `/home/zaks/zakops-agent-api` | Agent API + Dashboard + Backend + contracts | Primary development |
+| RAG/LLM | `/home/zaks/Zaks-llm` | RAG service, vLLM | Vector search, LLM inference |
+| Bookkeeping | `/home/zaks/bookkeeping` | Docs, snapshots, scripts | Operations, change log |
 
-## DataRoom automation (SharePoint + RAG)
-- Schedule: `/etc/cron.d/dataroom-automation` (SharePoint sync every 15 min, RAG index every 30 min)
-- Wrappers: `/home/zaks/scripts/run_sharepoint_sync.sh`, `/home/zaks/scripts/run_rag_index.sh` (locking + daily logs)
-- Logs: `/home/zaks/logs/sharepoint_sync_YYYYMMDD.log`, `/home/zaks/logs/rag_index_YYYYMMDD.log`
-- RAG health endpoint: `http://localhost:8052/rag/stats`
-- OpenWebUI → SharePoint/RAG: export chats to `DataRoom/06-KNOWLEDGE-BASE/AI-Sessions/OpenWebUI/` only; do not sync/index OpenWebUI runtime (`webui.db`, `vector_db/`, `cache/`)
+### Services
 
-## Operator changelog
+| Service | Port | Health Check | Runtime |
+|---------|------|-------------|---------|
+| Dashboard | 3003 | `GET /` | Bare Next.js (NOT Docker) |
+| Backend API | 8091 | `GET /health` | Docker (`zakops-backend-1`) |
+| Agent API | 8095 | `GET /health` | Docker (`zakops-agent-api`) |
+| RAG REST | 8052 | `GET /health` | Docker |
+| MCP Server | 9100 | (native process) | `/home/zaks/zakops-agent-api/apps/backend/mcp_server/` |
+| OpenWebUI | 3000 | `GET /` | Docker |
+| vLLM | 8000 | `GET /health` | Docker (Qwen2.5-32B-Instruct-AWQ) |
+| PostgreSQL | 5432 | `pg_isready` | Docker |
 
-> **IMPORTANT**: The authoritative change log is `/home/zaks/bookkeeping/CHANGES.md`. All environment changes MUST be recorded there. This section contains a summary of recent changes for quick reference.
+**Port 8090 is DECOMMISSIONED** — never use it.
 
-### 2025-12-21
-- Updated cron template and installed schedule: `/home/zaks/scripts/cron/dataroom-automation.cron` → `/etc/cron.d/dataroom-automation`
-- Added wrappers: `/home/zaks/scripts/run_sharepoint_sync.sh`, `/home/zaks/scripts/run_rag_index.sh`
-- Fixed ownership so `zaks` cron jobs can write caches/logs: `/home/zaks/.cache/rag_index_hashes.json`, `/home/zaks/.cache/sharepoint_sync_hashes.json`, and the scheduled scripts
-- Updated SharePoint sync defaults to include OpenWebUI exports and preserve folder paths: `/home/zaks/scripts/sync_sharepoint.py`
-- Updated dashboard health checks (RAG `/rag/stats`, actionable permission check): `/home/zaks/scripts/dataroom_dashboard.sh`
-- Improved SharePoint v2 script config/credential fallback (optional path): `/home/zaks/Zaks-llm/scripts/sharepoint_sync_v2.py`
-- Updated implementation plan to match the new schedule/wrappers and OpenWebUI export safety notes: `/home/zaks/DataRoom-rescructure-codex`
+### Databases
 
-### 2025-12-24
-- Replaced OpenWebUI volume rsync with DB-only backups (keeps DataRoom clean): `/home/zaks/bookkeeping/scripts/openwebui_sync.sh`
-- Removed `DataRoom/08-ARCHIVE/openwebui-chats` runtime dump and backed up all `webui.db` snapshots: `/home/zaks/scripts/cleanup_openwebui_archive.sh`
-- Enabled daily OpenWebUI export + daily DataRoom backup in `/etc/cron.d/dataroom-automation`
-- Fixed dashboard log parsing to only evaluate the most recent run: `/home/zaks/scripts/dataroom_dashboard.sh`
-- Moved Email-to-DataRoom cron to run as `zaks` (prevents root-owned DataRoom files): `/home/zaks/bookkeeping/configs/cron/root.crontab.after-20251215-045446`
+| Database | Schema | User | Service | Migrations |
+|----------|--------|------|---------|-----------|
+| zakops | **zakops** (NOT public!) | **zakops** (NOT dealengine!) | Backend | Alembic (`apps/backend/db/migrations/`) |
+| zakops_agent | public | agent | Agent | SQL (`apps/agent-api/migrations/`) |
+| crawlrag | public | (env) | RAG | SQL (`Zaks-llm/db/migrations/`) |
 
-### 2025-12-25
-- Added append-only run ledger writer: `/home/zaks/bookkeeping/scripts/run_ledger.py` (default ledger: `/home/zaks/logs/run-ledger.jsonl`)
-- Emitted run-ledger records from core automations: `/home/zaks/bookkeeping/capture.sh`, `/home/zaks/bookkeeping/scripts/openwebui_sync.sh`, `/home/zaks/scripts/run_rag_index.sh`, `/home/zaks/scripts/run_sharepoint_sync.sh`, `/home/zaks/scripts/sync_acquisition_emails.py`
-- Added best-effort secret scanning to prevent accidental RAG indexing / SharePoint exfil: `/home/zaks/scripts/zakops_secret_scan.py`, `/home/zaks/scripts/index_dataroom_to_rag.py`, `/home/zaks/scripts/sync_sharepoint.py`
-- Ensured mixed root/zaks jobs can append to the run ledger (auto-fix owner/mode when written by root): `/home/zaks/bookkeeping/scripts/run_ledger.py`
-- Added `make preflight` secret scan for this repo: `/home/zaks/bookkeeping/Makefile`
-- Redacted LinkedIn cookie values from docs (placeholders only): `/home/zaks/bookkeeping/docs/LINKEDIN-MCP-IMPLEMENTATION.md`
+---
 
-### 2025-12-26
-- Implemented World-Class Orchestration Patterns for year-spanning deal lifecycle:
-  - Event Sourcing: `/home/zaks/scripts/deal_events.py` (append-only event log per deal)
-  - State Machine: `/home/zaks/scripts/deal_state_machine.py` (enforced stage transitions, approval gates)
-  - Deferred Actions: `/home/zaks/scripts/deferred_actions.py` (schedule future actions, recurring tasks)
-  - Durable Checkpointing: `/home/zaks/scripts/durable_checkpoint.py` (crash recovery for long operations)
-  - AI Advisory: `/home/zaks/scripts/deal_ai_advisor.py` (stage-appropriate AI recommendations)
-  - Deferred Actions Processor: `/home/zaks/scripts/process_deferred_actions.py` (cron job for due actions)
-  - Event-Enabled Registry: `/home/zaks/scripts/deal_registry_events.py` (emits events on mutations)
-- Created directory structure: `/home/zaks/DataRoom/.deal-registry/events/`, `/home/zaks/DataRoom/.deal-registry/checkpoints/`
-- Deal stages now support full M&A lifecycle: INBOUND → SCREENING → QUALIFIED → LOI → DILIGENCE → CLOSING → INTEGRATION → OPERATIONS → GROWTH → EXIT_PLANNING → CLOSED_WON/CLOSED_LOST
-- CLI tools for all patterns: `python3 /home/zaks/scripts/deal_events.py list`, `deal_state_machine.py stages`, `deferred_actions.py stats`, `durable_checkpoint.py stats`
-- Added DFP CRUD endpoints to ZakOps API: `/api/deals`, `/api/deals/{id}/events`, `/api/quarantine`, `/api/deferred-actions`, `/api/checkpoints`
-- Updated dashboard UI: `/home/zaks/DataRoom/_dashboard/index.html` (deal pipeline, deferred actions, checkpoints)
-- Added cron jobs: hourly deferred actions processor, 15-min email sync in `/etc/cron.d/dataroom-automation`
-- LangSmith safe tracing: `/home/zaks/scripts/enable_langsmith_tracing.sh`, `/home/zaks/Zaks-llm/docker-compose.langsmith.yml`
-- Expanded golden datasets to 52 examples each (208 total) in `/home/zaks/DataRoom/06-KNOWLEDGE-BASE/EVALS/`
+## 3. Contract Surfaces (17 Total)
 
-### 2025-12-31
-- **Run Ledger & Secret Scanner Verification**: Verified Phase 0/1 implementation from lab environment analysis
-  - **Verified**: `run_ledger.py` (append-only JSONL, file locking, correlation IDs), `zakops_secret_scan.py` (8 secret patterns)
-  - **Verified integrations**: capture.sh, openwebui_sync.sh, run_rag_index.sh, run_sharepoint_sync.sh, sync_acquisition_emails.py
-  - **Fix applied**: Made `run_ledger.py` executable (`chmod +x`) - was missing, causing on_exit traps to skip ledger writes
-  - **Test results**: Run ledger at `/home/zaks/logs/run-ledger.jsonl` now capturing entries; secret scanner detects all patterns
-- **World-Class Orchestration Plan Unification**: Merged execution plans into comprehensive unified document
-  - Merged: existing `WORLD-CLASS-ORCHESTRATION-PLAN.md` + operator-provided `zakops_unified_execution_plan.md`
-  - Added: 5-plane architecture model, LLM Strategy (provider abstraction for vLLM + Gemini), policy-as-code YAML, Phase 0.5 Gemini adapter
-  - Added: idempotency requirements, Phase 6 evaluation, explicit execution order (0 → 0.5 → 1 → 2 → 3 → 5 → 4 → 6)
-  - Operator enhancements: projection rebuild/backfill, email dedupe, feature flags, retention/backup, API security
-  - Final document: `/home/zaks/bookkeeping/docs/WORLD-CLASS-ORCHESTRATION-PLAN.md` (1,140+ lines, 13 sections)
-- **Global Search + Scroll Model Remediation**: Fixed critical UX issues
-  - **Global Search (⌘K)**: Created Command Palette (`src/components/global-search.tsx`) with deal search, keyboard shortcut, 30s cache, navigation
-  - **Scroll Model Fix**: Fixed SidebarProvider (`h-screen overflow-hidden`) and SidebarInset (`overflow-hidden`); added page-level scroll containers to all 6 pages
-  - **Template Cleanup**: Removed 8 unused routes with Clerk deps (billing, kanban, product, etc.) and 5 feature dirs
-  - **Testing**: 40 click-sweep tests pass including new scroll container verification (Section 8)
-  - **Docs**: Created `SCROLL-MODEL.md`, updated `INTERACTION-MATRIX.md` (all 10 issues marked fixed)
-- **Email Sync Smart Provenance Checking**: Enhanced Downloads folder processing with email provenance verification
-  - Disabled auto-creation of deal folders from Downloads documents (was creating folders for personal docs)
-  - Added `search_by_terms()` to IMAPGmailClient for provenance lookup with `skip_words` filter (no false positives)
-  - Added document content extraction (PDF/Word → company names, listing IDs, broker names)
-  - Added `_search_email_provenance()`, `_is_acquisition_related()`, `_create_deal_from_email()` methods
-  - New flow: read content → match existing deals → search emails → verify acquisition-related → create or skip
-  - Fixed Gmail disconnect timing (moved Downloads scan before IMAP disconnect)
-  - Test results: Personal docs skipped (no provenance), business docs with email trail processed correctly
-- **ZakOps Prime Integration Plan**: Created `/home/zaks/plans/zakops-prime-email-sync-integration.md`
-  - 3-Stage Architecture: Stage A (Deterministic Ingestion), Stage B (Agentic Intelligence), Stage C (Gated Outbound)
-  - Per-email `manifest.json` for clean stage handoff
-  - Stage B outputs: `deal_profile.json`, `RISKS.md`, `NEXT-ACTIONS.md`, duplicate detection, broker intelligence
-  - Model routing: small model for classification, large model for analysis
-  - Guardrails: no-overwrite, schema validation, approval gates, never auto-send
+The system has 17 typed contract surfaces. Each has a committed OpenAPI spec, a codegen command, and generated output files. **Never edit generated files** — always re-run the sync command.
 
-### 2026-01-17
-- **ZakOps Dashboard Phase 4 UI Implementation**: Created comprehensive Phase 4 UI components
-  - **Operator HQ**: `OperatorHQ.tsx`, `QuickStats.tsx`, `PipelineOverview.tsx`, `ActivityFeed.tsx` in `/home/zaks/zakops-dashboard/src/components/operator-hq/`
-  - **Onboarding Wizard**: 5-step progressive wizard with `WelcomeStep`, `EmailSetupStep`, `AgentConfigStep`, `PreferencesStep`, `CompleteStep` in `/home/zaks/zakops-dashboard/src/components/onboarding/`
-  - **Diligence Components**: `DiligenceChecklist`, `DiligenceProgress`, `DiligenceCategory`, `DiligenceItem`, `useDiligence` hook in `/home/zaks/zakops-dashboard/src/components/diligence/`
-  - **Dashboard Components**: Enhanced `ExecutionInbox.tsx`, `TodayNextUpStrip.tsx` in `/home/zaks/zakops-dashboard/src/components/dashboard/`
-  - **Approvals**: Created `ApprovalBadge.tsx` with variants and notification dot
-  - **Infrastructure**: `use-render-tracking.ts`, `useApprovalFlow.ts`, enhanced `observability.ts`, `agent-client.ts`, `routes.ts`
+| # | Surface | Sync Command | Generated Output |
+|---|---------|-------------|-----------------|
+| 1 | Backend → Dashboard | `make sync-types` | `api-types.generated.ts` |
+| 2 | Backend → Agent SDK | `make sync-backend-models` | `backend_models.py` |
+| 3 | Agent OpenAPI | `make update-agent-spec` | `agent-api.json` |
+| 4 | Agent → Dashboard | `make sync-agent-types` | `agent-api-types.generated.ts` |
+| 5 | RAG → Backend SDK | `make sync-rag-models` | `rag_models.py` |
+| 6 | MCP Tools | (export from `tool_schemas.py`) | — |
+| 7 | SSE Events | (reference schema) | — |
+| 8 | Agent Config | `make validate-agent-config` | — |
+| 9 | Design System → Dashboard | `make validate-surface9` | — |
+| 10 | Dependency Health | `make validate-surface10` | — |
+| 11 | Env Registry | `make validate-surface11` | — |
+| 12 | Error Taxonomy | `make validate-surface12` | — |
+| 13 | Test Coverage | `make validate-surface13` | — |
+| 14 | Performance Budget | `make validate-surface14` | — |
+| 15 | MCP Bridge Tool Interface | `make validate-surface15` | — |
+| 16 | Email Triage Injection | `make validate-surface16` | — |
+| 17 | Dashboard Route Coverage | `make validate-surface17` | — |
 
-### 2026-01-18
-- **UI Polish Mission - Critical Bug Fixes**: Fixed multiple critical UI issues
-  - **HQ Data Fix**: Fixed stats showing 0 - corrected property names to match `PipelineStats` interface (`total_active_deals`, `deals_by_stage`)
-  - **Onboarding Layout Fix**: Fixed tiny centered card - changed to standard page layout with `p-4 md:p-6`
-  - **GlobalSearch Navigation Fix**: Changed from 404-causing dynamic routes to query params (`?selected=id`)
-  - **Missing Layouts**: Created `layout.tsx` for `/hq`, `/onboarding`, `/ui-test` pages with sidebar/header
-  - **UI Test Page**: Created comprehensive component verification page
-  - Files: `/home/zaks/zakops-dashboard/src/app/hq/page.tsx`, `/home/zaks/zakops-dashboard/src/app/onboarding/page.tsx`, `/home/zaks/zakops-dashboard/src/components/global-search.tsx`
+**Bridge files** (import these, never the generated files):
+- Dashboard: `@/types/api` and `@/types/agent-api`
+- Agent: `app.schemas.backend_models` (via BackendClient only)
 
-- **Agent Visibility Layer - Unified Architecture**: Implemented comprehensive agent visibility system
-  - API endpoint: `/api/agent/activity` with deterministic status rules (`waiting_approval > working > idle`)
-  - Data layer: `useAgentActivity` hook as single source of truth with SSE integration and React Query
-  - Components: `AgentDrawer` (global Ask Agent), `AgentActivityWidget` (dashboard), `AgentStatusIndicator` (header), `DealAgentPanel` (deal workspace), `AgentDemoStep` (onboarding demo)
-  - Page: `/agent/activity` - full history view with tabs, search, stats, and run history
-  - Integration: Provider in root layout, indicator in header, widget on dashboard, nav link with robot icon (`g g` shortcut)
-  - Files: `/home/zaks/zakops-dashboard/src/app/api/agent/activity/`, `/home/zaks/zakops-dashboard/src/hooks/useAgentActivity.ts`, `/home/zaks/zakops-dashboard/src/components/agent/AgentDrawer.tsx`, `/home/zaks/zakops-dashboard/src/components/dashboard/AgentActivityWidget.tsx`, `/home/zaks/zakops-dashboard/src/components/layout/AgentStatusIndicator.tsx`, `/home/zaks/zakops-dashboard/src/components/deal-workspace/DealAgentPanel.tsx`, `/home/zaks/zakops-dashboard/src/components/onboarding/steps/AgentDemoStep.tsx`
+### Codegen Flow
 
-### 2025-12-27
-- **ZakOps Chat System (Initial Implementation)**: Built RAG-grounded conversational interface for deal lifecycle queries:
-  - Backend scripts (`/home/zaks/scripts/`):
-    - `chat_orchestrator.py` - Main orchestrator with SSE streaming, deterministic routing, evidence-grounded LLM
-    - `chat_evidence_builder.py` - Evidence gathering from RAG, registry, events, case files, actions
-  - Frontend (`/home/zaks/zakops-dashboard/src/app/chat/page.tsx`): Chat UI with scope selector, evidence display, streaming
-  - API endpoints: `POST /api/chat/complete`, `GET /api/chat/llm-health`
-  - Features: Global/deal-scoped queries, RAG integration, deterministic routing for simple queries
-- **Chat UI Fixes: Progress Visibility + Session Persistence + Freeze Resolution**:
-  - Backend emits granular SSE progress events with `step`, `substep`, `phase`, `total_phases`
-  - Frontend 50ms token batching prevents UI freeze during streaming
-  - localStorage persistence for messages, session, scope - survives page refresh
-  - Debug panel shows session info, provider, timing breakdown with bar chart, cache status
-  - Smoke tests updated: Section 7 verifies progress events (30 tests pass)
-  - Performance: Deterministic ~20ms, LLM ~20-40s
-- **Chat Performance Mode v1 + Hybrid Gemini Integration**:
-  - New scripts (`/home/zaks/scripts/`):
-    - `chat_timing.py` - Timing/tracing infrastructure
-    - `chat_cache.py` - TTL-based evidence caching (global 45s, deal 180s)
-    - `chat_llm_provider.py` - Provider abstraction (vLLM, Gemini Flash/Pro)
-    - `chat_budget.py` - Gemini budget/rate controls ($5/day, 60 RPM)
-    - `chat_llm_router.py` - Routing policy with fallback chain
-    - `chat_benchmark.py` - Performance benchmark harness
-  - Modified `chat_orchestrator.py`: 7 deterministic patterns (deal counts, stage lookup, broker filter, stuck deals, actions due, what changed today), timing traces, evidence caching, provider routing, cloud safety gate
-  - Modified `chat_evidence_builder.py`: Retrieval caps (top_k=6, max_snippet=600 chars, deduplication)
-  - Extended `/api/chat/llm-health` endpoint with multi-provider health, budget, cache stats
-  - Frontend updates (`/home/zaks/zakops-dashboard/src/app/chat/page.tsx`): Progress indicator (4-step dots), Debug panel (timing breakdown, provider info, cache status)
-  - Testing: Extended `smoke-test.sh` (deterministic tests, provider health tests), new Makefile targets (`make perf`, `make provider-health`, `make budget-status`, `make cache-status`)
-  - Configuration: `ALLOW_CLOUD_DEFAULT=false`, `CHAT_CACHE_ENABLED=true`, `CHAT_DETERMINISTIC_EXTENDED=true`
-- **Chat vLLM Provider Hardening**:
-  - Fixed model name mismatch: Default changed from `Qwen/Qwen2.5-7B-Instruct` to `Qwen/Qwen2.5-32B-Instruct-AWQ`
-  - Centralized config: `OPENAI_API_BASE` is now single source of truth for vLLM endpoint
-  - Health check validates configured model exists in vLLM's model list
-  - Graceful degradation: Returns user-friendly message instead of "All providers failed" error
-  - New deterministic pattern: "What's this deal about?" returns comprehensive deal summary
-  - Health endpoint now includes `diagnostics`, `recommendations`, `primary_provider`
-  - Added Section 9 smoke tests for non-deterministic chat and graceful degradation
-  - Runbook: Added "ZakOps Chat / LLM Operations" section (12 procedures)
-
-## World-Class Orchestration Patterns
-
-Deal lifecycle patterns for year-spanning workflows:
-
-| Pattern | Script | Purpose | CLI Example |
-|---------|--------|---------|-------------|
-| Event Sourcing | `deal_events.py` | Immutable audit trail, state replay | `python3 deal_events.py list` |
-| State Machine | `deal_state_machine.py` | Enforced transitions, approvals | `python3 deal_state_machine.py stages` |
-| Deferred Actions | `deferred_actions.py` | Future tasks, recurring actions | `python3 deferred_actions.py stats` |
-| Checkpointing | `durable_checkpoint.py` | Crash recovery, resume | `python3 durable_checkpoint.py stats` |
-| AI Advisory | `deal_ai_advisor.py` | Stage-appropriate AI recommendations | `python3 deal_ai_advisor.py checklist --stage screening` |
-| Action Processor | `process_deferred_actions.py` | Execute due actions (cron) | `python3 process_deferred_actions.py --show-pending` |
-| Event Registry | `deal_registry_events.py` | Auto-emit events on mutations | Used via `EventEnabledRegistry` class |
-
-Environment variables:
-```bash
-DEAL_EVENTS_DIR=/home/zaks/DataRoom/.deal-registry/events
-DEAL_STATE_MACHINE_ENABLED=true
-DEAL_APPROVAL_REQUIRED_STAGES=loi,closing,exit_planning,closed_won
-DEFERRED_ACTIONS_PATH=/home/zaks/DataRoom/.deal-registry/deferred_actions.json
-CHECKPOINT_DIR=/home/zaks/DataRoom/.deal-registry/checkpoints
-AI_ADVISORY_ENABLED=true
-AI_ADVISORY_MODEL=Qwen/Qwen2.5-32B-Instruct-AWQ
+```
+Backend (live) → make update-spec → zakops-api.json → make sync-types → .generated.ts
+                                                     → make sync-backend-models → backend_models.py
+Agent (live)   → make update-agent-spec → agent-api.json → make sync-agent-types → .generated.ts
+RAG (committed)  → rag-api.json → make sync-rag-models → rag_models.py
 ```
 
-## Deal Lifecycle API Endpoints
+---
 
-Deal Lifecycle API endpoints available at `http://localhost:8091`:
+## 4. Claude Code Safety Pipeline (V5PP)
+
+The monorepo has a multi-layer safety system that prevents common mistakes at the tool level.
+
+### Hooks (`/home/zaks/.claude/hooks/`)
+
+| Hook | Event | Purpose |
+|------|-------|---------|
+| `pre-edit.sh` | Before Edit/Write | Blocks edits to generated files, secrets, and main branch |
+| `pre-bash.sh` | Before Bash | Blocks `rm -rf /`, `DROP TABLE`, `TRUNCATE`, force-push main |
+| `post-edit.sh` | After Edit/Write | Auto-formats (black for Python, prettier for TS/JS) |
+| `stop.sh` | Session end | Runs `make validate-local` + `memory-sync.sh` |
+| `memory-sync.sh` | Session end / manual | Syncs live facts to MEMORY.md, writes session log |
+
+### Permission Deny Rules (12 total in `settings.json`)
+
+Blocked operations (Edit and Write):
+- `*.generated.ts`, `*.generated.tsx` — use `make sync-types` or `make sync-agent-types`
+- `backend_models.py`, `rag_models.py` — use `make sync-backend-models` or `make sync-rag-models`
+- `.env`, `.env.*` — manage secrets outside Claude Code
+
+### Path-Scoped Rules (`.claude/rules/`)
+
+Auto-injected context when Claude edits files in specific paths:
+
+| Rule File | Triggers On | Key Constraints |
+|-----------|------------|-----------------|
+| `agent-tools.md` | `apps/agent-api/app/core/langgraph/tools/**` | Must use BackendClient, no raw HTTP |
+| `backend-api.md` | `apps/backend/src/api/**` | Must run sync after spec changes |
+| `contract-surfaces.md` | (reference) | Full surface map, dependency graph |
+| `dashboard-types.md` | `apps/dashboard/src/**` | Must import via bridge files only |
+
+### Slash Commands (`.claude/commands/`)
+
+| Command | Purpose |
+|---------|---------|
+| `/validate` | Full validation suite |
+| `/sync-all` | All codegen (surfaces 1, 2, 4, 5) |
+| `/sync-agent-types` | Surface 4 codegen |
+| `/sync-backend-types` | Surface 2 codegen |
+| `/contract-checker` | All 7 surface validation + drift + tsc |
+| `/check-drift` | Contract drift detection |
+| `/infra-check` | Infrastructure health + config audit |
+| `/after-change` | Post-change protocol |
+| `/hooks-check` | Hook testing |
+| `/permissions-audit` | Permission verification |
+| `/update-memory` | Manual memory sync trigger |
+
+### Non-Negotiable Rules
+
+1. **NEVER** edit generated files (`*.generated.ts`, `*_models.py`) — deny rules enforce this
+2. **NEVER** import generated files directly — use bridge files
+3. **NEVER** use raw HTTP in Agent tools — use BackendClient
+4. **NEVER** commit secrets (`.env`, credentials, tokens)
+5. **ALWAYS** run `make sync-*` after spec changes
+6. **ALWAYS** run migration-assertion after DB changes
+7. **ALWAYS** record changes in `/home/zaks/bookkeeping/CHANGES.md`
+8. Committed specs **MUST** match live backends — drift is a bug
+
+---
+
+## 5. Dynamic Memory System
+
+Claude Code's persistent memory auto-updates so knowledge never goes stale.
+
+### Components
+
+| Component | Path | Purpose |
+|-----------|------|---------|
+| `MEMORY.md` | `/root/.claude/projects/.../memory/` | Auto-loaded every session, contains project map, protocols, live facts |
+| `session-log.md` | Same directory | Append-only log of what changed each session |
+| `memory-sync.sh` | `/home/zaks/.claude/hooks/` | Gathers live facts, patches sentinel lines, writes session log |
+| Topic files | Same as MEMORY.md | Deep-dive references (`contract-surfaces.md`, `hooks-and-permissions.md`, etc.) |
+
+### How It Works
+
+1. **Session end**: `stop.sh` runs validation, then `memory-sync.sh`
+2. **memory-sync.sh** reads 9 live facts from the filesystem (CLAUDE.md line count, deny rules, hook count, rule count, redocly ignores, command count, spec presence, make targets)
+3. Updates `<!-- AUTOSYNC:key -->` sentinel-tagged lines in MEMORY.md with current values
+4. Appends a timestamped entry to `session-log.md` with git diff summary + fact snapshot
+5. Enforces 200-line limit on MEMORY.md, 50-entry limit on session log
+
+### Manual Refresh
+
+```bash
+make memory-sync          # From monorepo
+# or use /update-memory slash command in Claude Code
+```
+
+### Topic Files (read on demand)
+
+| File | Read When |
+|------|-----------|
+| `contract-surfaces.md` | Working on API boundaries or codegen |
+| `hooks-and-permissions.md` | Modifying hooks or deny rules |
+| `validation-pipeline.md` | Debugging make target failures |
+| `wsl-environment.md` | Hitting CRLF, permission, or path issues |
+| `project-history.md` | Understanding why infrastructure looks this way |
+
+---
+
+## 6. Validation Pipeline
+
+### Make Targets (Monorepo)
+
+```bash
+# Codegen
+make sync-types              # Backend OpenAPI → Dashboard TS types
+make sync-agent-types        # Agent OpenAPI → Dashboard TS types
+make sync-backend-models     # Backend OpenAPI → Agent Python models
+make sync-rag-models         # RAG OpenAPI → Backend Python models
+make sync-all-types          # All of the above
+
+# Validation
+make validate-local          # CI-safe offline (sync + lint + tsc + contracts)
+make validate-live           # Online (needs services, adds drift check)
+make validate-contract-surfaces  # All 17 contract surface checks
+make validate-enforcement    # Meta-gate: verify V5PP mechanisms active
+
+# Infrastructure
+make infra-check             # Quick pre-task health check (offline)
+make infra-snapshot          # Generate INFRASTRUCTURE_MANIFEST.md (needs services)
+make memory-sync             # Sync MEMORY.md with live facts
+
+# Spec updates (need running services)
+make update-spec             # Fetch live backend OpenAPI
+make update-agent-spec       # Fetch live agent OpenAPI
+```
+
+### Dependency Graph
+
+```
+validate-all
+  └── validate-live
+        └── validate-local
+              ├── sync-types
+              ├── sync-agent-types
+              ├── lint-dashboard
+              ├── validate-contract-surfaces
+              ├── tsc --noEmit
+              └── check-redocly-debt
+```
+
+### Pre-Task Protocol
+
+1. Read `CLAUDE.md` in monorepo root
+2. Run `make infra-check`
+3. Identify affected contract surfaces
+4. Run `make sync-all-types` if touching API boundaries
+
+### Post-Task Protocol
+
+1. Run appropriate `make sync-*` for affected surfaces
+2. Run `make validate-local`
+3. Fix CRLF + ownership on any new files
+4. Record changes in `/home/zaks/bookkeeping/CHANGES.md`
+
+---
+
+## 7. WSL Environment Hazards
+
+This runs on WSL2. These will silently break things if forgotten.
+
+### CRLF Line Endings
+
+Every file written by Claude's Write tool gets Windows line endings (`\r\n`).
+
+- **Symptom**: `bash\r: not found` (exit 127)
+- **Fix**: `sed -i 's/\r$//' <file>` on every `.sh` file after creation
+- **Detection**: `file <script>` shows "CRLF" or `cat -A <file> | grep '\^M'`
+
+### Root Ownership
+
+Claude Code runs as root. Every created file is root-owned.
+
+- **Symptom**: `EACCES` when user runs make targets
+- **Fix**: `sudo chown zaks:zaks <file>` after creating files in `/home/zaks/`
+
+### Dual Tool Paths
+
+- Monorepo tools: `/home/zaks/zakops-agent-api/tools/infra/`
+- External tools: `/home/zaks/tools/infra/`
+- Makefile expects monorepo-relative paths — never write scripts to the external path
+
+### grep -c Exit Code
+
+`grep -c` returns exit 1 when count is 0, breaking `set -e` scripts.
+
+```bash
+# Correct
+VAR=$(grep -c 'pattern' file 2>/dev/null) || VAR=0
+
+# Wrong (captures both outputs)
+VAR=$(grep -c 'pattern' file || echo 0)
+```
+
+---
+
+## 8. Key File Locations
+
+### Monorepo (`/home/zaks/zakops-agent-api`)
+
+| Category | Path |
+|----------|------|
+| CLAUDE.md | `CLAUDE.md` (root — the constitution) |
+| OpenAPI specs | `packages/contracts/openapi/*.json` |
+| Generated TS types | `apps/dashboard/src/lib/api-types.generated.ts` |
+| Bridge types | `apps/dashboard/types/api.ts` |
+| Agent models (gen) | `apps/agent-api/app/schemas/backend_models.py` |
+| Validation scripts | `tools/infra/validate-contract-surfaces.sh` |
+| Manifest | `INFRASTRUCTURE_MANIFEST.md` |
+| Rules | `.claude/rules/*.md` |
+| Commands | `.claude/commands/*.md` |
+
+### Claude Code Infrastructure
+
+| Category | Path |
+|----------|------|
+| Hooks | `/home/zaks/.claude/hooks/*.sh` |
+| Settings | `/home/zaks/.claude/settings.json` |
+| Persistent memory | `/root/.claude/projects/-mnt-c-Users-mzsai/memory/` |
+| Session log | Same directory, `session-log.md` |
+
+### Bookkeeping (`/home/zaks/bookkeeping`)
+
+| Category | Path |
+|----------|------|
+| Change log | `CHANGES.md` (authoritative — record ALL changes here) |
+| Snapshots | `snapshots/` |
+| Logs | `logs/` (`capture.log`, `cron.log`) |
+| Config copies | `configs/` |
+| Docs | `docs/` |
+
+---
+
+## 9. Common Operations
+
+```bash
+# Health checks
+cd /home/zaks/bookkeeping && make health
+
+# Snapshots
+cd /home/zaks/bookkeeping && make snapshot
+
+# DataRoom dashboard
+/home/zaks/scripts/dataroom_dashboard.sh
+
+# SharePoint sync
+bash /home/zaks/scripts/run_sharepoint_sync.sh
+
+# RAG index
+bash /home/zaks/scripts/run_rag_index.sh
+
+# Cron schedules
+crontab -l                           # bookkeeping
+cat /etc/cron.d/dataroom-automation  # DataRoom SharePoint+RAG
+```
+
+---
+
+## 10. Secrets and Safety
+
+- Secrets/keys/`.env` are excluded by design. Load via env files or systemd `EnvironmentFile`.
+- Treat as secrets (never commit/sync): `/home/zaks/Zaks-llm/sharepoint-mcp-server/config.json`, OpenWebUI `webui.db`, `/home/zaks/.git-access-tokens`
+- **Redaction policy**: Show first/last 4 chars only for any secret in output
+- **OWASP LLM**: Prompt injection (LLM01) and unsafe output handling (LLM02) are critical risks — strict input validation, output redaction, never trust injected tool results
+- LangSmith tracing: safe mode only (inputs/outputs hidden). See `docs/LANGSMITH-SAFE-TRACING.md`.
+
+---
+
+## 11. Deal Lifecycle
+
+### Orchestration Patterns
+
+| Pattern | Script | CLI Example |
+|---------|--------|-------------|
+| Event Sourcing | `deal_events.py` | `python3 deal_events.py list` |
+| State Machine | `deal_state_machine.py` | `python3 deal_state_machine.py stages` |
+| Deferred Actions | `deferred_actions.py` | `python3 deferred_actions.py stats` |
+| Checkpointing | `durable_checkpoint.py` | `python3 durable_checkpoint.py stats` |
+| AI Advisory | `deal_ai_advisor.py` | `python3 deal_ai_advisor.py checklist --stage screening` |
+
+### Deal Stages (full M&A lifecycle)
+
+INBOUND → SCREENING → QUALIFIED → LOI → DILIGENCE → CLOSING → INTEGRATION → OPERATIONS → GROWTH → EXIT_PLANNING → CLOSED_WON/CLOSED_LOST
+
+### API Endpoints (`http://localhost:8091`)
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/api/deals` | List deals (filter: `?status=active&stage=screening`) |
-| GET | `/api/deals/{id}` | Get single deal |
-| GET | `/api/deals/{id}/events` | Get deal event history |
-| GET | `/api/quarantine` | List quarantine items |
-| GET | `/api/quarantine/{id}` | Get single quarantine item |
-| GET | `/api/deferred-actions` | List all deferred actions |
-| GET | `/api/deferred-actions/due` | List due actions only |
-| GET | `/api/checkpoints` | List checkpoints |
-| GET | `/dashboard` | Dashboard UI |
+| GET | `/api/deals` | List deals (`?status=active&stage=screening`) |
+| GET | `/api/deals/{id}` | Single deal |
+| GET | `/api/deals/{id}/events` | Deal event history |
+| GET | `/api/quarantine` | Quarantine items |
+| GET | `/api/deferred-actions` | All deferred actions |
+| GET | `/api/deferred-actions/due` | Due actions only |
+| GET | `/api/checkpoints` | Checkpoints |
 
-## LangSmith Tracing
+---
 
-Enable safe tracing (inputs/outputs hidden by default):
+## 12. DataRoom Automation
+
+- **Schedule**: `/etc/cron.d/dataroom-automation` (SharePoint sync every 15 min, RAG index every 30 min)
+- **Wrappers**: `/home/zaks/scripts/run_sharepoint_sync.sh`, `/home/zaks/scripts/run_rag_index.sh` (locking + daily logs)
+- **Logs**: `/home/zaks/logs/sharepoint_sync_YYYYMMDD.log`, `/home/zaks/logs/rag_index_YYYYMMDD.log`
+- **RAG health**: `http://localhost:8052/rag/stats`
+- **Run ledger**: `/home/zaks/logs/run-ledger.jsonl` (append-only, with correlation IDs)
+- **Secret scanner**: `zakops_secret_scan.py` (8 patterns, prevents accidental RAG indexing of secrets)
+- OpenWebUI exports go to `DataRoom/06-KNOWLEDGE-BASE/AI-Sessions/OpenWebUI/` only — never sync/index runtime files
+
+---
+
+## 13. Autonomy Ladder (Claude Code Modes)
+
+| Level | Mode | When |
+|-------|------|------|
+| Plan | `--permission-mode plan --max-turns <N> --output-format json` | Architecture/design tasks |
+| Execute-Safe | Default | Normal development |
+| Execute-Full | `dangerouslySkipPermissions` | Trusted automation |
+| Emergency | Manual rollback | See procedures below |
+
+### Rollback Procedures
 
 ```bash
-# Option 1: Shell script
-export LANGCHAIN_API_KEY=your-key
-source /home/zaks/scripts/enable_langsmith_tracing.sh
+# Full rollback from backup
+cp ~/claude-backup-$(date +%Y%m%d)/* ~/.claude/
 
-# Option 2: Docker Compose overlay
-export LANGCHAIN_API_KEY=your-key
-docker compose -f docker-compose.yml -f docker-compose.langsmith.yml up -d zakops-api
+# Settings-only rollback
+cp ~/claude-backup-$(date +%Y%m%d)/settings.json ~/.claude/
+
+# Disable hooks temporarily
+mv ~/.claude/hooks ~/.claude/hooks.disabled
 ```
 
-See `docs/LANGSMITH-SAFE-TRACING.md` for full documentation.
+---
+
+## 14. Further Reading
+
+| Document | Location |
+|----------|----------|
+| Service Catalog | `docs/SERVICE-CATALOG.md` |
+| Runbooks | `docs/RUNBOOKS.md` |
+| World-Class Orchestration Plan | `docs/WORLD-CLASS-ORCHESTRATION-PLAN.md` |
+| LangSmith Safe Tracing | `docs/LANGSMITH-SAFE-TRACING.md` |
+| Scroll Model | `docs/SCROLL-MODEL.md` |
+| Post-Move Checklist | `docs/POST-MOVE-CHECKLIST.md` |
+| Lab Loop Guide | `docs/labloop-guide.md` |
+| Full Change Log | `/home/zaks/bookkeeping/CHANGES.md` |

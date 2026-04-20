@@ -1,0 +1,12 @@
+=== STEP 2.7: Backend Connectivity ===
+--- DEAL_API_URL from inside agent ---
+http://host.docker.internal:8091
+--- Resolution from inside agent container ---
+DEAL_API_URL = http://host.docker.internal:8091
+Status: 200
+Body: {"status":"healthy","timestamp":"2026-02-03T02:53:30.868481","version":"1.0.0","components":{"sse_streaming":"not_implemented","outbox_worker":"placeholder (0 actions processed)"},"not_implemented":{"
+--- Backend logs showing agent tool requests ---
+postgres-1  | 	DELETE FROM zakops.deals WHERE deal_id IN ('DL-0002','DL-0006','DL-0014','DL-0015','DL-0016','DL-0018','DL-0019','DL-0020');
+postgres-1  | 2026-02-03 02:09:37.446 UTC [40230] STATEMENT:  SELECT id, deal_id, stage FROM deals WHERE deal_id LIKE 'DL%' LIMIT 5;
+postgres-1  | 2026-02-03 02:10:15.258 UTC [40351] ERROR:  relation "public.deals" does not exist at character 22
+postgres-1  | 2026-02-03 02:10:15.258 UTC [40351] STATEMENT:  SELECT count(*) FROM public.deals;

@@ -1,0 +1,1 @@
+    CONSTRAINT chk_role CHECK (role IN ('VIEWER', 'OPERATOR', 'APPROVER', 'ADMIN'))

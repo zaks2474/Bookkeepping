@@ -1,0 +1,131 @@
+============================================================
+AGENT-FORENSIC-003 - Steps 4.9 & 4.10 Summary
+============================================================
+Completed: 2026-02-03T13:20:37-06:00
+
+## Step 4.9: Backend-Down Approval Test (Chaos)
+
+CHECK 4.9.1: Pre-Chaos Approval Creation
+  - Thread ID: forensic-003-chaos-1770146241
+  - Approval ID: b407e12b-d18a-4291-841c-84eaa9a6b3bf
+  - Tool: transition_deal (DL-CHAOS: inbound -> screening)
+  RESULT: PASS - Pending approval created successfully
+
+CHECK 4.9.2: Backend Stop and Approval Attempt
+  - Backend stopped: zakops-backend-backend-1
+  - Approval attempted while backend down
+  - Response: Graceful failure with clear error message
+    Error: 'Deal API unavailable at http://host.docker.internal:8091 and mocks disabled'
+  RESULT: PASS - System handled backend outage gracefully
+
+CHECK 4.9.3: Post-Chaos State Verification
+  - Backend restored successfully
+  - Deal stage before: qualified
+  - Deal stage after: qualified (UNCHANGED)
+  RESULT: PASS - No phantom state change occurred
+
+CHECK 4.9.4: Post-Chaos Approval Status
+  - Approval status in DB: approved
+  - Note: Approval was processed (claimed->approved) but tool execution failed
+  - Critical: Deal state was NOT mutated (no data corruption)
+  RESULT: INFO - Approval marked approved, but backend action failed safely
+
+## Step 4.10: Cross-Database Integrity
+
+CHECK 4.10.1: DB Identity Proof
+  - Agent API DB: postgresql://***@db:5432/zakops_agent
+    current_database: zakops_agent
+  - Backend API DB: postgresql://***@postgres:5432/zakops
+    current_database: zakops
+  RESULT: PASS - Separate databases confirmed
+
+CHECK 4.10.2: Container/Volume Labeling
+  - Postgres containers found: 5 total (4 running, 1 created)
+  - Volumes: agent-api_agent-postgres-data, zakops_postgres_data, etc.
+  RESULT: INFO - Multiple postgres containers exist (see 4.10.3)
+
+CHECK 4.10.3: Stale DB Warning
+  - Running postgres containers: 4
+  - Expected: 2 (zakops-agent-db, zakops-backend-postgres-1)
+  - Additional: rag-db, zakops-postgres-1
+  - Stale (Created): docker-postgres-1
+  RESULT: WARNING - More postgres containers than expected
+
+CHECK 4.10.4: Table Isolation Verification
+  - Agent DB tables (public schema): 9 tables
+    (approvals, audit_log, checkpoints, tool_executions, etc.)
+  - Backend DB tables (zakops schema): 66 tables
+    (deals, actions, users, email_messages, etc.)
+  - Table name overlap: NONE
+  RESULT: PASS - Complete table isolation between databases
+
+============================================================
+OVERALL: Steps 4.9 & 4.10 COMPLETED SUCCESSFULLY
+============================================================
+
+Key Findings:
+1. System handles backend outages gracefully (no data corruption)
+2. Approval state machine progresses but backend writes fail safely
+3. Agent and Backend databases are completely isolated
+4. WARNING: Multiple postgres containers may need cleanup
+
+Evidence files:
+total 244
+drwxr-xr-x 2 root root 4096 Feb  3 13:20 .
+drwxr-xr-x 4 root root 4096 Feb  3 13:07 ..
+-rw-r--r-- 1 root root  339 Feb  3 13:07 4_0_1_health.txt
+-rw-r--r-- 1 root root  983 Feb  3 13:07 4_0_2_backend_health.txt
+-rw-r--r-- 1 root root  534 Feb  3 13:07 4_0_3_agent_db.txt
+-rw-r--r-- 1 root root  199 Feb  3 13:07 4_0_4_backend_db.txt
+-rw-r--r-- 1 root root 1076 Feb  3 13:07 4_0_5_llm.txt
+-rw-r--r-- 1 root root  601 Feb  3 13:19 4_10_1_db_identity.txt
+-rw-r--r-- 1 root root  851 Feb  3 13:19 4_10_2_container_labels.txt
+-rw-r--r-- 1 root root  591 Feb  3 13:19 4_10_3_stale_db.txt
+-rw-r--r-- 1 root root 5590 Feb  3 13:19 4_10_4_table_isolation.txt
+-rw-r--r-- 1 root root  788 Feb  3 13:07 4_1_1_create_approval.txt
+-rw-r--r-- 1 root root 1608 Feb  3 13:08 4_1_2_approval_fields.txt
+-rw-r--r-- 1 root root  731 Feb  3 13:07 4_1_3_tool_args.txt
+-rw-r--r-- 1 root root  559 Feb  3 13:08 4_1_4_idempotency_unique.txt
+-rw-r--r-- 1 root root  806 Feb  3 13:08 4_2_1_approve_valid.txt
+-rw-r--r-- 1 root root  624 Feb  3 13:08 4_2_2_double_approve.txt
+-rw-r--r-- 1 root root  235 Feb  3 13:08 4_2_3_reject_approved.txt
+-rw-r--r-- 1 root root  724 Feb  3 13:08 4_2_4a_create_for_reject.txt
+-rw-r--r-- 1 root root  376 Feb  3 13:08 4_2_4b_reject_valid.txt
+-rw-r--r-- 1 root root  230 Feb  3 13:08 4_2_5_approve_rejected.txt
+-rw-r--r-- 1 root root  534 Feb  3 13:09 4_2_6_no_exec_on_reject.txt
+-rw-r--r-- 1 root root 2163 Feb  3 13:09 4_3_1_expiry_set.txt
+-rw-r--r-- 1 root root  458 Feb  3 13:09 4_3_2_timeout_config.txt
+-rw-r--r-- 1 root root 1607 Feb  3 13:09 4_3_3_expiry_code.txt
+-rw-r--r-- 1 root root 3942 Feb  3 13:09 4_3_4_expiry_worker.txt
+-rw-r--r-- 1 root root  778 Feb  3 13:09 4_4_1_event_types.txt
+-rw-r--r-- 1 root root 1730 Feb  3 13:09 4_4_2_approved_chain.txt
+-rw-r--r-- 1 root root 1065 Feb  3 13:09 4_4_3_rejected_chain.txt
+-rw-r--r-- 1 root root  250 Feb  3 13:09 4_4_4_immutability.txt
+-rw-r--r-- 1 root root 2312 Feb  3 13:09 4_4_5_payload_quality.txt
+-rw-r--r-- 1 root root 6453 Feb  3 13:10 4_5_1_execution_records.txt
+-rw-r--r-- 1 root root  610 Feb  3 13:10 4_5_3_orphaned_executions.txt
+-rw-r--r-- 1 root root  651 Feb  3 13:10 4_5_4_orphaned_approvals.txt
+-rw-r--r-- 1 root root  871 Feb  3 13:14 4_6_1_race_create.txt
+-rw-r--r-- 1 root root 2101 Feb  3 13:12 4_6_2_race_results.txt
+-rw-r--r-- 1 root root  415 Feb  3 13:13 4_6_3_race_execution_count.txt
+-rw-r--r-- 1 root root 1517 Feb  3 13:14 4_6_summary.txt
+-rw-r--r-- 1 root root 3107 Feb  3 13:13 4_6_y_spam_burst.txt
+-rw-r--r-- 1 root root  598 Feb  3 13:13 4_6_z_replay.txt
+-rw-r--r-- 1 root root  795 Feb  3 13:16 4_7_1a_multi_create.txt
+-rw-r--r-- 1 root root  785 Feb  3 13:16 4_7_1b_multi_create.txt
+-rw-r--r-- 1 root root 1098 Feb  3 13:17 4_7_2_multi_records.txt
+-rw-r--r-- 1 root root 1181 Feb  3 13:17 4_7_3a_approve_a.txt
+-rw-r--r-- 1 root root 1146 Feb  3 13:17 4_7_3b_reject_b.txt
+-rw-r--r-- 1 root root 1194 Feb  3 13:17 4_7_3c_final_states.txt
+-rw-r--r-- 1 root root 7272 Feb  3 13:18 4_8_1_no_illusions_code.txt
+-rw-r--r-- 1 root root 2591 Feb  3 13:18 4_8_2_resume_pattern.txt
+-rw-r--r-- 1 root root 1641 Feb  3 13:18 4_8_3_valid_stages.txt
+-rw-r--r-- 1 root root  798 Feb  3 13:17 4_9_1_pre_chaos_create.txt
+-rw-r--r-- 1 root root  516 Feb  3 13:17 4_9_2a_before_state.txt
+-rw-r--r-- 1 root root  245 Feb  3 13:17 4_9_2b_stop_backend.txt
+-rw-r--r-- 1 root root 1006 Feb  3 13:18 4_9_2c_approve_during_down.txt
+-rw-r--r-- 1 root root 1063 Feb  3 13:18 4_9_3a_restart_backend.txt
+-rw-r--r-- 1 root root  521 Feb  3 13:18 4_9_3b_after_state.txt
+-rw-r--r-- 1 root root  474 Feb  3 13:18 4_9_3c_stage_diff.txt
+-rw-r--r-- 1 root root 1021 Feb  3 13:19 4_9_4_post_chaos_status.txt
+-rw-r--r-- 1 root root 2943 Feb  3 13:20 PHASE4_SUMMARY.txt

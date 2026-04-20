@@ -1,0 +1,73 @@
+ESLint config: /home/zaks/zakops-agent-api/apps/dashboard/.eslintrc.json
+{
+  "extends": ["next"],
+  "rules": {
+    "react/no-unescaped-entities": "off",
+    "@next/next/no-html-link-for-pages": "warn",
+    "no-restricted-imports": ["error", {
+      "patterns": [
+        {
+          "group": ["**/api-types.generated*"],
+          "message": "Import from '@/types/api' instead of the generated file directly."
+        },
+        {
+          "group": ["zod"],
+          "message": "Zod is only allowed in approved validation modules (src/lib/validators/*, src/types/api.ts, src/lib/parsers.ts). Move your schema to a validator module."
+        }
+      ]
+    }]
+  },
+  "overrides": [
+    {
+      "files": ["src/types/api.ts"],
+      "rules": {
+        "no-restricted-imports": "off"
+      }
+    },
+    {
+      "files": ["src/lib/validators/**", "src/lib/parsers.ts", "src/lib/schemas/**", "src/lib/storage-utils.ts", "src/lib/api.ts", "src/app/chat/page.tsx", "src/components/forms/**"],
+      "rules": {
+        "no-restricted-imports": ["error", {
+          "patterns": [{
+            "group": ["**/api-types.generated*"],
+            "message": "Import from '@/types/api' instead of the generated file directly."
+          }]
+        }]
+      }
+    }
+  ]
+}
+    "no-restricted-imports": ["error", {
+      "patterns": [
+        {
+          "group": ["**/api-types.generated*"],
+          "message": "Import from '@/types/api' instead of the generated file directly."
+        },
+        {
+          "group": ["zod"],
+          "message": "Zod is only allowed in approved validation modules (src/lib/validators/*, src/types/api.ts, src/lib/parsers.ts). Move your schema to a validator module."
+        }
+      ]
+    }]
+  },
+  "overrides": [
+    {
+      "files": ["src/types/api.ts"],
+      "rules": {
+        "no-restricted-imports": "off"
+      }
+    },
+    {
+      "files": ["src/lib/validators/**", "src/lib/parsers.ts", "src/lib/schemas/**", "src/lib/storage-utils.ts", "src/lib/api.ts", "src/app/chat/page.tsx", "src/components/forms/**"],
+      "rules": {
+        "no-restricted-imports": ["error", {
+          "patterns": [{
+            "group": ["**/api-types.generated*"],
+            "message": "Import from '@/types/api' instead of the generated file directly."
+          }]
+        }]
+      }
+    }
+  ]
+}
+PASS: no-restricted-imports rule found

@@ -1,0 +1,14 @@
+=== H2: Correlation ID E2E Tests ===
+--- Test 1: Success response headers ---
+x-trace-id: 4d4d782ce5864e44ba0fc854f1aa5f72
+x-correlation-id: 74d7388f-69e1-4e6b-9834-24f82f1fcb5e
+--- Test 2: Error response headers (404) ---
+x-trace-id: 87000ff7b915489e94ad44fed5ecbf34
+x-correlation-id: 46c8ed8d-11ef-45b2-a01f-ab7caf51e90a
+--- Test 3: Echo back custom ID ---
+x-trace-id: 4ade7843f42546f197dd7a0a4a5e6d6b
+x-correlation-id: QA-TEST-123
+--- V2 Test 4: Security - newline injection ---
+x-correlation-id: INJECT%0aFAKE-LOG-LINE
+--- V2 Test 5: Security - long string ---
+x-correlation-id: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX

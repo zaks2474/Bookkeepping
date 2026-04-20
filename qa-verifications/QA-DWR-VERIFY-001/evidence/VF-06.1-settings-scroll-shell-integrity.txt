@@ -1,0 +1,15 @@
+=== VF-06.1 SETTINGS SCROLL SHELL INTEGRITY ===
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/settings/page.tsx:15:import { SettingsNav, useActiveSection } from '@/components/settings/SettingsNav';
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/settings/page.tsx:63:    // Navigation handled by SettingsNav scroll
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/settings/page.tsx:88:      <div className="flex items-center justify-center h-full">
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/settings/page.tsx:97:    <div className="flex flex-1 flex-col min-h-0 overflow-y-auto">
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/settings/page.tsx:98:      <div className="container max-w-5xl py-6 md:py-8">
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/settings/page.tsx:102:            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/settings/page.tsx:113:        <div className="flex gap-8">
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/settings/page.tsx:114:          <SettingsNav
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/settings/page.tsx:119:          <div className="flex-1 min-w-0 space-y-8">
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/settings/SettingsNav.tsx:4: * SettingsNav — Sidebar navigation for the Settings page.
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/settings/SettingsNav.tsx:36:interface SettingsNavProps {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/settings/SettingsNav.tsx:41:export function SettingsNav({ activeSection, onNavigate }: SettingsNavProps) {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/settings/SettingsNav.tsx:70:                  'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 text-left',
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/settings/SettingsNav.tsx:95:                  <span className="flex items-center gap-2">

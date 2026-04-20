@@ -1,0 +1,671 @@
+{
+  "base_url": "http://localhost:8091",
+  "mutation_allowed": false,
+  "name": "backend",
+  "results": [
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/logout",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/me",
+      "reachable": true,
+      "response_preview": "{\"id\":\"00000000-0000-0000-0000-000000000001\",\"email\":\"dev@zakops.local\",\"name\":\"Development User\",\"role\":\"admin\"}",
+      "status_code": 200,
+      "trace_id": "00000000-0000-0000-0000-000000000001",
+      "url": "http://localhost:8091/api/auth/me"
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/register",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/check",
+      "reachable": true,
+      "response_preview": "{\"authenticated\":true,\"operator\":{\"id\":\"00000000-0000-0000-0000-000000000001\",\"email\":\"dev@zakops.local\",\"name\":\"Development User\",\"role\":\"admin\"}}",
+      "status_code": 200,
+      "trace_id": "00000000-0000-0000-0000-000000000001",
+      "url": "http://localhost:8091/api/auth/check"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "reachable": true,
+      "response_preview": "{\"status\":\"healthy\",\"timestamp\":\"2026-01-26T16:45:13.751797\",\"version\":\"1.0.0\"}",
+      "status_code": 200,
+      "trace_id": null,
+      "url": "http://localhost:8091/health"
+    },
+    {
+      "method": "GET",
+      "path": "/health/live",
+      "reachable": true,
+      "response_preview": "{\"status\":\"alive\"}",
+      "status_code": 200,
+      "trace_id": null,
+      "url": "http://localhost:8091/health/live"
+    },
+    {
+      "method": "GET",
+      "path": "/health/ready",
+      "reachable": true,
+      "response_preview": "{\"status\":\"ready\",\"checks\":{\"database\":\"healthy\",\"outbox_processor\":\"not running\"},\"timestamp\":\"2026-01-26T16:45:13.754972\"}",
+      "status_code": 200,
+      "trace_id": null,
+      "url": "http://localhost:8091/health/ready"
+    },
+    {
+      "method": "GET",
+      "path": "/health/startup",
+      "reachable": true,
+      "response_preview": "{\"status\":\"started\",\"timestamp\":\"2026-01-26T16:45:13.756651\"}",
+      "status_code": 200,
+      "trace_id": null,
+      "url": "http://localhost:8091/health/startup"
+    },
+    {
+      "method": "GET",
+      "path": "/api/version",
+      "reachable": true,
+      "response_preview": "{\"version\":\"dev\",\"commit\":\"unknown\",\"build_time\":\"unknown\",\"environment\":\"development\"}",
+      "status_code": 200,
+      "trace_id": null,
+      "url": "http://localhost:8091/api/version"
+    },
+    {
+      "method": "GET",
+      "path": "/health/detailed",
+      "reachable": true,
+      "response_preview": "{\"status\":\"healthy\",\"timestamp\":\"2026-01-26T16:45:13.759945\",\"version\":\"1.0.0\",\"environment\":\"development\",\"python_version\":\"3.11.14 (main, Jan 13 2026, 03:12:14) [GCC 14.2.0]\",\"platform\":\"Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.41\",\"config\":{\"auth_required\":\"false\",\"outbox_enabled",
+      "status_code": 200,
+      "trace_id": null,
+      "url": "http://localhost:8091/health/detailed"
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/invoke",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/agent/runs",
+      "reachable": true,
+      "response_preview": "[]",
+      "status_code": 200,
+      "trace_id": null,
+      "url": "http://localhost:8091/api/agent/runs"
+    },
+    {
+      "method": "GET",
+      "path": "/api/agent/runs/{run_id}",
+      "reachable": true,
+      "response_preview": "{\"detail\":\"Agent run not found\"}",
+      "status_code": 404,
+      "trace_id": null,
+      "url": "http://localhost:8091/api/agent/runs/{run_id}"
+    },
+    {
+      "method": "GET",
+      "path": "/api/agent/tools",
+      "reachable": true,
+      "response_preview": "[{\"name\":\"analyze_document\",\"description\":\"Analyze a document and extract key information\",\"parameters\":{\"type\":\"object\",\"properties\":{\"document_id\":{\"type\":\"string\",\"description\":\"ID of document to analyze\"},\"analysis_type\":{\"type\":\"string\",\"enum\":[\"summary\",\"key_terms\",\"entities\",\"full\"]}},\"requir",
+      "status_code": 200,
+      "trace_id": null,
+      "url": "http://localhost:8091/api/agent/tools"
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/langsmith/invoke",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/langsmith/invoke/stream",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/agent/models",
+      "reachable": true,
+      "response_preview": "[{\"model_id\":\"claude-sonnet-4-20250514\",\"display_name\":\"Claude Sonnet 4 (May 2025)\",\"capability\":\"full\",\"deprecated\":false,\"is_primary\":true,\"is_fallback\":false},{\"model_id\":\"claude-haiku-4-20250514\",\"display_name\":\"Claude Haiku 4 (May 2025)\",\"capability\":\"reduced\",\"deprecated\":false,\"is_primary\":fa",
+      "status_code": 200,
+      "trace_id": null,
+      "url": "http://localhost:8091/api/agent/models"
+    },
+    {
+      "method": "GET",
+      "path": "/api/agent/langsmith/health",
+      "reachable": true,
+      "response_preview": "{\"status\":\"healthy\",\"primary_model\":\"claude-sonnet-4-20250514\",\"fallback_model\":\"claude-haiku-4-20250514\",\"tools_registered\":3,\"langsmith_enabled\":true,\"project_name\":\"zakops\"}",
+      "status_code": 200,
+      "trace_id": null,
+      "url": "http://localhost:8091/api/agent/langsmith/health"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/dlq",
+      "reachable": true,
+      "response_preview": "{\"entries\":[],\"total\":0,\"limit\":100,\"offset\":0}",
+      "status_code": 200,
+      "trace_id": null,
+      "url": "http://localhost:8091/api/admin/dlq"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/dlq/stats",
+      "reachable": true,
+      "response_preview": "{\"total_count\":0,\"by_event_type\":{},\"oldest_entry\":null}",
+      "status_code": 200,
+      "trace_id": null,
+      "url": "http://localhost:8091/api/admin/dlq/stats"
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/dlq/{entry_id}/retry",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/dlq/retry-all",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/admin/dlq/{entry_id}",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/dlq/purge-old",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/outbox/stats",
+      "reachable": true,
+      "response_preview": "{\"by_status\":{},\"stuck_count\":0,\"healthy\":true}",
+      "status_code": 200,
+      "trace_id": null,
+      "url": "http://localhost:8091/api/admin/outbox/stats"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/sse/stats",
+      "reachable": true,
+      "response_preview": "{\"total_connections\":0,\"max_connections\":1000,\"max_per_user\":5,\"heartbeat_interval\":30,\"buffered_events\":0}",
+      "status_code": 200,
+      "trace_id": null,
+      "url": "http://localhost:8091/api/admin/sse/stats"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/system/health",
+      "reachable": true,
+      "response_preview": "{\"overall\":\"degraded\",\"components\":{\"database\":{\"status\":\"healthy\"},\"sse\":{\"status\":\"healthy\",\"connections\":0,\"max\":1000},\"outbox\":{\"status\":\"healthy\",\"pending\":0,\"dead\":0,\"stuck\":0},\"outbox_processor\":{\"status\":\"stopped\"}}}",
+      "status_code": 200,
+      "trace_id": null,
+      "url": "http://localhost:8091/api/admin/system/health"
+    },
+    {
+      "method": "GET",
+      "path": "/api/deals/{deal_id}/valid-transitions",
+      "reachable": true,
+      "response_preview": "{\"detail\":\"Deal not found: {deal_id}\"}",
+      "status_code": 404,
+      "trace_id": null,
+      "url": "http://localhost:8091/api/deals/{deal_id}/valid-transitions"
+    },
+    {
+      "method": "POST",
+      "path": "/api/deals/{deal_id}/transition",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/deals/{deal_id}/stage-history",
+      "reachable": true,
+      "response_preview": "{\"detail\":\"Deal not found: {deal_id}\"}",
+      "status_code": 404,
+      "trace_id": null,
+      "url": "http://localhost:8091/api/deals/{deal_id}/stage-history"
+    },
+    {
+      "method": "GET",
+      "path": "/api/deals/stages/summary",
+      "reachable": true,
+      "response_preview": "{\"stages\":{\"inbound\":2,\"lead\":1},\"available_stages\":[\"inbound\",\"initial_review\",\"due_diligence\",\"negotiation\",\"documentation\",\"closing\",\"closed_won\",\"closed_lost\",\"archived\"]}",
+      "status_code": 200,
+      "trace_id": null,
+      "url": "http://localhost:8091/api/deals/stages/summary"
+    },
+    {
+      "method": "GET",
+      "path": "/api/search/deals",
+      "reachable": true,
+      "response_preview": "{\"error\":{\"code\":\"VALIDATION_ERROR\",\"message\":\"Request validation failed\",\"details\":[{\"field\":\"query.q\",\"message\":\"Field required\",\"code\":\"missing\"}],\"trace_id\":\"06906c33-73c1-4d8e-88fa-5999bf5c6271\",\"timestamp\":\"2026-01-26T16:45:13.794939Z\"}}",
+      "status_code": 400,
+      "trace_id": "06906c33-73c1-4d8e-88fa-5999bf5c6271",
+      "url": "http://localhost:8091/api/search/deals"
+    },
+    {
+      "method": "GET",
+      "path": "/api/search/actions",
+      "reachable": true,
+      "response_preview": "{\"error\":{\"code\":\"VALIDATION_ERROR\",\"message\":\"Request validation failed\",\"details\":[{\"field\":\"query.q\",\"message\":\"Field required\",\"code\":\"missing\"}],\"trace_id\":\"8b6cef60-670d-4a92-99c5-cd019459f733\",\"timestamp\":\"2026-01-26T16:45:13.796878Z\"}}",
+      "status_code": 400,
+      "trace_id": "8b6cef60-670d-4a92-99c5-cd019459f733",
+      "url": "http://localhost:8091/api/search/actions"
+    },
+    {
+      "method": "GET",
+      "path": "/api/search/global",
+      "reachable": true,
+      "response_preview": "{\"error\":{\"code\":\"VALIDATION_ERROR\",\"message\":\"Request validation failed\",\"details\":[{\"field\":\"query.q\",\"message\":\"Field required\",\"code\":\"missing\"}],\"trace_id\":\"42ef1d80-daef-4ac1-9cd6-65715652d13d\",\"timestamp\":\"2026-01-26T16:45:13.798638Z\"}}",
+      "status_code": 400,
+      "trace_id": "42ef1d80-daef-4ac1-9cd6-65715652d13d",
+      "url": "http://localhost:8091/api/search/global"
+    },
+    {
+      "method": "GET",
+      "path": "/api/deals/{deal_id}/timeline",
+      "reachable": true,
+      "response_preview": "{\"detail\":\"Deal {deal_id} not found\"}",
+      "status_code": 404,
+      "trace_id": null,
+      "url": "http://localhost:8091/api/deals/{deal_id}/timeline"
+    },
+    {
+      "method": "GET",
+      "path": "/api/deals/{deal_id}/activity-summary",
+      "reachable": true,
+      "response_preview": "{\"detail\":\"Deal {deal_id} not found\"}",
+      "status_code": 404,
+      "trace_id": null,
+      "url": "http://localhost:8091/api/deals/{deal_id}/activity-summary"
+    },
+    {
+      "method": "GET",
+      "path": "/api/integrations/email/gmail/auth",
+      "reachable": true,
+      "response_preview": "{\"auth_url\":\"https://accounts.google.com/o/oauth2/auth?response_type=code&client_id=your_google_client_id&redirect_uri=http%3A%2F%2Flocalhost%3A8091%2Fapi%2Fintegrations%2Femail%2Fgmail%2Fcallback&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fgmail.send+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fgm",
+      "status_code": 200,
+      "trace_id": null,
+      "url": "http://localhost:8091/api/integrations/email/gmail/auth"
+    },
+    {
+      "method": "GET",
+      "path": "/api/integrations/email/gmail/callback",
+      "reachable": true,
+      "response_preview": "{\"error\":{\"code\":\"VALIDATION_ERROR\",\"message\":\"Request validation failed\",\"details\":[{\"field\":\"query.code\",\"message\":\"Field required\",\"code\":\"missing\"},{\"field\":\"query.state\",\"message\":\"Field required\",\"code\":\"missing\"}],\"trace_id\":\"11572b9d-d895-48d7-9ae8-c95079ce8005\",\"timestamp\":\"2026-01-26T16:45",
+      "status_code": 400,
+      "trace_id": "11572b9d-d895-48d7-9ae8-c95079ce8005",
+      "url": "http://localhost:8091/api/integrations/email/gmail/callback"
+    },
+    {
+      "method": "GET",
+      "path": "/api/integrations/email/accounts",
+      "reachable": true,
+      "response_preview": "[]",
+      "status_code": 200,
+      "trace_id": null,
+      "url": "http://localhost:8091/api/integrations/email/accounts"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/integrations/email/accounts/{email_address}",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/integrations/email/send",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/integrations/email/inbox",
+      "reachable": true,
+      "response_preview": "{\"error\":{\"code\":\"VALIDATION_ERROR\",\"message\":\"Request validation failed\",\"details\":[{\"field\":\"query.account_email\",\"message\":\"Field required\",\"code\":\"missing\"}],\"trace_id\":\"758b64be-be0c-4b98-92c8-deb1ff03d7d4\",\"timestamp\":\"2026-01-26T16:45:13.809396Z\"}}",
+      "status_code": 400,
+      "trace_id": "758b64be-be0c-4b98-92c8-deb1ff03d7d4",
+      "url": "http://localhost:8091/api/integrations/email/inbox"
+    },
+    {
+      "method": "GET",
+      "path": "/api/integrations/email/threads/{thread_id}",
+      "reachable": true,
+      "response_preview": "{\"error\":{\"code\":\"VALIDATION_ERROR\",\"message\":\"Request validation failed\",\"details\":[{\"field\":\"query.account_email\",\"message\":\"Field required\",\"code\":\"missing\"}],\"trace_id\":\"cd98f8a0-b771-4084-921d-75ec10c75d7a\",\"timestamp\":\"2026-01-26T16:45:13.810994Z\"}}",
+      "status_code": 400,
+      "trace_id": "cd98f8a0-b771-4084-921d-75ec10c75d7a",
+      "url": "http://localhost:8091/api/integrations/email/threads/{thread_id}"
+    },
+    {
+      "method": "POST",
+      "path": "/api/integrations/email/search",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/integrations/email/deals/{deal_id}/threads",
+      "reachable": true,
+      "response_preview": "{\"error\":{\"code\":\"INTERNAL_ERROR\",\"message\":\"An internal error occurred\",\"details\":null,\"trace_id\":\"75a1ffaa-cd05-450f-ae19-9335895dfe48\",\"timestamp\":\"2026-01-26T16:45:13.816510Z\"}}",
+      "status_code": 500,
+      "trace_id": "75a1ffaa-cd05-450f-ae19-9335895dfe48",
+      "url": "http://localhost:8091/api/integrations/email/deals/{deal_id}/threads"
+    },
+    {
+      "method": "POST",
+      "path": "/api/integrations/email/threads/link",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/integrations/email/threads/{thread_id}/link",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/events/stream",
+      "reachable": false,
+      "response_preview": "",
+      "status_code": null,
+      "trace_id": null,
+      "url": "http://localhost:8091/api/events/stream"
+    },
+    {
+      "method": "GET",
+      "path": "/api/events/stats",
+      "reachable": true,
+      "response_preview": "{\"active_connections\":0,\"replay_buffer_size\":0,\"total_sequence\":null}",
+      "status_code": 200,
+      "trace_id": null,
+      "url": "http://localhost:8091/api/events/stats"
+    },
+    {
+      "method": "GET",
+      "path": "/api/events",
+      "reachable": true,
+      "response_preview": "{\"events\":[],\"count\":0}",
+      "status_code": 200,
+      "trace_id": null,
+      "url": "http://localhost:8091/api/events"
+    },
+    {
+      "method": "POST",
+      "path": "/api/events/broadcast",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/deals",
+      "reachable": true,
+      "response_preview": "[{\"deal_id\":\"DL-0003\",\"canonical_name\":\"QA Verify Probe\",\"display_name\":null,\"folder_path\":null,\"stage\":\"inbound\",\"status\":\"active\",\"identifiers\":{},\"company_info\":{},\"broker\":{},\"metadata\":{},\"email_thread_ids\":[],\"created_at\":\"2026-01-26T16:07:49.437043Z\",\"updated_at\":\"2026-01-26T16:07:49.437043Z\"",
+      "status_code": 200,
+      "trace_id": null,
+      "url": "http://localhost:8091/api/deals"
+    },
+    {
+      "method": "POST",
+      "path": "/api/deals",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/deals/{deal_id}",
+      "reachable": true,
+      "response_preview": "{\"detail\":\"Deal {deal_id} not found\"}",
+      "status_code": 404,
+      "trace_id": null,
+      "url": "http://localhost:8091/api/deals/{deal_id}"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/deals/{deal_id}",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/deals/{deal_id}/events",
+      "reachable": true,
+      "response_preview": "[]",
+      "status_code": 200,
+      "trace_id": null,
+      "url": "http://localhost:8091/api/deals/{deal_id}/events"
+    },
+    {
+      "method": "GET",
+      "path": "/api/deals/{deal_id}/aliases",
+      "reachable": true,
+      "response_preview": "[]",
+      "status_code": 200,
+      "trace_id": null,
+      "url": "http://localhost:8091/api/deals/{deal_id}/aliases"
+    },
+    {
+      "method": "GET",
+      "path": "/api/actions",
+      "reachable": true,
+      "response_preview": "[]",
+      "status_code": 200,
+      "trace_id": null,
+      "url": "http://localhost:8091/api/actions"
+    },
+    {
+      "method": "GET",
+      "path": "/api/actions/{action_id}",
+      "reachable": true,
+      "response_preview": "{\"detail\":\"Action {action_id} not found\"}",
+      "status_code": 404,
+      "trace_id": null,
+      "url": "http://localhost:8091/api/actions/{action_id}"
+    },
+    {
+      "method": "POST",
+      "path": "/api/actions/{action_id}/approve",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/actions/{action_id}/reject",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/quarantine",
+      "reachable": true,
+      "response_preview": "[]",
+      "status_code": 200,
+      "trace_id": null,
+      "url": "http://localhost:8091/api/quarantine"
+    },
+    {
+      "method": "GET",
+      "path": "/api/quarantine/{item_id}",
+      "reachable": true,
+      "response_preview": "{\"error\":{\"code\":\"VALIDATION_ERROR\",\"message\":\"Request validation failed\",\"details\":[{\"field\":\"path.item_id\",\"message\":\"Input should be a valid UUID, invalid character: expected an optional prefix of `urn:uuid:` followed by [0-9a-fA-F-], found `i` at 2\",\"code\":\"uuid_parsing\"}],\"trace_id\":\"d054218d-6",
+      "status_code": 400,
+      "trace_id": "d054218d-60d8-4294-bfeb-4dc61ee3e4b6",
+      "url": "http://localhost:8091/api/quarantine/{item_id}"
+    },
+    {
+      "method": "POST",
+      "path": "/api/quarantine/{item_id}/process",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/pipeline/summary",
+      "reachable": true,
+      "response_preview": "{\"error\":{\"code\":\"INTERNAL_ERROR\",\"message\":\"An internal error occurred\",\"details\":null,\"trace_id\":\"5f1e3874-cfb1-4a1e-a0e5-06a4d61e7f2f\",\"timestamp\":\"2026-01-26T16:45:21.877008Z\"}}",
+      "status_code": 500,
+      "trace_id": "5f1e3874-cfb1-4a1e-a0e5-06a4d61e7f2f",
+      "url": "http://localhost:8091/api/pipeline/summary"
+    },
+    {
+      "method": "GET",
+      "path": "/api/pipeline/stats",
+      "reachable": true,
+      "response_preview": "{\"total_active_deals\":3,\"pending_actions\":0,\"quarantine_pending\":0,\"recent_events_24h\":3,\"deals_by_stage\":{\"inbound\":2,\"lead\":1}}",
+      "status_code": 200,
+      "trace_id": null,
+      "url": "http://localhost:8091/api/pipeline/stats"
+    },
+    {
+      "method": "POST",
+      "path": "/api/threads",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/threads/{thread_id}",
+      "reachable": true,
+      "response_preview": "{\"error\":{\"code\":\"INTERNAL_ERROR\",\"message\":\"An internal error occurred\",\"details\":null,\"trace_id\":\"83f4d052-5a99-4f84-b77d-eca651d05425\",\"timestamp\":\"2026-01-26T16:45:21.886072Z\"}}",
+      "status_code": 500,
+      "trace_id": "83f4d052-5a99-4f84-b77d-eca651d05425",
+      "url": "http://localhost:8091/api/threads/{thread_id}"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/threads/{thread_id}",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/threads/{thread_id}/runs",
+      "reachable": true,
+      "response_preview": "{\"error\":{\"code\":\"INTERNAL_ERROR\",\"message\":\"An internal error occurred\",\"details\":null,\"trace_id\":\"c15e5176-ea51-4e27-a443-16df376f83f0\",\"timestamp\":\"2026-01-26T16:45:21.891980Z\"}}",
+      "status_code": 500,
+      "trace_id": "c15e5176-ea51-4e27-a443-16df376f83f0",
+      "url": "http://localhost:8091/api/threads/{thread_id}/runs"
+    },
+    {
+      "method": "POST",
+      "path": "/api/threads/{thread_id}/runs",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/threads/{thread_id}/runs/stream",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/threads/{thread_id}/runs/{run_id}",
+      "reachable": true,
+      "response_preview": "{\"error\":{\"code\":\"INTERNAL_ERROR\",\"message\":\"An internal error occurred\",\"details\":null,\"trace_id\":\"84bfc44e-09bb-4c59-b77e-875e11ae6d5f\",\"timestamp\":\"2026-01-26T16:45:21.897366Z\"}}",
+      "status_code": 500,
+      "trace_id": "84bfc44e-09bb-4c59-b77e-875e11ae6d5f",
+      "url": "http://localhost:8091/api/threads/{thread_id}/runs/{run_id}"
+    },
+    {
+      "method": "GET",
+      "path": "/api/threads/{thread_id}/runs/{run_id}/events",
+      "reachable": true,
+      "response_preview": "{\"error\":{\"code\":\"INTERNAL_ERROR\",\"message\":\"An internal error occurred\",\"details\":null,\"trace_id\":\"91118691-0cf3-434a-8b15-86ced36deaa1\",\"timestamp\":\"2026-01-26T16:45:21.902915Z\"}}",
+      "status_code": 500,
+      "trace_id": "91118691-0cf3-434a-8b15-86ced36deaa1",
+      "url": "http://localhost:8091/api/threads/{thread_id}/runs/{run_id}/events"
+    },
+    {
+      "method": "GET",
+      "path": "/api/threads/{thread_id}/runs/{run_id}/stream",
+      "reachable": true,
+      "response_preview": "{\"error\":{\"code\":\"INTERNAL_ERROR\",\"message\":\"An internal error occurred\",\"details\":null,\"trace_id\":\"bc10e09b-1254-495b-a7e9-3014aaa8fc1f\",\"timestamp\":\"2026-01-26T16:45:21.908914Z\"}}",
+      "status_code": 500,
+      "trace_id": "bc10e09b-1254-495b-a7e9-3014aaa8fc1f",
+      "url": "http://localhost:8091/api/threads/{thread_id}/runs/{run_id}/stream"
+    },
+    {
+      "method": "GET",
+      "path": "/api/threads/{thread_id}/runs/{run_id}/tool_calls",
+      "reachable": true,
+      "response_preview": "{\"error\":{\"code\":\"INTERNAL_ERROR\",\"message\":\"An internal error occurred\",\"details\":null,\"trace_id\":\"ac067c3c-b744-472c-a1bb-8fb6d7165f13\",\"timestamp\":\"2026-01-26T16:45:21.914771Z\"}}",
+      "status_code": 500,
+      "trace_id": "ac067c3c-b744-472c-a1bb-8fb6d7165f13",
+      "url": "http://localhost:8091/api/threads/{thread_id}/runs/{run_id}/tool_calls"
+    },
+    {
+      "method": "POST",
+      "path": "/api/threads/{thread_id}/runs/{run_id}/tool_calls/{tool_call_id}/approve",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/threads/{thread_id}/runs/{run_id}/tool_calls/{tool_call_id}/reject",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/threads/{thread_id}/runs/{run_id}/tool_calls/{tool_call_id}",
+      "reachable": true,
+      "response_preview": "{\"error\":{\"code\":\"INTERNAL_ERROR\",\"message\":\"An internal error occurred\",\"details\":null,\"trace_id\":\"a074713b-4dea-46e3-ac68-7001fa09c327\",\"timestamp\":\"2026-01-26T16:45:21.920674Z\"}}",
+      "status_code": 500,
+      "trace_id": "a074713b-4dea-46e3-ac68-7001fa09c327",
+      "url": "http://localhost:8091/api/threads/{thread_id}/runs/{run_id}/tool_calls/{tool_call_id}"
+    },
+    {
+      "method": "GET",
+      "path": "/api/pending-tool-approvals",
+      "reachable": true,
+      "response_preview": "[]",
+      "status_code": 200,
+      "trace_id": null,
+      "url": "http://localhost:8091/api/pending-tool-approvals"
+    },
+    {
+      "method": "GET",
+      "path": "/api/senders",
+      "reachable": true,
+      "response_preview": "{\"error\":{\"code\":\"INTERNAL_ERROR\",\"message\":\"An internal error occurred\",\"details\":null,\"trace_id\":\"7bce5cc1-913e-4e71-b420-c25d5eb08777\",\"timestamp\":\"2026-01-26T16:45:21.929660Z\"}}",
+      "status_code": 500,
+      "trace_id": "7bce5cc1-913e-4e71-b420-c25d5eb08777",
+      "url": "http://localhost:8091/api/senders"
+    },
+    {
+      "method": "GET",
+      "path": "/api/senders/{email}",
+      "reachable": true,
+      "response_preview": "{\"detail\":\"Sender {email} not found\"}",
+      "status_code": 404,
+      "trace_id": null,
+      "url": "http://localhost:8091/api/senders/{email}"
+    }
+  ],
+  "timestamp_utc": "2026-01-26T16:45:21.933490+00:00"
+}

@@ -1,0 +1,24 @@
+=== ST-4 STALE LABEL SCANNER STABILITY ===
+=== Stale Surface Label Scanner ===
+
+  PASS: stop.sh — no stale labels
+  PASS: ci.yml — no stale labels
+  PASS: CLAUDE.md — no stale labels
+  PASS: validate-contract-surfaces.sh — no stale labels
+  PASS: INFRASTRUCTURE_MANIFEST.md — no stale labels
+
+  PASS: No stale surface labels found across 5 files
+
+Stale Surface Label Scanner: PASS (6 pass, 0 fail, 0 warn)
+=== Stale Surface Label Scanner ===
+
+  PASS: stop.sh — no stale labels
+  PASS: ci.yml — no stale labels
+  PASS: CLAUDE.md — no stale labels
+  PASS: validate-contract-surfaces.sh — no stale labels
+  PASS: INFRASTRUCTURE_MANIFEST.md — no stale labels
+
+  PASS: No stale surface labels found across 5 files
+
+Stale Surface Label Scanner: PASS (6 pass, 0 fail, 0 warn)
+EXIT=0

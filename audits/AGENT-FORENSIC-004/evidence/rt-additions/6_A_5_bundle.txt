@@ -1,0 +1,28 @@
+=== THREE-PLANE EVIDENCE BUNDLE ===
+
+CORRELATION PROOF:
+- Thread ID:      rt-3plane-v2-1770159252
+- Request ID:     rt-3plane-v2-1770159252-req
+- Approval ID:    8efb63e2-40a6-4559-98e2-ba650151a562
+- Deal ID:        DL-QA003
+
+PLANE 1 (Logs):   PASS - thread_id visible in agent logs (7+ events logged with correlation)
+  Events: agent_invoke_started, llm_response_generated, approval_gate_interrupt, 
+          tool_result_extracted, resume_after_approval_success, approval_approved
+  Format: Structured JSON with timestamp, level, logger, thread_id fields
+
+PLANE 2 (Traces): NOT_CONFIGURED - Langfuse keys empty (P2 finding)
+  LANGFUSE_PUBLIC_KEY=<empty>
+  LANGFUSE_SECRET_KEY=<empty>
+  Recommendation: Configure Langfuse or implement OpenTelemetry
+
+PLANE 3 (Audit):  PASS - audit_log + tool_executions link actor + causation
+  audit_log events: 4 (approval_claimed, tool_execution_started, 
+                       tool_execution_completed, approval_approved)
+  tool_executions: 1 row (approval_id linked)
+  Minor finding: actor/target fields empty in payload
+
+DEFINITION OF DONE: Same IDs visible across ≥2 of 3 planes
+RESULT: 2 of 3 planes show correlated evidence ✓
+
+=== RT-3PLANE VERDICT: PASS (with P2 finding for traces) ===

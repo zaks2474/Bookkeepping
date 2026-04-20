@@ -1,0 +1,20 @@
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:66:  getActionMetrics,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:79:  type ActionMetrics,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:117:  const [metrics, setMetrics] = useState<ActionMetrics | null>(null);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:192:        getActionMetrics(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:198:      if (results[2].status === 'fulfilled') setMetrics(results[2].value);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:688:      {/* Metrics Cards - Clickable to filter */}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:503:                {/* Financials */}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:506:                    <CardTitle className='text-base'>Financials</CardTitle>
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:260:export const ClassificationMetricsSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:268:export type ClassificationMetrics = z.infer<typeof ClassificationMetricsSchema>;
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:996:export async function getClassificationMetrics(): Promise<ClassificationMetrics | null> {
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:999:    const parsed = ClassificationMetricsSchema.safeParse(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1548:export interface ActionMetrics {
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1644:// ActionMetricsSchema: Aligned with backend /api/actions/metrics response
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1646:const ActionMetricsSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1878:export async function getActionMetrics(): Promise<ActionMetrics | null> {
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1885:    const parsed = ActionMetricsSchema.safeParse(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1892:    return parsed.data as ActionMetrics;
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-types.generated.ts:125:         * Get Action Metrics
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-types.generated.ts:1780:         * @description Search across all entity types.

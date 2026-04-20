@@ -1,0 +1,4 @@
+=== XC-2 RULES VS S9 VALIDATOR ALIGNMENT ===
+-rw-r--r-- 1 zaks zaks 2162 Feb 10 12:28 /home/zaks/zakops-agent-api/.claude/rules/accessibility.md
+-rw-r--r-- 1 zaks zaks 2794 Feb 10 12:28 /home/zaks/zakops-agent-api/.claude/rules/component-patterns.md
+81:for RULE_FILE in accessibility.md component-patterns.md; do

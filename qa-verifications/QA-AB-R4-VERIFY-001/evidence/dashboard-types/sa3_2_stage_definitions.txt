@@ -1,0 +1,73 @@
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/execution-contracts.ts:9:import type { DealStage, ActionStatus, QuarantineStatus, RiskLevel } from './api';
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/execution-contracts.ts:25:export const DEAL_TRANSITIONS: Record<DealStage, readonly DealStage[]> = {
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/execution-contracts.ts:40:export const DEAL_STAGE_LABELS: Record<DealStage, string> = {
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/execution-contracts.ts:55:export const DEAL_STAGE_COLORS: Record<DealStage, string> = {
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/execution-contracts.ts:70:export function isValidDealTransition(from: DealStage, to: DealStage): boolean {
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/execution-contracts.ts:77:export function getValidDealTransitions(stage: DealStage): readonly DealStage[] {
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/execution-contracts.ts:330:  allowed_deal_stages?: DealStage[];
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/events.ts:104:export interface DealStageChangedEvent extends BaseEvent {
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/events.ts:412:  | DealStageChangedEvent
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/events.ts:509:  | DealStageChangedEvent
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deals/DealBoard.tsx:18:import type { Deal, DealStage } from '@/types/api';
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deals/DealBoard.tsx:25:const PIPELINE_STAGES: { id: DealStage; label: string; color: string }[] = [
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deals/DealBoard.tsx:97:  stage: { id: DealStage; label: string; color: string };
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deals/DealBoard.tsx:141:    const grouped: Record<DealStage, Deal[]> = {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deals/DealBoard.tsx:170:    const newStage = destination.droppableId as DealStage;
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api.ts:10:export type DealStage =
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api.ts:71:  stage: DealStage;
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api.ts:89:  stage?: DealStage;
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api.ts:101:  stage?: DealStage;
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api.ts:179:  deal_stage?: DealStage;
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api.ts:291:  stage: DealStage;
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api.ts:301:  deals_by_stage: Record<DealStage, number>;
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api.ts:309:  new_stage: DealStage;
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api.ts:316:  from_stage: DealStage;
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api.ts:317:  to_stage: DealStage;
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api.ts:323:  stage: DealStage;
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api.ts:338:  stage?: DealStage;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/ui-test/page.tsx:52:    stage: 'screening',
+/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/e2e/TEST_PLAN.md:60:   - [ ] Deal stage is "inbound"
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:15:import type { PipelineStats, DealStage } from '@/types/api';
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:18:const PIPELINE_STAGES: DealStage[] = [
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:66:  }, {} as Record<DealStage, number>);
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/operator-hq/PipelineOverview.tsx:18:import type { PipelineStats, DealStage } from '@/types/api';
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/operator-hq/PipelineOverview.tsx:35:const PIPELINE_STAGES: DealStage[] = [
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/operator-hq/PipelineOverview.tsx:69:  const dealsByStage: Record<DealStage, number> = stats?.deals_by_stage ?? {} as Record<DealStage, number>;
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealTimeline.tsx:31:import type { DealEvent, DealStage } from '@/types/api';
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealTimeline.tsx:230:        const fromStage = details.from_stage as DealStage | undefined;
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealTimeline.tsx:231:        const toStage = details.to_stage as DealStage | undefined;
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealHeader.tsx:44:import type { Deal, DealStage, Priority } from '@/types/api';
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealHeader.tsx:53:  onStageChange?: (stage: DealStage) => void;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/page.tsx:71:  const [selectedStage, setSelectedStage] = useState<string | null>(null);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/page.tsx:246:                        variant={selectedStage === stage ? 'default' : 'outline'}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/page.tsx:249:                        onClick={() => setSelectedStage(selectedStage === stage ? null : stage)}
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/onboarding/steps/PreferencesStep.tsx:60:  const dealStageChanges = notifications.dealStageChanges ?? true;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/pipeline/route.ts:39:      const summaryData: BackendStageSummary[] = await summaryResponse.json();
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/pipeline/route.ts:59:        stages[entry.stage] = {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/pipeline/route.ts:83:        if (!stages[stage]) {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/pipeline/route.ts:84:          stages[stage] = { count: 0, deals: [], avg_age: 0 };
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/pipeline/route.ts:86:        stages[stage].count++;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/pipeline/route.ts:87:        stages[stage].deals.push({
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/pipeline/route.ts:95:        const totalDays = stages[stage].deals.reduce((sum, d) => sum + d.days_in_stage, 0);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/pipeline/route.ts:96:        stages[stage].avg_age = stages[stage].count > 0 ? Math.round(totalDays / stages[stage].count) : 0;
+/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/e2e/integration.test.tsx:417:  describe('2.3 Stage Transition Flow', () => {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/operator-hq/PipelineOverview.tsx:35:const PIPELINE_STAGES: DealStage[] = [
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/operator-hq/PipelineOverview.tsx:69:  const dealsByStage: Record<DealStage, number> = stats?.deals_by_stage ?? {} as Record<DealStage, number>;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:18:const PIPELINE_STAGES: DealStage[] = [
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:63:  const dealsByStage = PIPELINE_STAGES.reduce((acc, stage) => {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deals/DealBoard.tsx:25:const PIPELINE_STAGES: { id: DealStage; label: string; color: string }[] = [
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deals/DealBoard.tsx:139:  const dealsByStage = useMemo(() => {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deals/DealBoard.tsx:141:    const grouped: Record<DealStage, Deal[]> = {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deals/DealBoard.tsx:170:    const newStage = destination.droppableId as DealStage;
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/global-search.tsx:343:  const getStageColor = (stage: string): string => {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealTimeline.tsx:230:        const fromStage = details.from_stage as DealStage | undefined;
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealTimeline.tsx:231:        const toStage = details.to_stage as DealStage | undefined;
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealWorkspace.tsx:45:  onStageChange?: (stage: string) => void;
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealWorkspace.tsx:134:        onStageChange={onStageChange}
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealHeader.tsx:53:  onStageChange?: (stage: DealStage) => void;
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealHeader.tsx:101:  const getStageBadgeClass = () => {
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api.ts:10:export type DealStage =
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/execution-contracts.ts:25:export const DEAL_TRANSITIONS: Record<DealStage, readonly DealStage[]> = {
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/execution-contracts.ts:40:export const DEAL_STAGE_LABELS: Record<DealStage, string> = {
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/execution-contracts.ts:55:export const DEAL_STAGE_COLORS: Record<DealStage, string> = {
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/execution-contracts.ts:330:  allowed_deal_stages?: DealStage[];

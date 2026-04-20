@@ -1,0 +1,6 @@
+
+=== F-14 Fix: Agent delegates to backend ===
+Line 93-100: Agent validates stage membership only; transition validity checked server-side
+Line 97-114: _is_valid_transition() only checks VALID_STAGES membership, no duplicate matrix
+Line 300: Call backend transition endpoint via typed client
+RESULT: PASS - Agent delegates to backend FSM, no duplicate transition matrix

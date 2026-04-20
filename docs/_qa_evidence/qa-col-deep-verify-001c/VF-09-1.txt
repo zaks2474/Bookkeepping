@@ -1,0 +1,6 @@
+=== GDPR purge service search ===
+FOUND: /home/zaks/zakops-agent-api/apps/agent-api/app/services/gdpr_service.py
+Function: async def gdpr_purge(user_id: str, db_pool=None) -> GdprPurgeReport
+Class: GdprPurgeReport (Pydantic BaseModel)
+Endpoint: POST /admin/compliance/purge (chatbot.py:558)
+RESULT: PASS — gdpr_purge() function exists in agent-api

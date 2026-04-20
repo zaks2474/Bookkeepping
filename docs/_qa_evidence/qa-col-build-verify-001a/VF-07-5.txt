@@ -1,0 +1,5 @@
+92:from app.services.reflexion import reflexion_service, REFLEXION_ENABLED
+1061:        if REFLEXION_ENABLED and deal_id and assistant_message:
+1063:                critique = await reflexion_service.critique(
+1070:                        "reflexion_critique_stored",
+1092:                logger.debug("reflexion_critique_failed", error=str(refl_err))

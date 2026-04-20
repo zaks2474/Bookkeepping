@@ -1,0 +1,9 @@
+=== VF-05.1 HEADER OUTSIDE SCROLL ===
+--- Check for fixed header + scrollable content split ---
+98:      {/* Fixed header — outside scroll area */}
+113:      {/* Scrollable content area */}
+114:      <div className="flex-1 min-h-0 overflow-y-auto">
+--- Back arrow should be in the fixed header div, not the scrollable area ---
+103-        >
+104-          <IconArrowLeft className="h-4 w-4" />
+105:          Back to Dashboard

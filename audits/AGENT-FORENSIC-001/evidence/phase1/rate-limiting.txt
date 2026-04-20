@@ -1,0 +1,38 @@
+AGENT-FORENSIC-001 Phase 1 — Step 1.9: Rate Limiting
+=====================================================
+Date: 2026-02-02
+
+CONFIGURATION (from config.py and rate_limiter.py):
+- Backend: slowapi with memory:// storage (in-process, not shared across workers)
+- Strategy: fixed-window
+- Client identification: IP + auth token hash
+
+Endpoint Rate Limits:
+  /                         — 10 per minute
+  /health                   — 20 per minute
+  /api/v1/auth/register     — 10 per hour
+  /api/v1/auth/login        — 20 per minute
+  /api/v1/chatbot/chat      — 30 per minute
+  /api/v1/chatbot/chat/stream — 20 per minute
+  /api/v1/chatbot/messages  — 50 per minute
+  /api/v1/agent/invoke      — 50 per minute
+  /api/v1/agent/invoke/stream — 30 per minute
+  /api/v1/agent/approvals (list) — 60 per minute
+  /api/v1/agent/approvals/{id} — 60 per minute
+  /api/v1/agent/approvals/{id}:approve — 30 per minute
+  /api/v1/agent/approvals/{id}:reject — 30 per minute
+  /api/v1/agent/threads/{id}/state — 60 per minute
+  Default: 100 per minute
+
+LIVE TEST:
+  20 rapid requests to /health: all returned 200
+  Request 21-25: returned 429 (rate limit exceeded)
+  → Confirms 20/minute limit on /health
+
+[PASS] Rate limiting is functional
+[WARN] Memory-based storage — rate limits reset on restart, not shared across instances
+[WARN] 429 response body: {"error":"Rate limit exceeded: 20 per 1 minute"}
+       — Does NOT include Retry-After or X-RateLimit headers in response
+       (The custom handler in rate_limiter.py:80-115 exists but main.py uses
+       slowapi's default _rate_limit_exceeded_handler instead)
+[INFO] Rate limits can be overridden via RATE_LIMIT_* env vars

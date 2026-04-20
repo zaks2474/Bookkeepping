@@ -1,0 +1,15 @@
+/home/zaks/zakops-backend/venv/lib/python3.12/site-packages/langchain_anthropic/middleware/anthropic_tools.py:617:    Enforces `/memories` prefix and injects Anthropic's recommended system prompt.
+/home/zaks/zakops-backend/venv/lib/python3.12/site-packages/langchain_anthropic/middleware/anthropic_tools.py:643:                Defaults to `['/memories']`.
+/home/zaks/zakops-backend/venv/lib/python3.12/site-packages/langchain_anthropic/middleware/anthropic_tools.py:652:            allowed_path_prefixes=allowed_path_prefixes or ["/memories"],
+/home/zaks/zakops-backend/venv/lib/python3.12/site-packages/langchain_anthropic/middleware/anthropic_tools.py:1116:    Enforces `/memories` prefix and injects Anthropic's recommended system
+/home/zaks/zakops-backend/venv/lib/python3.12/site-packages/langchain_anthropic/middleware/anthropic_tools.py:1146:                Defaults to `['/memories']`.
+/home/zaks/zakops-backend/venv/lib/python3.12/site-packages/langchain_anthropic/middleware/anthropic_tools.py:1158:            allowed_prefixes=allowed_prefixes or ["/memories"],
+/home/zaks/zakops-backend/venv/lib/python3.12/site-packages/opentelemetry/semconv/resource/__init__.py:326:    Note: It's recommended to set this attribute since e.g. too little memory can easily stop a Java AWS Lambda function from working correctly. On AWS Lambda, the environment variable `AWS_LAMBDA_FUNCTION_MEMORY_SIZE` provides this information (which must be multiplied by 1,048,576).
+/home/zaks/zakops-backend/venv/lib/python3.12/site-packages/opentelemetry/semconv/_incubating/attributes/faas_attributes.py:80:Note: It's recommended to set this attribute since e.g. too little memory can easily stop a Java AWS Lambda function from working correctly. On AWS Lambda, the environment variable `AWS_LAMBDA_FUNCTION_MEMORY_SIZE` provides this information (which must be multiplied by 1,048,576).
+/home/zaks/zakops-backend/venv/lib/python3.12/site-packages/langgraph/runtime.py:82:    2. Create a store to persist memories and other information.
+/home/zaks/zakops-backend/venv/lib/python3.12/site-packages/langchain/agents/middleware/_execution.py:126:                "HostExecutionPolicy cpu/memory limits require the Python 'resource' module. "
+/home/zaks/zakops-backend/venv/lib/python3.12/site-packages/langchain/agents/middleware/context_editing.py:192:    `clear_tool_uses_20250919` behavior [(read more)](https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool).
+/home/zaks/zakops-backend/venv/lib/python3.12/site-packages/h11/_util.py:125:# values. Accepts ascii-strings, or bytes/bytearray/memoryview/..., and always
+/home/zaks/zakops-backend/src/core/agent/living_memo_generator.py:7:GET /api/deals/{id}/memo?format=markdown
+/home/zaks/zakops-backend/src/api/orchestration/routers/brain.py:224:@router.get("/{deal_id}/memo")
+/home/zaks/zakops-backend/src/api/orchestration/routers/brain.py:225:async def get_deal_memo(deal_id: str, format: str = "markdown"):

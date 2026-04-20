@@ -1,0 +1,6 @@
+deal_access table: line 104
+  Line 104: CREATE TABLE IF NOT EXISTS zakops.deal_access (
+---
+Role CHECK constraint: line 111
+  CONSTRAINT chk_deal_role CHECK (role IN ('viewer', 'operator', 'approver', 'admin'))
+VERDICT: PASS

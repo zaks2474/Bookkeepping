@@ -1,0 +1,24 @@
+148:        return json.dumps({"ok": False, "error": error_msg, "validation_failed": True})
+156:                return json.dumps({
+177:                return json.dumps({
+213:                return json.dumps({
+222:                return json.dumps({
+242:                return json.dumps({
+268:            return json.dumps({
+286:            return json.dumps({
+298:            return json.dumps({
+305:        return json.dumps({"ok": False, "error": f"Error transitioning deal: {str(e)}"})
+334:            return json.dumps(
+385:            return json.dumps(
+449:        return json.dumps({"ok": False, "error": error_msg, "validation_failed": True})
+505:                return json.dumps({
+520:                return json.dumps({
+533:            return json.dumps({
+545:            return json.dumps({
+552:        return json.dumps({"ok": False, "error": f"Error creating deal: {str(e)}"})
+601:                return json.dumps({
+608:                return json.dumps({
+621:                return json.dumps({
+629:            return json.dumps({
+635:            return json.dumps({
+642:        return json.dumps({"ok": False, "error": f"Error adding note: {str(e)}"})

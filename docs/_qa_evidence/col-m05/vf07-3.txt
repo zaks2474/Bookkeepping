@@ -1,0 +1,5 @@
+/home/zaks/zakops-backend/src/core/agent/ghost_knowledge_detector.py:9:fact store, flags them as ghost_knowledge for confirmation or dismissal.
+/home/zaks/zakops-backend/src/core/agent/ghost_knowledge_detector.py:131:                    "status": "pending",  # pending | confirmed | dismissed
+/home/zaks/zakops-backend/src/core/agent/ghost_knowledge_detector.py:162:    async def confirm_ghost(self, deal_id: str, ghost_key: str, confirmed_value: str | None = None) -> dict:
+/home/zaks/zakops-backend/src/core/agent/ghost_knowledge_detector.py:187:            "value": confirmed_value or ghost.get("detected_value", ""),
+/home/zaks/zakops-backend/src/core/agent/ghost_knowledge_detector.py:189:            "source_type": "user_assertion",

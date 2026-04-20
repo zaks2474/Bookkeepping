@@ -1,0 +1,30 @@
+=== R2.3: F-009 Cross-Service Correlation ID ===
+Date: Tue Feb  3 04:53 UTC 2026
+
+--- Current State ---
+
+Middleware exists (app/core/middleware/__init__.py:10-22):
+- Accepts X-Request-ID from incoming request or generates UUID
+- Stores in request.state.request_id
+- Returns in response headers as X-Request-ID
+
+--- Gap ---
+The correlation ID is NOT propagated to outbound httpx calls in deal_tools.py
+because the tool functions don't have access to the request context.
+
+To fully implement RT-4 correlation:
+1. Use contextvars to store request_id
+2. Modify tool functions to access contextvar
+3. Include X-Request-ID header in all httpx calls
+
+--- Current Evidence ---
+$ curl -s -D- -X POST http://localhost:8095/agent/invoke \
+    -H "X-Request-ID: test-123" ... | grep -i x-request
+< X-Request-ID: test-123
+
+Response DOES include the correlation ID.
+
+--- Disposition ---
+PARTIAL: Inbound/outbound response correlation works.
+DEFERRED: Agent→Backend propagation requires additional work.
+Workaround: Use thread_id for cross-service tracing (already logged in both services).

@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "<string>", line 2, in <module>
+  File "/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/__init__.py", line 14, in <module>
+    from .duckduckgo_search import duckduckgo_search_tool
+  File "/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/duckduckgo_search.py", line 8, in <module>
+    from langchain_community.tools import DuckDuckGoSearchResults
+ModuleNotFoundError: No module named 'langchain_community'

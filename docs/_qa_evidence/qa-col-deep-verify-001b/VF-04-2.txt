@@ -1,0 +1,14 @@
+5:Role restricts tools by user permission level (VIEWER/OPERATOR/APPROVER/ADMIN).
+41:_VIEWER_TOOLS = frozenset([
+48:_OPERATOR_TOOLS = _VIEWER_TOOLS | frozenset(["add_note"])
+49:_APPROVER_TOOLS = _OPERATOR_TOOLS | frozenset(["transition_deal", "create_deal"])
+51:ROLE_TOOL_MAP: dict[str, frozenset[str]] = {
+52:    "VIEWER": _VIEWER_TOOLS,
+53:    "OPERATOR": _OPERATOR_TOOLS,
+54:    "APPROVER": _APPROVER_TOOLS,
+55:    "ADMIN": frozenset(["*"]),  # Wildcard — all tools allowed
+60:DEFAULT_ROLE = "ADMIN"
+72:        role: User role (VIEWER, OPERATOR, APPROVER, ADMIN).
+73:        all_tool_names: Full set of registered tool names (needed for ADMIN wildcard).
+79:    role_tools = ROLE_TOOL_MAP.get(role, ROLE_TOOL_MAP[DEFAULT_ROLE])
+81:    # ADMIN wildcard: expand to all registered tools, then intersect with scope

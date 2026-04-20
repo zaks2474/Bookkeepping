@@ -1,0 +1,444 @@
+#!/usr/bin/env bash
+#
+# Lab Loop CLI v2.0
+# =================
+# Main entry point for Lab Loop automation
+#
+# Usage:
+#   labloop new <TASK_ID> [options]     Create a new task
+#   labloop run <TASK_ID> [options]     Run the lab loop
+#   labloop status <TASK_ID>            Show task status
+#   labloop list                        List all tasks
+#   labloop help                        Show help
+#
+set -euo pipefail
+
+LABLOOP_VERSION="2.1.0"
+
+# Ensure npm global binaries are in PATH (claude, codex)
+export PATH="/root/.npm-global/bin:$HOME/.npm-global/bin:$PATH"
+
+BASE="/home/zaks/bookkeeping/labloop"
+BIN="$BASE/bin"
+
+show_help() {
+  cat <<'EOF'
+Lab Loop v2.1 - Automated QA/Builder Loop
+==========================================
+
+USAGE:
+  labloop <command> [arguments]
+
+COMMANDS:
+  new <TASK_ID> [options]     Create a new task
+    --repo PATH               Repository path (required)
+    --gate CMD                Gate command (required unless --profile)
+    --gate-fast CMD           Fast gate command (for iterative cycles)
+    --gate-full CMD           Full gate command (for release validation)
+    --profile NAME            Use a gate profile
+    --list-profiles           List available gate profiles
+
+  run <TASK_ID> [options]     Run the lab loop for a task
+    --dry-run                 Simulate without running agents (1 cycle demo)
+    --max-cycles N            Maximum cycles (default: 50)
+    --tier fast|full          Gate tier to use (default: fast)
+    --incremental             Track changed files between cycles
+    --webhook URL             Send notifications to webhook URL
+    --email ADDRESS           Send email notifications
+    --skip-preflight          Skip pre-flight validation checks
+    --version                 Show version
+
+  status <TASK_ID>            Show current status of a task
+
+  list                        List all tasks
+
+  help                        Show this help message
+
+GATE PROFILES:
+  python-fast       Quick pytest with parallel lint/type-check
+  python-full       Full pytest with coverage (70% min) + strict checks
+  nextjs            TypeScript + ESLint + Next.js build
+  go                go vet + staticcheck + test
+  rust              cargo fmt + clippy + test + build
+  docker            Docker build + test in container
+
+2-TIER GATE SYSTEM:
+  Fast Gate (--tier fast):    Quick validation for iterative cycles
+  Full Gate (--tier full):    Comprehensive validation for release
+
+  Configure in task config.env:
+    GATE_FAST_CMD="pytest tests/ -x"
+    GATE_FULL_CMD="pytest tests/ --cov=src --cov-fail-under=80"
+
+v2.1 ENHANCEMENTS:
+  Flaky Gate Policy:
+    GATE_RETRY_MAX=3          Max retries on failure (default: 0)
+    GATE_RETRY_DELAY_SEC=2    Delay between retries (default: 2)
+    GATE_RETRY_ON_REGEX=""    Only retry if output matches regex
+    GATE_RETRY_OFF_REGEX=""   Never retry if output matches regex
+    GATE_RETRY_MODE=on_fail   Retry mode: on_fail|always (default: on_fail)
+    Creates: artifacts/gate_attempts.json, history/gate_attempt_*.log
+
+  Spec Oracle:
+    SPEC_CHECK_CMD=""         Independent spec verification command
+    SPEC_CHECK_REQUIRED=true  Fail cycle if spec check fails (default: true)
+    Creates: artifacts/spec_check.json, history/spec_check_cycle_*.log
+
+  Prompt Evals:
+    EVAL_CMD=""               Behavioral test / prompt eval command
+    EVAL_REQUIRED=true        Fail cycle if eval fails (default: true)
+    EVAL_RESULTS_PATH=""      Path to eval JSON results
+    Creates: artifacts/eval_results.json, history/eval_cycle_*.log
+
+SAFETY GUARDRAILS:
+  - Protected paths: .env, secrets/**, credentials/**, *.pem, *.key
+  - Diff limits: Max 20 files, 500 lines per cycle (configurable)
+  - Command denylist: rm -rf /, sudo rm, etc.
+  - Task locking: Prevents concurrent runs on same task
+  - Secrets redaction: Automatic in escalation packets
+
+ENVIRONMENT VARIABLES:
+  MAX_CYCLES            Override maximum cycles (default: 50)
+  LABLOOP_WEBHOOK       Default webhook URL for notifications
+  LABLOOP_EMAIL         Default email for notifications
+  LABLOOP_SMTP_USER     Gmail address for sending
+  LABLOOP_SMTP_PASS     Gmail app password (16-char)
+  LABLOOP_SMTP_HOST     SMTP server (default: smtp.gmail.com)
+  LABLOOP_SMTP_PORT     SMTP port (default: 587)
+  LABLOOP_CONFIG        Path to config file (default: ~/.labloop/config)
+  SAFETY_CONF           Path to safety config (default: config/safety.conf)
+
+EXIT CODES:
+  0     PASS - Task completed successfully
+  1     ERROR - General error / pre-flight failed
+  2     STUCK - Human intervention required
+  3     MAX_CYCLES - Limit reached without PASS
+
+EXAMPLES:
+  # Create and run a task
+  labloop new auth_fix --repo /home/zaks/myapp --profile python-fast
+  labloop run auth_fix --email user@gmail.com
+
+  # Run with full validation tier
+  labloop run auth_fix --tier full
+
+  # Dry run to test flow
+  labloop run auth_fix --dry-run
+
+  # Check status
+  labloop status auth_fix
+
+PERSISTENCE (run in background):
+  # Using tmux (recommended)
+  tmux new-session -d -s labloop 'labloop run my_task'
+
+  # Using nohup
+  nohup labloop run my_task > loop.log 2>&1 &
+
+  # Using systemd (see docs for service file)
+  systemctl --user start labloop@my_task
+
+FILES:
+  ~/.labloop/config              Global configuration
+  $BASE/config/safety.conf       Safety guardrails config
+  $BASE/tasks/<TASK_ID>/
+    config.env                   Task configuration
+    mission.md                   Task mission/description
+    acceptance.md                Acceptance criteria
+    BUILDER_REPORT.md            Builder's report
+    QA_REPORT.json               QA's verdict
+    gate_output.log              Gate command output
+    history/                     Cycle history
+    snapshots/                   Environment snapshots
+    escalation_*.zip             Stuck escalation packets
+
+For full documentation: $BASE/docs/LABLOOP_COMPLETE_GUIDE.md
+EOF
+}
+
+cmd_new() {
+  exec "$BIN/labloop-new.sh" "$@"
+}
+
+cmd_run() {
+  exec "$BIN/labloop.sh" "$@"
+}
+
+cmd_status() {
+  local task_id="${1:-}"
+  if [[ -z "$task_id" ]]; then
+    echo "Usage: labloop status <TASK_ID>"
+    exit 1
+  fi
+
+  local task_dir="$BASE/tasks/$task_id"
+  if [[ ! -d "$task_dir" ]]; then
+    echo "Task not found: $task_id"
+    exit 1
+  fi
+
+  echo "========================================"
+  echo "Task: $task_id"
+  echo "========================================"
+
+  # Check if running
+  if [[ -f "$task_dir/.pid" ]]; then
+    local pid
+    pid=$(cat "$task_dir/.pid" 2>/dev/null || echo "")
+    if [[ -n "$pid" ]] && kill -0 "$pid" 2>/dev/null; then
+      echo "Status: RUNNING (PID: $pid)"
+    else
+      echo "Status: NOT RUNNING (stale PID file)"
+    fi
+  else
+    echo "Status: NOT RUNNING"
+  fi
+
+  if [[ -f "$task_dir/config.env" ]]; then
+    echo ""
+    echo "Configuration:"
+    grep -E "^(REPO_DIR|GATE_CMD|GATE_FAST_CMD|GATE_FULL_CMD)=" "$task_dir/config.env" 2>/dev/null | sed 's/^/  /' || true
+  fi
+
+  if [[ -f "$task_dir/QA_REPORT.json" ]]; then
+    echo ""
+    echo "Latest QA Report:"
+    local verdict cycle summary
+    verdict=$(grep -o '"verdict"[[:space:]]*:[[:space:]]*"[^"]*"' "$task_dir/QA_REPORT.json" | cut -d'"' -f4)
+    cycle=$(grep -o '"cycle"[[:space:]]*:[[:space:]]*[0-9]*' "$task_dir/QA_REPORT.json" | grep -o '[0-9]*')
+    summary=$(grep -o '"summary"[[:space:]]*:[[:space:]]*"[^"]*"' "$task_dir/QA_REPORT.json" | cut -d'"' -f4 | head -c 80)
+    echo "  Verdict: $verdict"
+    echo "  Cycle: $cycle"
+    echo "  Summary: $summary..."
+  else
+    echo ""
+    echo "No QA report yet. Run: labloop run $task_id"
+  fi
+
+  if [[ -f "$task_dir/gate_rc.txt" ]]; then
+    echo ""
+    echo "Last Gate Exit Code: $(cat "$task_dir/gate_rc.txt")"
+  fi
+
+  # v2.1: Show flake suspected status
+  if [[ -f "$task_dir/artifacts/gate_attempts.json" ]]; then
+    echo ""
+    echo "Gate Attempts:"
+    local attempts flake_suspected final_code
+    attempts=$(grep -o '"attempts"[[:space:]]*:[[:space:]]*[0-9]*' "$task_dir/artifacts/gate_attempts.json" 2>/dev/null | grep -o '[0-9]*' || echo "1")
+    flake_suspected=$(grep -o '"flake_suspected"[[:space:]]*:[[:space:]]*[a-z]*' "$task_dir/artifacts/gate_attempts.json" 2>/dev/null | grep -oE 'true|false' || echo "false")
+    final_code=$(grep -o '"final_exit_code"[[:space:]]*:[[:space:]]*[0-9]*' "$task_dir/artifacts/gate_attempts.json" 2>/dev/null | grep -o '[0-9]*' || echo "?")
+    echo "  Attempts: $attempts"
+    echo "  Flake Suspected: $flake_suspected"
+    echo "  Final Exit Code: $final_code"
+  fi
+
+  # v2.1: Show spec check status
+  if [[ -f "$task_dir/artifacts/spec_check.json" ]]; then
+    echo ""
+    echo "Spec Check:"
+    local spec_passed spec_code
+    spec_passed=$(grep -o '"passed"[[:space:]]*:[[:space:]]*[a-z]*' "$task_dir/artifacts/spec_check.json" 2>/dev/null | grep -oE 'true|false' || echo "?")
+    spec_code=$(grep -o '"exit_code"[[:space:]]*:[[:space:]]*[0-9]*' "$task_dir/artifacts/spec_check.json" 2>/dev/null | grep -o '[0-9]*' || echo "?")
+    echo "  Passed: $spec_passed"
+    echo "  Exit Code: $spec_code"
+  fi
+
+  # v2.1: Show eval status
+  if [[ -f "$task_dir/artifacts/eval_results.json" ]]; then
+    echo ""
+    echo "Eval Results:"
+    local eval_passed eval_code
+    # Try to extract pass status - structure may vary
+    if grep -q '"passed"' "$task_dir/artifacts/eval_results.json" 2>/dev/null; then
+      eval_passed=$(grep -o '"passed"[[:space:]]*:[[:space:]]*[a-z]*' "$task_dir/artifacts/eval_results.json" 2>/dev/null | head -1 | grep -oE 'true|false' || echo "?")
+    else
+      eval_passed="present"
+    fi
+    echo "  Passed: $eval_passed"
+  fi
+
+  # v2.1.1: Show QA agent info
+  local latest_qa_agent=""
+  local latest_cycle
+  latest_cycle=$(grep -o '"cycle"[[:space:]]*:[[:space:]]*[0-9]*' "$task_dir/QA_REPORT.json" 2>/dev/null | grep -o '[0-9]*' || echo "0")
+  if [[ -f "$task_dir/history/qa_agent_cycle_${latest_cycle}.txt" ]]; then
+    latest_qa_agent=$(cat "$task_dir/history/qa_agent_cycle_${latest_cycle}.txt" 2>/dev/null)
+  fi
+  if [[ -n "$latest_qa_agent" ]]; then
+    echo ""
+    echo "QA Agent (v2.1.1):"
+    echo "  Last Used: $latest_qa_agent"
+    # Count agent usage
+    local codex_count gemini_count
+    codex_count=$(grep -l "codex" "$task_dir/history/qa_agent_cycle_"*.txt 2>/dev/null | wc -l || echo "0")
+    gemini_count=$(grep -l "gemini" "$task_dir/history/qa_agent_cycle_"*.txt 2>/dev/null | wc -l || echo "0")
+    if [[ "$codex_count" -gt 0 ]] || [[ "$gemini_count" -gt 0 ]]; then
+      echo "  Usage: Codex=$codex_count, Gemini=$gemini_count"
+    fi
+  fi
+
+  local history_count
+  history_count=$(find "$task_dir/history" -name "qa_report_cycle_*.json" 2>/dev/null | wc -l)
+  echo ""
+  echo "History: $history_count cycle(s)"
+
+  # Show snapshots
+  local snapshot_count
+  snapshot_count=$(find "$task_dir/snapshots" -maxdepth 1 -type d -name "cycle_*" 2>/dev/null | wc -l)
+  if [[ $snapshot_count -gt 0 ]]; then
+    echo "Snapshots: $snapshot_count cycle(s)"
+  fi
+
+  # Show escalation packets
+  local escalation_count
+  escalation_count=$(find "$task_dir" -maxdepth 1 -name "escalation_*.zip" 2>/dev/null | wc -l)
+  if [[ $escalation_count -gt 0 ]]; then
+    echo "Escalation Packets: $escalation_count"
+  fi
+
+  echo ""
+}
+
+cmd_list() {
+  echo "========================================"
+  echo "Lab Loop Tasks (v$LABLOOP_VERSION)"
+  echo "========================================"
+
+  local tasks_dir="$BASE/tasks"
+  if [[ ! -d "$tasks_dir" ]] || [[ -z "$(ls -A "$tasks_dir" 2>/dev/null)" ]]; then
+    echo ""
+    echo "No tasks found."
+    echo "Create one with: labloop new <TASK_ID>"
+    echo ""
+    exit 0
+  fi
+
+  echo ""
+  printf "%-25s %-8s %-6s %-8s %-6s %-5s %-5s %s\n" "TASK_ID" "VERDICT" "CYCLE" "STATUS" "FLAKE" "SPEC" "EVAL" "SUMMARY"
+  printf "%-25s %-8s %-6s %-8s %-6s %-5s %-5s %s\n" "-------" "-------" "-----" "------" "-----" "----" "----" "-------"
+
+  for task_dir in "$tasks_dir"/*/; do
+    if [[ -d "$task_dir" ]]; then
+      local task_id
+      task_id=$(basename "$task_dir")
+
+      local verdict="N/A"
+      local cycle="0"
+      local summary="Not started"
+      local status="idle"
+      local flake="-"
+      local spec="-"
+      local eval_status="-"
+
+      # Check if running
+      if [[ -f "$task_dir/.pid" ]]; then
+        local pid
+        pid=$(cat "$task_dir/.pid" 2>/dev/null || echo "")
+        if [[ -n "$pid" ]] && kill -0 "$pid" 2>/dev/null; then
+          status="RUN"
+        fi
+      fi
+
+      if [[ -f "$task_dir/QA_REPORT.json" ]]; then
+        verdict=$(grep -o '"verdict"[[:space:]]*:[[:space:]]*"[^"]*"' "$task_dir/QA_REPORT.json" 2>/dev/null | cut -d'"' -f4 || echo "N/A")
+        cycle=$(grep -o '"cycle"[[:space:]]*:[[:space:]]*[0-9]*' "$task_dir/QA_REPORT.json" 2>/dev/null | grep -o '[0-9]*' || echo "0")
+        summary=$(grep -o '"summary"[[:space:]]*:[[:space:]]*"[^"]*"' "$task_dir/QA_REPORT.json" 2>/dev/null | cut -d'"' -f4 | head -c 25 || echo "")
+      fi
+
+      # v2.1: Check flake status
+      if [[ -f "$task_dir/artifacts/gate_attempts.json" ]]; then
+        local flake_val
+        flake_val=$(grep -o '"flake_suspected"[[:space:]]*:[[:space:]]*[a-z]*' "$task_dir/artifacts/gate_attempts.json" 2>/dev/null | grep -oE 'true|false' || echo "")
+        if [[ "$flake_val" == "true" ]]; then
+          flake="YES"
+        elif [[ "$flake_val" == "false" ]]; then
+          flake="no"
+        fi
+      fi
+
+      # v2.1: Check spec status
+      if [[ -f "$task_dir/artifacts/spec_check.json" ]]; then
+        local spec_val
+        spec_val=$(grep -o '"passed"[[:space:]]*:[[:space:]]*[a-z]*' "$task_dir/artifacts/spec_check.json" 2>/dev/null | grep -oE 'true|false' || echo "")
+        if [[ "$spec_val" == "true" ]]; then
+          spec="OK"
+        elif [[ "$spec_val" == "false" ]]; then
+          spec="FAIL"
+        fi
+      fi
+
+      # v2.1: Check eval status
+      if [[ -f "$task_dir/artifacts/eval_results.json" ]]; then
+        if grep -q '"passed"[[:space:]]*:[[:space:]]*true' "$task_dir/artifacts/eval_results.json" 2>/dev/null; then
+          eval_status="OK"
+        elif grep -q '"passed"[[:space:]]*:[[:space:]]*false' "$task_dir/artifacts/eval_results.json" 2>/dev/null; then
+          eval_status="FAIL"
+        else
+          eval_status="?"
+        fi
+      fi
+
+      printf "%-25s %-8s %-6s %-8s %-6s %-5s %-5s %s\n" "$task_id" "$verdict" "$cycle" "$status" "$flake" "$spec" "$eval_status" "$summary"
+    fi
+  done
+
+  echo ""
+}
+
+cmd_version() {
+  echo "Lab Loop v$LABLOOP_VERSION"
+  echo "Location: $BASE"
+  echo ""
+  echo "Components:"
+  echo "  Orchestrator: $BIN/labloop.sh"
+  echo "  Task Creator: $BIN/labloop-new.sh"
+  echo "  Config: ~/.labloop/config"
+  echo "  Safety: $BASE/config/safety.conf"
+  echo ""
+  echo "Schemas:"
+  echo "  QA Report: $BASE/schemas/qa_report.schema.json"
+  echo "  Builder Report: $BASE/schemas/builder_report.schema.json"
+  echo "  Safety Config: $BASE/schemas/safety_config.schema.json"
+}
+
+# Main dispatch
+main() {
+  local cmd="${1:-help}"
+
+  case "$cmd" in
+    new)
+      shift
+      cmd_new "$@"
+      ;;
+    run)
+      shift
+      cmd_run "$@"
+      ;;
+    status)
+      shift
+      cmd_status "$@"
+      ;;
+    list|ls)
+      cmd_list
+      ;;
+    version|-v|--version)
+      cmd_version
+      ;;
+    help|-h|--help)
+      show_help
+      ;;
+    *)
+      # If it looks like a task ID (no dash prefix), assume 'run'
+      if [[ "$cmd" != -* ]]; then
+        cmd_run "$@"
+      else
+        echo "Unknown command: $cmd"
+        echo "Run 'labloop help' for usage."
+        exit 1
+      fi
+      ;;
+  esac
+}
+
+main "$@"

@@ -1,0 +1,4 @@
+    legal_hold      BOOLEAN DEFAULT FALSE,
+    legal_hold_reason TEXT,
+    legal_hold_set_by VARCHAR(255),
+    legal_hold_set_at TIMESTAMPTZ,

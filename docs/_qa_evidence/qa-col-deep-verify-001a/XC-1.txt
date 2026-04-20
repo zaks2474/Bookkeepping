@@ -1,0 +1,22 @@
+CREATE TABLE count in migration 004: 12
+Spec S3.3 expects: 9 tables
+---
+Table names found:
+CREATE TABLE IF NOT EXISTS user_identity_map 
+CREATE TABLE IF NOT EXISTS chat_threads 
+CREATE TABLE IF NOT EXISTS chat_messages 
+CREATE TABLE IF NOT EXISTS thread_ownership 
+CREATE TABLE IF NOT EXISTS session_summaries 
+CREATE TABLE IF NOT EXISTS turn_snapshots 
+CREATE TABLE IF NOT EXISTS turn_snapshots_default PARTITION OF turn_snapshots DEFAULT;
+CREATE TABLE IF NOT EXISTS cost_ledger 
+CREATE TABLE IF NOT EXISTS cost_ledger_default PARTITION OF cost_ledger DEFAULT;
+CREATE TABLE IF NOT EXISTS deal_budgets 
+CREATE TABLE IF NOT EXISTS cross_db_outbox 
+CREATE TABLE IF NOT EXISTS %I PARTITION OF %I FOR VALUES FROM 
+---
+Note: 12 includes partition sub-tables (turn_snapshots_default, cost_ledger_default)
+Main tables: user_identity_map, chat_threads, chat_messages, thread_ownership, session_summaries, turn_snapshots, cost_ledger, deal_budgets, cross_db_outbox = 9
+Partition sub-tables: turn_snapshots_default, cost_ledger_default = 2
+Total CREATE TABLE: 11 (9 main + 2 partition)
+VERDICT: PASS (9 main tables match spec)

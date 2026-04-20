@@ -1,0 +1,32 @@
+5-GET/OPTIONS/HEAD remain open.
+6-
+7-Injection paths (/api/quarantine*) are FAIL-CLOSED: if ZAKOPS_API_KEY is not
+8:configured, these paths return 503 instead of silently allowing access.
+9-Other paths degrade gracefully when the key is unset.
+10-"""
+11-
+12-import os
+13-from collections.abc import Callable
+14-
+15-from fastapi import Request, Response
+16-from fastapi.responses import JSONResponse
+17-from starlette.middleware.base import BaseHTTPMiddleware
+18-
+--
+37-
+38-        # Fail-closed: injection paths require auth even when key is not configured
+39-        is_injection_path = any(path.startswith(p) for p in INJECTION_PATHS)
+40:        if not expected_key:
+41-            if is_injection_path:
+42-                return JSONResponse(
+43:                    status_code=503,
+44-                    content={"error": "service_not_configured", "message": "API key not configured — injection path blocked"},
+45-                )
+46-            # Other paths: graceful degradation (skip auth)
+47-            return await call_next(request)
+48-
+49-        provided_key = request.headers.get("X-API-Key", "")
+50-        if provided_key != expected_key:
+51-            return JSONResponse(
+52-                status_code=401,
+53-                content={"error": "unauthorized", "message": "Invalid or missing API key"},

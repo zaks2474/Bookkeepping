@@ -1,0 +1,4 @@
+Line 64: def scan_input(content: str) -> ScanResult:
+  Returns ScanResult(passed=True) on clean input (line 74)
+  Returns ScanResult(passed=False, patterns_found=found, severity=max_severity, sanitized_content=sanitized) on match (lines 100-105)
+VERDICT: PASS

@@ -1,0 +1,7 @@
+=== STEP 2.4: search_deals ===
+--- Direct RAG query (ground truth, if up) ---
+{"detail":"Database not connected"}--- Agent invoke ---
+{
+    "detail": "Authentication required"
+}
+VERDICT: [PASS] [GRACEFUL-FAIL if RAG down + clean error] [FAIL if 500/crash]

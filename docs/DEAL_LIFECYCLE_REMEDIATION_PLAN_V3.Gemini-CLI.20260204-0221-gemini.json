@@ -1,0 +1,129 @@
+{
+  "agent_identity": {
+    "agent_name": "Gemini-CLI",
+    "run_id": "20260204-0221-gemini",
+    "repo_revision": "unknown",
+    "date_time": "2026-02-04T02:21:00Z"
+  },
+  "decision_set": [
+    {
+      "topic": "Source of Truth",
+      "options": ["Split Postgres/JSON", "JSON Only", "Postgres Only"],
+      "recommendation": "Postgres Only",
+      "migration": ["One-way sync script", "Deprecate JSON"],
+      "verification": ["grep codebase for json registry imports"]
+    },
+    {
+      "topic": "Email Ingestion",
+      "options": ["Script->File", "Script->API->DB"],
+      "recommendation": "Script->API->DB",
+      "migration": ["Refactor ingestion_gateway to call API"],
+      "verification": ["End-to-end email injection test"]
+    },
+    {
+      "topic": "Auth Model",
+      "options": ["Open", "API Key Only", "API Key + User Session"],
+      "recommendation": "API Key + User Session",
+      "migration": ["Add middleware"],
+      "verification": ["Curl with/without header"]
+    }
+  ],
+  "phases": [
+    {
+      "name": "Phase 0",
+      "objective": "Stop the bleeding",
+      "issues": ["ZK-ISSUE-0002", "ZK-ISSUE-0020", "ZK-ISSUE-0010"],
+      "tasks": ["Enable cron", "Fix SSE stub", "RAG check"],
+      "gates": ["Services running"],
+      "acceptance_criteria": ["Cron active", "No 501 errors"],
+      "evidence_required": ["Process list", "Access logs"]
+    },
+    {
+      "name": "Phase 1",
+      "objective": "Data Truth Unification",
+      "issues": ["ZK-ISSUE-0001", "ZK-ISSUE-0014", "ZK-ISSUE-0008"],
+      "tasks": ["Migrate JSON to DB", "Rewrite Executor", "Migrate Actions"],
+      "gates": ["Migration script success"],
+      "acceptance_criteria": ["All deals in Postgres"],
+      "evidence_required": ["DB Row counts"]
+    },
+    {
+      "name": "Phase 2",
+      "objective": "Workflow Repair",
+      "issues": ["ZK-ISSUE-0003", "ZK-ISSUE-0004", "ZK-ISSUE-0006", "ZK-ISSUE-0012", "ZK-ISSUE-0022"],
+      "tasks": ["Wire quarantine approve", "Add folder scaffold", "Fix UI endpoints"],
+      "gates": ["E2E Test pass"],
+      "acceptance_criteria": ["Approve creates deal + folders"],
+      "evidence_required": ["File listing", "DB query"]
+    },
+    {
+      "name": "Phase 3",
+      "objective": "Hardening",
+      "issues": ["ZK-ISSUE-0005", "ZK-ISSUE-0007", "ZK-ISSUE-0013", "ZK-ISSUE-0016", "ZK-ISSUE-0018"],
+      "tasks": ["Dashboard Auth", "Zod fixes", "Stage Enum", "Capabilities API"],
+      "gates": ["Security scan"],
+      "acceptance_criteria": ["Auth required", "Schemas match"],
+      "evidence_required": ["Curl 401 response"]
+    },
+    {
+      "name": "Phase 4",
+      "objective": "Agent Upgrade",
+      "issues": ["ZK-ISSUE-0009", "ZK-ISSUE-0019", "ZK-ISSUE-0015", "ZK-ISSUE-0011"],
+      "tasks": ["New Agent Tools", "Wire Executors", "Expiry Job", "Trace ID"],
+      "gates": ["Agent integration test"],
+      "acceptance_criteria": ["Agent can create deal"],
+      "evidence_required": ["Audit log correlation"]
+    },
+    {
+      "name": "Phase 5",
+      "objective": "Legacy Decommission",
+      "issues": ["ZK-ISSUE-0017"],
+      "tasks": ["Delete JSON registry", "Delete Legacy API"],
+      "gates": ["Grep check"],
+      "acceptance_criteria": ["No legacy files"],
+      "evidence_required": ["Clean filesystem"]
+    }
+  ],
+  "coverage_matrix": [
+    { "issue_id": "ZK-ISSUE-0001", "phase": "Phase 1", "tasks": ["Migration", "Rewrite Executor"], "verification": ["grep 'deal_registry.json' returns 0"], "done": false },
+    { "issue_id": "ZK-ISSUE-0002", "phase": "Phase 0", "tasks": ["Enable Cron"], "verification": ["tail -f /home/zaks/logs/email_sync.log"], "done": false },
+    { "issue_id": "ZK-ISSUE-0003", "phase": "Phase 2", "tasks": ["Update /process logic"], "verification": ["Approve item -> SELECT * FROM deals"], "done": false },
+    { "issue_id": "ZK-ISSUE-0004", "phase": "Phase 2", "tasks": ["Add folder scaffold hook"], "verification": ["Create API deal -> ls DataRoom/..."], "done": false },
+    { "issue_id": "ZK-ISSUE-0005", "phase": "Phase 3", "tasks": ["Add Middleware"], "verification": ["curl dashboard -> 401"], "done": false },
+    { "issue_id": "ZK-ISSUE-0006", "phase": "Phase 2", "tasks": ["Update UI API client"], "verification": ["UI Resolution -> Success (200)"], "done": false },
+    { "issue_id": "ZK-ISSUE-0007", "phase": "Phase 3", "tasks": ["Update Pydantic models"], "verification": ["Invalid stage -> 422 Error"], "done": false },
+    { "issue_id": "ZK-ISSUE-0008", "phase": "Phase 1", "tasks": ["Migrate SQLite->Postgres"], "verification": ["SELECT count(*) FROM actions"], "done": false },
+    { "issue_id": "ZK-ISSUE-0009", "phase": "Phase 4", "tasks": ["Register create_deal tool"], "verification": ["Agent: 'Create deal X' -> Success"], "done": false },
+    { "issue_id": "ZK-ISSUE-0010", "phase": "Phase 0", "tasks": ["Add RAG health check"], "verification": ["Agent startup logs 'RAG OK'"], "done": false },
+    { "issue_id": "ZK-ISSUE-0011", "phase": "Phase 4", "tasks": ["Add correlation_id col"], "verification": ["SELECT * FROM audit WHERE corr_id=..."], "done": false },
+    { "issue_id": "ZK-ISSUE-0012", "phase": "Phase 2", "tasks": ["Add /note endpoint"], "verification": ["POST /note -> 201 Created"], "done": false },
+    { "issue_id": "ZK-ISSUE-0013", "phase": "Phase 3", "tasks": ["Implement capability endpoints"], "verification": ["GET /capabilities -> JSON"], "done": false },
+    { "issue_id": "ZK-ISSUE-0014", "phase": "Phase 1", "tasks": ["Remove sys.path hack"], "verification": ["Code review deal_create_from_email.py"], "done": false },
+    { "issue_id": "ZK-ISSUE-0015", "phase": "Phase 4", "tasks": ["Add expiry cron"], "verification": ["Check stale approvals count = 0"], "done": false },
+    { "issue_id": "ZK-ISSUE-0016", "phase": "Phase 3", "tasks": ["Add DB Constraint"], "verification": ["Insert dupe -> SQL Error"], "done": false },
+    { "issue_id": "ZK-ISSUE-0017", "phase": "Phase 5", "tasks": ["Define Policy"], "verification": ["Doc exists; Cron scheduled"], "done": false },
+    { "issue_id": "ZK-ISSUE-0018", "phase": "Phase 3", "tasks": ["Fix Zod schemas"], "verification": ["UI shows fields correctly"], "done": false },
+    { "issue_id": "ZK-ISSUE-0019", "phase": "Phase 4", "tasks": ["Register Executors"], "verification": ["Dashboard 'Actions' tab populated"], "done": false },
+    { "issue_id": "ZK-ISSUE-0020", "phase": "Phase 0", "tasks": ["Stub SSE Endpoint"], "verification": ["Dashboard console no 501s"], "done": false },
+    { "issue_id": "ZK-ISSUE-0021", "phase": "Backlog", "tasks": ["Design Scheduler"], "verification": ["Scheduler Design Doc"], "done": false },
+    { "issue_id": "ZK-ISSUE-0022", "phase": "Phase 2", "tasks": ["Add Archive endpoints"], "verification": ["POST /archive -> Success"], "done": false }
+  ],
+  "prioritized_backlog": [
+    {
+      "priority": "P2",
+      "effort": "M",
+      "owner": "backend",
+      "dependencies": ["Phase 4"],
+      "verification_steps": ["Check triage quality"],
+      "expected_outcome": "Better auto-fill"
+    },
+    {
+      "priority": "P3",
+      "effort": "L",
+      "owner": "frontend",
+      "dependencies": ["Phase 3"],
+      "verification_steps": ["UI Test"],
+      "expected_outcome": "Portfolio View"
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+460:validate-surface17: ## Validate Surface 17 dashboard API route coverage contract
+465:validate-endpoint-liveness: ## Runtime endpoint liveness probe (requires dashboard + backend running)
+470:smoke-test: ## Playwright-based dashboard smoke test (requires dashboard running)

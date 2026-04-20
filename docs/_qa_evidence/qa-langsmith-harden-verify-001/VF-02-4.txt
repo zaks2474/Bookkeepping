@@ -1,0 +1,16 @@
+64:def _get_deal_from_db(deal_id: str) -> dict[str, Any] | None:
+65-    """Get a deal from PostgreSQL zakops.deals (canonical source of truth).
+66-
+67-    Returns a dict compatible with asdict(Deal) for backward compatibility
+68-    with ExecutionContext consumers.
+69-    """
+70-
+71-    async def _query() -> dict[str, Any] | None:
+72-        conn = await asyncpg.connect(BACKEND_DB_URL)
+73-        try:
+74-            row = await conn.fetchrow(
+75-                "SELECT deal_id, canonical_name, display_name, stage, status, "
+76-                "broker, metadata, company_info, identifiers, folder_path "
+77-                "FROM zakops.deals WHERE deal_id = $1 AND deleted = FALSE",
+78-                deal_id,
+79-            )

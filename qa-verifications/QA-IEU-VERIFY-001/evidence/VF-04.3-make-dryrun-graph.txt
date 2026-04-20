@@ -1,0 +1,23 @@
+=== VF-04.3 MAKE DRY-RUN GRAPH ===
+echo "\033[36m=== Surfaces 10-14 + Schema Validation ===\033[0m"
+bash tools/infra/validate-surface10.sh
+bash tools/infra/validate-surface11.sh
+bash tools/infra/validate-surface12.sh
+bash tools/infra/validate-surface13.sh
+bash tools/infra/validate-surface14.sh
+bash tools/infra/validate-performance-budget-schema.sh
+bash tools/infra/validate-manifest-contract-section.sh
+echo "\033[32mSurfaces 10-14 + schema validation passed\033[0m"
+echo "\033[36m=== Hook Contract Validation ===\033[0m"
+bash tools/infra/validate-stop-hook-contract.sh
+bash tools/infra/validate-stop-hook-selftest.sh
+echo "\033[32mHook contract validation passed\033[0m"
+echo "\033[36m=== Enhancement Validation Suite ===\033[0m"
+bash tools/infra/validate-performance-budget-schema.sh
+bash tools/infra/validate-governance-anchor-schema.sh
+bash tools/infra/validate-manifest-contract-section.sh
+bash tools/infra/validate-stop-hook-selftest.sh
+bash tools/infra/tests/test-validate-gatee-scan.sh
+bash tools/infra/tests/test-validate-surfaces10-14.sh
+echo "\033[32mEnhancement validation suite passed\033[0m"
+EXIT=0

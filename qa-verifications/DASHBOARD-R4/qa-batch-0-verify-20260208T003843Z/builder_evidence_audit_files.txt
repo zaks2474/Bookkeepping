@@ -1,0 +1,22 @@
+/home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/batch-0/evidence/playwright-install/04-smoke.txt
+/home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/batch-0/evidence/playwright-install/01-install.txt
+/home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/batch-0/evidence/playwright-install/03-list.txt
+/home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/batch-0/evidence/playwright-install/02-browser-install.txt
+/home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/batch-0/evidence/auth-injection/05-no-key.txt
+/home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/batch-0/evidence/auth-injection/02-middleware-snapshot.txt
+/home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/batch-0/evidence/auth-injection/04-sample-id.txt
+/home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/batch-0/evidence/auth-injection/01-route-audit.txt
+/home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/batch-0/evidence/auth-injection/03-openapi-paths.txt
+/home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/batch-0/evidence/auth-injection/06-with-key.txt
+/home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/batch-0/evidence/service-health/04-env-check.txt
+/home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/batch-0/evidence/service-health/01-backend-health.json
+/home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/batch-0/evidence/service-health/03-dashboard-status.txt
+/home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/batch-0/evidence/service-health/00-repo-root.txt
+/home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/batch-0/evidence/service-health/02-agent-health.json
+--- sample: /home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/batch-0/evidence/playwright-install/04-smoke.txt ---
+
+Running 1 test using 1 worker
+
+  ✓  1 [chromium] › tests/e2e/smoke.spec.ts:3:5 › smoke: dashboard loads (1.5s)
+
+  1 passed (2.3s)

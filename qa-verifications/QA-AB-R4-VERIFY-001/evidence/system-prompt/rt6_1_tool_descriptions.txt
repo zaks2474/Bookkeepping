@@ -1,0 +1,34 @@
+=== list_deals DOCSTRING ===
+List deals from the pipeline with optional filtering.
+
+    R4 REMEDIATION: This tool queries the backend API directly (same data source
+    as the dashboard). Use this for questions like:
+    - "How many deals do I have?"
+    - "Show my pipeline"
+    - "What deals are in screening?"
+    - "List all inbound deals"
+
+    For finding a specific deal by name, use search_deals instead.
+    For getting details of a specific deal, use get_deal instead.
+
+    Args:
+        stage: Optional filter by stage 
+
+=== search_deals DOCSTRING ===
+Search for deals by name or attributes.
+
+    R4 REMEDIATION: Now queries backend API directly (not RAG).
+    RAG is for knowledge base documents only, not deal records.
+
+    Use this for finding specific deals by name or attribute:
+    - "Find the Acme Corp deal"
+    - "Search for deals from broker John"
+
+    For counting deals or viewing your full pipeline, use list_deals instead.
+
+    Args:
+        query: Search query (matches deal name, broker, etc.)
+        limit: Maximum number of results
+
+
+

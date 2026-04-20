@@ -1,0 +1,30 @@
+b96b33c fix(agent): QA remediation - P3.1, D-7, D-4 blocking failures
+e1244b7 feat(agent): AGENT-BRAIN-REMEDIATION-R3 — Complete agent reliability and observability overhaul
+559a5d1 fix(dashboard): add schema regression guard infrastructure [SCHEMA-GUARD-001]
+0dbeea7 fix(dashboard): align ActionMetricsSchema with backend response [SCHEMA-ALIGN-001]
+f7d1b69 fix(agent): AGENT-REMEDIATION-004 & 005 — Activity endpoint, storage safety, tracing
+36309d4 fix(security): add ownership checks to approvals/threads, sanitize streaming output [UF-003,UF-004]
+2dca48b fix(security): AGENT-REMEDIATION-001 — JWT enforcement, error sanitization, CORS hardening
+a18599b fix(dashboard): align API routes and schemas with backend contract [REMEDIATION-V5]
+b225dc7 chore: remove stale apps/backend directory (dead code)
+885bed1 fix: REMEDIATION-V3 — dashboard integrity and dead code cleanup
+b9966d1 fix(dashboard): replace non-canonical stages in deals and dashboard pages
+ba262a7 fix(dashboard): remove non-canonical stage names from color map
+b8609bb fix(dashboard): align deal transition payload (new_stage) [ZK-AUD-0005]
+7865ede fix(dashboard): require NEXT_PUBLIC_API_URL (no fallback) [ZK-AUD-0002]
+43421f8 fix(agent-api): require DATABASE_URL (no DB defaults) [ZK-AUD-0016]
+f8db986 fix(env): align backend URL defaults to 8091 [ZK-AUD-0002]
+1378c4f fix(compose): resolve orchestration port conflict [ZK-AUD-0002]
+e794a0d chore: fix CODEOWNERS to use actual GitHub user
+d36d5c9 chore: align default branch refs + fix decommissioned port
+ae537b4 ci: skip pre-existing failing dashboard tests
+4ffe674 ci: fix dashboard eslint rule reference, allow empty test collection
+0fe5337 ci: fix dashboard eslint compat, make agent-api mypy non-blocking
+bbae721 ci: fix agent-api mypy namespace conflict, dashboard eslint compat
+46fb4af ci: fix type-check, test imports, and dashboard eslint compatibility
+3722a4c ci: fix mypy not found, backend test imports, dashboard eslint errors
+a4fa13c ci: fix ruff lint failures (docstring policy + bugbear + backend auto-fixes)
+8dce3cf ci: ensure ruff is installed for lint jobs
+71d52d0 chore: stop tracking generated artifacts
+423692c feat: PROVIDER-FIX-CRITICAL-001 - Real settings system + fix local vLLM
+d1d2789 fix: Update system prompt to include accurate model identity

@@ -1,0 +1,10 @@
+=== VF-04.5 SURFACE14 STRICT CAPABILITY ===
+4:# Advisory mode by default; set STRICT=1 for CI enforcement
+8:STRICT="${STRICT:-0}"
+16:echo "Mode: $([ "$STRICT" = "1" ] && echo "STRICT" || echo "ADVISORY")"
+72:      if [ "$STRICT" = "1" ]; then
+76:        echo "  WARN: $name — ${size} bytes exceeds limit ${limit} (advisory)"
+98:    if [ "$STRICT" = "1" ]; then
+102:      echo "  WARN: Dashboard static ${STATIC_MB} MB exceeds dev limit (advisory)"
+116:      if [ "$STRICT" = "1" ]; then
+120:        echo "  WARN: main-app.js exceeds 2 MB limit (advisory)"

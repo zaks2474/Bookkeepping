@@ -1,0 +1,22 @@
+=== V-L4: Error Handling - hq/page.tsx ===
+Date: 2026-02-09T04:54:55Z
+
+File: /home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx
+
+>> allSettled matches:
+28:      // DEAL-INTEGRITY-UNIFIED L3+L4: Server-computed counts + Promise.allSettled
+29:      const results = await Promise.allSettled([
+
+>> catch matches:
+43:    } catch (err) {
+
+>> error/Error matches:
+36:      else console.error('Failed to load pipeline:', results[0].reason);
+38:      else console.error('Failed to load actions:', results[1].reason);
+40:      else console.error('Failed to load quarantine:', results[2].reason);
+42:      else console.error('Failed to load agent activity:', results[3].reason);
+44:      console.error('Failed to load HQ data:', err);
+107:    error_message: a.error?.message ?? null,
+
+>> fallback matches:
+(none)

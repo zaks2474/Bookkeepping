@@ -1,0 +1,8 @@
+=== BACKEND ALLOWED STAGES (workflow.py) ===
+['archived', 'closing', 'diligence', 'inbound', 'junk', 'loi', 'portfolio', 'qualified', 'screening']
+
+=== DASHBOARD DealStage (api.ts) ===
+['archived', 'closing', 'diligence', 'inbound', 'junk', 'loi', 'portfolio', 'qualified', 'screening']
+
+=== COMPARISON ===
+✓ Stage values appear aligned

@@ -1,0 +1,66 @@
+=== CHECK 4.8.2: Verify Command(resume=...) pattern is in use ===
+Timestamp: 2026-02-03T13:18:24-06:00
+
+=== Searching for Command(resume...) pattern ===
+631:            # Resume with approval granted using Command(resume=...)
+634:                Command(resume={"approved": True, "approval_id": approval_id}),
+715:            # Resume with rejection using Command(resume=...)
+717:                Command(resume={"approved": False, "reason": rejection_reason}),
+
+=== Full context of resume patterns in graph.py ===
+                pending_tools=[tc.tool_name for tc in state.pending_tool_calls],
+            )
+
+            # This will pause execution until resumed
+            approval_result = interrupt({
+                "type": "approval_required",
+                "pending_tool_calls": [tc.model_dump() for tc in state.pending_tool_calls],
+                "thread_id": thread_id,
+            })
+
+            # After resume, check the result
+            if approval_result.get("approved"):
+                return Command(
+                    update={"approval_status": "approved"},
+--
+            logger.exception("invoke_with_hitl_failed", error=str(e))
+            raise
+
+    async def resume_after_approval(
+        self,
+        thread_id: str,
+        checkpoint_id: Optional[str],
+--
+        """Resume the agent after approval is granted.
+
+        Args:
+            thread_id: The thread ID to resume
+            checkpoint_id: The checkpoint ID to resume from
+            tool_name: Name of the approved tool
+            tool_args: Arguments for the tool
+            approval_id: ID of the approval record
+--
+            config["configurable"]["checkpoint_id"] = checkpoint_id
+
+        try:
+            # Resume with approval granted using Command(resume=...)
+            # The resume value becomes the return value of interrupt() in _approval_gate
+            result = await self._graph.ainvoke(
+                Command(resume={"approved": True, "approval_id": approval_id}),
+                config=config,
+            )
+
+--
+            if response_text:
+                sanitization_result = sanitize_llm_output(response_text)
+                if sanitization_result.was_modified:
+                    logger.warning("llm_output_sanitized_on_resume", modifications=sanitization_result.modifications)
+                response_text = sanitization_result.sanitized
+
+            logger.info(
+
+=== Verification Summary ===
+Command(resume=...) occurrences: 4
+interrupt_resume occurrences: 0
+
+PASS: Command(resume=...) is used (4 occurrences), interrupt_resume is NOT used (0 occurrences)

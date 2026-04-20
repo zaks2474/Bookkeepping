@@ -17,12 +17,13 @@ run_check() {
 }
 
 checks=(
-  "Claude API (8090)|curl -fsS --max-time 3 http://localhost:8090/health"
-  "Claude API service (systemd)|systemctl is-active --quiet claude-code-api"
+  "Backend API (8091)|curl -fsS --max-time 3 http://localhost:8091/health/ready"
+  "Agent API (8095)|curl -fsS --max-time 3 http://localhost:8095/health"
+  "Dashboard (3003)|curl -fsS --max-time 3 http://localhost:3003"
   "OpenWebUI (3000)|curl -fsS --max-time 3 http://localhost:3000 || curl -fsS --max-time 3 http://localhost:3000/health"
   "vLLM Qwen (8000 models)|curl -fsS --max-time 3 http://localhost:8000/v1/models"
-  "ZakOps API (8080)|curl -fsS --max-time 3 http://localhost:8080/health"
   "RAG REST API (8052)|curl -fsS --max-time 3 http://localhost:8052/"
+  "MCP Bridge (9100)|curl -fsS --max-time 3 http://localhost:9100/health"
   "Docker daemon access|docker info >/dev/null"
 )
 

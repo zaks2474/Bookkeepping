@@ -1,0 +1,2 @@
+96:    async def get_thread(self, thread_id: str, user_id: str) -> ChatThread:
+325:    async def get_thread_for_llm(

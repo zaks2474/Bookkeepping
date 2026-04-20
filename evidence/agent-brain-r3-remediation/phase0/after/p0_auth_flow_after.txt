@@ -1,0 +1,32 @@
+=== P0.4 AUTH VALIDATION ANALYSIS ===
+
+CURRENT STATE:
+- Service token auth (X-Service-Token) authenticates the CALLING SERVICE (dashboard)
+- actor_id is passed in request body and TRUSTED from dashboard
+- Ownership check exists for approval operations (line 256-257 in agent.py):
+  `if pre_check and actor_id and pre_check.actor_id != actor_id: raise 403`
+
+GAP IDENTIFIED:
+- Service token does not carry user identity
+- Dashboard is trusted to pass correct actor_id
+- If service token is compromised, attacker can impersonate any user
+
+EXISTING MITIGATIONS:
+1. Ownership check prevents acting on OTHER users' approvals
+2. Service token is timing-safe compared (hmac.compare_digest)
+3. Bearer JWT tokens rejected on /agent/* endpoints (confused deputy prevention)
+4. Approval audit trail includes actor_id
+
+RECOMMENDATION FOR P0.4:
+Given the current architecture where service token auth doesn't carry user identity,
+the fix requires one of:
+A) Require JWT auth with user claims for user-facing operations
+B) Have dashboard sign actor_id claim (add X-Actor-Signature header)
+C) Add rate limiting and anomaly detection per actor_id
+
+DECISION:
+- Mark P0.4 as PARTIAL - ownership check exists
+- Document limitation and track as ZK-BRAIN-ISSUE-0004 for Phase 5 (auth hardening)
+- Add enhanced logging for actor_id operations (implemented below)
+
+GATE P0.4: PARTIAL (ownership check exists, full impersonation prevention requires architecture change)

@@ -1,0 +1,13 @@
+NETWORK ID     NAME                               DRIVER    SCOPE
+0b9550fcc278   agent-api_agent-network            bridge    local
+d8366c547c90   bridge                             bridge    local
+cd70d330af1e   crawl4ai-rag_backend               bridge    local
+67d13af2e0a0   docker_default                     bridge    local
+f23dd32ebfd3   docker_zakops-network              bridge    local
+0764546bc510   host                               host      local
+36d3b1ed6a4d   none                               null      local
+419cc1a2919e   zakops-agent-api_agent-network     bridge    local
+58742158cf8f   zakops-backend_zakops              bridge    local
+2157cfb8d86f   zakops-temporal_temporal-network   bridge    local
+11dd70001e88   zakops_network                     bridge    local
+ead8c6c72273   zaks-llm_ai-network                bridge    local

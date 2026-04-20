@@ -1,0 +1,15 @@
+=== QA-2.3: T1.9-T1.11 Workflow Router ===
+--- TEST 1: Workflow router file ---
+-rw-r--r-- 1 zaks zaks 3880 Jan 24 13:05 /home/zaks/zakops-backend/src/api/orchestration/routers/workflow.py
+
+--- TEST 2: Workflow endpoints ---
+44:@router.get("/{deal_id}/valid-transitions", response_model=ValidTransitionsResponse)
+59:@router.post("/{deal_id}/transition", response_model=TransitionResponse)
+104:@router.get("/{deal_id}/stage-history")
+118:@router.get("/stages/summary")
+
+--- TEST 3: Router included in main ---
+from .routers.workflow import router as workflow_router
+app.include_router(workflow_router)
+
+=== QA-2.3 VERDICT: PASS ===

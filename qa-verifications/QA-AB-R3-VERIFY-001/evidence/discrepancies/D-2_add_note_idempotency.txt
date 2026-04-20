@@ -1,0 +1,80 @@
+D-2 add_note idempotency implementation (snippet)
+    content: str,
+    category: str = "general",
+) -> str:
+    """Add a note to an existing deal.
+
+    Args:
+        deal_id: The unique identifier of the deal
+        content: The content of the note
+        category: Category of the note
+
+    Returns:
+        str: JSON result with ok, event_id, error, backend_status
+    """
+    logger.info(
+        "add_note_called",
+        deal_id=deal_id,
+        category=category,
+    )
+
+    try:
+        headers = _get_backend_headers()
+
+        # R3 REMEDIATION [P1.3]: Generate idempotency key for note creation
+        idempotency_key = tool_idempotency_key(
+            thread_id="agent",
+            tool_name="add_note",
+            tool_args={
+                "deal_id": deal_id,
+                "content": content,
+                "category": category,
+            }
+        )
+
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.post(
+                f"{DEAL_API_URL}/api/deals/{deal_id}/notes",
+                headers=headers,
+                json={
+                    "content": content,
+                    "category": category,
+                    "idempotency_key": idempotency_key,
+                },
+            )
+
+            backend_status = response.status_code
+
+            if response.status_code == 201:
+                result = response.json()
+                logger.info(
+                    "add_note_success",
+                    deal_id=deal_id,
+                    event_id=result.get("event_id"),
+                    backend_status=backend_status,
+                )
+                return json.dumps({
+                    "ok": True,
+                    "deal_id": deal_id,
+                    "event_id": result.get("event_id"),
+                    "backend_status": backend_status,
+                })
+            elif response.status_code == 404:
+                return json.dumps({
+                    "ok": False,
+                    "error": f"Deal {deal_id} not found",
+                    "backend_status": backend_status,
+                })
+            else:
+                error_text = response.text
+                logger.error(
+                    "add_note_backend_rejected",
+                    deal_id=deal_id,
+                    status_code=backend_status,
+                    error=error_text,
+                )
+                return json.dumps({
+                    "ok": False,
+                    "error": f"Backend rejected note: HTTP {backend_status} - {error_text}",
+
+Note: No pre-insert check for idempotency_key in agent tool; relies on backend.

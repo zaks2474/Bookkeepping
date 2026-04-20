@@ -14,3 +14,8 @@
 # 5 6-21 * * * sudo -u zaks python3 /home/zaks/scripts/sync_acquisition_emails.py >> /home/zaks/logs/email_sync.log 2>&1
 # 5 22,2 * * * sudo -u zaks python3 /home/zaks/scripts/sync_acquisition_emails.py >> /home/zaks/logs/email_sync.log 2>&1
 # NOTE: Email sync now handled by /etc/cron.d/dataroom-automation using 'make ingest'
+
+# QA-R4C-VERIFY-001 — One-shot: runs at 04:44 CST Feb 10 2026, then self-removes
+44 4 10 2 * sudo claude --dangerously-skip-permissions 'execute this mission "/home/zaks/bookkeeping/docs/QA-R4C-VERIFY-001.md"' > /home/zaks/bookkeeping/logs/qa-r4c-verify-001.log 2>&1 && (crontab -l | grep -v 'QA-R4C-VERIFY-001' | crontab -) # QA-R4C-VERIFY-001 one-shot
+
+# QA-R4C watchdog — 10 min after mission launch, checks if running, re-launches if not, self-removes

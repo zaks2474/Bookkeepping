@@ -1,0 +1,10 @@
+28:RAG_REST_URL = os.getenv("RAG_REST_URL", "http://host.docker.internal:8052")
+92:    """Input schema for search_deals tool."""
+375:async def search_deals(query: str, limit: int = 10) -> str:
+376:    """Search for deals using RAG.
+385:    logger.info("search_deals_called", query=query, limit=limit)
+390:                f"{RAG_REST_URL}/rag/query",
+409:                    "note": "MOCK: RAG REST unavailable",
+413:            "rag_rest_unavailable_fail_closed",
+418:        raise httpx.ConnectError(f"RAG REST unavailable at {RAG_REST_URL} and mocks disabled")
+421:        logger.error("search_deals_error", error=str(e))

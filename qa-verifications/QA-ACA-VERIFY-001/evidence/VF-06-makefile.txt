@@ -1,0 +1,17 @@
+=== VF-06: Makefile Integration (AC-5) ===
+
+1. Target exists (Makefile line 354):
+   sync-agent-configs: ## Sync contract surface tables to all agent config files
+     @echo "$(CYAN)=== Sync Agent Configs ===$(RESET)"
+     @bash tools/infra/sync-agent-configs.sh
+     @echo "$(GREEN)Agent configs synced$(RESET)"
+   ✓
+
+2. Included in sync-all-types dep chain (Makefile line 359):
+   sync-all-types: sync-types sync-backend-models sync-agent-types sync-rag-models sync-agent-configs
+   ✓ (last in dep chain)
+
+3. .PHONY includes sync-agent-configs (Makefile line 7):
+   ✓
+
+VERDICT: PASS — Target exists, in dep chain, .PHONY declared

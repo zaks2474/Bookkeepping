@@ -1,0 +1,6 @@
+=== VF-02.1 STALETIME REDUCED ===
+12:      staleTime: 30 * 1000,         // 30s default — hooks can override per-query
+--- Checking value is <= 60s ---
+staleTime_expr=30 * 1000
+staleTime_ms=30000
+EXIT=0

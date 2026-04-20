@@ -1,0 +1,7 @@
+=== RT-CORRELATION: Correlation ID Propagation ===
+--- TEST 1: Send request with X-Correlation-ID: QA006-CORR-1770190274 ---
+x-correlation-id: QA006-CORR-1770190274
+--- TEST 2: TraceMiddleware configured ---
+/home/zaks/zakops-backend/src/api/orchestration/main.py
+
+=== RT-CORRELATION VERDICT: PASS ===

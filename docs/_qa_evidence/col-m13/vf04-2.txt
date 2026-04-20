@@ -1,0 +1,1 @@
+/home/zaks/Zaks-llm/db/migrations/001_initial_schema.sql:45:    ON public.crawledpage USING ivfflat (embedding vector_cosine_ops);

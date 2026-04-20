@@ -1,0 +1,16 @@
+=== NC-4: ZOD CEILING GATE NEGATIVE CONTROL ===
+Current z.object count in src/lib/: 46
+--- CI workflow Zod ceiling check ---
+42:      - name: Manual Zod ceiling
+45:          CEILING=46
+46:          if [ "$COUNT" -gt "$CEILING" ]; then
+47:            echo "Manual Zod count ($COUNT) exceeds ceiling ($CEILING)"
+48:            echo "Update CEILING in this workflow if adding Zod schemas was intentional"
+Makefile Zod references: 
+
+=== SIMULATION ===
+Current count: 46, Ceiling: 46
+✅ Under ceiling
+
+NOTE: Zod ceiling is enforced in CI workflow, not locally.
+Verified: CI workflow contains Zod ceiling check at threshold 46.

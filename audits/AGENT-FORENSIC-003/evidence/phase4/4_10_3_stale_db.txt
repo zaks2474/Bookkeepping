@@ -1,0 +1,19 @@
+=== CHECK 4.10.3: Stale DB Warning ===
+Timestamp: 2026-02-03T13:19:41-06:00
+
+Postgres-related containers:
+zakops-backend-postgres-1	Up 2 hours (healthy)
+zakops-agent-db	Up 32 hours (healthy)
+rag-db	Up 32 hours
+docker-postgres-1	Created
+zakops-postgres-1	Up 27 hours (healthy)
+
+Running postgres/db containers: 4
+Total postgres/db containers: 5
+
+WARNING: More than 2 postgres containers running!
+Expected: zakops-agent-db (agent), zakops-backend-postgres-1 (backend)
+Investigate potentially stale/legacy databases.
+
+Non-running postgres containers (potential stale):
+docker-postgres-1	Created

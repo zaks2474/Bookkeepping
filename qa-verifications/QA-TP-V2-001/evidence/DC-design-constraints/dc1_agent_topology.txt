@@ -1,0 +1,41 @@
+=== DC-1: Agent Topology Integration ===
+--- DC-1.1: Existing 4-agent topology unchanged ---
+/home/zaks/.claude/agents/arch-reviewer.md
+/home/zaks/.claude/agents/contract-guardian.md
+/home/zaks/.claude/agents/test-engineer.md
+No monorepo agents dir
+
+--- DC-1.2: Claude Code is the orchestrator ---
+4:# with structured consolidation and append-only evidence discipline.
+833:  append_master_log "$run_dir" "Pass 3 started — consolidating all outputs" "PASS 3 START"
+835:  local p3_prompt="$run_dir/03_pass3/consolidation_prompt.md"
+864:This is a placeholder. Run the consolidation prompt manually:
+865:See 03_pass3/consolidation_prompt.md
+
+--- DC-1.3: Gemini/Codex invoked as external tools ---
+32:GEMINI_CLI=""
+33:CODEX_CLI=""
+147:  GEMINI_CLI=$(command -v gemini 2>/dev/null || echo "")
+148:  if [ -z "$GEMINI_CLI" ] && [ -x "/root/.npm-global/bin/gemini" ]; then
+149:    GEMINI_CLI="/root/.npm-global/bin/gemini"
+153:  CODEX_CLI=$(command -v codex 2>/dev/null || echo "")
+154:  if [ -z "$CODEX_CLI" ] && [ -x "/root/.npm-global/bin/codex" ]; then
+155:    CODEX_CLI="/root/.npm-global/bin/codex"
+173:| Gemini CLI | ${GEMINI_CLI:-NOT FOUND} | $([ -n "$GEMINI_CLI" ] && echo "YES" || echo "NO") |
+174:| Codex CLI | ${CODEX_CLI:-NOT FOUND} | $([ -n "$CODEX_CLI" ] && echo "YES" || echo "NO") |
+
+--- DC-1.4: Agents produce Markdown only (no write access) ---
+219:  local output_file="$2"
+223:    cp "$prompt_file" "${output_file%.md}_PROMPT.md"
+238:    < "$prompt_file" > "$output_file" 2>/dev/null || {
+240:    if [ ! -s "$output_file" ]; then
+241:      echo "# Claude Agent — No Output" > "$output_file"
+242:      echo "The Claude agent did not produce output within the timeout." >> "$output_file"
+251:  local output_file="$2"
+254:    cp "$prompt_file" "${output_file%.md}_PROMPT.md"
+260:    --yolo > "$output_file" 2>/dev/null || {
+262:    if [ ! -s "$output_file" ]; then
+
+--- DC-1.5: Contract-guardian optionally invocable ---
+No contract-guardian reference
+

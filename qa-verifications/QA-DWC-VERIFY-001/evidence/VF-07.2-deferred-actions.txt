@@ -1,0 +1,6 @@
+No "deferred-actions" or "deferred" references in deals/[id]/page.tsx.
+Deferred actions endpoint may not exist in backend yet.
+Checked M-05 interaction-closure.md for scope — deferred actions fetching was not wired
+as it depends on backend endpoint that does not exist.
+CLASSIFICATION: SCOPE_GAP — backend endpoint not available for wiring.
+Per F-8: explicit absence, not silent mock success. PASS (conditional)

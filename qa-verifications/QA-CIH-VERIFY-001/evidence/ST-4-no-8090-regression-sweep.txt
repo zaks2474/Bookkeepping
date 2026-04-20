@@ -1,0 +1,8 @@
+=== ST-4 NO PORT 8090 REGRESSION SWEEP ===
+/home/zaks/zakops-agent-api/tools/infra/validate-frontend-governance.sh:4:# Includes no-8090 drift check for governance files.
+/home/zaks/zakops-agent-api/tools/infra/validate-frontend-governance.sh:98:# ── Check 4: No port 8090 drift in governance files ──
+/home/zaks/zakops-agent-api/tools/infra/validate-frontend-governance.sh:100:echo "--- Port 8090 drift check ---"
+/home/zaks/zakops-agent-api/tools/infra/validate-frontend-governance.sh:103:  if [ -f "$rule_file" ] && grep -q "8090" "$rule_file" 2>/dev/null; then
+/home/zaks/zakops-agent-api/tools/infra/validate-frontend-governance.sh:104:    echo "  FAIL: Port 8090 reference in $(basename "$rule_file")"
+/home/zaks/zakops-agent-api/tools/infra/validate-frontend-governance.sh:109:  echo "  PASS: No port 8090 references in governance rules"
+/home/zaks/bookkeeping/docs/CI-HARDENING-001-COMPLETION.md:57:- Port 8090 drift check across governance files

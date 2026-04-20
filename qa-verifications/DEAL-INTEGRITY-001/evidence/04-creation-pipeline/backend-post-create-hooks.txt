@@ -1,0 +1,20 @@
+/home/zaks/zakops-backend/src/workers/actions_runner.py:85:def _emit_deal_event(event_store: DealEventStore, *, deal_id: str | None, event_type: str, actor: str, data: dict[str, Any]) -> None:
+/home/zaks/zakops-backend/src/workers/actions_runner.py:91:        logger.exception("Failed to emit deal event: %s", event_type)
+/home/zaks/zakops-backend/src/workers/actions_runner.py:214:            _emit_deal_event(
+/home/zaks/zakops-backend/src/workers/actions_runner.py:275:        _emit_deal_event(
+/home/zaks/zakops-backend/src/workers/actions_runner.py:446:            _emit_deal_event(
+/home/zaks/zakops-backend/src/workers/actions_runner.py:567:            _emit_deal_event(
+/home/zaks/zakops-backend/src/workers/actions_runner.py:582:            _emit_deal_event(
+/home/zaks/zakops-backend/src/core/actions/executor.py:15:from ..events import publish_action_event
+/home/zaks/zakops-backend/src/core/actions/executor.py:81:                await publish_action_event(
+/home/zaks/zakops-backend/src/core/actions/executor.py:94:            logger.warning(f"Failed to publish execution started event: {e}")
+/home/zaks/zakops-backend/src/core/actions/executor.py:116:                    await publish_action_event(
+/home/zaks/zakops-backend/src/core/actions/executor.py:130:                logger.warning(f"Failed to publish completion event: {e}")
+/home/zaks/zakops-backend/src/core/actions/executor.py:153:                    await publish_action_event(
+/home/zaks/zakops-backend/src/core/actions/executor.py:167:                logger.warning(f"Failed to publish failure event: {event_error}")
+/home/zaks/zakops-backend/src/core/actions/policy.py:240:        await self._emit_event(
+/home/zaks/zakops-backend/src/core/actions/policy.py:375:        await self._emit_event(
+/home/zaks/zakops-backend/src/core/actions/policy.py:443:        await self._emit_event(
+/home/zaks/zakops-backend/src/core/actions/policy.py:475:    async def _emit_event(
+/home/zaks/zakops-backend/src/core/actions/policy.py:486:            from ..events.publisher import publish_event
+/home/zaks/zakops-backend/src/core/actions/policy.py:498:            await publish_event(event)

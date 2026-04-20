@@ -1,0 +1,33 @@
+D-4 correlation_id propagation evidence
+--- Agent API sends X-Correlation-ID header (deal_tools.py) ---
+62:        headers["X-Correlation-ID"] = correlation_id
+
+--- Backend TraceMiddleware extracts/sets correlation_id ---
+6:Adds trace_id and correlation_id to all requests for observability.
+17:correlation_id_var: contextvars.ContextVar[str] = contextvars.ContextVar("correlation_id", default="")
+30:def get_correlation_id() -> str | None:
+37:    return correlation_id_var.get() or None
+45:def set_correlation_id(correlation_id: str) -> None:
+47:    correlation_id_var.set(correlation_id)
+56:    - X-Correlation-ID: ID linking related requests (e.g., deal_id)
+69:        correlation_id = request.headers.get("X-Correlation-ID") or ""
+70:        correlation_id_var.set(correlation_id)
+74:        request.state.correlation_id = correlation_id
+81:        if correlation_id:
+82:            response.headers["X-Correlation-ID"] = correlation_id
+
+--- Backend response headers with X-Correlation-ID ---
+HTTP/1.1 200 OK
+date: Thu, 05 Feb 2026 16:28:42 GMT
+server: uvicorn
+content-length: 342
+content-type: application/json
+x-trace-id: 5a5ef6f481fb4afeb69c5d83579cb835
+x-correlation-id: qa-ab-r3-corr-1770308922
+x-response-time: 2ms
+x-content-type-options: nosniff
+x-frame-options: DENY
+x-xss-protection: 1; mode=block
+referrer-policy: strict-origin-when-cross-origin
+
+[{"deal_id":"DL-0007","canonical_name":"R2-4 Full Test Deal","display_name":null,"folder_path":null,"stage":"archived","status":"active","identifiers":{},"company_info":{},"broker":{},"metadata":{},"created_at":"2026-02-04T20:18:31.101756Z","updated_at":"2026-02-05T06:18:13.833184Z","days_since_update":0.0,"action_count":0,"alias_count":0}]

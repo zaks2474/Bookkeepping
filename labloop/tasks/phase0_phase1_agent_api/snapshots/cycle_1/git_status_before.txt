@@ -1,0 +1,28 @@
+ M app/api/v1/api.py
+ M app/core/config.py
+ M app/core/langgraph/graph.py
+ M app/core/langgraph/tools/__init__.py
+ M app/core/logging.py
+ M app/core/metrics.py
+ M app/main.py
+ M app/schemas/__init__.py
+ M app/schemas/graph.py
+ M app/services/database.py
+ M app/services/llm.py
+ M app/utils/graph.py
+ M docker-compose.yml
+ M pyproject.toml
+ M scripts/docker-entrypoint.sh
+ M uv.lock
+?? .labloop.yaml
+?? WHAT_CHANGED.md
+?? app/api/v1/agent.py
+?? app/core/idempotency.py
+?? app/core/langgraph/tools/deal_tools.py
+?? app/core/security/
+?? app/models/approval.py
+?? app/schemas/agent.py
+?? docs/
+?? gate_artifacts/
+?? migrations/
+?? scripts/bring_up_tests.sh

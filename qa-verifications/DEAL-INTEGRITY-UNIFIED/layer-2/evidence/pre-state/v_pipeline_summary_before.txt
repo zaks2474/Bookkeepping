@@ -1,0 +1,10 @@
+   stage   | count | avg_days_in_stage 
+-----------+-------+-------------------
+ inbound   |    21 |               2.3
+ screening |     7 |               4.6
+ qualified |     1 |               5.0
+ loi       |     1 |               4.0
+ diligence |     1 |               5.0
+ archived  |     6 |               2.0
+(6 rows)
+

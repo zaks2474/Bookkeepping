@@ -1,0 +1,25 @@
+=== R0.5 DB SOURCE OF TRUTH ===
+--- Agent DB ---
+ current_database | current_user 
+------------------+--------------
+ zakops_agent     | agent
+(1 row)
+
+--- Backend DB ---
+ current_database | current_user 
+------------------+--------------
+ zakops           | zakops
+(1 row)
+
+--- Agent DB has approvals? ---
+ count 
+-------
+    49
+(1 row)
+
+--- Backend DB has deals? ---
+ count 
+-------
+     4
+(1 row)
+

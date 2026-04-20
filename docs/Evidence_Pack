@@ -1,0 +1,4060 @@
+=== INPUT A (Research) ===
+
+RESEARCH MISSION REPORT: ZakOps Local Agent Architecture
+1. Executive Summary
+Recommendation: Build a Hybrid-Local Agentic System centered on LangGraph for orchestration and Qwen
+2.5 32B as the primary local intelligence engine.
+To meet the "cutting-edge" and "production-grade" requirements on an NVIDIA RTX 5090 (32GB VRAM), we
+will move away from a procedural orchestrator to a Stateful Multi-Agent Graph. This architecture
+ensures that complex deal workflows (e.g., "Analyze CIM -> Update Pipeline -> Draft Email") are
+durable, observable, and recoverable.
+Key Decisions:
+*  Intelligence: Qwen 2.5 32B (AWQ/GPTQ) running on vLLM is the optimal balance of GPT-4 class
+reasoning and sub-second latency for a single 32GB GPU.
+*  Orchestration: LangGraph is the definitive framework. We will refactor the custom OrchestratorAgent
+ into a Supervisor Node within a master graph.
+*  Memory: Consolidate all memory (Deal Docs, Agent State, Logs) into PostgreSQL (pgvector). It is
+reliable, transactional, and already present.
+*  Reliability: Use Postgres Checkpointing in LangGraph for pause/resume capabilities.
+Estimated Timeline: 6 Weeks to MVP (Refactor -> Hardening -> UI Integration).
+---
+2. Detailed Layer Analysis
+LAYER 1: Local Model Selection & Inference
+Context: The RTX 5090 (32GB VRAM) is a beast, but 70B parameter models (approx. 40GB+ at 4-bit) still
+require CPU offloading, which kills interactive latency.
+*  Current State of the Art (Jan 2026):
+*  Qwen 2.5 32B: The "Goldilocks" model. Beats Llama 3.1 70B on many coding/math benchmarks but fits
+entirely in 24GB+ VRAM.
+*  DeepSeek V3 (Distilled): Excellent, but architecture support in local inference engines can lag.
+*  Llama 3.3 70B: The heavyweight champion, but too slow for a "snappy" agent if offloaded to RAM.
+*  Recommendation: Qwen 2.5 32B-Instruct (AWQ/GPTQ Int4)
+*  Engine: vLLM (Best throughput, PagedAttention).
+*  Why: Fits in ~18GB VRAM, leaving 14GB for context (KV cache) and other small models (embeddings).
+It allows massive context windows (32k+) without OOM.
+*  Fallback: Keep the LLMRouter pattern. Use DeepSeek V3 (via API) or Llama 3.3 70B (via API) for
+extremely nuanced "Partner Level" deal reasoning, but run 95% of ops locally on Qwen.
+*  Implementation Note:
+    Update docker-compose.yml to run vllm/vllm-openai container serving Qwen/Qwen2.5-32B-Instruct-AWQ.
+LAYER 2: Agent Architecture & Orchestration
+Context: Your current SystemOpsAgent uses LangGraph, but the OrchestratorAgent is procedural.
+*  Recommendation: Hierarchical State Graph (LangGraph)
+*  Convert OrchestratorAgent into a Supervisor Node.
+*  Instead of agent.run(), the graph passes a State object between nodes: Supervisor -> DealAgent ->
+ToolNode -> Supervisor.
+*  Why: This enables "Time Travel" (rewinding agent steps) and "Human-in-the-loop" (pausing at the
+ApprovalNode before executing a SshExecuteTool).
+*  Pattern: Supervisor-Worker Pattern
+*  Supervisor: Route requests.
+*  Workers: SystemOps, DealManager, RAGExpert, Comms.
+*  Shared State: messages, deal_context, user_approval_status.
+LAYER 3: Tool Integration & Execution
+Context: You have a working MCP server. This is excellent.
+*  Recommendation: MCP over stdio/SSE wrapped in LangChain Tools
+*  Continue using the MCP client code in core/mcp_client.py.
+*  Crucial Change: Add a Validation Layer before tool execution. The agent will occasionally
+hallucinate parameters. A Pydantic schema validation step (already part of LangChain tools) is strict,
+ but we need logical validation (e.g., "Is this Deal ID actually in the database?").
+*  Approval Workflow: Mark sensitive tools (delete, send email) as requires_approval=True. The
+LangGraph node for these tools should interrupt execution and wait for a human signal (via API/UI).
+LAYER 4: Memory Architecture
+Context: Currently using file-based zakops.md. This won't scale to 1000s of deals.
+*  Recommendation: Unified PostgreSQL Strategy
+*  Short-term (Thread): LangGraph PostgresCheckpointer. Stores the exact state of every active
+conversation.
+*  Long-term (Procedural): A memories table in Postgres.
+*  (entity_id, memory_text, embedding, timestamp)
+*  When looking at "Deal X", the agent performs a vector search on this table for notes related to
+"Deal X".
+*  Episodic (RAG): Keep the existing RAG system for documents, but ensure it shares the same Postgres
+instance (different schema/tables) to reduce infrastructure complexity.
+LAYER 5: Hybrid Cloud Integration
+Context: LLMRouter already exists.
+*  Recommendation: Semantic Router
+*  Don't just use "Task Type". Use Complexity Analysis.
+*  If the user asks "Summarize this CIM" (High context, low reasoning) -> Local Qwen 2.5.
+*  If the user asks "What are the strategic risks of this acquisition given our portfolio?" (High
+reasoning) -> Claude 3.5 Sonnet / GPT-4o.
+*  Cost Control: Add a "Daily Budget" check in the Router. If local is free and cloud is paid, default
+ to local unless specific keywords ("deep analysis", "strategy") are present.
+LAYER 6: Observability & Debugging
+Context: LangSmith is installed.
+*  Recommendation: LangSmith + OpenTelemetry
+*  LangSmith: Keep using it for traces (seeing the chain of thought). It is best-in-class for
+debugging why an agent failed.
+*  Custom Dashboard: The "ZakOps Dashboard" should show "Active Agent Threads". Since we use
+LangGraph, every thread has a ID. The UI should list these threads so you can "Resume" or "Cancel"
+them.
+LAYER 7: Reliability & Production Readiness
+Context: Temporal is in the repo, but LangGraph also offers persistence.
+*  Recommendation: LangGraph Persistence (Postgres)
+*  You do not strictly need Temporal inside the agent logic if you use LangGraph's checkpointer.
+*  LangGraph writes the state to Postgres after every node. If the server crashes, you simply reload
+the ThreadConfig and the agent picks up exactly where it left off.
+*  Use Temporal Only For: Cron jobs (e.g., "Run daily deal triage at 9 AM"). The Temporal worker
+effectively just calls graph.invoke().
+---
+3. Integrated Architecture Diagram
+1 graph TD
+2     User[User / UI] -->|HTTP/WebSocket| API[FastAPI / ZakOps Backend]
+3     API -->|Load Thread| GraphEngine[LangGraph Engine]
+4
+5     subgraph "Local Workstation (RTX 5090)"
+6         GraphEngine -->|State Checkpoint| PG[(PostgreSQL + pgvector)]
+7
+8         GraphEngine -->|Inference| vLLM[vLLM Server]
+9         vLLM -->|Load| Qwen[Qwen 2.5 32B]
+10
+11         GraphEngine -->|Tool Call| MCP[MCP Client]
+12         MCP -->|Connect| MCPServer[MCP Server]
+13         MCPServer -->|Action| Sys[System / Files]
+14     end
+15
+16     subgraph "Cloud"
+17         GraphEngine -->|Complex Reasoning| Claude[Claude 3.5 Sonnet]
+18         GraphEngine -->|Tracing| Smith[LangSmith]
+19     end
+---
+4. Implementation Roadmap
+Phase 1: The Core Upgrade (Week 1-2)
+1.  Infrastructure: Deploy vllm docker container with Qwen/Qwen2.5-32B-Instruct-AWQ.
+2.  Model: Update LLMRouter to point local provider to the vLLM endpoint.
+3.  Migration: Refactor OrchestratorAgent.py to use langgraph.graph.StateGraph instead of procedural
+logic. Create a simple Supervisor Node.
+Phase 2: Memory & Tools (Week 3-4)
+1.  Persistence: Implement PostgresSaver for LangGraph to replace in-memory checkpointers.
+2.  Tools: Hardening. Wrap all MCP tools with Pydantic validation.
+3.  Vector Store: Migrate RagExpertAgent to use pgvector in the main Postgres DB.
+Phase 3: The Interface (Week 5-6)
+1.  API: Expose agent threads via FastAPI endpoints (/agent/threads, /agent/threads/{id}/run).
+2.  UI: Update ZakOps Dashboard to visualize the running graph (current node, history).
+---
+5. Benchmarks & Success Metrics
+┌───────────────────────┬─────────────────┬──────────────────────────────────────────────┐
+│ Metric                │ Target          │ Verification Method                          │
+├───────────────────────┼─────────────────┼──────────────────────────────────────────────┤
+│ Local Inference Speed │ > 40 tokens/sec │ vllm benchmark script                        │
+│ Routing Accuracy      │ > 95%           │ Test suite with 50 diverse queries           │
+│ Recovery Time         │ < 2 seconds     │ Kill process mid-run, restart, resume thread │
+│ Tool Error Rate       │ < 1%            │ LangSmith tracing stats                      │
+└───────────────────────┴─────────────────┴──────────────────────────────────────────────┘
+---
+6. Risks & Mitigations
+*  Risk: Hallucination in Critical Ops. (e.g., delete_file /)
+*  Mitigation: Human-in-the-Loop Node. Any destructive tool must transition the graph state to
+waiting_for_approval. The agent effectively "pauses" until a human clicks "Approve" in the UI.
+*  Risk: Context Window Overflow.
+*  Mitigation: Qwen 2.5 supports 32k context comfortably. We will also implement a "Summary Node" in
+the graph that compresses conversation history when it exceeds 20k tokens.
+---
+Conclusion
+This architecture leverages your powerful hardware to run a "GPT-4 class" agent locally without the
+latency of cloud or the slowness of CPU offloading. By standardizing on LangGraph, you gain the
+reliability and observability needed for a production-grade Deal Engine.
+
+=== INPUT B (Research) ===
+
+# ZakOps AI Agent Architecture Research
+## Building a Cutting-Edge Local AI Agent for Deal Lifecycle Management
+
+**Research Date:** January 2026
+**Target System:** SACS AIOps 3.0 / ZakOps Deal Lifecycle Platform
+**Hardware:** RTX 5090 (32GB VRAM), 64GB DDR5, AMD Ryzen 9
+
+---
+
+## Executive Summary
+
+### Key Recommendations
+
+| Layer | Primary Recommendation | Rationale |
+|-------|----------------------|-----------|
+| **Model** | Qwen3-32B (Q4 quantized) | Best tool-calling, fits in 32GB VRAM (~20GB), 61 tok/s on RTX 5090 |
+| **Inference** | vLLM | Best latency + throughput balance, production-proven, OpenAI-compatible API |
+| **Framework** | LangGraph | State machine architecture, PostgresSaver persistence, production track record |
+| **Tools** | Hybrid MCP + Direct | Keep MCP for portability, add direct calls for latency-critical operations |
+| **Memory** | Qdrant (self-hosted) | Best filtering, Rust performance, mid-scale sweet spot |
+| **Embeddings** | BGE-M3 | 72% retrieval accuracy, 8K context, multilingual |
+| **Observability** | Langfuse (self-hosted) | Open source, MIT license, full control |
+| **Reliability** | LangGraph + PostgreSQL checkpointing | Built-in durability, idempotent tool design |
+| **Security** | ABAC with OPA | Context-aware policies, externalized authorization |
+
+### Estimated Timeline
+
+| Phase | Duration | Deliverable |
+|-------|----------|-------------|
+| Phase 1: MVP | 2-3 weeks | Working agent with basic deal operations |
+| Phase 2: Production Hardening | 3-4 weeks | Persistence, observability, error handling |
+| Phase 3: Advanced Features | 4-6 weeks | Multi-agent, hybrid cloud, full tool suite |
+| Phase 4: Optimization | Ongoing | Fine-tuning, cost optimization, scaling |
+
+### Major Risks
+
+1. **Model Quality for Complex Reasoning** - Local 32B may not match GPT-4/Claude for edge cases
+   - *Mitigation:* Hybrid routing to cloud for complex tasks
+2. **Tool Call Reliability** - Open models have higher hallucination rates than GPT-4
+   - *Mitigation:* Structured output enforcement, validation layers
+3. **State Management Complexity** - Long-running deal workflows across restarts
+   - *Mitigation:* PostgresSaver checkpointing, idempotent tool design
+
+---
+
+## Layer 1: Local Model Selection & Inference
+
+### Current State of the Art (January 2026)
+
+The open-source model landscape has dramatically improved. Key developments:
+
+- **Qwen3 series** matches Qwen2.5 with 2x fewer parameters (Qwen3-32B ~ Qwen2.5-72B quality)
+- **DeepSeek V3.2** reaches GPT-4 level but 671B params (37B active MoE)
+- **GLM-4.5-Air** specifically optimized for agent/tool use
+- **K2** emerged as highest-scoring open model on Agent Leaderboard v2
+
+### RTX 5090 Performance Benchmarks
+
+| Model Size | VRAM Usage | Tokens/sec | Fits in 32GB? |
+|------------|------------|------------|---------------|
+| 8B (Q4) | ~5GB | 213 tok/s | Yes |
+| 32B (Q4) | ~19-20GB | 61 tok/s | Yes |
+| 70B (Q4) | ~40GB | N/A single GPU | No - needs 2x 5090 |
+
+**Key Capability:** RTX 5090 can sustain 147K token context windows entirely in VRAM at ~52 tok/s with 30B MoE models.
+
+### Model Recommendations
+
+**Primary: Qwen3-32B-Instruct (Q4_K_M quantization)**
+- Best tool calling among open models at this size
+- Hybrid thinking modes (reasoning vs fast response)
+- 128K context window
+- MIT license (fully permissive)
+- Qwen-Agent framework provides excellent MCP integration
+
+**Alternative: DeepSeek-V3-Lite (if available) or Mistral-Large-2 (32B)**
+
+**For specialized tasks:**
+- **Complex reasoning:** Route to Claude/GPT-4 via hybrid
+- **Code generation:** Qwen3-Coder variants
+- **Fast classification:** Qwen3-8B as router model
+
+### Inference Engine Comparison
+
+| Engine | Throughput | Latency | Setup Complexity | Best For |
+|--------|------------|---------|------------------|----------|
+| **vLLM** | Excellent | Low | 1-2 days | Production serving, high concurrency |
+| **SGLang** | Highest | Very Low | 1-2 days | Agents with KV cache reuse (RAG) |
+| **TensorRT-LLM** | Excellent | Lowest | Weeks | Maximum raw performance, NVIDIA-heavy |
+| **llama.cpp** | Good | Medium | Hours | Edge deployment, CPU fallback |
+| **Ollama** | Moderate | Medium | Minutes | Development, quick testing |
+
+**Primary Recommendation: vLLM**
+- Best balance of performance and setup complexity
+- OpenAI-compatible API (drop-in for existing code)
+- Production-proven at LinkedIn, Uber, 400+ companies
+- Excellent tool calling support with Hermes parser
+
+**Configuration for RTX 5090:**
+```bash
+vllm serve Qwen/Qwen3-32B-Instruct-AWQ \
+  --quantization awq \
+  --max-model-len 32000 \
+  --gpu-memory-utilization 0.90 \
+  --enable-auto-tool-choice \
+  --tool-call-parser hermes
+```
+
+### Success Criteria
+
+| Metric | Target | Measurement |
+|--------|--------|-------------|
+| Inference latency (32K context) | < 2 seconds TTFT | vLLM metrics |
+| Tool call accuracy | > 95% correct parameters | Berkeley Function Calling Leaderboard methodology |
+| Throughput | > 50 tok/s generation | Load testing |
+| Context handling | 32K tokens minimum | Needle-in-haystack test |
+
+---
+
+## Layer 2: Agent Architecture & Orchestration
+
+### Current State of the Art
+
+**Framework Landscape 2025:**
+- **LangGraph** dominates production deployments (LinkedIn, Uber, Replit)
+- **AutoGen** merging with Semantic Kernel for Microsoft Agent Framework (GA Q1 2026)
+- **CrewAI** powers 60% of Fortune 500 agents but hits walls at 6-12 months
+- **DSPy** excellent for prompt optimization, not agent orchestration
+
+### Framework Comparison
+
+| Framework | Strengths | Weaknesses | Best For |
+|-----------|-----------|------------|----------|
+| **LangGraph** | State machine, checkpointing, debugging | Learning curve | Complex workflows, production |
+| **AutoGen** | Conversational, role-playing | Not yet production-ready (v0.4) | Prototyping, Azure integration |
+| **CrewAI** | Simple role-based collaboration | Inflexible for custom patterns | Quick MVPs, sequential tasks |
+| **DSPy** | Prompt optimization | Not for multi-agent | Improving prompts |
+
+### Primary Recommendation: LangGraph
+
+**Why LangGraph:**
+1. **Graph-based orchestration** - Explicit state machines with nodes, edges, conditional routing
+2. **Built-in checkpointing** - PostgresSaver for durable state across restarts
+3. **Human-in-the-loop** - Native interrupt/resume patterns for approvals
+4. **Time-travel debugging** - Replay any point in execution
+5. **Production track record** - Running at scale at major companies
+
+**Architecture Pattern: Plan-and-Execute**
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                      DEAL LIFECYCLE AGENT                    │
+├─────────────────────────────────────────────────────────────┤
+│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐     │
+│  │   PLANNER   │───▶│  EXECUTOR   │───▶│  VERIFIER   │     │
+│  │  (32B LLM)  │    │  (8B LLM)   │    │  (Rules)    │     │
+│  └─────────────┘    └─────────────┘    └─────────────┘     │
+│         │                  │                  │              │
+│         ▼                  ▼                  ▼              │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │                    STATE GRAPH                       │   │
+│  │  ┌────┐  ┌────────┐  ┌─────────┐  ┌──────────┐     │   │
+│  │  │INIT│─▶│PLANNING│─▶│EXECUTING│─▶│VALIDATING│─▶...│   │
+│  │  └────┘  └────────┘  └─────────┘  └──────────┘     │   │
+│  └─────────────────────────────────────────────────────┘   │
+│                          │                                   │
+│                          ▼                                   │
+│               ┌─────────────────────┐                       │
+│               │   PostgresSaver     │                       │
+│               │   (Checkpoints)     │                       │
+│               └─────────────────────┘                       │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Key Patterns to Implement:**
+
+1. **ReAct for simple operations** - Direct tool calls for health checks, listings
+2. **Plan-and-Execute for complex workflows** - Deal transitions, document analysis
+3. **Supervisor pattern for sub-agents** - Triage agent, analysis agent, drafting agent
+4. **Human-in-the-loop interrupts** - Approval gates before state transitions
+
+### State Management
+
+```python
+from langgraph.checkpoint.postgres import PostgresSaver
+
+# Production configuration
+checkpointer = PostgresSaver.from_conn_string(
+    "postgresql://user:pass@localhost:5432/zakops"
+)
+
+# Compile graph with persistence
+app = graph.compile(checkpointer=checkpointer)
+
+# Resume from checkpoint
+config = {"configurable": {"thread_id": "deal-DL-0001"}}
+result = await app.ainvoke(input, config)
+```
+
+### Success Criteria
+
+| Metric | Target | Measurement |
+|--------|--------|-------------|
+| Workflow completion rate | > 99% | End-to-end success tracking |
+| Recovery from crash | 100% state recovery | Chaos testing |
+| Human approval latency | < 500ms UI response | APM tracking |
+| Sub-agent routing accuracy | > 95% | Evaluation dataset |
+
+---
+
+## Layer 3: Tool Integration & Execution
+
+### MCP vs Function Calling Analysis
+
+| Approach | Pros | Cons | Best For |
+|----------|------|------|----------|
+| **MCP** | Portable, standardized, multi-runtime | Latency overhead, security concerns | Shared tools across products |
+| **Function Calling** | Low latency, tight integration | Vendor-specific, less portable | Single-app, latency-critical |
+| **Hybrid** | Best of both | Complexity | Production systems |
+
+### Security Concerns with MCP (2025 Findings)
+
+- 2,000+ MCP servers found without authentication (Knostic research July 2025)
+- Over-permissioning patterns identified (Backslash Security June 2025)
+- Replit agent deleted production database despite safeguards
+
+**Recommendation: Hybrid approach with security hardening**
+
+### Tool Architecture
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    TOOL GATEWAY                          │
+├─────────────────────────────────────────────────────────┤
+│                                                          │
+│  ┌──────────────────┐    ┌──────────────────┐          │
+│  │  DIRECT TOOLS    │    │    MCP SERVER    │          │
+│  │  (Low latency)   │    │   (Portable)     │          │
+│  │                  │    │                  │          │
+│  │  - list_deals    │    │  - External APIs │          │
+│  │  - get_deal      │    │  - Third-party   │          │
+│  │  - check_health  │    │  - Future tools  │          │
+│  └──────────────────┘    └──────────────────┘          │
+│           │                       │                     │
+│           ▼                       ▼                     │
+│  ┌─────────────────────────────────────────────────┐   │
+│  │              VALIDATION LAYER                    │   │
+│  │  - JSON Schema validation                        │   │
+│  │  - Pydantic models                               │   │
+│  │  - Parameter range checks                        │   │
+│  │  - Idempotency token injection                   │   │
+│  └─────────────────────────────────────────────────┘   │
+│                          │                              │
+│                          ▼                              │
+│  ┌─────────────────────────────────────────────────┐   │
+│  │              PERMISSION LAYER                    │   │
+│  │  - Read vs Write classification                  │   │
+│  │  - Approval requirement check                    │   │
+│  │  - Rate limiting                                 │   │
+│  └─────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────┘
+```
+
+### Tool Reliability Patterns
+
+1. **Structured Output Enforcement**
+   - Use JSON mode with schema constraints
+   - Pydantic validation on all tool inputs
+   - Reject malformed calls before execution
+
+2. **Idempotency**
+   - Every write operation accepts idempotency key
+   - Store operation results for replay
+   - Safe under retries
+
+3. **Approval Workflow**
+   ```python
+   class ToolPermission(Enum):
+       READ = "read"           # No approval needed
+       WRITE = "write"         # May need approval
+       CRITICAL = "critical"   # Always needs approval
+
+   TOOL_PERMISSIONS = {
+       "list_deals": ToolPermission.READ,
+       "get_deal": ToolPermission.READ,
+       "transition_deal": ToolPermission.WRITE,
+       "approve_action": ToolPermission.CRITICAL,
+   }
+   ```
+
+### Existing MCP Server
+
+Keep the existing MCP server at `localhost:9100` with modifications:
+- Add authentication (currently missing per security research)
+- Add idempotency token support
+- Add rate limiting
+- Keep for external/future integrations
+
+### Success Criteria
+
+| Metric | Target | Measurement |
+|--------|--------|-------------|
+| Tool call success rate | > 99% | Error rate tracking |
+| Parameter hallucination rate | < 1% | Validation rejection logs |
+| Average tool latency | < 200ms | APM tracking |
+| Approval workflow completion | 100% | End-to-end testing |
+
+---
+
+## Layer 4: Memory Architecture
+
+### Memory Types Required
+
+| Type | Purpose | Storage | TTL |
+|------|---------|---------|-----|
+| **Working Memory** | Current conversation | LangGraph State | Session |
+| **Short-term Memory** | Recent context | PostgreSQL + Checkpoints | Hours/Days |
+| **Long-term Memory** | Deal history, documents | Qdrant + PostgreSQL | Permanent |
+| **Episodic Memory** | Past interactions | Event log | 90 days |
+
+### Vector Database Comparison
+
+| Database | Best For | Performance | Self-Hosting |
+|----------|----------|-------------|--------------|
+| **Qdrant** | Complex filtering, mid-scale | Excellent | Docker/K8s |
+| **Milvus** | Billion-scale, heavy ops | Excellent | Complex |
+| **Chroma** | Prototyping, < 100K vectors | Good | Embedded |
+| **Weaviate** | Hybrid search, GraphQL | Good | Docker/K8s |
+
+### Primary Recommendation: Qdrant
+
+**Why Qdrant:**
+- Rust-based = excellent memory efficiency and performance
+- Best-in-class filtering capabilities (deal metadata queries)
+- Simple Docker deployment
+- Sweet spot for mid-scale (millions of vectors)
+- Active development, good documentation
+
+**Configuration:**
+```yaml
+# docker-compose.yml
+services:
+  qdrant:
+    image: qdrant/qdrant:latest
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_data:/qdrant/storage
+    environment:
+      - QDRANT__SERVICE__GRPC_PORT=6334
+```
+
+### Embedding Model: BGE-M3
+
+**Why BGE-M3:**
+- 72% retrieval accuracy (highest in benchmarks)
+- 8,192 token context (handles long documents)
+- Supports dense + sparse + multi-vector retrieval
+- MIT license
+- 568M parameters (runs fast locally)
+
+**Alternative:** Nomic-Embed for speed-critical applications (faster, slightly lower accuracy)
+
+### Memory Architecture
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                   MEMORY SYSTEM                          │
+├─────────────────────────────────────────────────────────┤
+│                                                          │
+│  ┌─────────────────┐    ┌─────────────────┐            │
+│  │  WORKING MEMORY │    │  SHORT-TERM     │            │
+│  │  (LangGraph)    │    │  (PostgreSQL)   │            │
+│  │                 │    │                 │            │
+│  │  - Messages     │    │  - Checkpoints  │            │
+│  │  - Tool results │    │  - Session data │            │
+│  │  - Plan state   │    │  - Recent deals │            │
+│  └─────────────────┘    └─────────────────┘            │
+│                                                          │
+│  ┌─────────────────┐    ┌─────────────────┐            │
+│  │  LONG-TERM      │    │  EPISODIC       │            │
+│  │  (Qdrant)       │    │  (Event Log)    │            │
+│  │                 │    │                 │            │
+│  │  - Documents    │    │  - Agent runs   │            │
+│  │  - Deal history │    │  - Decisions    │            │
+│  │  - Knowledge    │    │  - Outcomes     │            │
+│  └─────────────────┘    └─────────────────┘            │
+│                                                          │
+│  ┌─────────────────────────────────────────────────┐   │
+│  │              RETRIEVAL LAYER                     │   │
+│  │  - Hybrid search (dense + sparse)                │   │
+│  │  - Metadata filtering                            │   │
+│  │  - Reranking (cross-encoder)                     │   │
+│  └─────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────┘
+```
+
+### Success Criteria
+
+| Metric | Target | Measurement |
+|--------|--------|-------------|
+| Retrieval accuracy | > 80% relevant | Human evaluation |
+| Query latency | < 100ms | P95 latency |
+| Context relevance | > 90% useful | LLM-as-judge |
+| Storage efficiency | < 10GB for 10K deals | Disk usage |
+
+---
+
+## Layer 5: Hybrid Cloud Integration
+
+### Routing Strategy
+
+**When to use Local (80% target):**
+- Deal CRUD operations
+- Document summarization
+- Simple classification
+- Routine queries
+- Structured data extraction
+
+**When to use Cloud (20% target):**
+- Complex multi-step reasoning
+- Novel situations outside training
+- High-stakes decisions requiring verification
+- Long-form content generation
+- Edge cases local model struggles with
+
+### LLM Gateway Architecture
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    LLM ROUTER                            │
+├─────────────────────────────────────────────────────────┤
+│                                                          │
+│  ┌─────────────────────────────────────────────────┐   │
+│  │              COMPLEXITY CLASSIFIER               │   │
+│  │  - Task type detection                           │   │
+│  │  - Confidence scoring                            │   │
+│  │  - Historical success rates                      │   │
+│  └─────────────────────────────────────────────────┘   │
+│                          │                              │
+│            ┌─────────────┼─────────────┐               │
+│            ▼             ▼             ▼               │
+│     ┌──────────┐  ┌──────────┐  ┌──────────┐         │
+│     │  LOCAL   │  │  CLAUDE  │  │  GPT-4   │         │
+│     │ Qwen3-32B│  │  Sonnet  │  │          │         │
+│     │          │  │          │  │          │         │
+│     │ - Fast   │  │ - Complex│  │ - Backup │         │
+│     │ - Cheap  │  │ - Reason │  │ - Verify │         │
+│     └──────────┘  └──────────┘  └──────────┘         │
+│                                                          │
+│  ┌─────────────────────────────────────────────────┐   │
+│  │              FALLBACK CHAIN                      │   │
+│  │  Local → Claude → GPT-4 → Graceful Degradation  │   │
+│  └─────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────┘
+```
+
+### Cost Optimization
+
+**RouteLLM approach:** Use trained router to decide local vs cloud
+- Can reduce costs by 85% while maintaining 95% GPT-4 quality
+
+**Caching strategy:**
+- Redis-based caching with configurable TTL
+- Cache similar queries (semantic similarity > 0.95)
+- Cross-provider compatibility
+
+**Budget controls:**
+- Daily spend limits per provider
+- Rate limiting
+- Usage tracking and alerts
+
+### Recommended Gateway: LiteLLM
+
+**Why LiteLLM:**
+- Unified API for 100+ models
+- Built-in fallbacks and retries
+- Cost tracking
+- Caching support
+- OpenAI-compatible
+
+```python
+from litellm import completion
+
+# Automatic routing with fallback
+response = completion(
+    model="qwen/qwen3-32b",  # Primary: local
+    messages=messages,
+    fallbacks=["claude-3-sonnet", "gpt-4"],  # Fallback chain
+)
+```
+
+### Success Criteria
+
+| Metric | Target | Measurement |
+|--------|--------|-------------|
+| Local processing rate | > 80% | Router logs |
+| Cloud cost per deal | < $0.50 | Cost tracking |
+| Fallback success rate | > 99% | Error logs |
+| Quality maintenance | > 95% of cloud-only | Evaluation set |
+
+---
+
+## Layer 6: Observability & Debugging
+
+### Platform Comparison
+
+| Platform | Self-Hosted | Cost | LangChain Integration | Best For |
+|----------|-------------|------|----------------------|----------|
+| **Langfuse** | Free (MIT) | Free self-hosted | Good | Full control, privacy |
+| **LangSmith** | Enterprise only | $39/user/mo | Native | LangChain-heavy teams |
+| **Phoenix** | Free (OSS) | Free | Good | Evaluation focus |
+
+### Primary Recommendation: Langfuse (Self-Hosted)
+
+**Why Langfuse:**
+- Fully open source (MIT license)
+- Free self-hosting
+- 19K+ GitHub stars, active community
+- LangGraph integration
+- OpenTelemetry support
+- Complete feature set: tracing, prompt versioning, evaluation
+
+**Deployment:**
+```yaml
+# docker-compose.yml
+services:
+  langfuse:
+    image: langfuse/langfuse:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://...
+      - NEXTAUTH_SECRET=...
+      - NEXTAUTH_URL=http://localhost:3000
+```
+
+### Metrics to Track
+
+**Agent Performance:**
+- Task completion rate
+- Average steps to completion
+- Tool call success rate
+- Error rate by type
+
+**Model Performance:**
+- Tokens per request
+- Latency (TTFT, generation)
+- Cost per request
+- Cache hit rate
+
+**Business Metrics:**
+- Deals processed per day
+- Time to process deal
+- Human intervention rate
+- Approval turnaround time
+
+### Debugging Workflow
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                 DEBUGGING WORKFLOW                       │
+├─────────────────────────────────────────────────────────┤
+│                                                          │
+│  1. TRACE CAPTURE                                        │
+│     └─▶ Langfuse captures full execution trace          │
+│                                                          │
+│  2. FAILURE DETECTION                                    │
+│     └─▶ Automatic alerts on error patterns              │
+│                                                          │
+│  3. ROOT CAUSE ANALYSIS                                  │
+│     └─▶ Step-through replay in Langfuse UI              │
+│                                                          │
+│  4. REPRODUCTION                                         │
+│     └─▶ Export trace as test case                       │
+│                                                          │
+│  5. FIX VALIDATION                                       │
+│     └─▶ Run against regression suite                    │
+│                                                          │
+└─────────────────────────────────────────────────────────┘
+```
+
+### Success Criteria
+
+| Metric | Target | Measurement |
+|--------|--------|-------------|
+| Trace coverage | 100% of requests | Langfuse dashboard |
+| Alert latency | < 1 minute | Alert timestamp |
+| Debug time | < 30 min for typical issue | Incident tracking |
+| Dashboard uptime | > 99.9% | Health checks |
+
+---
+
+## Layer 7: Reliability & Production Readiness
+
+### Core Patterns
+
+1. **Durable Execution with Checkpointing**
+   - Every state transition saved to PostgreSQL
+   - Automatic resume from last checkpoint on restart
+   - No lost work due to crashes
+
+2. **Idempotent Tool Design**
+   ```python
+   async def transition_deal(
+       deal_id: str,
+       new_stage: str,
+       idempotency_key: str  # Required for writes
+   ) -> dict:
+       # Check if already processed
+       existing = await get_by_idempotency_key(idempotency_key)
+       if existing:
+           return existing.result
+
+       # Execute transition
+       result = await execute_transition(deal_id, new_stage)
+
+       # Store result for future replays
+       await store_result(idempotency_key, result)
+       return result
+   ```
+
+3. **Retry with Backoff**
+   - Exponential backoff for transient failures
+   - Circuit breaker for persistent failures
+   - Dead letter queue for manual review
+
+4. **Health Monitoring**
+   ```python
+   class HealthStatus(BaseModel):
+       status: Literal["healthy", "degraded", "unhealthy"]
+       components: dict[str, ComponentHealth]
+       last_check: datetime
+
+   HEALTH_CHECKS = [
+       ("database", check_postgres),
+       ("llm", check_vllm),
+       ("vector_db", check_qdrant),
+       ("mcp_server", check_mcp),
+   ]
+   ```
+
+### Queue Architecture
+
+**Recommendation: PostgreSQL-based queue (SKIP LISTEN/NOTIFY)**
+
+For ZakOps scale (hundreds of deals/day, not millions), using PostgreSQL's built-in features is simpler than adding RabbitMQ/Redis:
+
+```sql
+-- Simple task queue table
+CREATE TABLE task_queue (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    task_type TEXT NOT NULL,
+    payload JSONB NOT NULL,
+    status TEXT DEFAULT 'pending',
+    idempotency_key TEXT UNIQUE,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    started_at TIMESTAMPTZ,
+    completed_at TIMESTAMPTZ,
+    error TEXT
+);
+
+-- Claim task with SELECT FOR UPDATE SKIP LOCKED
+```
+
+### Failure Recovery
+
+| Failure Type | Detection | Recovery |
+|--------------|-----------|----------|
+| LLM timeout | 30s timeout | Retry with backoff, fallback to cloud |
+| Tool failure | Exception handling | Retry 3x, then human escalation |
+| DB failure | Connection error | Wait for recovery, alert |
+| Agent crash | Process monitor | Restart from checkpoint |
+
+### Success Criteria
+
+| Metric | Target | Measurement |
+|--------|--------|-------------|
+| System uptime | > 99.9% | Health checks |
+| Crash recovery | < 30 seconds | Restart timing |
+| Data durability | Zero loss | Checkpoint verification |
+| Queue processing | < 5 min latency | Queue depth monitoring |
+
+---
+
+## Layer 8: Security & Access Control
+
+### Authentication Architecture
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                 SECURITY ARCHITECTURE                    │
+├─────────────────────────────────────────────────────────┤
+│                                                          │
+│  ┌─────────────────────────────────────────────────┐   │
+│  │              IDENTITY LAYER                      │   │
+│  │  - User authentication (OIDC)                    │   │
+│  │  - Agent identity (SPIFFE/SPIRE)                 │   │
+│  │  - Service-to-service mTLS                       │   │
+│  └─────────────────────────────────────────────────┘   │
+│                          │                              │
+│                          ▼                              │
+│  ┌─────────────────────────────────────────────────┐   │
+│  │              AUTHORIZATION LAYER                 │   │
+│  │  - ABAC policies (OPA/Rego)                      │   │
+│  │  - Context-aware decisions                       │   │
+│  │  - Least privilege enforcement                   │   │
+│  └─────────────────────────────────────────────────┘   │
+│                          │                              │
+│                          ▼                              │
+│  ┌─────────────────────────────────────────────────┐   │
+│  │              AUDIT LAYER                         │   │
+│  │  - Immutable logs                                │   │
+│  │  - All auth decisions logged                     │   │
+│  │  - 7-year retention                              │   │
+│  └─────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────┘
+```
+
+### RBAC/ABAC Model
+
+**Roles:**
+```python
+class Role(Enum):
+    VIEWER = "viewer"       # Read-only access
+    OPERATOR = "operator"   # Can trigger actions
+    APPROVER = "approver"   # Can approve critical actions
+    ADMIN = "admin"         # Full access
+```
+
+**ABAC Policies (OPA/Rego):**
+```rego
+# policy.rego
+package zakops.authz
+
+default allow = false
+
+# Viewers can read anything
+allow {
+    input.action == "read"
+    input.user.role == "viewer"
+}
+
+# Operators can trigger non-critical actions
+allow {
+    input.action == "write"
+    input.user.role == "operator"
+    not input.resource.critical
+}
+
+# Critical actions require approver role
+allow {
+    input.action == "approve"
+    input.user.role in ["approver", "admin"]
+}
+```
+
+### Audit Logging
+
+**Required Fields:**
+```python
+class AuditEvent(BaseModel):
+    timestamp: datetime
+    event_type: str
+    actor_type: Literal["user", "agent", "system"]
+    actor_id: str
+    action: str
+    resource_type: str
+    resource_id: str
+    outcome: Literal["success", "failure", "denied"]
+    details: dict
+    trace_id: str  # Correlation with observability
+```
+
+**Storage:** Append-only PostgreSQL table with row-level security
+
+### Secrets Management
+
+| Secret Type | Storage | Rotation |
+|-------------|---------|----------|
+| API keys | Environment variables | Manual |
+| DB credentials | Docker secrets | Quarterly |
+| Encryption keys | File with 0600 perms | Annually |
+
+### Success Criteria
+
+| Metric | Target | Measurement |
+|--------|--------|-------------|
+| Auth coverage | 100% of endpoints | Audit logs |
+| Failed auth attempts | < 1% legitimate | Error rate |
+| Audit completeness | 100% of operations | Log verification |
+| Secret exposure | Zero incidents | Security scanning |
+
+---
+
+## Integrated Architecture
+
+### System Diagram
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│                        ZAKOPS AI AGENT SYSTEM                     │
+├───────────────────────â─────────────────────────────┤
+│                                                                   │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐              │
+│  │   Next.js   │  │   FastAPI   │  │  Cloudflare │              │
+│  │  Dashboard  │  │  Backend    │  │   Tunnel    │              │
+│  │   :30   │  │   :8090     │  │             │              │
+│  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘              │
+│         │                │                │                      │
+│         └────────────────┼────────────────┘                      │
+│                          │                                      │
+│                          ▼                                        │
+│  ┌────────────────────────────────────────────────────────────┐ │
+│  │                    LANGGRAPH AGENT                          │ │
+│  │  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐     │ Planner │  │Executor │  │Verifier │  │ Router  │       │ │
+│  │  │  Node   │  │  Node   │  │  Node   │  │  Node   │       │ │
+│  │  └────┬────┘  └────┬────┘  └────┬────┘  └────┬────┘       │ │
+│  │       └────────────┴────────────┴────────────┘             │ │
+│  │                  │                                  │ │
+│  │                          ▼                                  │ │
+│  │              ┌─────────────────────┐                       │ │
+│  │              │   PostgresSaver     │                       │ │
+│  │              │   (Checkpoints)     │                       │ │
+│  │              └─────────────────────┘                       │ │
+│  └────────────────────────────────────────────────────────────┘ │
+│                          │                                        │
+│         ┌────────────────┼────────────────┐                      │
+│         │                │                │                      ▼                ▼                ▼                      │
+│  ┌──────────────┐ ┌──────────────┐ ┌──────────────┐            │
+│  │    vLLM      │ │   LiteLLM    │ │    Tools     │            │
+│  │  Qwen3-32B   │ │   Gateway    │ │   Gateway    │            │
+│  │    :8000     │ │              │ │              │            │
+│  └──────â──┬───────┘ └──────┬───────┘            │
+│                          │                │                      │
+│                   ┌──────┴──────┐  ┌──────┴──────┐              │
+│                   │   Claude    │  │    MCP      │              │
+│                   │   GPT-4     │  │   Server    │              │
+│                   │  (Fallback) │  │   :9100     │              │
+│                   └─────────────┘  └─────────────┘              │
+│                                                                   │
+│  ┌──────────────┐ ┌──────────────┐ ┌──────────────┐            │
+│  │  PostgreSQL  │ │   Qdrant     │ │  Langfuse    │            │
+│  │    :5432   │ │   :6333      │ │   :3000      │            │
+│  │              │ │              │ │              │            │
+│  │ - Deals      │ │ - Documents  │ │ - Traces     │            │
+│  │ - Actions    │ │ - Embeddings │ │ - Metrics    │            │
+│  │ - Events     │ │ - History    │ │ - Prompts    │            │
+│  │ - Checkpts   │ │              │ │              │            │
+│  └────────â───┘ └──────────────┘ └──────────────┘            │
+│                                                                   │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+### Data Flow
+
+1. **Deal Intake:**
+   ```
+   Email/API → Triage Agent → Classification → Quare
+   ```
+
+2. **Deal Processing:**
+   ```
+   Deal → Planner → [Analysis, Document, Transition] → Verification → Complete
+   ```
+
+3. **Approval Workflow:**
+   ```
+   Agent Action → Permission Check → Queue → Human Review → Execute/Reject
+   ```
+
+---
+
+## Implementation Roadmap
+
+### Phase 1: Minimum Viable Agent (2-3 weeks)
+
+**Goal:** Working agent that can list deals and check health
+
+**Deliverables:**
+- [ ] vLLM running with Qwen3-32B
+- [ ] Basic LangGraph agent with ReAct pattern
+- [ ] Direct tool integration (no MCP yet)
+- [ ] PostgreSQL state storage
+- [ ] Simple CLI/API interface
+
+**Success Criteria:**
+- Agent can answer "List all deals in proposal stage"
+- Agent can check system health
+- State persists across restarts
+
+### Phase 2: Production Hardening (3-4 weeks)
+
+**Goal:** Reliable system with observability
+
+**Deliverables:**
+- [ ] PostgresSaver checkpointing
+- [ ] Langfuse integration
+- [ ] Error handling and retries
+- [ ] Idempotent tool design
+- [ ] Health monitoring
+- [ ] Basic authentication
+
+**Success Criteria:**
+- System recovers from crash without data loss
+- Full execution traces in Langfuse
+- < 1% error rate
+
+### Phase 3: Advanced Features (4-6 weeks)
+
+**Goal:** Full deal lifecycle management
+
+**Deliverables:**
+- [ ] Plan-and-Execute pattern
+- [ ] Sub-agents (triage, analysis, drafting)
+- [ ] Hybrid cloud routing
+- [ ] Qdrant memory integration
+- [ ] Human-in-the-loop approvals
+- [ ] MCP server integration
+
+**Success Criteria:**
+- Agent can process deal from intake to transition
+- Complex queries handled correctly
+- Approval workflow works end-to-end
+
+### Phase 4: Optimization (Ongoing)
+
+**Goal:** Performance and cost optimization
+
+**Deliverables:**
+- [ ] Query caching
+- [ ] Router fine-tuning
+- [ ] Prompt optimization
+- [ ] Memory consolidation
+- [ ] Evaluation suite
+- [ ] Documentation
+
+**Success Criteria:**
+- 80%+ local processing
+- < $0.50 cloud cost per deal
+- < 2s average response time
+
+---
+
+## Risk Assessment
+
+### Layer 1: Model Selection
+
+| Risk | Likelihood | Impact | Mitigation |
+|------|------------|--------|------------|
+| Model quality insufficient | Medium | High | Hybrid routing to cloud |
+| VRAM constraints | Low | Medium | Use Q4 quantization, monitor usage |
+| Tool call hallucination | Medium | Medium | Validation layers, structured output |
+
+### Layer 2: Agent Architecture
+
+| Risk | Likelihood | Impact | Mitigation |
+|------|------------|--------|------------|
+| Framework complexity | Medium | Medium | Start simple, expand gradually |
+| State corruption | Low | High | PostgreSQL ACID, checkpointing |
+| Infinite loops | Low | Medium | Max iteration limits, timeouts |
+
+### Layer 3: Tool Integration
+
+| Risk | Likelihood | Impact | Mitigation |
+|------|------------|--------|------------|
+| MCP security issues | Medium | High | Authentication, rate limiting |
+| Tool failures | Medium | Medium | Retries, fallbacks |
+| Latency spikes | Low | Low | Caching, direct calls |
+
+### Layer 4: Memory
+
+| Risk | Likelihood | Impact | Mitigation |
+|------|------------|--------|------------|
+| Retrieval quality | Medium | Medium | Evaluation, reranking |
+| Storage growth | Low | Low | TTL, cleanup policies |
+| Index corruption | Low | High | Backups, rebuild capability |
+
+### Layer 5: Hybrid Cloud
+
+| Risk | Likelihood | Impact | Mitigation |
+|------|------------|--------|------------|
+| Cloud API failures | Low | Medium | Fallback chain |
+| Cost overruns | Medium | Medium | Budget limits, monitoring |
+| Vendor lock-in | Low | Medium | Abstraction layer (LiteLLM) |
+
+### Layer 6: Observability
+
+| Risk | Likelihood | Impact | Mitigation |
+|------|------------|--------|------------|
+| Trace overhead | Low | Low | Sampling for high volume |
+| Storage costs | Low | Medium | Retention policies |
+| Alert fatigue | Medium | Medium | Tuned thresholds |
+
+### Layer 7: Reliability
+
+| Risk | Likelihood | Impact | Mitigation |
+|------|------------|--------|------------|
+| Checkpoint bloat | Medium | Medium | External storage for large data |
+| Recovery time | Low | Medium | Fast restart, warm standby |
+| Queue backlog | Low | Medium | Monitoring, scaling |
+
+### Layer 8: Security
+
+| Risk | Likelihood | Impact | Mitigation |
+|------|------------|--------|------------|
+| Unauthorized access | Low | High | Auth, audit logging |
+| Data exposure | Low | High | Encryption, access controls |
+| Agent misuse | Medium | Medium | ABAC policies, human approval |
+
+---
+
+## Appendices
+
+### A. Benchmark Data Sources
+
+**Model Benchmarks:**
+- [Berkeley Function Calling Leaderboard](https://gorilla.cs.berkeley.edu/leaderboard.html)
+- [RTX 5090 LLM Benchmarks (RunPod)](https://www.runpod.io/blog/rtx-5090-llm-benchmarks)
+- [Vellum LLM Leaderboard](https://www.vellum.ai/llm-leaderboard)
+
+**Framework Comparisons:**
+- [LangWatch Framework Comparison](https://langwatch.ai/blog/best-ai-agent-frameworks-in-2025-comparing-langgraph-dspy-crewai-agno-and-more)
+- [DataCamp CrewAI vs LangGraph vs AutoGen](https://www.datacamp.com/tutorial/crewai-vs-langgraph-vs-autogen)
+
+**Vector Database Benchmarks:**
+- [Firecrawl Vector DB Comparison](https://www.firecrawl.dev/blog/best-vector-databases-2025)
+- [LiquidMetal AI Vector Comparison](https://liquidmetal.ai/casesAndBlogs/vector-comparison/)
+
+### B. Configuration Examples
+
+**vLLM Configuration:**
+```bash
+# Start vLLM with Qwen3-32B
+docker run --gpus all \
+  -v ~/.cache/huggingface:/root/.cache/huggingface \
+  -p 8000:8000 \
+  vllm/vllm-openai:latest \
+  --model Qwen/Qwen3-32B-Instruct-AWQ \
+  --quantization awq \
+  --max-model-len 32000 \
+  --gpu-memory-utilization 0.90 \
+  --enable-auto-tool-choice \
+  --tool-call-parser hermes
+```
+
+**LangGraph Agent Skeleton:**
+```python
+from langgraph.graph import StateGraph, END
+from langgraph.checkpoint.postgres import PostgresSaver
+
+class DealAgentState(TypedDict):
+    messages: list
+    deal_id: Optional[str]
+    plan: Optional[list]
+    current_step: int
+
+def create_deal_agent():
+    graph = StateGraph(DealAgentState)
+
+    graph.add_node("router", route_request)
+    graph.add_node("planner", create_plan)
+    graph.add_node("executor", execute_step)
+    graph.add_node("verifier", verify_result)
+
+    graph.add_edge("router", "planner")
+    graph.add_conditional_edges("planner", should_execute)
+    graph.add_edge("executor", "verifier")
+    graph.add_conditional_edges("verifier", next_step_or_end)
+
+    graph.set_entry_point("router")
+
+    checkpointer = PostgresSaver.from_conn_string(DB_URL)
+    return graph.compile(checkpointer=checkpointer)
+```
+
+### C. Reference Implementations
+
+**LangGraph Examples:**
+- [LangGraph Official Examples](https://github.com/langchain-ai/langgraph/tree/main/examples)
+- [Plan-and-Execute Tutorial](https://langchain-ai.github.io/langgraph/tutorials/plan-and-execute/plan-and-execute/)
+
+**Qwen-Agent:**
+- [Qwen-Agent GitHub](https://github.com/QwenLM/Qwen-Agent)
+
+**Langfuse:**
+- [Langfuse Self-Hosting](https://langfuse.com/docs/deployment/self-host)
+- [LangGraph Integration](https://langfuse.com/docs/integrations/langchain/tracing)
+
+---
+
+## Sources
+
+### Layer 1: Models & Inference
+- [The Best Open-Source LLMs in 2026 - BentoML](https://www.bentoml.com/blog/navigating-the-world-of-open-source-large-language-models)
+- [RTX 5090 LLM Benchmarks - RunPod](https://www.runpod.io/blog/rtx-5090-llm-benchmarks)
+- [RTX 5090 Ollama Benchmark - DatabaseMart](https://www.databasemart.com/blog/ollama-gpu-benchmark-rtx5090)
+- [vLLM vs llama.cpp - Red Hat](https://developers.redhat.com/articles/2025/09/30/vllm-or-llamacpp-choosing-right-llm-inference-engine-your-use-case)
+- [Qwen3 Release Blog](https://qwenlm.github.io/blog/qwen3/)
+
+### Layer 2: Agent Frameworks
+- [Best AI Agent Frameworks 2025 - LangWatch](https://langwatch.ai/blog/best-ai-agent-frameworks-in-2025-comparing-langgraph-dspy-crewai-agno-and-more)
+- [LangGraph Review 2025 - Sider.ai](https://sider.ai/blog/ai-tools/langgraph-review-is-the-agentic-state-machine-worth-your-stack-in-2025)
+- [Plan-and-Execute Agents - LangChain Blog](https://www.blog.langchain.com/planning-agents/)
+
+### Layer 3: Tools
+- [MCP vs Function Calling - MarkTechPost](https://www.marktechpost.com/2025/10/08/model-context-protocol-mcp-vs-function-calling-vs-openapi-tools-when-to-use-each/)
+- [MCP Security - Descope](https://www.descope.com/learn/post/mcp)
+- [Berkeley Function Calling Leaderboard](https://gorilla.cs.berkeley.edu/leaderboard.html)
+
+### Layer 4: Memory
+- [Best Vector Databases 2025 - Firecrawl](https://www.firecrawl.dev/blog/best-vector-databases-2025)
+- [LangGraph Checkpointing Best Practices](https://sparkco.ai/blog/mastering-langgraph-checkpointing-best-practices-for-2025)
+- [BGE-M3 vs Nomic Comparison](https://ai-marketinglabs.com/lab-experiments/nv-embed-vs-bge-m3-vs-nomic-picking-the-right-embeddings-for-pinecone-rag)
+
+### Layer 5: Hybrid Cloud
+- [RouteLLM - LMSYS](https://lmsys.org/blog/2024-07-01-routellm/)
+- [Top LLM Gateways 2025 - Helicone](https://www.helicone.ai/blog/top-llm-gateways-comparison-2025)
+
+### Layer 6: Observability
+- [AI Observability Platforms Compared - Softcery](https://softcery.com/lab/top-8-observability-platforms-for-ai-agents-in-2025)
+- [Langfuse vs LangSmith](https://langfuse.com/faq/all/langsmith-alternative)
+
+### Layer 7: Reliability
+- [Agentic AI Architectures - arXiv](https://arxiv.org/html/2512.09458)
+- [Durable Agentic Flows - Temporal](https://temporal.io/blog/from-ai-hype-to-durable-reality-why-agentic-flows-need-distributed-systems)
+
+### Layer 8: Security
+- [AI Agent Security 2025 - Obsidian](https://www.obsidiansecurity.com/blog/security-for-ai-agents)
+- [AI Agent Access Control - WorkOS](https://workos.com/blog/ai-agent-access-control)
+- [Enterprise AI Agent Security Checklist](https://sparkco.ai/blog/2025-enterprise-ai-agent-security-checklist-guide)
+
+---
+
+*Document generated: January 2026*
+*For ZakOps / SACS AIOps 3.0
+
+=== INPUT C (Research) ===
+
+  - The fastest path to a production‑grade local agent is a LangGraph‑based orchestration layer on top
+    of your existing Deal Lifecycle API (8090), RAG REST API (8052), and MCP tools, served by a local
+    LLM gateway (vLLM primary, with optional TensorRT‑LLM for later optimization). Sources: https://
+    docs.vllm.ai/en/latest/ , https://github.com/langchain-ai/langgraph
+  - Model strategy: run a high‑quality 32B–72B local model (Qwen2.5 or Llama 3.3) at 4‑bit or 5‑bit,
+    plus a smaller router/specialist model; keep cloud LLMs as a fallback via a unified gateway
+    (LiteLLM). Sources: https://huggingface.co/Qwen/Qwen2.5-72B-Instruct , https://huggingface.co/
+    meta-llama/Llama-3.3-70B-Instruct , https://github.com/BerriAI/litellm
+  - Memory and retrieval should default to Postgres + pgvector (existing), with a path to Qdrant/
+    Milvus for scale; add reranking for quality. Sources: https://github.com/pgvector/pgvector ,
+    https://qdrant.tech/documentation/ , https://github.com/milvus-io/milvus , https://huggingface.co/
+    BAAI/bge-reranker-large
+  - Observability should be local‑first: OpenTelemetry + Langfuse or Phoenix, optionally LangSmith for
+    tracing only. Sources: https://opentelemetry.io/docs/ , https://github.com/langfuse/langfuse ,
+    https://github.com/Arize-ai/phoenix , https://docs.smith.langchain.com/
+  - Primary risks are tool‑call reliability, long‑running workflow durability, and secret management;
+    mitigation is strict schema enforcement, queue‑based execution, and formal RBAC + audit logging.
+    Sources: https://modelcontextprotocol.io/ , https://github.com/guardrails-ai/guardrails , https://
+    developer.hashicorp.com/vault/docs
+
+  Detailed Layer Analysis
+
+  Layer 1 — Local Model Selection & Inference
+
+  - State of the Art + Recommendation: Use vLLM as the primary inference server and benchmark
+    Qwen2.5‑32B/72B and Llama‑3.3‑70B quantized (AWQ/GGUF) on RTX 5090; add DeepSeek‑V3 and Mixtral
+    8x22B as benchmarks for MoE tradeoffs. Sources: https://docs.vllm.ai/en/latest/ , https://
+    huggingface.co/Qwen/Qwen2.5-32B-Instruct , https://huggingface.co/Qwen/Qwen2.5-72B-Instruct ,
+    https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct , https://huggingface.co/deepseek-ai/
+    DeepSeek-V3 , https://huggingface.co/mistralai/Mixtral-8x22B-Instruct-v0.1
+  - Alternatives & Tradeoffs: TensorRT‑LLM for maximum throughput/latency (higher setup cost),
+    llama.cpp for CPU/GPU hybrid and GGUF portability, Ollama for developer convenience. Sources:
+    https://github.com/NVIDIA/TensorRT-LLM , https://github.com/ggerganov/llama.cpp , https://
+    github.com/ollama/ollama
+  - Implementation Notes: Run 2‑model setup: a “fast router” (7B–14B) and a “reasoning model” (32B–
+    72B); implement a model router that falls back to cloud for complex tasks. Source (router/
+    gateway): https://github.com/BerriAI/litellm
+  - Success Criteria & Benchmarks: Target <2s median latency for typical responses, ≥8k context, and
+    stable throughput under concurrent sessions; measure tokens/sec and p95 latency for each model/
+    quant. Use standardized prompts and workloads.
+  - Risks & Mitigations: 70B quantized may still be slow; mitigate by using 32B as default and gating
+    70B to complex tasks; keep CPU offload as a contingency (llama.cpp).
+  - Sources: https://huggingface.co/Qwen/Qwen2.5-72B-Instruct , https://huggingface.co/meta-llama/
+    Llama-3.3-70B-Instruct , https://huggingface.co/deepseek-ai/DeepSeek-V3 , https://docs.vllm.ai/en/
+    latest/
+
+  Layer 2 — Agent Architecture & Orchestration
+
+  - State of the Art + Recommendation: Use LangGraph for stateful, resumable agent flows with explicit
+    nodes for triage, analysis, planning, drafting, and approval gates. Sources: https://github.com/
+    langchain-ai/langgraph
+  - Alternatives & Tradeoffs: AutoGen and CrewAI are good for multi‑agent simulations but less
+    deterministic for durable workflows; DSPy is strong for programmatic prompt optimization but not a
+    full orchestration system. Sources: https://github.com/microsoft/autogen , https://github.com/
+    crewAIInc/crewAI , https://github.com/stanfordnlp/dspy
+  - Implementation Notes: Persist state in Postgres (deal‑scoped) with explicit “checkpoint”
+    transitions; each node emits structured outputs and logs decisions to an audit table.
+  - Success Criteria & Benchmarks: Zero lost work after restart; sub‑second router decisions; full
+    audit trail with replay support.
+  - Risks & Mitigations: Graph complexity can increase debugging cost; mitigate by enforcing node
+    contracts and keeping a small number of stable workflow types.
+  - Sources: https://github.com/langchain-ai/langgraph , https://github.com/microsoft/autogen
+
+  Layer 3 — Tool Integration & Execution
+
+  - State of the Art + Recommendation: Keep MCP for interoperability and expose critical operations as
+    internal function tools with strict schemas and validation (JSON schema + guardrails). Sources:
+    https://modelcontextprotocol.io/ , https://github.com/guardrails-ai/guardrails , https://
+    github.com/dottxt-ai/outlines
+  - Alternatives & Tradeoffs: Direct function calling offers lower latency and stronger typing; MCP
+    offers interoperability and external tool access.
+  - Implementation Notes: Build a “tool registry” with read/write separation and approval gating; run
+    write tools via a queue that requires human approval when required.
+  - Success Criteria & Benchmarks: ≥99% tool call success rate; no hallucinated parameters; 100% of
+    write actions logged with approvals.
+  - Risks & Mitigations: Tool schema drift; mitigate with contract tests and CI validation for every
+    tool signature.
+  - Sources: https://modelcontextprotocol.io/ , https://github.com/guardrails-ai/guardrails , https://
+    github.com/dottxt-ai/outlines
+
+  Layer 4 — Memory Architecture
+
+  - State of the Art + Recommendation: Keep Postgres as system‑of‑record; use pgvector for embeddings
+    by default and add reranking for quality (bge‑m3 + bge‑reranker). Sources: https://github.com/
+    pgvector/pgvector , https://huggingface.co/BAAI/bge-m3 , https://huggingface.co/BAAI/bge-reranker-
+    large
+  - Alternatives & Tradeoffs: Qdrant/Milvus/Weaviate for higher‑scale vector search and hybrid
+    indexing; Chroma is simpler but less scalable. Sources: https://qdrant.tech/documentation/ ,
+    https://github.com/milvus-io/milvus , https://github.com/weaviate/weaviate , https://
+    docs.trychroma.com/
+  - Implementation Notes: Separate memory layers: working memory (session state), episodic memory
+    (deal events), semantic memory (vectors), and artifact memory (documents in dataroom).
+  - Success Criteria & Benchmarks: RAG precision@k and recall@k above baseline; retrieval <250ms p95
+    for common queries; zero cross‑deal leakage.
+  - Risks & Mitigations: Vector quality drift; mitigate by periodic re‑indexing and embedding model
+    versioning.
+  - Sources: https://github.com/pgvector/pgvector , https://qdrant.tech/documentation/ , https://
+    huggingface.co/BAAI/bge-reranker-large
+
+  Layer 5 — Hybrid Cloud Integration
+
+  - State of the Art + Recommendation: Use a unified LLM gateway with routing policies that prefer
+    local models and call cloud only for high‑complexity tasks. Source: https://github.com/BerriAI/
+    litellm
+  - Alternatives & Tradeoffs: Direct cloud SDK calls are simpler but make cost tracking and routing
+    harder; a gateway adds complexity but enables centralized governance.
+  - Implementation Notes: Define routing rules by task type, confidence score, and criticality; log
+    every cloud invocation with cost metadata.
+  - Success Criteria & Benchmarks: ≥80% local task completion; cloud usage only for complex/ambiguous
+    tasks; graceful fallback if cloud unavailable.
+  - Risks & Mitigations: Over‑routing to cloud increases cost; mitigate with periodic review and
+    policy tuning.
+  - Sources: https://github.com/BerriAI/litellm
+
+  Layer 6 — Observability & Debugging
+
+  - State of the Art + Recommendation: OpenTelemetry for traces/metrics/logs, Langfuse or Phoenix for
+    LLM‑specific observability, optional LangSmith for tracing only. Sources: https://
+    opentelemetry.io/docs/ , https://github.com/langfuse/langfuse , https://github.com/Arize-ai/
+    phoenix , https://docs.smith.langchain.com/
+  - Alternatives & Tradeoffs: LangSmith is best‑in‑class but hosted; Langfuse/Phoenix provide local
+    control and can integrate with OTel.
+  - Implementation Notes: Standardize event schema for tool calls, decisions, costs, and outcomes;
+    build a “decision replay” view.
+  - Success Criteria & Benchmarks: 100% trace coverage for tool calls; replayable runs; median trace
+    ingestion <5s.
+  - Risks & Mitigations: High telemetry volume; mitigate with sampling policies and per‑deal trace
+    retention windows.
+  - Sources: https://opentelemetry.io/docs/ , https://github.com/langfuse/langfuse , https://
+    github.com/Arize-ai/phoenix
+
+  Layer 7 — Reliability & Production Readiness
+
+  - State of the Art + Recommendation: Use a queue‑based task system (Redis + Dramatiq/Celery) for
+    durable steps and retries; write each state transition to Postgres. Sources: https://redis.io/
+    docs/latest/ , https://dramatiq.io/ , https://docs.celeryq.dev/en/stable/
+  - Alternatives & Tradeoffs: RabbitMQ provides strong delivery semantics but adds operational
+    overhead; Redis is simpler and sufficient for a local deployment. Source: https://github.com/
+    rabbitmq/rabbitmq-server
+  - Implementation Notes: Add idempotency keys, outbox pattern for external writes, and explicit
+    recovery procedures for partially completed workflows.
+  - Success Criteria & Benchmarks: No lost work on restart; recoverable state for every deal; retry
+    success rate >95% without duplication.
+  - Risks & Mitigations: Duplicate actions or stuck jobs; mitigate with idempotency and dead‑letter
+    queues.
+  - Sources: https://dramatiq.io/ , https://docs.celeryq.dev/en/stable/ , https://redis.io/docs/
+    latest/
+
+  Layer 8 — Security & Access Control
+
+  - State of the Art + Recommendation: Protect all externally exposed endpoints with Cloudflare Access
+    (Zero Trust), enforce RBAC/ABAC in the API, and store secrets in a dedicated secrets manager.
+    Sources: https://developers.cloudflare.com/cloudflare-one/ , https://developers.cloudflare.com/
+    cloudflare-one/connections/connect-networks/ , https://developer.hashicorp.com/vault/docs
+  - Alternatives & Tradeoffs: Casbin (lightweight RBAC) vs OPA (policy‑as‑code); choose based on
+    complexity and team size. Sources: https://github.com/casbin/casbin , https://github.com/open-
+    policy-agent/opa
+  - Implementation Notes: Separate read/write scopes, require approvals for write tools, and ensure
+    all sensitive operations are auditable.
+  - Success Criteria & Benchmarks: Zero secrets in repo; full audit trail for approvals; verified
+    access control for each role.
+  - Risks & Mitigations: Misconfigured access policy; mitigate with policy tests and least‑privilege
+    defaults.
+  - Sources: https://developers.cloudflare.com/cloudflare-one/ , https://developer.hashicorp.com/
+    vault/docs , https://github.com/casbin/casbin
+
+  Integrated Architecture
+
+  [Next.js UI] ---> [Agent Orchestrator (LangGraph)]
+                        |  \
+                        |   -> [Tool Registry]
+                        |        |--> MCP Server (tools: deal API, approvals, quarantine)
+                        |        |--> Internal direct tools (read/write gated)
+                        |
+                        v
+               [Model Gateway / Router]
+                  |        \
+                  |         -> [Cloud LLMs via LiteLLM]
+                  v
+             [Local LLMs via vLLM]
+                        |
+                        v
+                 [Memory & Data]
+     Postgres (Deal DB + pgvector) + ArtifactStore (DataRoom)
+                        |
+                        v
+               [Observability Layer]
+       OpenTelemetry + Langfuse/Phoenix (+ optional LangSmith)
+
+  - Data flow: UI → Orchestrator → Router → LLM → Tool calls → Deal API/RAG → Memory updates → Audit
+    logs.
+  - Execution flow: every tool call emits a trace, state checkpoint, and a human‑approval gate for
+    write actions.
+
+  Implementation Plan
+
+  1. Phase 1 — Minimum Viable Agent (2–4 weeks)
+      - LangGraph orchestrator, tool registry, MCP integration, local vLLM, and baseline RAG retrieval
+        via pgvector.
+  2. Phase 2 — Production Hardening (4–6 weeks)
+      - Queue + retries, structured output enforcement, audit logs, RBAC, and observability
+        dashboards.
+  3. Phase 3 — Advanced Capabilities (4–8 weeks)
+      - Multi‑agent specialization, memory consolidation, reranking, and dynamic routing policies.
+  4. Phase 4 — Optimization & Scaling (ongoing)
+      - TensorRT‑LLM experiments, quantization sweeps, caching, and cost/latency tuning.
+
+  Appendices
+
+  Benchmark plan (minimal)
+
+  - LLM: measure p50/p95 latency, tokens/sec, context‑window stability, and reasoning accuracy on deal
+    workflows.
+  - Tools: measure tool call success rate, validation failures, and approval cycle time.
+  - Retrieval: precision@k, recall@k, and reranker uplift for deal doc QA.
+
+  Config example (gateway routing)
+
+  router:
+    default_model: local-qwen2.5-32b
+    escalation_model: local-llama3.3-70b
+    cloud_fallback: anthropic/claude-3
+  policy:
+    use_cloud_if:
+      - task_complexity: high
+      - confidence: low
+      - risk_level: high
+
+  Reference implementations
+
+  - vLLM: https://docs.vllm.ai/en/latest/
+  - LangGraph: https://github.com/langchain-ai/langgraph
+  - MCP: https://modelcontextprotocol.io/
+  - LiteLLM gateway: https://github.com/BerriAI/litellm
+  - pgvector: https://github.com/pgvector/pgvector
+  - Langfuse: https://github.com/langfuse/langfuse
+
+
+=== S1 (Model 1 Synthesis Output) ===
+
+Model:  ZAKOPS AIOPS 3.0: AGENTIC ARCHITECTURE MASTER DOCUMENT
+Version: 1.0.0-FINAL
+Date: January 22, 2026
+Status: APPROVED FOR ENGINEERING
+Author: Principal Architect, ZakOps Engineering
+---
+1. Executive Summary
+We are building the industry's first "Local-Sovereign" Deal Lifecycle Management System.
+ZakOps is a high-stakes operational platform where AI agents manage financial deals, analyze CIMs
+(Confidential Information Memorandums), and orchestrate pipeline transitions. Unlike commercial SaaS
+agents that are brittle, opaque, and privacy-leaking, ZakOps is durable, deterministic, and fully
+observable, running entirely on local high-performance hardware (RTX 5090).
+The Core Decision: We reject the "black box" agent hosting model (LangSmith Agent Builder) in favor of
+ a Local-First, Graph-Based Architecture.
+The Winning Architecture:
+*  Intelligence: A hybrid brain dominated by local 32B-parameter models (Qwen 2.5/3) running on vLLM
+for sub-second tool use, escalating to cloud SOTA (Claude/GPT-4) only for complex strategic reasoning
+[A][B].
+*  Orchestration: LangGraph serves as the state machine, replacing fragile procedural code with a
+graph of persistent nodes. This guarantees that if the system crashes, the agent resumes exactly where
+ it left off (Time Travel/Replay) [A][B][C].
+*  Data & Memory: We consolidate "Brain" (Vectors) and "State" (Checkpoints) into a unified PostgreSQL
+ backbone. This reduces infrastructure sprawl and ensures transactional integrity for deal data
+[A][C].
+*  Tools: A hardened Hybrid Tool Gateway that wraps the existing MCP (Model Context Protocol) server
+with strict Pydantic validation and human-approval gates for high-stakes actions [A][B].
+Why This Wins: It leverages the unique advantage of the RTX 5090 (32GB VRAM) to run "GPT-4 class"
+tool-using models locally, eliminating latency and privacy risks while maintaining the auditability
+required for financial operations.
+---
+2. Design Goals & Non-Goals
+Design Goals
+1.  Durable Execution: Zero lost work. If the server power cycles, the agent must resume the deal
+analysis at Step 3 of 5 [A][C].
+2.  Local Sovereignty: 80%+ of inference tokens must be generated locally. No dependency on internet
+for core deal triage [A][B].
+3.  Audit-Grade Observability: Every decision, tool call, and state change must be logged, traceable,
+and replayable [C].
+4.  Safety-First Tooling: No destructive action (delete, send email) occurs without an explicit policy
+ check or human approval [A].
+Non-Goals
+*  Massive Scale: We are designing for hundreds of high-value deals per day, not millions of consumer
+requests. Latency and correctness trump throughput [B].
+*  No-Code Config: This is a code-first engineering platform. We prioritize developer control over
+drag-and-drop agent builders.
+*  Generic Chat: This is not a chatbot. It is a job-to-be-done automation engine.
+---
+3. System Requirements
+Functional Requirements
+*  Deal Intake: Ingest emails/files, classify opportunity, extracting structured metadata (EBITDA,
+Revenue).
+*  Orchestration: Execute multi-step workflows (e.g., "Triage -> Research -> Draft LOI") with
+conditional branching.
+*  Human-in-the-Loop: Pause execution for human review on defined triggers (e.g., "Confidence < 70%"
+or "Action = Send Email") [B].
+*  Quarantine: Automatically isolate ambiguous items for manual review.
+Non-Functional Requirements
+*  Latency: Local inference < 2s TTFT (Time To First Token); Tool execution < 200ms [B].
+*  Reliability: 99.9% uptime for the API; 100% state recovery after crash [C].
+*  Privacy: Deal documents never leave the local environment unless explicitly routed to a secure
+cloud endpoint for advanced reasoning.
+*  Hardware: Optimized for Single-Host NVIDIA RTX 5090 (32GB VRAM) [A].
+---
+4. Architecture Overview
+High-Level Topology
+1 ┌──────────────────┐      ┌──────────────────────────────────────────┐
+2 │   USER / UI      │◄────►│         ZAKOPS API GATEWAY               │
+3 │ (Next.js/Dash)   │      │        (FastAPI :8090)                   │
+4 └──────────────────┘      └────────────────────┬─────────────────────┘
+5                                                │
+6                                                ▼
+7 ┌──────────────────────────────────────────────────────────────────────────┐
+8 │                          AGENT ORCHESTRATOR                              │
+9 │                         (LangGraph Engine)                               │
+10 │                                                                          │
+11 │  ┌───────────┐     ┌───────────┐     ┌─────────────┐     ┌────────────┐  │
+12 │  │ SUPERVISOR│────►│ DEAL PLAN │────►│ TOOL WORKER │────►│ APPROVAL   │  │
+13 │  └───────────┘     └───────────┘     └─────────────┘     └────────────┘  │
+14 └──────────────────────────────────────┬───────────────────────────────────┘
+15                                        │
+16            ┌───────────────────────────┼────────────────────────────────┐
+17            ▼                           ▼                                ▼
+18 ┌─────────────────────┐    ┌───────────────────────┐         ┌────────────────────┐
+19 │   INFERENCE LAYER   │    │      DATA LAYER       │         │    TOOL LAYER      │
+20 │                     │    │                       │         │                    │
+21 │ ┌─────────────────┐ │    │ ┌───────────────────┐ │         │ ┌────────────────┐ │
+22 │ │ vLLM (Local)    │ │    │ │ PostgreSQL (Main) │ │         │ │ Direct Tools   │ │
+23 │ │ Qwen 2.5 32B    │ │    │ │ - Deal Records    │ │         │ │ (Fast/Internal)│ │
+24 │ └─────────────────┘ │    │ │ - Agent State     │ │         │ └────────────────┘ │
+25 │                     │    │ │ - Task Queue      │ │         │                    │
+26 │ ┌─────────────────┐ │    │ │ - pgvector        │ │         │ ┌────────────────┐ │
+27 │ │ LiteLLM Router  │ │    │ └───────────────────┘ │         │ │ MCP Client     │ │
+28 │ │ -> Cloud SOTA   │ │    │                       │         │ │ (StdIO/SSE)    │ │
+29 │ └─────────────────┘ │    │                       │         │ └────────────────┘ │
+30 └─────────────────────┘    └───────────────────────┘         └────────────────────┘
+---
+5. Component-by-Component Design
+5.1 Intelligence Layer (Model & Inference)
+Purpose: Provide reasoning capabilities for tool selection, data extraction, and planning.
+*  Primary Engine: vLLM (Local). Chosen for best-in-class throughput and PagedAttention support
+[A][B].
+*  Primary Model: Qwen 2.5 32B-Instruct (AWQ Int4).
+*  Rationale: The "Goldilocks" model. It fits comfortably in 32GB VRAM (~18-20GB) while leaving room
+for 32k+ context and embedding models. It outperforms Llama 3.1 70B on coding/logic benchmarks
+relevant to tool use [A][C].
+*  Note: If "Qwen 3" (referenced in [B]) is available and verified stable, it may be substituted, but
+Qwen 2.5 is the safe baseline.
+*  Cloud Fallback: LiteLLM Gateway.
+*  Policy: Route to Claude 3.5 Sonnet or GPT-4o ONLY if:
+1.  Task complexity is flagged "High" (e.g., strategic risk analysis).
+2.  Local model confidence < Low Threshold.
+3.  Local vLLM is overloaded/unresponsive [A][B].
+*  Configuration:
+*  --gpu-memory-utilization 0.90 [B]
+*  --max-model-len 32768 [A]
+5.2 Orchestration Layer (LangGraph)
+Purpose: Manage the control flow, state, and persistence of agent workflows.
+*  Architecture: Hierarchical State Graph.
+*  Supervisor Node: Routes tasks to specialist sub-graphs (e.g., DealIntakeGraph, AnalysisGraph).
+*  State Schema:
+1         class AgentState(TypedDict):
+2             deal_id: str
+3             messages: List[BaseMessage]
+4             next_step: str
+5             errors: List[str]
+6             approval_status: str
+*  Persistence: PostgresCheckpointer.
+*  Saves the state after every node execution. This enables "Time Travel" debugging—you can rewind a
+live agent to the state before it made a mistake and resume with a correction [A][B].
+*  Pattern: Plan-and-Execute. The agent first generates a structured plan (list of steps), then
+executes them sequentially. This reduces "looping" behavior and hallucination [B].
+5.3 Memory & Data Layer
+Purpose: Unified storage for structured data, unstructured documents, and agent state.
+*  Technology: PostgreSQL 16+ with pgvector.
+*  Justification: While Input B suggests Qdrant, Inputs A & C correctly identify that for "hundreds of
+ deals," a separate vector DB adds unnecessary operational complexity. Postgres can handle millions of
+ vectors easily with HNSW indexes.
+*  Schema Strategy:
+*  deals: Core business entities.
+*  checkpoints: Serialized LangGraph state (blobs).
+*  embeddings: Document vectors (linked to deals).
+*  task_queue: Simple job table for async agent triggers [B].
+*  Retrieval: Hybrid Search (Keyword + Vector) with BGE-M3 embeddings [B] and BGE-Reranker [C] for
+high precision.
+5.4 Tool Gateway
+Purpose: Safe, validated execution of external actions.
+*  Hybrid Approach:
+1.  Direct Tools: Python functions within the agent process for low-latency, read-only ops (e.g.,
+db.get_deal).
+2.  MCP Clients: Connect to the existing MCP server (port 9100) for standardized tools.
+*  Safety Wrapper (Crucial):
+*  Validation: Every tool input must pass a Pydantic schema check.
+*  Sanitization: Path traversal checks for file operations.
+*  Approval Gate: Tools tagged requires_approval=True (e.g., send_email, delete_file) trigger a Graph
+Interrupt. The agent pauses, state is saved, and it waits for a resume signal from the API [A][C].
+---
+6. Research Plan & Technical Evaluation
+Immediate Verification Required
+1.  vLLM + RTX 5090 Stability: Verify that Qwen 2.5 32B @ 32k context + vLLM overhead does not OOM
+(Out of Memory) on a single 32GB card when concurrent requests hit.
+*  Test: Run concurrent batch of 5 agents analyzing 50-page PDFs.
+2.  LangGraph Persistence Performance: Measure latency overhead of writing full state to Postgres
+after every step.
+*  Threshold: < 50ms write overhead.
+Evaluation Strategy
+*  Offline Eval: Run the "ZakOps Validation Set" (50 historical deals). Compare Agent output vs. Human
+ Ground Truth for extracted fields (Revenue, EBITDA).
+*  Online Eval: Track "Intervention Rate"—how often humans must correct the agent or reject an
+approval request.
+---
+7. Implementation Roadmap
+Phase 1: The Core Foundation (Weeks 1-3)
+*  Goal: Durable "Read-Only" Agent.
+*  Steps:
+1.  Deploy vLLM container with Qwen 2.5 32B [A].
+2.  Refactor OrchestratorAgent from procedural loop to LangGraph StateGraph [A].
+3.  Implement PostgresCheckpointer for state persistence [C].
+4.  Connect Direct Tools (Read File, DB Query).
+*  Milestone: Agent can survive a process kill command mid-execution and resume correctly.
+Phase 2: Action & Safety (Weeks 4-5)
+*  Goal: Safe "Write" Capabilities.
+*  Steps:
+1.  Wrap MCP Client tools with Pydantic Validation Layer [A].
+2.  Implement Human-in-the-Loop interrupt nodes for write tools.
+3.  Build the Approval UI in Next.js to visualize pending agent requests.
+Phase 3: Intelligence Upgrade (Weeks 6-8)
+*  Goal: Advanced Reasoning & Hybrid Routing.
+*  Steps:
+1.  Deploy LiteLLM Gateway for cloud routing [C].
+2.  Implement Semantic Router to offload complex tasks to Claude [A].
+3.  Migrate RAG system to pgvector inside main DB [A].
+---
+8. Testing Strategy
+*  Unit Tests: Verify individual Tool Logic and Pydantic validators.
+*  Integration Tests: "Mocked LLM" tests for the LangGraph control flow (ensure graph transitions
+correct states).
+*  End-to-End (E2E): Replay historical deal emails through the system and assert final DB state
+matches expected deal attributes.
+*  Adversarial: "Red Team" the agent by injecting prompt injection attacks in CIM documents to ensure
+it doesn't exfiltrate data or execute unauthorized shells [C].
+---
+9. Deployment & Operations
+*  Runtime: Docker Compose (local workstation).
+*  Monitoring:
+*  Langfuse (Self-Hosted): For tracing agent thoughts, latency, and costs [B].
+*  OpenTelemetry: For system-level metrics (GPU usage, DB connection pool) [C].
+*  Backup: Daily pg_dump of the Postgres database (includes both deal data and vector embeddings).
+*  Scaling: Single RTX 5090 is sufficient for ~50-100 concurrent active deals (batch processing). For
+scale-out, add a second GPU or offload more to cloud.
+---
+10. Risks, Tradeoffs, and Open Questions
+1.  Risk: Local Model Hallucination. Qwen 2.5 is good, but not GPT-4.
+*  Mitigation: Strict "Structured Output" enforcement (JSON Mode) and fallback to Cloud for
+low-confidence generations [B].
+2.  Risk: Context Window Thrashing. Long CIMs (>50 pages) eat context.
+*  Mitigation: Implement a Summarization Node in the graph that compresses document content into key
+facts before passing to the reasoning agent [A].
+3.  Tradeoff: Postgres Vector vs Specialized DB.
+*  Decision: We accept slightly lower raw QPS (Queries Per Second) of Postgres vs Qdrant in exchange
+for transactional consistency (ACID) which is critical for financial data.
+---
+11. Appendix
+A. Glossary
+*  CIM: Confidential Information Memorandum (deal document).
+*  MCP: Model Context Protocol (standard for tool servers).
+*  TTFT: Time To First Token (latency metric).
+*  AWQ: Activation-aware Weight Quantization (compression for LLMs).
+B. Decision Log
+*  Decision: Rejected Qdrant for Phase 1/2. Reason: Postgres pgvector is sufficient and reduces infra
+complexity.
+*  Decision: Rejected LangSmith Hosting. Reason: Need local runtime control.
+*  Decision: Selected LangGraph over AutoGen. Reason: AutoGen is too chat-focused/non-deterministic;
+LangGraph provides the engineering control flow needed for business logic.
+---
+12. Quality Audit (Hard Mode)
+Grade: A-
+Strengths:
+*  Completeness: Covers hardware, software, orchestration, and ops.
+*  Feasibility: All selected technologies (vLLM, LangGraph, Postgres) are mature and compatible.
+*  Clarity: Clear distinction between "Brain" (LLM) and "Control" (Graph).
+Top Remaining Weaknesses & Fixes:
+1.  Weakness: The specific "Semantic Router" logic is abstract.
+*  Fix: Define concrete regex/keyword rules for routing in Phase 1 before training a classifier model.
+2.  Weakness: "Summarization Node" details are sparse.
+*  Fix: Define a "Map-Reduce" graph pattern for documents > 30k tokens.
+3.  Weakness: vLLM install on consumer hardware can be finicky with CUDA versions.
+*  Fix: Pin the exact Docker image hash in the implementation plan to ensure reproducibility.
+4.  Weakness: Database migration strategy from existing schema not detailed.
+*  Fix: Add a specific schema migration script step in Phase 1.
+5.  Weakness: No mention of "Secret Management" for cloud API keys.
+*  Fix: Mandate use of .env file loaded strictly by Docker, never committed to git.
+6.  Weakness: Backup strategy for the Vector data specifically.
+*  Fix: Confirm pg_dump includes vector extensions data (it does, but verify restore time).
+7.  Weakness: User Interface integration lag.
+*  Fix: The Next.js dashboard needs a polling mechanism or WebSocket to see real-time agent state
+changes.
+8.  Weakness: Model updates.
+*  Fix: Establish a quarterly "Model Review" cadence to swap Qwen 2.5 for newer SOTA.
+9.  Weakness: Cost tracking for Local vs Cloud.
+*  Fix: Implement token counting even for local models to visualize "savings" vs cloud equivalent.
+10.  Weakness: Single Point of Failure (The Workstation).
+*  Fix: Acceptable for "Local" design, but document a "Cloud Failover" manual process if hardware
+dies.
+
+
+=== S2 (Model 2 Synthesis Output) ===
+
+    **Version:** 1.0.0
+    **Date:** January 2026
+    **Status:** APPROVED FOR IMPLEMENTATION
+    **Classification:** Internal Technical Architecture
+
+    ---
+
+    ## 1. Executive Summary
+
+    ### What We Are Building
+
+    ZakOps Agent is a **production-grade, locally-hosted AI agent system** for Deal Lifecycle
+    Management that serves as the intelligence layer for SACS AIOps 3.0. The agent orchestrates deal
+    intake, document analysis, pipeline transitions, approval workflows, and communication
+    drafting—all running on a single high-performance workstation with optional cloud escalation.
+
+    ### Why This Architecture Is Best-in-Class
+
+    1. **Full Local Control**: Runs entirely on RTX 5090 (32GB VRAM) without mandatory internet
+    dependency, avoiding the brittleness we experienced with LangSmith Agent Builder's MCP tool
+    binding limitations [Project Context].
+
+    2. **Production-Grade Reliability**: LangGraph state machine with PostgreSQL checkpointing ensures
+     zero lost work across crashes [A][B][C consensus].
+
+    3. **Competitive Performance**: Qwen3-32B achieves 61 tokens/sec on RTX 5090 [B] with tool-calling
+     quality approaching GPT-4 class [A], at zero marginal cost per inference.
+
+    4. **Hybrid Escalation**: Complex reasoning tasks route to cloud LLMs (Claude/GPT-4) via LiteLLM
+    gateway, maintaining quality ceiling [A][B][C consensus].
+
+    5. **Observable by Design**: OpenTelemetry + self-hosted Langfuse provides complete tracing
+    without vendor lock-in [B][C].
+
+    ### Key Architectural Decisions
+
+    | Decision | Choice | Rationale |
+    |----------|--------|-----------|
+    | **Primary Model** | Qwen3-32B-Instruct (Q4_K_M) | Best tool-calling at 32B tier, fits VRAM, MIT
+    license [B] |
+    | **Inference Engine** | vLLM | Production-proven, OpenAI-compatible, PagedAttention [A][B][C] |
+    | **Orchestration** | LangGraph | State machine + checkpointing + HITL patterns [A][B][C] |
+    | **State Persistence** | PostgreSQL + PostgresSaver | Already in stack, ACID guarantees, no new
+    deps [A][B] |
+    | **Vector Store** | pgvector (Phase 1) → Qdrant (Phase 3) | Minimize initial complexity, scale
+    when needed [C] |
+    | **Observability** | OpenTelemetry + Langfuse | Local-first, MIT license, full control [B][C] |
+    | **Tool Gateway** | Hybrid MCP + Direct calls | MCP for portability, direct for latency-critical
+    [B] |
+    | **Queue System** | PostgreSQL SKIP LOCKED | Sufficient for hundreds of deals/day, no Redis
+    needed [B] |
+
+    ---
+
+    ## 2. Design Goals & Non-Goals
+
+    ### Design Goals
+
+    | ID | Goal | Measurable Criteria |
+    |----|------|---------------------|
+    | G1 | **Local-first operation** | System functions fully without internet for 30+ days |
+    | G2 | **Sub-2-second response latency** | P95 time-to-first-token < 2s for 32K context [B] |
+    | G3 | **Zero lost work** | 100% state recovery after crash [A][B] |
+    | G4 | **High tool reliability** | ≥99% tool call success rate, <1% parameter hallucination [A][B]
+     |
+    | G5 | **Full observability** | 100% trace coverage for all agent operations [B][C] |
+    | G6 | **Human-in-the-loop gates** | All write operations blockable pending approval [A][B][C] |
+    | G7 | **Cost efficiency** | ≥80% of tasks completed locally; cloud cost <$0.50/deal [B][C] |
+    | G8 | **Auditability** | Complete audit trail for all decisions with replay capability [B][C] |
+
+    ### Non-Goals
+
+    | ID | Non-Goal | Rationale |
+    |----|----------|-----------|
+    | NG1 | Multi-tenant SaaS deployment | Single-operator system; multi-tenancy adds complexity |
+    | NG2 | Real-time collaborative editing | Deals are single-owner; not a document editor |
+    | NG3 | Sub-100ms latency | Agent reasoning requires seconds; not a CRUD API |
+    | NG4 | 70B+ model without CPU offload | RTX 5090 caps at ~40GB quantized 70B; kills latency [A] |
+    | NG5 | Training/fine-tuning in-loop | Inference-only system; training is offline process |
+    | NG6 | LangSmith Agent Builder hosting | Platform limitations proven [Project Context]; tracing
+    only |
+
+    ---
+
+    ## 3. System Requirements
+
+    ### 3.1 Functional Requirements
+
+    #### FR1: Deal Triage
+    - System SHALL classify incoming deals by type, priority, and confidence
+    - System SHALL route low-confidence items to quarantine with explanation
+    - System SHALL emit `deal.triaged` event with classification metadata
+
+    #### FR2: Document Analysis
+    - System SHALL extract structured data from deal documents (PDFs, emails)
+    - System SHALL identify key entities (parties, dates, amounts, terms)
+    - System SHALL store extracted data in deal metadata with source provenance
+
+    #### FR3: Pipeline Transitions
+    - System SHALL validate stage transitions against allowed state machine
+    - System SHALL require approval for critical transitions (e.g., to Won/Lost)
+    - System SHALL emit events for all transitions with actor and reason
+
+    #### FR4: Action Planning
+    - System SHALL decompose complex requests into executable steps
+    - System SHALL estimate risk level for each action
+    - System SHALL queue actions requiring human approval before execution
+
+    #### FR5: Communication Drafting
+    - System SHALL generate contextual responses using deal history
+    - System SHALL support templates with variable substitution
+    - System SHALL flag drafts for human review before sending
+
+    #### FR6: Quarantine Management
+    - System SHALL list, approve, reject, and re-classify quarantined items
+    - System SHALL track quarantine reasons and resolution history
+    - System SHALL escalate items exceeding configurable age threshold
+
+    ### 3.2 Non-Functional Requirements
+
+    | Category | Requirement | Target | Validation Method |
+    |----------|-------------|--------|-------------------|
+    | **Latency** | Time-to-first-token | P50 <1s, P95 <2s | Load test with 32K context |
+    | **Latency** | Tool call round-trip | P95 <200ms | APM tracing |
+    | **Throughput** | Token generation | ≥50 tok/s sustained [B] | vLLM benchmark |
+    | **Reliability** | Workflow completion | ≥99% success | End-to-end tracking |
+    | **Reliability** | Crash recovery | 100% state recovery | Chaos testing |
+    | **Privacy** | Data residency | All PII local-only | Audit; no cloud logging |
+    | **Cost** | Cloud LLM spend | <$0.50/deal average | Cost tracking dashboard |
+    | **Scale** | Concurrent deals | 100 active threads | Load test |
+    | **Context** | Window size | 32K tokens minimum | Needle-in-haystack test |
+    | **Availability** | Uptime | 99.9% during business hours | Health check monitoring |
+
+    ---
+
+    ## 4. Architecture Overview
+
+    ### 4.1 High-Level Architecture
+
+    ```
+    ┌─────────────────────────────────────────────────────────────────────────────┐
+    │                           ZAKOPS AI AGENT SYSTEM                             │
+    ├─────────────────────────────────────────────────────────────────────────────┤
+    │                                                                              │
+    │  ┌──────────────┐   ┌──────────────┐   ┌──────────────┐                    │
+    │  │   Next.js    │   │   FastAPI    │   │  Cloudflare  │                    │
+    │  │  Dashboard   │   │   Backend    │   │   Tunnel     │                    │
+    │  │   :3003      │   │   :8090      │   │  (optional)  │                    │
+    │  └──────┬───────┘   └──────┬───────┘   └──────┬───────┘                    │
+    │         │                  │                  │                             │
+    │         └──────────────────┼──────────────────┘                             │
+    │                            │                                                 │
+    │                            ▼                                                 │
+    │  ┌───────────────────────────────────────────────────────────────────────┐ │
+    │  │                     AGENT ORCHESTRATOR (LangGraph)                     │ │
+    │  │  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐    │ │
+    │  │  │ Router  │─▶│ Planner │─▶│Executor │─▶│Verifier │─▶│ Output  │    │ │
+    │  │  │  Node   │  │  Node   │  │  Node   │  │  Node   │  │  Node   │    │ │
+    │  │  └─────────┘  └─────────┘  └─────────┘  └─────────┘  └─────────┘    │ │
+    │  │       │            │            │            │            │          │ │
+    │  │       └────────────┴────────────┴────────────┴────────────┘          │ │
+    │  │                                 │                                     │ │
+    │  │                                 ▼                                     │ │
+    │  │                    ┌─────────────────────┐                           │ │
+    │  │                    │   State Manager     │                           │ │
+    │  │                    │  (PostgresSaver)    │                           │ │
+    │  │                    └─────────────────────┘                           │ │
+    │  └───────────────────────────────────────────────────────────────────────┘ │
+    │                            │                                                 │
+    │         ┌──────────────────┼──────────────────┐                             │
+    │         │                  │                  │                             │
+    │         ▼                  ▼                  ▼                             │
+    │  ┌─────────────┐   ┌─────────────┐   ┌─────────────┐                      │
+    │  │ LLM Gateway │   │Tool Gateway │   │Memory Layer │                      │
+    │  │  (LiteLLM)  │   │(Validation) │   │ (Retrieval) │                      │
+    │  └──────┬──────┘   └──────┬──────┘   └──────┬──────┘                      │
+    │         │                 │                 │                              │
+    │    ┌────┴────┐      ┌─────┴─────┐     ┌─────┴─────┐                       │
+    │    │         │      │           │     │           │                       │
+    │    ▼         ▼      ▼           ▼     ▼           ▼                       │
+    │ ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐                    │
+    │ │vLLM  │ │Cloud │ │Direct│ │ MCP  │ │Postgres│ │ RAG  │                    │
+    │ │:8000 │ │ LLMs │ │Tools │ │:9100 │ │pgvector│ │:8052 │                    │
+    │ │      │ │      │ │      │ │      │ │:5432  │ │      │                    │
+    │ └──────┘ └──────┘ └──────┘ └──────┘ └──────┘ └──────┘                    │
+    │                                                                              │
+    │  ┌───────────────────────────────────────────────────────────────────────┐ │
+    │  │                     OBSERVABILITY LAYER                                │ │
+    │  │   OpenTelemetry Collector  ──▶  Langfuse  ──▶  Dashboards/Alerts     │ │
+    │  └───────────────────────────────────────────────────────────────────────┘ │
+    │                                                                              │
+    └─────────────────────────────────────────────────────────────────────────────┘
+    ```
+
+    ### 4.2 Data Flow
+
+    ```
+    ┌──────────────────────────────────────────────────────────────────────────┐
+    │                           DATA FLOW                                       │
+    ├──────────────────────────────────────────────────────────────────────────┤
+    │                                                                           │
+    │  1. REQUEST INGESTION                                                     │
+    │     ┌─────────┐      ┌─────────┐      ┌─────────┐                       │
+    │     │ User/   │─────▶│ FastAPI │─────▶│ Agent   │                       │
+    │     │ System  │      │ :8090   │      │ Thread  │                       │
+    │     └─────────┘      └─────────┘      └─────────┘                       │
+    │                                             │                            │
+    │  2. ORCHESTRATION                           ▼                            │
+    │     ┌─────────────────────────────────────────────────────┐             │
+    │     │                  LangGraph State                     │             │
+    │     │  {                                                   │             │
+    │     │    thread_id: "deal-DL-0001",                       │             │
+    │     │    messages: [...],                                  │             │
+    │     │    deal_context: {...},                              │             │
+    │     │    plan: [...],                                      │             │
+    │     │    current_step: 0,                                  │             │
+    │     │    pending_approval: null                            │             │
+    │     │  }                                                   │             │
+    │     └─────────────────────────────────────────────────────┘             │
+    │                            │                                             │
+    │  3. NODE EXECUTION         ▼                                             │
+    │     ┌────────┐  ┌────────┐  ┌────────┐  ┌────────┐                     │
+    │     │ Route  │─▶│ Plan   │─▶│Execute │─▶│Verify  │──▶ (loop or end)   │
+    │     └────────┘  └────────┘  └────────┘  └────────┘                     │
+    │         │           │           │           │                           │
+    │         ▼           ▼           ▼           ▼                           │
+    │     [Checkpoint] [Checkpoint] [Checkpoint] [Checkpoint]                 │
+    │                                                                          │
+    │  4. TOOL EXECUTION                                                       │
+    │     ┌──────────────────────────────────────────────────────┐            │
+    │     │  Tool Call: transition_deal(deal_id, stage)          │            │
+    │     │                      │                                │            │
+    │     │           ┌──────────┼──────────┐                    │            │
+    │     │           ▼          ▼          ▼                    │            │
+    │     │     [Validate]  [Authorize] [Execute]                │            │
+    │     │           │          │          │                    │            │
+    │     │           └──────────┼──────────┘                    │            │
+    │     │                      ▼                                │            │
+    │     │              [Emit Event + Log]                       │            │
+    │     └──────────────────────────────────────────────────────┘            │
+    │                                                                          │
+    │  5. PERSISTENCE & EVENTS                                                 │
+    │     ┌────────────────────────────────────────────────────────┐          │
+    │     │                    PostgreSQL                          │          │
+    │     │  ┌──────────┐  ┌──────────┐  ┌──────────┐            │          │
+    │     │  │ deals    │  │ events   │  │checkpts  │            │          │
+    │     │  │          │  │          │  │          │            │          │
+    │     │  └──────────┘  └──────────┘  └──────────┘            │          │
+    │     └────────────────────────────────────────────────────────┘          │
+    │                                                                          │
+    └──────────────────────────────────────────────────────────────────────────┘
+    ```
+
+    ### 4.3 Key Abstractions & Interfaces
+
+    ```python
+    # Core State Interface [B adapted]
+    class AgentState(TypedDict):
+        thread_id: str
+        messages: list[BaseMessage]
+        deal_id: Optional[str]
+        deal_context: Optional[DealContext]
+        plan: Optional[list[PlanStep]]
+        current_step: int
+        pending_approval: Optional[ApprovalRequest]
+        error: Optional[ErrorInfo]
+
+    # Tool Interface [B]
+    class ToolPermission(Enum):
+        READ = "read"        # No approval needed
+        WRITE = "write"      # May need approval
+        CRITICAL = "critical" # Always needs approval
+
+    class ToolDefinition(BaseModel):
+        name: str
+        description: str
+        parameters: dict  # JSON Schema
+        permission: ToolPermission
+        idempotency_required: bool
+        timeout_ms: int
+
+    # Event Interface [B adapted]
+    class AgentEvent(BaseModel):
+        event_id: str
+        event_type: str
+        thread_id: str
+        deal_id: Optional[str]
+        actor_type: Literal["user", "agent", "system"]
+        actor_id: str
+        payload: dict
+        trace_id: str
+        timestamp: datetime
+    ```
+
+    ---
+
+    ## 5. Component-by-Component Design
+
+    ### 5.1 LLM Inference Layer
+
+    #### Purpose
+    Serve local language model inference with OpenAI-compatible API, with fallback routing to cloud
+    providers.
+
+    #### Responsibilities
+    - Load and serve Qwen3-32B-Instruct model
+    - Handle concurrent inference requests with batching
+    - Provide function/tool calling capability
+    - Route complex requests to cloud when confidence is low
+
+    #### Inputs/Outputs
+
+    ```
+    INPUT:  ChatCompletionRequest {messages, tools?, temperature, max_tokens}
+    OUTPUT: ChatCompletionResponse {choices, usage, tool_calls?}
+    ```
+
+    #### Internal Design
+
+    **Primary Model Configuration** [B]:
+    ```bash
+    vllm serve Qwen/Qwen3-32B-Instruct-AWQ \
+      --quantization awq \
+      --max-model-len 32000 \
+      --gpu-memory-utilization 0.90 \
+      --enable-auto-tool-choice \
+      --tool-call-parser hermes \
+      --tensor-parallel-size 1
+    ```
+
+    **Router Model (Optional)** [A][C]:
+    - Qwen3-8B as fast classifier for routing decisions
+    - Runs alongside main model if VRAM permits (~5GB additional)
+
+    **LiteLLM Gateway Configuration** [C]:
+    ```python
+    # config.yaml
+    model_list:
+      - model_name: local-primary
+        litellm_params:
+          model: openai/Qwen3-32B-Instruct
+          api_base: http://localhost:8000/v1
+
+      - model_name: cloud-claude
+        litellm_params:
+          model: claude-3-5-sonnet-20241022
+          api_key: ${ANTHROPIC_API_KEY}
+
+    router_settings:
+      routing_strategy: simple-shuffle
+      fallbacks:
+        - local-primary
+        - cloud-claude
+
+      # Cost controls
+      set_budget:
+        max_budget: 50.0  # USD per day
+    ```
+
+    #### Key Decisions & Rationale
+
+    | Decision | Rationale |
+    |----------|-----------|
+    | Qwen3-32B over Qwen2.5-32B | Qwen3 matches Qwen2.5-72B quality at half params [B]; better tool
+    calling |
+    | AWQ over GPTQ | Better vLLM support, minimal quality loss [general knowledge] |
+    | 32K context over 128K | 32K sufficient for deal workflows; saves VRAM for KV cache |
+    | LiteLLM over direct SDK | Unified interface, built-in fallbacks, cost tracking [C] |
+
+    #### Failure Modes & Mitigations
+
+    | Failure | Detection | Mitigation |
+    |---------|-----------|------------|
+    | OOM | vLLM error logs | Reduce max-model-len; fall back to cloud |
+    | Timeout (>30s) | Request timeout | Retry once, then escalate to cloud |
+    | Hallucinated tool params | Validation layer rejects | Retry with stricter prompt |
+    | Model corruption | Health check fails | Reload model; alert operator |
+
+    #### Observability
+
+    - **Metrics**: tokens/sec, TTFT_p50/p95, requests/sec, error_rate, cache_hit_rate
+    - **Logs**: Request/response hashes, latency, tool calls, routing decisions
+    - **Traces**: Span per inference call with model version and prompt hash
+
+    #### Security
+
+    - vLLM listens on localhost only (not exposed to network)
+    - API key required for LiteLLM proxy
+    - No PII in cloud-routed requests (redaction layer)
+
+    ---
+
+    ### 5.2 Agent Orchestrator (LangGraph)
+
+    #### Purpose
+    Coordinate multi-step agent workflows as a state machine with persistence, human-in-the-loop
+    gates, and crash recovery.
+
+    #### Responsibilities
+    - Route incoming requests to appropriate workflow type
+    - Execute plan-and-execute patterns for complex tasks
+    - Persist state after every node transition
+    - Block execution pending human approval when required
+    - Enable workflow replay and debugging
+
+    #### Inputs/Outputs
+
+    ```
+    INPUT:  AgentRequest {thread_id?, deal_id?, message, context?}
+    OUTPUT: AgentResponse {thread_id, messages, actions_taken, pending_approval?}
+    ```
+
+    #### Internal Design
+
+    **State Graph Definition** [A][B combined]:
+
+    ```python
+    from langgraph.graph import StateGraph, END
+    from langgraph.checkpoint.postgres import PostgresSaver
+
+    class DealAgentState(TypedDict):
+        thread_id: str
+        messages: Annotated[list, add_messages]
+        deal_id: Optional[str]
+        deal_context: Optional[dict]
+        plan: Optional[list[dict]]
+        current_step: int
+        pending_approval: Optional[dict]
+        iteration_count: int  # Safety limit
+
+    def create_deal_agent(db_url: str) -> CompiledGraph:
+        graph = StateGraph(DealAgentState)
+
+        # Nodes
+        graph.add_node("router", router_node)
+        graph.add_node("planner", planner_node)
+        graph.add_node("executor", executor_node)
+        graph.add_node("verifier", verifier_node)
+        graph.add_node("approval_gate", approval_gate_node)
+        graph.add_node("output", output_node)
+
+        # Edges
+        graph.set_entry_point("router")
+        graph.add_conditional_edges("router", route_decision, {
+            "simple": "executor",      # Direct tool call
+            "complex": "planner",      # Multi-step planning
+            "clarify": "output",       # Need user input
+        })
+        graph.add_edge("planner", "executor")
+        graph.add_conditional_edges("executor", post_execute, {
+            "needs_approval": "approval_gate",
+            "continue": "verifier",
+            "error": "output",
+        })
+        graph.add_conditional_edges("approval_gate", check_approval, {
+            "approved": "verifier",
+            "rejected": "output",
+            "pending": END,  # Pause workflow
+        })
+        graph.add_conditional_edges("verifier", verify_result, {
+            "success": "output",
+            "retry": "executor",
+            "escalate": "output",
+        })
+        graph.add_edge("output", END)
+
+        # Persistence
+        checkpointer = PostgresSaver.from_conn_string(db_url)
+
+        return graph.compile(
+            checkpointer=checkpointer,
+            interrupt_before=["approval_gate"],  # HITL breakpoint
+        )
+    ```
+
+    **Node Implementations**:
+
+    ```python
+    async def router_node(state: DealAgentState) -> dict:
+        """Classify request and route to appropriate path."""
+        # Safety check
+        if state["iteration_count"] > MAX_ITERATIONS:
+            return {"error": "Max iterations exceeded"}
+
+        last_message = state["messages"][-1].content
+
+        # Simple heuristic routing (upgrade to LLM classifier later)
+        if any(kw in last_message.lower() for kw in ["list", "show", "get"]):
+            return {"route": "simple"}
+        elif any(kw in last_message.lower() for kw in ["analyze", "plan", "draft"]):
+            return {"route": "complex"}
+        else:
+            # Use LLM to classify
+            classification = await classify_request(last_message)
+            return {"route": classification}
+
+    async def planner_node(state: DealAgentState) -> dict:
+        """Generate multi-step plan for complex tasks."""
+        context = await build_context(state["deal_id"])
+
+        plan_prompt = PLAN_TEMPLATE.format(
+            task=state["messages"][-1].content,
+            context=context,
+            available_tools=TOOL_DESCRIPTIONS,
+        )
+
+        plan = await llm_gateway.complete(
+            messages=[{"role": "user", "content": plan_prompt}],
+            response_format=PlanSchema,  # Structured output
+        )
+
+        return {
+            "plan": plan.steps,
+            "current_step": 0,
+            "deal_context": context,
+        }
+
+    async def executor_node(state: DealAgentState) -> dict:
+        """Execute current plan step or direct tool call."""
+        if state["plan"]:
+            step = state["plan"][state["current_step"]]
+            tool_name = step["tool"]
+            tool_args = step["arguments"]
+        else:
+            # Direct tool call from LLM
+            tool_call = await llm_gateway.complete(
+                messages=state["messages"],
+                tools=TOOL_DEFINITIONS,
+            )
+            tool_name = tool_call.tool_name
+            tool_args = tool_call.arguments
+
+        # Check approval requirement
+        tool_def = TOOL_REGISTRY[tool_name]
+        if tool_def.permission == ToolPermission.CRITICAL:
+            return {
+                "pending_approval": {
+                    "tool": tool_name,
+                    "args": tool_args,
+                    "reason": f"Critical action: {tool_name}",
+                }
+            }
+
+        # Execute tool
+        result = await tool_gateway.execute(tool_name, tool_args)
+
+        return {
+            "messages": [AIMessage(content=f"Executed {tool_name}: {result}")],
+            "current_step": state["current_step"] + 1,
+            "iteration_count": state["iteration_count"] + 1,
+        }
+    ```
+
+    #### Key Decisions & Rationale
+
+    | Decision | Rationale |
+    |----------|-----------|
+    | Plan-and-Execute over pure ReAct | Better for multi-step deal workflows; planner uses stronger
+    model [B] |
+    | PostgresSaver over MemorySaver | Production durability; already have Postgres [A][B] |
+    | interrupt_before for HITL | Native LangGraph pattern; clean pause/resume [B] |
+    | Max iteration limit | Prevents infinite loops; configurable per workflow type |
+
+    #### Failure Modes & Mitigations
+
+    | Failure | Detection | Mitigation |
+    |---------|-----------|------------|
+    | Infinite loop | iteration_count > MAX | Force exit with error message |
+    | Checkpoint write fails | Exception on save | Retry 3x with backoff; alert if persistent |
+    | State corruption | Schema validation fails | Restore from previous checkpoint |
+    | Approval timeout | Configurable TTL | Auto-reject or escalate after threshold |
+
+    #### Observability
+
+    - **Metrics**: workflow_duration, steps_per_workflow, approval_wait_time, error_rate_by_node
+    - **Logs**: State transitions, node entry/exit, tool calls, approval decisions
+    - **Traces**: Span per node with state snapshot hash
+
+    ---
+
+    ### 5.3 Tool Gateway
+
+    #### Purpose
+    Provide a unified, validated, permission-checked interface for all tool executions with
+    idempotency support.
+
+    #### Responsibilities
+    - Validate tool call parameters against schemas
+    - Enforce permission checks (read/write/critical)
+    - Inject idempotency keys for write operations
+    - Route to MCP server or direct implementations
+    - Log all tool executions for audit
+
+    #### Inputs/Outputs
+
+    ```
+    INPUT:  ToolRequest {name, arguments, idempotency_key?, actor_id, trace_id}
+    OUTPUT: ToolResponse {success, result?, error?, execution_time_ms}
+    ```
+
+    #### Internal Design
+
+    ```
+    ┌─────────────────────────────────────────────────────────────────┐
+    │                        TOOL GATEWAY                              │
+    ├────────────────────────────────────────────────────────────────â                                                           │
+    │  ┌────────────────────────────────────────────────────────────┐│
+    │  │                    VALIDATION LAYER                         ││
+    │  │  - JSON Schema validation (Pydantic)                       ││
+    │  │  - Parameter range checks                                   ││
+    │  âield enforcement                               ││
+    │  └────────────────────────────────────────────────────────────┘│
+    │                            │                                    │
+    │                            ▼                                    │
+    │  ┌─────────────────────────────â──────────────┐│
+    │  │                   PERMISSION LAYER                          ││
+    │  │  - Actor authorization check                                ││
+    │  │  - Permission level verification                            ││
+    │  │  - Rate limiting                                            ││
+    │  └──────────────────────────────────────────â─────┘│
+    │                            │                                    │
+    │                            ▼                                    │
+    │  ┌────────────────────────────────────────────────────────────┐│
+    │  │                  IDEMPOTENCY LAYER                          ││
+    │  │  - Generate/validate idempotency key                ││
+    │  │  - Check for duplicate execution                            ││
+    │  │  - Return cached result if duplicate                        ││
+    │  └────────────────────────────────────────────────────────────┘│
+    │                            │                                    │
+    │               ┌──────────┴────────────┐                      │
+    │               ▼                         ▼                      │
+    │  ┌─────────────────────┐   ┌─────────────────────┐            │
+    │  │    DIRECT TOOLS     │   │    MCP SERVER       │            │
+    │  │  (Low latency)      │   │  (Portable)         │            │
+    │  │                     â                     │            │
+    │  │  - list_deals       │   │  - External APIs    │            │
+    │  │  - get_deal         │   │  - Third-party      │            │
+    │  │  - check_health     │   │  - Future tools     │            │
+    │  └─────────────────────┘   └─────────────────────┘            │
+    │                                                      │
+    └─────────────────────────────────────────────────────────────────┘
+    ```
+
+    **Tool Registry** [B adapted]:
+
+    ```python
+    TOOL_REGISTRY = {
+        "list_deals": ToolDefinition(
+            name="list_deals",
+            description="List deals with optional stage filter",
+            parameters={
+                "type": "object",
+                "propert                    "stage": {"type": "string", "enum": DEAL_STAGES},
+                    "limit": {"type": "integer", "default": 20, "maximum": 100},
+                },
+            },
+            permission=ToolPermission.READ,
+            idempotency_required=False,
+            timeout_ms=5000,
+        ),
+        "transition_deal": ToolDefinition(
+            name="transition_deal",
+            description="Move deal to a new pipeline stage",
+            parameters={
+                "type": "object",
+                "properties": {
+                    "deal_id": {"type": "string", "pattern": "^DL-\\d{4}$"},
+                    "new_stage": {"type": "string", "enum": DEAL_STAGES},
+                    "reason": {"type": "string"},
+                },
+                "required": ["deal_id", "new_stage"],
+            },
+            permission=ToolPermission.WRITE,
+            idempotency_required=True,
+            timeout_ms=10000,
+        ),
+        "approve_action": ToolDefinition(
+            name="approve_action",
+            description="Approve a pending action for execution",
+            parameters={
+                "type": "object",
+                "properties": {
+                    "action_id": {"type": "string"},
+                },
+                "required": ["action_id"],
+            },
+            permission=ToolPermission.CRITICAL,
+            idempotency_required=True,
+            timeout_ms=15000,
+        ),
+    }
+    ```
+
+    **Idempotency Implementation** [B]:
+
+    ```python
+    async def execute_with_idempotency(
+        tool_name: str,
+        args: dict,
+        idempotency_key: str,
+    ) -> ToolResponse:
+        # Check for existing result
+        existing = await db.fetchone(
+            "SELECT result, error FROM tool_executions WHERE idempotency_key = $1",
+            idempotency_key,
+        )
+        if existing:
+            return ToolResponse(
+                success=existing["error"] is None,
+                result=existing["result"],
+                error=existing["error"],
+                cached=True,
+            )
+
+        # Execute tool
+        try:
+            result = await TOOL_IMPLEMENTATIONS[tool_name](**args)
+            await db.execute(
+                """INSERT INTO tool_executions (idempotency_key, tool_name, args, result)
+                   VALUES ($1, $2, $3, $4)""",
+                idempotency_key, tool_name, json.dumps(args), json.dumps(result),
+            )
+            return ToolResponse(success=True, result=result)
+        except Exception as e:
+            await db.execute(
+                """INSERT INTO tool_executions (idempotency_key, tool_name, args, error)
+                   VALUES ($1, $2, $3, $4)""",
+                idempotency_key, tool_name, json.dumps(args), str(e),
+            )
+            return ToolResponse(success=False, error=str(e))
+    ```
+
+    #### Key Decisions & Rationale
+
+    | Decision | Rationale |
+    |----------|-----------|
+    | Hybrid MCP + Direct | MCP for future portability; direct for latency-critical [B] |
+    | Pydantic validation | Type-safe, auto-generates JSON Schema, clear error messages |
+    | Idempotency keys mandatory for writes | Safe retries; exactly-once semantics [B][C] |
+    | 3-tier permission model | Clear separation: read (free), write (logged), critical (approved) |
+
+    #### Failure Modes & Mitigations
+
+    | Failure | Detection | Mitigation |
+    |---------|-----------|------------|
+    | Validation failure | Schema error | Return clear error; do not execute |
+    | MCP server down | Connection timeout | Fall back to direct implementation if available |
+    | Rate limit exceeded | Counter check | Queue request; retry after backoff |
+    | Timeout | Execution exceeds timeout_ms | Cancel; return error; log for investigation |
+
+    #### Observability
+
+    - **Metrics**: tool_call_count (by tool), tool_latency_p95, validation_failure_rate,
+    cache_hit_rate
+    - **Logs**: Every tool call with args (redacted for sensitive fields), result summary, actor
+    - **Traces**: Span per tool call linked to parent agent trace
+
+    ---
+
+    ### 5.4 Memory & Retrieval Layer
+
+    #### Purpose
+    Provide contextual memory for agent reasoning through vector search, deal history, and document
+    retrieval.
+
+    #### Responsibilities
+    - Store and retrieve deal document embeddings
+    - Provide semantic search over deal corpus
+    - Maintain conversation context within threads
+    - Support cross-deal knowledge queries
+
+    #### Inputs/Outputs
+
+    ```
+    INPUT:  RetrievalRequest {query, deal_id?, k=5, filters?}
+    OUTPUT: RetrievalResponse {documents[], scores[], sources[]}
+    ```
+
+    #### Internal Design
+
+    **Phase 1: pgvector (Immediate)** [A][C]:
+
+    ```sql
+    -- Extension and table setup
+    CREATE EXTENSION IF NOT EXISTS vector;
+
+    CREATE TABLE deal_embeddings (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        deal_id TEXT NOT NULL REFERENCES deals(deal_id),
+        chunk_id TEXT NOT NULL,
+        content TEXT NOT NULL,
+        embedding vector(1024),  -- BGE-M3 dimension
+        metadata JSONB DEFAULT '{}',
+        created_at TIMESTAMPTZ DEFAULT NOW(),
+        UNIQUE(deal_id, chunk_id)
+    );
+
+    CREATE INDEX ON deal_embeddings USING ivfflat (embedding vector_cosine_ops)
+        WITH (lists = 100);
+
+    CREATE INDEX ON deal_embeddings (deal_id);
+    ```
+
+    **Phase 3: Qdrant (Scale)** [B][C]:
+
+    ```python
+    # Migration path when pgvector hits limits
+    from qdrant_client import QdrantClient
+
+    qdrant = QdrantClient(host="localhost", port=6333)
+
+    qdrant.create_collection(
+        collection_name="deal_documents",
+        vectors_config=VectorParams(
+            size=1024,  # BGE-M3
+            distance=Distance.COSINE,
+        ),
+        # Qdrant's killer feature: payload filtering
+        payload_schema={
+            "deal_id": PayloadSchemaType.KEYWORD,
+            "doc_type": PayloadSchemaType.KEYWORD,
+            "created_at": PayloadSchemaType.DATETIME,
+        },
+    )
+    ```
+
+    **Embedding Model** [B][C]:
+
+    ```python
+    # BGE-M3: 72% retrieval accuracy, 8K context, multilingual
+    from sentence_transformers import SentenceTransformer
+
+    embedder = SentenceTransformer("BAAI/bge-m3")
+
+    def embed_document(text: str) -> list[float]:
+        # BGE-M3 instruction prefix for retrieval
+        return embedder.encode(
+            f"Represent this document for retrieval: {text}",
+            normalize_embeddings=True,
+        ).tolist()
+
+    def embed_query(query: str) -> list[float]:
+        return embedder.encode(
+            f"Represent this query for retrieval: {query}",
+            normalize_embeddings=True,
+        ).tolist()
+    ```
+
+    **Retrieval with Reranking** [C]:
+
+    ```python
+    from sentence_transformers import CrossEncoder
+
+    reranker = CrossEncoder("BAAI/bge-reranker-large")
+
+    async def retrieve_with_rerank(
+        query: str,
+        deal_id: Optional[str] = None,
+        k: int = 5,
+        rerank_k: int = 20,
+    ) -> list[Document]:
+        # Stage 1: Dense retrieval
+        query_embedding = embed_query(query)
+
+        candidates = await db.fetch(
+            """
+            SELECT chunk_id, content, metadata,
+                   1 - (embedding <=> $1::vector) as score
+            FROM deal_embeddings
+            WHERE ($2::text IS NULL OR deal_id = $2)
+            ORDER BY embedding <=> $1::vector
+            LIMIT $3
+            """,
+            query_embedding, deal_id, rerank_k,
+        )
+
+        # Stage 2: Cross-encoder reranking
+        pairs = [(query, doc["content"]) for doc in candidates]
+        rerank_scores = reranker.predict(pairs)
+
+        # Combine and sort
+        for doc, score in zip(candidates, rerank_scores):
+            doc["rerank_score"] = float(score)
+
+        candidates.sort(key=lambda x: x["rerank_score"], reverse=True)
+        return candidates[:k]
+    ```
+
+    #### Key Decisions & Rationale
+
+    | Decision | Rationale |
+    |----------|-----------|
+    | pgvector Phase 1, Qdrant Phase 3 | Minimize initial deps; migrate when retrieval demands it [C]
+    |
+    | BGE-M3 embeddings | 72% accuracy, 8K context, MIT license [B] |
+    | Reranking with bge-reranker | Significant quality uplift for top-k [C] |
+    | Deal-scoped filtering | Security: no cross-deal leakage by default |
+
+    #### Failure Modes & Mitigations
+
+    | Failure | Detection | Mitigation |
+    |---------|-----------|------------|
+    | Embedding service down | Health check fails | Degrade to keyword search; alert |
+    | Index corruption | Query returns garbage | Rebuild index from source docs |
+    | Slow retrieval (>250ms) | Latency monitoring | Increase IVFFlat lists; consider Qdrant |
+    | Cross-deal leakage | Security audit | Enforce deal_id filter at query layer |
+
+    #### Observability
+
+    - **Metrics**: retrieval_latency_p95, recall_at_k (offline eval), reranker_uplift
+    - **Logs**: Query text (hashed), filters applied, result count
+    - **Traces**: Span for embed + search + rerank stages
+
+    ---
+
+    ### 5.5 State & Persistence Layer
+
+    #### Purpose
+    Provide durable storage for deal data, agent state, events, and tool execution history.
+
+    #### Responsibilities
+    - Store deal lifecycle data with full history
+    - Persist LangGraph checkpoints for crash recovery
+    - Record all events for audit and replay
+    - Queue tasks for async processing
+
+    #### Internal Design
+
+    **Schema Overview**:
+
+    ```sql
+    -- Core deal tables (existing at :8090)
+    -- deals, deal_events, actions, quarantine_items
+
+    -- Agent checkpoints (LangGraph)
+    CREATE TABLE checkpoints (
+        thread_id TEXT NOT NULL,
+        checkpoint_id TEXT NOT NULL,
+        parent_id TEXT,
+        checkpoint JSONB NOT NULL,
+        metadata JSONB DEFAULT '{}',
+        created_at TIMESTAMPTZ DEFAULT NOW(),
+        PRIMARY KEY (thread_id, checkpoint_id)
+    );
+
+    CREATE INDEX ON checkpoints (thread_id, created_at DESC);
+
+    -- Tool execution log (idempotency + audit)
+    CREATE TABLE tool_executions (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        idempotency_key TEXT UNIQUE,
+        tool_name TEXT NOT NULL,
+        args JSONB NOT NULL,
+        result JSONB,
+        error TEXT,
+        actor_id TEXT NOT NULL,
+        trace_id TEXT,
+        executed_at TIMESTAMPTZ DEFAULT NOW()
+    );
+
+    CREATE INDEX ON tool_executions (tool_name, executed_at DESC);
+    CREATE INDEX ON tool_executions (actor_id);
+
+    -- Task queue (Postgres-based) [B]
+    CREATE TABLE task_queue (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        task_type TEXT NOT NULL,
+        payload JSONB NOT NULL,
+        status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'running', 'completed', 'failed',
+    'dead_letter')),
+        idempotency_key TEXT UNIQUE,
+        priority INT DEFAULT 0,
+        attempts INT DEFAULT 0,
+        max_attempts INT DEFAULT 3,
+        created_at TIMESTAMPTZ DEFAULT NOW(),
+        started_at TIMESTAMPTZ,
+        completed_at TIMESTAMPTZ,
+        error TEXT,
+        next_retry_at TIMESTAMPTZ
+    );
+
+    CREATE INDEX ON task_queue (status, priority DESC, created_at ASC)
+        WHERE status = 'pending';
+    CREATE INDEX ON task_queue (next_retry_at)
+        WHERE status = 'pending' AND next_retry_at IS NOT NULL;
+
+    -- Audit log
+    CREATE TABLE audit_log (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        event_type TEXT NOT NULL,
+        actor_type TEXT NOT NULL CHECK (actor_type IN ('user', 'agent', 'system')),
+        actor_id TEXT NOT NULL,
+        resource_type TEXT NOT NULL,
+        resource_id TEXT,
+        action TEXT NOT NULL,
+        outcome TEXT NOT NULL CHECK (outcome IN ('success', 'failure', 'denied')),
+        details JSONB DEFAULT '{}',
+        trace_id TEXT,
+        created_at TIMESTAMPTZ DEFAULT NOW()
+    );
+
+    CREATE INDEX ON audit_log (resource_type, resource_id, created_at DESC);
+    CREATE INDEX ON audit_log (actor_id, created_at DESC);
+    CREATE INDEX ON audit_log (trace_id);
+    ```
+
+    **Task Queue Worker** [B]:
+
+    ```python
+    async def claim_task() -> Optional[Task]:
+        """Claim next pending task using SKIP LOCKED."""
+        return await db.fetchone(
+            """
+            UPDATE task_queue
+            SET status = 'running', started_at = NOW(), attempts = attempts + 1
+            WHERE id = (
+                SELECT id FROM task_queue
+                WHERE status = 'pending'
+                  AND (next_retry_at IS NULL OR next_retry_at <= NOW())
+                ORDER BY priority DESC, created_at ASC
+                FOR UPDATE SKIP LOCKED
+                LIMIT 1
+            )
+            RETURNING *
+            """
+        )
+
+    async def complete_task(task_id: str, result: dict):
+        await db.execute(
+            """
+            UPDATE task_queue
+            SET status = 'completed', completed_at = NOW(), payload = payload || $2
+            WHERE id = $1
+            """,
+            task_id, json.dumps({"result": result}),
+        )
+
+    async def fail_task(task_id: str, error: str, max_attempts: int):
+        task = await db.fetchone("SELECT attempts FROM task_queue WHERE id = $1", task_id)
+
+        if task["attempts"] >= max_attempts:
+            new_status = "dead_letter"
+            next_retry = None
+        else:
+            new_status = "pending"
+            # Exponential backoff: 30s, 60s, 120s, ...
+            next_retry = datetime.utcnow() + timedelta(seconds=30 * (2 ** task["attempts"]))
+
+        await db.execute(
+            """
+            UPDATE task_queue
+            SET status = $2, error = $3, next_retry_at = $4
+            WHERE id = $1
+            """,
+            task_id, new_status, error, next_retry,
+        )
+    ```
+
+    #### Key Decisions & Rationale
+
+    | Decision | Rationale |
+    |----------|-----------|
+    | PostgreSQL for queue | Sufficient for scale; no Redis needed; transactional with business data
+    [B] |
+    | SKIP LOCKED for claiming | Standard pattern; no external coordinator needed |
+    | Exponential backoff | Industry standard for transient failures |
+    | Dead letter queue | Manual investigation for persistent failures |
+
+    ---
+
+    ### 5.6 Observability Layer
+
+    #### Purpose
+    Provide complete visibility into agent operations for debugging, monitoring, and compliance.
+
+    #### Responsibilities
+    - Collect traces for all agent operations
+    - Aggregate metrics for dashboards and alerting
+    - Store structured logs for debugging
+    - Enable trace replay for failed workflows
+
+    #### Internal Design
+
+    **Stack Selection** [B][C]:
+    - **Tracing**: OpenTelemetry SDK → Langfuse
+    - **Metrics**: OpenTelemetry → Prometheus
+    - **Logs**: Structured JSON → Loki (or file for Phase 1)
+
+    **Langfuse Integration**:
+
+    ```python
+    from langfuse import La
+    from langfuse.decorators import observe
+
+    langfuse = Langfuse(
+        public_key=os.getenv("LANGFUSE_PUBLIC_KEY"),
+        secret_key=os.getenv("LANGFUSE_SECRET_KEY"),
+        host="http://localhost:3001",  # Self-hosted
+    )
+
+    @observe(name="agent_workflow")
+    async def run_agent_workflow(request: AgentRequest) -> AgentResponse:
+        trace = langfuse.trace(
+            name="deal_agent",
+            user_id=request.actor_id,
+            session_id=request.thread_id,
+            metadata={"deal_id": request.deal_id},
+        )
+
+        try:
+            # ... workflow execution ...
+            span = trace.span(name="llm_inference")
+            response = await llm_gateway.complete(...)
+            span.end(output=response.content[:500])  # Truncate for storage
+
+            trace.update(status="success")
+            return response
+        except Exception as e:
+            trace.update(status="error", metadata={"error": str(e)})
+            raise
+    ```
+
+    **Metric Definitions**:
+
+    ```python
+    from opentelemetry import metrics
+
+    meter = metrics.get_meter("zakops_agent")
+
+    # Counters
+    workflow_count = meter.create_counter(
+        "agent.workflow.count",
+        description="Total workflows started",
+    )
+    tool_call_count = meter.create_counter(
+        "agent.tool.call.count",
+        description="Tool calls by tool name",
+    )
+
+    # Histograms
+    workflow_duration = meter.create_histogram(
+        "agent.workflow.duration_ms",
+        description="Workflow duration in milliseconds",
+    )
+    llm_latency = meter.create_histogram(
+        "agent.llm.latency_ms",
+        description="LLM inference latency",
+    )
+
+    # Gauges
+    active_workflows = meter.create_up_down_counter(
+        "agent.workflow.active",
+        description="Currently active workflows",
+    )
+    ```
+
+    **Langfuse Deployment** [B]:
+
+    ```yaml
+    # docker-compose.langfuse.yml
+    services:
+      langfuse:
+        image: langfuse/langfuse:latest
+        ports:
+          - "3001:3000"
+        environment:
+          - DATABASE_URL=postgresql://langfuse:langfuse@postgres:5432/langfuse
+          - NEXTAUTH_SECRET=${LANGFUSE_SECRET}
+          - NEXTAUTH_URL=http://localhost:3001
+          - SALT=${LANGFUSE_SALT}
+        depends_on:
+          - postgres
+    ```
+
+    #### Key Decisions & Rationale
+
+    | Decision | Rationale |
+    |----------|-----------|
+    | Langfuse over LangSmith | Self-hosted, MIT license, full control [B]; LangSmith for tracing only
+     if needed |
+    | OpenTelemetry | Vendor-agnostic, wide ecosystem, standard [C] |
+    | Prometheus for metrics | Already ubiquitous; Grafana dashboards |
+
+    ---
+
+    ### 5.7 Security Layer
+
+    #### Purpose
+    Protect agent operations through authentication, authorization, and audit logging.
+
+    #### Responsibilities
+    - Authenticate API requests
+    - Authorize actions based on actor and permission level
+    - Encrypt sensitive data at rest and in transit
+    - Maintain complete audit trail
+
+    #### Internal Design
+
+    **RBAC Model** [B]:
+
+    ```python
+    class Role(Enum):
+        VIEWER = "viewer"       # Read-only access
+        OPERATOR = "operator"   # Can trigger non-critical actions
+        APPROVER = "approver"   # Can approve critical actions
+        ADMIN = "admin"         # Full access
+
+    ROLE_PERMISSIONS = {
+        Role.VIEWER: {"read"},
+        Role.OPERATOR: {"read", "write"},
+        Role.APPROVER: {"read", "write", "approve"},
+        Role.ADMIN: {"read", "write", "approve", "admin"},
+    }
+
+    async def check_permission(
+        actor: Actor,
+        action: str,
+        resource: Resource,
+    ) -> bool:
+        role = await get_actor_role(actor.id)
+        required_permission = get_required_permission(action, resource)
+        return required_permission in ROLE_PERMISSIONS[role]
+    ```
+
+    **API Authentication**:
+
+    ```python
+    from fastapi import Security, HTTPException
+    from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+
+    security = HTTPBearer()
+
+    async def verify_token(
+        credentials: HTTPAuthorizationCredentials = Security(security),
+    ) -> Actor:
+        token = credentials.credentials
+
+        # Verify JWT or API key
+        try:
+            payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+            return Actor(
+                id=payload["sub"],
+                role=Role(payload["role"]),
+            )
+        except jwt.InvalidTokenError:
+            # Check API key fallback
+            api_key = await db.fetchone(
+                "SELECT actor_id, role FROM api_keys WHERE key_hash = $1 AND revoked_at IS NULL",
+                hash_key(token),
+            )
+            if api_key:
+                return Actor(id=api_key["actor_id"], role=Role(api_key["role"]))
+
+            raise HTTPException(status_code=401, detail="Invalid credentials")
+    ```
+
+    **Secrets Management** [C]:
+
+    ```python
+    # Phase 1: Environment variables (acceptable for single-operator)
+    # Phase 3: HashiCorp Vault integration
+
+    import os
+
+    class SecretManager:
+        def __init__(self):
+            self._cache = {}
+
+        def get(self, key: str) -> str:
+            if key not in self._cache:
+                # Phase 1: Environment
+                value = os.getenv(key)
+                if not value:
+                    raise ValueError(f"Secret {key} not found")
+                self._cache[key] = value
+            return self._cache[key]
+
+        # Phase 3: Vault integration
+        # async def get_from_vault(self, path: str) -> str:
+        #     async with self.vault_client.read(path) as secret:
+        #         return secret["data"]["value"]
+    ```
+
+    **Cloudflare Access (External Exposure)** [C]:
+
+    ```
+    # Cloudflare tunnel config
+    tunnel: <tunnel-id>
+    credentials-file: /root/.cloudflared/<tunnel-id>.json
+
+    ingress:
+      - hostname: zakops-agent.zaksops.com
+        service: http://localhost:8090
+        originRequest:
+          access:
+            required: true
+            teamName: zaksops
+            # Require Cloudflare Access authentication
+      - service: http_status:404
+    ```
+
+    ---
+
+    ## 6. Research Plan & Technical Evaluation
+
+    ### 6.1 Implementable Now vs. Needs Research
+
+    | Component | Status | Notes |
+    |-----------|--------|-------|
+    | vLLM + Qwen3-32B | **Ready** | Well-documented; benchmarks available [B] |
+    | LangGraph + PostgresSaver | **Ready** | Production-proven [A][B][C] |
+    | pgvector | **Ready** | Already in stack |
+    | Direct tools (Deal API) | **Ready** | Existing infrastructure |
+    | Langfuse | **Ready** | Simple Docker deployment |
+    | BGE-M3 embeddings | **Ready** | HuggingFace model |
+    | LiteLLM gateway | **Ready** | pip install |
+    | MCP integration | **Needs Testing** | Verify streamable-http works with LangGraph |
+    | Qwen3 tool calling | **Needs Testing** | Validate Hermes parser accuracy |
+    | Reranker quality uplift | **Needs Research** | Measure actual improvement on deal docs |
+    | Qdrant migration | **Phase 3** | Only if pgvector limits hit |
+    | Hybrid cloud routing | **Needs Research** | Define routing rules; measure cost/quality |
+
+    ### 6.2 Candidate Approaches & Decision Criteria
+
+    **Model Selection Evaluation** (to verify [B] claims):
+
+    ```
+    Test Matrix:
+    ┌────────────────────┬─────────────┬─────────────┬─────────────┐
+    │ Model              │ Tool Acc.   │ Latency     │ VRAM        │
+    ├────────────────┼─────────────┼─────────────┼─────────────┤
+    │ Qwen3-32B-AWQ      │ TBD         │ TBD         │ ~20GB       │
+    │ Qwen2.5-32B-AWQ    │ TBD         │ TBD         │ ~18GB       │
+    │ Llama-3.3-70B-Q4   │ TBD         │ TBD         │ ~40GB (OOM?)│
+    │ DeepSeek-V3-Lite   │ TBD         │ TBD         │ TBD         │
+    └───────────────â──────────┴─────────────┴─────────────┘
+
+    Evaluation Dataset:
+    - 50 tool-calling prompts derived from deal workflows
+    - Ground truth annotations for expected tool + parameters
+    - Measure: exact match, partial match, hallucination rate
+    ```
+
+    **Retrieval Quality Evaluation**:
+
+    ```
+    Test Methodology:
+    1. Build eval set: 100 query-document pairs from real deals
+    2. Measure recall@5, recall@10, MRR
+    3. Compare: pgvector-only vs pgvector+reranker vs Qdrant+reranker
+
+    Acceptance Criteria:
+    - recall@5 ≥ 0.8
+    - Reranker must improve MRR by ≥10% to justify latency cost
+    ```
+
+    ### 6.3 Metrics & Benchmarks
+
+    | Metric | Target | Measurement Method |
+    |--------|--------|-------------------|
+    | Tool call accuracy | ≥95% | Eval set with 50 prompts |
+    | Tool hallucination rate | <1% | Validation rejection logs |
+    | TTFT (32K context) | P95 <2s | Load test |
+    | Token through≥50 tok/s | vLLM benchmark |
+    | Retrieval recall@5 | ≥80% | Offline eval set |
+    | Workflow completion | ≥99% | Production tracking |
+    | Crash recovery | 100% | Chaos testing |
+    | Cloud cost per deal | <$0.50 | Cost tracking |
+
+    ### 6.4 Acceptance Thresholds / Definition of Done
+
+    **Phase 1 (MVP) Done When:**
+    - [ ] vLLM serves Qwen3-32B at ≥50 tok/s
+    - [ ] LangGraph workflow completes simple deal query end-to-end
+    - [ ] State persists across process restart
+    - [ ] Tool lidated and logged
+    - [ ] Langfuse shows complete trace
+
+    **Phase 2 (Hardening) Done When:**
+    - [ ] Tool accuracy ≥95% on eval set
+    - [ ] HITL approval workflow functions
+    - [ ] Queue processes tasks with retry
+    - [ ] Health checks pass continuously for 24h
+    - [ ] Crash recovery verified via chaos test
+
+    ---
+
+    ## 7. Implementation Roadmap
+
+    ### Phase 1: Minimum Viable Agent (Weeks 1-4)
+
+    **Goal**: Working agent that can list deals, check health, and answer questions.
+
+    Deliverables**:
+    - [ ] vLLM container with Qwen3-32B serving on :8000
+    - [ ] LiteLLM proxy with fallback configuration
+    - [ ] LangGraph agent with router → executor → output flow
+    - [ ] PostgresSaver checkpointing
+    - [ ] Direct tool implementations (list_deals, get_deal, check_health)
+    - [ ] Langfuse tracing integration
+    - [ ] CLI for testing: `zakops-agent query "List deals in proposal stage"`
+
+    **Success Criteria**:
+    - Agent answers simple queries correctly
+    - State persiacross restart
+    - Traces visible in Langfuse
+
+    ### Phase 2: Production Hardening (Weeks 5-8)
+
+    **Goal**: Reliable system with observability and approval workflows.
+
+    **Deliverables**:
+    - [ ] Full tool registry with validation
+    - [ ] Permission layer (read/write/critical)
+    - [ ] Idempotency key support
+    - [ ] HITL approval gates
+    - [ ] Task queue with retry
+    - [ ] Health check endpoints
+    - [ ] Error handling and graceful degradation
+    - [ ] Prometheus metrics
+    - [ ] Basic authentication
+
+    **Success Criteria**:
+    - Tool error rate <1%
+    - Approval workflow blocks critical actions
+    - System recovers from crash without data loss
+
+    ### Phase 3: Advanced Features (Weeks 9-14)
+
+    **Goal**: Full deal lifecycle management with memory and cloud routing.
+
+    **Deliverables**:
+    - [ ] Plan-and-Execute pattern for complex tasks
+    - [ ] BGE-M3 embeddings + pgvector retrieval
+    - [ ] Reranking layer
+    - [ ] Hybrid cloud routing with cost tracking
+    - [ ] MCP server integration
+    - [ ] Sub-agents (triage, analysis, drafting)
+    - [ ] Qdrant migration (if needed)
+
+    **Success Criteria**:
+    - Agent processes deal from intake to transition
+    - ≥80% tasks handled locally
+    - Retrieval recall ≥80%
+
+    ### Phase 4: Optimization (Ongoing)
+
+    **Goal**: Performance tuning and cost optimization.
+
+    **Deliverables**:
+    - [ ] Router model fine-tuning
+    - [ ] Prompt optimization
+    - [ ] Response caching
+    - [ ] Batch inference
+    - [ ] Cost/qualityhboard
+
+    ---
+
+    ## 8. Testing Strategy
+
+    ### 8.1 Unit Testing
+
+    ```python
+    # tests/unit/test_tool_validation.py
+    import pytest
+    from zakops_agent.tools import validate_tool_call
+
+    def test_transition_deal_valid():
+        result = validate_tool_call(
+            "transition_deal",
+            {"deal_id": "DL-0001", "new_stage": "qualified", "reason": "Good fit"},
+        )
+        assert result.valid is True
+
+    def test_transition_deal_invalid_stage():
+        result = validate_tool_call(
+            "transition_deal",
+            {"deal_id": "DL-0001", "new_stage": "invalid_stage"},
+        )
+        assert result.valid is False
+        assert "enum" in result.error.lower()
+
+    def test_transition_deal_missing_required():
+        result = validate_tool_call(
+            "transition_deal",
+            {"deal_id": "DL-0001"},  # missing new_stage
+        )
+        assert result.valid is False
+    ```
+
+    ### 8.2 Integration Testing
+
+    ```python
+    # tests/integration/test_workflow_e2e.py
+    import pytest
+    from zakops_agent import create_agent, AgentRequest
+
+    @pytest.fixture
+    async def agent():
+        return create_agent(db_url=TEST_DB_URL)
+
+    async def test_simple_query_workflow(agent):
+        response = await agent.invoke(
+            AgentRequest(
+                message="List all deals in proposal stage",
+                actor_id="test_user",
+            )
+        )
+        assert response.success
+        assert "deals" in response.content.lower()
+
+    async def test_critical_action_requires_approval(agent):
+        response = await agent.invoke(
+            AgentRequest(
+                message="Approve action ACT-001",
+                actor_id="test_user",
+            )
+        )
+        assert response.pending_approval is not None
+        assert response.pending_approval["tool"] == "approve_action"
+
+    async def test_state_persists_across_restart(agent):
+        # Start workflow
+        r1 = await agent.invoke(
+            AgentRequest(
+                thread_id="test-thread",
+                message="Analyze deal DL-0001",
+            )
+        )
+
+        # Simulate restart by creating new agent instance
+        agent2 = create_agent(db_url=TEST_DB_URL)
+
+        # Resume should work
+        r2 = await agent2.invoke(
+            AgentRequest(
+                thread_id="test-thread",
+                message="Continue",
+            )
+        )
+        assert r2.success
+    ```
+
+    ### 8.3 Model Evaluation Harness
+
+    ```python
+    # evals/tool_calling_eval.py
+    import json
+    from pathlib import Path
+
+    EVAL_SET = Path("evals/tool_calling_dataset.jsonl")
+
+    async def evaluate_tool_calling(model_name: str) -> dict:
+        results = {"exact_match": 0, "partial_match": 0, "hallucination": 0, "total": 0}
+
+        with open(EVAL_SET) as f:
+            for line in f:
+                case = json.loads(line)
+                prompt = case["prompt"]
+                expected_tool = case["expected_tool"]
+                expected_args = case["expected_args"]
+
+                response = await llm_gateway.complete(
+                    model=model_name,
+                    messages=[{"role": "user", "content": prompt}],
+                    tools=TOOL_DEFINITIONS,
+                )
+
+                results["total"] += 1
+
+                if response.tool_calls:
+                    actual_tool = response.tool_calls[0].name
+                    actual_args = response.tool_calls[0].arguments
+
+                    if actual_tool == expected_tool and actual_args == expected_args:
+                        results["exact_match"] += 1
+                    elif actual_tool == expected_tool:
+                        results["partial_match"] += 1
+                    else:
+                        results["hallucination"] += 1
+                else:
+                    results["hallucination"] += 1  # Should have called tool
+
+        return {
+            "accuracy": results["exact_match"] / results["total"],
+            "partial_accuracy": (results["exact_match"] + results["partial_match"]) /
+    results["total"],
+            "hallucination_rate": results["hallucination"] / results["total"],
+            "raw": results,
+        }
+    ```
+
+    ### 8.4 Chaos Testing
+
+    ```bash
+    #!/bin/bash
+    # chaos/test_crash_recovery.sh
+
+    echo "Starting workflow..."
+    THREAD_ID=$(curl -s -X POST localhost:8090/agent/invoke \
+      -H "Content-Type: application/json" \
+      -d '{"message": "Analyze deal DL-0001"}' | jq -r '.thread_id')
+
+    echo "Thread: $THREAD_ID"
+    sleep 2
+
+    echo "Killing agent process..."
+    pkill -9 -f "zakops_agent"
+
+    echo "Restarting agent..."
+    python -m zakops_agent.server &
+    sleep 5
+
+    echo "Resuming workflow..."
+    RESULT=$(curl -s -X POST localhost:8090/agent/invoke \
+      -H "Content-Type: application/json" \
+      -d "{\"thread_id\": \"$THREAD_ID\", \"message\": \"Continue\"}")
+
+    if echo "$RESULT" | jq -e '.success' > /dev/null; then
+      echo "PASS: Workflow recovered successfully"
+    else
+      echo "FAIL: Workflow did not recover"
+      exit 1
+    fi
+    ```
+
+    ---
+
+    ## 9. Deployment & Operations
+
+    ### 9.1 Service Configuration
+
+    ```yaml
+    # docker-compose.yml
+    version: "3.8"
+
+    services:
+      vllm:
+        image: vllm/vllm-openai:latest
+        deploy:
+          resources:
+            reservations:
+              devices:
+                - driver: nvidia
+                  count: 1
+                  capabilities: [gpu]
+        volumes:
+          - ~/.cache/huggingface:/root/.cache/huggingface
+        ports:
+          - "8000:8000"
+        command: >
+          --model Qwen/Qwen3-32B-Instruct-AWQ
+          --quantization awq
+          --max-model-len 32000
+          --gpu-memory-utilization 0.90
+          --enable-auto-tool-choice
+          --tool-call-parser hermes
+        healthcheck:
+          test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+          interval: 30s
+          timeout: 10s
+          retries: 3
+
+      agent:
+        build: ./agent
+        depends_on:
+          - vllm
+          - postgres
+        ports:
+          - "8095:8095"
+        environment:
+          - DATABASE_URL=postgresql://zakops:${DB_PASSWORD}@postgres:5432/zakops
+          - VLLM_BASE_URL=http://vllm:8000/v1
+          - LANGFUSE_HOST=http://langfuse:3000
+        healthcheck:
+          test: ["CMD", "curl", "-f", "http://localhost:8095/health"]
+          interval: 30s
+          timeout: 10s
+          retries: 3
+
+      langfuse:
+        image: langfuse/langfuse:latest
+        ports:
+          - "3001:3000"
+        environment:
+          - DATABASE_URL=postgresql://langfuse:${LANGFUSE_DB_PASSWORD}@postgres:5432/langfuse
+          - NEXTAUTH_SECRET=${LANGFUSE_SECRET}
+          - NEXTAUTH_URL=http://localhost:3001
+    ```
+
+    ### 9.2 Health Checks
+
+    ```python
+    # zakops_agent/health.py
+    from fastapi import APIRouter
+
+    router = APIRouter()
+
+    @router.get("/health")
+    async def health():
+        return {"status": "ok"}
+
+    @router.get("/health/ready")
+    async def ready():
+        checks = {}
+
+        # Database
+        try:
+            await db.execute("SELECT 1")
+            checks["database"] = "healthy"
+        except Exception as e:
+            checks["database"] = f"unhealthy: {e}"
+
+        # vLLM
+        try:
+            async with httpx.AsyncClient() as client:
+                r = await client.get("http://localhost:8000/health", timeout=5)
+                checks["vllm"] = "healthy" if r.status_code == 200 else "unhealthy"
+        except Exception as e:
+            checks["vllm"] = f"unhealthy: {e}"
+
+        # Overall
+        all_healthy = all(v == "healthy" for v in checks.values())
+        status_code = 200 if all_healthy else 503
+
+        return JSONResponse(
+            content={"status": "ready" if all_healthy else "not_ready", "checks": checks},
+            status_code=status_code,
+        )
+    ```
+
+    ### 9.3 Monitoring & Alerting
+
+    **Critical Alerts**:
+    - vLLM OOM or crash
+    - Workflow failure rate >5%
+    - Tool hallucination rate >2%
+    - Checkpoint write failures
+    - Queue depth >100 (backlog)
+
+    **Warning Alerts**:
+    - P95 latency >3s
+    - Cloud cost >$10/day
+    - Dead letter queue depth >10
+
+    ---
+
+    ## 10. Risks, Tradeoffs, and Open Questions
+
+    ### 10.1 Risks & Mitigations
+
+    | Risk | Likelihood | Impact | Mitigation |
+    |------|------------|--------|------------|
+    | Qwen3-32B tool accuracy insufficient | Medium | High | Fallback to cloud; fine-tune on deal data
+     |
+    | VRAM constraints with large context | Low | Medium | Reduce max-model-len; cloud escalation |
+    | MCP integration issues (like LangSmith) | Medium | Medium | Direct tool fallback; don't depend
+    on MCP |
+    | Checkpoint bloat | Medium | Low | TTL on old checkpoints; external storage for large data |
+    | Hallucinated critical actions | Low | High | HITL gates; never auto-approve critical |
+
+    ### 10.2 Key Tradeoffs Made
+
+    | Tradeoff | Choice | Alternative | Rationale |
+    |----------|--------|-------------|-----------|
+    | Model size | 32B over 70B | 70B with offload | Latency priority; 32B sufficient for deals [A] |
+    | Vector DB | pgvector first | Qdrant from start | Minimize deps; migrate when needed [C] |
+    | Queue | Postgres over Redis | Redis + Dramatiq | Already have Postgres; simpler ops [B] |
+    | Observability | Langfuse over LangSmith | LangSmith cloud | Self-hosted; no vendor dependency
+    [B] |
+
+    ### 10.3 Open Questions
+
+    1. **Q: How well does Qwen3 handle multi-turn deal conversations?**
+       - *Proposed Test*: Run 20 multi-turn scenarios from real deal history.
+
+    2. **Q: What is the actual reranker quality uplift on deal documents?**
+       - *Proposed Test*: A/B test on 100 retrieval queries.
+
+    3. **Q: When does pgvector hit limits requiring Qdrant?**
+       - *Assumption*: >1M vectors or >250ms P95 latency.
+       - *Proposed Test*: Load test with synthetic data.
+
+    4. **Q: What hybrid routing rules maximize quality while minimizing cost?**
+       - *Proposed Test*: Classify 100 queries by complexity; measure local vs cloud quality.
+
+    ---
+
+    ## 11. Appendix
+
+    ### A. Glossary
+
+    | Term | Definition |
+    |------|------------|
+    | **HITL** | Human-in-the-loop; workflow pauses for human approval |
+    | **Checkpoint** | Serialized agent state saved to database |
+    | **Idempotency Key** | Unique ID ensuring operation executes exactly once |
+    | **Tool Permission** | Classification: read, write, or critical |
+    | **Dead Letter Queue** | Queue for tasks that failed all retries |
+
+    ### B. Decision Log
+
+    | Decision | Chose | Over | Reason |
+    |----------|-------|------|--------|
+    | Primary Model | Qwen3-32B | Qwen2.5-32B | Better tool calling; newer [B] |
+    | Inference Engine | vLLM | TensorRT-LLM | Simpler setup; sufficient perf [A][B][C] |
+    | Framework | LangGraph | AutoGen | Production-proven; checkpointing [A][B][C] |
+    | Vector DB (Ph1) | pgvector | Qdrant | Already present; minimize deps [C] |
+    | Observability | Langfuse | LangSmith | Self-hosted; MIT license [B] |
+    | Queue | Postgres | Redis | No new deps; ACID with business data [B] |
+
+    ### C. What We Removed or Replaced
+
+    | From Inputs | Removed/Replaced | Reason |
+    |-------------|-----------------|--------|
+    | Temporal for all workflows [A] | PostgresSaver + queue | LangGraph has built-in checkpointing |
+    | LangSmith for hosting [A] | Langfuse (self-hosted) | Project context: LangSmith hosting failed |
+    | Redis + Dramatiq [C] | Postgres queue | Simpler; sufficient for scale |
+    | Qdrant from Phase 1 [B] | pgvector first | Minimize initial complexity |
+
+    ### D. Assumptions Made
+
+    1. Qwen3-32B is available and works with Hermes tool parser (to verify)
+    2. RTX 5090 has stable CUDA support for vLLM (to verify)
+    3. 32K context is sufficient for deal workflows (assumption based on [A][B])
+    4. Hundreds of deals/day is target scale (not thousands) [B]
+    5. Single operator (not multi-tenant) [Project Context]
+
+    ### E. Coverage Map Summary
+
+    | Topic | Input A | Input B | Input C | Master Doc |
+    |-------|---------|---------|---------|------------|
+    | Model Selection | Qwen2.5-32B | Qwen3-32B | Qwen2.5/Llama3.3 | Qwen3-32B |
+    | Inference | vLLM | vLLM | vLLM | vLLM |
+    | Framework | LangGraph | LangGraph | LangGraph | LangGraph |
+    | State | Postgres | PostgresSaver | Postgres | PostgresSaver |
+    | Vector DB | pgvector | Qdrant | pgvector→Qdrant | pgvector→Qdrant |
+    | Embeddings | - | BGE-M3 | bge-m3+reranker | BGE-M3+reranker |
+    | Tools | MCP | Hybrid | MCP+internal | Hybrid |
+    | Routing | Semantic | LiteLLM | LiteLLM | LiteLLM |
+    | Obsbility | LangSmith | Langfuse | OTel+Langfuse | OTel+Langfuse |
+    | Queue | Temporal | Postgres | Redis+Dramatiq | Postgres |
+    | Security | - | ABAC/OPA | Cloudflare/RBAC | RBAC+Cloudflare |
+    | Testing | - | - | - | Comprehensive |
+    | Deployment | - | Partial | - | Full |
+
+    ---
+
+    ## 12. Quality Audit
+
+    ### Grades
+
+    | Criterion | Grade | Justification |
+    |-----------|-------|---------------|
+    | **Completeness** | A | Covers all 8 layers + ops + security + testing |
+    | **Correctness** | A- | Resolved all contradictions; some claims need verification |
+    | **Novelty/Edge-of-Tech** | B+ | Uses latest models (Qwen3); standard patterns |
+    | **Engineering Feasibility** | A | Clear interfaces; realistic timelines; existing infra |
+    | **Clarity** | A | ASCII diagrams; tables; consistent terminology |
+
+    ### Top 10 Remaining Weaknesses & Fixes
+
+    | # | Weakness | Fix |
+    |---|----------|-----|
+    | 1 | Qwen3-32B tool accuracy unverified | Run eval set before Phase 1 commit |
+    | 2 | No fine-tuning guidance | Add Phase 4 fine-tuning runbook |
+    | 3 | CI/CD not specified | Add GitHub Actions workflow |
+    | 4 | Rollback strategy vague | Document specific rollback procedures |
+    | 5 | Multi-turn conversation handling unproven | Add eval cases for multi-turn |
+    | 6 | Reranker latency cost not measured | Benchmark before Phase 3 |
+    | 7 | No load testing plan | Add locust/k6 test scripts |
+    | 8 | Secrets management Phase 1 is basic | Document Vault migration path |
+    | 9 | Prompt templates not specified | Add prompt library with versioning |
+    | 10 | No disaster recovery plan | Document backup/restore procedures |
+
+    ---
+
+    *Document synthesized from Inputs A, B, C per rigorous review process.*
+    *Ready for implementation review.*
+
+
+=== S3 (Model 3 Synthesis Output) ===
+
+
+
+• 1. Title + Version
+     ZakOps Deal Lifecycle Agent System — Ultimate Master Document v1.0 (2026-01-22)
+  2. Executive Summary
+     ZakOps requires a local-first, production-grade agent system that orchestrates deal intake,
+     document intelligence, pipeline transitions, action approvals, communications, and quarantine
+     handling. Prior attempts with hosted Agent Builder failed due to MCP tool-binding constraints, so
+     we will implement a fully local architecture with optional tracing-only integrations. The unified
+     design centers on a LangGraph orchestrator, vLLM-served local models, and a hybrid tool gateway
+     (direct tools + MCP), all anchored to existing Deal Lifecycle and RAG APIs. The result is a
+     system that is deterministic, observable, and recoverable by design, while remaining flexible
+     enough to use cloud models only when necessary. [A][B][C]
+
+  - Core decisions: LangGraph for orchestration with Postgres checkpointing, vLLM as primary inference
+    server, Postgres + pgvector as the default memory layer, hybrid tool integration (direct + MCP),
+    and optional cloud fallback through a gateway. [A][B][C]
+  - Conflicts resolved:
+      - Model choice: default to Qwen2.5-32B (current infra fit) with Qwen3-32B and Llama3.3-70B as
+        evaluated candidates; 70B is not assumed to fit in 32GB VRAM without offload. [A][B][C]
+      - Memory: Postgres + pgvector first, with Qdrant/Milvus as scale upgrades; no immediate external
+        vector DB required. [A][B][C]
+      - Reliability queue: start with Postgres-backed queue to minimize moving parts; add Redis/
+        Celery/Dramatiq only if throughput/latency requires it. [B][C]
+  - Status of claims: any quantitative performance claims from inputs (tokens/sec, context limits,
+    benchmark scores) are treated as assumptions and require local validation before adoption. [B]
+
+  3. Design Goals & Non-Goals
+
+  - Goals:
+  - Local-first execution using RTX 5090 hardware; minimal external dependencies. [A][B][C]
+  - Deterministic, recoverable workflows with full auditability and human approval gates. [A][B][C]
+  - Seamless integration with existing Deal Lifecycle API (8090), RAG REST API (8052), MCP server
+    (9100), Next.js UI, and Cloudflare tunnel. [A][C]
+  - Observability from day one: traces, metrics, and replay of agent decisions. [A][B][C]
+  - Hybrid cloud optional for complex reasoning, with strict routing and cost control. [A][B][C]
+  - Non-Goals:
+  - Hosted agent builder or no-code dependency for runtime execution. [A][C]
+  - Mandatory cloud reliance for core workflows. [A][C]
+  - Complex distributed system requirements before validation of MVP scale. [B][C]
+
+  4. System Requirements
+
+  - Functional requirements:
+  - Deal intake and triage. [A][B][C]
+  - Document analysis and structured extraction. [A][B][C]
+  - Pipeline transitions with approval gating. [A][B][C]
+  - Action planning and execution with idempotency. [A][B][C]
+  - Communication drafting and follow-up generation. [A][B][C]
+  - Quarantine management with explicit approve/reject workflows. [A][B][C]
+  - Non-functional requirements:
+  - Latency: sub-2s median response for typical interactive requests (target; to verify). [A][C]
+  - Reliability: recoverable state after crash or restart; zero lost workflow state. [A][B][C]
+  - Privacy: no secret leakage, restricted tool scopes, audit logs. [A][B][C]
+  - Cost: local-first; cloud usage gated and budgeted (target to define per deal). [A][B][C]
+  - Scale: 1–10k deals with document volumes in a single Postgres cluster initially; vector growth
+    plan in place. [A][B][C]
+
+  5. Architecture Overview (high-level)
+
+  - Major components:
+  - Next.js UI (agent visibility and approvals). [C]
+  - Deal Lifecycle API (8090) + Postgres. [C]
+  - RAG REST API (8052). [C]
+  - Agent Orchestrator (LangGraph + Postgres checkpointer). [A][B][C]
+  - Model Gateway (router + local vLLM + optional cloud). [A][B][C]
+  - Tool Gateway (direct tools + MCP tools). [A][B][C]
+  - Observability (OpenTelemetry + Langfuse/Phoenix; optional LangSmith for tracing). [A][B][C]
+  - Security (RBAC/ABAC, Cloudflare Access, audit logging). [B][C]
+  - High-level diagram (ASCII):
+
+  [Next.js UI] -> [Deal Lifecycle API :8090] -> [Agent Orchestrator (LangGraph)]
+                                      |                |
+                                      |                v
+                                      |        [Postgres Checkpoints]
+                                      |
+                                      v
+                               [Tool Gateway]
+                                 |        |
+                                 |        v
+                                 |     [MCP Server :9100]
+                                 v
+                         [Direct Tool Calls]
+                                      |
+                                      v
+                              [Deal DB + Actions]
+
+  [Agent Orchestrator] -> [Model Gateway]
+                           |        |
+                           |        v
+                           |   [Cloud LLMs] (optional)
+                           v
+                        [vLLM Local LLMs]
+
+  [RAG REST API :8052] -> [Postgres + pgvector] -> [Retriever/Reranker]
+
+  - Data flow: UI/API request -> Orchestrator -> Model -> Tool call -> Deal API/RAG -> Postgres
+    updates -> Observability logs. [A][B][C]
+  - Control flow: Orchestrator checkpoints each node; write actions pause at approval gates until
+    human confirmation. [A][B][C]
+  - Key abstractions:
+  - AgentState (thread_id, deal_id, messages, plan, approvals, tool_results). [A][B][C]
+  - ToolRegistry with read/write classification and idempotency. [A][B][C]
+  - ModelRouter with complexity scoring and fallback chain. [A][B][C]
+
+  6. Component-by-Component Design (deep detail)
+
+  Component: Agent Orchestrator (LangGraph)
+
+  - Purpose: Durable, stateful control of multi-step deal workflows. [A][B][C]
+  - Responsibilities: Route requests, manage agent state, invoke tools, enforce approvals, checkpoint
+    after each node. [A][B][C]
+  - Inputs/outputs:
+  - Input: DealRequest {deal_id?, user_id?, intent, payload, approvals?} (proposed schema).
+  - Output: AgentResponse {status, actions, approvals_required, artifacts, summary}.
+  - Internal design: StateGraph with Supervisor node, worker nodes (triage, analysis, drafting), Tool
+    node, Approval node; PostgresSaver for checkpoints. [A][B][C]
+  - Key decisions & rationale: LangGraph chosen for deterministic state and resume capability;
+    replaces procedural orchestration. [A][B][C]
+  - Failure modes & mitigations:
+  - Crash mid-flow -> resume via checkpoint. [A][B][C]
+  - Infinite loop -> node max-iterations and timeout guardrails. [B]
+  - Observability: Trace each node execution, state transitions, tool calls. [A][B][C]
+  - Security & privacy: No secret exposure in state; approvals enforced for write tools. [A][B][C]
+
+  Component: Model Gateway + Router
+
+  - Purpose: Choose local vs cloud model; standardize model API. [A][B][C]
+  - Responsibilities: Complexity scoring, fallback chain, cost tracking, model selection. [A][B][C]
+  - Inputs/outputs:
+  - Input: ModelRequest {prompt, tool_schema, complexity_score, policy_flags}.
+  - Output: ModelResponse {content, tool_calls, confidence, cost_metadata}.
+  - Internal design: Router policy (local-first; cloud fallback) with explicit criteria. [A][B][C]
+  - Key decisions & rationale:
+  - Default local model for most tasks; cloud reserved for high-stakes or complex reasoning. [A][B][C]
+  - Failure modes & mitigations:
+  - Local model failure -> fallback to cloud. [A][B][C]
+  - Excessive cloud usage -> budget limit; route to local. [A][B][C]
+  - Observability: Log model choice, latency, cost per request. [B][C]
+  - Security & privacy: Redact PII before cloud calls when policy requires. (Assumption; to verify
+    with policy tests.)
+
+  Component: Local Inference Server (vLLM)
+
+  - Purpose: Serve local LLMs with high throughput and low latency. [A][B][C]
+  - Responsibilities: Host local model(s), provide OpenAI-compatible API. [A][B][C]
+  - Inputs/outputs: OpenAI-compatible request/response (proposed standard).
+  - Internal design: vLLM with one primary model and optional router model. [A][B][C]
+  - Key decisions & rationale: vLLM chosen for production-grade serving and OpenAI-compatible API. [A]
+    [B][C]
+  - Failure modes & mitigations: GPU OOM -> reduce context, lower batch size, use quantized model. [A]
+    [B]
+  - Observability: GPU utilization, tokens/sec, TTFT, error rate. [B]
+  - Security & privacy: Local-only by default; no external telemetry. [A][C]
+
+  Component: Tool Gateway (Direct + MCP)
+
+  - Purpose: Provide reliable, validated tool execution with approvals. [A][B][C]
+  - Responsibilities: Validate tool calls, enforce permissions, idempotency, and approval flow. [A][B]
+    [C]
+  - Inputs/outputs:
+  - Input: ToolCall {tool_name, params, idempotency_key, approval_status}.
+  - Output: ToolResult {status, payload, error, audit_id}.
+  - Internal design:
+  - Tool registry with READ/WRITE/CRITICAL classification and approval gating. [A][B][C]
+  - Schema validation (Pydantic/JSON schema) and logical validation. [A][B][C]
+  - Key decisions & rationale: Hybrid MCP + direct to balance portability and latency. [A][B][C]
+  - Failure modes & mitigations:
+  - Parameter hallucination -> reject invalid calls; return structured error. [A][B][C]
+  - Write retries -> idempotency keys prevent duplicates. [B][C]
+  - Observability: Log tool success rate, latency, validation failures. [B][C]
+  - Security & privacy:
+  - Auth on MCP server; rate limiting; least-privilege scope. [B]
+  - Approval required for sensitive actions. [A][B][C]
+
+  Component: MCP Server (existing :9100)
+
+  - Purpose: Standardized tool surface for external integrations and portable tools. [A][B][C]
+  - Responsibilities: Expose tools; enforce auth; audit all calls. [B]
+  - Inputs/outputs: MCP streamable-http tools. [C]
+  - Internal design: Keep existing tool list; add auth and idempotency. [B][C]
+  - Failure modes & mitigations:
+  - Unauthenticated access -> enforce Cloudflare Access or local auth. [B][C]
+  - Observability: Tool call traces and errors. [B][C]
+  - Security & privacy: Strict auth and rate limiting; separate read/write tools. [B][C]
+
+  Component: Memory + Storage (Postgres + pgvector)
+
+  - Purpose: Single source of truth for deals, state, embeddings, and audit logs. [A][C]
+  - Responsibilities: Store deal data, agent checkpoints, vector embeddings, and event logs. [A][B][C]
+  - Inputs/outputs:
+  - Input: deal events, embeddings, checkpoints.
+  - Output: query results, retrieval context.
+  - Internal design:
+  - Postgres tables for deals, events, approvals, checkpoints. [A][B][C]
+  - pgvector for semantic retrieval; reranker optional. [A][C]
+  - Key decisions & rationale: Use existing Postgres stack; optional Qdrant/Milvus only when needed.
+    [A][B][C]
+  - Failure modes & mitigations:
+  - Index corruption -> rebuild embeddings; backups. [B]
+  - Observability: Query latency, retrieval hit rate, storage growth. [B][C]
+  - Security & privacy: RLS for deal data; encryption at rest (assumption; to verify).
+
+  Component: RAG REST API (existing :8052)
+
+  - Purpose: Vector search and document retrieval. [C]
+  - Responsibilities: Provide retrieval endpoints; integrate with embeddings and pgvector. [C]
+  - Inputs/outputs: RAG query -> retrieved chunks with metadata.
+  - Internal design: Keep as service; align with Postgres/pgvector strategy. [A][C]
+  - Failure modes & mitigations: Query timeouts -> retries or degrade to keyword search. (Assumption;
+    to verify)
+  - Observability: Query latency, recall metrics. [B][C]
+  - Security & privacy: Access only from internal network/API.
+
+  Component: Observability Stack
+
+  - Purpose: Full traceability, debugging, and performance monitoring. [A][B][C]
+  - Responsibilities: Traces, metrics, logs, evaluation dashboards. [A][B][C]
+  - Internal design: OpenTelemetry + Langfuse or Phoenix; optional LangSmith for tracing only. [A][B]
+    [C]
+  - Key decisions & rationale: Local-first observability; avoid hosted lock-in. [B][C]
+  - Failure modes & mitigations: Trace volume -> sampling and retention policies. [B][C]
+  - Security & privacy: Redact PII in traces by default. [A][C]
+
+  Component: Queue and Reliability Layer
+
+  - Purpose: Durable execution for long-running tasks and retries. [B][C]
+  - Responsibilities: Task scheduling, retries, idempotency, dead-letter handling. [B][C]
+  - Internal design: Start with Postgres-backed queue (SKIP LOCKED) to reduce components; optionally
+    add Redis + Dramatiq/Celery if scale requires. [B][C]
+  - Key decisions & rationale: Minimal moving parts for local-first deployment. [B]
+  - Failure modes & mitigations: Queue backlog -> scaling and monitoring; stuck jobs -> dead-letter
+    and manual review. [B][C]
+  - Observability: Queue depth, retry counts, processing latency. [B][C]
+  - Security & privacy: Worker identity and permission scopes. (Assumption; to verify)
+
+  Component: Security & Access Control
+
+  - Purpose: Protect data, tools, and approvals; comply with auditability. [B][C]
+  - Responsibilities: AuthN/AuthZ, audit logs, secrets management, least privilege. [B][C]
+  - Internal design:
+  - Cloudflare Access for external exposure; RBAC/ABAC policy layer (OPA or Casbin) with API
+    enforcement. [B][C]
+  - Key decisions & rationale: ABAC is best for context-aware approvals; start with RBAC subset for
+    MVP. [B][C]
+  - Failure modes & mitigations: Policy misconfig -> tests and default-deny. [B][C]
+  - Observability: Audit logs for every approval, tool call, and data access. [B][C]
+  - Security & privacy: Secrets externalized; no secrets in repo. [B][C]
+
+  Component: Cloudflare Tunnel
+
+  - Purpose: Optional external access without public exposure. [C]
+  - Responsibilities: Secure ingress to APIs and UI. [C]
+  - Security: Must require Cloudflare Access policy or equivalent. [C]
+
+  7. Research Plan & Technical Evaluation
+
+  - Implementable now (based on inputs):
+  - LangGraph orchestration with Postgres checkpointing. [A][B][C]
+  - vLLM serving Qwen2.5-32B (primary), with hybrid routing. [A][C]
+  - Postgres + pgvector retrieval, with optional reranker. [A][C]
+  - Hybrid tool gateway with approval gating. [A][B][C]
+  - Requires research/validation:
+  - Exact best local model (Qwen2.5-32B vs Qwen3-32B vs Llama 3.3 70B). [A][B][C]
+  - Quantization level tradeoffs and context window stability. [A][B][C]
+  - Whether Postgres-only queue meets latency targets or needs Redis/Dramatiq. [B][C]
+  - Candidate approaches and decision criteria:
+  - Models: compare quality on deal tasks, tool-calling accuracy, latency, and VRAM fit. [A][B][C]
+  - Memory: Postgres + pgvector vs Qdrant/Milvus when scaling beyond current thresholds. [A][B][C]
+  - Observability: Langfuse vs Phoenix vs LangSmith (tracing-only). [A][B][C]
+  - Metrics and benchmarks:
+  - Inference latency (TTFT, p95), tokens/sec, context integrity. [A][B][C]
+  - Tool-call accuracy, parameter validation failure rate, approval latency. [A][B][C]
+  - Retrieval precision@k, recall@k, reranker uplift. [A][B][C]
+  - Ablation plan + experiments:
+  - Model A/B: Qwen2.5-32B vs Qwen3-32B vs Llama3.3-70B (if feasible), fixed prompt suite. [A][B][C]
+  - Tool execution: MCP-only vs hybrid (direct + MCP). [A][B][C]
+  - Memory: pgvector-only vs pgvector + reranker. [A][C]
+  - Acceptance thresholds / Definition of Done:
+  - Recovery from crash with no state loss. [A][B][C]
+  - Tool call success >= 99%, validation failure <= 1%. [A][B][C]
+  - Local processing rate >= 80%. [A][B][C]
+  - Latency targets met for typical interactive tasks (to verify). [A][C]
+
+  8. Implementation Roadmap
+
+  - Phase 1: MVP (2–4 weeks)
+  - vLLM serving primary local model, LangGraph orchestration, basic tool registry, Postgres
+    checkpointing, API endpoints for runs/threads. [A][B][C]
+  - Phase 2: Hardening (4–6 weeks)
+  - Full observability, idempotency, approval gates, authentication, and retry logic. [A][B][C]
+  - Phase 3: Advanced (4–8 weeks)
+  - Multi-agent specialization, hybrid routing, reranking, and expanded tool suite. [A][B][C]
+  - Phase 4: Optimization (ongoing)
+  - Quantization sweeps, caching, latency tuning, and optional TensorRT-LLM exploration. [A][B][C]
+  - Dependencies:
+  - Stable Deal Lifecycle API and RAG API, MCP server compatibility, Postgres schema alignment. [C]
+  - Risk management plan:
+  - Feature flags for model/router changes, reversible tool gating, and incremental rollout. [A][B][C]
+
+  9. Testing Strategy
+
+  - Unit tests: Tool schema validation, router decisions, approval gates. [A][B][C]
+  - Integration tests: Orchestrator -> Tool Gateway -> Deal API/RAG API. [A][B][C]
+  - E2E tests: Full deal flow from intake to transition with approval. [A][B][C]
+  - Model eval harness: Offline prompts + tool-call simulation; online A/B for real traffic. [A][B][C]
+  - Red-teaming / adversarial testing: Prompt injection in deal docs, tool misuse attempts, and
+    authorization bypass attempts. [B][C]
+
+  10. Deployment & Operations
+
+  - Runtime considerations:
+  - GPU utilization controls, batch sizes, and context-window caps to prevent OOM. [A][B][C]
+  - Scaling strategy:
+  - Single host first; expand to multi-service only after stable throughput metrics. [B][C]
+  - Monitoring and incident response:
+  - OpenTelemetry traces; alerts for tool error rate, queue backlog, and model errors. [A][B][C]
+  - Upgrade path:
+  - Model upgrades behind feature flags; staged rollout with regression suite. [A][B][C]
+
+  11. Risks, Tradeoffs, and Open Questions
+
+  - Model quality vs latency (32B vs 70B) remains unresolved; requires empirical testing. [A][B][C]
+  - MCP security posture requires explicit auth and rate limiting; current state unknown. [B]
+  - Whether Postgres-only queue meets reliability/latency targets is uncertain; may require Redis. [B]
+    [C]
+  - RAG relevance for long documents depends on reranking; evaluate on real deal data. [A][C]
+  - Hybrid cloud routing must be policy-driven to avoid cost spikes; thresholds need definition. [A]
+    [B][C]
+
+  12. Appendix
+
+  - Glossary:
+  - Deal Lifecycle API: existing API at 8090 with deal CRUD and workflow actions. [C]
+  - RAG REST API: existing retrieval service at 8052. [C]
+  - MCP: Model Context Protocol tool server. [A][B][C]
+  - Decision log (what chosen and why):
+  - Orchestration: LangGraph chosen for durable, stateful flows with checkpointing. [A][B][C]
+  - Inference: vLLM selected as primary server; TensorRT-LLM optional later. [A][B][C]
+  - Memory: Postgres + pgvector as default; Qdrant/Milvus optional for scale. [A][B][C]
+  - Tooling: Hybrid direct + MCP to balance latency and portability. [A][B][C]
+  - Observability: OpenTelemetry + Langfuse/Phoenix; LangSmith only for tracing if desired. [A][B][C]
+  - What we removed or replaced:
+  - Hosted Agent Builder and no-code runtime replaced by local orchestration. [A][C]
+  - Temporal removed from core agent execution; only optional for cron if required. [A]
+  - Assumptions made:
+  - Quantitative benchmarks (tokens/sec, context limits) are not accepted without local tests. [B]
+  - Some model claims (Qwen3 equivalences) are hypotheses pending evaluation. [B]
+  - Coverage Map Summary:
+  - Input A contributed: LangGraph + Postgres checkpointing, Qwen2.5-32B preference, MCP validation,
+    human approvals, and recovery patterns. [A]
+  - Input B contributed: expanded model/inference comparisons, hybrid tools architecture, Qdrant
+    option, ABAC/OPA security framing, and detailed observability/reliability patterns. [B]
+  - Input C contributed: integrated system summary, local-first with hybrid cloud, and consolidated
+    layer recommendations. [C]
+
+  13. Quality Audit
+
+  - Grades: completeness A-, correctness B+, novelty/edge-of-tech B, engineering feasibility A-,
+    clarity A-
+  - Top 10 remaining weaknesses + fix:
+  - Lack of empirical benchmarks on local hardware -> run standardized eval suite across candidate
+    models. [A][B][C]
+  - Unvalidated tool-call accuracy -> build tool-call replay harness with schema enforcement. [A][B]
+    [C]
+  - RAG precision not measured -> create deal-doc evaluation set with human labels. [A][C]
+  - Router policy thresholds undefined -> define explicit complexity scoring and cost caps. [A][B][C]
+  - Queue choice not proven -> test Postgres queue under load; add Redis if needed. [B][C]
+  - Security policy details incomplete -> implement RBAC baseline and incremental ABAC policies with
+    tests. [B][C]
+  - Approval workflow UX unspecified -> define UI state transitions and API contract. (Assumption; to
+    design)
+  - Secret management details shallow -> formalize rotation and storage procedures. [B][C]
+  - Cloud fallback data handling unclear -> define redaction rules and user consent. [A][B][C]
+  - Recovery procedures under partial failure -> add chaos tests and documented runbooks. [A][B][C]

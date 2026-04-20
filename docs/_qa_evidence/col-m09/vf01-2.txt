@@ -1,0 +1,8 @@
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/migrate/migrate.py:40:    batch_size: int = 100,
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/migrate/migrate.py:52:        batch_size (int, optional): Batch size for scrolling and uploading vectors. Defaults to 100.
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/migrate/migrate.py:68:        _migrate_collection(source_client, dest_client, collection_name, batch_size)
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/migrate/migrate.py:72:        _migrate_collection(source_client, dest_client, collection_name, batch_size)
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/migrate/migrate.py:161:    batch_size: int = 100,
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/migrate/migrate.py:169:        batch_size (int, optional): Batch size for scrolling and uploading vectors. Defaults to 100.
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/migrate/migrate.py:178:            collection_name, offset=next_offset, limit=batch_size, with_vectors=True
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/qdrant_client.py:3089:            batch_size: Batch size to be in scroll and upsert operations during migration

@@ -1,0 +1,66 @@
+import { NextRequest, NextResponse } from 'next/server';
+
+const AGENT_API_URL =
+  process.env.AGENT_LOCAL_URL || 'http://localhost:8095';
+
+/**
+ * POST /api/chat/execute-proposal
+ *
+ * Execute or reject an approved chat proposal.
+ * COL-V2 S15: Wired to Agent API proposal pipeline.
+ */
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const {
+      proposal_id,
+      session_id,
+      message_id,
+      approved_by,
+      action = 'approve',
+      reject_reason,
+    } = body;
+
+    const resp = await fetch(
+      `${AGENT_API_URL}/api/v1/chatbot/proposals/execute`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          thread_id: session_id,
+          message_id: message_id || '',
+          proposal_id,
+          action,
+          reject_reason,
+        }),
+      }
+    );
+
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({ detail: resp.statusText }));
+      return NextResponse.json(
+        {
+          error: 'proposal_error',
+          message: err.detail || 'Proposal execution failed',
+          proposal_id,
+        },
+        { status: resp.status }
+      );
+    }
+
+    const result = await resp.json();
+    return NextResponse.json(result);
+  } catch (error) {
+    console.warn(
+      '[Execute Proposal] Agent API unavailable:',
+      error instanceof Error ? error.message : error
+    );
+    return NextResponse.json(
+      {
+        error: 'proposal_error',
+        message: error instanceof Error ? error.message : 'Unknown error',
+      },
+      { status: 502 }
+    );
+  }
+}

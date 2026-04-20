@@ -1,0 +1,2 @@
+1550:            ON CONFLICT (message_id) DO NOTHING
+1567:        # Race condition safety: if ON CONFLICT triggered (row is None),

@@ -1,0 +1,2 @@
+33:462-            return json.dumps({
+35:464-                "error": f"Invalid stage '{stage}'. Valid stages: {', '.join(sorted(VALID_STAGES))}",

@@ -1,0 +1,11 @@
+=== Contract ===
+| `email_sync` | Items from the email synchronization pipeline |
+| `langsmith_shadow` | LangSmith shadow-mode items (measurement only) |
+| `langsmith_live` | LangSmith live-mode items |
+| `manual` | Manually injected items |
+=== Dashboard ===
+<option value='email_sync'>Email sync</option>
+<option value='langsmith_shadow'>LangSmith shadow</option>
+<option value='langsmith_live'>LangSmith live</option>
+<option value='manual'>Manual</option>
+VERDICT: All 4 values match (email_sync, langsmith_shadow, langsmith_live, manual). PASS.

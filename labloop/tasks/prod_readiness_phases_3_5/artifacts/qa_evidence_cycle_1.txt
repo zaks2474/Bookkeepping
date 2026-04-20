@@ -1,0 +1,66 @@
+=== AUTO-COLLECTED EVIDENCE (Cycle 1) ===
+Timestamp: 2026-01-25T08:58:41Z
+
+--- git status ---
+ M Makefile
+?? .test_venv/
+?? apps/agent-api/app/core/middleware/
+?? apps/agent-api/app/core/security/output_validation.py
+?? apps/agent-api/app/core/security/rbac_coverage.py
+?? apps/agent-api/app/core/telemetry/
+?? apps/agent-api/evals/datasets/tool_selection/
+?? apps/agent-api/evals/golden_trace.schema.json
+?? apps/agent-api/evals/golden_trace_runner.py
+?? apps/agent-api/evals/golden_traces/
+?? apps/agent-api/tests/
+?? apps/backend/tests/security/
+?? apps/dashboard/src/components/audit/
+?? artifacts/perf/
+?? artifacts/policies/
+?? artifacts/quality/
+?? artifacts/security/
+?? docs/agent/
+?? docs/perf/
+?? docs/risk/
+?? docs/security/THREAT_MODEL.md
+?? docs/security/api_top10.yaml
+?? docs/security/asvs_l1.yaml
+?? docs/slos/
+?? docs/ux/
+?? ops/external_access/
+?? tools/gates/golden_trace_gate.sh
+?? tools/gates/owasp_llm_gate.sh
+?? tools/gates/phase0_risk_gate.sh
+?? tools/gates/phase0_slo_gate.sh
+?? tools/gates/phase2_trust_ux_gate.sh
+?? tools/gates/phase3_security_gate.sh
+?? tools/gates/phase4_external_access_gate.sh
+?? tools/gates/phase5_performance_gate.sh
+?? tools/load-tests/
+?? tools/quality/
+?? tools/scripts/
+
+--- Recent changes (git diff --stat) ---
+ Makefile                              | 48 +++++++++++++++++++++++++++++++++++
+ apps/dashboard/Dockerfile             |  8 +++++-
+ deployments/docker/docker-compose.yml |  8 +-----
+ 3 files changed, 56 insertions(+), 8 deletions(-)
+
+--- Directory listing (top-level) ---
+total 68
+drwxr-xr-x 12 zaks zaks 4096 Jan 25 02:55 .
+drwxrwx--- 45 zaks zaks 4096 Jan 23 18:09 ..
+drwxr-xr-x  8 zaks zaks 4096 Jan 25 02:58 .git
+drwxr-xr-x  3 zaks zaks 4096 Jan 22 23:19 .github
+-rw-r--r--  1 root root 2890 Jan 24 23:20 .gitignore
+drwxr-xr-x  5 root root 4096 Jan 25 02:12 .test_venv
+-rw-r--r--  1 zaks zaks 1075 Jan 22 23:19 LICENSE
+-rw-r--r--  1 root root 7871 Jan 25 02:55 Makefile
+-rw-r--r--  1 root root 2521 Jan 25 00:44 README.md
+drwxr-xr-x  5 root root 4096 Jan 24 23:18 apps
+drwxr-xr-x  9 root root 4096 Jan 25 02:44 artifacts
+drwxr-xr-x  3 root root 4096 Jan 24 23:15 deployments
+drwxr-xr-x 12 zaks zaks 4096 Jan 25 02:44 docs
+drwxr-xr-x  5 root root 4096 Jan 25 02:44 ops
+drwxr-xr-x  3 root root 4096 Jan 24 23:15 packages
+drwxr-xr-x  7 root root 4096 Jan 25 02:44 tools

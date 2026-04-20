@@ -1,0 +1,22 @@
+=== XC-3 SURFACE ALIGNMENT ===
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:12:Per builder baseline loading, this mission references existing operating context rather than repeating it: `CLAUDE.md`, `MEMORY.md`, 10 hooks, 7 path-scoped rules, deny rules, and delegated agents. This mission extends governance tracking to 16 contract surfaces (including S15 and S16), preserves the standing 7-rule infrastructure discipline, and enforces mission-specific deviations and sequencing below.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:95:| S15 | MCP Bridge Tool Interface contract surface; bridge implementation must match tool schema validators |
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:96:| S16 | Email Triage Injection contract surface; LangSmith output must remain schema-valid through bridge to backend ingestion |
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:103:## Contract Surface Matrix (S1-S16)
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:113:| S6 | MCP Tools | Yes | P1, P6 | `cd /home/zaks/zakops-agent-api && make validate-surface6` |
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:115:| S8 | Agent Config | Yes | P1, P3 | `cd /home/zaks/zakops-agent-api && make validate-agent-config` |
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:119:| S12 | Error Taxonomy | Yes | P1, P4, P5 | `cd /home/zaks/zakops-agent-api && make validate-surface12` |
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:120:| S13 | Test Coverage | Yes | P1, P2, P4, P8 | `cd /home/zaks/zakops-agent-api && make validate-surface13` |
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:122:| S15 | MCP Bridge Tool Interface | Yes | P0, P1, P6 | `cd /home/zaks/zakops-agent-api && make validate-surface15` |
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:123:| S16 | Email Triage Injection | Yes | P0, P1, P4, P5 | `cd /home/zaks/zakops-agent-api && make validate-surface16` |
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:185:| 5 | Long execution causes context loss and skipped surfaces | HIGH | Hidden contract drift | Context checkpoint after Phase 4 + explicit S1-S16 phase gates |
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:234:- `cd /home/zaks/zakops-agent-api && make validate-surface10 && make validate-surface11 && make validate-surface15 && make validate-surface16`
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:278:- `cd /home/zaks/zakops-agent-api && make validate-surface6 && make validate-agent-config && make validate-surface12 && make validate-surface13 && make validate-surface15 && make validate-surface16`
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:324:- `cd /home/zaks/zakops-agent-api && make validate-surface9 && make validate-surface13`
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:364:- `cd /home/zaks/zakops-agent-api && make validate-agent-config`
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:402:- `cd /home/zaks/zakops-agent-api && make validate-surface12 && make validate-surface13 && make validate-surface16`
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:449:- `cd /home/zaks/zakops-agent-api && make validate-surface12 && make validate-surface16`
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:488:- `cd /home/zaks/zakops-agent-api && make validate-surface6 && make validate-surface15`
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:562:- `cd /home/zaks/zakops-agent-api && make validate-surface13 && make validate-surface14`
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:637:4. Governance safety: all affected surfaces (especially S10-S16) must have explicit phase gates.
+/home/zaks/bookkeeping/docs/QA-ET-VALIDATION-P1-VERIFY-001.md:462:  rg -n 'S6|S8|S12|S13|S15|S16|make validate-surface6|make validate-agent-config|make validate-surface12|make validate-surface13|make validate-surface15|make validate-surface16' \

@@ -1,0 +1,7 @@
+DIFF OUTPUT (only difference is timestamp comment on line 3):
+3c3
+< #   timestamp: 2026-02-06T23:21:21+00:00
+---
+> #   timestamp: 2026-02-06T23:21:22+00:00
+
+VERDICT: PASS (timestamp-only diff is expected codegen behavior)

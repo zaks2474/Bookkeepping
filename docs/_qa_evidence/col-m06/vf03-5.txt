@@ -1,0 +1,3 @@
+Injects invisible markers into high/critical sensitivity RAG chunks.
+SENSITIVE_LEVELS = {"high", "critical"}
+    def _is_sensitive(self, sensitivity: str) -> bool:

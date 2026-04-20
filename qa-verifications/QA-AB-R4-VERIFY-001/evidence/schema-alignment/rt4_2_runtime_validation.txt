@@ -1,0 +1,5 @@
+=== OpenAPI Runtime Validation ===
+Manual verification required:
+1. Compare backend_raw_response.json against OpenAPI Deal schema
+2. Verify all required fields are present
+3. Verify field types match spec

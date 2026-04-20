@@ -1,0 +1,51 @@
+=== V-L6: ADR-001 Search ===
+Date: 2026-02-09T04:56:22Z
+
+--- Monorepo search ---
+
+--- Evidence root search ---
+
+--- Content references in monorepo ---
+(no references)
+
+--- Content references in bookkeeping ---
+/home/zaks/bookkeeping/CHANGES.md:3:2026-02-09: **QA-DI-VERIFY-UNIFIED — FINAL REPORT COMPILED**: Full 113-gate adversarial QA verification of DEAL-INTEGRITY-UNIFIED-001 "FOUNDATION ZERO" complete. **Verdict: CONDITIONAL PASS** — 102/113 PASS outright (90.3%), 107/113 PASS or PARTIAL (94.7%). **All 6 layers verified:** L1 10/10, L2 13/16 (2 partial, 1 fail), L3 12/12, L4 8/11 (1 conditional, 1 fail, 2 deferred), L5 12/12, L6 6/7. **Red-Team: 19/20 PASS.** **Negative Controls: 8/9 PASS.** **16 cross-reference drops: 14 addressed, 1 fail, 2 accepted-low.** **4 outstanding failures:** (1) ADR-001 not at canonical path, (2) /api/actions/kinetic HTTP 500, (3-4) innovation roadmap 8/34 items. **No functional regression, no data integrity issue, no infrastructure gap.** `make validate-local` PASS. Pipeline parity confirmed: API=31, Summary=31. **Report:** `qa-verifications/QA-DI-VERIFY-UNIFIED/evidence/FINAL-verification/final_report.txt`. **Evidence:** 13 subdirectories with per-gate evidence files.
+/home/zaks/bookkeeping/CHANGES.md:7:2026-02-09: **QA-DI-VERIFY-UNIFIED — Layer 5, Layer 6, and Red-Team (RT1-RT20) Verification Complete**: Independent QA verification of DEAL-INTEGRITY-UNIFIED builder output. **Layer 5 (12/12 PASS, 2 partial):** 47 test files across 3 repos inventoried; DI-ISSUE-001 archive/restore integration tests confirmed (deal excluded from active after archive, returned after restore); pipeline count invariant tests verified (sum + per-stage); contract schema tests validate against OpenAPI; make validate-local passes all gates; performance baselines real (0.228ms/0.109ms query, 1-4ms API); 9 indexes on deals table confirmed; health endpoint reports dynamic DB identity; audit_trail + deal_events (99 rows) provide full transition logging. **Layer 6 (6/7 PASS, 1 FAIL):** ADR-001/002/003 all exist with substantive content (55/88/79 lines, 0 TODO/TBD); ADR-001 discusses Options A/B/C with rationale; runbook has 9 testable steps with make/npm/SQL commands; change protocol covers 7 trigger files + 7 checks. **FAIL: V-L6-INNOVATION/RT-15** — innovation roadmap has 8 themed ideas, not 34 I-XX numbered entries. **Red-Team (19/20 PASS, 1 FAIL):** transition_deal_state() is 78-line real PL/pgSQL (RT-1); CHECK constraints are real (RT-2); trigger fires with auto-correct logic (RT-3); 99 audit events + audit_trail JSONB (RT-4); 26 files import stage config (RT-5); server-side counting in hq + dashboard (RT-6); ErrorBoundary with componentDidCatch (RT-7); allSettled results checked fulfilled/rejected (RT-8); DSN gate raises RuntimeError (RT-9); dynamic DB info from SQL (RT-10); real timing numbers (RT-11); 40+ expect() assertions (RT-12); ADRs substantive (RT-13); runbook has concrete commands (RT-14); sync-all-types has 4 sub-targets (RT-16); generated files current (RT-17); organizational root cause acknowledged (RT-18); all 14 columns match DB (RT-19); Q1-Q10 formally answered (RT-20). **Overall: 37/39 PASS (95%).** **Evidence:** `/home/zaks/bookkeeping/qa-verifications/QA-DI-VERIFY-UNIFIED/evidence/`.
+/home/zaks/bookkeeping/qa-verifications/DEAL-INTEGRITY-UNIFIED/layer-6/completion-report.md:13:| L6-1 | PASS | ADR-001 exists at `layer-2/evidence/migration/ADR-001-deal-lifecycle-fsm.md` — documents Option A decision, FSM design, valid states, transition function, constraints |
+/home/zaks/bookkeeping/qa-verifications/DEAL-INTEGRITY-UNIFIED/layer-6/completion-report.md:23:1. **ADR-001: Deal Lifecycle State Machine** (Layer 2 evidence)
+/home/zaks/bookkeeping/qa-verifications/DEAL-INTEGRITY-UNIFIED/layer-2/completion-report.md:13:| L2-1 | PASS | ADR-001 in `evidence/migration/ADR-001-deal-lifecycle-fsm.md` |
+/home/zaks/bookkeeping/qa-verifications/DEAL-INTEGRITY-UNIFIED/layer-2/completion-report.md:32:1. **ADR-001**: Documented Option A decision with full FSM rationale and Option C migration path
+/home/zaks/bookkeeping/qa-verifications/DEAL-INTEGRITY-UNIFIED/layer-2/evidence/migration/ADR-001-deal-lifecycle-fsm.md:1:# ADR-001: Deal Lifecycle State Machine Design
+/home/zaks/bookkeeping/qa-verifications/QA-DI-VERIFY-UNIFIED/evidence/V-L2-data-model-integrity/V-L2.1-ADR-001.md:1:# V-L2.1: ADR-001 Exists
+/home/zaks/bookkeeping/qa-verifications/QA-DI-VERIFY-UNIFIED/evidence/V-L2-data-model-integrity/V-L2.1-ADR-001.md:10:ADR-001 does not exist. Related ADRs found:
+/home/zaks/bookkeeping/qa-verifications/QA-DI-VERIFY-UNIFIED/evidence/V-L2-data-model-integrity/V-L2.1-ADR-001.md:14:ADR-001 (presumably covering the deal lifecycle FSM decision) is missing.
+/home/zaks/bookkeeping/qa-verifications/QA-DI-VERIFY-UNIFIED/evidence/UNIFIED-SUMMARY.md:30:| V-L6.1 | PASS | ADR-001: Lifecycle State Machine (55 lines) |
+/home/zaks/bookkeeping/qa-verifications/QA-DI-VERIFY-UNIFIED/evidence/FINAL-verification/final_report.txt:41:V-L2.1:  FAIL  ADR-001 not at canonical path (exists at layer-2/evidence/migration/)
+/home/zaks/bookkeeping/qa-verifications/QA-DI-VERIFY-UNIFIED/evidence/FINAL-verification/final_report.txt:110:V-L6.1:  PASS  ADR-001: Lifecycle State Machine (55 lines)
+/home/zaks/bookkeeping/qa-verifications/QA-DI-VERIFY-UNIFIED/evidence/FINAL-verification/final_report.txt:214:DROP-M1: ADDRESSED — ADR-001 has 7 option references, A/B/C rationale (V-L6-ADR)
+/home/zaks/bookkeeping/qa-verifications/QA-DI-VERIFY-UNIFIED/evidence/FINAL-verification/final_report.txt:271:1. V-L2.1 (ADR-001 path): ADR-001 exists at layer-2/evidence/migration/
+/home/zaks/bookkeeping/qa-verifications/QA-DI-VERIFY-UNIFIED/evidence/RT-red-team/RT-report.md:208:| ADR-001 | 55 | 0 |
+/home/zaks/bookkeeping/qa-verifications/QA-DI-VERIFY-UNIFIED/evidence/V-L6-governance-evolution/V-L6-report.md:6:### V-L6.1: ADR-001 Exists (Lifecycle State Machine) — PASS
+/home/zaks/bookkeeping/qa-verifications/QA-DI-VERIFY-UNIFIED/evidence/V-L6-governance-evolution/V-L6-report.md:8:File: `layer-2/evidence/migration/ADR-001-deal-lifecycle-fsm.md` (55 lines)
+/home/zaks/bookkeeping/qa-verifications/QA-DI-VERIFY-UNIFIED/evidence/V-L6-governance-evolution/V-L6-report.md:17:### V-L6-ADR: ADR-001 Includes Operator Decision Rationale — PASS
+/home/zaks/bookkeeping/qa-verifications/QA-DI-VERIFY-UNIFIED/evidence/V-L6-governance-evolution/V-L6-report.md:19:ADR-001 explicitly discusses all three options:
+/home/zaks/bookkeeping/qa-verifications/QA-DI-VERIFY-UNIFIED/evidence/V-L6-governance-evolution/V-L6-report.md:97:| V-L6.1 | **PASS** — ADR-001 exists with full FSM design |
+/home/zaks/bookkeeping/qa-verifications/QA-DI-VERIFY-UNIFIED/evidence/D-drops-audit/drop_m1.txt:10:--- /home/zaks/bookkeeping/qa-verifications/DEAL-INTEGRITY-UNIFIED/layer-2/evidence/migration/ADR-001-deal-lifecycle-fsm.md ---
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:107:| DROP-M1 | Operator Decisions 1-4 rationale (3 options each with tradeoffs) not documented in ADRs | MASTER Section 3 | Layer 6 ADR-001 | V-L6-ADR |
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:325:**Mission requires:** Option A FSM with transition function, triggers, CHECK constraints, backfill, audit_trail, concurrency, ADR-001.
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:331:# V-L2.1: ADR-001 exists and documents Option A
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:332:find "$EVIDENCE_ROOT" "$MONOREPO" -name "ADR-001*" -o -name "adr-001*" -o -name "adr_001*" 2>/dev/null \
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:475:| V-L2.1 | ADR-001 exists (Option A + FSM + Option C path) | file present, documents decision | adr001_*.txt | |
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:834:**Mission requires:** ADR-001/002/003, runbook, innovation roadmap, change protocol.
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:840:# V-L6.1: ADR-001 — Lifecycle State Machine
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:841:find "$MONOREPO" "$EVIDENCE_ROOT" -name "ADR-001*" -o -name "adr-001*" 2>/dev/null \
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:846:# V-L6-ADR: ADR-001 includes operator decision rationale (DROP-M1)
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:886:| V-L6.1 | ADR-001 exists and accurate | file present, > 20 lines | adr001_search.txt | **REMEDIATE IF MISSING** |
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:887:| V-L6-ADR | ADR-001 includes decision rationale (DROP-M1) | 3+ alternatives discussed | adr001_rationale_check.txt | **REMEDIATE IF MISSING** |
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:1419:# ADR-001 must discuss all 3 options
+/home/zaks/bookkeeping/docs/MISSION-DEAL-INTEGRITY-UNIFIED.md:128:| Q7 | **Lifecycle model decision — DECIDED: Option A with full FSM infrastructure.** Retain the three-field system, add `transition_deal_state()` as the single choke point, CHECK constraints, DB trigger, and `audit_trail` logging. Design the transition function so a future migration to Option C (lifecycle ENUM) requires changing only that one function. Document as ADR-001. | Layer 2: Scope (first action) |
+/home/zaks/bookkeeping/docs/MISSION-DEAL-INTEGRITY-UNIFIED.md:303:   **Document this decision** as ADR-001 in the evidence directory. This ADR will be formalized in Layer 6.
+/home/zaks/bookkeeping/docs/MISSION-DEAL-INTEGRITY-UNIFIED.md:363:| GATE L2-1 | ADR-001 documents Option A with full FSM infrastructure, including rationale for why Option A now and the path to Option C later | ADR file in evidence directory |
+/home/zaks/bookkeeping/docs/MISSION-DEAL-INTEGRITY-UNIFIED.md:797:1. **ADR-001: Deal Lifecycle State Machine Design.** Document:
+/home/zaks/bookkeeping/docs/MISSION-DEAL-INTEGRITY-UNIFIED.md:864:| GATE L6-1 | ADR-001 (Lifecycle State Machine) exists and accurately describes the Layer 2 implementation | ADR file reviewed for accuracy against actual implementation |
+(no references)

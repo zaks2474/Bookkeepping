@@ -1,0 +1,6 @@
+=== VF-04.1 FAILURE INJECTION ===
+[36m=== Infrastructure Snapshot ===[0m
+[33mgenerate-manifest.sh not found at /does/not/exist — skipping[0m
+make: *** [Makefile:470: infra-snapshot] Error 1
+injected_exit_code=2
+PASS: non-zero exit on injected failure

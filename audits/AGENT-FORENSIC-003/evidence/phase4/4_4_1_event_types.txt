@@ -1,0 +1,15 @@
+=== CHECK 4.4.1: Event Type Inventory ===
+Timestamp: 2026-02-03T13:09:45-06:00
+Command: SELECT event_type, COUNT(*) as count FROM audit_log GROUP BY event_type ORDER BY count DESC;
+
+time="2026-02-03T13:09:45-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-03T13:09:45-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+        event_type        | count 
+--------------------------+-------
+ tool_execution_completed |    26
+ approval_claimed         |    26
+ tool_execution_started   |    26
+ approval_approved        |    26
+ approval_rejected        |     4
+(5 rows)
+

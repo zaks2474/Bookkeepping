@@ -1,0 +1,16 @@
+1:"""PlanAndExecute Graph — Complex query decomposition and synthesis.
+5:(potentially calling specialist nodes or tools), and synthesizes
+22:        self.step_type = step_type  # "analysis", "lookup", "comparison", "synthesis"
+31:    Flow: plan steps → execute each → synthesize results.
+39:        """Plan, execute, and synthesize a complex query.
+46:            Dict with plan, step_results, synthesized_response, steps_executed
+54:                "synthesized_response": "",
+94:        # 3. Synthesize: merge step results into coherent response
+95:        synthesized = self._synthesize(query, step_results)
+106:            "synthesized_response": synthesized,
+123:            steps.append(PlanStep("Synthesize comparison findings", "synthesis"))
+128:            steps.append(PlanStep("Summarize findings and recommendations", "synthesis"))
+133:            steps.append(PlanStep("Outline actionable steps", "synthesis"))
+138:            steps.append(PlanStep("Propose mitigation strategies", "synthesis"))
+173:        elif step.step_type == "synthesis":
+179:    def _synthesize(self, query: str, step_results: list[dict]) -> str:

@@ -1,0 +1,13 @@
+UNIQUE constraint search:
+79:    CONSTRAINT uq_thread_turn UNIQUE (thread_id, turn_number)
+122:    -- QA logical key anchor: UNIQUE(thread_id, turn_number)
+161:    UNIQUE(thread_id, turn_number, created_at)
+---
+turn_number column:
+75:    turn_number     INTEGER NOT NULL,
+79:    CONSTRAINT uq_thread_turn UNIQUE (thread_id, turn_number)
+82:CREATE INDEX IF NOT EXISTS idx_messages_thread ON chat_messages(thread_id, turn_number);
+120:    turn_number             INTEGER NOT NULL,
+122:    -- QA logical key anchor: UNIQUE(thread_id, turn_number)
+161:    UNIQUE(thread_id, turn_number, created_at)
+173:    turn_number     INTEGER,

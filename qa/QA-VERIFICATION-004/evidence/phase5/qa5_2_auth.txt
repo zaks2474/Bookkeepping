@@ -1,0 +1,8 @@
+=== QA-5.2: Auth Regression ===
+--- No token ---
+{"detail":"Authentication required"}
+HTTP_CODE: 401
+
+--- Valid token ---
+{"approvals":[],"total":0}
+HTTP_CODE: 200

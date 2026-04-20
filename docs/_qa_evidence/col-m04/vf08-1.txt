@@ -1,0 +1,6 @@
+DROP TABLE IF EXISTS zakops.decision_outcomes CASCADE;
+DROP TABLE IF EXISTS zakops.deal_entity_graph CASCADE;
+DROP TABLE IF EXISTS zakops.deal_access CASCADE;
+DROP TABLE IF EXISTS zakops.deal_brain_history CASCADE;
+DROP TABLE IF EXISTS zakops.deal_brain_history CASCADE;
+DROP TABLE IF EXISTS zakops.deal_brain CASCADE;

@@ -1,0 +1,47 @@
+=== PRE-GATE: Auth Re-Validation (GPT RT-0) ===
+--- Container Discovery ---
+Agent container ID: b3682e112d763b94f5e32f5479f8794ed0c1ea98f7afc8def65313ff24ab38cb
+Backend container ID: 2a74f7d7c66fe43b45d0e3c67a2435c2bdaba703d171e42b8626582ba3d680dc
+Agent DB container ID: dc7e3254455b8eebead290449f8b552e9afa6e84051a37d6a949b9493e5f5a9a
+Backend DB container ID: 2eb1011dbc3821dec9e37952f76e94b6b0d61d029ef67cca34f005afe9b4f418
+SERVICE_TOKEN: k-bG****kWpo
+--- PG.1: /agent/invoke no auth ---
+HTTP 401
+--- PG.2: /agent/invoke JWT-only (confused deputy) ---
+HTTP 401
+--- PG.3: /agent/approvals no auth ---
+HTTP 401
+--- PG.4: /api/v1/sessions no auth ---
+HTTP 404
+NOTE: /api/v1/sessions not found; probing /api/v1/auth/sessions
+HTTP 401
+--- PG.5: /api/v1/sessions service-token (confused deputy) ---
+HTTP 404
+NOTE: /api/v1/sessions not found; probing /api/v1/auth/sessions
+HTTP 401
+--- PG.6: /agent/invoke correct service-token ---
+HTTP 401
+--- PG.7: Obtain JWT + test ---
+NOTE: /api/v1/login returned no JWT; attempting /api/v1/auth/login (form)
+JWT length: 179
+HTTP 404
+NOTE: /api/v1/sessions not found; probing /api/v1/auth/sessions
+HTTP 200
+--- PG.8: Shadow endpoints ---
+/docs: HTTP 200
+/redoc: HTTP 200
+/openapi.json: HTTP 404
+/metrics: HTTP 200
+
+=== PRE-GATE VERDICT ===
+PG.1: [PASS if 401] PG.2: [PASS if 401] PG.3: [PASS if 401]
+PG.4: [PASS if 401] PG.5: [PASS if 401]
+PG.6: [PASS if 200] PG.7: [PASS if 200]
+PG.8: [PASS if all 404/405]
+ALL 8 MUST PASS. ANY FAIL -> STOP. DO NOT PROCEED TO PHASE 2.
+
+--- ENV EXPORTS (not secrets) ---
+AGENT_CONTAINER=b3682e112d763b94f5e32f5479f8794ed0c1ea98f7afc8def65313ff24ab38cb
+BACKEND_CONTAINER=2a74f7d7c66fe43b45d0e3c67a2435c2bdaba703d171e42b8626582ba3d680dc
+AGENT_DB_CONTAINER=dc7e3254455b8eebead290449f8b552e9afa6e84051a37d6a949b9493e5f5a9a
+BACKEND_DB_CONTAINER=2eb1011dbc3821dec9e37952f76e94b6b0d61d029ef67cca34f005afe9b4f418

@@ -1,0 +1,16 @@
+=== FS-2: Append-Only Discipline ===
+--- FS-2.1: Size and hash evidence exists ---
+30 /home/zaks/bookkeeping/docs/_tripass_runs/TP-20260209-211737/EVIDENCE/append_only_log.txt
+2026-02-09T21:17:37Z | INIT WORKSPACE | size=43 | sha256=fc7f191e0cfaa120eaad24901dfcd5d8cfc68c7cb12c385c35d0bc34d3ff7b2f
+2026-02-09T21:17:37Z | INIT MASTER_LOG | size=44 | sha256=8c5ae616afc3851e3b8d6b685a815ec7ee793785a409a57836b99884115ae3e1
+2026-02-09T21:17:37Z | BEFORE PIPELINE START MASTER_LOG | size=44 | sha256=8c5ae616afc3851e3b8d6b685a815ec7ee793785a409a57836b99884115ae3e1
+2026-02-09T21:17:37Z | AFTER PIPELINE START MASTER_LOG | size=251 | sha256=5fff29944c660dc3a1e54d92452ea952ec7de669587a71aa55a3110703b7a31d
+2026-02-09T21:17:39Z | BEFORE PASS 1 START MASTER_LOG | size=251 | sha256=5fff29944c660dc3a1e54d92452ea952ec7de669587a71aa55a3110703b7a31d
+
+--- FS-2.2: FINAL_MASTER.md is the only overwritable file ---
+329:  # Pass 3: FINAL_MASTER.md exists and non-empty
+330:  if [ -s "$run_dir/FINAL_MASTER.md" ]; then
+331:    echo "  PASS: Pass 3 — FINAL_MASTER.md exists ($(file_size "$run_dir/FINAL_MASTER.md") bytes)"
+333:    echo "  FAIL: Pass 3 — FINAL_MASTER.md missing or empty"
+370:  # Check FINAL_MASTER.md has required fields
+

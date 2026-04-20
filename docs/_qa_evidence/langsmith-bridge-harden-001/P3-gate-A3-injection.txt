@@ -1,0 +1,46 @@
+INJECTION RESPONSE:
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"created\":true,\"dedup\":false,\"status_code\":201,\"data\":{\"id\":\"afa47290-6b88-4337-8b27-0856d8c47a7f\",\"message_id\":\"bridge-harden-proof-001\",\"email_subject\":null,\"sender\":\"proof-test@bridge-harden.local\",\"sender_domain\":\"bridge-harden.local\",\"received_at\":null,\"classification\":\"unknown\",\"urgency\":\"NORMAL\",\"confidence\":null,\"company_name\":null,\"broker_name\":null,\"status\":\"pending\",\"created_at\":\"2026-02-14T12:04:04.658990Z\",\"sender_name\":null,\"sender_company\":null,\"is_broker\":null},\"message\":\"Quarantine item created successfully\"}"
+      }
+    ],
+    "structuredContent": {
+      "created": true,
+      "dedup": false,
+      "status_code": 201,
+      "data": {
+        "id": "afa47290-6b88-4337-8b27-0856d8c47a7f",
+        "message_id": "bridge-harden-proof-001",
+        "email_subject": null,
+        "sender": "proof-test@bridge-harden.local",
+        "sender_domain": "bridge-harden.local",
+        "received_at": null,
+        "classification": "unknown",
+        "urgency": "NORMAL",
+        "confidence": null,
+        "company_name": null,
+        "broker_name": null,
+        "status": "pending",
+        "created_at": "2026-02-14T12:04:04.658990Z",
+        "sender_name": null,
+        "sender_company": null,
+        "is_broker": null
+      },
+      "message": "Quarantine item created successfully"
+    },
+    "isError": false
+  }
+}
+
+status_code=201, created=True, dedup=False
+VERDICT: PASS
+                  id                  |       message_id        |   source_type    |  correlation_id  | status  
+--------------------------------------+-------------------------+------------------+------------------+---------
+ afa47290-6b88-4337-8b27-0856d8c47a7f | bridge-harden-proof-001 | langsmith_shadow | harden-proof-001 | pending
+(1 row)
+

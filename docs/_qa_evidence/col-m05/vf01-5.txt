@@ -1,0 +1,2 @@
+131:    async def record_history(
+158:    async def get_history(self, deal_id: str, limit: int = 20) -> list[dict]:

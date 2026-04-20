@@ -1,0 +1,17 @@
+=== VF-02.6 STOP HOOK ENV OVERRIDE BRANCH ===
+=== Session End Validation (Fast Tier) ===
+Project detected via env-override: /home/zaks/zakops-agent-api
+Gate A: validate-fast
+fatal: detected dubious ownership in repository at '/home/zaks/zakops-agent-api'
+To add an exception for this directory, call:
+
+	git config --global --add safe.directory /home/zaks/zakops-agent-api
+fatal: detected dubious ownership in repository at '/home/zaks/zakops-agent-api'
+To add an exception for this directory, call:
+
+	git config --global --add safe.directory /home/zaks/zakops-agent-api
+[36m=== Fast Validation (Offline) ===[0m
+cd /apps/dashboard && npx tsc --noEmit
+/bin/sh: 1: cd: can't cd to /apps/dashboard
+make: *** [Makefile:464: validate-fast] Error 2
+ERROR: Gate A failed. Blocking stop hook.

@@ -1,0 +1,5 @@
+    async def get_brain(self, deal_id: str) -> dict | None:
+            "SELECT * FROM zakops.deal_brain WHERE deal_id = $1",
+            deal_id,
+    async def get_or_create_brain(self, deal_id: str) -> dict:
+        brain = await self.get_brain(deal_id)

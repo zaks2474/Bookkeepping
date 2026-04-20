@@ -1,0 +1,8 @@
+Line 336: @router.patch('/threads/{thread_id}')
+Line 337: async def update_thread(...)
+Line 349-351: chat_repository.update_thread(thread_id=thread_id, user_id=user_id, title=body.title, pinned=body.pinned, archived=body.archived)
+---
+title: present in UpdateThreadRequest (line 227)
+pinned: present in UpdateThreadRequest (line 228)
+archived: present in UpdateThreadRequest (line 229)
+VERDICT: PASS

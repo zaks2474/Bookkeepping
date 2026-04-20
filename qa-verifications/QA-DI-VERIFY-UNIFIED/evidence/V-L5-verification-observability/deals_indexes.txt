@@ -1,0 +1,16 @@
+=== V-L5.9: Deals Table Indexes ===
+Date: 2026-02-09T04:56:07Z
+
+          indexname          |                                               indexdef                                               
+-----------------------------+------------------------------------------------------------------------------------------------------
+ deals_pkey                  | CREATE UNIQUE INDEX deals_pkey ON zakops.deals USING btree (deal_id)
+ idx_deals_canonical_name    | CREATE INDEX idx_deals_canonical_name ON zakops.deals USING btree (canonical_name)
+ idx_deals_stage             | CREATE INDEX idx_deals_stage ON zakops.deals USING btree (stage)
+ idx_deals_status            | CREATE INDEX idx_deals_status ON zakops.deals USING btree (status)
+ idx_deals_created_at        | CREATE INDEX idx_deals_created_at ON zakops.deals USING btree (created_at DESC)
+ idx_deals_updated_at        | CREATE INDEX idx_deals_updated_at ON zakops.deals USING btree (updated_at DESC)
+ idx_deals_cursor_pagination | CREATE INDEX idx_deals_cursor_pagination ON zakops.deals USING btree (updated_at DESC, deal_id DESC)
+ deals_canonical_name_unique | CREATE UNIQUE INDEX deals_canonical_name_unique ON zakops.deals USING btree (canonical_name)
+ idx_deals_lifecycle         | CREATE INDEX idx_deals_lifecycle ON zakops.deals USING btree (deleted, status, stage)
+(9 rows)
+

@@ -1,0 +1,2 @@
+    (r"<\s*/?script", "xss_attempt", "low"),
+    (r"DROP\s+TABLE|DELETE\s+FROM|TRUNCATE", "sql_injection", "low"),

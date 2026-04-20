@@ -1,0 +1,12 @@
+6:and skip is logged to legal_hold_log for audit compliance.
+21:    skipped_count: int = 0
+22:    skipped_thread_ids: list[str] = []
+42:        GdprPurgeReport with deleted/skipped counts and thread IDs.
+75:                    report.skipped_count += 1
+76:                    report.skipped_thread_ids.append(thread_id)
+78:                    # Log skip to legal_hold_log
+81:                        INSERT INTO legal_hold_log
+83:                        VALUES ($1, 'gdpr_skip', $2, 'GDPR purge skipped — active legal hold', NOW())
+114:                    # Log deletion to legal_hold_log
+117:                        INSERT INTO legal_hold_log
+139:        skipped=report.skipped_count,

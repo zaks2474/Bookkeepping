@@ -1,0 +1,136 @@
+=== V-L3.2: Hardcoded Stage Arrays Search ===
+Date: 2026-02-09T04:54:05Z
+
+--- Search for literal stage names in dashboard/src/ ---
+/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/e2e/integration.test.tsx:428:      // - screening → junk (reject)
+/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/e2e/integration.test.tsx:431:        inbound: ['screening', 'junk'],
+/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/e2e/integration.test.tsx:432:        screening: ['qualified', 'junk'],
+/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/e2e/integration.test.tsx:433:        qualified: ['loi', 'junk', 'screening'],
+/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/e2e/integration.test.tsx:434:        loi: ['diligence', 'junk', 'qualified'],
+/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/e2e/integration.test.tsx:435:        diligence: ['closing', 'junk', 'loi'],
+/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/e2e/integration.test.tsx:436:        closing: ['portfolio', 'diligence'],
+/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/e2e/integration.test.tsx:437:        portfolio: ['archived'],
+/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/e2e/integration.test.tsx:438:        junk: ['screening'],
+/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/e2e/integration.test.tsx:443:      expect(validTransitions.screening).toContain('junk');
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:65:  proposals?: ChatProposal[];
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:112:  proposals: z.array(z.any()).optional(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:150:        proposals: m.proposals,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:266:              proposals: (m.proposals || [])
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:445:      let proposals: ChatProposal[] = [];
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:490:            proposals?: ChatProposal[];
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:499:          proposals = (doneData.proposals || [])
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:561:                proposals,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:616:  // Execute proposal
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:620:    proposalId: string;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:633:    proposal: ChatProposal,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:643:    setExecutingProposalId(proposal.proposal_id);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:647:        proposal.proposal_id,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:659:          proposalId: proposal.proposal_id,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:660:          type: proposal.type,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:673:                  proposals: m.proposals?.map((p) =>
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:674:                    p.proposal_id === proposal.proposal_id
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:675:                      ? (result.proposal ?? {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:687:        // Show detailed error and update proposal status to failed
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:690:          : result.error || 'Failed to execute proposal';
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:693:          proposalId: proposal.proposal_id,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:694:          type: proposal.type,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:706:                  proposals: m.proposals?.map((p) =>
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:707:                    p.proposal_id === proposal.proposal_id
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:720:        proposalId: proposal.proposal_id,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:721:        type: proposal.type,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:727:      // Update proposal status to failed
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:733:                proposals: m.proposals?.map((p) =>
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:734:                  p.proposal_id === proposal.proposal_id
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:912:                  <Badge variant='secondary'>Action proposals</Badge>
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1109:        {message.proposals && message.proposals.length > 0 && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1114:            {message.proposals.map((proposal) => (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1116:                key={proposal.proposal_id}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1117:                data-testid={`proposal-${proposal.proposal_id}`}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1122:                    <Badge variant='secondary'>{proposal.type}</Badge>
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1123:                    {proposal.deal_id && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1125:                        {proposal.deal_id}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1131:                      proposal.status === 'executed'
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1133:                        : proposal.status === 'failed'
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1138:                    {proposal.status}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1141:                {proposal.reason && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1142:                  <p className='mt-1 text-muted-foreground'>{proposal.reason}</p>
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1145:                {proposal.status === 'executed' && proposal.result != null && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1147:                    {proposal.type === 'draft_email' ? (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1150:                          const r: any = proposal.result;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1180:                    ) : proposal.type === 'create_task' ? (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1182:                        Task created: {(proposal.result as any).action_id || 'ok'}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1184:                    ) : proposal.type === 'add_note' ? (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1186:                        Note saved: {(proposal.result as any).event_id || 'ok'}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1188:                    ) : proposal.type === 'stage_transition' ? (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1190:                        Stage transition: {(proposal.result as any).from_stage} → {(proposal.result as any).to_stage}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1196:                {(proposal.status === 'pending_approval' || proposal.status === 'failed') && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1202:                      data-testid={`proposal-approve-${proposal.proposal_id}`}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1203:                      disabled={executingProposalId === proposal.proposal_id}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1204:                      onClick={() => onExecuteProposal(proposal, 'approve')}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1206:                      {executingProposalId === proposal.proposal_id ? (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1211:                      {executingProposalId === proposal.proposal_id
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1213:                        : proposal.status === 'failed'
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1221:                      data-testid={`proposal-reject-${proposal.proposal_id}`}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1222:                      disabled={executingProposalId === proposal.proposal_id}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1223:                      onClick={() => onExecuteProposal(proposal, 'reject')}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1230:                {proposal.status === 'rejected' && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1233:                {proposal.status === 'failed' && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1235:                    Failed: {(proposal as any).error || 'Unknown error'}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1448:    proposalId: string;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx:58:const STATUSES = ['active', 'archived', 'junk', 'merged'];
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/new/page.tsx:27:  'portfolio',
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/execute-proposal/route.ts:4: * POST /api/chat/execute-proposal
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/execute-proposal/route.ts:6: * Execute an approved chat proposal (action).
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/execute-proposal/route.ts:12:    const { proposal_id, session_id, approved_by } = body;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/execute-proposal/route.ts:14:    // For now, return error since Backend doesn't have proposal execution
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/execute-proposal/route.ts:15:    // Full implementation would call the chat_orchestrator's execute_proposal
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/execute-proposal/route.ts:19:        detail: 'The chat proposal execution feature is not yet integrated with the orchestration API.',
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/execute-proposal/route.ts:20:        proposal_id,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/execute-proposal/route.ts:28:    console.error('Execute proposal API error:', error);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/execute-proposal/route.ts:31:        error: 'Failed to execute proposal',
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/route.ts:147:            proposals: response.proposals || [],
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/route.ts:199:                proposals: [],
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/route.ts:249:          proposals: [],
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/route.ts:339:- **Deals**: Browse and manage your deal portfolio
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1059:  proposal_id: string;
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1126:  proposals: ChatProposal[];
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1138:    proposals?: ChatProposal[];
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1256: * Execute a chat proposal (requires approval)
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1259:  proposalId: string,
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1267:  proposal?: ChatProposal;
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1268:  proposal_type?: string;
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1273:  return apiFetch('/api/chat/execute-proposal', {
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1276:      proposal_id: proposalId,
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1298:    proposals?: ChatProposal[];
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent/providers/local.ts:113:          proposals: data.proposals || [],
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent/providers/local.ts:125:        proposals: data.proposals || [],
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent/toolRegistry.ts:101:      'Retrieve operator profile, buy box criteria, portfolio, and goals',
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent/toolRegistry.ts:121:        portfolio: { type: 'array' },
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent/types.ts:43:  proposals?: unknown[];
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api.ts:78:  | 'portfolio'
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api.ts:79:  | 'junk'
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api.ts:82:export type DealStatus = 'active' | 'junk' | 'merged' | 'archived';
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api.ts:152:  junk_reason: string | null;
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/execution-contracts.ts:21: * - Any stage can transition to junk or archived
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/execution-contracts.ts:22: * - junk can be restored to inbound for re-evaluation
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/execution-contracts.ts:26:  inbound: ['screening', 'junk', 'archived'],
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/execution-contracts.ts:27:  screening: ['qualified', 'junk', 'archived'],
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/execution-contracts.ts:28:  qualified: ['loi', 'junk', 'archived'],
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/execution-contracts.ts:29:  loi: ['diligence', 'qualified', 'junk', 'archived'], // Can fall back to qualified
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/execution-contracts.ts:30:  diligence: ['closing', 'loi', 'junk', 'archived'], // Can fall back to loi
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/execution-contracts.ts:31:  closing: ['portfolio', 'diligence', 'junk', 'archived'], // Can fall back to diligence
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/execution-contracts.ts:32:  portfolio: ['archived'], // Only archive from portfolio
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/execution-contracts.ts:33:  junk: ['inbound', 'archived'], // Can restore to inbound for re-evaluation
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/execution-contracts.ts:47:  portfolio: 'Portfolio',
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/execution-contracts.ts:48:  junk: 'Junk',
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/execution-contracts.ts:62:  portfolio: 'emerald',
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/execution-contracts.ts:63:  junk: 'gray',
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/execution-contracts.ts:78:  portfolio: 'bg-green-700',
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/execution-contracts.ts:79:  junk: 'bg-red-700',
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/execution-contracts.ts:93:  portfolio: 'bg-teal-50 dark:bg-teal-950',
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/execution-contracts.ts:94:  junk: 'bg-red-50 dark:bg-red-950',
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/execution-contracts.ts:100: * Excludes terminal stages (junk, archived)
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/execution-contracts.ts:109:  'portfolio',
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/execution-contracts.ts:116:  'junk',
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deals/DealBoard.tsx:150:      portfolio: [],
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deals/DealBoard.tsx:151:      junk: [],

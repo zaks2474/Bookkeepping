@@ -1,0 +1,12 @@
+=== CHECK 4.6.3: Tool Execution Count After Race ===
+Timestamp: 2026-02-03T13:13:08-06:00
+Approval ID: 505b8aeb-66aa-47ad-b19d-845c8e0551d4
+
+=== Tool Executions Query ===
+ bb24742d-9df6-4be7-89e7-f0d16a4f006c | 505b8aeb-66aa-47ad-b19d-845c8e0551d4 | transition_deal | f       | 2026-02-03 19:12:49.19+00
+
+=== Execution Count ===
+Count:      1
+
+=== Analysis ===
+PASS: Execution count is 1 (expected 0 or 1, never 2)

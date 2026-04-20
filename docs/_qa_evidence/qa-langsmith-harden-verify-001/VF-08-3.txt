@@ -1,0 +1,4 @@
+Line 1829: # Forward original correlation_id from quarantine item (not gen_random_uuid())
+Line 1830: outbox_correlation = item.get('correlation_id') or str(uuid.uuid4())
+Line 1833-1835: INSERT INTO zakops.outbox (correlation_id, ...) VALUES ($3::uuid, ...)
+Line 1845: outbox_correlation if isinstance(outbox_correlation, str) else str(outbox_correlation)

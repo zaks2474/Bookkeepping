@@ -1,0 +1,32 @@
+=== A2.2 ===
+32:GEMINI_CLI=""
+33:CODEX_CLI=""
+34:CLAUDE_CLI=""
+142:discover_clis() {
+147:  GEMINI_CLI=$(command -v gemini 2>/dev/null || echo "")
+148:  if [ -z "$GEMINI_CLI" ] && [ -x "/root/.npm-global/bin/gemini" ]; then
+149:    GEMINI_CLI="/root/.npm-global/bin/gemini"
+153:  CODEX_CLI=$(command -v codex 2>/dev/null || echo "")
+154:  if [ -z "$CODEX_CLI" ] && [ -x "/root/.npm-global/bin/codex" ]; then
+155:    CODEX_CLI="/root/.npm-global/bin/codex"
+159:  CLAUDE_CLI=$(command -v claude 2>/dev/null || echo "")
+173:| Gemini CLI | ${GEMINI_CLI:-NOT FOUND} | $([ -n "$GEMINI_CLI" ] && echo "YES" || echo "NO") |
+174:| Codex CLI | ${CODEX_CLI:-NOT FOUND} | $([ -n "$CODEX_CLI" ] && echo "YES" || echo "NO") |
+175:| Claude CLI | ${CLAUDE_CLI:-NOT FOUND} | $([ -n "$CLAUDE_CLI" ] && echo "YES" || echo "NO") |
+184:- Gemini: $([ -n "$GEMINI_CLI" ] && $GEMINI_CLI --version 2>/dev/null | head -1 || echo "N/A")
+185:- Codex: $([ -n "$CODEX_CLI" ] && $CODEX_CLI --version 2>/dev/null | head -1 || echo "N/A")
+186:- Claude: $([ -n "$CLAUDE_CLI" ] && $CLAUDE_CLI --version 2>/dev/null | head -1 || echo "N/A")
+191:  [ -n "$GEMINI_CLI" ] && available=$((available + 1))
+192:  [ -n "$CODEX_CLI" ] && available=$((available + 1))
+193:  [ -n "$CLAUDE_CLI" ] && available=$((available + 1))
+221:  if [ -z "$CLAUDE_CLI" ]; then
+234:  timeout "$CLAUDE_TIMEOUT" "$CLAUDE_CLI" -p \
+252:  if [ -z "$GEMINI_CLI" ]; then
+258:  timeout "$GEMINI_TIMEOUT" cat "$prompt_file" | "$GEMINI_CLI" \
+275:  if [ -z "$CODEX_CLI" ]; then
+281:  timeout "$CODEX_TIMEOUT" "$CODEX_CLI" exec \
+565:  discover_clis /tmp/tripass_init_ctx
+627:  discover_clis "$run_dir/00_context"
+644:    [ -z "$CLAUDE_CLI" ] && claude_exec="false" && log_warn "Claude CLI not available — generate-only for Claude"
+645:    [ -z "$GEMINI_CLI" ] && gemini_exec="false" && log_warn "Gemini CLI not available — generate-only for Gemini"
+646:    [ -z "$CODEX_CLI" ] && codex_exec="false" && log_warn "Codex CLI not available — generate-only for Codex"

@@ -1,0 +1,26 @@
+=== QA-1.4: T0.6-T0.8 Correlation ID ===
+--- TEST 1: deal_events has correlation_id column ---
+  column_name   
+----------------
+ correlation_id
+(1 row)
+
+
+--- TEST 2: Backend reads X-Correlation-ID ---
+6:Adds trace_id and correlation_id to all requests for observability.
+17:correlation_id_var: contextvars.ContextVar[str] = contextvars.ContextVar("correlation_id", default="")
+30:def get_correlation_id() -> str | None:
+32:    Get the current correlation ID.
+34:    Returns the correlation ID from the current request context,
+37:    return correlation_id_var.get() or None
+45:def set_correlation_id(correlation_id: str) -> None:
+46:    """Set the correlation ID for the current context."""
+47:    correlation_id_var.set(correlation_id)
+52:    Middleware that extracts or generates trace/correlation IDs.
+
+--- TEST 3: Live correlation test ---
+Sending request with X-Correlation-ID: qa006-test-1770190043
+x-trace-id: fab7f610baf14486a8ea64b93f1c44c7
+x-correlation-id: qa006-test-1770190043
+
+=== QA-1.4 VERDICT: PASS ===

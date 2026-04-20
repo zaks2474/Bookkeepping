@@ -1,0 +1,8 @@
+295:                # F-13: processed_by/processing_action live in raw_content JSONB, not separate columns
+301:                            'processed_by', 'retention_cleanup',
+302:                            'processing_action', 'auto_rejected_stale',
+BAD_COLUMN_REF_COUNT=3
+NOTE: BAD_COLUMN_REF_COUNT=3 is a FALSE POSITIVE. All 3 matches are JSONB key strings inside jsonb_build_object(), NOT separate column references.
+Line 295 comment explicitly states: 'F-13: processed_by/processing_action live in raw_content JSONB, not separate columns'
+Line 300-302: These appear as JSONB keys within 'raw_content = COALESCE(raw_content, ...) || jsonb_build_object(...)'
+EFFECTIVE_BAD_COLUMN_REF_COUNT=0

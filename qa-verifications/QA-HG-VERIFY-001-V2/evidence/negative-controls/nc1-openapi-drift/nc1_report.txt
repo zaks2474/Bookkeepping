@@ -1,0 +1,39 @@
+=== NC-1: OPENAPI DRIFT GATE NEGATIVE CONTROL ===
+
+1. Recording current state...
+   Backed up api-types.generated.ts
+
+2. Applying sabotage (adding fake interface NC1_SABOTAGE_MARKER)...
+   Injected fake interface at line 21 of generated types file
+
+3. Running sync-types (expecting regeneration to overwrite sabotage)...
+   sync-types regenerated from committed OpenAPI spec:
+     openapi-typescript 7.10.1
+     zakops-api.json -> api-types.generated.ts [120ms]
+   sync-types exit code: 0
+
+   CHECKPOINT: Does sabotage survive sync-types?
+   PASS: Sabotage removed -- sync-types regenerated the file correctly
+   (NC1_SABOTAGE_MARKER was obliterated by regeneration)
+
+4. Contract drift check (spec vs live backend):
+   Re-introduced sabotage to generated types file.
+   check-contract-drift exit code: 0
+   NOTE: This is EXPECTED. check-contract-drift compares the OpenAPI *spec*
+   against the live backend -- it does NOT check generated types.
+   The generated types gate is sync-types itself (step 3), which
+   deterministically regenerates from the spec, obliterating any manual edits.
+
+5. Reverting sabotage...
+   Restored original api-types.generated.ts from backup
+
+6. Verifying gate passes after revert...
+   sync-types exit code: 0 -- clean pass
+
+VERDICT: PASS
+  - sync-types correctly obliterated injected sabotage (the generated file
+    is deterministically produced from the OpenAPI spec)
+  - Any manual edit to the generated file is automatically overwritten
+  - The gate is REAL: you cannot sneak types into the generated file
+
+=== NC-1 COMPLETE ===

@@ -1,0 +1,21 @@
+=== Q0.2: DB Source-of-Truth ===
+--- Backend DB ---
+ current_database | inet_server_addr | inet_server_port 
+------------------+------------------+------------------
+ zakops           |                  |                 
+(1 row)
+
+Backend deals count: 3
+Backend approvals table: ERROR:  relation "approvals" does not exist
+LINE 1: SELECT 1 FROM approvals LIMIT 1;
+                      ^ (expect ERROR)
+--- Agent DB ---
+ current_database | inet_server_addr | inet_server_port 
+------------------+------------------+------------------
+ zakops_agent     |                  |                 
+(1 row)
+
+Agent approvals count: 26
+Agent deals table: ERROR:  relation "deals" does not exist
+LINE 1: SELECT 1 FROM deals LIMIT 1;
+                      ^ (expect ERROR)

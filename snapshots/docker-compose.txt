@@ -1,7 +1,5 @@
 == Docker compose projects ==
 NAME                STATUS              CONFIG FILES
-agent-api           running(2)          /home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml
 crawl4ai-rag        running(1)          /root/mcp-servers/crawl4ai-rag/docker-compose.yml
-zakops              running(2)          /home/zaks/zakops-backend/docker-compose.yml
-zakops-backend      running(5)          /home/zaks/zakops-backend/docker-compose.yml
+zakops              running(6)          /home/zaks/zakops-agent-api/docker-compose.yml
 zaks-llm            running(3)          /home/zaks/Zaks-llm/docker-compose.yml

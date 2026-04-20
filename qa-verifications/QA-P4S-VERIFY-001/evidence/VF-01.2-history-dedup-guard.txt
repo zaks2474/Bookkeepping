@@ -1,0 +1,15 @@
+=== VF-01.2 HISTORY DEDUP GUARD ===
+--- Checking sessionId guard before archiveCurrentSession ---
+828:    if (archivedSessionId !== sessionId) {
+--- Checking archiveCurrentSession is conditional ---
+826:  const handleLoadFromHistory = (archivedSessionId: string) => {
+827-    // Skip re-archive if loading the already-active session
+828-    if (archivedSessionId !== sessionId) {
+--
+1020:              onSelectSession={handleLoadFromHistory}
+1021-              refreshKey={historyRefreshKey}
+1022-            />
+--
+1042:                  handleLoadFromHistory(id);
+1043-                  setShowHistory(false);
+1044-                }}

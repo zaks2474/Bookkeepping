@@ -1,0 +1,12 @@
+=== QA-1.2: T0.2+T0.3 Notes Endpoint ===
+--- TEST 1: Dashboard notes API path ---
+474:        console.debug('[API] Deal schema validation notes:', parsed.error.issues.map(i => `${i.path.join('.')}: ${i.message}`).join(', '));
+979:  return apiFetch(`/api/deals/${dealId}/notes`, {
+
+--- TEST 2: Backend notes endpoint ---
+752:@app.post("/api/deals/{deal_id}/notes", status_code=201)
+753:async def add_deal_note(
+
+--- TEST 3: Live POST /notes ---
+{"success":true,"event_id":"2422aaa5-d898-4e83-8080-735832a999d8"}
+=== QA-1.2 VERDICT: PASS ===

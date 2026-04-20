@@ -1,0 +1,11 @@
+# Bookkeeping snapshots
+50 */5 * * * /home/zaks/bookkeeping/capture.sh >> /home/zaks/bookkeeping/logs/cron.log 2>&1
+
+# OpenWebUI DB backup (do not sync full volume to DataRoom)
+20 */2 * * * /home/zaks/bookkeeping/scripts/openwebui_sync.sh >> /home/zaks/bookkeeping/logs/openwebui-sync.log 2>&1
+
+# Email-to-DataRoom Automation (Dallas business hours 06:00–21:59 hourly)
+5 6-21 * * * sudo -u zaks python3 /home/zaks/scripts/sync_acquisition_emails.py >> /home/zaks/logs/email_sync.log 2>&1
+
+# Off-hours (22:00–05:59) every 4 hours (22:05 and 02:05)
+5 22,2 * * * sudo -u zaks python3 /home/zaks/scripts/sync_acquisition_emails.py >> /home/zaks/logs/email_sync.log 2>&1

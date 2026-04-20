@@ -1,0 +1,184 @@
+=== QA-1.3: UF-003 User Isolation Testing ===
+The prior audit found 4 missing ownership checks. RE-VERIFICATION by code inspection.
+
+Configuration:
+- AGENT_JWT_ENFORCE=true (from .env.development)
+- JWT_SECRET_KEY configured
+- Auth middleware: get_agent_user returns AgentUser with subject claim when enforced
+
+===========================================================================
+CODE INSPECTION: /home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/agent.py
+===========================================================================
+
+CHECKPOINT 1: GET /api/v1/agent/approvals (list_pending_approvals)
+Location: Lines 609-660
+Dependency: user: Optional[AgentUser] = Depends(get_agent_user) (line 614)
+
+Ownership Filter Implementation (LINES 632-636):
+```python
+# UF-003: Scope approvals to authenticated user when JWT enforced
+if user:
+    statement = statement.where(Approval.actor_id == user.subject)
+elif actor_id:
+    statement = statement.where(Approval.actor_id == actor_id)
+```
+
+VERDICT: ✅ PASS
+- Line 633: Checks if user exists
+- Line 634: Filters query by Approval.actor_id == user.subject
+- Users can ONLY see their own approvals when authenticated
+
+---
+
+CHECKPOINT 2: GET /api/v1/agent/approvals/{id} (get_approval)
+Location: Lines 663-702
+Dependency: user: Optional[AgentUser] = Depends(get_agent_user) (line 668)
+
+Ownership Check Implementation (LINES 685-687):
+```python
+# UF-003: Ownership check
+if user and approval.actor_id != user.subject:
+    raise HTTPException(status_code=403, detail="Insufficient permissions")
+```
+
+VERDICT: ✅ PASS
+- Line 681: Retrieves approval by ID
+- Line 686: Checks if approval.actor_id matches user.subject
+- Returns 403 if user attempts to access another user's approval
+
+---
+
+CHECKPOINT 3: POST /api/v1/agent/approvals/{id}:approve (approve_action)
+Location: Lines 209-492
+Dependency: user: Optional[AgentUser] = Depends(require_approve_role) (line 215)
+
+Ownership Check Implementation (LINES 245-248):
+```python
+# UF-003: Ownership check before claiming
+pre_check = db.get(Approval, approval_id)
+if pre_check and user and pre_check.actor_id != user.subject:
+    raise HTTPException(status_code=403, detail="Insufficient permissions")
+```
+
+VERDICT: ✅ PASS
+- Line 246: Retrieves approval for pre-check
+- Line 247: Validates ownership BEFORE atomic claim operation
+- Returns 403 if user attempts to approve another user's request
+
+---
+
+CHECKPOINT 4: POST /api/v1/agent/approvals/{id}:reject (reject_action)
+Location: Lines 495-606
+Dependency: user: Optional[AgentUser] = Depends(require_approve_role) (line 501)
+
+Ownership Check Implementation (LINES 522-525):
+```python
+# UF-003: Ownership check before rejecting
+pre_check = db.get(Approval, approval_id)
+if pre_check and user and pre_check.actor_id != user.subject:
+    raise HTTPException(status_code=403, detail="Insufficient permissions")
+```
+
+VERDICT: ✅ PASS
+- Line 523: Retrieves approval for pre-check
+- Line 524: Validates ownership BEFORE rejection operation
+- Returns 403 if user attempts to reject another user's request
+
+---
+
+CHECKPOINT 5: GET /api/v1/agent/threads/{id}/state (get_thread_state)
+Location: Lines 716-771
+Dependency: user: Optional[AgentUser] = Depends(get_agent_user) (line 721)
+
+Ownership Check Implementation (LINES 741-743):
+```python
+# UF-003: Scope thread state to authenticated user
+if user:
+    thread_query = thread_query.where(Approval.actor_id == user.subject)
+```
+
+VERDICT: ✅ PASS
+- Line 737-740: Builds query for pending approvals on thread
+- Line 742: Filters by actor_id when user is authenticated
+- Users can ONLY see thread state for their own approvals
+
+===========================================================================
+SECURITY MODULE INSPECTION
+===========================================================================
+
+File: /home/zaks/zakops-agent-api/apps/agent-api/app/core/security/agent_auth.py
+
+get_agent_user Implementation (LINES 274-318):
+```python
+async def get_agent_user(
+    request: Request,
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(security),
+) -> Optional[AgentUser]:
+    if not AGENT_JWT_ENFORCE:
+        return None  # Auth not enforced
+
+    if not credentials:
+        raise HTTPException(status_code=401, detail="Authentication required")
+
+    try:
+        return verify_agent_token(credentials.credentials)
+    except InsufficientRoleError:
+        raise HTTPException(status_code=403, detail="Insufficient permissions")
+    except (TokenExpiredError, InvalidIssuerError, InvalidAudienceError,
+            MissingRoleError, AgentAuthError):
+        raise HTTPException(status_code=401, detail="Authentication required")
+```
+
+AgentUser Class (LINES 84-108):
+```python
+class AgentUser:
+    def __init__(
+        self,
+        subject: str,  # ← This is the user's unique identifier from JWT
+        issuer: str,
+        audience: str,
+        role: str,
+        expires_at: datetime,
+    ):
+        self.subject = subject  # ← Used for ownership checks
+        ...
+```
+
+Token Verification (LINES 161-253):
+- Validates JWT signature with JWT_SECRET_KEY
+- Extracts subject from "sub" claim (line 194)
+- Returns AgentUser with subject populated (line 247-253)
+
+===========================================================================
+FINAL ASSESSMENT
+===========================================================================
+
+TEST 1.3.1: GET /api/v1/agent/approvals - Ownership Filtering
+RESULT: ✅ PASS
+Evidence: Line 634 filters by Approval.actor_id == user.subject
+
+TEST 1.3.2: GET /api/v1/agent/approvals/{id} - Ownership Check
+RESULT: ✅ PASS
+Evidence: Line 686-687 validates ownership, returns 403 on mismatch
+
+TEST 1.3.3: POST approve/reject - Ownership Check
+RESULT: ✅ PASS
+Evidence:
+- approve_action: Line 247-248 validates ownership
+- reject_action: Line 524-525 validates ownership
+
+TEST 1.3.4: GET /api/v1/agent/threads/{id}/state - Ownership Filtering
+RESULT: ✅ PASS
+Evidence: Line 742-743 filters by actor_id when authenticated
+
+===========================================================================
+COMPARISON TO PRIOR AUDIT
+===========================================================================
+
+The prior audit reported 4 missing ownership checks. Current inspection shows:
+1. All 4 identified endpoints NOW HAVE ownership checks implemented
+2. All checks explicitly reference "UF-003" in comments
+3. All checks use user.subject from JWT for validation
+4. All checks occur BEFORE any sensitive operations
+
+CONCLUSION: ALL UF-003 vulnerabilities have been REMEDIATED.

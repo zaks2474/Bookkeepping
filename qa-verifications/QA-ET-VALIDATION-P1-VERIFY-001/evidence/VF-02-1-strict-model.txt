@@ -1,0 +1,5 @@
+=== VF-02.1 STRICT MODEL ===
+277:class QuarantineCreate(BaseModel):
+326:    model_config = ConfigDict(extra="forbid")
+329:    def _coalesce_subject(self) -> "QuarantineCreate":
+1684:    item: QuarantineCreate,

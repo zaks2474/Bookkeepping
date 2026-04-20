@@ -1,0 +1,5 @@
+    (r"ignore\s+(all\s+)?previous\s+instructions", "instruction_override", "high"),
+    (r"you\s+are\s+now\s+a", "role_hijack", "high"),
+    (r"reveal\s+(your\s+)?(system\s+)?prompt", "prompt_extraction", "high"),
+    (r"ASSISTANT\s*:", "role_injection", "medium"),
+    (r"<\|im_start\|>|<\|im_end\|>", "chatml_injection", "medium"),

@@ -1,0 +1,9 @@
+
+Running 4 tests using 1 worker
+
+  ✓  1 [chromium] › tests/e2e/quarantine-actions.spec.ts:4:7 › Quarantine & Actions — Batch 2 Verification › quarantine page loads and shows items (3.9s)
+  ✓  2 [chromium] › tests/e2e/quarantine-actions.spec.ts:15:7 › Quarantine & Actions — Batch 2 Verification › quarantine item selection loads preview (3.5s)
+  ✓  3 [chromium] › tests/e2e/quarantine-actions.spec.ts:38:7 › Quarantine & Actions — Batch 2 Verification › actions page loads and shows capabilities (3.2s)
+  ✓  4 [chromium] › tests/e2e/quarantine-actions.spec.ts:48:7 › Quarantine & Actions — Batch 2 Verification › actions clear-completed button exists (3.1s)
+
+  4 passed (14.5s)

@@ -1,0 +1,19 @@
+apps/agent-api/app/core/langgraph/graph.py:502:        R3 REMEDIATION [P1.4]: Added tool call budget enforcement.
+apps/agent-api/app/core/cost_tracking.py:106:    def check_budget(self) -> bool:
+apps/agent-api/app/services/cost_repository.py:1:"""Cost Repository — Persistent cost ledger and budget enforcement.
+apps/agent-api/app/services/cost_repository.py:5:Provides per-deal budget enforcement (hard cap + soft threshold).
+apps/agent-api/app/services/cost_repository.py:157:        monthly_limit_usd: float = 10.0,
+apps/agent-api/app/services/cost_repository.py:165:                    INSERT INTO deal_budgets (deal_id, monthly_limit_usd, alert_threshold, hard_cap)
+apps/agent-api/app/services/cost_repository.py:166:                    VALUES (:deal_id, :monthly_limit_usd, :alert_threshold, :hard_cap)
+apps/agent-api/app/services/cost_repository.py:168:                        monthly_limit_usd = EXCLUDED.monthly_limit_usd,
+apps/agent-api/app/services/cost_repository.py:175:                    "monthly_limit_usd": monthly_limit_usd,
+apps/agent-api/app/services/cost_repository.py:183:    async def check_budget(self, deal_id: str) -> dict:
+apps/agent-api/app/services/cost_repository.py:191:                "monthly_limit": float,
+apps/agent-api/app/services/cost_repository.py:202:                "monthly_limit": None,
+apps/agent-api/app/services/cost_repository.py:207:        monthly_limit = float(budget["monthly_limit_usd"])
+apps/agent-api/app/services/cost_repository.py:208:        utilization = monthly_spend / monthly_limit if monthly_limit > 0 else 0
+apps/agent-api/app/services/cost_repository.py:210:        if budget["hard_cap"] and monthly_spend >= monthly_limit:
+apps/agent-api/app/services/cost_repository.py:215:                limit=monthly_limit,
+apps/agent-api/app/services/cost_repository.py:221:                "monthly_limit": monthly_limit,
+apps/agent-api/app/services/cost_repository.py:237:                "monthly_limit": monthly_limit,
+apps/agent-api/app/services/cost_repository.py:245:            "monthly_limit": monthly_limit,

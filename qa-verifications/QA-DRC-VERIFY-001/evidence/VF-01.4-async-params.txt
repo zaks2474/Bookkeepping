@@ -1,0 +1,15 @@
+=== VF-01.4: Async params (Promise<{ id: string }>) ===
+HAS Promise params: src/app/api/quarantine/[id]/route.ts
+  { params }: { params: Promise<{ id: string }> }
+HAS Promise params: src/app/api/quarantine/[id]/undo-approve/route.ts
+  { params }: { params: Promise<{ id: string }> }
+HAS Promise params: src/app/api/actions/[id]/approve/route.ts
+  { params }: { params: Promise<{ id: string }> }
+HAS Promise params: src/app/api/actions/[id]/cancel/route.ts
+  { params }: { params: Promise<{ id: string }> }
+HAS Promise params: src/app/api/actions/[id]/retry/route.ts
+  { params }: { params: Promise<{ id: string }> }
+HAS Promise params: src/app/api/actions/[id]/update/route.ts
+  { params }: { params: Promise<{ id: string }> }
+
+Result: 6/6 dynamic routes have async params

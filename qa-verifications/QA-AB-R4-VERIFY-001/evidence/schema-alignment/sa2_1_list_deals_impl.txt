@@ -1,0 +1,124 @@
+=== list_deals IMPLEMENTATION ===
+async def list_deals(
+    stage: Optional[str] = None,
+    status: str = "active",
+    limit: int = 50,
+) -> str:
+    """List deals from the pipeline with optional filtering.
+
+    R4 REMEDIATION: This tool queries the backend API directly (same data source
+    as the dashboard). Use this for questions like:
+    - "How many deals do I have?"
+    - "Show my pipeline"
+    - "What deals are in screening?"
+    - "List all inbound deals"
+
+    For finding a specific deal by name, use search_deals instead.
+    For getting details of a specific deal, use get_deal instead.
+
+    Args:
+        stage: Optional filter by stage (inbound, screening, qualified, loi,
+               diligence, closing, portfolio, junk, archived)
+        status: Filter by status (default: active)
+        limit: Maximum number of deals to return (default: 50)
+
+    Returns:
+        str: JSON result with deals list, total count, and stage breakdown
+    """
+    logger.info("list_deals_called", stage=stage, status=status, limit=limit)
+
+    # Validate stage if provided
+    if stage:
+        stage_lower = stage.lower().strip()
+        if stage_lower not in VALID_STAGES:
+            return json.dumps({
+                "ok": False,
+                "error": f"Invalid stage '{stage}'. Valid stages: {', '.join(sorted(VALID_STAGES))}",
+            })
+        stage = stage_lower
+
+    try:
+        headers = _get_backend_headers()
+        params = {}
+        if stage:
+            params["stage"] = stage
+        if status:
+            params["status"] = status
+
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.get(
+                f"{DEAL_API_URL}/api/deals",
+                headers=headers,
+                params=params,
+            )
+
+            if response.status_code == 200:
+                deals = response.json()
+
+                # Handle both list and dict responses
+                if isinstance(deals, dict):
+                    deals = deals.get("deals", deals.get("results", []))
+
+                # Apply limit
+                if limit and len(deals) > limit:
+                    deals = deals[:limit]
+
+                # Calculate stage breakdown
+                from collections import Counter
+                stage_counts = Counter(d.get("stage", "unknown") for d in deals)
+
+                # Build response
+                result = {
+                    "ok": True,
+                    "deals": deals,
+                    "total": len(deals),
+                    "stage_breakdown": dict(stage_counts),
+                    "filters_applied": {
+                        "stage": stage,
+                        "status": status,
+                    },
+                    "metadata": {
+                        "source": "backend_api",
+                        "endpoint": "/api/deals",
+                        "provenance": "Same data source as dashboard",
+                    }
+                }
+
+                logger.info(
+                    "list_deals_success",
+                    total=len(deals),
+                    stage_breakdown=dict(stage_counts),
+                    filters={"stage": stage, "status": status},
+                )
+
+                return json.dumps(result)
+            else:
+                error_text = response.text
+                logger.error(
+                    "list_deals_backend_error",
+                    status_code=response.status_code,
+                    error=error_text,
+                )
+                return json.dumps({
+                    "ok": False,
+                    "error": f"Backend returned HTTP {response.status_code}: {error_text}",
+                })
+
+    except httpx.ConnectError:
+        logger.error(
+            "list_deals_backend_unavailable",
+            environment=ENVIRONMENT,
+        )
+        return json.dumps({
+            "ok": False,
+            "error": f"Backend API unavailable at {DEAL_API_URL}",
+        })
+
+    except Exception as e:
+        logger.error("list_deals_error", error=str(e))
+        return json.dumps({
+            "ok": False,
+            "error": f"Error listing deals: {str(e)}",
+        })
+
+

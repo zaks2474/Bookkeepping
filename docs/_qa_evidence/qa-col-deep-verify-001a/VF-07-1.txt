@@ -1,0 +1,7 @@
+File: /home/zaks/zakops-backend/src/core/agent/ghost_knowledge_detector.py
+---
+Line 55: async def detect(self, deal_id: str, user_message: str, existing_facts: list[dict] | None = None) -> list[dict]:
+---
+Parameters: deal_id, user_message, existing_facts
+Returns: list of ghost flags with key/detected_value/pattern_type/confidence/detected_at/detected_in/status
+VERDICT: PASS

@@ -1,0 +1,38 @@
+                                      Table "zakops.deals"
+     Column      |           Type           | Collation | Nullable |           Default           
+-----------------+--------------------------+-----------+----------+-----------------------------
+ deal_id         | character varying(20)    |           | not null | 
+ canonical_name  | character varying(255)   |           | not null | 
+ display_name    | character varying(255)   |           |          | 
+ folder_path     | character varying(1024)  |           |          | 
+ stage           | character varying(50)    |           |          | 'lead'::character varying
+ status          | character varying(50)    |           |          | 'active'::character varying
+ identifiers     | jsonb                    |           |          | '{}'::jsonb
+ company_info    | jsonb                    |           |          | '{}'::jsonb
+ broker          | jsonb                    |           |          | '{}'::jsonb
+ metadata        | jsonb                    |           |          | '{}'::jsonb
+ deleted         | boolean                  |           |          | false
+ created_at      | timestamp with time zone |           | not null | now()
+ updated_at      | timestamp with time zone |           | not null | now()
+ last_indexed_at | timestamp with time zone |           |          | 
+ content_hash    | character varying(64)    |           |          | 
+Indexes:
+    "deals_pkey" PRIMARY KEY, btree (deal_id)
+    "idx_deals_canonical_name" btree (canonical_name)
+    "idx_deals_created_at" btree (created_at DESC)
+    "idx_deals_cursor_pagination" btree (updated_at DESC, deal_id DESC)
+    "idx_deals_stage" btree (stage)
+    "idx_deals_status" btree (status)
+    "idx_deals_updated_at" btree (updated_at DESC)
+Check constraints:
+    "chk_deals_stage" CHECK (stage::text = ANY (ARRAY['inbound'::character varying, 'screening'::character varying, 'qualified'::character varying, 'loi'::character varying, 'diligence'::character varying, 'closing'::character varying, 'portfolio'::character varying, 'junk'::character varying, 'archived'::character varying]::text[]))
+Referenced by:
+    TABLE "actions" CONSTRAINT "actions_deal_id_fkey" FOREIGN KEY (deal_id) REFERENCES deals(deal_id) ON DELETE SET NULL
+    TABLE "deal_aliases" CONSTRAINT "deal_aliases_deal_id_fkey" FOREIGN KEY (deal_id) REFERENCES deals(deal_id) ON DELETE CASCADE
+    TABLE "deal_events" CONSTRAINT "deal_events_deal_id_fkey" FOREIGN KEY (deal_id) REFERENCES deals(deal_id) ON DELETE CASCADE
+    TABLE "deal_transitions" CONSTRAINT "deal_transitions_deal_id_fkey" FOREIGN KEY (deal_id) REFERENCES deals(deal_id)
+    TABLE "email_threads" CONSTRAINT "email_threads_deal_id_fkey" FOREIGN KEY (deal_id) REFERENCES deals(deal_id) ON DELETE SET NULL
+    TABLE "quarantine_items" CONSTRAINT "quarantine_items_deal_id_fkey" FOREIGN KEY (deal_id) REFERENCES deals(deal_id) ON DELETE SET NULL
+Triggers:
+    deals_updated_at BEFORE UPDATE ON deals FOR EACH ROW EXECUTE FUNCTION update_timestamp()
+

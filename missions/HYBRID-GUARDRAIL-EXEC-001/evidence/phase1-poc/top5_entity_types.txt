@@ -1,0 +1,45 @@
+DealResponse: FOUND (2 nullable fields)
+  DealResponse: {
+  /** Deal Id */
+  deal_id: string;
+  /** Canonical Name */
+  canonical_name: string;
+  /** Display Name */
+  display_name: string | null;
+  /** Folder Path */
+  ... (17 total lines)
+
+ActionResponse: FOUND (2 nullable fields)
+  ActionResponse: {
+  /** Action Id */
+  action_id: string;
+  /** Deal Id */
+  deal_id: string | null;
+  /** Capability Id */
+  capability_id: string;
+  /** Action Type */
+  ... (33 total lines)
+
+DealEvent: FOUND (3 nullable fields)
+  DealEvent: {
+  /**
+  * Id
+  * Format: uuid
+  */
+  id: string;
+  /** Deal Id */
+  deal_id: string;
+  ... (24 total lines)
+
+QuarantineItem: NOT FOUND in generated types
+
+AgentRunResponse: FOUND (3 nullable fields)
+  AgentRunResponse: {
+  /**
+  * Run Id
+  * Format: uuid
+  */
+  run_id: string;
+  /**
+  * Deal Id
+  ... (38 total lines)

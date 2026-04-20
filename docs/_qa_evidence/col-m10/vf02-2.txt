@@ -1,0 +1,88 @@
+apps/agent-api/app/services/chat_repository.py:419:        """Get recent messages formatted for LLM context window."""
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/language_models/chat_models.py:1694:        model capabilities, such as context window sizes and supported features.
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/language_models/base.py:300:        Useful for checking if an input fits in a model's context window.
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/language_models/base.py:318:        Useful for checking if an input fits in a model's context window.
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/messages/utils.py:720:    2. It includes recent messages and drops old messages in the chat history.
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/chat_models/llamacpp.py:82:    """Token context window."""
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/rwkv.py:40:    """Token context window."""
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/gpt4all.py:34:    """Token context window."""
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/llamacpp.py:42:    """Token context window."""
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/yuan2.py:36:    """Token context window."""
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/google_palm.py:234:        Useful for checking if an input will fit in a model's context window.
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/ollama.py:68:    """Sets the size of the context window used to generate the
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/vertexai.py:287:        Useful for checking if an input will fit in a model's context window.
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/embeddings/llamacpp.py:26:    """Token context window."""
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/embeddings/ollama.py:67:    """Sets the size of the context window used to generate the
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain/agents/middleware/summarization.py:66:    messages when a threshold is reached, preserving recent messages and maintaining
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain/agents/middleware/summarization.py:85:            messages_to_keep: Number of recent messages to preserve after summarization.
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/types/beta/threads/run_create_params.py:182:    Use this to control the initial context window of the run.
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/types/beta/threads/run_create_params.py:234:    to the n most recent messages in the thread. When set to `auto`, messages in the
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/types/beta/threads/run_create_params.py:241:    The number of most recent messages from the thread when constructing the context
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/types/beta/threads/run.py:60:    to the n most recent messages in the thread. When set to `auto`, messages in the
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/types/beta/threads/run.py:67:    The number of most recent messages from the thread when constructing the context
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/types/beta/threads/run.py:231:    Use this to control the initial context window of the run.
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/types/beta/thread_create_and_run_params.py:173:    Use this to control the initial context window of the run.
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/types/beta/thread_create_and_run_params.py:367:    to the n most recent messages in the thread. When set to `auto`, messages in the
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/types/beta/thread_create_and_run_params.py:374:    The number of most recent messages from the thread when constructing the context
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/types/chat/completion_create_params.py:402:    High level guidance for the amount of context window space to use for the
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/types/completion_usage.py:28:    and context window limits.
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/types/responses/response_create_params.py:255:    - `auto`: If the input to this Response exceeds the model's context window size,
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/types/responses/response_create_params.py:256:      the model will truncate the response to fit the context window by dropping
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/types/responses/response_create_params.py:258:    - `disabled` (default): If the input size will exceed the context window size
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/types/responses/web_search_preview_tool_param.py:42:    """High level guidance for the amount of context window space to use for the
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/types/responses/input_token_count_params.py:94:    - `auto`: If the input to this Response exceeds the model's context window size,
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/types/responses/input_token_count_params.py:95:      the model will truncate the response to fit the context window by dropping
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/types/responses/input_token_count_params.py:97:      input size will exceed the context window size for a model, the request will
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/types/responses/web_search_preview_tool.py:42:    """High level guidance for the amount of context window space to use for the
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/types/responses/response.py:255:    - `auto`: If the input to this Response exceeds the model's context window size,
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/types/responses/response.py:256:      the model will truncate the response to fit the context window by dropping
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/types/responses/response.py:258:    - `disabled` (default): If the input size will exceed the context window size
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/types/responses/web_search_tool_param.py:58:    """High level guidance for the amount of context window space to use for the
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/types/responses/web_search_tool.py:56:    """High level guidance for the amount of context window space to use for the
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/types/realtime/realtime_truncation_retention_ratio_param.py:16:    cannot be higher than the model's context window size minus the maximum output
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/types/realtime/realtime_truncation_retention_ratio.py:17:    cannot be higher than the model's context window size minus the maximum output
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/resources/beta/threads/runs/runs.py:226:              control the initial context window of the run.
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/resources/beta/threads/runs/runs.py:379:              control the initial context window of the run.
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/resources/beta/threads/runs/runs.py:532:              control the initial context window of the run.
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/resources/beta/threads/runs/runs.py:1665:              control the initial context window of the run.
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/resources/beta/threads/runs/runs.py:1818:              control the initial context window of the run.
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/resources/beta/threads/runs/runs.py:1971:              control the initial context window of the run.
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/resources/beta/threads/threads.py:396:              control the initial context window of the run.
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/resources/beta/threads/threads.py:530:              control the initial context window of the run.
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/resources/beta/threads/threads.py:664:              control the initial context window of the run.
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/resources/beta/threads/threads.py:1254:              control the initial context window of the run.
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/resources/beta/threads/threads.py:1388:              control the initial context window of the run.
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/resources/beta/threads/threads.py:1522:              control the initial context window of the run.
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/resources/responses/input_tokens.py:113:              this Response exceeds the model's context window size, the model will truncate
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/resources/responses/input_tokens.py:114:              the response to fit the context window by dropping items from the beginning of
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/resources/responses/input_tokens.py:116:              context window size for a model, the request will fail with a 400 error.
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/resources/responses/input_tokens.py:238:              this Response exceeds the model's context window size, the model will truncate
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/resources/responses/input_tokens.py:239:              the response to fit the context window by dropping items from the beginning of
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/resources/responses/input_tokens.py:241:              context window size for a model, the request will fail with a 400 error.
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/resources/responses/responses.py:303:              - `auto`: If the input to this Response exceeds the model's context window size,
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/resources/responses/responses.py:304:                the model will truncate the response to fit the context window by dropping
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/resources/responses/responses.py:306:              - `disabled` (default): If the input size will exceed the context window size
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/resources/responses/responses.py:542:              - `auto`: If the input to this Response exceeds the model's context window size,
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/resources/responses/responses.py:543:                the model will truncate the response to fit the context window by dropping
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/resources/responses/responses.py:545:              - `disabled` (default): If the input size will exceed the context window size
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/resources/responses/responses.py:781:              - `auto`: If the input to this Response exceeds the model's context window size,
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/resources/responses/responses.py:782:                the model will truncate the response to fit the context window by dropping
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/resources/responses/responses.py:784:              - `disabled` (default): If the input size will exceed the context window size
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/resources/responses/responses.py:1738:              - `auto`: If the input to this Response exceeds the model's context window size,
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/resources/responses/responses.py:1739:                the model will truncate the response to fit the context window by dropping
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/resources/responses/responses.py:1741:              - `disabled` (default): If the input size will exceed the context window size
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/resources/responses/responses.py:1977:              - `auto`: If the input to this Response exceeds the model's context window size,
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/resources/responses/responses.py:1978:                the model will truncate the response to fit the context window by dropping
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/resources/responses/responses.py:1980:              - `disabled` (default): If the input size will exceed the context window size
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/resources/responses/responses.py:2216:              - `auto`: If the input to this Response exceeds the model's context window size,
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/resources/responses/responses.py:2217:                the model will truncate the response to fit the context window by dropping
+apps/agent-api/.venv/lib/python3.13/site-packages/openai/resources/responses/responses.py:2219:              - `disabled` (default): If the input size will exceed the context window size
+apps/agent-api/.venv/lib/python3.13/site-packages/limits/aio/storage/memory.py:31:    as an in memory storage for fixed and elastic window strategies,
+apps/agent-api/.venv/lib/python3.13/site-packages/limits/storage/memory.py:28:    as an in memory storage for fixed and elastic window strategies,
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/chains/conversation/memory.py:10:from langchain_classic.memory.buffer_window import ConversationBufferWindowMemory
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/memory/vectorstore_token_buffer_memory.py:173:        # that will overflow the context window
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/memory/token_buffer.py:22:    Keeps only the most recent messages in the conversation under the constraint
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/memory/buffer.py:28:    conversation history is too large to fit in the context window of the model.
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/memory/buffer.py:112:    conversation history is too large to fit in the context window of the model.
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/memory/__init__.py:10:from langchain_classic.memory.buffer_window import ConversationBufferWindowMemory
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_openai/chat_models/base.py:699:    fit the context window.

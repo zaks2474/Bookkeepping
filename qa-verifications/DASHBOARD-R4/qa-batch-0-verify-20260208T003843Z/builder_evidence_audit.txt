@@ -1,0 +1,13 @@
+total 20
+drwxr-xr-x 5 root root 4096 Feb  7 18:23 .
+drwxr-xr-x 3 root root 4096 Feb  7 18:49 ..
+drwxr-xr-x 2 root root 4096 Feb  7 18:25 auth-injection
+drwxr-xr-x 2 root root 4096 Feb  7 18:27 playwright-install
+drwxr-xr-x 2 root root 4096 Feb  7 18:23 service-health
+--- sample: /home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/batch-0/evidence/playwright-install/04-smoke.txt ---
+
+Running 1 test using 1 worker
+
+  ✓  1 [chromium] › tests/e2e/smoke.spec.ts:3:5 › smoke: dashboard loads (1.5s)
+
+  1 passed (2.3s)

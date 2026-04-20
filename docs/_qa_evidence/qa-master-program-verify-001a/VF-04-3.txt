@@ -1,0 +1,9 @@
+63:        self.dual_write = os.getenv("DUAL_WRITE_ENABLED", "false").lower() == "true"
+85:            f"dual_write={self.dual_write}, read_from={self.read_from})"
+121:        # Connect to PostgreSQL if it's the primary or dual-write is enabled
+122:        if self.config.backend == DatabaseBackend.POSTGRESQL or self.config.dual_write:
+137:        # Connect to SQLite if it's the primary or dual-write is enabled
+138:        if self.config.backend == DatabaseBackend.SQLITE or self.config.dual_write:
+187:        if self.config.dual_write:
+214:        If dual-write is enabled, writes to both databases.
+235:        if self.config.dual_write:

@@ -1,0 +1,5 @@
+241:    async def hybrid_query(
+278:                "/rag/hybrid",
+298:                "rag_hybrid_query_success",
+315:                "rag_hybrid_query_failed",
+475:        return await client.hybrid_query(query, limit=limit, deal_id=deal_id)

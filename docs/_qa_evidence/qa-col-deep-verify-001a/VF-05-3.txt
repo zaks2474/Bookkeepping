@@ -1,0 +1,11 @@
+deal_entity_graph table: line 76
+  Line 76: CREATE TABLE IF NOT EXISTS zakops.deal_entity_graph (
+---
+Columns:
+  entity_type: 3
+  normalized_name: 3
+  deal_id: 16
+---
+UNIQUE constraint: line 85
+  UNIQUE(entity_type, normalized_name, deal_id)
+VERDICT: PASS

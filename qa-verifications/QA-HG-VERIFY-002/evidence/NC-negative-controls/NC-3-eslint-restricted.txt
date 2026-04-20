@@ -1,0 +1,8 @@
+=== NC-3: ESLint Restricted Imports ===
+
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/qa-nc3-test.tsx
+  2:1  error  '@/lib/api-types.generated' import is restricted from being used by a pattern. Import from '@/types/api' instead of the generated file directly  no-restricted-imports
+
+✖ 1 problem (1 error, 0 warnings)
+
+NC-3 PASS: ESLint caught restricted import (exit 1)

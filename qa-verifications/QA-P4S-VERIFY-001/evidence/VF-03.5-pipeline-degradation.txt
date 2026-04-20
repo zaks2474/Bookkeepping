@@ -1,0 +1,7 @@
+=== VF-03.5 PIPELINE DEGRADATION ===
+--- Check pipeline description handles null pipelineData ---
+119:    acc[stage] = pipelineData?.stages[stage]?.count ?? 0;
+212:                      <>{pipelineData?.total_active ?? deals.length} active deal{(pipelineData?.total_active ?? deals.length) !== 1 ? 's' : ''}{pipelineData ? ` across ${STAGE_ORDER.filter(s => stageCounts[s] > 0).length} stage${STAGE_ORDER.filter(s => stageCounts[s] > 0).length !== 1 ? 's' : ''}` : ''}</>
+275:                      <>{selectedStage ? `${stageCounts[selectedStage] ?? 0} deal${(stageCounts[selectedStage] ?? 0) !== 1 ? 's' : ''} in ${selectedStage}` : `${pipelineData?.total_active ?? 0} deal${(pipelineData?.total_active ?? 0) !== 1 ? 's' : ''}`}</>
+--- Should not hardcode '0 stages' ---
+hardcoded_zero_stages=0

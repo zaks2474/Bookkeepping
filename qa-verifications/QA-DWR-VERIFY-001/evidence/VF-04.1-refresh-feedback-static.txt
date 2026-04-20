@@ -1,0 +1,13 @@
+=== VF-04.1 REFRESH FEEDBACK STATIC ===
+57:  // Data fetch with source awareness: 'initial' | 'manual' | 'auto'
+58:  const fetchData = async (source: 'initial' | 'manual' | 'auto' = 'manual') => {
+59:    if (source === 'initial') {
+88:      // Show success toast ONLY on manual refresh (not initial or auto)
+89:      if (source === 'manual') {
+90:        toast.success('Dashboard refreshed', {
+97:      // Show error toast only on manual refresh
+98:      if (source === 'manual') {
+113:    const interval = setInterval(() => fetchData('auto'), 60000);
+148:    <div className='flex flex-1 flex-col min-h-0 overflow-y-auto gap-4 p-4 md:p-6' data-testid='dashboard-scroll'>
+169:          <Button onClick={() => fetchData('manual')} variant='outline' size='sm' disabled={loading || isRefreshing}>
+196:      <div className='grid gap-4 md:grid-cols-3 md:auto-rows-min'>

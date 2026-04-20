@@ -1,0 +1,8 @@
+=== ST-7 EXISTING + NEW HOOK COEXISTENCE ===
+PreToolUse => True
+PostToolUse => True
+SessionStart => True
+Stop => True
+PreCompact => True
+TaskCompleted => True
+PASS

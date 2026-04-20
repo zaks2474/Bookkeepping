@@ -1,0 +1,4 @@
+99:                        "DELETE FROM messages WHERE thread_id = $1", thread_id,
+102:                        "DELETE FROM turn_snapshots WHERE thread_id = $1", thread_id,
+105:                        "DELETE FROM thread_summaries WHERE thread_id = $1", thread_id,
+108:                        "DELETE FROM threads WHERE thread_id = $1", thread_id,

@@ -1,0 +1,6 @@
+=== VF-04.2 MAKE DRY RUN GRAPH ===
+echo "\033[36m=== Frontend Governance Validation ===\033[0m"
+bash tools/infra/validate-rule-frontmatter.sh
+bash tools/infra/validate-frontend-governance.sh
+bash tools/infra/validate-gatee-scan.sh
+echo "\033[32mFrontend governance validation passed\033[0m"

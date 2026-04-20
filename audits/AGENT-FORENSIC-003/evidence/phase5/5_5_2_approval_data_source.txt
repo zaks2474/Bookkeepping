@@ -1,0 +1,19 @@
+=== CHECK 5.5.2: Approval Data Source ===
+Timestamp: 2026-02-03T13:22:00-06:00
+
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent-client.ts:118:  pendingApprovals: ['agent', 'pending-approvals'] as const,
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/events.ts:47:  AGENT_WAITING_APPROVAL: 'agent.waiting_approval',
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/events.ts:343:  type: 'agent.waiting_approval';
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/events.ts:491:  'agent.waiting_approval': ['agentRuns', 'pendingApprovals'],
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/events.ts:595:    'agent.waiting_approval',
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/events.ts:607:    'agent.waiting_approval': 1,
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/useAgentActivity.ts:139: * Check if agent has any pending approvals
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/approvals/ApprovalQueue.tsx:97:    refetchApprovals,
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/approvals/ApprovalQueue.tsx:288:              onClick={() => refetchApprovals()}
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/hooks/useApprovalFlow.ts:72:  refetchApprovals: () => void;
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/hooks/useApprovalFlow.ts:85:  // NOTE: Polling disabled to prevent UI blinking. Use refetchApprovals() for manual refresh.
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/hooks/useApprovalFlow.ts:90:    refetch: refetchApprovals,
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/hooks/useApprovalFlow.ts:241:    refetchApprovals,
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/onboarding/steps/AgentDemoStep.tsx:371:                    The agent analyzed the deal and drafted a response - with your approval.
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/onboarding/steps/AgentConfigStep.tsx:4: * Configure AI agent behavior and approval settings.
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/onboarding/steps/AgentConfigStep.tsx:42:      description: 'All agent actions require your approval',

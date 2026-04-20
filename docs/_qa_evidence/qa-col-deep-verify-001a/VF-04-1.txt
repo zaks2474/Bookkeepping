@@ -1,0 +1,8 @@
+File: /home/zaks/zakops-agent-api/apps/dashboard/src/middleware.ts
+---
+Line 84: const isChatbotRoute = request.nextUrl.pathname.startsWith('/api/v1/chatbot');
+Line 85: const proxyBaseUrl = isChatbotRoute ? AGENT_API_URL : BACKEND_URL;
+Line 28: AGENT_API_URL = process.env.AGENT_LOCAL_URL || process.env.AGENT_API_URL || 'http://localhost:8095';
+---
+Comment at line 83: // COL-DESIGN-SPEC-V2 S3.5 (GAP-H1): route /api/v1/chatbot/* to Agent API.
+VERDICT: PASS — /api/v1/chatbot/* routes proxied to agent-api on port 8095

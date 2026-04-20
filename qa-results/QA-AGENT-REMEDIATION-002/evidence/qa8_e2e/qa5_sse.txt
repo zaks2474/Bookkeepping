@@ -1,0 +1,6 @@
+=== QA-5: SSE Streaming ===
+--- SSE no auth (expect 401 fast, not hang) ---
+{"detail":"Not Found"}
+HTTP:404
+--- SSE with service token on JWT endpoint (confused deputy) ---
+HTTP:404

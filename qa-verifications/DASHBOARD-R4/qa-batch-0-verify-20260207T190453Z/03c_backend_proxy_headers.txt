@@ -1,0 +1,17 @@
+BACKEND_ROUTES: 15
+   /home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/[id]/route.ts
+   /home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/[id]/archive/route.ts
+   /home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/quarantine/route.ts
+   /home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/quarantine/[actionId]/preview/route.ts
+   /home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/completed-count/route.ts
+   /home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/bulk/archive/route.ts
+   /home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/bulk/delete/route.ts
+   /home/zaks/zakops-agent-api/apps/dashboard/src/app/api/actions/clear-completed/route.ts
+   /home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/route.ts
+   /home/zaks/zakops-agent-api/apps/dashboard/src/app/api/alerts/route.ts
+   /home/zaks/zakops-agent-api/apps/dashboard/src/app/api/deferred-actions/route.ts
+   /home/zaks/zakops-agent-api/apps/dashboard/src/app/api/deferred-actions/due/route.ts
+   /home/zaks/zakops-agent-api/apps/dashboard/src/app/api/quarantine/health/route.ts
+   /home/zaks/zakops-agent-api/apps/dashboard/src/app/api/checkpoints/route.ts
+   /home/zaks/zakops-agent-api/apps/dashboard/src/app/api/pipeline/route.ts
+MISSING_BACKEND_HEADERS: 0

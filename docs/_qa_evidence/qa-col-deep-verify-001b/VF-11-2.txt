@@ -1,0 +1,3 @@
+34:            fmt: Export format — "markdown" (MVP) or "json"
+45:            content = self._export_json(thread, messages)
+168:    def _export_json(self, thread, messages) -> str:

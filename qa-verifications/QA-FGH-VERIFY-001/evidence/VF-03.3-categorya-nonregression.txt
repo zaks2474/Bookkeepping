@@ -1,0 +1,8 @@
+=== VF-03.3 CATEGORY A NON-REGRESSION ===
+18:- `Promise.allSettled` with typed empty fallbacks is **mandatory** for multi-fetch operations
+19:- `Promise.all` is **banned** in dashboard page-level data fetching
+20:- Pattern: `const [dealsResult, countsResult] = await Promise.allSettled([fetchDeals(), fetchCounts()])`
+39:- `PIPELINE_STAGES` from `execution-contracts.ts` is the single source of truth
+45:- Backend errors return JSON 502, never HTML 500
+48:- Import from bridge files: `@/types/api`, `@/types/agent-api`
+49:- **Never** import directly from generated files (`api-types.generated.ts`, `agent-api-types.generated.ts`)

@@ -1,0 +1,6 @@
+=== VF-02.2 EXPLICIT SKIP MESSAGING ===
+108:    echo "SKIP: No trusted monorepo root found (git unavailable, known path /home/zaks/zakops-agent-api absent)."
+110:    echo "SKIP: Monorepo root found ($MONOREPO_ROOT) but Makefile missing."
+112:    echo "SKIP: Monorepo root found ($MONOREPO_ROOT) but Makefile lacks validate-fast target."
+114:  echo "Validation gates not executed."
+106:  # Explicit skip reason (fail-open with reason, not silent)

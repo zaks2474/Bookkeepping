@@ -1,0 +1,99 @@
+QA-8: MATRIX COMPLETENESS VERIFICATION
+=======================================
+Tested: 2026-02-02
+
+## auth_boundary_matrix.md
+
+### Structure Analysis
+- Agent endpoints: 7 rows × 4 auth modes = 28 cells
+- Chatbot endpoints: 2 rows × 4 auth modes = 8 cells
+- Public endpoints: 3 rows × 2 auth modes = 6 cells
+- Total cells: 42
+
+### Completeness Check
+- Empty cells: 0
+- All cells populated with HTTP status codes (401, 422, 200)
+- All agent endpoints correctly return 401 for unauthorized access
+- Chatbot endpoints return 401 for invalid auth, 422 for valid auth with bad body
+- Public endpoints return 200 for no-auth (expected behavior)
+
+VERDICT: PASS (complete matrix, no empty cells)
+
+## finding_to_fix_matrix.md
+
+### Coverage Check
+Required: UF-001 through UF-022 (22 findings)
+
+Found:
+- UF-001: PRESENT (P0, agent endpoints unauthenticated)
+- UF-002: PRESENT (P0, confused deputy)
+- UF-003: PRESENT (P0, no user/tenant isolation)
+- UF-004: PRESENT (P1, LLM output validation)
+- UF-005: PRESENT (P1, docs exposed)
+- UF-006: PRESENT (P1, agent inputs unsanitized)
+- UF-007: PRESENT (P1, error leakage)
+- UF-008: PRESENT (P1, timing attack)
+- UF-009: PRESENT (P1, SSE streaming leakage)
+- UF-010: PRESENT (P2, CORS wildcard)
+- UF-011: PRESENT (P2, rate limiting)
+- UF-012: PRESENT (P2, python-jose)
+- UF-013: PRESENT (P2, no internal TLS)
+- UF-014: PRESENT (P2, single worker)
+- UF-015: PRESENT (P2, Langfuse restart)
+- UF-016: PRESENT (P2, source bind-mount)
+- UF-017: PRESENT (P2, rate limits memory-only)
+- UF-018: PRESENT (P2, RAG health 404)
+- UF-019: PRESENT (P2, MCP root 404)
+- UF-020: PRESENT (P2, orchestration health)
+- UF-021: PRESENT (P2, session name update)
+- UF-022: PRESENT (P2, curl missing)
+
+Total: 22/22 PRESENT
+
+### Column Completeness
+All rows have:
+- UF-# ✓
+- Priority ✓
+- Finding ✓
+- Fix Applied ✓
+- Fix Step ✓
+- Before Evidence ✓
+- After Evidence ✓
+- Verified ✓
+
+Empty cells: 0
+
+Status distribution:
+- PASS (fixed): 11
+- PASS (confirmed existing): 2
+- DEFERRED: 9
+
+VERDICT: PASS (all 22 findings present, all columns populated)
+
+## regression_matrix.md
+
+### Structure Analysis
+- Services tested: 3 (Agent API, Dashboard, Backend API)
+- Endpoints: 3 (/health, /api/chat, /health)
+- Columns: Service, Endpoint, Port, Before, After, Status
+
+### Completeness Check
+All 3 rows complete with Before/After status codes:
+- Agent API /health: 200 → 200 (PASS)
+- Dashboard /api/chat: 200 → 200 (PASS)
+- Backend API /health: 200 → 200 (PASS)
+
+### Regression Analysis
+FAIL/REGRESSED entries: 0
+All status: PASS
+
+VERDICT: PASS (no regressions detected)
+
+## OVERALL QA-8 VERDICT: PASS
+
+All three matrices are complete:
+1. auth_boundary_matrix.md: 42/42 cells populated, no auth bypass
+2. finding_to_fix_matrix.md: 22/22 findings present, all columns complete
+3. regression_matrix.md: 3/3 services healthy, no regressions
+
+No empty cells. No regressions. All required data present.

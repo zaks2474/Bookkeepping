@@ -1,0 +1,34 @@
+=== RAG/LLM DSN search ===
+--- /home/zaks/Zaks-llm/docker-compose.yml ---
+98:      - POSTGRES_URL=postgresql://postgres:****@rag-db:5432/crawlrag
+
+--- /home/zaks/Zaks-llm/src/deal_origination/docker-compose.deal-engine.yml ---
+3:# The deal-engine-db container on port 5435 has been permanently destroyed.
+4:# All deal data lives in the canonical database: zakops-backend-postgres-1 on port 5432
+5:# DSN: postgresql://zakops:****@localhost:5432/zakops
+
+--- /home/zaks/Zaks-llm/docker-compose.temporal.yml ---
+4:  temporal-postgresql:
+5:    image: postgres:16-alpine
+6:    container_name: temporal-postgresql
+8:      - POSTGRES_PASSWORD=*****
+9:      - POSTGRES_USER=temporal
+10:      - POSTGRES_DB=temporal
+12:      - temporal-postgres-data:/var/lib/postgresql/data
+21:      - temporal-postgresql
+23:      - DB=postgres12
+24:      - DB_PORT=5432
+25:      - POSTGRES_USER=temporal
+26:      - POSTGRES_PWD=temporal
+27:      - POSTGRES_SEEDS=temporal-postgresql
+56:  temporal-postgres-data:
+
+--- /home/zaks/Zaks-llm/docker-compose.deal-engine.yml ---
+3:# The deal-engine-db container on port 5435 has been permanently destroyed.
+4:# All deal data lives in the canonical database: zakops-backend-postgres-1 on port 5432
+5:# DSN: postgresql://zakops:****@localhost:5432/zakops
+
+--- /home/zaks/Zaks-llm/.env.deal-engine.example ---
+4:# ========== DATABASE ==========
+5:DEAL_ENGINE_POSTGRES_URL=postgresql://dealengine:****@deal-engine-db:5432/dealengine
+

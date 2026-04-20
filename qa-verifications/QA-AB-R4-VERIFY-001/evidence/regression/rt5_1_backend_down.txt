@@ -1,0 +1,10 @@
+=== BACKEND DOWN TEST ===
+This test requires temporarily stopping the backend.
+Manual test procedure:
+1. docker stop zakops-backend-backend-1
+2. Invoke agent with 'list all deals'
+3. Verify agent returns structured error (not hallucinated data)
+4. docker start zakops-backend-backend-1
+
+Expected: ToolResult with success=false and error message
+NOT Expected: Agent inventing deal data

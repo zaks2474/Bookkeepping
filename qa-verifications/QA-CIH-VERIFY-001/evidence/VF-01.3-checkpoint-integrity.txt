@@ -1,0 +1,30 @@
+=== VF-01.3 CHECKPOINT INTEGRITY ===
+-rw-r--r-- 1 zaks zaks 828 Feb 10 15:39 /home/zaks/bookkeeping/mission-checkpoints/CI-HARDENING-001.md
+# CI-HARDENING-001 Checkpoint
+
+## Status: COMPLETE
+## Date: 2026-02-10
+
+## Completed Phases
+- Phase 0: Discovery and Baseline
+- Phase 1: stop.sh project detection fallback hardening (Step 1)
+- Phase 2: Repo-local CI governance validation scripts (4 scripts)
+- Phase 3: Aggregate Make targets (validate-frontend-governance)
+- Phase 4: CI workflow hardening (Gate E script, Gate F governance)
+- Phase 5: Documentation and drift safeguards
+- Phase 6: Final verification and bookkeeping
+
+## Remaining Phases
+None — all 7 phases complete.
+
+## Validation State
+- `make validate-local`: PASS
+- `make validate-frontend-governance`: PASS
+- `make validate-surface9`: PASS (0 violations)
+- `make validate-contract-surfaces`: ALL 14 PASS
+
+## Open Blockers
+None.
+
+## Next Action
+Hand off to QA-CIH-VERIFY-001 for independent verification.

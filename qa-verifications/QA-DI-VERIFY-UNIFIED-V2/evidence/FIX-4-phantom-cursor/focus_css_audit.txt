@@ -1,0 +1,5 @@
+=== F4.2: CSS cursor fix applied ===
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx:436:            <div className='rounded-md border select-none caret-transparent'>
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deals/DealBoard.tsx:233:          <div className="flex gap-4 overflow-x-auto pb-4 select-none caret-transparent">
+CSS fix instances: 2
+VERDICT: PASS

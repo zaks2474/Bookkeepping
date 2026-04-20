@@ -1,0 +1,15 @@
+      column_name      |        data_type         
+-----------------------+--------------------------
+ id                    | uuid
+ idempotency_key       | character varying
+ request_hash          | character varying
+ endpoint              | character varying
+ method                | character varying
+ response_status       | integer
+ response_body         | jsonb
+ created_at            | timestamp with time zone
+ expires_at            | timestamp with time zone
+ is_processing         | boolean
+ processing_started_at | timestamp with time zone
+(11 rows)
+

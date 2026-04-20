@@ -1,0 +1,5 @@
+/home/zaks/zakops-backend/src/actions/tests/test_e2e_actions.py:60:    registry_path = Path("/home/zaks/DataRoom/.deal-registry/deal_registry.json")
+/home/zaks/zakops-backend/src/actions/tests/test_e2e_actions.py:64:    registry = json.loads(registry_path.read_text())
+/home/zaks/zakops-backend/src/core/deal_registry.py:760:                with open(self.registry_path, encoding='utf-8') as f:
+/home/zaks/zakops-backend/src/core/deal_registry.py:907:        with open(self.registry_path, 'w', encoding='utf-8') as f:
+ACTIVE_JSON_READS=1

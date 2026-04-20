@@ -1,0 +1,3 @@
+            lines.append(f"  SLO (p95 < 30s): {'PASS' if slo_pass else 'FAIL'}")
+            lines.append(f"  SLO (p95 < 3s): {'PASS' if slo_pass else 'FAIL'}")
+            lines.append(f"  SLO (p95 < 2s): {'PASS' if slo_pass else 'FAIL'}")

@@ -1,0 +1,16 @@
+VALID_TRANSITIONS: dict[str, frozenset[str]] = {
+    "inbound": frozenset(["screening", "junk", "archived"]),
+    "screening": frozenset(["qualified", "junk", "archived"]),
+    "qualified": frozenset(["loi", "junk", "archived"]),
+    "loi": frozenset(["diligence", "junk", "archived"]),
+    "diligence": frozenset(["closing", "junk", "archived"]),
+    "closing": frozenset(["portfolio", "junk", "archived"]),
+    "portfolio": frozenset(["archived"]),
+    "junk": frozenset(["archived"]),
+    "archived": frozenset(),  # Terminal state, no transitions out
+}
+
+
+def _is_valid_transition(from_stage: str, to_stage: str) -> tuple[bool, str]:
+    """R3 REMEDIATION [P4.2]: Validate stage transition against matrix.
+

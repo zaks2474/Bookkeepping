@@ -1,0 +1,5 @@
+    deal_id               VARCHAR(20) PRIMARY KEY REFERENCES zakops.deals(deal_id),
+    deal_id         VARCHAR(20) NOT NULL REFERENCES zakops.deals(deal_id),
+    deal_id         VARCHAR(20) NOT NULL REFERENCES zakops.deals(deal_id),
+    deal_id         VARCHAR(20) NOT NULL REFERENCES zakops.deals(deal_id),
+    deal_id         VARCHAR(20) NOT NULL REFERENCES zakops.deals(deal_id) ON DELETE CASCADE,

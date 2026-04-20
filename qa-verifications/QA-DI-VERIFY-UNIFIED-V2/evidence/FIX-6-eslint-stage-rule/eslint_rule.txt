@@ -1,0 +1,18 @@
+=== F6.1: ESLint rule exists ===
+    "no-restricted-syntax": ["error",
+      {
+        "selector": "VariableDeclarator[id.name='PIPELINE_STAGES'][init.type='ArrayExpression']",
+        "message": "Hardcoded stage arrays are not allowed. Import PIPELINE_STAGES from '@/types/execution-contracts' instead."
+      },
+      {
+        "selector": "VariableDeclarator[id.name='STAGE_ORDER'][init.type='ArrayExpression']",
+        "message": "Hardcoded stage arrays are not allowed. Import from '@/types/execution-contracts' instead."
+      },
+      {
+--
+        "no-restricted-syntax": "off"
+      }
+    }
+  ]
+Stage variable rules: 9
+VERDICT: PASS

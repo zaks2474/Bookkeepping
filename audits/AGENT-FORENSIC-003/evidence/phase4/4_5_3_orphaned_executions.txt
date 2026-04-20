@@ -1,0 +1,10 @@
+=== CHECK 4.5.3: No Orphaned Tool Executions ===
+Timestamp: 2026-02-03T13:10:03-06:00
+Command: SELECT te.id, te.approval_id FROM tool_executions te LEFT JOIN approvals a ON te.approval_id = a.id WHERE a.id IS NULL;
+
+time="2026-02-03T13:10:03-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-03T13:10:03-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+ id | approval_id 
+----+-------------
+(0 rows)
+

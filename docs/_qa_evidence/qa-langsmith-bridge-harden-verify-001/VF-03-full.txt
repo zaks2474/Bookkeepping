@@ -1,0 +1,17 @@
+FUNCTION_LENGTH=99 lines
+PARAMETERS=8
+  message_id: str = required
+  sender: str = required
+  subject: str = required
+  body_text: str = required
+  correlation_id: Optional[str] = None,
+  classification: Optional[str] = None,
+  company_name: Optional[str] = None,
+  urgency: Optional[str] = None,
+HAS_201_CHECK=True
+HAS_200_CHECK=True
+CREATED_DEDUP_SIGNALS=True
+NONE_STRIPPING=True
+CORRELATION_ID_HEADER=True
+LOG_TOOL_CALL=True
+HTTP_ERROR_HANDLING=True

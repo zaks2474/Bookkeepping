@@ -1,0 +1,4 @@
+14:MAX_STEPS = 10  # Explicit step limit to prevent runaway execution
+67:            if i >= MAX_STEPS:
+68:                logger.warning("plan_execute_step_limit", max_steps=MAX_STEPS)
+144:        return steps[:MAX_STEPS]

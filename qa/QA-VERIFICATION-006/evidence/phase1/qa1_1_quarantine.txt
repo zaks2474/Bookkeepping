@@ -1,0 +1,47 @@
+=== QA-1.1: T0.1 Quarantine Endpoint ===
+--- TEST 1: api.ts quarantine calls ---
+693:export async function resolveQuarantineItem(
+704:  return apiFetch('/api/quarantine/' + itemId + '/process', {
+
+--- TEST 1b: Full quarantine references ---
+164:  quarantine_id: z.string().optional(),
+172:  quarantine_reason: z.string().optional(),
+180:  quarantine_dir: z.string().optional().nullable(),
+213:  quarantine_dir: z.string().nullish(),
+253:  quarantine_rate: z.number().optional(),
+653: * Fetch quarantine items - ALWAYS returns an array
+656:  const data = await apiFetch<unknown>('/api/quarantine');
+660:    console.error('Invalid quarantine response:', parsed.error);
+671: * Fetch quarantine health status
+675:    const data = await apiFetch<unknown>('/api/quarantine/health');
+679:      console.error('Invalid quarantine health response:', parsed.error);
+685:    console.error('Failed to fetch quarantine health:', error);
+691: * Resolve quarantine item
+704:  return apiFetch('/api/quarantine/' + itemId + '/process', {
+715: * Canonical quarantine queue (EMAIL_TRIAGE.REVIEW_EMAIL actions pending approval)
+725:  const endpoint = `/api/actions/quarantine${query ? `?${query}` : ''}`;
+731:    console.error('Invalid quarantine queue response:', parsed.error);
+742: * Local-only quarantine preview payload (right-side panel)
+746:    const data = await apiFetch<unknown>(`/api/actions/quarantine/${actionId}/preview`);
+749:      console.error('Invalid quarantine preview response:', parsed.error);
+760: * Approve + execute a quarantine (review email) action.
+768:    return { success: false, error: approved.error || 'Failed to approve quarantine item' };
+772:    return { success: false, error: ran.error || 'Failed to run quarantine item' };
+778: * Reject a quarantine item using the atomic backend endpoint.
+796:    }>(`/api/actions/quarantine/${params.originalActionId}/reject`, {
+817: * Delete (hide) a quarantine item from the decision queue.
+821:  quarantineId: string,
+823:): Promise<{ hidden: boolean; quarantine_id: string }> {
+824:  return apiFetch(`/api/quarantine/${encodeURIComponent(quarantineId)}/delete`, {
+834: * Bulk delete (hide) quarantine items from the decision queue.
+840:  return apiFetch(`/api/quarantine/bulk-delete`, {
+
+--- TEST 2: Backend /process endpoint ---
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1220:@app.post("/api/quarantine/{item_id}/process")
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1221:async def process_quarantine(
+
+--- TEST 3: Backend quarantine routes ---
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1050:@app.get("/api/quarantine", response_model=list[QuarantineResponse])
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1114:@app.get("/api/quarantine/{item_id}", response_model=QuarantineResponse)
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1148:@app.post("/api/quarantine", response_model=QuarantineResponse, status_code=201)
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1220:@app.post("/api/quarantine/{item_id}/process")

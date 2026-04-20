@@ -1,0 +1,28 @@
+=== VF-01.2 KILL SWITCH PATH ===
+/home/zaks/zakops-backend/src/api/orchestration/main.py:510:    # LAYER 3 — Feature flags startup cache
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1632:    # P0-T2: Kill switch — block all quarantine writes when disabled
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1634:    if not await is_flag_enabled("email_triage_writes_enabled", pool, default=True):
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:5:Phase 0: Provides in-memory cached access to feature flags stored in PostgreSQL.
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:6:Flags are loaded at startup and refreshed on reads with a 5-second TTL cache.
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:9:    from .feature_flags import get_flag, is_flag_enabled, refresh_flags
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:20:# In-memory cache: {flag_name: (enabled, updated_at, description)}
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:21:_flag_cache: dict[str, dict[str, Any]] = {}
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:22:_cache_loaded_at: float = 0.0
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:23:_CACHE_TTL_SECONDS = 5.0
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:27:    """Load all flags from DB into cache. Returns the cache dict."""
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:28:    global _flag_cache, _cache_loaded_at
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:36:    _flag_cache = {
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:45:    _cache_loaded_at = time.monotonic()
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:46:    return _flag_cache
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:49:async def _ensure_cache(pool: asyncpg.Pool) -> None:
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:50:    """Refresh cache if stale or empty."""
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:51:    if not _flag_cache or (time.monotonic() - _cache_loaded_at) > _CACHE_TTL_SECONDS:
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:55:async def get_flag(name: str, pool: asyncpg.Pool) -> dict[str, Any] | None:
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:57:    await _ensure_cache(pool)
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:58:    return _flag_cache.get(name)
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:63:    flag = await get_flag(name, pool)
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:87:    # Invalidate cache so next read picks up the change
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:88:    global _cache_loaded_at
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:89:    _cache_loaded_at = 0.0
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:101:    """Get all flags (refreshes cache). Returns dict keyed by flag name."""
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:103:    return dict(_flag_cache)

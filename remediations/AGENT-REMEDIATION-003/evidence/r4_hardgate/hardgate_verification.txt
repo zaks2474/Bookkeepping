@@ -1,0 +1,54 @@
+=== R4: Hard Gate Verification ===
+Date: 2026-02-03
+
+--- Service Health Checks ---
+Agent API (8095): healthy ✅
+Backend API (8091): healthy ✅
+
+--- Critical Path Tests ---
+
+1. INVOKE → APPROVAL:
+   POST /agent/invoke → status="awaiting_approval" ✅
+   
+2. APPROVE → EXECUTION → SUCCESS:
+   POST /agent/approvals/{id}:approve → tool executes → ok=true ✅
+
+3. DOUBLE-APPROVAL REJECTION:
+   Second approve → HTTP 409 "already resolved" ✅
+
+4. CONCURRENT APPROVAL:
+   3 parallel requests → 1 winner, 2 rejected ✅
+
+5. INVALID TRANSITION:
+   Backend rejects with HTTP 400 ✅
+
+6. ACTOR OWNERSHIP:
+   Mismatched actor_id → HTTP 403 ✅
+
+--- Database Verification ---
+Backend DB (zakops): 3 deals (DL-0020, DL-0036, DL-0037 verified)
+Agent DB (zakops_agent): Approvals and checkpoints operational
+
+--- File Changes (from CHANGELOG) ---
+1. graph.py: LangGraph resume API fixed (Command(resume=...))
+2. graph.py: Tool result extraction added
+3. agent.py: No-Illusions Gate (actual_success verification)
+4. deal_tools.py: Backend auth helper (ZAKOPS_API_KEY)
+5. idempotency.py: Key length fixed (64 chars)
+6. workflow.py: Column name fix (details → payload)
+
+--- Matrix Summary ---
+8/8 verification matrices generated and PASS
+
+=== HARD GATE VERDICT: PASS ===
+
+All critical paths verified:
+- F-003 Phantom Success: FIXED
+- LangGraph interrupt/resume: WORKING
+- Backend integration: WORKING
+- Auth (service token + API key): WORKING
+- Concurrency: SAFE (atomic claims)
+- Idempotency: WORKING
+- Audit logging: COMPLETE
+- State machine validation: ENFORCED
+

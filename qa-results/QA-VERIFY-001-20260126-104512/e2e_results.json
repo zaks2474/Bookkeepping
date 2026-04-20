@@ -1,0 +1,165 @@
+{
+  "summary": {
+    "passed": 2,
+    "total": 2
+  },
+  "test_suite": "E2E",
+  "tests": [
+    {
+      "details": {
+        "create": {
+          "elapsed_ms": 22,
+          "method": "POST",
+          "ok": true,
+          "request_json": {
+            "canonical_name": "QA-VERIFY-001 E2E Deal 1769445929",
+            "stage": "inbound",
+            "status": "active"
+          },
+          "response_headers": {
+            "content-length": "382",
+            "content-type": "application/json",
+            "date": "Mon, 26 Jan 2026 16:45:29 GMT",
+            "referrer-policy": "strict-origin-when-cross-origin",
+            "server": "uvicorn",
+            "x-content-type-options": "nosniff",
+            "x-frame-options": "DENY",
+            "x-trace-id": "b58e82f7ea80479595634ed12f6cce85",
+            "x-xss-protection": "1; mode=block"
+          },
+          "response_json": {
+            "action_count": null,
+            "alias_count": null,
+            "broker": {},
+            "canonical_name": "QA-VERIFY-001 E2E Deal 1769445929",
+            "company_info": {},
+            "created_at": "2026-01-26T16:45:29.786278Z",
+            "days_since_update": null,
+            "deal_id": "DL-0007",
+            "display_name": null,
+            "email_thread_ids": [],
+            "folder_path": null,
+            "identifiers": {},
+            "metadata": {},
+            "stage": "inbound",
+            "status": "active",
+            "updated_at": "2026-01-26T16:45:29.786278Z"
+          },
+          "response_text": "{\"deal_id\":\"DL-0007\",\"canonical_name\":\"QA-VERIFY-001 E2E Deal 1769445929\",\"display_name\":null,\"folder_path\":null,\"stage\":\"inbound\",\"status\":\"active\",\"identifiers\":{},\"company_info\":{},\"broker\":{},\"metadata\":{},\"email_thread_ids\":[],\"created_at\":\"2026-01-26T16:45:29.786278Z\",\"updated_at\":\"2026-01-26T16:45:29.786278Z\",\"days_since_update\":null,\"action_count\":null,\"alias_count\":null}",
+          "status_code": 200,
+          "url": "http://localhost:8091/api/deals"
+        },
+        "deal_id_from_db": "DL-0007"
+      },
+      "id": "4.1",
+      "name": "E2E: create deal then GET by id (API + DB)",
+      "passed": true,
+      "timestamp_utc": "2026-01-26T16:45:29.913791+00:00"
+    },
+    {
+      "details": {
+        "api": {
+          "elapsed_ms": 4,
+          "method": "GET",
+          "ok": true,
+          "request_json": null,
+          "response_headers": {
+            "content-length": "1483",
+            "content-type": "application/json",
+            "date": "Mon, 26 Jan 2026 16:45:29 GMT",
+            "referrer-policy": "strict-origin-when-cross-origin",
+            "server": "uvicorn",
+            "x-content-type-options": "nosniff",
+            "x-frame-options": "DENY",
+            "x-trace-id": "3af47ab3341b48aba5901ded2cbad628",
+            "x-xss-protection": "1; mode=block"
+          },
+          "response_json": [
+            {
+              "action_count": 0,
+              "alias_count": 0,
+              "broker": {},
+              "canonical_name": "QA-VERIFY-001 E2E Deal 1769445929",
+              "company_info": {},
+              "created_at": "2026-01-26T16:45:29.786278Z",
+              "days_since_update": 0.0,
+              "deal_id": "DL-0007",
+              "display_name": null,
+              "email_thread_ids": [],
+              "folder_path": null,
+              "identifiers": {},
+              "metadata": {},
+              "stage": "inbound",
+              "status": "active",
+              "updated_at": "2026-01-26T16:45:29.786278Z"
+            },
+            {
+              "action_count": 0,
+              "alias_count": 0,
+              "broker": {},
+              "canonical_name": "QA Verify Probe",
+              "company_info": {},
+              "created_at": "2026-01-26T16:07:49.437043Z",
+              "days_since_update": 0.0,
+              "deal_id": "DL-0003",
+              "display_name": null,
+              "email_thread_ids": [],
+              "folder_path": null,
+              "identifiers": {},
+              "metadata": {},
+              "stage": "inbound",
+              "status": "active",
+              "updated_at": "2026-01-26T16:07:49.437043Z"
+            },
+            {
+              "action_count": 0,
+              "alias_count": 0,
+              "broker": {},
+              "canonical_name": "QA Test Company 1769443214",
+              "company_info": {},
+              "created_at": "2026-01-26T16:00:14.183580Z",
+              "days_since_update": 0.0,
+              "deal_id": "DL-0002",
+              "display_name": "QA Test Company 1769443214",
+              "email_thread_ids": [],
+              "folder_path": null,
+              "identifiers": {},
+              "metadata": {},
+              "stage": "lead",
+              "status": "active",
+              "updated_at": "2026-01-26T16:00:14.183580Z"
+            },
+            {
+              "action_count": 0,
+              "alias_count": 0,
+              "broker": {},
+              "canonical_name": "QA Test Company",
+              "company_info": {},
+              "created_at": "2026-01-26T15:59:12.052210Z",
+              "days_since_update": 0.0,
+              "deal_id": "DL-0001",
+              "display_name": null,
+              "email_thread_ids": [],
+              "folder_path": null,
+              "identifiers": {},
+              "metadata": {},
+              "stage": "inbound",
+              "status": "active",
+              "updated_at": "2026-01-26T15:59:12.052210Z"
+            }
+          ],
+          "response_text": "[{\"deal_id\":\"DL-0007\",\"canonical_name\":\"QA-VERIFY-001 E2E Deal 1769445929\",\"display_name\":null,\"folder_path\":null,\"stage\":\"inbound\",\"status\":\"active\",\"identifiers\":{},\"company_info\":{},\"broker\":{},\"metadata\":{},\"email_thread_ids\":[],\"created_at\":\"2026-01-26T16:45:29.786278Z\",\"updated_at\":\"2026-01-26T16:45:29.786278Z\",\"days_since_update\":0.0,\"action_count\":0,\"alias_count\":0},{\"deal_id\":\"DL-0003\",\"canonical_name\":\"QA Verify Probe\",\"display_name\":null,\"folder_path\":null,\"stage\":\"inbound\",\"status\":\"active\",\"identifiers\":{},\"company_info\":{},\"broker\":{},\"metadata\":{},\"email_thread_ids\":[],\"created_at\":\"2026-01-26T16:07:49.437043Z\",\"updated_at\":\"2026-01-26T16:07:49.437043Z\",\"days_since_update\":0.0,\"action_count\":0,\"alias_count\":0},{\"deal_id\":\"DL-0002\",\"canonical_name\":\"QA Test Company 1769443214\",\"display_name\":\"QA Test Company 1769443214\",\"folder_path\":null,\"stage\":\"lead\",\"status\":\"active\",\"identifiers\":{},\"company_info\":{},\"broker\":{},\"metadata\":{},\"email_thread_ids\":[],\"created_at\":\"2026-01-26T16:00:14.183580Z\",\"updated_at\":\"2026-01-26T16:00:14.183580Z\",\"days_since_update\":0.0,\"action_count\":0,\"alias_count\":0},{\"deal_id\":\"DL-0001\",\"canonical_name\":\"QA Test Company\",\"display_name\":null,\"folder_path\":null,\"stage\":\"inbound\",\"status\":\"active\",\"identifiers\":{},\"company_info\":{},\"broker\":{},\"metadata\":{},\"email_thread_ids\":[],\"created_at\":\"2026-01-26T15:59:12.052210Z\",\"updated_at\":\"2026-01-26T15:59:12.052210Z\",\"days_since_update\":0.0,\"action_count\":0,\"alias_count\":0}]",
+          "status_code": 200,
+          "url": "http://localhost:8091/api/deals?status=active"
+        },
+        "api_count": 4,
+        "db_count": "4"
+      },
+      "id": "4.2",
+      "name": "E2E: backend active deals count API vs DB (must match)",
+      "passed": true,
+      "timestamp_utc": "2026-01-26T16:45:30.002485+00:00"
+    }
+  ],
+  "timestamp_utc": "2026-01-26T16:45:30.091561+00:00"
+}

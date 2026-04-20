@@ -1,0 +1,2 @@
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py:220:                text("DELETE FROM chat_threads WHERE id = :tid"),
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py:216:                text("DELETE FROM thread_ownership WHERE thread_id = :tid"),

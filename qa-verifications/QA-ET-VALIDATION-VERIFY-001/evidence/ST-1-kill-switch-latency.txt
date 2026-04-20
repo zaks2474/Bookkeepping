@@ -1,0 +1,33 @@
+=== ST-1 KILL SWITCH LATENCY ===
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:5:Phase 0: Provides in-memory cached access to feature flags stored in PostgreSQL.
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:6:Flags are loaded at startup and refreshed on reads with a 5-second TTL cache.
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:20:# In-memory cache: {flag_name: (enabled, updated_at, description)}
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:21:_flag_cache: dict[str, dict[str, Any]] = {}
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:22:_cache_loaded_at: float = 0.0
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:23:_CACHE_TTL_SECONDS = 5.0
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:27:    """Load all flags from DB into cache. Returns the cache dict."""
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:28:    global _flag_cache, _cache_loaded_at
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:36:    _flag_cache = {
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:45:    _cache_loaded_at = time.monotonic()
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:46:    return _flag_cache
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:49:async def _ensure_cache(pool: asyncpg.Pool) -> None:
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:50:    """Refresh cache if stale or empty."""
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:51:    if not _flag_cache or (time.monotonic() - _cache_loaded_at) > _CACHE_TTL_SECONDS:
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:57:    await _ensure_cache(pool)
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:58:    return _flag_cache.get(name)
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:87:    # Invalidate cache so next read picks up the change
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:88:    global _cache_loaded_at
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:89:    _cache_loaded_at = 0.0
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:101:    """Get all flags (refreshes cache). Returns dict keyed by flag name."""
+/home/zaks/zakops-backend/src/api/orchestration/feature_flags.py:103:    return dict(_flag_cache)
+/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py:61:# P0-T3: Feature flag cache for shadow mode (60s TTL)
+/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py:63:_flag_cache: dict[str, Any] = {}
+/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py:64:_flag_cache_ts: float = 0.0
+/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py:65:_FLAG_CACHE_TTL = 60.0
+/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py:69:    """Read a feature flag from backend with 60s cache. Returns default on error."""
+/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py:70:    global _flag_cache, _flag_cache_ts
+/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py:72:    if (now - _flag_cache_ts) > _FLAG_CACHE_TTL or not _flag_cache:
+/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py:81:                    _flag_cache = {f["name"]: f["enabled"] for f in data.get("flags", [])}
+/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py:82:                    _flag_cache_ts = now
+/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py:84:            pass  # Use cached/default on failure
+/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py:85:    return _flag_cache.get(name, default)

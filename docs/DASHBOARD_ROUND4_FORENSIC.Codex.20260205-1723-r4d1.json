@@ -1,0 +1,128 @@
+{
+  "agent_identity": {
+    "agent_name": "Codex",
+    "run_id": "20260205-1723-r4d1",
+    "date_time": "2026-02-05T17:23:20Z",
+    "repo_revision_dashboard": "b96b33c5547258663123a637dcff741c96b028c9",
+    "repo_revision_backend": "2a68de172c7faf1df6f53357f4b43b0161d5dd32",
+    "repo_revision_agent_api": "b96b33c5547258663123a637dcff741c96b028c9"
+  },
+  "executive_summary": "Dashboard UX is rich but core workflows are broken or demo-only. Key failures: deal detail routing for reserved slugs, missing bulk deal archive endpoint, quarantine approve/reject miswired to missing action-execution endpoints, quarantine preview ID mismatch, and write auth missing X-API-Key. Settings/onboarding are mock-only; chat renders raw markdown and agent search uses RAG leading to count mismatches.",
+  "evidence_review": {
+    "screenshots_note": "No local screenshot directory found at /home/zaks/bookkeeping/docs/round4_dashboard_screenshots. Screenshot paths referenced are external evidence from prompt.",
+    "screenshots": [
+      {
+        "id": 1,
+        "path": "C:\\Users\\mzsai\\Downloads\\Dashbord Srenshots\\Screenshot 2026-02-05 101133.png",
+        "route": "/deals/GLOBAL",
+        "observed": "Failed to load deal (GET /api/deals/GLOBAL)",
+        "suspected_root_cause": "Catch-all /deals/[id] treats GLOBAL as deal_id",
+        "evidence_refs": ["apps/dashboard/src/app/deals/[id]/page.tsx:89-126", "apps/dashboard/src/app/deals/[id]/page.tsx:315-325"]
+      },
+      {
+        "id": 2,
+        "path": "C:\\Users\\mzsai\\Downloads\\Dashbord Srenshots\\Screenshot 2026-02-05 101209.png",
+        "route": "/deals",
+        "observed": "Method Not Allowed toast after delete",
+        "suspected_root_cause": "POST /api/deals/bulk-archive missing; FastAPI returns 405",
+        "evidence_refs": ["apps/dashboard/src/lib/api.ts:467-478", "zakops-backend/src/api/orchestration/main.py:465-949"]
+      },
+      {
+        "id": 3,
+        "path": "C:\\Users\\mzsai\\Downloads\\Dashbord Srenshots\\Screenshot 2026-02-05 101227.png",
+        "route": "/settings",
+        "observed": "Provider settings only; no email settings",
+        "suspected_root_cause": "Settings page only handles provider localStorage",
+        "evidence_refs": ["apps/dashboard/src/app/settings/page.tsx", "apps/dashboard/src/lib/settings/provider-settings.ts:105-118"]
+      }
+    ]
+  },
+  "surface_inventory": [
+    {"route": "/dashboard", "actions": ["refresh", "approvals toggle", "today/next up links"], "data_sources": ["/api/deals", "/api/deferred-actions/due", "/api/quarantine", "/api/alerts"]},
+    {"route": "/deals", "actions": ["filter/search", "refresh", "row click", "single archive", "bulk archive"], "data_sources": ["/api/deals", "/api/deals/{id}/archive", "/api/deals/bulk-archive"]},
+    {"route": "/deals/[id]", "actions": ["add note", "transition stage", "actions approve/run/cancel/retry", "materials/enrichment tabs"], "data_sources": ["/api/deals/{id}", "/api/deals/{id}/transition", "/api/actions/*", "/api/deals/{id}/materials"]},
+    {"route": "/actions", "actions": ["create", "approve/run/cancel/retry", "bulk archive/delete", "clear completed"], "data_sources": ["/api/actions", "/api/actions/*", "/api/actions/clear-completed"]},
+    {"route": "/quarantine", "actions": ["approve", "reject", "delete", "preview"], "data_sources": ["/api/actions/quarantine", "/api/actions/{id}", "/api/quarantine/{id}/delete"]},
+    {"route": "/chat", "actions": ["send SSE", "execute proposal"], "data_sources": ["/api/chat", "agent-api tools (RAG search)"]},
+    {"route": "/settings", "actions": ["save provider", "test connection"], "data_sources": ["localStorage", "/api/chat (GET)"]},
+    {"route": "/onboarding", "actions": ["connect email (mock)", "agent demo (mock)", "complete"], "data_sources": ["localStorage"]}
+  ],
+  "limitations": [
+    {
+      "id": "L-01",
+      "severity": "P0",
+      "title": "Reserved slugs (new/GLOBAL) routed to deal detail",
+      "evidence_refs": ["apps/dashboard/src/app/deals/[id]/page.tsx:89-126", "apps/dashboard/src/app/deals/[id]/page.tsx:315-325"],
+      "fix": "Add /deals/new route or guard reserved slugs in [id] page.",
+      "dependencies": ["Decide creation UX", "Backend create endpoint/auth"],
+      "systemic_prevention": "Route lint + Playwright route coverage.",
+      "better_ideas": ["Deal intake wizard", "Global portfolio page"],
+      "verification": ["GET /deals/new renders create UI", "No /api/deals/new call"]
+    },
+    {
+      "id": "L-02",
+      "severity": "P0",
+      "title": "Bulk archive deals endpoint missing",
+      "evidence_refs": ["apps/dashboard/src/lib/api.ts:467-478", "zakops-backend/src/api/orchestration/main.py:465-949"],
+      "fix": "Implement /api/deals/bulk-archive or loop single archive.",
+      "dependencies": ["DB transaction strategy", "Audit logging"],
+      "systemic_prevention": "OpenAPI contract tests.",
+      "better_ideas": ["Bulk preview", "Undo window"],
+      "verification": ["POST /api/deals/bulk-archive returns 200"]
+    },
+    {
+      "id": "L-03",
+      "severity": "P0",
+      "title": "Write requests lack X-API-Key",
+      "evidence_refs": ["apps/dashboard/src/lib/api.ts:361-388", "zakops-backend/src/api/shared/middleware/apikey.py:4-40"],
+      "fix": "Route writes through Next API with X-API-Key or implement session auth.",
+      "dependencies": ["Auth model decision"],
+      "systemic_prevention": "Lint: forbid direct client POST/PUT/PATCH/DELETE.",
+      "better_ideas": ["RBAC sessions", "Signed requests"],
+      "verification": ["Write endpoints succeed with key, fail without"]
+    },
+    {
+      "id": "L-04",
+      "severity": "P0",
+      "title": "Quarantine approve/reject miswired to missing Kinetic endpoints",
+      "evidence_refs": ["apps/dashboard/src/lib/api.ts:781-792", "zakops-backend/src/api/orchestration/main.py:1358-1483"],
+      "fix": "Use /api/quarantine/{id}/process for approvals or implement action execute endpoints.",
+      "dependencies": ["Decision on canonical quarantine flow"],
+      "systemic_prevention": "Contract map gate.",
+      "better_ideas": ["Approval summary sheet", "Link-to-existing-deal option"],
+      "verification": ["POST /api/quarantine/{id}/process returns deal_id"]
+    },
+    {
+      "id": "L-05",
+      "severity": "P0",
+      "title": "Quarantine preview ID mismatch",
+      "evidence_refs": ["apps/dashboard/src/app/api/actions/quarantine/[actionId]/preview/route.ts:16-48", "apps/dashboard/src/app/api/actions/quarantine/route.ts:26-54"],
+      "fix": "Create /api/quarantine/{id}/preview or ensure action_id exists.",
+      "dependencies": ["Quarantine-action linkage"],
+      "systemic_prevention": "Typed ID enums and validation.",
+      "better_ideas": ["Precomputed previews", "Raw email viewer"],
+      "verification": ["Selecting item loads preview without 404"]
+    }
+  ],
+  "feature_contract_map": [
+    {"feature": "Deals list", "endpoint": "/api/deals", "method": "GET", "payload": "query params", "response": "Deal[]", "auth": "none", "evidence_refs": ["apps/dashboard/src/lib/api.ts:424-445"]},
+    {"feature": "Deal archive", "endpoint": "/api/deals/{id}/archive", "method": "POST", "payload": "{operator,reason}", "response": "{success,deal_id}", "auth": "X-API-Key", "evidence_refs": ["apps/dashboard/src/lib/api.ts:451-461"]},
+    {"feature": "Bulk archive deals", "endpoint": "/api/deals/bulk-archive", "method": "POST", "payload": "{deal_ids,...}", "response": "{archived,skipped}", "auth": "X-API-Key", "evidence_refs": ["apps/dashboard/src/lib/api.ts:467-478"]},
+    {"feature": "Quarantine approve", "endpoint": "/api/actions/{id}/approve + /execute", "method": "POST", "payload": "{approved_by}", "response": "{success}", "auth": "X-API-Key", "evidence_refs": ["apps/dashboard/src/lib/api.ts:781-792"]}
+  ],
+  "deep_dives": [
+    {"topic": "Deals routing", "finding": "Catch-all /deals/[id] handles new/GLOBAL", "evidence_refs": ["apps/dashboard/src/app/deals/[id]/page.tsx:89-126"]},
+    {"topic": "Quarantine", "finding": "Preview uses /api/actions/{id}; queue uses quarantine ids", "evidence_refs": ["apps/dashboard/src/app/api/actions/quarantine/[actionId]/preview/route.ts:16-48", "apps/dashboard/src/app/api/actions/quarantine/route.ts:26-54"]},
+    {"topic": "Chat", "finding": "Plain-text rendering, RAG primary search", "evidence_refs": ["apps/dashboard/src/app/chat/page.tsx:1035-1047", "apps/agent-api/app/core/langgraph/tools/deal_tools.py:469-507"]}
+  ],
+  "systemic_patterns": [
+    "Route/method mismatches produce 405 (clear-completed, bulk archive)",
+    "Mock fallbacks hide missing backend functionality",
+    "Client write calls miss required X-API-Key",
+    "Multiple API client stacks lead to inconsistent data handling"
+  ],
+  "verification_commands": [
+    {"cmd": "curl -i http://localhost:3003/deals/new", "expected": "Create UI renders, no /api/deals/new call"},
+    {"cmd": "curl -i -X POST http://localhost:8091/api/quarantine/{id}/process -H 'X-API-Key: ...' -d '{"action":"approve","processed_by":"qa"}'", "expected": "200 with deal_id"}
+  ]
+}

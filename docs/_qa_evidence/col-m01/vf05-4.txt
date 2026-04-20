@@ -1,0 +1,2 @@
+CREATE INDEX IF NOT EXISTS idx_ownership_user ON thread_ownership(user_id);
+CREATE INDEX IF NOT EXISTS idx_ownership_user_thread ON thread_ownership(user_id, thread_id);

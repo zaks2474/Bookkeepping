@@ -1,0 +1,87 @@
+{
+  "summary": {
+    "passed": 2,
+    "total": 2
+  },
+  "test_suite": "Agent Tools",
+  "tests": [
+    {
+      "details": {
+        "request": {
+          "elapsed_ms": 12072,
+          "method": "POST",
+          "ok": true,
+          "request_json": {
+            "actor_id": "qa-verify-001",
+            "message": "List deals (QA). If tools are available, use them; otherwise explain error."
+          },
+          "response_headers": {
+            "content-length": "169",
+            "content-type": "application/json",
+            "date": "Mon, 26 Jan 2026 16:49:20 GMT",
+            "server": "uvicorn",
+            "x-request-id": "2420a61b",
+            "x-response-time": "12.071s"
+          },
+          "response_json": {
+            "actions_taken": [],
+            "content": "How can I assist you today?",
+            "error": null,
+            "pending_approval": null,
+            "status": "completed",
+            "thread_id": "c43fa892-3cb4-4515-91e6-19302522117e"
+          },
+          "response_text": "{\"thread_id\":\"c43fa892-3cb4-4515-91e6-19302522117e\",\"status\":\"completed\",\"content\":\"How can I assist you today?\",\"pending_approval\":null,\"actions_taken\":[],\"error\":null}",
+          "status_code": 200,
+          "url": "http://localhost:8095/api/v1/agent/invoke"
+        }
+      },
+      "id": "2.2.1",
+      "name": "Agent tool attempt: list deals (may exercise tool gateway)",
+      "passed": true,
+      "timestamp_utc": "2026-01-26T16:49:33.208115+00:00"
+    },
+    {
+      "details": {
+        "backend_health": {
+          "elapsed_ms": 1,
+          "method": "GET",
+          "ok": true,
+          "request_json": null,
+          "response_headers": {
+            "content-length": "79",
+            "content-type": "application/json",
+            "date": "Mon, 26 Jan 2026 16:49:32 GMT",
+            "referrer-policy": "strict-origin-when-cross-origin",
+            "server": "uvicorn",
+            "x-content-type-options": "nosniff",
+            "x-frame-options": "DENY",
+            "x-trace-id": "86dfb344-a384-49c4-95f6-a4e97a3b0d75",
+            "x-xss-protection": "1; mode=block"
+          },
+          "response_json": {
+            "status": "healthy",
+            "timestamp": "2026-01-26T16:49:33.209889",
+            "version": "1.0.0"
+          },
+          "response_text": "{\"status\":\"healthy\",\"timestamp\":\"2026-01-26T16:49:33.209889\",\"version\":\"1.0.0\"}",
+          "status_code": 200,
+          "url": "http://localhost:8091/health"
+        },
+        "legacy_8090": {
+          "elapsed_ms": 0,
+          "error": "ConnectionError(MaxRetryError(\"HTTPConnectionPool(host='localhost', port=8090): Max retries exceeded with url: /health (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x763d5bc34ce0>: Failed to establish a new connection: [Errno 111] Connection refused'))\"))",
+          "method": "GET",
+          "ok": false,
+          "request_json": null,
+          "url": "http://localhost:8090/health"
+        }
+      },
+      "id": "2.2.2",
+      "name": "Agent integration sanity: backend reachable, legacy 8090 dead",
+      "passed": true,
+      "timestamp_utc": "2026-01-26T16:49:33.210555+00:00"
+    }
+  ],
+  "timestamp_utc": "2026-01-26T16:49:33.210563+00:00"
+}

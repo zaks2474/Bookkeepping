@@ -1,0 +1,37 @@
+=== VF-07.3 CHECKPOINT + CHANGES CLOSURE ===
+# CI-HARDENING-001 Checkpoint
+
+## Status: COMPLETE
+## Date: 2026-02-10
+
+## Completed Phases
+- Phase 0: Discovery and Baseline
+- Phase 1: stop.sh project detection fallback hardening (Step 1)
+- Phase 2: Repo-local CI governance validation scripts (4 scripts)
+- Phase 3: Aggregate Make targets (validate-frontend-governance)
+- Phase 4: CI workflow hardening (Gate E script, Gate F governance)
+- Phase 5: Documentation and drift safeguards
+- Phase 6: Final verification and bookkeeping
+
+## Remaining Phases
+None — all 7 phases complete.
+
+## Validation State
+- `make validate-local`: PASS
+- `make validate-frontend-governance`: PASS
+- `make validate-surface9`: PASS (0 violations)
+- `make validate-contract-surfaces`: ALL 14 PASS
+
+## Open Blockers
+None.
+
+## Next Action
+Hand off to QA-CIH-VERIFY-001 for independent verification.
+/home/zaks/bookkeeping/CHANGES.md:3:## 2026-02-10 — CI-HARDENING-001: CI and Pipeline Hardening for Frontend Governance
+/home/zaks/bookkeeping/CHANGES.md:31:- `/home/zaks/bookkeeping/docs/CI-HARDENING-001-BASELINE.md`
+/home/zaks/bookkeeping/CHANGES.md:32:- `/home/zaks/bookkeeping/docs/CI-HARDENING-001-COMPLETION.md`
+/home/zaks/bookkeeping/CHANGES.md:35:- Baseline: `/home/zaks/bookkeeping/docs/CI-HARDENING-001-BASELINE.md`
+/home/zaks/bookkeeping/CHANGES.md:36:- Completion: `/home/zaks/bookkeeping/docs/CI-HARDENING-001-COMPLETION.md`
+/home/zaks/bookkeeping/CHANGES.md:1242:- 2025-12-31: **Email Sync Smart Provenance Checking + ZakOps Prime Integration Plan**: Enhanced email-to-DataRoom automation with intelligent document provenance verification. **Smart Provenance for Downloads** (`/home/zaks/scripts/sync_acquisition_emails.py`): Disabled automatic deal creation from Downloads folder documents; added `search_by_terms()` method to IMAPGmailClient for email provenance lookup with `skip_words` filter to prevent false positives from generic terms (e.g., "Technologies", "Solutions"); added `_extract_document_content()` to read PDF/Word text and extract company names, listing IDs, broker names; added `_search_email_provenance()` to search Gmail for matching emails using extracted content; added `_is_acquisition_related()` to verify document contains ≥2 acquisition keywords; added `_create_deal_from_email()` to create deals with proper email attribution in README; fixed Gmail disconnect timing to allow Downloads scan to search emails before IMAP disconnect; added search term sanitization (removes newlines/tabs that break IMAP). **New Flow**: Documents in Downloads are now: (1) read for content, (2) matched against existing deals, (3) if no match, searched in Gmail for provenance, (4) only create new deal if email found AND document is acquisition-related, (5) skip personal documents without email trail. **Fixes**: Changed `deals_created` to `new_deals_created` for stats merge; fixed false positive email matches; fixed IMAP search errors from malformed queries. **ZakOps Prime Integration Plan** (`/home/zaks/plans/zakops-prime-email-sync-integration.md`): Created comprehensive 3-stage architecture for agentic email processing: Stage A (Deterministic Ingestion - IMAP fetch, attachment download, manifests), Stage B (Agentic Intelligence - ZakOps Prime generates `deal_profile.json`, `RISKS.md`, `NEXT-ACTIONS.md`, duplicate detection, broker intelligence), Stage C (Gated Outbound - approval-required drafts, never auto-send). **Plan features**: Per-email `manifest.json` for clean stage handoff, model routing (small model for classification, large model for analysis), guardrails (no-overwrite rule, schema validation, approval gates), deterministic CSV patch applier, enum normalization for stages/statuses. **Test results**: Downloads scan now correctly skips personal documents (no provenance), processes business documents with email trail, stats show `provenance_found`/`no_provenance` counts.
+/home/zaks/bookkeeping/mission-checkpoints/CI-HARDENING-001.md:1:# CI-HARDENING-001 Checkpoint
+/home/zaks/bookkeeping/mission-checkpoints/CI-HARDENING-001.md:28:Hand off to QA-CIH-VERIFY-001 for independent verification.

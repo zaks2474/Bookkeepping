@@ -1,0 +1,54 @@
+1046-    }
+1047-
+1048-
+1049-# R2 QA compatibility: legacy/actions alias for quarantine list
+1050-@app.get("/api/actions/quarantine", response_model=list[QuarantineResponse])
+1051:async def list_quarantine_actions(
+1052-    status: str | None = Query("pending", description="Filter by status"),
+1053-    classification: str | None = Query(None, description="Filter by classification"),
+1054-    limit: int = Query(50, ge=1, le=200),
+1055-    offset: int = Query(0, ge=0),
+1056-    pool: asyncpg.Pool = Depends(get_db)
+1057-):
+1058-    """Alias for /api/quarantine to preserve R2 QA expectations."""
+1059:    return await list_quarantine(
+1060-        status=status,
+1061-        classification=classification,
+1062-        limit=limit,
+1063-        offset=offset,
+1064-        pool=pool
+1065-    )
+1066-
+1067-# =============================================================================
+1068-# ACTIONS ENDPOINTS
+1069-# =============================================================================
+1070-
+1071-@app.get("/api/actions", response_model=list[ActionResponse])
+1072-async def list_actions(
+1073-    status: str | None = Query(None, description="Filter by status"),
+1074-    deal_id: str | None = Query(None, description="Filter by deal"),
+--
+1375-# =============================================================================
+1376-
+1377-@app.get("/api/quarantine", response_model=list[QuarantineResponse])
+1378:async def list_quarantine(
+1379-    status: str | None = Query("pending", description="Filter by status"),
+1380-    classification: str | None = Query(None, description="Filter by classification"),
+1381-    source_type: str | None = Query(None, description="Filter by source_type (e.g. email, langsmith_shadow)"),
+1382-    limit: int = Query(50, ge=1, le=200),
+1383-    offset: int = Query(0, ge=0),
+1384-    pool: asyncpg.Pool = Depends(get_db)
+1385-):
+1386-    """List quarantine items."""
+1387-    conditions = []
+1388-    params = []
+1389-    param_idx = 1
+1390-
+1391-    if status:
+1392-        conditions.append(f"q.status = ${param_idx}")
+1393-        params.append(status)
+1394-        param_idx += 1
+1395-
+1396-    if classification:
+1397-        conditions.append(f"COALESCE(sp.classification, q.raw_content->>'classification', 'unknown') = ${param_idx}")
+1398-        params.append(classification)

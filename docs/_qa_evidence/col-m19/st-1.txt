@@ -1,0 +1,15 @@
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py:373:                    params={"tid": thread_id, "before_turn": before_turn, "limit": limit + 1},
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/export_service.py:144:            for i, p in enumerate(all_proposals, 1):
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/export_service.py:218:                            "message_count": len(export["content"].split("### Turn")) - 1,
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/replay_service.py:206:            return 0.0 if (text_a or text_b) else 1.0
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/backend_client.py:73:        self.base_url = base_url or os.getenv("DEAL_API_URL", "http://host.docker.internal:8091")
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/momentum_calculator.py:29:    """Compute deal momentum score (0-100).
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/momentum_calculator.py:41:            stage_score = 12  # Slow
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/momentum_calculator.py:47:        stage_score = 15  # No data
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/momentum_calculator.py:55:        event_score = 12
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/momentum_calculator.py:66:        completion_score = 10  # Neutral
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/momentum_calculator.py:68:    # Risk trajectory (0-15): Lower is better
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/momentum_calculator.py:70:        risk_score = 15
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/momentum_calculator.py:72:        risk_score = 10
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/momentum_calculator.py:80:        action_score = 15
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/momentum_calculator.py:82:        action_score = 10

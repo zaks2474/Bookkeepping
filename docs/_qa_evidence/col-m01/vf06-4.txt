@@ -1,0 +1,3 @@
+    facts_json      JSONB DEFAULT '[]'::jsonb,
+    decisions_json  JSONB DEFAULT '[]'::jsonb,
+    open_questions  JSONB DEFAULT '[]'::jsonb,

@@ -1,0 +1,115 @@
+=== QA-1.3: F-003 — Phantom Success Triple-Proof ===
+--- BEFORE STATE ---
+Raw: DL-0002|inbound|2026-02-02 15:03:55.298646+00
+
+Parsed:
+  Deal ID: DL-0002
+  Stage: inbound
+  Updated: 2026-02-02 15:03:55.298646+00
+
+--- TRIGGER TRANSITION (Target: screening) ---
+Thread ID: qa-phantom-1770098432
+
+Invoke Response:
+{"thread_id":"qa-phantom-1770098432","status":"awaiting_approval","content":null,"pending_approval":{"approval_id":"5609bb60-e644-4497-8ee9-3b3732d14726","tool":"transition_deal","args":{"deal_id":"DL-0002","from_stage":"inbound","to_stage":"screening","reason":null},"permission_tier":"CRITICAL","requested_by":"qa-auditor","requested_at":"2026-02-03T06:00:35.024099Z"},"actions_taken":[],"error":null}
+
+--- APPROVE TRANSITION ---
+Approval ID: 5609bb60-e644-4497-8ee9-3b3732d14726
+Approve Response:
+{"detail":"Validation error","errors":[{"field":"","message":"Field required"}]}
+
+==========================================
+         TRIPLE-PROOF VERIFICATION        
+==========================================
+
+--- PROOF 1: API Response ---
+API approval response stored above
+
+--- PROOF 2: Backend SQL ---
+Before: stage=inbound, updated=2026-02-02 15:03:55.298646+00
+After:  stage=inbound, updated=2026-02-02 15:03:55.298646+00
+
+--- PROOF 3: Audit Log ---
+ event_type | created_at 
+------------+------------
+(0 rows)
+
+
+==========================================
+              VERDICT                     
+==========================================
+FAIL: PHANTOM SUCCESS DETECTED
+API returned success but stage unchanged (inbound → inbound)
+
+--- RETRY APPROVAL (with actor_id) ---
+Approve Response:
+{"thread_id":"qa-phantom-1770098432","status":"completed","content":"","pending_approval":null,"actions_taken":[{"tool":"transition_deal","result":{"ok":true}}],"error":null}
+
+==========================================
+    TRIPLE-PROOF VERIFICATION (RETRY)    
+==========================================
+
+--- PROOF 2: Backend SQL ---
+Before: stage=inbound, updated=2026-02-02 15:03:55.298646+00
+After:  stage=time="2026-02-03T00:01:31-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-03T00:01:31-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+service "postgres" is not running, updated=time="2026-02-03T00:01:31-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-03T00:01:31-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+service "postgres" is not running
+
+--- PROOF 3: Audit Log ---
+        event_type        |          created_at           
+--------------------------+-------------------------------
+ approval_claimed         | 2026-02-03 06:01:26.389554+00
+ tool_execution_started   | 2026-02-03 06:01:26.402645+00
+ tool_execution_completed | 2026-02-03 06:01:26.415137+00
+ approval_approved        | 2026-02-03 06:01:26.415201+00
+(4 rows)
+
+
+==========================================
+         VERDICT (RETRY)                 
+==========================================
+PASS: Stage actually changed (inbound → time="2026-02-03T00:01:31-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-03T00:01:31-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+service "postgres" is not running)
+
+===========================================
+    CRITICAL FINDING: PHANTOM SUCCESS
+===========================================
+
+TRIPLE-PROOF VERIFICATION:
+
+1. API Response: {"ok":true} in actions_taken
+2. Backend SQL: stage unchanged (inbound → inbound)
+3. Audit Log: tool_execution_completed written, but result column is EMPTY
+4. Agent Logs: NO 'transition_deal_called' log entry
+
+ROOT CAUSE ANALYSIS:
+
+The approve_action endpoint in agent.py line 452 HARDCODES {"ok": True}:
+```python
+actions_taken=[ActionTaken(tool=tool_name, result={"ok": True})],
+```
+
+This returns success to the caller REGARDLESS of what the tool actually did.
+The actual tool result goes to result.get("response") but the API always
+says {"ok": True} in actions_taken.
+
+EVIDENCE:
+- tool_executions.result = EMPTY (NULL)
+- tool_executions.success = TRUE (hardcoded)
+- tool_executions.completed_at = NULL
+- No 'transition_deal_called' log entry (tool never executed)
+
+F-003 VERDICT: FAIL - PHANTOM SUCCESS DETECTED
+
+The builder's fix for transition_deal (No-Illusions Gate) was implemented,
+but it never gets called because the LangGraph resume path doesn't actually
+execute the tool. The hardcoded {"ok": True} masks this failure.
+
+REMEDIATION REQUIRED:
+1. Fix agent.py line 452 to return actual tool result, not hardcoded success
+2. Investigate why tool execution isn't happening on resume
+3. Verify tool actually runs and returns proper result before marking success
+

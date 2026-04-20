@@ -1,0 +1,27 @@
+=== PHASE 3 GATE EVALUATION ===
+Date: Tue Feb  3 02:20:00 UTC 2026
+
+=== MANDATORY (ALL must pass) ===
+G3.4:  Path C (HITL interrupt + pending approval)      FAIL (auth blocked; status approved)
+G3.5:  Path D (approve->execute changes stage)          FAIL (phantom success; stage unchanged)
+G3.9:  Idempotency (no double-execute)                 FAIL/UNVERIFIED (Not Found/Auth required)
+G3.13: Rejection path (no side effects + SQL proof)    FAIL/UNVERIFIED (API reject failed)
+
+=== NON-MANDATORY (>=5 must pass) ===
+G3.1:  Graph source documented                          PASS
+G3.2:  Path A (Chat->END)                               FAIL (auth blocked)
+G3.3:  Path B (tool_call)                               FAIL (auth blocked)
+G3.6:  Path E (reject)                                  FAIL/UNVERIFIED
+G3.7:  Checkpoint durability                            FAIL/UNVERIFIED
+G3.8:  Approval field completeness                      PASS
+G3.10: Audit log >=5 event types                        PASS
+G3.11: tool_executions populated                        PASS
+G3.12: Backend SQL confirms stage change                FAIL (stage unchanged)
+G3.14: HITL survives restart                            PASS
+G3.15: Concurrent approvals safe                        PASS
+G3.16: Approval ownership isolation                     FAIL/UNVERIFIED (no user JWT)
+
+Mandatory passed: 0 / 4
+Non-mandatory passed: 6 / 12
+
+GATE RESULT: FAIL (continued per user override)

@@ -1,0 +1,17 @@
+=== V2 DEBT LEDGER EVIDENCE ===
+Date: 2026-02-06
+File: /home/zaks/zakops-agent-api/docs/debt-ledger.md
+
+Debt items tracked with justification + target date:
+  1. Manual Type Debt: 4 types, ceiling=4, target removal=2026-03-15
+     - EventResponse, AgentRun, StageTransitionRequest, StageTransitionResponse
+  2. Redocly Ignores: 57 ignores, ceiling=57, categorized by rule
+     - security-defined (~35), operation-4xx-response (8), no-unused-components (4)
+     - Target reduction dates: 2026-04-01 (most), N/A (false positives)
+  3. Mypy Baseline: 83 errors, stored in tools/type_baselines/mypy_baseline.txt
+     - Target zero date: 2026-06-01
+  4. Backend Error Shape Unification: PENDING
+     - Owner: Backend Team, Deadline: 2026-03-08
+     - Impact: Frontend normalizer is band-aid until unified
+
+All ceiling increases require: PR review + commit message justification + debt-ledger.md update

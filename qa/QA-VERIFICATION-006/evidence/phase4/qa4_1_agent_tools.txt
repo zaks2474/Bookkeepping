@@ -1,0 +1,25 @@
+=== QA-4.1: T3.1+T3.2 Agent Tools ===
+--- TEST 1: create_deal tool ---
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:80:class CreateDealInput(BaseModel):
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:81:    """Input schema for create_deal tool.
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:405:# REMEDIATION-V3 [ZK-ISSUE-0009]: create_deal agent tool with HITL
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:406:@tool(args_schema=CreateDealInput)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:407:async def create_deal(
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:438:        "create_deal_called",
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:448:        logger.warning("create_deal_invalid_stage", stage=stage)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:500:                    "create_deal_success",
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:515:                    "create_deal_backend_rejected",
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:551:        logger.error("create_deal_error", error=str(e))
+
+--- TEST 2: add_note tool ---
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:98:class AddNoteInput(BaseModel):
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:99:    """Input schema for add_note tool.
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:555:# REMEDIATION-V3 [ZK-ISSUE-0009]: add_note agent tool
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:556:@tool(args_schema=AddNoteInput)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:557:async def add_note(
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:573:        "add_note_called",
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:596:                    "add_note_success",
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:616:                    "add_note_backend_rejected",
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:641:        logger.error("add_note_error", error=str(e))
+
+--- TEST 3: Tool registration ---

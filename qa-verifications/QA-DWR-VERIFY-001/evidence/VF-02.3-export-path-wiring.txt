@@ -1,0 +1,4 @@
+=== VF-02.3 EXPORT PATH WIRING ===
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/settings/preferences-api.ts:98:export async function exportUserData(): Promise<void> {
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/settings/preferences-api.ts:99:  const res = await fetch('/api/settings/data/export', {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/settings/data/export/route.ts:5: * POST /api/settings/data/export

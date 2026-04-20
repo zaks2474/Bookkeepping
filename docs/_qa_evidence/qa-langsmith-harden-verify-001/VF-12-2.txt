@@ -1,0 +1,6 @@
+33:| `injection_rate_limiter` | 120 requests/minute | `quarantine:{client_ip}` | **429 Too Many Requests** |
+35:The injection rate limiter is separate from the general (60/min) and auth (10/min) limiters. The higher limit accommodates email-sync burst ingestion.
+37:Headers on 429 response:
+38:- `Retry-After: 60`
+41:Implementation: `src/api/shared/security.py` (RateLimiter class + injection_rate_limiter instance)
+53:| **429 Too Many Requests** | Rate limit exceeded |

@@ -1,0 +1,24 @@
+=== PHASE 2 GATE EVALUATION ===
+=== MANDATORY (ALL must pass) ===
+G2.1:  LLM generates coherent response?          FAIL (auth blocked)
+G2.2:  get_deal triple-proof?                     FAIL
+G2.5:  transition_deal HITL triple-proof?         FAIL
+G2.7:  Backend received tool requests?            FAIL
+G2.11: Streaming >=3 data events + tokens?        FAIL
+
+=== NON-MANDATORY (>=4 must pass) ===
+G2.3:  search_deals?                              GRACEFUL-FAIL (RAG DB not connected + auth blocked)
+G2.4:  duckduckgo_search?                         FAIL (auth blocked)
+G2.6:  DEAL_API_URL resolves from agent?          PASS
+G2.8:  Tool errors graceful?                      FAIL (auth blocked)
+G2.9:  Canary proves real DB?                     FAIL
+G2.10: Agent DB has new records?                  FAIL
+G2.12: Tool source matches expected?              FAIL (3 tools found, expected 4)
+G2.13: Security regression pass?                  FAIL (endpoint mismatch)
+G2.14: Prompt injection blocked by HITL?          FAIL/UNVERIFIED (auth blocked)
+G2.15: Output sanitization invoked?               PASS (code evidence)
+G2.16: Correlation IDs propagate?                 FAIL
+
+Mandatory passed: 0 / 5 (ALL REQUIRED)
+Non-mandatory passed: 2 / 11 (>=4 REQUIRED)
+IF ANY MANDATORY FAIL -> STOP (override requested: proceed to Phase 3 with findings)

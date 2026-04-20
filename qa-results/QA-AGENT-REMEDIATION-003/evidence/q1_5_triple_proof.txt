@@ -1,0 +1,62 @@
+=== Q1.5: INDEPENDENT TRIPLE-PROOF TEST ===
+
+Test Details:
+- Thread ID: qa003-final-1770141011
+- Actor ID: qa-auditor-003
+- Test Deal: DL-QA003 (inbound → screening)
+- Approval ID: f86e9790-d896-48ed-9dcc-421d27273ad2
+
+PROOF 1: API RESPONSE
+---------------------
+{
+  "tool": "transition_deal",
+  "result": {
+    "ok": true,
+    "deal_id": "DL-QA003",
+    "old_stage": "inbound",
+    "new_stage": "screening",
+    "backend_status": 200,
+    "updated_at": "2026-02-03T17:50:13.694995Z"
+  }
+}
+
+PROOF 2: BACKEND SQL (zakops-postgres-1)
+----------------------------------------
+Before: stage=inbound, updated_at=2026-02-03 17:49:56.691732+00
+After:  stage=screening, updated_at=2026-02-03 17:50:13.694995+00
+
+Stage changed: ✅ inbound → screening
+Updated_at changed: ✅ (different timestamp)
+
+PROOF 3: TOOL EXECUTION RECORD (agent DB)
+-----------------------------------------
+execution_id: f06475dd-5f67-447b-9710-2ca8ce016e18
+success: true
+result: {
+  "ok": true,
+  "deal_id": "DL-QA003",
+  "old_stage": "inbound",
+  "new_stage": "screening",
+  "backend_status": 200,
+  "updated_at": "2026-02-03T17:50:13.694995Z"
+}
+
+TRIPLE-PROOF ALIGNMENT
+----------------------
+| Proof | Source | ok | Stage |
+|-------|--------|-----|-------|
+| API Response | actions_taken | true | screening |
+| Backend SQL | zakops.deals | - | screening |
+| Tool Execution | tool_executions | true | screening |
+
+ALL PROOFS ALIGN ✅
+
+VERDICT: PASS
+The Phantom Success bug (F-003) has been fixed. The API response accurately
+reflects the actual backend state change, and the tool_executions record
+confirms the operation succeeded.
+
+NOTE: During testing, discovered two postgres instances:
+- zakops-postgres-1: Production database with active deals (port 5432 mapped)
+- zakops-backend-postgres-1: Stale/test database (internal only)
+Backend correctly uses zakops-postgres-1.

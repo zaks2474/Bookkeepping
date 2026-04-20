@@ -1,0 +1,2 @@
+384:  // REC-005: Add X-API-Key for write operations on server side only
+387:    (headers as Record<string, string>)['X-API-Key'] = process.env.ZAKOPS_API_KEY;

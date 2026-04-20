@@ -1,0 +1,77 @@
+=== AUTO-COLLECTED EVIDENCE (Cycle 1) ===
+Timestamp: 2026-01-25T19:48:50Z
+
+--- git status ---
+ M artifacts/business/beta_readiness.json
+ M artifacts/business/demo_isolation_validation.json
+ M artifacts/business/success_metrics_validation.json
+ M artifacts/docs/demo_run.json
+ M artifacts/observability/canary_run.json
+ M artifacts/ops/bluegreen_verify.json
+ M artifacts/ops/runbook_lint.json
+ M artifacts/perf/thresholds_used.json
+ M artifacts/quality/risk_validation.json
+ M tools/load-tests/generated/thresholds.js
+?? .test_venv/
+?? apps/dashboard/e2e/workflow_verification.spec.ts
+?? apps/dashboard/gate_artifacts/
+?? apps/dashboard/test-results/
+?? apps/dashboard/tools/
+
+--- Recent changes (git diff --stat) ---
+ .../src/__tests__/e2e/integration.test.tsx         | 18 +++++++++++++++---
+ apps/dashboard/src/__tests__/setup.ts              |  2 +-
+ .../src/components/agent/hooks/useAgentRun.ts      |  8 ++++----
+ .../src/components/approvals/ApprovalCard.tsx      |  6 +++++-
+ .../src/components/approvals/ApprovalQueue.tsx     | 19 +++++++++----------
+ .../src/components/deal-workspace/DealTimeline.tsx | 10 +++++-----
+ .../src/components/diligence/DiligenceProgress.tsx | 15 ++++++++-------
+ .../src/components/operator-hq/ActivityFeed.tsx    |  2 +-
+ .../components/operator-hq/PipelineOverview.tsx    |  4 ++--
+ apps/dashboard/src/components/ui/resizable.tsx     | 19 +++++++++++++++++--
+ apps/dashboard/src/config/safety.ts                | 22 +++++++++-------------
+ apps/dashboard/src/lib/api-client.ts               |  2 +-
+ apps/dashboard/tsconfig.json                       |  9 +++------
+ artifacts/business/beta_readiness.json             |  2 +-
+ artifacts/business/demo_isolation_validation.json  |  2 +-
+ artifacts/business/success_metrics_validation.json |  2 +-
+ artifacts/docs/demo_run.json                       |  2 +-
+ artifacts/observability/canary_run.json            | 10 +++++-----
+ artifacts/ops/bluegreen_verify.json                |  2 +-
+ artifacts/ops/runbook_lint.json                    |  2 +-
+ artifacts/perf/thresholds_used.json                |  2 +-
+ artifacts/quality/risk_validation.json             |  6 +++---
+ tools/load-tests/generated/thresholds.js           |  2 +-
+ 23 files changed, 96 insertions(+), 72 deletions(-)
+
+--- Directory listing (top-level) ---
+total 1148
+drwxr-xr-x  16 root root   4096 Jan 25 13:48 .
+drwxr-xr-x   5 root root   4096 Jan 24 23:18 ..
+drwxr-xr-x   3 root root   4096 Jan 24 23:50 .claude
+-rw-r--r--   1 root root    274 Jan 24 23:18 .eslintrc.json
+drwxr-xr-x   2 root root   4096 Jan 24 23:18 .github
+-rw-r--r--   1 root root    531 Jan 24 23:18 .gitignore
+drwxr-xr-x   2 root root   4096 Jan 24 23:18 .husky
+drwxr-xr-x   8 root root   4096 Jan 25 01:00 .next
+-rw-r--r--   1 root root    203 Jan 24 23:18 .npmrc
+-rw-r--r--   1 root root      3 Jan 24 23:18 .nvmrc
+-rw-r--r--   1 root root    557 Jan 24 23:18 .prettierignore
+-rw-r--r--   1 root root    252 Jan 24 23:18 .prettierrc
+drwxr-xr-x   2 root root   4096 Jan 24 23:18 .vscode
+-rw-r--r--   1 root root   3042 Jan 24 23:18 CHANGELOG.md
+-rw-r--r--   1 root root   1191 Jan 25 01:15 Dockerfile
+-rw-r--r--   1 root root   1065 Jan 24 23:18 LICENSE
+-rw-r--r--   1 root root   6098 Jan 24 23:18 Makefile
+-rw-r--r--   1 root root   6383 Jan 24 23:18 README.md
+drwxr-xr-x   3 root root   4096 Jan 24 23:18 audit
+-rw-r--r--   1 root root 254845 Jan 24 23:18 bun.lock
+-rwxr-xr-x   1 root root   8585 Jan 24 23:18 click-sweep-test.sh
+-rw-r--r--   1 root root    324 Jan 24 23:18 components.json
+drwxr-xr-x   2 root root   4096 Jan 24 23:18 docs
+drwxr-xr-x   2 root root   4096 Jan 25 13:25 e2e
+-rw-r--r--   1 root root   3533 Jan 24 23:18 env.example.txt
+drwxr-xr-x   2 root root   4096 Jan 25 13:47 gate_artifacts
+-rw-r--r--   1 root root    262 Jan 25 01:00 next-env.d.ts
+-rw-r--r--   1 root root    954 Jan 25 01:00 next.config.ts
+drwxr-xr-x 430 root root  20480 Jan 25 00:59 node_modules

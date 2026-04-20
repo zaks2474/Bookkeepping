@@ -1,0 +1,10 @@
+=== VF-02.4 TIMEOUT ALIGNED ===
+--- middleware.ts timeout ---
+29:const PROXY_TIMEOUT_MS = parseInt(process.env.PROXY_TIMEOUT_MS || '15000', 10);
+97:    const timeoutId = setTimeout(() => controller.abort(), PROXY_TIMEOUT_MS);
+--- backend-fetch.ts timeout ---
+9:const DEFAULT_TIMEOUT_MS = parseInt(process.env.PROXY_TIMEOUT_MS || '15000', 10);
+--- Both should default to 15000 ---
+middleware_default=15000
+backend_fetch_default=15000
+aligned=True

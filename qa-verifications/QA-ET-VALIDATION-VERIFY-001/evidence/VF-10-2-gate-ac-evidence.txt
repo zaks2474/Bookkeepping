@@ -1,0 +1,31 @@
+=== VF-10.2 GATE TO AC COMPLETION EVIDENCE ===
+48:| G0-01 | Feature flags table with 5 flags, queryable via API | PASS |
+49:| G0-02 | shadow_mode=ON → source_type=langsmith_shadow | PASS |
+50:| G0-03 | Unknown source_type → 400 | PASS |
+51:| G0-04 | Kill switch ON → 503 within 1s; reads unaffected | PASS |
+52:| G0-05 | Kill switch OFF → normal operation | PASS |
+53:| G0-06 | 5 concurrent identical message_id → 1 record | PASS |
+54:| G0-07 | correlation_id on quarantine + logs | PASS |
+55:| G0-08 | correlation_id in tool response | PASS |
+56:| G0-09 | Bridge rejects unauthenticated requests | PASS |
+57:| G0-10 | Key rotation documented | PASS |
+58:| G0-11 | curl no auth → 401/403 | PASS |
+59:| G0-12 | langsmith_live absent during shadow pilot | DEFERRED — SSE transport returns 200 without auth (handled by FastMCP internal handler); deferred to Phase 7 |
+90:1. **SSE transport auth (G0-12):** The `/sse` endpoint returns 200 without Bearer token because FastMCP's internal SSE handler operates at the transport level before application middleware. REST endpoints (`/tools`, `/tools/zakops/*`) correctly enforce auth. Deferred to Phase 7 (Security & Hardening) where Cloudflare Access (Layer 1) will gate all paths including SSE.
+582:### AC-1
+585:### AC-2
+588:### AC-3
+591:### AC-4
+594:### AC-5
+597:### AC-6
+600:### AC-7
+603:### AC-8
+606:### AC-9
+609:### AC-10
+612:### AC-11
+615:### AC-12
+618:### AC-13
+621:### AC-14
+624:### AC-15
+627:### AC-16
+697:- AC-1 through AC-16 are satisfied with artifacts and command output.

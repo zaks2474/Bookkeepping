@@ -1,0 +1,25 @@
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:1159:                    maybe_summarize_after_turn(thread_id, turn_number)
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/chatbot.py:492:class ReplayRequest(BaseModel):
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/chatbot.py:516:    body: ReplayRequest,
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/chatbot.py:521:    result = await replay_service.replay(body.thread_id, body.turn_number)
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/chatbot.py:535:        body.thread_id, body.turn_number, body.modified_inputs,
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/cost_repository.py:50:                        (thread_id, user_id, deal_id, turn_number, request_id,
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/cost_repository.py:54:                        (:thread_id, :user_id, :deal_id, :turn_number, :request_id,
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py:314:                        (id, thread_id, user_id, role, content, turn_number,
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py:318:                        (:id, :thread_id, :user_id, :role, :content, :turn_number,
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py:369:                        WHERE thread_id = :tid AND turn_number < :before_turn
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py:466:                        (thread_id, user_id, deal_id, turn_number, request_id,
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py:470:                        (:thread_id, :user_id, :deal_id, :turn_number, :request_id,
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/replay_service.py:8:  Body: { thread_id, turn_number }
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/replay_service.py:53:        snapshot = await writer.get_snapshot(thread_id, turn_number)
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/replay_service.py:55:            return {"error": f"No snapshot found for thread={thread_id} turn={turn_number}"}
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/counterfactual_service.py:9:  Body: { thread_id, turn_number, modified_inputs }
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/counterfactual_service.py:45:        snapshot = await snapshot_writer.get_snapshot(thread_id, turn_number)
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/counterfactual_service.py:47:            return {"error": f"No snapshot for thread={thread_id} turn={turn_number}"}
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/snapshot_writer.py:113:                        thread_id, turn_number, user_id,
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/snapshot_writer.py:135:                    ON CONFLICT (thread_id, turn_number) DO UPDATE SET
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/snapshot_writer.py:196:    async def get_snapshot(self, thread_id: str, turn_number: int) -> dict | None:
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/snapshot_writer.py:202:                    "SELECT * FROM turn_snapshots WHERE thread_id = $1 AND turn_number = $2",
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/snapshot_writer.py:203:                    thread_id, turn_number,
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/snapshot_writer.py:207:            logger.warning("snapshot_get_failed", thread_id=thread_id, turn=turn_number, error=str(e))
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/snapshot_writer.py:217:                    SELECT id, thread_id, turn_number, user_id, model_name,

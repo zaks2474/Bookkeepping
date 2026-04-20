@@ -1,0 +1,35 @@
+=== BYPASS ATTEMPTS ===
+--- BP-1: Aliased Import Bypass ---
+BP-1 exit: 0 (expect 1 = alias caught)
+--- BP-2: Relative Path Bypass ---
+
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/qa-bp2-test.tsx
+  2:1  error  '../lib/agent-api-types.generated' import is restricted from being used by a pattern. Import from '@/types/agent-api' instead of the generated file directly. (EXEC-002)  no-restricted-imports
+
+✖ 1 problem (1 error, 0 warnings)
+
+BP-2 exit: 1 (expect 1 = relative path caught)
+--- BP-3: .get() Behind Wrapper ---
+_lookup() uses .get(): 0
+0
+BP-3 FAIL: _lookup() still uses .get() internally
+--- BP-4: Ignore File Bypass ---
+Current ignore file: 70 lines
+Ceiling enforcement: check-redocly-debt target exists
+BP-4 PASS: ceiling target exists in Makefile
+--- BP-5: Indirect Re-Export Bypass ---
+
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/qa-bp5-wrapper.ts
+  2:1  error  './api-types.generated' import is restricted from being used by a pattern. Import from '@/types/api' instead of the generated file directly  no-restricted-imports
+
+✖ 1 problem (1 error, 0 warnings)
+
+BP-5 exit: 1 (expect 1 = re-export caught)
+
+=== BYPASS SUMMARY ===
+BP-1: exit=0 BYPASSED!
+BP-2: exit=1 BLOCKED
+BP-3: wrapper check done
+BP-4: ceiling check done
+BP-5: exit=1 BLOCKED
+Date: 2026-02-06T17:39:10-06:00

@@ -1,0 +1,14 @@
+=== VF-05.1 DUPLICATE PREVENTION + THREAD MAP ===
+259:    source_thread_id: str | None = None
+309:    source_thread_id: str | None = None
+768:                $1, 'deal_created', 'api', 'ui_user', $2::jsonb
+1524:            q.source_thread_id,
+1592:            q.source_thread_id,
+1727:               q.email_body_snippet, q.triage_summary, q.source_thread_id,
+1755:                 urgency, source_thread_id, schema_version, tool_version,
+1774:                      email_body_snippet, triage_summary, source_thread_id,
+1793:            item.source_thread_id, item.schema_version, item.tool_version,
+1965:                    'action': 'deal_created',
+2027:                        $1, 'deal_created', 'quarantine_approval', $2, $3::jsonb
+2046:                    VALUES ($3::uuid, 'deal', $1, 'deal_created', $2::jsonb)
+2085:        "deal_created": process.action == 'approve' and not process.deal_id

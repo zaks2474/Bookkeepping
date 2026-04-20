@@ -1,0 +1,14 @@
+=== CHECK 5.2.1: Raw SSE from Agent /agent/invoke/stream ===
+Timestamp: 2026-02-03T13:22:57-06:00
+Service token first 8 chars: k-bG0Us8
+
+event: start
+data: {"thread_id": "sse-audit-001"}
+
+event: content
+data: {"content": "Hello! I can help you with various tasks such as searching for information, managing deals through different stages, and answering questions to the best of my knowledge. If you have any specific requests or questions, feel free to ask!"}
+
+event: end
+data: {"status": "completed", "thread_id": "sse-audit-001"}
+
+=== Fallback: Non-streaming /agent/invoke ===

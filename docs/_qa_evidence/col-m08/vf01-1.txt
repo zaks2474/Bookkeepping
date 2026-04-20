@@ -1,0 +1,2 @@
+apps/agent-api/app/core/security/tool_scoping.py:17:SCOPE_TOOL_MAP: dict[str, frozenset[str]] = {
+apps/agent-api/app/core/security/tool_scoping.py:78:    scope_tools = SCOPE_TOOL_MAP.get(scope, SCOPE_TOOL_MAP[DEFAULT_SCOPE])

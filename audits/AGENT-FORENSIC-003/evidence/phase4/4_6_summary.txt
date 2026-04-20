@@ -1,0 +1,42 @@
+=== Step 4.6 Summary: Concurrent Approval Race Conditions ===
+Timestamp: 2026-02-03T13:14:10-06:00
+
+CHECK 4.6.1: Create Fresh Approval for Race Testing
+  Status: PASS
+  Approval created with ID: 505b8aeb-66aa-47ad-b19d-845c8e0551d4
+
+CHECK 4.6.2: Concurrent Approve/Reject Race Condition
+  Status: PASS
+  Result: 1x HTTP 200 (approve won), 1x HTTP 409 (reject blocked)
+  Final DB status: approved
+  Note: UF-003 ownership check requires matching actor_id
+
+CHECK 4.6.3: Tool Execution Count After Race
+  Status: PASS
+  Execution count: 1 (expected 0 or 1, never 2)
+
+CHECK 4.6.Y: Approve Spam Burst (N=20)
+  Status: PASS
+  Approval ID: 7b65f288-fb5f-40b7-aa90-61d11a25bdca
+  HTTP 200 count: 1
+  HTTP 409 count: 19
+  Tool execution count: 1
+  Verdict: Atomic claim mechanism correctly serialized 20 concurrent requests
+
+CHECK 4.6.Z: Replay After Completion
+  Status: PASS
+  HTTP code: 409
+  Message: 'Approval already resolved (status: approved)'
+  Tool execution count unchanged: 1
+
+=== OVERALL ASSESSMENT ===
+All race condition checks PASSED.
+The atomic claim mechanism (WHERE status='pending') effectively prevents:
+  - Concurrent approve/reject races
+  - Spam burst attacks (only 1 of 20 requests succeeds)
+  - Replay attacks (already resolved approvals cannot be re-approved)
+
+Key security controls verified:
+  - UF-003: Ownership check ensures only matching actor can approve/reject
+  - Atomic SQL UPDATE with WHERE status='pending' prevents TOCTOU races
+  - Tool execution count is always 0 or 1, never duplicated

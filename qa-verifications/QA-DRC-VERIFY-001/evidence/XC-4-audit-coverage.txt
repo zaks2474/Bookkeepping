@@ -1,0 +1,14 @@
+=== Category 1: 12 missing route handlers — how many were created? ===
+Report claims 10 new + 1 method addition = 11 fixes
+Remaining: /api/actions GET (list) and /api/quarantine GET (list) — these are middleware-proxied, not route-handled
+
+=== Category 2: 3 middleware routing gaps — all fixed? ===
+3
+prefixes found in middleware (expected: 3)
+
+=== Category 4: 5 bugs — how many fixed? ===
+Fixed: #1 (CSS), #2 (chat), #5 (working state) = 3 of 5
+Out of scope: #3 (pipeline), #4 (terminal stage) = 2 — documented in completion report §9
+
+=== Category 5: 1 dead code — deleted? ===
+DELETED

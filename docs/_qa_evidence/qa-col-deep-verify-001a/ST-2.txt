@@ -1,0 +1,11 @@
+Checking for module-level singleton pattern in COL-V2 services:
+chat_repository.py: 635:chat_repository = ChatRepository()
+injection_guard.py: NO SINGLETON FOUND
+canary_tokens.py: 84:_MANAGER = CanaryTokenManager()
+sse_events.py: NO SINGLETON FOUND
+snapshot_writer.py: 233:snapshot_writer = SnapshotWriter()
+cost_writer.py: FILE NOT FOUND
+---
+Also checking session_tracker.py and cost_repository.py:
+session_tracker.py: 62:session_injection_tracker = SessionInjectionTracker()
+cost_repository.py: 251:cost_repository = CostRepository()

@@ -1,0 +1,16 @@
+=== XC-5 COMPLETION AC CONSISTENCY ===
+314:### AC-1: Baseline captured for all 7 enhancement items
+341:### AC-10: No regression and bookkeeping closure complete
+11:| AC-1 | Baseline captured for all 7 enhancements | `bookkeeping/docs/CLAUDE-CODE-ENHANCE-002-BASELINE.md` tracks ENH-1/2/3/4/5/7/10 | PASS |
+13:| AC-3 | Machine-readable gate markers | `task-completed.sh` emits `GATE_RESULT:crlf|ownership|typescript|overall:PASS|FAIL` | PASS |
+14:| AC-4 | Configurable snapshot retention | `pre-compact.sh` uses `${SNAPSHOT_RETENTION:-10}`; default behavior preserved | PASS |
+19:| AC-9 | `make qa-cce-verify` implemented | Makefile target wired to `run-qa-cce-verify.sh`; 5/5 checks PASS | PASS |
+20:| AC-10 | No regression + bookkeeping closure | Hook chain intact, completion report + checkpoint + CHANGES present | PASS |
+28:| `~/.claude/hooks/pre-compact.sh` | Added `SNAPSHOT_RETENTION` env var (default 10) | P1 |
+29:| `~/.claude/hooks/task-completed.sh` | Added `TASK_COMPLETED_TARGETS` fixture mode + `GATE_RESULT:*` markers | P1 |
+31:| `zakops-agent-api/Makefile` | Added `qa-cce-verify` target | P2 |
+42:| `bookkeeping/scripts/run-qa-cce-verify.sh` | Combined QA runner (ENH-1) | P2 |
+52:| ENH-1 | CLOSED | `make qa-cce-verify` target + `run-qa-cce-verify.sh` runner |
+56:| ENH-5 | CLOSED | `GATE_RESULT:*` lines in `task-completed.sh` (4 markers per run) |
+57:| ENH-7 | CLOSED | `SNAPSHOT_RETENTION` env var in `pre-compact.sh` (default 10) |
+65:make qa-cce-verify → 5/5 PASS, VERDICT: ALL PASS

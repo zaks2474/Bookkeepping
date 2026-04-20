@@ -1,0 +1,40 @@
+{
+  "test_suite": "RAG API",
+  "timestamp": "2026-01-26T10:02:31.527730",
+  "tests": [
+    {
+      "id": "3.1.1",
+      "name": "RAG Stats",
+      "passed": true,
+      "timestamp": "2026-01-26T10:02:31.531215",
+      "details": {
+        "total_chunks": 226,
+        "response": "{'total_chunks': 226, 'unique_urls': 12, 'embedding_model': 'bge-m3', 'embedding_dim': 1024}"
+      }
+    },
+    {
+      "id": "3.1.2",
+      "name": "RAG Query (Basic)",
+      "passed": true,
+      "timestamp": "2026-01-26T10:02:31.649852",
+      "details": {
+        "query": "deal pipeline",
+        "results_count": 5
+      }
+    },
+    {
+      "id": "3.1.3",
+      "name": "RAG Query (top_k)",
+      "passed": false,
+      "timestamp": "2026-01-26T10:02:31.768884",
+      "details": {
+        "top_k": 3,
+        "results_returned": 5
+      }
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "total": 3
+  }
+}

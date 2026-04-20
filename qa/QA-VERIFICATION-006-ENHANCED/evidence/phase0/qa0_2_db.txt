@@ -1,0 +1,21 @@
+=== QA-0.2: DATABASE CONNECTIVITY ===
+--- Backend DB (zakops) ---
+ current_database | current_user | inet_server_addr | inet_server_port |              now              
+------------------+--------------+------------------+------------------+-------------------------------
+ zakops           | zakops       |                  |                  | 2026-02-04 07:26:24.594989+00
+(1 row)
+
+
+--- Agent DB (zakops_agent) ---
+ current_database | current_user | inet_server_addr | inet_server_port |             now              
+------------------+--------------+------------------+------------------+------------------------------
+ zakops_agent     | agent        |                  |                  | 2026-02-04 07:26:24.70026+00
+(1 row)
+
+
+--- Backend DB Table Count ---
+ table_count 
+-------------
+          71
+(1 row)
+

@@ -1,0 +1,17 @@
+=== CHECK 5.1.2: Agent URL Environment Variables ===
+Timestamp: 2026-02-03T13:21:44-06:00
+
+/home/zaks/zakops-agent-api/apps/dashboard/.env.local:NEXT_PUBLIC_AGENT_API_URL=http://localhost:8095
+/home/zaks/zakops-agent-api/apps/dashboard/.env.local:AGENT_LOCAL_URL=http://localhost:8095
+/home/zaks/zakops-agent-api/apps/dashboard/.env.local:AGENT_LOCAL_API_KEY=k-bG0Us8LHBso4S4OnjqVOXkCNR_C8smNqtflzukWpo
+/home/zaks/zakops-agent-api/apps/dashboard/.env.local:AGENT_LOCAL_TIMEOUT=30000
+/home/zaks/zakops-agent-api/apps/dashboard/.env.example:NEXT_PUBLIC_AGENT_API_URL=http://localhost:8095
+/home/zaks/zakops-agent-api/apps/dashboard/.env.example:AGENT_LOCAL_URL=http://localhost:8095
+/home/zaks/zakops-agent-api/apps/dashboard/.env.example:AGENT_LOCAL_API_KEY=your-service-token-here
+/home/zaks/zakops-agent-api/apps/dashboard/.env.example:AGENT_LOCAL_TIMEOUT=30000
+/home/zaks/zakops-agent-api/apps/dashboard/.env.example:# DASHBOARD_SERVICE_TOKEN - same as AGENT_LOCAL_API_KEY
+/home/zaks/zakops-agent-api/apps/dashboard/.env.example:# AGENT_SERVICE_TOKEN - same as AGENT_LOCAL_API_KEY
+/home/zaks/zakops-agent-api/apps/dashboard/.env.local:NEXT_PUBLIC_AGENT_API_URL=http://localhost:8095
+/home/zaks/zakops-agent-api/apps/dashboard/.env.local:AGENT_LOCAL_URL=http://localhost:8095
+/home/zaks/zakops-agent-api/apps/dashboard/.env.local:AGENT_LOCAL_API_KEY=k-bG0Us8LHBso4S4OnjqVOXkCNR_C8smNqtflzukWpo
+/home/zaks/zakops-agent-api/apps/dashboard/.env.local:AGENT_LOCAL_TIMEOUT=30000

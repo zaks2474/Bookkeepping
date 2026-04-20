@@ -1,0 +1,4 @@
+=== VF-06.3 PRE-COMMIT STYLE HOOK ===
+-rwxr-xr-x 1 zaks zaks 1275 Feb 10 16:17 /home/zaks/zakops-agent-api/tools/hooks/pre-commit
+24:if bash "$INFRA/scan-stale-surface-labels.sh" 2>&1; then
+34:if bash "$INFRA/validate-claude-surface-table.sh" 2>&1; then

@@ -1,0 +1,119 @@
+{
+  "agent_identity": {
+    "agent_name": "Codex",
+    "run_id": "20260204-0334-6c0282",
+    "date_time": "2026-02-04T03:34:43Z",
+    "repo_revision": "unknown"
+  },
+  "status": "FAIL",
+  "gate_results": [
+    {
+      "gate": "GATE 0",
+      "status": "PASS",
+      "evidence": "Final plan exists, includes Part 3 No-Drop Coverage Matrix, and references V2 in Source Documents table."
+    },
+    {
+      "gate": "GATE 1",
+      "status": "PASS",
+      "evidence": "Coverage matrix table lists all 22 V2 issue IDs once each; no missing or duplicate IDs in table rows."
+    },
+    {
+      "gate": "GATE 2",
+      "status": "FAIL",
+      "evidence": "Several tasks lack explicit file/module locations or NEEDS VERIFICATION guidance (e.g., T3.6, T4.6–T4.8, T4.11, T5.5)."
+    },
+    {
+      "gate": "GATE 3",
+      "status": "PASS",
+      "evidence": "RT Gates + QA Passes defined with evidence checklist and command templates in PART 5: FINAL QA PLAN."
+    },
+    {
+      "gate": "GATE 4",
+      "status": "PASS",
+      "evidence": "D-FINAL-01 through D-FINAL-07 specify SoT, stages, agent boundaries, HITL, email ingestion, RAG, auth."
+    },
+    {
+      "gate": "GATE 5",
+      "status": "FAIL",
+      "evidence": "Legacy decommission steps exist but no explicit changelog/CHANGES.md strategy found in plan."
+    },
+    {
+      "gate": "GATE 6",
+      "status": "PASS",
+      "evidence": "Plan targets unified Postgres truth, UI/agent alignment, email ingestion, RAG consistency, and HITL flows."
+    }
+  ],
+  "coverage": {
+    "total_v2_issues": 22,
+    "total_mapped_issues": 22,
+    "missing_issue_ids": [],
+    "duplicate_issue_ids": [],
+    "ambiguous_mappings": []
+  },
+  "risks": [
+    {
+      "risk": "Migration validation gaps (ID mapping errors)",
+      "detection": "Migration report mismatch and sampled field diffs",
+      "mitigation": "id_map + field-by-field validation",
+      "rollback": "Restore JSON/SQLite writes and rerun migration"
+    },
+    {
+      "risk": "Legacy writers still active after cutover",
+      "detection": "File hash changes or CI guard hit",
+      "mitigation": "Read-only permissions + rg guard",
+      "rollback": "Disable new writers and restore backups"
+    },
+    {
+      "risk": "Quarantine approve non-atomic",
+      "detection": "Approved items without deal_id",
+      "mitigation": "Transactional approve + idempotency",
+      "rollback": "Revert to manual 2-step process"
+    },
+    {
+      "risk": "Folder scaffolding drift",
+      "detection": "Missing folder_path or filesystem mismatch",
+      "mitigation": "Store folder_path + retry queue",
+      "rollback": "Disable auto-scaffold and run repair"
+    },
+    {
+      "risk": "Contract drift between UI/API",
+      "detection": "404/422 spike",
+      "mitigation": "OpenAPI-generated clients",
+      "rollback": "Restore compatibility endpoints"
+    },
+    {
+      "risk": "Auth rollout breaks workflows",
+      "detection": "401/403 increase",
+      "mitigation": "Staged rollout + feature flag",
+      "rollback": "Disable auth requirement"
+    },
+    {
+      "risk": "Email ingestion duplicates",
+      "detection": "Duplicate quarantine items",
+      "mitigation": "Idempotency table",
+      "rollback": "Disable cron/dry-run only"
+    },
+    {
+      "risk": "RAG staleness",
+      "detection": "last_indexed_at lag > SLA",
+      "mitigation": "Reindex queue + reconciliation",
+      "rollback": "Disable search_deals or return explicit error"
+    },
+    {
+      "risk": "HITL expiry race",
+      "detection": "Approvals executed after expiry",
+      "mitigation": "TTL check at execution",
+      "rollback": "Disable auto-expiry job"
+    },
+    {
+      "risk": "Legacy deletion breaks hidden dependency",
+      "detection": "Runtime errors referencing removed modules",
+      "mitigation": "Staged deprecation + monitoring",
+      "rollback": "Restore from git"
+    }
+  ],
+  "patch_instructions": [
+    "Add explicit file/module locations or NEEDS VERIFICATION + how to locate for tasks with vague file references (e.g., Phase 3 T3.6, Phase 4 T4.6–T4.8/T4.11, Phase 5 T5.5).",
+    "Add a changelog strategy to Phase 6, specifying required entry in /home/zaks/bookkeeping/CHANGES.md and a verification command to confirm the entry exists."
+  ]
+}

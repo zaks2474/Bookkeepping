@@ -1,0 +1,24 @@
+9:  Body: { thread_id, turn_number, modified_inputs }
+25:    async def analyze(
+29:        modified_inputs: dict[str, Any],
+36:            modified_inputs: Dict with optional keys:
+53:        self._apply_modifications(modified_snapshot, modified_inputs)
+65:            modified_inputs=modified_inputs,
+72:            modifications=list(modified_inputs.keys()),
+79:            "modifications_applied": list(modified_inputs.keys()),
+92:        await self._persist_result(thread_id, turn_number, modified_inputs, result)
+100:        modified_inputs: dict[str, Any],
+117:                        "modified_inputs": list(modified_inputs.keys()),
+126:    def _apply_modifications(
+127:        self, snapshot: dict, modified_inputs: dict[str, Any]
+129:        """Apply modifications to a snapshot copy."""
+132:        if "user_message" in modified_inputs:
+137:                    messages[i]["content"] = modified_inputs["user_message"]
+142:        if "facts_override" in modified_inputs:
+144:            facts_str = json.dumps(modified_inputs["facts_override"], indent=2)
+150:        if "stage_override" in modified_inputs:
+152:            new_stage = modified_inputs["stage_override"]
+211:        modified_inputs: dict[str, Any],
+233:        if "user_message" in modified_inputs:
+235:        if "facts_override" in modified_inputs:
+237:        if "stage_override" in modified_inputs:

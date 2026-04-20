@@ -1,0 +1,22 @@
+=== ST-3: Template rendering ===
+render_template() {
+  local template_file="$1"
+  shift
+  # Remaining args are key=value pairs
+  local content
+  content=$(cat "$template_file")
+  while [ $# -gt 0 ]; do
+    local key="${1%%=*}"
+    local value="${1#*=}"
+    content="${content//\{\{${key}\}\}/$value}"
+    shift
+  done
+  echo "$content"
+}
+
+# ── Agent Execution ───────────────────────────────────────────────────
+--
+    render_template "$TEMPLATES_DIR/pass1.md" \
+      "AGENT_NAME=${agent_upper}" \
+      "RUN_ID=${run_id}" \
+

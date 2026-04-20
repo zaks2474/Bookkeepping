@@ -1,0 +1,78 @@
+apps/agent-api/app/core/langgraph/graph.py:462:            # Check for tool calls that require approval
+apps/agent-api/app/core/langgraph/graph.py:463:            if response_message.tool_calls:
+apps/agent-api/app/core/langgraph/graph.py:464:                hitl_calls = [tc for tc in response_message.tool_calls if requires_approval(tc["name"])]
+apps/agent-api/app/core/langgraph/graph.py:466:                    # Store pending tool calls and go to approval gate
+apps/agent-api/app/core/langgraph/graph.py:471:                            tool_call_id=tc["id"],
+apps/agent-api/app/core/langgraph/graph.py:478:                            "pending_tool_calls": pending,
+apps/agent-api/app/core/langgraph/graph.py:484:                    # Regular tool calls, no approval needed
+apps/agent-api/app/core/langgraph/graph.py:485:                    return Command(update={"messages": [response_message]}, goto="tool_call")
+apps/agent-api/app/core/langgraph/graph.py:498:    async def _tool_call(self, state: GraphState) -> Command:
+apps/agent-api/app/core/langgraph/graph.py:499:        """Process tool calls from the last message.
+apps/agent-api/app/core/langgraph/graph.py:502:        R3 REMEDIATION [P1.4]: Added tool call budget enforcement.
+apps/agent-api/app/core/langgraph/graph.py:506:            state: The current agent state containing messages and tool calls.
+apps/agent-api/app/core/langgraph/graph.py:511:        # R3 REMEDIATION [P2.1]: Set correlation_id context for tool HTTP calls
+apps/agent-api/app/core/langgraph/graph.py:516:        # R3 REMEDIATION [P1.4]: Check tool call budget
+apps/agent-api/app/core/langgraph/graph.py:517:        current_count = state.tool_call_count
+apps/agent-api/app/core/langgraph/graph.py:518:        tool_calls = state.messages[-1].tool_calls
+apps/agent-api/app/core/langgraph/graph.py:519:        new_count = current_count + len(tool_calls)
+apps/agent-api/app/core/langgraph/graph.py:523:                "tool_call_budget_exceeded",
+apps/agent-api/app/core/langgraph/graph.py:525:                requested=len(tool_calls),
+apps/agent-api/app/core/langgraph/graph.py:528:            # Return error for all tool calls
+apps/agent-api/app/core/langgraph/graph.py:533:                        "Please complete the task with fewer tool calls.",
+apps/agent-api/app/core/langgraph/graph.py:537:                    tool_call_id=tc["id"],
+apps/agent-api/app/core/langgraph/graph.py:539:                for tc in tool_calls
+apps/agent-api/app/core/langgraph/graph.py:541:            return Command(update={"messages": outputs, "tool_call_count": new_count}, goto="chat")
+apps/agent-api/app/core/langgraph/graph.py:544:        for tool_call in tool_calls:
+apps/agent-api/app/core/langgraph/graph.py:545:            # R3 REMEDIATION [P1.5]: Validate tool call structure
+apps/agent-api/app/core/langgraph/graph.py:547:                tool_name = tool_call.get("name") if isinstance(tool_call, dict) else getattr(tool_call, "name", None)
+apps/agent-api/app/core/langgraph/graph.py:548:                tool_args = tool_call.get("args", {}) if isinstance(tool_call, dict) else getattr(tool_call, "args", {})
+apps/agent-api/app/core/langgraph/graph.py:549:                tool_call_id = tool_call.get("id") if isinstance(tool_call, dict) else getattr(tool_call, "id", None)
+apps/agent-api/app/core/langgraph/graph.py:553:                    logger.error("tool_call_missing_name", tool_call=str(tool_call)[:200])
+apps/agent-api/app/core/langgraph/graph.py:557:                                "Malformed tool call: missing 'name' field",
+apps/agent-api/app/core/langgraph/graph.py:558:                                metadata={"raw_call": str(tool_call)[:200]}
+apps/agent-api/app/core/langgraph/graph.py:561:                            tool_call_id=tool_call_id or f"error-{len(outputs)}",
+apps/agent-api/app/core/langgraph/graph.py:566:                if not tool_call_id:
+apps/agent-api/app/core/langgraph/graph.py:567:                    tool_call_id = f"generated-{tool_name}-{len(outputs)}"
+apps/agent-api/app/core/langgraph/graph.py:568:                    logger.warning("tool_call_missing_id", tool_name=tool_name, generated_id=tool_call_id)
+apps/agent-api/app/core/langgraph/graph.py:577:                            logger.error("tool_call_args_not_json", tool_name=tool_name, args_type=type(tool_args).__name__)
+apps/agent-api/app/core/langgraph/graph.py:581:                                        f"Malformed tool call: 'args' must be a dict, got string that is not valid JSON",
+apps/agent-api/app/core/langgraph/graph.py:585:                                    tool_call_id=tool_call_id,
+apps/agent-api/app/core/langgraph/graph.py:590:                        logger.error("tool_call_args_invalid_type", tool_name=tool_name, args_type=type(tool_args).__name__)
+apps/agent-api/app/core/langgraph/graph.py:594:                                    f"Malformed tool call: 'args' must be a dict, got {type(tool_args).__name__}",
+apps/agent-api/app/core/langgraph/graph.py:598:                                tool_call_id=tool_call_id,
+apps/agent-api/app/core/langgraph/graph.py:604:                logger.error("tool_call_parse_error", error=str(parse_error), tool_call=str(tool_call)[:200])
+apps/agent-api/app/core/langgraph/graph.py:608:                            f"Failed to parse tool call: {str(parse_error)}",
+apps/agent-api/app/core/langgraph/graph.py:612:                        tool_call_id=f"parse-error-{len(outputs)}",
+apps/agent-api/app/core/langgraph/graph.py:655:                        raw_result = await self.tools_by_name[tool_name].ainvoke(tool_args)
+apps/agent-api/app/core/langgraph/graph.py:677:                        "tool_call_executed",
+apps/agent-api/app/core/langgraph/graph.py:723:                    "tool_call_exception",
+apps/agent-api/app/core/langgraph/graph.py:738:                    tool_call_id=tool_call_id,
+apps/agent-api/app/core/langgraph/graph.py:742:        # R3 REMEDIATION [P1.4]: Update tool call count
+apps/agent-api/app/core/langgraph/graph.py:743:        return Command(update={"messages": outputs, "tool_call_count": new_count}, goto="chat")
+apps/agent-api/app/core/langgraph/graph.py:748:        This node is triggered when tool calls require human approval.
+apps/agent-api/app/core/langgraph/graph.py:752:            state: Current graph state with pending tool calls
+apps/agent-api/app/core/langgraph/graph.py:756:            Command: Either continues to tool_call (approved) or back to chat (rejected)
+apps/agent-api/app/core/langgraph/graph.py:765:                pending_tools=[tc.tool_name for tc in state.pending_tool_calls],
+apps/agent-api/app/core/langgraph/graph.py:771:                "pending_tool_calls": [tc.model_dump() for tc in state.pending_tool_calls],
+apps/agent-api/app/core/langgraph/graph.py:791:                        "pending_tool_calls": [],
+apps/agent-api/app/core/langgraph/graph.py:807:        R3 REMEDIATION [P2.1]: Propagates correlation_id to tool HTTP calls.
+apps/agent-api/app/core/langgraph/graph.py:819:        # R3 REMEDIATION [P2.1]: Set correlation_id context for tool HTTP calls
+apps/agent-api/app/core/langgraph/graph.py:824:        for pending_call in state.pending_tool_calls:
+apps/agent-api/app/core/langgraph/graph.py:826:            idempotency_key = tool_idempotency_key(thread_id, pending_call.tool_name, pending_call.tool_args)
+apps/agent-api/app/core/langgraph/graph.py:833:                    tool_name=pending_call.tool_name,
+apps/agent-api/app/core/langgraph/graph.py:840:                tool = self.tools_by_name.get(pending_call.tool_name)
+apps/agent-api/app/core/langgraph/graph.py:842:                    result = await tool.ainvoke(pending_call.tool_args)
+apps/agent-api/app/core/langgraph/graph.py:847:                            tool_call_id=pending_call.tool_call_id,
+apps/agent-api/app/core/langgraph/graph.py:852:                        tool_name=pending_call.tool_name,
+apps/agent-api/app/core/langgraph/graph.py:870:                                tool_name=pending_call.tool_name,
+apps/agent-api/app/core/langgraph/graph.py:871:                                tool_args=json.dumps(pending_call.tool_args) if pending_call.tool_args else None,
+apps/agent-api/app/core/langgraph/graph.py:887:                            tool_call_id=pending_call.tool_call_id,
+apps/agent-api/app/core/langgraph/graph.py:894:                    tool_name=pending_call.tool_name,
+apps/agent-api/app/core/langgraph/graph.py:902:                        tool_call_id=pending_call.tool_call_id,
+apps/agent-api/app/core/langgraph/graph.py:909:                "pending_tool_calls": [],
+apps/agent-api/app/core/langgraph/graph.py:926:                graph_builder.add_node("chat", self._chat, ends=["tool_call", "approval_gate", END])
+apps/agent-api/app/core/langgraph/graph.py:927:                graph_builder.add_node("tool_call", self._tool_call, ends=["chat"])
+apps/agent-api/app/core/langgraph/graph.py:1068:                pending_calls = result.get("pending_tool_calls", [])
+apps/agent-api/app/core/langgraph/graph.py:1073:                        tool_name = first_call.tool_name if hasattr(first_call, 'tool_name') else first_call["tool_name"]
+apps/agent-api/app/core/langgraph/graph.py:1074:                        tool_args = first_call.tool_args if hasattr(first_call, 'tool_args') else first_call["tool_args"]
+apps/agent-api/app/core/langgraph/tools/deal_tools.py:49:    """Set correlation_id in context for tool HTTP calls."""

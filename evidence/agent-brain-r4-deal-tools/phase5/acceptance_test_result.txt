@@ -1,0 +1,34 @@
+R4 REMEDIATION - ACCEPTANCE TEST RESULTS
+========================================
+Date: 2026-02-05
+Test: "How many deals do I have in my pipeline? Break it down by stage."
+
+BACKEND API RESPONSE (Source of Truth):
+---------------------------------------
+Total deals: 10
+
+Stage breakdown:
+  archived: 1
+  inbound: 8
+  screening: 1
+
+AGENT RESPONSE:
+---------------
+{
+  "thread_id": "acceptance-test-r4-003",
+  "status": "completed",
+  "content": "You currently have a total of 10 deals in your pipeline, broken down by stage as follows:\n\n- **Inbound:** 8 deals\n- **Screening:** 1 deal\n- **Archived:** 1 deal\n\nIf you need more detailed information about any specific stage or deal, let me know!",
+  "pending_approval": null,
+  "actions_taken": [],
+  "error": null
+}
+
+RESULT: ✅ PASS
+===============
+Numbers match exactly:
+- Total: 10 == 10 ✓
+- Inbound: 8 == 8 ✓
+- Screening: 1 == 1 ✓
+- Archived: 1 == 1 ✓
+
+Agent correctly used list_deals tool (backed by backend API) instead of search_deals (which was using RAG).

@@ -1,0 +1,500 @@
+/**
+ * ZakOps Orchestration API Zod Schemas
+ * Runtime validation for API data
+ */
+
+import { z } from 'zod';
+
+// =============================================================================
+// ENUMS
+// =============================================================================
+
+export const DealStageSchema = z.enum([
+  'inbound',
+  'screening',
+  'qualified',
+  'loi',
+  'diligence',
+  'closing',
+  'portfolio',
+  'junk',
+  'archived',
+]);
+
+export const DealStatusSchema = z.enum(['active', 'junk', 'merged', 'archived']);
+
+export const PrioritySchema = z.enum(['HIGH', 'MEDIUM', 'LOW', 'NORMAL']);
+
+export const NdaStatusSchema = z.enum(['none', 'requested', 'signed', 'expired']);
+
+// R2-1.3 FIX: Aligned with backend lowercase status values
+export const ActionStatusSchema = z.enum([
+  'pending',
+  'pending_approval',
+  'queued',
+  'ready',
+  'running',
+  'completed',
+  'failed',
+  'cancelled',
+  'rejected',
+]);
+
+export const RiskLevelSchema = z.enum(['low', 'medium', 'high']);
+
+export const ActionSourceSchema = z.enum(['chat', 'ui', 'system', 'agent', 'api']);
+
+export const QuarantineClassificationSchema = z.enum(['DEAL_SIGNAL', 'UNCERTAIN', 'JUNK', 'unknown']);
+
+export const QuarantineStatusSchema = z.enum(['pending', 'approved', 'rejected', 'expired']);
+
+export const SenderTypeSchema = z.enum(['broker', 'seller', 'advisor', 'platform', 'unknown']);
+
+// =============================================================================
+// NESTED SCHEMAS
+// =============================================================================
+
+export const DealIdentifiersSchema = z.object({
+  listing_ids: z.array(z.string()).optional().default([]),
+  broker_reference_ids: z.array(z.string()).optional().default([]),
+  bizbuysell_id: z.string().nullable().optional(),
+  axial_id: z.string().nullable().optional(),
+  internal_codes: z.array(z.string()).optional().default([]),
+}).passthrough();
+
+export const CompanyInfoSchema = z.object({
+  company_name: z.string().nullable().optional(),
+  legal_entity: z.string().nullable().optional(),
+  dba_names: z.array(z.string()).optional().default([]),
+  location: z.string().nullable().optional(),
+  sector: z.string().nullable().optional(),
+  franchise_system: z.string().nullable().optional(),
+}).passthrough();
+
+export const BrokerInfoSchema = z.object({
+  broker_id: z.string().nullable().optional(),
+  name: z.string().nullable().optional(),
+  email: z.string().nullable().optional(),
+  phone: z.string().nullable().optional(),
+  company: z.string().nullable().optional(),
+  quality_rating: PrioritySchema.optional(),
+  sectors: z.array(z.string()).optional().default([]),
+  domain: z.string().nullable().optional(),
+}).passthrough();
+
+export const DealMetadataSchema = z.object({
+  priority: PrioritySchema.optional(),
+  asking_price: z.number().nullable().optional(),
+  ebitda: z.number().nullable().optional(),
+  revenue: z.number().nullable().optional(),
+  employees: z.number().nullable().optional(),
+  nda_status: NdaStatusSchema.optional(),
+  cim_received: z.boolean().optional(),
+  junk_reason: z.string().nullable().optional(),
+}).passthrough();
+
+// FIX: Changed to .nullable().optional() to handle backend null values
+export const AuditEntrySchema = z.object({
+  action: z.string(),
+  by: z.string(),
+  at: z.string(),
+  notes: z.string().nullable().optional(),
+  reason: z.string().nullable().optional(),
+}).passthrough();
+
+// FIX: Changed to .nullable().optional() to handle backend null values
+export const ArtifactSchema = z.object({
+  type: z.string(),
+  path: z.string(),
+  size: z.number().nullable().optional(),
+  created_at: z.string(),
+}).passthrough();
+
+export const QuarantineLinkSchema = z.object({
+  url: z.string(),
+  type: z.string(),
+  vendor_hint: z.string().nullable(),
+  auth_required: z.boolean(),
+  source_email_id: z.string(),
+  source_timestamp: z.string(),
+});
+
+// =============================================================================
+// MAIN ENTITY SCHEMAS
+// =============================================================================
+
+export const DealSchema = z.object({
+  deal_id: z.string(),
+  canonical_name: z.string(),
+  display_name: z.string().nullable().optional(),
+  folder_path: z.string().nullable().optional(),
+  stage: DealStageSchema,
+  status: DealStatusSchema,
+  identifiers: DealIdentifiersSchema.or(z.record(z.unknown())).optional(),
+  company_info: CompanyInfoSchema.or(z.record(z.unknown())).optional(),
+  broker: BrokerInfoSchema.or(z.record(z.unknown())).optional(),
+  metadata: DealMetadataSchema.or(z.record(z.unknown())).optional(),
+  email_thread_ids: z.array(z.string()).optional().default([]),
+  created_at: z.string(),
+  updated_at: z.string(),
+  days_since_update: z.number().nullable().optional(),
+  action_count: z.number().nullable().optional(),
+  alias_count: z.number().nullable().optional(),
+});
+
+export const DealCreateSchema = z.object({
+  canonical_name: z.string().min(1),
+  display_name: z.string().optional(),
+  folder_path: z.string().optional(),
+  stage: DealStageSchema.optional(),
+  status: DealStatusSchema.optional(),
+  identifiers: DealIdentifiersSchema.partial().optional(),
+  company_info: CompanyInfoSchema.partial().optional(),
+  broker: BrokerInfoSchema.partial().optional(),
+  metadata: DealMetadataSchema.partial().optional(),
+});
+
+export const DealUpdateSchema = z.object({
+  canonical_name: z.string().min(1).optional(),
+  display_name: z.string().optional(),
+  folder_path: z.string().optional(),
+  stage: DealStageSchema.optional(),
+  status: DealStatusSchema.optional(),
+  identifiers: DealIdentifiersSchema.partial().optional(),
+  company_info: CompanyInfoSchema.partial().optional(),
+  broker: BrokerInfoSchema.partial().optional(),
+  metadata: DealMetadataSchema.partial().optional(),
+});
+
+// FIX: Changed to .nullable().optional() to handle backend null values
+export const DealEventSchema = z.object({
+  id: z.string(),
+  deal_id: z.string().nullable().optional(),
+  event_type: z.string(),
+  source: z.string().nullable().optional(),
+  actor: z.string().nullable().optional(),
+  details: z.record(z.unknown()).nullable().optional(),
+  created_at: z.string(),
+}).passthrough();
+
+// FIX: Changed to .nullable().optional() to handle backend null values
+export const DealAliasSchema = z.object({
+  id: z.string(),
+  deal_id: z.string().nullable().optional(),
+  alias: z.string(),
+  alias_type: z.string(),
+  created_at: z.string(),
+}).passthrough();
+
+// R2-1.6 FIX: Aligned with backend ActionResponse - phantom fields made optional
+// Backend fields: action_id, deal_id, capability_id, action_type, title, summary,
+//                 status, created_at, updated_at, risk_level, requires_human_review,
+//                 inputs, outputs, deal_name, deal_stage
+export const ActionSchema = z.object({
+  // Required fields (exist in backend)
+  action_id: z.string(),
+  capability_id: z.string(),
+  action_type: z.string(),
+  title: z.string(),
+  status: ActionStatusSchema,
+  created_at: z.string(),
+  updated_at: z.string(),
+  risk_level: RiskLevelSchema,
+  requires_human_review: z.boolean(),
+  inputs: z.record(z.unknown()),
+  outputs: z.record(z.unknown()),
+  // Optional fields (exist in backend but may be null)
+  deal_id: z.string().nullable().optional(),
+  summary: z.string().nullable().optional(),
+  deal_name: z.string().nullable().optional(),
+  deal_stage: DealStageSchema.nullable().optional(),
+  // Phantom fields (NOT in backend - kept for future compatibility, all optional)
+  started_at: z.string().nullable().optional(),
+  completed_at: z.string().nullable().optional(),
+  scheduled_for: z.string().nullable().optional(),
+  duration_seconds: z.number().nullable().optional(),
+  created_by: z.string().nullable().optional(),
+  source: ActionSourceSchema.nullable().optional(),
+  idempotency_key: z.string().nullable().optional(),
+  retry_count: z.number().nullable().optional(),
+  max_retries: z.number().nullable().optional(),
+  next_retry_at: z.string().nullable().optional(),
+  parent_action_id: z.string().nullable().optional(),
+  root_action_id: z.string().nullable().optional(),
+  chain_depth: z.number().nullable().optional(),
+  audit_trail: z.array(AuditEntrySchema).nullable().optional(),
+  artifacts: z.array(ArtifactSchema).nullable().optional(),
+  error_message: z.string().nullable().optional(),
+}).passthrough();
+
+export const ActionApproveSchema = z.object({
+  approved_by: z.string().optional(),
+  notes: z.string().optional(),
+});
+
+export const ActionRejectSchema = z.object({
+  rejected_by: z.string().optional(),
+  reason: z.string().min(1),
+});
+
+export const QuarantineItemSchema = z.object({
+  id: z.string(),
+  action_id: z.string().nullable().optional(),
+  message_id: z.string().nullable().optional(),
+  thread_id: z.string().nullable().optional(),
+  email_subject: z.string().nullable().optional(),
+  sender: z.string().nullable().optional(),
+  sender_domain: z.string().nullable().optional(),
+  received_at: z.string().nullable().optional(),
+  classification: QuarantineClassificationSchema.optional(),
+  urgency: PrioritySchema.optional(),
+  confidence: z.number().nullable().optional(),
+  company_name: z.string().nullable().optional(),
+  broker_name: z.string().nullable().optional(),
+  links: z.array(QuarantineLinkSchema).optional(),
+  quarantine_dir: z.string().nullable().optional(),
+  email_content_path: z.string().nullable().optional(),
+  triage_summary_path: z.string().nullable().optional(),
+  status: QuarantineStatusSchema.optional(),
+  processed_at: z.string().nullable().optional(),
+  processed_by: z.string().nullable().optional(),
+  processing_result: z.string().nullable().optional(),
+  created_deal_id: z.string().nullable().optional(),
+  created_at: z.string().optional(),
+  updated_at: z.string().optional(),
+  sender_name: z.string().nullable().optional(),
+  sender_company: z.string().nullable().optional(),
+  is_broker: z.boolean().nullable().optional(),
+}).passthrough();
+
+export const QuarantineProcessSchema = z.object({
+  action: z.enum(['approve', 'reject']),
+  processed_by: z.string().optional(),
+  deal_id: z.string().optional(),
+  notes: z.string().optional(),
+});
+
+export const SenderProfileSchema = z.object({
+  id: z.number(),
+  email: z.string(),
+  domain: z.string(),
+  name: z.string().nullable(),
+  company: z.string().nullable(),
+  role: z.string().nullable(),
+  sender_type: SenderTypeSchema,
+  quality_rating: PrioritySchema,
+  is_broker: z.boolean(),
+  total_emails: z.number(),
+  deal_emails: z.number(),
+  last_email_at: z.string().nullable(),
+  associated_deal_ids: z.array(z.string()),
+  created_at: z.string(),
+  updated_at: z.string(),
+});
+
+export const PipelineStageSummarySchema = z.object({
+  stage: DealStageSchema,
+  count: z.number(),
+  avg_days_in_stage: z.number().nullable(),
+});
+
+export const PipelineStatsSchema = z.object({
+  total_active_deals: z.number(),
+  pending_actions: z.number(),
+  quarantine_pending: z.number(),
+  recent_events_24h: z.number(),
+  deals_by_stage: z.record(DealStageSchema, z.number()),
+});
+
+// =============================================================================
+// TYPE EXPORTS
+// =============================================================================
+
+export type DealStage = z.infer<typeof DealStageSchema>;
+export type DealStatus = z.infer<typeof DealStatusSchema>;
+export type Priority = z.infer<typeof PrioritySchema>;
+export type NdaStatus = z.infer<typeof NdaStatusSchema>;
+export type ActionStatus = z.infer<typeof ActionStatusSchema>;
+export type RiskLevel = z.infer<typeof RiskLevelSchema>;
+export type ActionSource = z.infer<typeof ActionSourceSchema>;
+export type QuarantineClassification = z.infer<typeof QuarantineClassificationSchema>;
+export type QuarantineStatus = z.infer<typeof QuarantineStatusSchema>;
+export type SenderType = z.infer<typeof SenderTypeSchema>;
+export type Deal = z.infer<typeof DealSchema>;
+export type DealCreate = z.infer<typeof DealCreateSchema>;
+export type DealUpdate = z.infer<typeof DealUpdateSchema>;
+export type DealEvent = z.infer<typeof DealEventSchema>;
+export type DealAlias = z.infer<typeof DealAliasSchema>;
+export type Action = z.infer<typeof ActionSchema>;
+export type ActionApprove = z.infer<typeof ActionApproveSchema>;
+export type ActionReject = z.infer<typeof ActionRejectSchema>;
+export type QuarantineItem = z.infer<typeof QuarantineItemSchema>;
+export type QuarantineProcess = z.infer<typeof QuarantineProcessSchema>;
+export type SenderProfile = z.infer<typeof SenderProfileSchema>;
+export type PipelineStageSummary = z.infer<typeof PipelineStageSummarySchema>;
+export type PipelineStats = z.infer<typeof PipelineStatsSchema>;
+
+// =============================================================================
+// EXECUTION CONTRACT SCHEMAS (Phase 1)
+// =============================================================================
+
+export const ToolRiskLevelSchema = z.enum(['low', 'medium', 'high', 'critical']);
+
+export const AgentRunEventTypeSchema = z.enum([
+  'run_created',
+  'run_started',
+  'run_completed',
+  'run_failed',
+  'run_cancelled',
+]);
+
+export const AgentToolEventTypeSchema = z.enum([
+  'tool_call_started',
+  'tool_call_completed',
+  'tool_call_failed',
+  'tool_approval_required',
+  'tool_approval_granted',
+  'tool_approval_denied',
+]);
+
+export const AgentStreamEventTypeSchema = z.enum([
+  'stream_start',
+  'stream_token',
+  'stream_end',
+  'stream_error',
+]);
+
+export const AgentEventTypeSchema = z.union([
+  AgentRunEventTypeSchema,
+  AgentToolEventTypeSchema,
+  AgentStreamEventTypeSchema,
+]);
+
+export const ThreadStatusSchema = z.enum(['active', 'archived']);
+
+export const RunStatusSchema = z.enum(['pending', 'running', 'completed', 'failed', 'cancelled']);
+
+export const AgentEventBaseSchema = z.object({
+  event_id: z.string(),
+  event_type: AgentEventTypeSchema,
+  thread_id: z.string(),
+  run_id: z.string(),
+  timestamp: z.string(),
+});
+
+export const AgentRunEventSchema = AgentEventBaseSchema.extend({
+  event_type: AgentRunEventTypeSchema,
+  data: z.object({
+    assistant_id: z.string(),
+    status: RunStatusSchema,
+    error: z.string().optional(),
+    duration_ms: z.number().optional(),
+  }),
+});
+
+export const AgentToolCallEventSchema = AgentEventBaseSchema.extend({
+  event_type: AgentToolEventTypeSchema,
+  data: z.object({
+    tool_call_id: z.string(),
+    tool_name: z.string(),
+    tool_input: z.record(z.unknown()),
+    tool_output: z.unknown().optional(),
+    risk_level: ToolRiskLevelSchema,
+    requires_approval: z.boolean(),
+    approved_by: z.string().optional(),
+    error: z.string().optional(),
+    duration_ms: z.number().optional(),
+  }),
+});
+
+export const AgentStreamEventSchema = AgentEventBaseSchema.extend({
+  event_type: AgentStreamEventTypeSchema,
+  data: z.object({
+    token: z.string().optional(),
+    content: z.string().optional(),
+    error: z.string().optional(),
+  }),
+});
+
+export const AgentEventSchema = z.union([
+  AgentRunEventSchema,
+  AgentToolCallEventSchema,
+  AgentStreamEventSchema,
+]);
+
+export const ToolCallStatusSchema = z.enum([
+  'pending',
+  'approved',
+  'rejected',
+  'completed',
+  'failed',
+]);
+
+export const AgentToolCallSchema = z.object({
+  tool_call_id: z.string(),
+  run_id: z.string(),
+  tool_name: z.string(),
+  tool_input: z.record(z.unknown()),
+  tool_output: z.unknown().nullable(),
+  status: ToolCallStatusSchema,
+  requires_approval: z.boolean(),
+  approved_by: z.string().nullable(),
+  approved_at: z.string().nullable(),
+  started_at: z.string().nullable(),
+  completed_at: z.string().nullable(),
+  error: z.string().nullable(),
+  created_at: z.string(),
+});
+
+export const AgentThreadSchema = z.object({
+  thread_id: z.string(),
+  deal_id: z.string().nullable(),
+  assistant_id: z.string(),
+  status: ThreadStatusSchema,
+  metadata: z.record(z.unknown()),
+  created_at: z.string(),
+  updated_at: z.string(),
+});
+
+export const AgentRunSchema = z.object({
+  run_id: z.string(),
+  thread_id: z.string(),
+  assistant_id: z.string(),
+  status: RunStatusSchema,
+  started_at: z.string().nullable(),
+  completed_at: z.string().nullable(),
+  error: z.string().nullable(),
+  tool_calls: z.array(AgentToolCallSchema),
+  metadata: z.record(z.unknown()),
+  created_at: z.string(),
+  updated_at: z.string(),
+});
+
+export const ToolManifestEntrySchema = z.object({
+  tool_id: z.string(),
+  name: z.string(),
+  description: z.string(),
+  risk_level: ToolRiskLevelSchema,
+  requires_approval: z.boolean(),
+  allowed_deal_stages: z.array(DealStageSchema).optional(),
+  rate_limit: z
+    .object({
+      max_calls: z.number(),
+      window_seconds: z.number(),
+    })
+    .optional(),
+});
+
+// Type exports for execution contracts
+export type ToolRiskLevel = z.infer<typeof ToolRiskLevelSchema>;
+export type AgentRunEventType = z.infer<typeof AgentRunEventTypeSchema>;
+export type AgentToolEventType = z.infer<typeof AgentToolEventTypeSchema>;
+export type AgentStreamEventType = z.infer<typeof AgentStreamEventTypeSchema>;
+export type AgentEventType = z.infer<typeof AgentEventTypeSchema>;
+export type ThreadStatus = z.infer<typeof ThreadStatusSchema>;
+export type RunStatus = z.infer<typeof RunStatusSchema>;
+export type AgentEvent = z.infer<typeof AgentEventSchema>;
+export type AgentToolCall = z.infer<typeof AgentToolCallSchema>;
+export type AgentThread = z.infer<typeof AgentThreadSchema>;
+export type AgentRun = z.infer<typeof AgentRunSchema>;
+export type ToolManifestEntry = z.infer<typeof ToolManifestEntrySchema>;

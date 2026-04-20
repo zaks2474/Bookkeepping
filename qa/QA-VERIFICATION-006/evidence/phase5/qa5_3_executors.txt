@@ -1,0 +1,22 @@
+=== QA-5.3: T4.6-T4.8 Executors ===
+--- Executor files ---
+/home/zaks/zakops-backend/src/actions/executors/communication_draft_email.py
+/home/zaks/zakops-backend/src/actions/executors/_artifacts.py
+/home/zaks/zakops-backend/src/actions/executors/deal_enrich_materials.py
+/home/zaks/zakops-backend/src/actions/executors/diligence_request_docs.py
+/home/zaks/zakops-backend/src/actions/executors/deal_backfill_sender_history.py
+/home/zaks/zakops-backend/src/actions/executors/email_triage_review_email.py
+/home/zaks/zakops-backend/src/actions/executors/rag_reindex_deal.py
+/home/zaks/zakops-backend/src/actions/executors/tool_invoke.py
+/home/zaks/zakops-backend/src/actions/executors/analysis_build_valuation_model.py
+/home/zaks/zakops-backend/src/actions/executors/document_generate_loi.py
+/home/zaks/zakops-backend/src/actions/executors/deal_create_from_email.py
+/home/zaks/zakops-backend/src/actions/executors/deal_extract_email_artifacts.py
+/home/zaks/zakops-backend/src/actions/executors/registry.py
+/home/zaks/zakops-backend/src/actions/executors/deal_append_email_materials.py
+/home/zaks/zakops-backend/src/actions/executors/deal_dedupe_and_place_materials.py
+/home/zaks/zakops-backend/src/actions/executors/base.py
+/home/zaks/zakops-backend/src/actions/executors/email_triage_reject_email.py
+/home/zaks/zakops-backend/src/actions/executors/communication_send_email.py
+/home/zaks/zakops-backend/src/actions/executors/presentation_generate_pitch_deck.py
+Executor count: 19

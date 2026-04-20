@@ -1,0 +1,49 @@
+=== Q0.3: Builder Artifacts ===
+Builder dir exists: /home/zaks/bookkeeping/remediations/AGENT-REMEDIATION-003
+total 32
+drwxr-xr-x  6 root root 4096 Feb  3 11:20 .
+drwxr-xr-x  5 root root 4096 Feb  3 10:43 ..
+-rw-r--r--  1 root root 2705 Feb  3 11:20 R003_PROGRESS.md
+-rw-r--r--  1 root root 1972 Feb  3 11:11 REMEDIATION_003_CHANGELOG.md
+drwxr-xr-x  2 root root 4096 Feb  3 10:47 backups
+drwxr-xr-x 17 root root 4096 Feb  3 11:11 evidence
+drwxr-xr-x  2 root root 4096 Feb  3 11:19 matrices
+drwxr-xr-x  2 root root 4096 Feb  3 10:43 scripts
+
+--- Required Files ---
+MISSING: /home/zaks/bookkeeping/remediations/AGENT-REMEDIATION-003/REMEDIATION_003_REPORT.md
+EXISTS: /home/zaks/bookkeeping/remediations/AGENT-REMEDIATION-003/REMEDIATION_003_CHANGELOG.md (17 lines)
+EXISTS: /home/zaks/bookkeeping/remediations/AGENT-REMEDIATION-003/R003_PROGRESS.md (67 lines)
+
+--- Evidence dirs ---
+total 68
+drwxr-xr-x 17 root root 4096 Feb  3 11:11 .
+drwxr-xr-x  6 root root 4096 Feb  3 11:20 ..
+drwxr-xr-x  2 root root 4096 Feb  3 10:46 pre0_db_identity
+drwxr-xr-x  2 root root 4096 Feb  3 10:49 r0_diagnosis
+drwxr-xr-x  2 root root 4096 Feb  3 10:55 r1_fix_verification
+drwxr-xr-x  2 root root 4096 Feb  3 10:43 r1_phantom_fix
+drwxr-xr-x  2 root root 4096 Feb  3 10:43 r1_resume_fix
+drwxr-xr-x  2 root root 4096 Feb  3 10:43 r1_triple_proof
+drwxr-xr-x  2 root root 4096 Feb  3 10:43 r2_auth_regression
+drwxr-xr-x  2 root root 4096 Feb  3 10:43 r2_chaos
+drwxr-xr-x  2 root root 4096 Feb  3 11:16 r2_chaos_tests
+drwxr-xr-x  2 root root 4096 Feb  3 10:43 r2_concurrency
+drwxr-xr-x  2 root root 4096 Feb  3 10:43 r2_correlation
+drwxr-xr-x  2 root root 4096 Feb  3 10:43 r2_golden_path
+drwxr-xr-x  2 root root 4096 Feb  3 10:43 r2_seed
+drwxr-xr-x  2 root root 4096 Feb  3 10:43 r3_matrices
+drwxr-xr-x  2 root root 4096 Feb  3 11:20 r4_hardgate
+
+--- Matrices ---
+total 40
+drwxr-xr-x 2 root root 4096 Feb  3 11:19 .
+drwxr-xr-x 6 root root 4096 Feb  3 11:20 ..
+-rw-r--r-- 1 root root  902 Feb  3 11:18 01_HITL_FLOW_MATRIX.md
+-rw-r--r-- 1 root root 1027 Feb  3 11:18 02_CONCURRENCY_MATRIX.md
+-rw-r--r-- 1 root root 1188 Feb  3 11:19 03_AUTH_MATRIX.md
+-rw-r--r-- 1 root root 1350 Feb  3 11:19 04_IDEMPOTENCY_MATRIX.md
+-rw-r--r-- 1 root root 1413 Feb  3 11:19 05_ERROR_HANDLING_MATRIX.md
+-rw-r--r-- 1 root root 1491 Feb  3 11:19 06_AUDIT_LOG_MATRIX.md
+-rw-r--r-- 1 root root 1579 Feb  3 11:19 07_STATE_TRANSITION_MATRIX.md
+-rw-r--r-- 1 root root 2388 Feb  3 11:19 08_TRIPLE_PROOF_MATRIX.md

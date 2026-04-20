@@ -1,0 +1,44 @@
+=== FastMCP 2.14.4 Transport Investigation ===
+
+http_app signature: (self, path: 'str | None' = None, middleware: 'list[ASGIMiddleware] | None' = None, json_response: 'bool | None' = None, stateless_http: 'bool | None' = None, transport: "Literal['http', 'streamable-http', 'sse']" = 'http', event_store: 'EventStore | None' = None, retry_interval: 'int | None' = None) -> 'StarletteWithLifespan'
+
+Transport parameter: transport: "Literal['http', 'streamable-http', 'sse']" = 'http'
+Transport annotation: Literal['http', 'streamable-http', 'sse']
+Transport default: http
+
+=== Dual Transport Test ===
+SSE app created: <class 'fastmcp.server.http.StarletteWithLifespan'>
+Streamable HTTP app created: <class 'fastmcp.server.http.StarletteWithLifespan'>
+
+=== Mount Investigation ===
+Starlette Mount available — could mount SSE at /sse and HTTP at /mcp on separate sub-apps
+BUT: FastMCP.http_app() creates a full app with its own routes.
+The SSE app registers /sse and /messages/ routes.
+The streamable-http app registers /mcp/ route.
+
+FEASIBILITY: Possible via Starlette Mount, but complex.
+SIMPLER: FastMCP 2.14.4 default http transport already handles both.
+
+=== Default HTTP Transport Routes ===
+  /mcp -> None
+
+=== Streamable HTTP Transport Routes ===
+  /mcp -> None
+
+=== SSE Transport Routes ===
+  /sse -> {'GET', 'HEAD'}
+  /messages -> None
+
+=== DUAL TRANSPORT OUTCOME ===
+FastMCP 2.14.4 supports both SSE and Streamable HTTP as separate app instances.
+Combining both into a single Starlette server is non-trivial — route mounting
+causes path prefix stripping (/mcp/mcp double path) and raw ASGI dispatch
+requires lifespan management across two apps.
+
+DECISION: Keep SSE as primary transport (proven working through tunnel).
+Switching to Streamable HTTP is a one-line change in create_app():
+  transport="sse" → transport="streamable-http"
+This changes the endpoint from /sse to /mcp.
+
+IF LangSmith shows Tools: 0 with SSE → switch to Streamable HTTP and retest.
+This is documented in the create_app() docstring and health check response.

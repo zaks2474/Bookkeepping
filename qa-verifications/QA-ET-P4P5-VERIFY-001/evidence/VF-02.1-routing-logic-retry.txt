@@ -1,0 +1,4 @@
+        auto_route_enabled = await is_flag_enabled("auto_route", pool, default=False)
+        if auto_route_enabled:
+                                $1, 'email_routed', 'auto_route', 'system', $2::jsonb
+            routing_reason = "auto_route_off"

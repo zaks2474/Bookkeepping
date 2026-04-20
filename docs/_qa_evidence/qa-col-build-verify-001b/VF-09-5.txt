@@ -1,0 +1,9 @@
+17:class GdprPurgeReport(BaseModel):
+20:    deleted_count: int = 0
+21:    skipped_count: int = 0
+22:    skipped_thread_ids: list[str] = []
+75:                    report.skipped_count += 1
+76:                    report.skipped_thread_ids.append(thread_id)
+111:                    report.deleted_count += 1
+138:        deleted=report.deleted_count,
+139:        skipped=report.skipped_count,

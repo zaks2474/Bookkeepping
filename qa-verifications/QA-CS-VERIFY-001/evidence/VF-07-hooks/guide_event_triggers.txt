@@ -1,0 +1,4 @@
+=== V7.7 ===
+225:| `pre-edit.sh` | PreToolUse | Edit\|Write | Block edits to generated files, .env, secrets, and main branch | 0=allow, 2=block |
+226:| `pre-bash.sh` | PreToolUse | Bash | Block `rm -rf /`, `DROP TABLE`, `TRUNCATE`, force-push main | 0=allow, 2=block |
+227:| `post-edit.sh` | PostToolUse | Edit\|Write | Auto-format: `black` for .py, `prettier` for .ts/.js, JSON validation | Async, never blocks |

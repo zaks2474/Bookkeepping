@@ -1,0 +1,32 @@
+=== XC-5 VALIDATION LOG CONSISTENCY ===
+11:make validate-local: PASS
+13:npm run test: Existing tests pass (deal-integrity live tests skipped — backend not running)
+18:### make validate-local
+30:### npm run type-check
+35:### npm run test (unit tests)
+45:### npm run test:e2e
+--- outcomes ---
+4:**Status:** ALL PASS
+11:make validate-local: PASS
+12:tsc --noEmit: PASS
+20:Sync Types: PASS
+21:Sync Agent Types: PASS
+22:Lint: PASS (warnings only — pre-existing useEffect deps)
+23:Contract Surface Validation: 14/14 PASS
+24:Agent Config Validation: PASS
+25:SSE Schema Validation: PASS
+26:Frontend Governance Validation: PASS
+27:Local Validation (tsc --noEmit): PASS
+32:tsc --noEmit: PASS (0 errors)
+37:deals-board-shape.test.ts: 5/5 PASS
+38:dashboard-refresh-toast.test.tsx: 5/5 PASS
+39:onboarding-sequence.test.tsx: 9/9 PASS
+40:quarantine-input-state.test.tsx: 8/8 PASS
+41:settings-export-route.test.ts: 9/9 PASS
+42:Total mission tests: 36/36 PASS
+53:CHECK 1: PASS — Memory integrity OK
+54:CHECK 2: PASS — Surface count consistent (14 everywhere)
+55:CHECK 3: PASS — Sentinel freshness OK (4/4 current)
+56:CHECK 4: PASS — Generated files present (4/4)
+57:CHECK 5: PASS — Codegen freshness OK
+58:CHECK 6: PASS — Constraint registry OK (10/10 verified)

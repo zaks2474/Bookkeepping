@@ -1,0 +1,9 @@
+=== VF-04.3 PHASE-3 EVIDENCE PRESENCE ===
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:181:| 1 | Bridge schema expansion ships but LangSmith payload assembly lags | HIGH | Injection failures or null-heavy records | Phase 1 handoff artifact + Phase 3 deterministic payload gate (G3-06) |
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:357:- G3-01: System prompt is deployed in LangSmith.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:358:- G3-02: Ten test emails show correct behavior by class (deal signals full extraction, newsletters minimal, spam discarded).
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:359:- G3-03: Zero required-field NULLs on injected items.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:360:- G3-04: `triage_summary` present and meaningful on every item.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:361:- G3-05: Confidence scoring calibrated (not collapsed to a single constant).
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:362:- G3-06: Deterministic payload verified across 20 injections with identical key sets.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:363:- G3-07: Eval set exists with 20+ labeled samples and baseline scores.

@@ -1,0 +1,11 @@
+226:- `portfolio` - Businesses the operator already owns
+255:Inbound    → Screening, Passed
+256:Screening  → Qualified, Passed, Lost
+257:Qualified  → LOI, Screening (back), Passed, Lost
+258:LOI        → Diligence, Qualified (back), Lost
+259:Diligence  → Closing, LOI (back), Lost
+260:Closing    → Won, Diligence (back), Lost
+261:Won        → (terminal)
+262:Lost       → (terminal)
+263:Passed     → Screening (reactivate)
+287:| `get_operator_context` | Get operator profile, buy box, portfolio |

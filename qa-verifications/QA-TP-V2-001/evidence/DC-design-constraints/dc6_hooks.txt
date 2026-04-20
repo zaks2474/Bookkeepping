@@ -1,0 +1,16 @@
+=== DC-6: Hook Integration ===
+--- DC-6.1: stop.sh aware of active TriPass runs ---
+56:TRIPASS_LOCK="/tmp/tripass.lock"
+57:if [ -f "$TRIPASS_LOCK" ]; then
+58:  TRIPASS_RUN_ID=$(cat "$TRIPASS_LOCK" 2>/dev/null)
+59:  echo "WARNING: TriPass run in progress: ${TRIPASS_RUN_ID}"
+66:- **TriPass:** INTERRUPTED — run ${TRIPASS_RUN_ID} was active when session ended\\
+
+--- DC-6.2: memory-sync.sh captures TriPass metadata ---
+57:    tripass_runs)
+58:      local runs_dir="/home/zaks/bookkeeping/docs/_tripass_runs"
+65:    tripass_latest)
+105:TRIPASS_RUNS=$(gather_fact tripass_runs)
+106:TRIPASS_LATEST=$(gather_fact tripass_latest)
+157:- **Facts:** CLAUDE.md=${CLAUDE_MD_LINES}L | deny=${DENY_RULES} | hooks=${HOOK_COUNT} | rules=${RULE_COUNT} | redocly=${REDOCLY_IGNORES} | cmds=${COMMAND_COUNT} | specs: backend=${BACKEND_SPEC}, agent=${AGENT_SPEC} | make=${MAKE_TARGETS} targets | tripass: ${TRIPASS_RUNS} runs (latest: ${TRIPASS_LATEST})
+

@@ -1,0 +1,10 @@
+79:from app.services.chat_repository import chat_repository
+1143:                await chat_repository.add_message(
+1148:                    await chat_repository.add_message(
+1153:                logger.warning("chat_repository_write_failed", error=str(repo_err), thread_id=thread_id)
+1392:                    await chat_repository.add_message(
+1397:                    await chat_repository.add_message(
+1402:                logger.warning("chat_repository_write_failed", error=str(repo_err), thread_id=session_id)
+1472:                        await chat_repository.add_message(
+1477:                        await chat_repository.add_message(
+1482:                    logger.warning("chat_repository_write_failed", error=str(repo_err), thread_id=session_id)

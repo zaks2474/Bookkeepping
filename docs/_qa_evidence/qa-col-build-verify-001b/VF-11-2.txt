@@ -1,0 +1,3 @@
+94:  critiqueResult?: { severity?: string; issues_count?: number; should_revise?: boolean } | null;
+1260:        {!isUser && !message.isStreaming && (message.dataSource || message.critiqueResult) && (
+1267:            <RefinedBadge critiqueResult={message.critiqueResult} />

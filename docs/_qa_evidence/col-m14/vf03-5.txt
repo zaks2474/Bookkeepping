@@ -1,0 +1,7 @@
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/drift_detection.py:110:        fact: Fact dict with 'confidence', 'last_reinforced', 'reinforcement_count'.
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/drift_detection.py:119:    last_reinforced = fact.get("last_reinforced")
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/drift_detection.py:120:    if not last_reinforced:
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/drift_detection.py:124:        if isinstance(last_reinforced, str):
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/drift_detection.py:125:            last_dt = parse_date(last_reinforced)
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/drift_detection.py:127:            last_dt = last_reinforced
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/drift_detection.py:133:        reinforcements = max(fact.get("reinforcement_count", 1), 1)

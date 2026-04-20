@@ -1,0 +1,9 @@
+=== POST-REMEDIATION AUDIT ===
+1. events/route.ts: 501 explicit → ACCEPTABLE
+2. agent/activity/route.ts: 501 explicit → ACCEPTABLE
+3. chat/session/[sessionId]/route.ts: 501 with note → ACCEPTABLE
+4. chat/execute-proposal/route.ts: 501 with explicit message → ACCEPTABLE
+5. actions/bulk/archive/route.ts: REMEDIATED → now returns 502 degraded (was mock success)
+6. actions/[id]/archive/route.ts: REMEDIATED → now returns 502 degraded (was mock success)
+7. actions/completed-count/route.ts: REMEDIATED → now returns 502 degraded (was mock success)
+All remaining mock/placeholder endpoints return explicit degradation. PASS

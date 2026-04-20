@@ -1,0 +1,6 @@
+class GhostKnowledgeFlagsEvent(SSEEvent):
+    """Ghost knowledge flags detected for a deal."""
+    event_type: str = "ghost_knowledge_flags"
+    deal_id: str
+    flags: list[dict] = Field(default_factory=list)
+    detected_at: str = Field(

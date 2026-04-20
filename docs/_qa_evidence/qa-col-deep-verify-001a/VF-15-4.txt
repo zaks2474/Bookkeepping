@@ -1,0 +1,19 @@
+Looking for blocking awaits on enrichment tasks:
+Direct await on brain_extract/snapshot_write/cost_record: NONE FOUND
+---
+trigger_brain_extraction IS awaited inside _post_turn_enrichment (line 1009)
+BUT _post_turn_enrichment ITSELF is wrapped in create_task (line 1310)
+So the enrichment pipeline is non-blocking from the response path perspective.
+---
+Total create_task count: 11 in graph.py
+  line 418: cost_repository.record_cost
+  line 451: snapshot_writer.write
+  line 700: cost_repository.record_cost (streaming path)
+  line 1278: _update_long_term_memory
+  line 1303: maybe_summarize_after_turn
+  line 1310: _post_turn_enrichment (brain+drift+citations)
+  line 1518: cost recording (get_response path)
+  line 1548: maybe_summarize_after_turn
+  line 1601: cost recording (streaming path)
+  line 1628: maybe_summarize_after_turn
+VERDICT: PASS — all enrichment uses create_task, response path is non-blocking

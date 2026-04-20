@@ -1,0 +1,68 @@
+- generic [active] [ref=e1]:
+  - region "Notifications alt+T"
+  - main [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - button "Toggle Sidebar" [ref=e6]:
+          - img
+          - generic [ref=e7]: Toggle Sidebar
+        - navigation "breadcrumb" [ref=e8]:
+          - list [ref=e9]:
+            - link "Chat" [disabled] [ref=e10]
+      - generic [ref=e11]:
+        - button [ref=e132]:
+          - img
+        - button [ref=e12]:
+          - generic [ref=e14]:
+            - img
+        - button "Toggle theme" [ref=e15]:
+          - img
+          - generic [ref=e16]: Toggle theme
+    - generic [ref=e17]:
+      - generic [ref=e18]:
+        - generic [ref=e19]:
+          - img [ref=e20]
+          - heading "Chat" [level=1] [ref=e22]
+        - generic [ref=e23]:
+          - generic [ref=e24]:
+            - generic [ref=e27]: Local vLLM (Qwen)
+            - link [ref=e28] [cursor=pointer]:
+              - /url: /settings
+              - img
+          - combobox [ref=e30]:
+            - generic:
+              - generic:
+                - img
+                - text: Global
+            - img
+          - button "History" [ref=e32]:
+            - img
+            - text: History
+          - button "New Chat" [ref=e33]:
+            - img
+            - text: New Chat
+          - button "Evidence" [ref=e34]:
+            - img
+            - text: Evidence
+          - button "Debug" [ref=e35]:
+            - img
+            - text: Debug
+      - generic [ref=e37]:
+        - generic [ref=e39]:
+          - img [ref=e40]
+          - heading "ZakOps Assistant" [level=2] [ref=e47]
+          - paragraph [ref=e48]: Ask questions about your deals, get AI-powered insights, and receive actionable suggestions grounded in your data.
+          - generic [ref=e49]:
+            - generic [ref=e50]: RAG-powered
+            - generic [ref=e51]: Grounded responses
+            - generic [ref=e52]: Action proposals
+          - paragraph [ref=e53]: Your chat history is saved to both server and browser, persisting across refreshes and restarts.
+        - generic [ref=e54]:
+          - generic [ref=e55]:
+            - textbox "Ask a question..." [ref=e56]
+            - button [disabled]:
+              - img
+          - paragraph [ref=e57]: Responses are grounded in deal data. Proposals require approval.
+  - button "Open Next.js Dev Tools" [ref=e139] [cursor=pointer]:
+    - img [ref=e140]
+  - alert [ref=e143]

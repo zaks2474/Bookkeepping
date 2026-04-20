@@ -1,0 +1,20 @@
+/home/zaks/zakops-backend/src/actions/tests/test_e2e_actions.py:97:    def test_propose_valid_action_creates_ready(self, store, test_deal):
+/home/zaks/zakops-backend/src/actions/tests/test_e2e_actions.py:287:    def test_propose_high_risk_creates_pending_approval(self, test_deal):
+/home/zaks/zakops-backend/src/actions/executors/diligence_request_docs.py:196:def _create_fallback_draft(doc_type: str, description: str, broker_name: str, deal_name: str) -> dict[str, str]:
+/home/zaks/zakops-backend/src/actions/executors/email_triage_review_email.py:323:def _create_deal_workspace(*, deal_path: Path, deal_name: str, email_from: str, email_subject: str, email_received: str, email_body: str) -> None:
+/home/zaks/zakops-backend/src/core/actions/executor.py:205:    async def _execute_create_task(self, action: dict, inputs: dict) -> dict[str, Any]:
+/home/zaks/zakops-backend/src/core/actions/policy.py:173:    async def create_action(
+/home/zaks/zakops-backend/src/core/deal_registry.py:977:    def create_deal(
+/home/zaks/zakops-backend/src/core/agent/invoker.py:219:    async def _create_action(
+/home/zaks/zakops-backend/src/core/agent/actions.py:313:    async def _execute_create_task(self, action: AgentAction) -> dict[str, Any]:
+/home/zaks/zakops-backend/src/core/agent/deal_api_client.py:12:- transition_deal → POST /deals/{id}/transition (CRITICAL - requires approval)
+/home/zaks/zakops-backend/src/core/agent/deal_api_client.py:412:        Maps to: POST /api/deals/{id}/transition
+/home/zaks/zakops-backend/src/core/agent/reasoning.py:154:    async def create_chain(
+/home/zaks/zakops-backend/src/core/agent/callbacks.py:168:    async def on_action_created(self, action_id: UUID, action_type: str):
+/home/zaks/zakops-backend/src/core/agent/tools.py:230:    async def _create_task(self, input: dict, context: dict) -> dict[str, Any]:
+/home/zaks/zakops-backend/src/core/agent/deal_tools.py:9:- transition_deal → POST /deals/{id}/transition (CRITICAL tier - requires approval)
+/home/zaks/zakops-backend/src/core/agent/deal_tools.py:246:    Maps to: POST /deals/{id}/transition
+/home/zaks/zakops-backend/src/core/outbox/processor.py:72:        self._task = asyncio.create_task(self._run())
+/home/zaks/zakops-backend/src/core/database/adapter.py:125:                    self._pg_pool = await asyncpg.create_pool(
+/home/zaks/zakops-backend/src/core/auth/permissions.py:109:        async def create_deal(request: Request):
+/home/zaks/zakops-backend/src/core/auth/operator.py:168:async def create_operator(

@@ -1,0 +1,2 @@
+267:    async def route(self, query: str, context: dict[str, Any]) -> Optional[dict[str, Any]]:
+297:        Uses fast keyword-based classification instead of LLM call

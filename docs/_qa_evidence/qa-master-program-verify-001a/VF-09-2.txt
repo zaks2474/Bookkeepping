@@ -1,0 +1,10 @@
+5: * GET /api/settings/email
+6: * Proxies to backend GET /api/user/email-config
+12:    const response = await backendFetch('/api/user/email-config', { timeoutMs: 3000 });
+22:      console.warn('[settings/email] Backend returned', response.status);
+33:    console.warn('[settings/email] Backend unavailable:', error instanceof Error ? error.message : error);
+42: * POST /api/settings/email
+43: * Proxies to backend POST /api/user/email-config
+49:    const response = await backendFetch('/api/user/email-config', {
+56:      console.warn('[settings/email] POST failed:', response.status, errorText);
+66:    console.warn('[settings/email] Backend unavailable:', error instanceof Error ? error.message : error);

@@ -1,0 +1,58 @@
+D-5 Langfuse check_health implementation
+def check_health() -> TracingHealthStatus:
+    """R3 REMEDIATION [P2.2]: Check Langfuse connectivity on startup.
+
+    Returns health status including:
+    - configured: Whether env vars are set
+    - connected: Whether connection succeeded
+    - latency_ms: Round-trip time to Langfuse
+    - error: Error message if connection failed
+    """
+    global _health_status
+
+    if not _is_configured():
+        status = TracingHealthStatus(
+            configured=False,
+            connected=False,
+            latency_ms=None,
+            error="Langfuse not configured (missing LANGFUSE_PUBLIC_KEY, LANGFUSE_SECRET_KEY, or LANGFUSE_HOST)"
+        )
+        logger.info("langfuse_health_check", status="not_configured")
+        _health_status = status.__dict__
+        return status
+
+    start_time = time.time()
+    try:
+        client = get_langfuse()
+        if client is None:
+            status = TracingHealthStatus(
+                configured=True,
+                connected=False,
+                latency_ms=None,
+                error="Langfuse client failed to initialize"
+            )
+            logger.warning("langfuse_health_check", status="init_failed")
+            _health_status = status.__dict__
+            return status
+
+        # Attempt a simple operation to verify connectivity
+        # Create and immediately flush a test trace
+        test_trace = client.trace(
+            name="_health_check",
+            metadata={"purpose": "startup_health_check"}
+        )
+        client.flush()
+
+        latency_ms = (time.time() - start_time) * 1000
+
+        status = TracingHealthStatus(
+            configured=True,
+            connected=True,
+            latency_ms=round(latency_ms, 2),
+            error=None
+        )
+        logger.info(
+            "langfuse_health_check",
+            status="connected",
+            latency_ms=status.latency_ms,
+            host=os.getenv("LANGFUSE_HOST"),

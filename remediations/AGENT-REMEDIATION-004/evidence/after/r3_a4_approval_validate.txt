@@ -1,0 +1,30 @@
+=== R3.A.4: Schema Alignment Verification ===
+
+Schema file created at: src/lib/schemas/approval.ts
+
+Schema fields:
+- approval_id: z.string().uuid()
+- tool: z.string()
+- args: z.record(z.unknown())
+- permission_tier: z.string()
+- requested_by: z.string()
+- requested_at: z.string()
+
+API response matches schema:
+{
+    "approvals": [
+        {
+            "approval_id": "0f33e3c5-6015-4180-9996-b01c79dd980b",
+            "tool": "transition_deal",
+            "args": {
+                "deal_id": "DL-CHAOS",
+                "from_stage": "loi",
+                "to_stage": "diligence"
+            },
+            "permission_tier": "CRITICAL",
+            "requested_by": "shape-tester",
+            "requested_at": "2026-02-03T20:59:37.955154Z"
+        }
+    ],
+    "total": 1
+}

@@ -1,0 +1,18 @@
+=== CHECK 6.B.2 — PII Redaction Check ===
+
+--- Scanning for PII patterns in logs ---
+Email patterns:
+  None found
+
+SSN patterns:
+  None found
+
+Phone patterns:
+  None found
+
+Credit card patterns:
+1911861456528572
+1911861456528572
+1911861456528572
+
+VERDICT: PASS - No PII found in logs

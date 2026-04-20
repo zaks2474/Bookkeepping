@@ -1,0 +1,5 @@
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/fastapi/background.py:26:    def write_notification(email: str, message=""):
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/fastapi/background.py:28:            content = f"notification for {email}: {message}"
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/fastapi/background.py:32:    @app.post("/send-notification/{email}")
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/fastapi/background.py:33:    async def send_notification(email: str, background_tasks: BackgroundTasks):
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/fastapi/background.py:34:        background_tasks.add_task(write_notification, email, message="some notification")

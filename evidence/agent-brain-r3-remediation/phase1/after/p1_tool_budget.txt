@@ -1,0 +1,9 @@
+app/core/langgraph/graph.py:77:MAX_TOOL_CALLS_PER_TURN = int(os.getenv("MAX_TOOL_CALLS_PER_TURN", "10"))
+app/core/langgraph/graph.py:273:        current_count = state.tool_call_count
+app/core/langgraph/graph.py:277:        if new_count > MAX_TOOL_CALLS_PER_TURN:
+app/core/langgraph/graph.py:282:                max_allowed=MAX_TOOL_CALLS_PER_TURN,
+app/core/langgraph/graph.py:288:                        f"Tool call budget exceeded ({new_count}/{MAX_TOOL_CALLS_PER_TURN}). "
+app/core/langgraph/graph.py:290:                        metadata={"budget_exceeded": True, "count": new_count, "max": MAX_TOOL_CALLS_PER_TURN}
+app/core/langgraph/graph.py:297:            return Command(update={"messages": outputs, "tool_call_count": new_count}, goto="chat")
+app/core/langgraph/graph.py:432:        return Command(update={"messages": outputs, "tool_call_count": new_count}, goto="chat")
+app/schemas/graph.py:65:    tool_call_count: int = Field(default=0, description="Number of tool calls in current turn")

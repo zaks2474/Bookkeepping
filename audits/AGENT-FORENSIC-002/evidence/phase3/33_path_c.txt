@@ -1,0 +1,40 @@
+=== STEP 3.4: Path C — HITL Interrupt ===
+Deal DL-0037 current stage: inbound
+Target stage: due_diligence
+--- Trigger HITL ---
+{
+    "detail": "Authentication required"
+}
+--- Thread state (should show interrupted/pending) ---
+{
+    "detail": "Authentication required"
+}
+--- Approval record in Agent DB ---
+time="2026-02-02T20:59:05-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-02T20:59:05-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+                  id                  |    thread_id    |    tool_name    |                                           tool_args                                           |  status  |                                         idempotency_key                                          |          expires_at           |          created_at           
+--------------------------------------+-----------------+-----------------+-----------------------------------------------------------------------------------------------+----------+--------------------------------------------------------------------------------------------------+-------------------------------+-------------------------------
+ 4b466371-a1f1-45d0-aff0-53da812af541 | f002-path-c-001 | transition_deal | {"deal_id": "DL-0020", "from_stage": "proposal", "to_stage": "due_diligence", "reason": null} | approved | f002-path-c-001:transition_deal:9b4e0d13ea8218569ae15607ec43706433585eae3788b7c5a51e737690576c8d | 2026-02-03 03:09:07.931621+00 | 2026-02-03 02:09:07.931737+00
+(1 row)
+
+--- Approval via API ---
+{
+    "detail": "Authentication required"
+}
+--- Deal stage UNCHANGED in backend DB (direct SQL proof) ---
+Before: inbound | After interrupt: inbound
+CORRECT: Deal NOT modified during interrupt
+--- Backend DB direct SQL proof ---
+ deal_id | stage 
+---------+-------
+(0 rows)
+
+MANDATORY GATE G3.4 CHECKLIST:
+  1. Graph interrupted (not completed)? [Y/N]
+  2. Approval status = pending in Agent DB? [Y/N]
+  3. Deal stage UNCHANGED via API? [Y/N]
+  4. Deal stage UNCHANGED via direct SQL? [Y/N]
+  5. Approval has all fields (id, thread_id, tool_name, tool_args, status, expires_at)? [Y/N]
+ALL 5 must be YES. This is a MANDATORY gate.
+
+AUDIT NOTE: Agent API returned "Authentication required" for this step; path behavior is UNVERIFIED.

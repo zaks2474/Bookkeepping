@@ -1,0 +1,7 @@
+=== VF-03.5 EXIT CODE CONTRACT ===
+42:  exit 2
+45:exit 0
+--- exit 1 check ---
+PASS: no exit 1 found
+--- exit 2 check ---
+PASS: exit 2 found

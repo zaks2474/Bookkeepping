@@ -1,0 +1,111 @@
+44-    )
+45-
+46-    # Quarantine retention (days)
+47:    quarantine_rejected_days: int = field(
+48-        default_factory=lambda: int(os.getenv("RETENTION_QUARANTINE_REJECTED_DAYS", "90"))
+49-    )
+50:    quarantine_pending_days: int = field(
+51-        default_factory=lambda: int(os.getenv("RETENTION_QUARANTINE_PENDING_DAYS", "30"))
+52-    )
+53-
+--
+98-        await self._cleanup_idempotency_keys()
+99-        await self._cleanup_outbox_delivered()
+100-        await self._cleanup_outbox_dead()
+101:        await self._cleanup_quarantine_rejected()
+102:        await self._cleanup_quarantine_pending()
+103-        await self._cleanup_junk_deals()
+104-
+105-        total_deleted = sum(r.deleted_count for r in self._results)
+--
+231-        ))
+232-        logger.info(f"[R2-10] outbox (dead): {count} records {'would be' if self.config.dry_run else ''} deleted")
+233-
+234:    async def _cleanup_quarantine_rejected(self):
+235:        """Clean up old rejected quarantine items."""
+236-        import time
+237-        start = time.perf_counter()
+238-
+239:        cutoff = datetime.now(UTC) - timedelta(days=self.config.quarantine_rejected_days)
+240-        db = await get_database()
+241-
+242-        try:
+243-            if self.config.dry_run:
+244-                result = await db.fetchrow(
+245-                    """
+246:                    SELECT COUNT(*) as count FROM zakops.quarantine_items
+247-                    WHERE status = 'rejected' AND updated_at < $1
+248-                    """,
+249-                    cutoff
+--
+252-            else:
+253-                result = await db.execute(
+254-                    """
+255:                    DELETE FROM zakops.quarantine_items
+256-                    WHERE status = 'rejected' AND updated_at < $1
+257-                    """,
+258-                    cutoff
+259-                )
+260-                count = int(result.split()[-1]) if result and result.startswith("DELETE") else 0
+261-        except Exception as e:
+262:            logger.warning(f"[R2-10] quarantine (rejected) cleanup skipped: {e}")
+263-            count = 0
+264-
+265-        duration = (time.perf_counter() - start) * 1000
+266-        self._results.append(CleanupResult(
+267:            table="quarantine_items (rejected)",
+268-            deleted_count=count,
+269-            cutoff_date=cutoff,
+270-            dry_run=self.config.dry_run,
+271-            duration_ms=round(duration, 2)
+272-        ))
+273:        logger.info(f"[R2-10] quarantine (rejected): {count} records {'would be' if self.config.dry_run else ''} deleted")
+274-
+275:    async def _cleanup_quarantine_pending(self):
+276:        """Clean up old pending quarantine items (auto-reject)."""
+277-        import time
+278-        start = time.perf_counter()
+279-
+280:        cutoff = datetime.now(UTC) - timedelta(days=self.config.quarantine_pending_days)
+281-        db = await get_database()
+282-
+283-        try:
+284-            if self.config.dry_run:
+285-                result = await db.fetchrow(
+286-                    """
+287:                    SELECT COUNT(*) as count FROM zakops.quarantine_items
+288-                    WHERE status = 'pending' AND created_at < $1
+289-                    """,
+290-                    cutoff
+--
+292-                count = result["count"] if result else 0
+293-            else:
+294-                # Auto-reject old pending items instead of deleting
+295:                # F-13: processed_by/processing_action live in raw_content JSONB, not separate columns
+296-                result = await db.execute(
+297-                    """
+298:                    UPDATE zakops.quarantine_items
+299-                    SET status = 'rejected',
+300:                        raw_content = COALESCE(raw_content, '{}'::jsonb) || jsonb_build_object(
+301-                            'processed_by', 'retention_cleanup',
+302-                            'processing_action', 'auto_rejected_stale',
+303-                            'processed_at', NOW()::text
+--
+309-                )
+310-                count = int(result.split()[-1]) if result and result.startswith("UPDATE") else 0
+311-        except Exception as e:
+312:            logger.warning(f"[R2-10] quarantine (pending) cleanup skipped: {e}")
+313-            count = 0
+314-
+315-        duration = (time.perf_counter() - start) * 1000
+316-        self._results.append(CleanupResult(
+317:            table="quarantine_items (pending->rejected)",
+318-            deleted_count=count,
+319-            cutoff_date=cutoff,
+320-            dry_run=self.config.dry_run,
+321-            duration_ms=round(duration, 2)
+322-        ))
+323:        logger.info(f"[R2-10] quarantine (pending): {count} records {'would be' if self.config.dry_run else ''} auto-rejected")
+324-
+325-    async def _cleanup_junk_deals(self):
+326-        """Soft-delete old junk deals."""

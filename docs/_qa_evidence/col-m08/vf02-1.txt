@@ -1,0 +1,2 @@
+apps/agent-api/app/core/security/tool_scoping.py:51:ROLE_TOOL_MAP: dict[str, frozenset[str]] = {
+apps/agent-api/app/core/security/tool_scoping.py:79:    role_tools = ROLE_TOOL_MAP.get(role, ROLE_TOOL_MAP[DEFAULT_ROLE])

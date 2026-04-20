@@ -1,0 +1,3 @@
+REM-007: Add _redact_pii helper to graph.py
+- Issue: V3.6 check found no PII redaction function in graph.py.
+- Fix: Added module-level _redact_pii() with regex for email, phone, API key.

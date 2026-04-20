@@ -1,0 +1,18 @@
+Spec S3.10 defines 14 event types. Checking implementation coverage:
+message_chunk: 2 reference(s)
+message_complete: 2 reference(s)
+thread_updated: 3 reference(s)
+brain_updated: 2 reference(s)
+summary_generated: 2 reference(s)
+injection_alert: 2 reference(s)
+legal_hold_set: 4 reference(s)
+budget_warning: 2 reference(s)
+cost_update: 2 reference(s)
+ghost_knowledge: 10 reference(s)
+momentum_update: 2 reference(s)
+tool_execution: 118 reference(s)
+approval_required: 8 reference(s)
+error: 1427 reference(s)
+---
+Event types with references: 14 / 14
+VERDICT: PASS (14 >= 10)

@@ -1,0 +1,4 @@
+2337:  anomalies: DealAnomaly[];
+2338:  anomaly_count: number;
+2342:export async function getDealAnomalies(dealId: string): Promise<DealAnomalyResult | null> {
+2344:    return await apiFetch<DealAnomalyResult>(`/api/deals/${dealId}/anomalies`);

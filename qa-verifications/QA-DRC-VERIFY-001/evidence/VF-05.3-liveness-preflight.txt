@@ -1,0 +1,15 @@
+3:# Curls every dashboard API endpoint through port 3003 and checks:
+6:# Requires: Dashboard (port 3003) and Backend (port 8091) running.
+9:DASHBOARD_URL="${DASHBOARD_URL:-http://localhost:3003}"
+10:BACKEND_URL="${BACKEND_URL:-http://localhost:8091}"
+16:SKIP=0
+37:# Pre-flight: verify dashboard and backend are reachable
+49:  echo "  SKIP: Dashboard not reachable at $DASHBOARD_URL"
+55:  echo "  SKIP: Backend not reachable at $BACKEND_URL"
+60:  SKIP=${#ENDPOINTS[@]}
+63:  echo "Endpoint Liveness: 0 PASS, 0 FAIL, 0 WARN, $SKIP SKIP"
+67:echo "  OK: Dashboard reachable"
+68:echo "  OK: Backend reachable"
+92:    echo "  SKIP: $endpoint -> connection refused / timeout"
+93:    SKIP=$((SKIP + 1))
+132:echo "Endpoint Liveness: $PASS PASS, $FAIL FAIL, $WARN WARN, $SKIP SKIP"

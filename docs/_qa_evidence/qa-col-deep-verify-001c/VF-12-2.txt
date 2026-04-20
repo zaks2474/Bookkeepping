@@ -1,0 +1,15 @@
+FILE EXISTS
+19:class MorningBriefingGenerator:
+22:    async def generate(
+24:        user_id: str,
+25:        hours_lookback: int = 18,
+30:            user_id: User requesting the briefing
+31:            hours_lookback: Hours to look back for changes (default 18h)
+36:        since = datetime.now(UTC) - timedelta(hours=hours_lookback)
+41:            deals = await self._get_user_deals(user_id)
+43:            logger.warning("briefing_deals_fetch_failed", user_id=user_id, error=str(e))
+101:        text = self._build_summary_text(changes, quarantine_pending, quarantine_high, hours_lookback)
+111:            "lookback_hours": hours_lookback,
+117:            user_id=user_id,
+159:    async def _get_user_deals(self, user_id: str) -> list[dict]:
+202 /home/zaks/zakops-backend/src/core/agent/morning_briefing.py

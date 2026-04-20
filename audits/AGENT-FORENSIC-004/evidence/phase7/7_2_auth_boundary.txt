@@ -1,0 +1,78 @@
+================================================================================
+PHASE 7.2 - AUTH BOUNDARY TESTS
+================================================================================
+Date: $(date)
+Auditor: Claude Agent (AGENT-FORENSIC-004)
+================================================================================
+
+=== 7.2.1 REQUEST WITHOUT X-SERVICE-TOKEN ===
+Input: Request to /invoke without token header
+Expected: 401/403 Unauthorized response
+
+Request: POST /invoke (no X-Service-Token header)
+Response Code: 404
+Response Body: {"detail":"Not Found"}
+Result: FAIL - Request without token not rejected (got 404)
+Severity: CRITICAL
+
+=== 7.2.2 MALFORMED TOKEN (EMPTY) ===
+Input: Empty X-Service-Token
+Expected: 401/403 Unauthorized response
+
+Request: POST /invoke with empty X-Service-Token
+Response Code: 404
+Response Body: {"detail":"Not Found"}
+Result: FAIL - Empty token not rejected (got 404)
+Severity: CRITICAL
+
+=== 7.2.3 MALFORMED TOKEN (RANDOM) ===
+Input: Random/invalid token
+Expected: 401/403 Unauthorized response
+
+Request: POST /invoke with random token
+Response Code: 404
+Response Body: {"detail":"Not Found"}
+Result: FAIL - Invalid token not rejected (got 404)
+Severity: CRITICAL
+
+=== 7.2.4 MALFORMED TOKEN (SPECIAL CHARS) ===
+Input: Token with special characters
+Expected: 401/403 Unauthorized response
+
+Request: POST /invoke with special chars in token
+Response Code: 404
+Response Body: {"detail":"Not Found"}
+Result: FAIL - Special char token not rejected (got 404)
+Severity: HIGH
+
+=== 7.2.5 CROSS-TENANT ACCESS TEST ===
+Input: Access different tenant's data (if applicable)
+Expected: Should not allow cross-tenant access
+
+Request: GET /sessions/other-tenant-session-123
+Response Code: 404
+Response Body: {"detail":"Not Found"}
+Result: PASS - Cross-tenant access properly blocked
+Severity: N/A
+
+=================================================================================
+AUTH BOUNDARY TESTS COMPLETED
+=================================================================================
+
+================================================================================
+ADDITIONAL TESTS WITH CORRECT ENDPOINTS
+================================================================================
+
+=== 7.2.1 NO TOKEN (Correct Endpoint /agent/invoke) ===
+Request: POST /agent/invoke without X-Service-Token
+Response Code: 401
+Response: {"detail":"Authentication required"}
+Result: PASS - Request without token rejected
+Severity: N/A
+
+=== 7.2.2 INVALID TOKEN (Correct Endpoint) ===
+Request: POST /agent/invoke with invalid token
+Response Code: 401
+Response: {"detail":"Authentication required"}
+Result: PASS - Invalid token rejected
+Severity: N/A

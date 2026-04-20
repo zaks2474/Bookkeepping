@@ -1,0 +1,9 @@
+| Phase | Gate | Status | Evidence File |
+|-------|------|--------|---------------|
+| V0 | Baseline captured | PASS | v0-baseline/* |
+| V1 | Safety & Auth verified | PASS (remediated) | phase0/* + remediation/REM-002_* |
+| V2 | Tool Contract verified | PASS | phase1/* |
+| V3 | Observability verified | PASS (remediated) | phase2/* + remediation/REM-003/REM-007 |
+| V4 | Memory/RAG verified | PASS | phase3/* |
+| V5 | Deal Intelligence verified | PASS (CI mode) | phase4/* + remediation/REM-001 |
+| VREG | No regressions | PASS (remediated) | regression/* + remediation/REM-006 |

@@ -1,0 +1,6 @@
+=== get_expired_threads() ===
+Found in: /home/zaks/zakops-agent-api/apps/agent-api/app/services/retention_policy.py
+Lines 110-142: def get_expired_threads(self, threads: list[dict]) -> list[RetentionResult]
+Evaluates all threads, returns only those past retention AND not protected
+Line 132: if result.is_expired and not result.is_protected
+RESULT: PASS — get_expired_threads() correctly filters protected threads

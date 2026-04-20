@@ -1,0 +1,6 @@
+cross_db_outbox reference: True (line 506: INSERT INTO cross_db_outbox)
+brain reference: True (line 507: event_type='brain_extract')
+  Lines 494-525: async def enqueue_brain_extraction(self, deal_id, thread_id, turn, user_msg, asst_msg)
+    INSERT INTO cross_db_outbox (event_type, payload, target_db)
+    VALUES ('brain_extract', :payload, 'zakops')
+VERDICT: PASS

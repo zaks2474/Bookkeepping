@@ -1,0 +1,39 @@
+ gate_artifacts/agent_api_contract.json           |  16 +
+ gate_artifacts/approve.json                      |   1 +
+ gate_artifacts/approve_again.json                |   1 +
+ gate_artifacts/artifact_bundle.tar.gz            | Bin 0 -> 12959 bytes
+ gate_artifacts/artifact_bundle.zip               | Bin 0 -> 12959 bytes
+ gate_artifacts/auth_negative_tests.json          |  14 +
+ gate_artifacts/auth_negative_tests.json.tmp      |   3 +
+ gate_artifacts/build.log                         |  78 +++
+ gate_artifacts/checkpoint_kill9_test.log         |  56 ++
+ gate_artifacts/concurrent_approves.log           |  31 +
+ gate_artifacts/contract_snapshot.json            |   1 +
+ gate_artifacts/db_invariants.sql.out             | 124 ++++
+ gate_artifacts/dependency_licenses.json          | 737 +++++++++++++++++++++++
+ gate_artifacts/dependency_licenses.json.meta     |   1 +
+ gate_artifacts/dependency_licenses.json.tmp      |   1 +
+ gate_artifacts/encryption_verify.log             |   9 +
+ gate_artifacts/env_no_localhost_lint.log         |  11 +
+ gate_artifacts/gate_registry.json                |  37 ++
+ gate_artifacts/gate_registry_lint.log            |  25 +
+ gate_artifacts/health.json                       |   1 +
+ gate_artifacts/hitl_scope_test.log               |  36 ++
+ gate_artifacts/hitl_scope_test.raw.log           |  36 ++
+ gate_artifacts/invoke_hitl.json                  |   1 +
+ gate_artifacts/kill9_encrypted.log               |   7 +
+ gate_artifacts/langfuse_selfhost_gate.log        |   8 +
+ gate_artifacts/mock_safety_test.log              |  10 +
+ gate_artifacts/pii_canary_report.json            |  11 +
+ gate_artifacts/pii_canary_report.json.log        |   4 +
+ gate_artifacts/ports_md_lint.log                 |  11 +
+ gate_artifacts/prod_exposure_fail_closed.log     |   8 +
+ gate_artifacts/raw_content_scan.log              |   7 +
+ gate_artifacts/resilience_config_snapshot.json   | 147 +++++
+ gate_artifacts/run.log                           |  85 +++
+ gate_artifacts/secrets_hygiene_lint.log          |   8 +
+ gate_artifacts/streaming_test.log                |  15 +
+ gate_artifacts/tool_call_validation_test.log     |  28 +
+ gate_artifacts/tool_call_validation_test.raw.log |  30 +
+ gate_artifacts/vllm_lane_verify.json             |   8 +
+ 38 files changed, 1607 insertions(+)

@@ -1,0 +1,56 @@
+25:from app.core.logging import logger
+211:    logger.info(
+223:        logger.warning("transition_deal_invalid_stage", deal_id=deal_id, to_stage=to_stage)
+244:                logger.info(
+254:                logger.warning(
+301:                logger.error(
+329:                logger.error(
+347:                logger.warning(
+355:            logger.info(
+373:        logger.error(
+384:        logger.error("transition_deal_error", error=str(e))
+398:    logger.info("get_deal_called", deal_id=deal_id)
+414:        logger.error(
+425:        logger.error("get_deal_error", error=str(e))
+456:    logger.info("list_deals_called", stage=stage, status=status, limit=limit)
+515:                logger.info(
+525:                logger.error(
+536:        logger.error(
+546:        logger.error("list_deals_error", error=str(e))
+584:        logger.error("search_deals_fallback_failed", error=str(e))
+611:    logger.info("search_deals_called", query=query, limit=limit)
+661:                logger.info(
+670:                logger.error(
+681:        logger.error(
+692:        logger.error("search_deals_error", error=str(e))
+731:    logger.info(
+742:        logger.warning("create_deal_invalid_stage", stage=stage)
+793:                logger.info(
+808:                logger.error(
+822:        logger.error(
+833:        logger.error("create_deal_error", error=str(e))
+855:    logger.info(
+890:                logger.info(
+910:                logger.error(
+924:        logger.error(
+935:        logger.error("add_note_error", error=str(e))
+1018:            logger.debug("deal_health_date_parse_error", error=str(e))
+1042:            logger.debug("deal_health_date_parse_error", error=str(e))
+1126:    logger.info("get_deal_health_called", deal_id=deal_id)
+1139:                logger.info(
+1160:        logger.error(
+1171:        logger.error("get_deal_health_error", error=str(e))
+30:DEAL_API_URL = os.getenv("DEAL_API_URL", "http://host.docker.internal:8091")
+230:            get_response = await client.get(f"{DEAL_API_URL}/api/deals/{deal_id}", headers=headers)
+279:                f"{DEAL_API_URL}/api/deals/{deal_id}/transition",
+314:            verify_response = await client.get(f"{DEAL_API_URL}/api/deals/{deal_id}", headers=headers)
+380:            "error": f"Deal API unavailable at {DEAL_API_URL}. Please try again later.",
+403:            response = await client.get(f"{DEAL_API_URL}/api/deals/{deal_id}", headers=headers)
+478:                f"{DEAL_API_URL}/api/deals",
+542:            "error": f"Backend API unavailable at {DEAL_API_URL}",
+562:                f"{DEAL_API_URL}/api/deals",
+618:                f"{DEAL_API_URL}/api/deals",
+688:            "error": f"Backend API unavailable at {DEAL_API_URL}",
+783:                f"{DEAL_API_URL}/api/deals",
+877:                f"{DEAL_API_URL}/api/deals/{deal_id}/notes",
+1131:            response = await client.get(f"{DEAL_API_URL}/api/deals/{deal_id}", headers=headers)

@@ -1,0 +1,19 @@
+=== A3.2 ===
+16:#   --generate-only                     Force generate-only mode (no CLI execution)
+222:    log_warn "Claude CLI not available — generating prompt only"
+253:    log_warn "Gemini CLI not available — generating prompt only"
+276:    log_warn "Codex CLI not available — generating prompt only"
+579:  local force_generate_only="false"
+587:      --generate-only) force_generate_only="true"; shift ;;
+632:    append_master_log "$run_dir" "WARNING: frontend-design plugin not available. Design mode will run with degraded frontend analysis capability." "PLUGIN WARNING"
+640:  if [ "$force_generate_only" = "true" ]; then
+642:    log_warn "Force generate-only mode — no agents will be executed"
+644:    [ -z "$CLAUDE_CLI" ] && claude_exec="false" && log_warn "Claude CLI not available — generate-only for Claude"
+645:    [ -z "$GEMINI_CLI" ] && gemini_exec="false" && log_warn "Gemini CLI not available — generate-only for Gemini"
+646:    [ -z "$CODEX_CLI" ] && codex_exec="false" && log_warn "Codex CLI not available — generate-only for Codex"
+695:  # For generate-only agents, create placeholder reports
+706:This report was generated in generate-only mode.
+787:  # Placeholder reports for generate-only agents
+798:This cross-review was generated in generate-only mode.
+856:  # Placeholder for generate-only
+1030:      echo "  --generate-only                          Force generate-only mode"

@@ -1,0 +1,10 @@
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/operator-hq/PipelineOverview.tsx:70:  const totalDeals = stats?.total_active_deals ?? 0;
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/operator-hq/PipelineOverview.tsx:81:          const percentage = totalDeals > 0 ? (count / totalDeals) * 100 : 0;
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/operator-hq/PipelineOverview.tsx:146:              const width = totalDeals > 0 ? (count / totalDeals) * 100 : 14;
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deals/DealBoard.tsx:107:          {deals.length}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/page.tsx:217:                    {deals.length} active deals across {STAGE_ORDER.filter(s => stageCounts[s] > 0).length} stages
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/pipeline/route.ts:74:    if (deals.length > 0) {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/pipeline/route.ts:100:        total_active: deals.length,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:72:    total_active_deals: deals.length,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/route.ts:41:    return { total: deals.length, byStage };
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/route.ts:122:        console.log('[Chat] Deal count query detected, fetching authoritative count from backend...');

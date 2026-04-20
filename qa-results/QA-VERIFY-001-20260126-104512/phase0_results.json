@@ -1,0 +1,37 @@
+{
+  "summary": {
+    "passed": 3,
+    "total": 3
+  },
+  "test_suite": "Phase 0 \u2014 Environment Setup",
+  "tests": [
+    {
+      "details": {
+        "artifact": "phase0_health.json"
+      },
+      "id": "0.1",
+      "name": "Pre-test HTTP health matrix",
+      "passed": true,
+      "timestamp_utc": "2026-01-26T16:45:12.995997+00:00"
+    },
+    {
+      "details": {
+        "artifact": "baseline_state.json"
+      },
+      "id": "0.2",
+      "name": "Baseline DB state captured",
+      "passed": true,
+      "timestamp_utc": "2026-01-26T16:45:13.634397+00:00"
+    },
+    {
+      "details": {
+        "artifact": "legacy_port_8090_check.json"
+      },
+      "id": "0.3",
+      "name": "Legacy contamination check (port 8090 must fail)",
+      "passed": true,
+      "timestamp_utc": "2026-01-26T16:45:13.635134+00:00"
+    }
+  ],
+  "timestamp_utc": "2026-01-26T16:45:13.635141+00:00"
+}

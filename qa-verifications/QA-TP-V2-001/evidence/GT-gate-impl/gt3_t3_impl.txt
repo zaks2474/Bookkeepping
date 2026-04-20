@@ -1,0 +1,28 @@
+=== GT-3: T-3 Structural Validity ===
+gate_t3_structural() {
+  local run_dir="$1"
+  log "Gate T-3: Structural Validity"
+  local fails=0
+
+  # Check agent identity headers in Pass 1 reports
+  for report in "$run_dir/01_pass1/"*.md; do
+    [ -f "$report" ] || continue
+    local basename
+    basename=$(basename "$report")
+    if head -5 "$report" | grep -qiE "^#.*(pass 1|report|agent)"; then
+      echo "  PASS: $basename has identity header"
+    else
+      echo "  FAIL: $basename missing identity header"
+      fails=$((fails + 1))
+    fi
+  done
+
+  # Check FINAL_MASTER.md has required fields
+  if [ -s "$run_dir/FINAL_MASTER.md" ]; then
+    local master="$run_dir/FINAL_MASTER.md"
+    for field in "Root Cause" "Fix Approach" "Industry Standard" "System Fit" "Enforcement"; do
+      if grep -qi "$field" "$master"; then
+        echo "  PASS: FINAL_MASTER contains '$field' field"
+      else
+        echo "  WARN: FINAL_MASTER may be missing '$field' field"
+

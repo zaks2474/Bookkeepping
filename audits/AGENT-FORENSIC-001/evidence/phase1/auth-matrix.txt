@@ -1,0 +1,46 @@
+AGENT-FORENSIC-001 Phase 1 — Step 1.2: Auth Enforcement Matrix
+================================================================
+Date: 2026-02-02
+
+AUTH MECHANISMS:
+1. Bearer JWT (chatbot/auth endpoints) — HS256, JWT_SECRET_KEY
+2. X-Service-Token (chatbot endpoints) — static token for Dashboard
+3. Agent JWT (agent approve/reject) — iss/aud/role claims, OPTIONAL
+4. None (agent invoke/approvals/threads) — completely open
+
+KEY FINDING: AGENT_JWT_ENFORCE defaults to "false"
+  → All agent endpoints accept unauthenticated requests
+
+LIVE TEST RESULTS:
+
+Route                                    | No Auth | Invalid Bearer | Notes
+-----------------------------------------|---------|----------------|------
+GET  /                                   | 200     | N/A            | Public
+GET  /health                             | 200     | N/A            | Public
+GET  /metrics                            | 200     | N/A            | Public, no auth
+GET  /docs                               | 200     | N/A            | Public, Swagger UI
+GET  /redoc                              | 200     | N/A            | Public, ReDoc
+POST /api/v1/auth/register               | 422     | N/A            | Validation error (expected)
+POST /api/v1/auth/login                  | 422     | N/A            | Validation error (expected)
+POST /api/v1/auth/session                | 401     | N/A            | PROTECTED (Bearer required)
+GET  /api/v1/auth/sessions               | 401     | 422            | PROTECTED
+POST /api/v1/chatbot/chat                | 401     | N/A            | PROTECTED (Bearer or X-Service-Token)
+POST /api/v1/chatbot/chat/stream         | 401     | N/A            | PROTECTED
+GET  /api/v1/chatbot/messages            | 401     | 422            | PROTECTED
+DELETE /api/v1/chatbot/messages          | 401     | N/A            | PROTECTED
+POST /api/v1/agent/invoke               | 200     | N/A            | **UNPROTECTED** — accepts any request
+POST /agent/invoke                       | 200     | N/A            | **UNPROTECTED** — duplicate
+GET  /api/v1/agent/approvals             | 200     | N/A            | **UNPROTECTED** — lists all approvals
+GET  /agent/approvals                    | 200     | N/A            | **UNPROTECTED**
+POST /api/v1/agent/approvals/{id}:approve| varies  | N/A            | Requires ApprovalActionRequest body
+POST /api/v1/agent/approvals/{id}:reject | varies  | N/A            | Requires ApprovalActionRequest body
+
+CRITICAL FINDINGS:
+[FAIL] Agent /invoke endpoint requires NO authentication — anyone can invoke the LLM
+[FAIL] Agent /approvals listing requires NO authentication — data leakage
+[FAIL] Agent /threads/{id}/state requires NO authentication — thread state visible to anyone
+[FAIL] Agent approve/reject endpoints accept actor_id from request body when JWT not enforced
+       → Actor identity can be spoofed (line 237: actor_id = user.subject if user else action_request.actor_id)
+[WARN] AGENT_JWT_ENFORCE=false by default — all agent JWT checks are bypassed
+[INFO] Chatbot endpoints properly require Bearer token or X-Service-Token
+[INFO] Auth endpoints (session/sessions) properly require Bearer token

@@ -1,0 +1,57 @@
+9:When not configured, all tracing calls are silent no-ops.
+33:class TracingHealthStatus:
+35:    configured: bool
+36:    connected: bool
+37:    latency_ms: Optional[float]
+41:def _is_configured() -> bool:
+52:    Returns the Langfuse client if configured, None otherwise.
+62:    if not _is_configured():
+63:        logger.info("Langfuse tracing not configured — running without traces. "
+83:    Returns a Langfuse CallbackHandler if configured, None otherwise.
+90:    if not _is_configured():
+104:    Returns empty list if Langfuse is not configured.
+121:    Context manager for tracing a span. No-op if Langfuse is not configured.
+164:def check_health() -> TracingHealthStatus:
+168:    - configured: Whether env vars are set
+169:    - connected: Whether connection succeeded
+170:    - latency_ms: Round-trip time to Langfuse
+175:    if not _is_configured():
+176:        status = TracingHealthStatus(
+177:            configured=False,
+178:            connected=False,
+179:            latency_ms=None,
+180:            error="Langfuse not configured (missing LANGFUSE_PUBLIC_KEY, LANGFUSE_SECRET_KEY, or LANGFUSE_HOST)"
+182:        logger.info("langfuse_health_check", status="not_configured")
+190:            status = TracingHealthStatus(
+191:                configured=True,
+192:                connected=False,
+193:                latency_ms=None,
+208:        latency_ms = (time.time() - start_time) * 1000
+210:        status = TracingHealthStatus(
+211:            configured=True,
+212:            connected=True,
+213:            latency_ms=round(latency_ms, 2),
+218:            status="connected",
+219:            latency_ms=status.latency_ms,
+226:        latency_ms = (time.time() - start_time) * 1000
+227:        status = TracingHealthStatus(
+228:            configured=True,
+229:            connected=False,
+230:            latency_ms=round(latency_ms, 2),
+237:            latency_ms=status.latency_ms,
+def check_health() -> TracingHealthStatus:
+    """R3 REMEDIATION [P2.2]: Check Langfuse connectivity on startup.
+
+    Returns health status including:
+    - configured: Whether env vars are set
+    - connected: Whether connection succeeded
+    - latency_ms: Round-trip time to Langfuse
+    - error: Error message if connection failed
+    """
+    global _health_status
+
+    if not _is_configured():
+        status = TracingHealthStatus(
+            configured=False,
+            connected=False,
+            latency_ms=None,

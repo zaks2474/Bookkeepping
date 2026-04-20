@@ -1,0 +1,6 @@
+=== QA-6.1: T5.1-T5.3 Auth ===
+--- TEST 1: Auth middleware ---
+
+--- TEST 2: Backend auth enforcement (no API key) ---
+{"error":"unauthorized","message":"Invalid or missing API key"}
+HTTP: 401

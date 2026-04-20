@@ -1,0 +1,30 @@
+=== Agent API DSN search ===
+--- /home/zaks/zakops-agent-api/apps/agent-api/.env.example ---
+30:# Database Settings
+31:POSTGRES_HOST=db
+32:POSTGRES_DB=mydb
+33:POSTGRES_USER=myuser
+34:POSTGRES_PORT=5432
+35:POSTGRES_PASSWORD=*****ssword
+36:POSTGRES_POOL_SIZE=5
+37:POSTGRES_MAX_OVERFLOW=10
+
+--- /home/zaks/zakops-agent-api/apps/agent-api/pyproject.toml ---
+14:    "langgraph-checkpoint-postgres>=3.0.1",
+
+--- /home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml ---
+8:      - POSTGRES_DB=${POSTGRES_DB:-zakops_agent}
+9:      - POSTGRES_USER=${POSTGRES_USER:-agent}
+10:      - POSTGRES_PASSWORD=*****secure_pass_123}
+14:      - agent-postgres-data:/var/lib/postgresql/data
+22:      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-agent} -d ${POSTGRES_DB:-zakops_agent}"]
+52:      # Override POSTGRES_HOST for internal Docker networking
+53:      - POSTGRES_HOST=db
+54:      - POSTGRES_PORT=5432
+128:  agent-postgres-data:
+
+--- /home/zaks/zakops-agent-api/apps/agent-api/.env.development ---
+37:# Database Settings - REQUIRED
+38:# NOTE: DATABASE_URL is required (no silent defaults).
+39:DATABASE_URL=postgresql://agent:agent_secure_pass_123@db:5432/zakops_agent
+

@@ -1,0 +1,5 @@
+All 13 error.tsx files: 20 lines each
+Content: use client, import ErrorBoundary from @/components/states, wrapper component
+Structurally DRY — all delegate to shared ErrorBoundary with page-specific title/description
+CLASSIFICATION: FALSE_POSITIVE — 20 lines includes mandatory Next.js boilerplate
+(use client, type annotation, export default). Shared component intent achieved. PASS

@@ -1,0 +1,44 @@
+=== ST-2 PROXY ROUTING ===
+--- Verify middleware handles key API routes ---
+--- handledByRoutes list ---
+  const handledByRoutes = [
+    '/api/actions/',
+    '/api/chat',
+    '/api/events',
+    '/api/agent/',
+    '/api/alerts',
+    '/api/checkpoints',
+    '/api/deferred-actions',
+    '/api/pipeline',
+    '/api/quarantine/health',
+    '/api/quarantine/',
+  ];
+  for (const prefix of handledByRoutes) {
+    if (request.nextUrl.pathname === prefix || request.nextUrl.pathname.startsWith(prefix + '/') || request.nextUrl.pathname.startsWith(prefix)) {
+      const response = NextResponse.next();
+      response.headers.set('X-Correlation-ID', correlationId);
+      return response;
+    }
+  }
+
+  // All other /api/* requests — proxy to backend with error handling.
+  // This replaces the next.config.ts rewrite for unhandled routes (e.g. /api/deals),
+  // ensuring connection failures return JSON 502 instead of HTML error pages.
+  const backendProxyUrl = `${BACKEND_URL}${request.nextUrl.pathname}${request.nextUrl.search}`;
+
+  const headers: Record<string, string> = {
+    'Content-Type': request.headers.get('Content-Type') || 'application/json',
+    'X-Correlation-ID': correlationId,
+  };
+  if (API_KEY) {
+    headers['X-API-Key'] = API_KEY;
+  }
+  // Forward idempotency key if present (write operations)
+--- Catch-all proxy for unhandled routes ---
+78:  const backendProxyUrl = `${BACKEND_URL}${request.nextUrl.pathname}${request.nextUrl.search}`;
+101:      backendResponse = await fetch(backendProxyUrl, {
+--- JSON 502 error handling ---
+121:      { error: 'backend_unavailable', message: 'Failed to reach backend API', correlation_id: correlationId },
+--- Live route test (if backend UP) ---
+DEALS_ROUTE=OK
+PIPELINE_ROUTE=OK

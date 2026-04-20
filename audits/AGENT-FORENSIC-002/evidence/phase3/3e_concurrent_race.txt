@@ -1,0 +1,43 @@
+=== STEP 3.15 — Concurrent Double-Approve Race ===
+Date: Tue Feb  3 02:15:04 UTC 2026
+
+--- tool_executions count BEFORE ---
+time="2026-02-02T20:15:04-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-02T20:15:04-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+     2
+
+
+--- Invoke: Transition DL-0020 to negotiation ---
+{"thread_id":"f002-race-001","status":"awaiting_approval","content":null,"pending_approval":{"approval_id":"1d17d04c-e2c1-4b03-ac81-96f6dcbd06d4","tool":"transition_deal","args":{"deal_id":"DL-0020","from_stage":"initial_contact","to_stage":"negotiation"},"permission_tier":"CRITICAL","requested_by":"forensic-auditor","requested_at":"2026-02-03T02:15:06.996583Z"},"actions_taken":[],"error":null}
+
+Approval ID: 1d17d04c-e2c1-4b03-ac81-96f6dcbd06d4
+
+--- Fire 2 concurrent approvals ---
+/bin/bash: line 91: wait: `$!': not a pid or valid job spec
+/bin/bash: line 91: wait: `$!': not a pid or valid job spec
+Race result 1: 
+Race result 2: 
+
+--- tool_executions count AFTER ---
+time="2026-02-02T20:15:07-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-02T20:15:07-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+     3
+
+[1]-  Done                    curl -s --max-time 120 -X POST "http://localhost:8095/agent/approvals/${APPR_RACE}:approve" -H "Authorization: Bearer $AGENT_JWT" -H "Content-Type: application/json" -d '{"actor_id":"forensic-auditor"}' > /tmp/race1.txt 2>&1
+[2]+  Done                    curl -s --max-time 120 -X POST "http://localhost:8095/agent/approvals/${APPR_RACE}:approve" -H "Authorization: Bearer $AGENT_JWT" -H "Content-Type: application/json" -d '{"actor_id":"forensic-auditor"}' > /tmp/race2.txt 2>&1
+
+--- Approval status ---
+time="2026-02-02T20:15:07-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-02T20:15:07-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+                  id                  |  status  
+--------------------------------------+----------
+ 1d17d04c-e2c1-4b03-ac81-96f6dcbd06d4 | approved
+(1 row)
+
+
+--- SUPPLEMENT: race outputs from /tmp ---
+Race1 (approve):
+{"thread_id":"f002-race-001","status":"completed","content":"","pending_approval":null,"actions_taken":[{"tool":"transition_deal","result":{"ok":true}}],"error":null}
+Race2 (approve):
+{"detail":"Approval already claimed by another request"}
+NOTE: Both approvals were sent with Authorization: Bearer $AGENT_JWT per command lines above.

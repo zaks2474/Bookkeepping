@@ -1,0 +1,7 @@
+=== V-P5.6: Hardcoded container check ===
+docker exec rag-db count: 0
+0
+docker exec zakops-backend count: 0
+0
+docker compose exec count: 6
+Date: 2026-02-06T17:36:40-06:00

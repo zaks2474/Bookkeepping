@@ -1,0 +1,4 @@
+    (r"ASSISTANT\s*:", "role_injection", "medium"),
+    (r"\[INST\]|\[/INST\]", "format_injection", "medium"),
+    (r"```system", "fenced_injection", "medium"),
+    (r"<\|im_start\|>|<\|im_end\|>", "chatml_injection", "medium"),

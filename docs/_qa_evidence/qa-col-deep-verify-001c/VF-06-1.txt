@@ -1,0 +1,11 @@
+/home/zaks/zakops-backend/db/migrations/018_advanced_agent.sql:180:-- Add check constraints for status values
+/home/zaks/zakops-backend/db/migrations/018_advanced_agent.sql:185:    CHECK (status IN ('pending', 'running', 'completed', 'failed'));
+/home/zaks/zakops-backend/db/migrations/018_advanced_agent.sql:191:    CHECK (status IN ('proposed', 'approved', 'rejected', 'executed', 'failed'));
+/home/zaks/zakops-backend/db/migrations/029_quarantine_hardening_rollback.sql:9:ALTER TABLE zakops.quarantine_items DROP CONSTRAINT IF EXISTS chk_quarantine_status;
+/home/zaks/zakops-backend/db/migrations/001_foundation_tables.sql:103:    CONSTRAINT checkpoints_status_check CHECK (status IN ('active', 'resumed', 'expired', 'cancelled'))
+/home/zaks/zakops-backend/db/migrations/001_foundation_tables.sql:107:CREATE INDEX IF NOT EXISTS idx_checkpoints_status ON zakops.execution_checkpoints(status);
+/home/zaks/zakops-backend/db/migrations/001_foundation_tables.sql:172:    CONSTRAINT outbox_status_check CHECK (status IN ('pending', 'processing', 'delivered', 'failed', 'dead'))
+/home/zaks/zakops-backend/db/migrations/029_quarantine_hardening.sql:7:--   2. CHECK constraint on status (closed enum)
+/home/zaks/zakops-backend/db/migrations/029_quarantine_hardening.sql:22:    ADD CONSTRAINT chk_quarantine_status
+/home/zaks/zakops-backend/db/migrations/029_quarantine_hardening.sql:23:    CHECK (status IN ('pending', 'approved', 'rejected', 'hidden'));
+---base_tables---

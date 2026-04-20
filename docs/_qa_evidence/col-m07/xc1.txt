@@ -1,0 +1,31 @@
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py:207:    async def hard_delete_thread(self, thread_id: str, user_id: str) -> None:
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py-208-        """Hard-delete a thread and all associated data (cascading)."""
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py-209-        thread = await self.get_thread(thread_id, user_id)
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py-210-        if getattr(thread, "legal_hold", False):
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py-211-            raise ValueError(f"Thread {thread_id} is under legal hold — cannot delete")
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py-212-        with self._get_session() as session:
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py-213-            # thread_ownership, chat_messages, session_summaries, turn_snapshots
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py-214-            # all cascade from chat_threads FK
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py-215-            session.exec(
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py-216-                text("DELETE FROM thread_ownership WHERE thread_id = :tid"),
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py-217-                params={"tid": thread_id},
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py-218-            )
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py-219-            session.exec(
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py-220-                text("DELETE FROM chat_threads WHERE id = :tid"),
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py-221-                params={"tid": thread_id},
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py-222-            )
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py-223-            session.commit()
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py-224-            logger.info("thread_hard_deleted", thread_id=thread_id, user_id=user_id)
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py-225-
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py-226-    async def restore_thread(self, thread_id: str, user_id: str) -> ChatThread:
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py-227-        """Restore a soft-deleted thread."""
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py-228-        with self._get_session() as session:
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py-229-            session.exec(
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py-230-                text("""
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py-231-                    UPDATE chat_threads
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py-232-                    SET deleted = FALSE, deleted_at = NULL
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py-233-                    WHERE id = :thread_id
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py-234-                """),
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py-235-                params={"thread_id": thread_id},
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py-236-            )
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py-237-            session.commit()

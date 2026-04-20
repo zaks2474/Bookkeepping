@@ -1,0 +1,14 @@
+=== QA-3.4: T2.6+T2.7 Archive/Restore ===
+Test deal: DL-0042
+
+--- TEST 1: Archive endpoint ---
+{"success":true,"deal_id":"DL-0042","previous_stage":"inbound"}
+--- TEST 2: Restore endpoint ---
+{"success":true,"deal_id":"DL-0042","restored_to_stage":"inbound"}
+--- TEST 3: OpenAPI archive/restore endpoints ---
+[
+  "/api/deals/{deal_id}/archive",
+  "/api/deals/{deal_id}/restore"
+]
+
+=== QA-3.4 VERDICT: PASS ===

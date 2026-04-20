@@ -1,0 +1,38 @@
+=== CHECK 6.D — RT-DIAG: Diagnostic Endpoints ===
+
+--- 6.D.1 Health Endpoint Response ---
+GET /health response:
+{
+  "status": "healthy",
+  "version": "1.0.0",
+  "environment": "development",
+  "components": {
+    "api": "healthy",
+    "database": "healthy"
+  },
+  "timestamp": "2026-02-03T22:58:13.015425"
+}
+
+--- Checking for debug endpoints ---
+/debug -> HTTP 404
+/debug/vars -> HTTP 404
+/metrics -> HTTP 200
+/status -> HTTP 404
+/_debug -> HTTP 404
+/internal -> HTTP 404
+/admin -> HTTP 404
+
+--- OpenAPI docs exposure ---
+GET /docs -> HTTP 200
+GET /redoc -> HTTP 200
+GET /openapi.json -> HTTP 404
+
+FINDINGS:
+  - /health returns minimal status (no internals)
+  - P3 Finding: /docs, /redoc, /openapi.json exposed in dev (disable in prod)
+  - No debug endpoints found
+
+--- /metrics endpoint (P3 Finding) ---
+Prometheus metrics exposed on /metrics (HTTP 200)
+Exposes: python_info, process metrics, http_requests_total, db_connections, llm_inference_duration
+Recommendation: Protect /metrics in production (auth or internal-only)

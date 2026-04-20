@@ -1,0 +1,80 @@
+{
+  "agent_identity": {
+    "agent_name": "Codex",
+    "run_id": "20260207-0117-ccreset2",
+    "timestamp": "2026-02-07T01:17:00Z",
+    "repo_commit_if_any": "5eb7ce6f2427a4c7befd1f8d810ee9e42cb7791a",
+    "mission_prompt_path": "/home/zaks/bookkeeping/docs/MISSION-INFRA-AWARENESS-V5-CLAUDE-CODE-RESET.md",
+    "mission_prompt_line_count": 1112
+  },
+  "top_upgrades": [
+    "Add Claude Code settings & managed policy section with explicit deny/allow rules",
+    "Add hooks-based runtime guardrails (PreToolUse) for tool authorization",
+    "Require CLI automation flags for deterministic runs",
+    "Add mandatory eval gate (OpenAI Evals or equivalent)",
+    "Add prompt-injection defense section aligned to OWASP LLM01/LLM02",
+    "Add staged autonomy rules (plan -> execute)",
+    "Add slash-command macros for evidence capture",
+    "Add drift checks for CLAUDE.md/instructions",
+    "Add contract-diff gate for tool outputs",
+    "Add risk register + rollback template"
+  ],
+  "top_risks": [
+    "Permissions too strict can block needed actions",
+    "Hooks can over-block without staged rollout",
+    "Eval gate adds friction without fast smoke suite",
+    "Prompt-injection remains possible without strict validation",
+    "Managed policy misconfiguration causes inconsistent behavior"
+  ],
+  "top_hybrid_accelerators": [
+    "Policy-driven permissions (managed settings)",
+    "Hooks-based tool firewall",
+    "Slash-command macros for evidence collection",
+    "Staged autonomy modes",
+    "CI bot for drift detection"
+  ],
+  "patches": [
+    {
+      "section": "SECTION 0: DISCOVERY — VERIFY CURRENT STATE",
+      "additions": ["Step 0.8 settings audit", "Step 0.9 hooks audit"]
+    },
+    {
+      "section": "Pre-Task Protocol (MANDATORY)",
+      "additions": ["Confirm permission mode", "Verify settings loaded"]
+    },
+    {
+      "section": "Non-Negotiable Rules",
+      "additions": ["No bypass permissions", "Hooks validation", "Report permission mode"]
+    },
+    {
+      "section": "FIX 2 (P0): UPDATE .claude/commands/ WITH ALL OPERATIONS",
+      "additions": ["permissions-audit.md", "hooks-check.md", "eval-smoke.md"]
+    },
+    {
+      "section": "FIX 4 (P1): UPDATE CROSS-LAYER VALIDATION",
+      "additions": ["Check settings.json", "Check hooks"]
+    },
+    {
+      "section": "FIX 9 (P2): UPDATE validate-enforcement.sh",
+      "additions": ["Fail if settings.json missing", "Fail if bypass enabled", "Fail if hooks missing"]
+    },
+    {
+      "section": "AUTONOMY RULES",
+      "additions": ["Plan-mode approval for permission changes", "Stop if hooks/settings missing"]
+    },
+    {
+      "section": "OUTPUT FORMAT",
+      "additions": ["Settings path(s)", "Permission mode used", "Hook status"]
+    }
+  ],
+  "sources": [
+    "https://docs.anthropic.com/en/docs/claude-code/settings",
+    "https://docs.anthropic.com/en/docs/claude-code/hooks",
+    "https://docs.anthropic.com/en/docs/claude-code/cli-usage",
+    "https://docs.anthropic.com/en/docs/claude-code/cli-reference",
+    "https://docs.anthropic.com/en/docs/claude-code/team",
+    "https://owasp.org/www-project-top-10-for-large-language-model-applications/",
+    "https://github.com/openai/evals",
+    "https://www.youtube.com/watch?v=7EJrsyZ4jUI"
+  ]
+}

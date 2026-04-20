@@ -1,0 +1,12 @@
+=== CHECK 4.4.3: Chain-of-Custody for Rejected Lifecycle ===
+Timestamp: 2026-02-03T13:09:55-06:00
+Thread ID: forensic-003-reject-1770145722
+Command: SELECT event_type, payload::text, created_at FROM audit_log WHERE thread_id = 'forensic-003-reject-1770145722' ORDER BY created_at ASC;
+
+time="2026-02-03T13:09:55-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-03T13:09:55-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+    event_type     |                                        payload                                         |          created_at           
+-------------------+----------------------------------------------------------------------------------------+-------------------------------
+ approval_rejected | {"reason": "Forensic test — verifying rejection path", "tool_name": "transition_deal"} | 2026-02-03 19:08:52.209399+00
+(1 row)
+

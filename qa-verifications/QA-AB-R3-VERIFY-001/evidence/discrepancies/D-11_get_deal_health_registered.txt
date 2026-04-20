@@ -1,0 +1,11 @@
+D-11 get_deal_health registration
+--- tools/__init__.py ---
+8:R3 REMEDIATION [P4.3]: Added get_deal_health tool for deal health scoring.
+20:    get_deal_health,
+30:    get_deal_health,
+
+--- deal_tools.py (definition) ---
+975:async def get_deal_health(deal_id: str) -> str:
+
+--- system.md tool list ---
+86:7. **get_deal_health** - Get a health score (0-100) and recommendations for a deal

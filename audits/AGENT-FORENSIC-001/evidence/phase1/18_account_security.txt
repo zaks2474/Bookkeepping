@@ -1,0 +1,33 @@
+=== STEP 1.9: Account Security (GPT 1.C) ===
+--- Enumeration Test ---
+Valid email, wrong password:
+{"detail":"Incorrect email or password"}
+Invalid email:
+{"detail":"Incorrect email or password"}
+--- Brute Force (10 rapid) ---
+3: 401
+2: 401
+1: 401
+4: 401
+8: 401
+9: 401
+10: 401
+7: 401
+5: 401
+6: 401
+--- Password Hash Check (U14) ---
+Columns in public.user:
+   column_name   
+-----------------
+ created_at
+ id
+ email
+ hashed_password
+(4 rows)
+
+Password field sample (first 20 chars):
+          email          |   password_prefix    
+-------------------------+----------------------
+ forensic-001@zakops.com | $2b$12$p.7FH9JQx//sb
+(1 row)
+

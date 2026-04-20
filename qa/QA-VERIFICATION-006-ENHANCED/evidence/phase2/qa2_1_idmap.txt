@@ -1,0 +1,21 @@
+=== QA-2.1: T1.1 id_map Table ===
+--- TEST 1: id_map table exists ---
+
+--- TEST 2: deal_aliases table (alternative) ---
+                                 Table "zakops.deal_aliases"
+   Column   |           Type           | Collation | Nullable |           Default            
+------------+--------------------------+-----------+----------+------------------------------
+ id         | uuid                     |           | not null | gen_random_uuid()
+ deal_id    | character varying(20)    |           |          | 
+ alias      | character varying(255)   |           | not null | 
+ alias_type | character varying(50)    |           |          | 'general'::character varying
+ created_at | timestamp with time zone |           | not null | now()
+Indexes:
+    "deal_aliases_pkey" PRIMARY KEY, btree (id)
+    "idx_deal_aliases_alias" btree (alias)
+    "idx_deal_aliases_deal_id" btree (deal_id)
+Foreign-key constraints:
+    "deal_aliases_deal_id_fkey" FOREIGN KEY (deal_id) REFERENCES deals(deal_id) ON DELETE CASCADE
+
+
+=== QA-2.1 VERDICT: PASS ===

@@ -1,0 +1,2 @@
+22:INJECTION_PATHS = ("/api/quarantine",)
+39:        is_injection_path = any(path.startswith(p) for p in INJECTION_PATHS)

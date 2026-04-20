@@ -1,0 +1,140 @@
+=== VF-03.3 GOVERNANCE ANCHOR VALIDATOR COVERAGE ===
+#!/usr/bin/env bash
+# validate-frontend-governance.sh — CI-HARDENING-001 Phase 2
+# Validates required governance anchors across frontend rule files.
+# Includes no-8090 drift check for governance files.
+# CI-safe: repo-local only, no external dependencies.
+# Exit 0 = PASS, Exit 1 = violations found.
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+RULES_DIR="$REPO_ROOT/.claude/rules"
+
+VIOLATIONS=0
+
+echo "=== Frontend Governance Anchor Validation ==="
+echo ""
+
+# ── Check 1: design-system.md required section anchors ──
+echo "--- design-system.md governance sections ---"
+DS_RULE="$RULES_DIR/design-system.md"
+if [ ! -f "$DS_RULE" ]; then
+  echo "  FAIL: design-system.md not found"
+  VIOLATIONS=$((VIOLATIONS + 1))
+else
+  DS_SECTIONS=(
+    "Skill Preload"
+    "Responsive Breakpoint"
+    "Z-Index"
+    "Dark Mode"
+    "Animation Performance"
+    "State Management"
+    "Anti-convergence"
+    "Data Fetching"
+    "Error Handling"
+    "CSS Architecture"
+    "Import Discipline"
+  )
+  for section in "${DS_SECTIONS[@]}"; do
+    if grep -qi "$section" "$DS_RULE" 2>/dev/null; then
+      echo "  PASS: $section"
+    else
+      echo "  FAIL: Missing section: $section"
+      VIOLATIONS=$((VIOLATIONS + 1))
+    fi
+  done
+fi
+
+# ── Check 2: accessibility.md required anchors ──
+echo ""
+echo "--- accessibility.md governance sections ---"
+A11Y_RULE="$RULES_DIR/accessibility.md"
+if [ ! -f "$A11Y_RULE" ]; then
+  echo "  FAIL: accessibility.md not found"
+  VIOLATIONS=$((VIOLATIONS + 1))
+else
+  A11Y_SECTIONS=(
+    "Semantic Structure"
+    "Keyboard Navigation"
+    "Color Contrast"
+    "ARIA"
+    "Reduced Motion"
+  )
+  for section in "${A11Y_SECTIONS[@]}"; do
+    if grep -qi "$section" "$A11Y_RULE" 2>/dev/null; then
+      echo "  PASS: $section"
+    else
+      echo "  FAIL: Missing section: $section"
+      VIOLATIONS=$((VIOLATIONS + 1))
+    fi
+  done
+fi
+
+# ── Check 3: component-patterns.md required anchors ──
+echo ""
+echo "--- component-patterns.md governance sections ---"
+CP_RULE="$RULES_DIR/component-patterns.md"
+if [ ! -f "$CP_RULE" ]; then
+  echo "  FAIL: component-patterns.md not found"
+  VIOLATIONS=$((VIOLATIONS + 1))
+else
+  CP_SECTIONS=(
+    "Server vs Client"
+    "Loading.*Empty.*Error"
+    "Suspense"
+    "State Ownership"
+    "Composability"
+  )
+  for section in "${CP_SECTIONS[@]}"; do
+    if grep -qi "$section" "$CP_RULE" 2>/dev/null; then
+      echo "  PASS: $section"
+    else
+      echo "  FAIL: Missing section: $section"
+      VIOLATIONS=$((VIOLATIONS + 1))
+    fi
+  done
+fi
+
+# ── Check 4: No port 8090 drift in governance files ──
+echo ""
+echo "--- Port 8090 drift check ---"
+PORT_DRIFT=0
+for rule_file in "$DS_RULE" "$A11Y_RULE" "$CP_RULE"; do
+  if [ -f "$rule_file" ] && grep -q "8090" "$rule_file" 2>/dev/null; then
+    echo "  FAIL: Port 8090 reference in $(basename "$rule_file")"
+    PORT_DRIFT=$((PORT_DRIFT + 1))
+  fi
+done
+if [ "$PORT_DRIFT" -eq 0 ]; then
+  echo "  PASS: No port 8090 references in governance rules"
+else
+  VIOLATIONS=$((VIOLATIONS + PORT_DRIFT))
+fi
+
+echo ""
+if [ "$VIOLATIONS" -eq 0 ]; then
+  echo "Frontend Governance Validation: PASS"
+  exit 0
+else
+  echo "Frontend Governance Validation: FAIL ($VIOLATIONS violations)"
+  exit 1
+fi
+4:# Includes no-8090 drift check for governance files.
+18:# ── Check 1: design-system.md required section anchors ──
+19:echo "--- design-system.md governance sections ---"
+20:DS_RULE="$RULES_DIR/design-system.md"
+22:  echo "  FAIL: design-system.md not found"
+48:# ── Check 2: accessibility.md required anchors ──
+50:echo "--- accessibility.md governance sections ---"
+51:A11Y_RULE="$RULES_DIR/accessibility.md"
+53:  echo "  FAIL: accessibility.md not found"
+73:# ── Check 3: component-patterns.md required anchors ──
+75:echo "--- component-patterns.md governance sections ---"
+76:CP_RULE="$RULES_DIR/component-patterns.md"
+78:  echo "  FAIL: component-patterns.md not found"
+98:# ── Check 4: No port 8090 drift in governance files ──
+100:echo "--- Port 8090 drift check ---"
+103:  if [ -f "$rule_file" ] && grep -q "8090" "$rule_file" 2>/dev/null; then
+104:    echo "  FAIL: Port 8090 reference in $(basename "$rule_file")"
+109:  echo "  PASS: No port 8090 references in governance rules"

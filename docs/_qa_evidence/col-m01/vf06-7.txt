@@ -1,0 +1,1 @@
+CREATE INDEX IF NOT EXISTS idx_summaries_thread ON session_summaries(thread_id, version DESC);

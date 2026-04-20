@@ -1,0 +1,7 @@
+Route: src/app/api/chat/execute-proposal/route.ts
+Line 7: "Note: This is a placeholder - full implementation requires backend chat orchestrator."
+Line 19: message: 'The chat proposal execution feature is not yet integrated with the orchestration API.'
+Line 24: { status: 501 }
+Line 28: console.warn('[Execute Proposal] Backend unavailable (degraded):', ...)
+CLASSIFICATION: ACCEPTABLE — explicit degradation (501 + clear message), not silent mock success.
+Per F-8 decision tree: returns explicit error/degradation status. PASS

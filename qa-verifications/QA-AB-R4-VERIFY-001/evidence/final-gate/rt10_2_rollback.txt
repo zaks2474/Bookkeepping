@@ -1,0 +1,13 @@
+=== R4 ROLLBACK PLAN ===
+If R4 causes regressions:
+
+1. Revert deal_tools.py to pre-R4 version:
+   git checkout HEAD~1 -- app/core/langgraph/tools/deal_tools.py
+
+2. Revert system.md to previous version:
+   git checkout HEAD~1 -- app/core/prompts/system.md
+
+3. Restart agent container:
+   docker compose restart agent-api
+
+4. Verify regression is fixed with golden prompt test

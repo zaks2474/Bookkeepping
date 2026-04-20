@@ -1,0 +1,57 @@
+{
+  "agent_identity": {
+    "agent_name": "Gemini-CLI",
+    "run_id": "20260204-1050-gemini",
+    "date_time": "2026-02-04T10:50:00Z",
+    "repo_revision": "unknown"
+  },
+  "scorecard": {
+    "grounding_truthfulness": 8,
+    "tool_reliability": 9,
+    "prompt_system_instruction_quality": 4,
+    "memory_rag_correctness": 3,
+    "hitl_correctness": 9,
+    "observability_tracing": 6,
+    "security_permissions": 8,
+    "provider_abstraction": 8,
+    "stage_aware_reasoning": 3,
+    "evals_regression_gates": 5
+  },
+  "findings": [
+    {
+      "severity": "P1",
+      "issue": "Blind Agent (No Deal Context)",
+      "impact": "User friction; agent doesn't know active deal state without asking.",
+      "evidence": "system.md is static; graph.py does not inject context."
+    },
+    {
+      "severity": "P1",
+      "issue": "Long-Term Memory Disabled",
+      "impact": "Agent is amnesic between sessions.",
+      "evidence": "config.py: DISABLE_LONG_TERM_MEMORY=true"
+    },
+    {
+      "severity": "P2",
+      "issue": "RAG Fragility",
+      "impact": "System blindness if RAG container fails.",
+      "evidence": "deal_tools.py: search_deals has no SQL fallback."
+    }
+  ],
+  "recommendations": [
+    {
+      "priority": "P1",
+      "action": "Implement DealContext Injection",
+      "description": "Inject active deal stage, tasks, and missing docs into system prompt."
+    },
+    {
+      "priority": "P1",
+      "action": "Enable Long-Term Memory",
+      "description": "Configure pgvector and set DISABLE_LONG_TERM_MEMORY=false."
+    },
+    {
+      "priority": "P2",
+      "action": "Implement Decision Ledger",
+      "description": "Log reasoning and triggers, not just raw events."
+    }
+  ]
+}

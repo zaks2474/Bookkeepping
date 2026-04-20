@@ -1,0 +1,28 @@
+=== VF-01.1 COMPLETION STRUCTURE ===
+152 /home/zaks/bookkeeping/docs/CI-HARDENING-001-COMPLETION.md
+5:## Result: COMPLETE — 12/12 AC PASS
+13:| 0 | Discovery and Baseline | PASS — Baseline captured with timestamps |
+14:| 1 | stop.sh Project Detection Fallback | PASS — 3-path detection, explicit skip |
+15:| 2 | Repo-Local CI Governance Scripts | PASS — 4 scripts created and tested |
+16:| 3 | Aggregate Make Targets | PASS — Target added, wired into validate-local |
+17:| 4 | CI Workflow Hardening | PASS — Gate E scripted, Gate F added |
+18:| 5 | Documentation and Drift Safeguards | PASS — Drift check, evidence index |
+19:| 6 | Final Verification and Bookkeeping | PASS — All validations green |
+25:### AC-1: Baseline Evidence Captured
+26:**PASS** — `/home/zaks/bookkeeping/docs/CI-HARDENING-001-BASELINE.md` contains:
+32:**PASS** — stop.sh project detection hardened with ordered fallback:
+39:**PASS** — Four scenarios tested:
+46:**PASS** — `tools/infra/validate-rule-frontmatter.sh`:
+53:**PASS** — `tools/infra/validate-frontend-governance.sh`:
+60:**PASS** — `tools/infra/validate-gatee-scan.sh`:
+66:**PASS** — `make validate-frontend-governance` runs:
+73:**PASS** — ci.yml changes:
+80:**PASS** — Final validation shows:
+81:- `make validate-surface9`: PASS (0 violations, all 8 checks)
+82:- `make validate-contract-surfaces`: ALL 14 PASS
+85:### AC-10: Documentation Updated
+86:**PASS** — CI hardening documented in:
+91:### AC-11: No Regressions
+92:**PASS** — `make validate-local` passes with all gates including new governance target.
+95:### AC-12: Bookkeeping Complete
+96:**PASS** — Updated:

@@ -1,0 +1,20 @@
+Total endpoints: 88
+With response schema: 75
+Without response schema: 13
+Coverage: 85.2%
+Meets 70% threshold: YES
+
+Missing schema:
+  GET /api/auth/check
+  GET /api/agent/models
+  GET /api/agent/langsmith/health
+  GET /api/admin/dlq/stats
+  GET /api/admin/outbox/stats
+  GET /api/admin/sse/stats
+  GET /api/admin/system/health
+  GET /api/admin/retention/stats
+  GET /api/deals/stages/summary
+  GET /api/actions/capabilities
+  GET /api/actions/metrics
+  GET /api/quarantine/health
+  GET /api/pipeline/stats

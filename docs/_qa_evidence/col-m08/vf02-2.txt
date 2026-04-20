@@ -1,0 +1,11 @@
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/default_comparator.py:94:                roles.ConstExprRole, element=obj, operator=op, expr=expr
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/default_comparator.py:122:            roles.BinaryElementRole, element=obj, operator=op, expr=expr
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/default_comparator.py:174:        roles.BinaryElementRole, obj, expr=expr, operator=op
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/default_comparator.py:220:        roles.InElementRole, seq_or_selectable, expr=expr, operator=op
+apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/default_comparator.py:239:            roles.BinaryElementRole, other, expr=expr, operator=op
+apps/agent-api/.venv/lib/python3.13/site-packages/gotrue/types.py:244:    When a user signs up, this role is set to `authenticated` by default. You should only modify the `role` if you need to provision several levels of admin access that have different permissions on individual columns in your database.
+apps/agent-api/.venv/lib/python3.13/site-packages/gotrue/types.py:246:    Setting this role to `service_role` is not recommended as it grants the user admin privileges.
+apps/agent-api/.venv/lib/python3.13/site-packages/langfuse/api/resources/organizations/types/membership_role.py:18:        admin: typing.Callable[[], T_Result],
+apps/agent-api/.venv/lib/python3.13/site-packages/langfuse/api/resources/organizations/types/membership_role.py:20:        viewer: typing.Callable[[], T_Result],
+apps/agent-api/.venv/lib/python3.13/site-packages/langfuse/api/resources/organizations/types/membership_role.py:25:            return admin()
+apps/agent-api/.venv/lib/python3.13/site-packages/langfuse/api/resources/organizations/types/membership_role.py:29:            return viewer()

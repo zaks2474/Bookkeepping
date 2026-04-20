@@ -1,0 +1,8 @@
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:605:              Dismiss and retry
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1153:                      Dismiss
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealBrain.tsx:181:  const handleDismissGhost = async (ghostKey: string) => {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealBrain.tsx:184:      toast.success('Dismissed');
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealBrain.tsx:473:                                onClick={() => handleDismissGhost(ghostKey)}
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealBrain.tsx:476:                                Dismiss
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/onboarding/OnboardingBanner.tsx:6: * Dismiss = sets skipped=true via backend PATCH (permanent).
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/onboarding/OnboardingBanner.tsx:69:          aria-label="Dismiss onboarding banner"

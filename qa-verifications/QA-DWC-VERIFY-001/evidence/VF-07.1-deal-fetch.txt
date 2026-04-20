@@ -1,0 +1,3 @@
+127:      // DEAL-INTEGRITY-UNIFIED L4: Promise.allSettled for graceful degradation
+128:      const results = await Promise.allSettled([
+Uses Promise.allSettled, not Promise.all. PASS

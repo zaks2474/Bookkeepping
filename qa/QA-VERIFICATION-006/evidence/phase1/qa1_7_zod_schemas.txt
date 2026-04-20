@@ -1,0 +1,33 @@
+=== QA-1.7: T0.11+T0.12 Zod Schemas (ZK-ISSUE-0018) ===
+--- TEST 1: Dashboard schema files ---
+total 12
+drwxr-xr-x 2 root root 4096 Feb  3 14:59 .
+drwxr-xr-x 5 root root 4096 Feb  3 22:34 ..
+-rw-r--r-- 1 root root 2877 Feb  3 14:59 approval.ts
+
+--- TEST 2: Zod usage in api.ts ---
+309
+
+--- TEST 3: Sample Zod schema definition ---
+export const DealSchema = z.object({
+  deal_id: z.string(),
+  canonical_name: z.string().nullable(),
+  display_name: z.string().optional().nullable(),
+  stage: z.string(),
+  status: z.string(),
+  broker: z.preprocess(coerceBrokerToString, z.string().nullable().optional()),
+  priority: z.string().nullable().optional(),
+  updated_at: z.string().nullable().optional(),
+  created_at: z.string().nullable().optional(),
+  days_since_update: z.preprocess(coerceToNumber, z.number().optional()),
+--
+export const DealDetailSchema = z.object({
+  deal_id: z.string(),
+  canonical_name: z.string().nullable(),
+
+--- ANALYSIS ---
+Schema files: 1 file in schemas/ (approval.ts)
+Zod usage: 309 occurrences in api.ts
+DealSchema: EXISTS with proper validation
+
+=== QA-1.7 VERDICT: PASS ===

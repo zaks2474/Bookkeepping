@@ -1,0 +1,25 @@
+=== QA-1.7: T0.11+T0.12 Zod Schemas ===
+--- TEST 1: Zod .passthrough() usage ---
+17
+84:}).passthrough();
+89:// REMEDIATION-V3 [ZK-ISSUE-0018]: Added .passthrough() to avoid silent field drops
+102:  }).passthrough().nullable().optional(),
+106:  }).passthrough().nullable().optional(),
+115:  }).passthrough().nullable().optional(),
+
+--- TEST 2: Schema validation logging ---
+417:    console.error('Invalid deals response:', parsed.error);
+474:        console.debug('[API] Deal schema validation notes:', parsed.error.issues.map(i => `${i.path.join('.')}: ${i.message}`).join(', '));
+481:        console.debug('[API] Returning partially validated deal data for:', rawData.deal_id);
+524:    console.error('Invalid events response:', parsed.error);
+624:    console.error('Invalid actions response:', parsed.error);
+642:    console.error('Invalid due actions response:', parsed.error);
+660:    console.error('Invalid quarantine response:', parsed.error);
+679:      console.error('Invalid quarantine health response:', parsed.error);
+731:    console.error('Invalid quarantine queue response:', parsed.error);
+749:      console.error('Invalid quarantine preview response:', parsed.error);
+
+--- TEST 3: safeParse usage (logging validation errors) ---
+19
+
+=== QA-1.7 VERDICT: PASS ===

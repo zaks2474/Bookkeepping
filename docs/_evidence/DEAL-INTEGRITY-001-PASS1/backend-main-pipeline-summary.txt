@@ -1,0 +1,76 @@
+                    deal_id = COALESCE($5, deal_id),
+                    raw_content = COALESCE(raw_content, '{}'::jsonb) || jsonb_build_object(
+                        'processed_by', $3::text,
+                        'processing_action', $4::text,
+                        'processed_at', NOW()
+                    ),
+                    updated_at = NOW()
+                WHERE id = $1
+                """,
+                item_id,
+                new_status,
+                process.processed_by,
+                process.action,
+                deal_id
+            )
+
+    return {
+        "status": new_status,
+        "item_id": item_id,
+        "deal_id": deal_id,
+        "deal_created": process.action == 'approve' and not process.deal_id
+    }
+
+
+# =============================================================================
+# PIPELINE ENDPOINTS
+# =============================================================================
+
+@app.get("/api/pipeline/summary", response_model=list[PipelineSummary])
+async def get_pipeline_summary(pool: asyncpg.Pool = Depends(get_db)):
+    """Get pipeline summary with deal counts per stage."""
+    query = """
+        SELECT stage, count, avg_days_in_stage
+        FROM zakops.v_pipeline_summary
+    """
+    async with pool.acquire() as conn:
+        rows = await conn.fetch(query)
+
+    return [dict(row) for row in rows]
+
+
+@app.get("/api/pipeline/stats")
+async def get_pipeline_stats(pool: asyncpg.Pool = Depends(get_db)):
+    """Get overall pipeline statistics."""
+    async with pool.acquire() as conn:
+        # Total deals
+        total_deals = await conn.fetchval(
+            "SELECT COUNT(*) FROM zakops.deals WHERE deleted = FALSE AND status = 'active'"
+        )
+
+        # Pending actions
+        pending_actions = await conn.fetchval(
+            "SELECT COUNT(*) FROM zakops.actions WHERE status IN ('pending_approval', 'queued')"
+        )
+
+        # Quarantine items
+        quarantine_pending = await conn.fetchval(
+            "SELECT COUNT(*) FROM zakops.quarantine_items WHERE status = 'pending'"
+        )
+
+        # Deals by stage
+        stage_counts = await conn.fetch(
+            """
+            SELECT stage, COUNT(*) as count
+            FROM zakops.deals
+            WHERE deleted = FALSE AND status = 'active'
+            GROUP BY stage
+            """
+        )
+
+        # Recent activity
+        recent_events = await conn.fetchval(
+            """
+            SELECT COUNT(*) FROM zakops.deal_events
+            WHERE created_at > NOW() - INTERVAL '24 hours'
+            """

@@ -1,0 +1,28 @@
+=== XC-1: Completion Report File Count Cross-Check ===
+
+Completion report header: "zakops-agent-api (11 files: 2 new, 9 edited)"
+Completion report table: 13 rows (2 new + 11 edited)
+
+Discrepancy: Header says 9 edited, table lists 11 edited files.
+Missing from count: validate-endpoint-liveness.sh and smoke-test.sh (2 infra scripts)
+
+Actual files in table:
+  NEW:
+    1. apps/dashboard/src/lib/agent-fetch.ts
+    2. apps/dashboard/src/app/api/agent/sentiment/[dealId]/route.ts
+  EDIT:
+    1. apps/dashboard/src/lib/api.ts
+    2. apps/dashboard/src/app/api/chat/complete/route.ts
+    3. apps/dashboard/src/app/api/chat/threads/route.ts
+    4. apps/dashboard/src/app/api/chat/threads/[id]/route.ts
+    5. apps/dashboard/src/app/api/chat/threads/[id]/messages/route.ts
+    6. apps/dashboard/src/app/api/chat/execute-proposal/route.ts
+    7. apps/dashboard/src/app/api/agent/activity/route.ts
+    8. apps/dashboard/src/app/api/chat/route.ts
+    9. tools/infra/validate-surface17.sh
+   10. tools/infra/validate-endpoint-liveness.sh
+   11. tools/infra/smoke-test.sh
+
+Correct count: 13 files (2 new + 11 edited)
+
+VERDICT: INFO — Header math error (11 vs 13); table is authoritative and complete

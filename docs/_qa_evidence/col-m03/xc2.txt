@@ -1,0 +1,10 @@
+from app.services.chat_repository import chat_repository
+        # Sort order is enforced in ChatRepository: ORDER BY pinned DESC, last_active DESC.
+        threads, total = await chat_repository.list_threads(
+            valid = await chat_repository.validate_deal_reference(body.deal_id)
+        thread = await chat_repository.create_thread(
+        thread = await chat_repository.get_thread(thread_id, user_id)
+        messages, has_more = await chat_repository.get_messages(
+        thread = await chat_repository.update_thread(
+            await chat_repository.hard_delete_thread(thread_id, user_id)
+            await chat_repository.soft_delete_thread(thread_id, user_id)

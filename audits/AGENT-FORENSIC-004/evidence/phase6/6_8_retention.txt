@@ -1,0 +1,162 @@
+================================================================================
+AGENT-FORENSIC-004 - Phase 6 Check 6.8: Log Retention Policy
+================================================================================
+Date: 2026-02-03
+Auditor: Claude Opus 4.5 (Automated)
+Status: P3 (Minor Gap)
+================================================================================
+
+1. DOCKER LOG ROTATION
+----------------------
+Command: docker inspect zakops-agent-api | grep -A5 '"LogConfig"'
+
+Result:
+```json
+"LogConfig": {
+    "Type": "json-file",
+    "Config": {}
+}
+```
+
+Analysis:
+- Docker log driver: json-file (default)
+- NO explicit log rotation configured
+- Empty Config means default Docker behavior
+
+Docker default behavior:
+- Logs grow unbounded
+- No automatic rotation
+- No size limits
+
+FINDING: Docker log rotation NOT configured for agent-api container.
+
+2. DATABASE CLEANUP POLICIES
+----------------------------
+Source: /home/zaks/zakops-agent-api/apps/agent-api/migrations/001_approvals.sql
+
+2.1 Expired Approvals Cleanup (Lines 108-123):
+```sql
+CREATE OR REPLACE FUNCTION cleanup_expired_approvals()
+RETURNS INTEGER AS $$
+DECLARE
+    expired_count INTEGER;
+BEGIN
+    UPDATE approvals
+    SET status = 'expired'
+    WHERE status = 'pending'
+      AND expires_at IS NOT NULL
+      AND expires_at < NOW();
+
+    GET DIAGNOSTICS expired_count = ROW_COUNT;
+    RETURN expired_count;
+END;
+$$ LANGUAGE plpgsql;
+```
+
+2.2 Stale Claims Recovery (Lines 125-140):
+```sql
+CREATE OR REPLACE FUNCTION reclaim_stale_claims(stale_threshold_minutes INTEGER DEFAULT 5)
+RETURNS INTEGER AS $$
+DECLARE
+    reclaimed_count INTEGER;
+BEGIN
+    UPDATE approvals
+    SET status = 'pending',
+        claimed_at = NULL
+    WHERE status = 'claimed'
+      AND claimed_at < NOW() - (stale_threshold_minutes || ' minutes')::INTERVAL;
+
+    GET DIAGNOSTICS reclaimed_count = ROW_COUNT;
+    RETURN reclaimed_count;
+END;
+$$ LANGUAGE plpgsql;
+```
+
+2.3 Lazy Expiry Cleanup in Code:
+From agent.py (Line 677):
+```python
+logger.info("lazy_expiry_cleanup", expired_count=expired_count.rowcount)
+```
+
+This indicates cleanup is triggered lazily during request processing.
+
+3. APPLICATION LOG FILES
+------------------------
+From logging.py:
+- Logs written to: {LOG_DIR}/{env}-{YYYY-MM-DD}.jsonl
+- Daily rotation by date in filename
+- NO explicit size limits
+- NO automatic cleanup of old log files
+
+4. DATABASE TABLES - RETENTION STATUS
+--------------------------------------
+Tables in zakops_agent database:
+| Table               | Retention Policy           |
+|---------------------|----------------------------|
+| approvals           | Status-based expiry        |
+| audit_log           | NO retention policy        |
+| tool_executions     | NO retention policy        |
+| checkpoints         | NO retention policy        |
+| checkpoint_blobs    | NO retention policy        |
+| checkpoint_writes   | NO retention policy        |
+| session             | NO retention policy        |
+| user                | No expiry (permanent)      |
+
+5. GAPS IDENTIFIED
+------------------
+
+5.1 Docker Logs:
+- No rotation configured
+- Risk: Disk space exhaustion over time
+- Recommendation: Add to docker-compose.yml:
+  ```yaml
+  logging:
+    driver: "json-file"
+    options:
+      max-size: "100m"
+      max-file: "5"
+  ```
+
+5.2 Application Logs:
+- Daily files created but never cleaned
+- No maximum retention period
+- Recommendation: Add log rotation/cleanup job
+
+5.3 Audit Log Table:
+- No retention policy
+- Will grow indefinitely
+- Recommendation: Add scheduled cleanup for old entries
+
+5.4 Checkpoint Tables:
+- LangGraph checkpoints accumulate
+- No pruning mechanism
+- Recommendation: Add checkpoint retention policy
+
+6. EXISTING CLEANUP MECHANISMS
+------------------------------
+POSITIVE: Approval expiry is handled:
+- cleanup_expired_approvals() function exists
+- Lazy expiry cleanup during requests
+- Stale claim reclamation implemented
+
+7. SUMMARY
+----------
+| Component         | Rotation/Cleanup | Status      |
+|-------------------|------------------|-------------|
+| Docker logs       | NOT CONFIGURED   | P3 Gap      |
+| App log files     | Date-based only  | P3 Gap      |
+| Approvals         | Expiry cleanup   | OK          |
+| Audit log         | None             | P3 Gap      |
+| Tool executions   | None             | P3 Gap      |
+| Checkpoints       | None             | P3 Gap      |
+
+RESULT: P3 (Minor Gap)
+- Approval expiry cleanup: IMPLEMENTED
+- Docker log rotation: NOT CONFIGURED
+- Database retention: PARTIAL (approvals only)
+- Application log cleanup: NOT IMPLEMENTED
+
+This is rated P3 because:
+- System will function but disk usage will grow over time
+- No immediate operational impact
+- Should be addressed in future maintenance window

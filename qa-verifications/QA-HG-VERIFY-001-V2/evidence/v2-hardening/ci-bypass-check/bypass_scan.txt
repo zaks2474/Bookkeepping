@@ -1,0 +1,23 @@
+=== V2: CI BYPASS VULNERABILITY CHECK ===
+--- Path Filters ---
+--- Trigger Analysis ---
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+PASS: Workflow triggers on pull_request
+--- continue-on-error Check ---
+PASS: No continue-on-error found
+--- Conditional Execution Check ---
+42:    if: needs.changes.outputs.agent-api == 'true'
+101:    if: needs.changes.outputs.dashboard == 'true'
+136:    if: needs.changes.outputs.contracts == 'true'
+159:    if: needs.changes.outputs.dashboard == 'true' || needs.changes.outputs.contracts == 'true'
+226:    if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'

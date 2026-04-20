@@ -1,0 +1,75 @@
+=== P0-2: ZK-ISSUE-0002 Email Ingestion Not Creating Deals ===
+--- TEST 1: Email integration endpoints ---
+[
+  "/api/integrations/email/accounts",
+  "/api/integrations/email/accounts/{email_address}",
+  "/api/integrations/email/deals/{deal_id}/threads",
+  "/api/integrations/email/gmail/auth",
+  "/api/integrations/email/gmail/callback",
+  "/api/integrations/email/inbox",
+  "/api/integrations/email/search",
+  "/api/integrations/email/send",
+  "/api/integrations/email/threads/link",
+  "/api/integrations/email/threads/{thread_id}",
+  "/api/integrations/email/threads/{thread_id}/link",
+  "/api/senders/{email}"
+]
+
+--- TEST 2: Email router in main.py ---
+from .routers.email import router as email_router
+app.include_router(email_router)
+
+--- TEST 3: Email sync deal creation ---
+
+--- TEST 4: Email router file analysis ---
+462 /home/zaks/zakops-backend/src/api/orchestration/routers/email.py
+
+--- TEST 5: Check inbox processing for deal creation ---
+294:@router.get("/inbox", response_model=InboxResponse)
+295:async def get_inbox(
+300:    """Get inbox messages for an email account."""
+308:    messages = await service.get_inbox(account, max_results)
+
+--- TEST 6: Quarantine on unknown sender ---
+Result: No quarantine logic found in email router
+
+--- ANALYSIS ---
+Email router provides:
+✓ Gmail OAuth authentication
+✓ Inbox listing
+✓ Thread viewing
+✓ Manual thread-to-deal linking
+✗ Automatic deal creation from emails
+✗ Quarantine for unknown senders
+
+ZK-ISSUE-0002 STATUS: NOT REMEDIATED
+- Email ingestion exists but does NOT create deals
+- No quarantine logic for new/unknown senders
+- Manual linking only (not automatic)
+
+=== P0-2 VERDICT: FAIL (requires remediation) ===
+
+--- TEST 7: deal_create_from_email executor ---
+File: src/actions/executors/deal_create_from_email.py (660 lines)
+Status: EXISTS and is comprehensive
+
+Features:
+✓ Creates deals via backend API (/api/deals)
+✓ Sets up DataRoom folder structure (01-NDA to 09-Closing)
+✓ Adds email aliases for idempotency (gmail_message_id)
+✓ Copies attachments from quarantine
+✓ Creates deal_profile.json from triage data
+✓ Chains to DEAL.EXTRACT_EMAIL_ARTIFACTS action
+
+MISSING PIECE:
+The ingestion pipeline (email → quarantine → approve → create_deal) is:
+- Executor: EXISTS (deal_create_from_email.py)
+- Email endpoints: EXISTS (routers/email.py)  
+- Quarantine: EXISTS (/api/quarantine, /api/quarantine/{id}/process)
+- Pipeline trigger: MISSING (no cron job or webhook to ingest emails)
+
+ZK-ISSUE-0002 STATUS: PARTIALLY REMEDIATED
+- Core functionality implemented
+- Missing: Pipeline automation (T4.1, T4.5)
+
+=== P0-2 REVISED VERDICT: PARTIAL (executor exists, pipeline not wired) ===

@@ -1,0 +1,6 @@
+Line 305: @router.get('/threads/{thread_id}/messages')
+Line 310: before_turn: Optional[int] = Query(None)
+Line 320-322: chat_repository.get_messages(thread_id=thread_id, user_id=user_id, limit=limit, before_turn=before_turn)
+---
+before_turn cursor pagination: YES
+VERDICT: PASS

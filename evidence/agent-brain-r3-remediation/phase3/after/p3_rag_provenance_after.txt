@@ -1,0 +1,19 @@
+374:async def _search_deals_fallback(query: str, limit: int) -> str:
+375:    """R3 REMEDIATION [P3.4]: Fallback to backend API when RAG is unavailable.
+390:                # Format for user with provenance warning
+394:                    "provenance": {
+405:        logger.error("search_deals_fallback_failed", error=str(e))
+416:    R3 REMEDIATION [P3.4]: Added provenance tracking and fallback to backend API.
+423:        str: Search results with provenance metadata
+439:                # R3 REMEDIATION [P3.4]: Add provenance to RAG results
+444:                    "provenance": {
+451:                # RAG returned error - try fallback
+453:                    "rag_rest_error_fallback",
+457:                return await _search_deals_fallback(query, limit)
+460:        # R3 REMEDIATION [P3.4]: Circuit breaker - fallback to backend API
+462:            "rag_rest_unavailable_fallback",
+471:                "provenance": {
+477:        # Try fallback to backend API
+478:        return await _search_deals_fallback(query, limit)
+482:        # Try fallback before giving up
+484:            return await _search_deals_fallback(query, limit)

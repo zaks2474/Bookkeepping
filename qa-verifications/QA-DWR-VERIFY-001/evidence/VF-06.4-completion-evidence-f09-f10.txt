@@ -1,0 +1,13 @@
+=== VF-06.4 COMPLETION EVIDENCE F-09 F-10 ===
+14:| AC-2 | Export Action Integrity | PASS | `api/settings/data/export/route.ts`: deterministic success/degraded path with error taxonomy |
+17:| AC-5 | Quarantine Input Determinism | PASS | `quarantine/page.tsx`: localStorage read once on mount, write only after successful action |
+18:| AC-6 | Dashboard Layout Symmetry | PASS | `dashboard/page.tsx`: scroll container with `overflow-y-auto`, balanced grid layout |
+20:| AC-8 | Ask Agent Drawer Quality | PASS | `AgentDrawer.tsx`: redesigned with avatars, QuickAction buttons, "Full chat" link, auto-scroll |
+22:| AC-10 | Settings Navigation and Structure | PASS | `settings/page.tsx`: `overflow-y-auto` scroll container, "Back to Dashboard" link |
+32:| F-01 | Dashboard layout imbalance | Added scroll container with `overflow-y-auto` to dashboard page |
+40:| F-09 | Settings scroll/structure | Wrapped in `overflow-y-auto` container with `min-h-0` |
+41:| F-10 | Settings lacks return path | Added "Back to Dashboard" link with `IconArrowLeft` |
+55:| `src/__tests__/settings-export-route.test.ts` | 9 tests: export error handling |
+56:| `tests/e2e/dashboard-worldclass-remediation.spec.ts` | 12 e2e tests covering F-01..F-10 |
+64:| `src/components/agent/AgentDrawer.tsx` | Redesigned drawer: avatar system, QuickAction buttons, "Full chat" link, auto-scroll |
+67:| `src/app/settings/page.tsx` | Scroll container wrapper, "Back to Dashboard" link |

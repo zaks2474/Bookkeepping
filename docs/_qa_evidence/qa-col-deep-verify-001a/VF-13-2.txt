@@ -1,0 +1,24 @@
+All user_id column declarations in migration 004:
+4:-- Fixes: GAP-C2 (user_id type), GAP-M1 (redundant deal_id),
+16:-- ----- user_identity_map -----
+17:CREATE TABLE IF NOT EXISTS user_identity_map (
+32:    user_id         VARCHAR(255) NOT NULL,
+57:CREATE INDEX IF NOT EXISTS idx_threads_user ON chat_threads(user_id);
+59:CREATE INDEX IF NOT EXISTS idx_threads_active ON chat_threads(user_id, last_active DESC) WHERE deleted = FALSE;
+66:    user_id         VARCHAR(255) NOT NULL,
+83:CREATE INDEX IF NOT EXISTS idx_messages_user ON chat_messages(user_id);
+89:    user_id         VARCHAR(255) NOT NULL,
+94:CREATE INDEX IF NOT EXISTS idx_ownership_user ON thread_ownership(user_id);
+95:CREATE INDEX IF NOT EXISTS idx_ownership_user_thread ON thread_ownership(user_id, thread_id);
+121:    user_id                 VARCHAR(255) NOT NULL,
+171:    user_id         VARCHAR(255) NOT NULL,
+192:CREATE INDEX IF NOT EXISTS idx_cost_user ON cost_ledger(user_id);
+205:    COUNT(DISTINCT user_id) AS unique_users,
+---
+Check for INTEGER user_id:
+INTEGER user_id count: 0
+0
+VARCHAR user_id count: 5
+---
+user_id VARCHAR(255) found in: chat_threads (32), chat_messages (66), thread_ownership (89), turn_snapshots (121), cost_ledger (171)
+VERDICT: PASS (INTEGER=0, VARCHAR>=5)

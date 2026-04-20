@@ -1,0 +1,13 @@
+=== CHECK 3.7: Gate F Execution ===
+Migration Assertion Check - 2026-02-07T14:57:34-06:00
+==============================================
+=== Checking zakops_agent migrations ===
+zakops_agent: OK (003_add_migration_tracking)
+=== Checking crawlrag migrations ===
+FAIL: crawlrag - no schema_migrations table or no entries (db unreachable or empty)
+=== Checking zakops (backend) migrations ===
+FAIL: zakops - file=024_correlation_id, db=022
+==============================================
+FAILED: 2 database(s) have migration drift
+Exit code: 1
+CHECK 3.7: PASS (exit: 1)

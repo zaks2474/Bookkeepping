@@ -1,0 +1,20 @@
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:677:                        "tool_call_executed",
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:756:            Command: Either continues to tool_call (approved) or back to chat (rejected)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:776:            if approval_result.get("approved"):
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:778:                    update={"approval_status": "approved"},
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:779:                    goto="execute_approved_tools"
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:785:                    content=f"The requested action was not approved. Reason: {rejection_reason}"
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:796:        elif state.approval_status == "approved":
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:797:            return Command(goto="execute_approved_tools")
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:803:    async def _execute_approved_tools(self, state: GraphState, config: RunnableConfig) -> Command:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:804:        """Execute tools that have been approved.
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:832:                    "executing_approved_tool",
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:928:                graph_builder.add_node("approval_gate", self._approval_gate, ends=["execute_approved_tools", "chat", END])
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:929:                graph_builder.add_node("execute_approved_tools", self._execute_approved_tools, ends=["chat"])
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:990:                - pending_approval: Approval info (if HITL triggered)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:1096:                        "pending_approval": {
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:1198:            tool_name: Name of the approved tool
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:1222:                Command(resume={"approved": True, "approval_id": approval_id}),
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:1229:            tool_executed = False
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:1235:                    tool_executed = True
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:1260:                tool_executed=tool_executed,

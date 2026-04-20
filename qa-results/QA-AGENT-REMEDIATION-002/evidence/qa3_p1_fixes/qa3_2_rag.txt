@@ -1,0 +1,49 @@
+=== QA-3.2: F-005 — RAG Degradation ===
+--- RAG health check ---
+{"detail":"Not Found"}
+HTTP:404
+
+--- search_deals error handling ---
+async def search_deals(query: str, limit: int = 10) -> str:
+    """Search for deals using RAG.
+
+    Args:
+        query: Search query for deals
+        limit: Maximum number of results
+
+    Returns:
+        str: Search results
+    """
+    logger.info("search_deals_called", query=query, limit=limit)
+
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.post(
+                f"{RAG_REST_URL}/rag/query",
+                json={
+                    "query": query,
+                    "top_k": limit,
+                },
+            )
+
+--- ConnectError handling in search_deals ---
+
+
+@tool(args_schema=SearchDealsInput)
+async def search_deals(query: str, limit: int = 10) -> str:
+--
+    except httpx.ConnectError:
+        if ENVIRONMENT == "development" and ALLOW_TOOL_MOCKS:
+            return json.dumps(
+                {
+                    "results": [{"id": "deal-001", "title": "Sample Deal", "stage": "proposal"}],
+                    "total": 1,
+                    "note": "MOCK: RAG REST unavailable",
+                }
+            )
+--
+        raise httpx.ConnectError(f"RAG REST unavailable at {RAG_REST_URL} and mocks disabled")
+
+    except Exception as e:
+        logger.error("search_deals_error", error=str(e))
+        return f"Error searching deals: {str(e)}"

@@ -1,0 +1,84 @@
+=== VF-03.4 GATE E SCANNER SCRIPT SEMANTICS ===
+#!/usr/bin/env bash
+# validate-gatee-scan.sh — CI-HARDENING-001 Phase 2
+# CI-safe Gate E scanner with rg->grep fallback and explicit rc handling.
+# Replaces inline CI Gate E snippet.
+# rc semantics: 0 = violation found (FAIL), 1 = clean (PASS), >=2 = scanner error (FAIL closed)
+# Exit 0 = PASS (no violations), Exit 1 = FAIL (violations or scanner error)
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+
+TARGET="$REPO_ROOT/apps/agent-api/app/core/langgraph/tools/deal_tools.py"
+PATTERN="httpx\.(AsyncClient|get|post|put|patch|delete)"
+
+echo "=== Gate E: Raw httpx Client Usage Check ==="
+
+# Verify target file exists
+if [ ! -f "$TARGET" ]; then
+  echo "FAIL: Target file not found: $TARGET"
+  exit 1
+fi
+
+# Select scanner: prefer rg, fall back to grep
+if command -v rg >/dev/null 2>&1; then
+  SCANNER="rg"
+  SCAN_CMD="rg -n"
+elif command -v grep >/dev/null 2>&1; then
+  SCANNER="grep"
+  SCAN_CMD="grep -nE"
+else
+  echo "FAIL: No scanner available (neither rg nor grep in PATH). Fail closed."
+  exit 1
+fi
+
+echo "Scanner: $SCANNER"
+
+# Run scan
+SCAN_OUTPUT=$($SCAN_CMD "$PATTERN" "$TARGET" 2>&1) || true
+SCAN_RC=${PIPESTATUS[0]:-$?}
+
+# Re-run to get accurate exit code (the || true above masks it)
+set +e
+$SCAN_CMD "$PATTERN" "$TARGET" >/dev/null 2>&1
+SCAN_RC=$?
+set -e
+
+if [ "$SCAN_RC" -eq 0 ]; then
+  # Matches found — violation
+  echo "FAIL: Raw httpx client usage found in deal_tools.py (use BackendClient)"
+  echo "$SCAN_OUTPUT"
+  exit 1
+elif [ "$SCAN_RC" -eq 1 ]; then
+  # No matches — clean
+  echo "PASS: No raw httpx client usage in deal_tools.py"
+  exit 0
+else
+  # Scanner error (rc >= 2) — fail closed
+  echo "FAIL: Scanner error (exit $SCAN_RC). Fail closed."
+  echo "$SCAN_OUTPUT"
+  exit 1
+fi
+3:# CI-safe Gate E scanner with rg->grep fallback and explicit rc handling.
+5:# rc semantics: 0 = violation found (FAIL), 1 = clean (PASS), >=2 = scanner error (FAIL closed)
+6:# Exit 0 = PASS (no violations), Exit 1 = FAIL (violations or scanner error)
+12:TARGET="$REPO_ROOT/apps/agent-api/app/core/langgraph/tools/deal_tools.py"
+13:PATTERN="httpx\.(AsyncClient|get|post|put|patch|delete)"
+17:# Verify target file exists
+19:  echo "FAIL: Target file not found: $TARGET"
+20:  exit 1
+23:# Select scanner: prefer rg, fall back to grep
+24:if command -v rg >/dev/null 2>&1; then
+25:  SCANNER="rg"
+26:  SCAN_CMD="rg -n"
+27:elif command -v grep >/dev/null 2>&1; then
+28:  SCANNER="grep"
+29:  SCAN_CMD="grep -nE"
+31:  echo "FAIL: No scanner available (neither rg nor grep in PATH). Fail closed."
+32:  exit 1
+49:  echo "FAIL: Raw httpx client usage found in deal_tools.py (use BackendClient)"
+51:  exit 1
+54:  echo "PASS: No raw httpx client usage in deal_tools.py"
+57:  # Scanner error (rc >= 2) — fail closed
+60:  exit 1

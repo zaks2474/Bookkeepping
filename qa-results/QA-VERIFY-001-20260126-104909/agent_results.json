@@ -1,0 +1,45 @@
+{
+  "summary": {
+    "passed": 3,
+    "total": 3
+  },
+  "test_suite": "Phase 2 \u2014 Agent API",
+  "tests": [
+    {
+      "details": {
+        "artifact": "agent_endpoint_probe.json"
+      },
+      "id": "2.0",
+      "name": "Agent endpoint probe (OpenAPI reachability)",
+      "passed": true,
+      "timestamp_utc": "2026-01-26T16:49:18.640441+00:00"
+    },
+    {
+      "details": {
+        "artifact": "agent_api_results.json",
+        "summary": {
+          "passed": 3,
+          "total": 3
+        }
+      },
+      "id": "2.1",
+      "name": "Agent API functional tests executed",
+      "passed": true,
+      "timestamp_utc": "2026-01-26T16:49:21.135304+00:00"
+    },
+    {
+      "details": {
+        "artifact": "agent_tool_results.json",
+        "summary": {
+          "passed": 2,
+          "total": 2
+        }
+      },
+      "id": "2.2",
+      "name": "Agent tool capability tests executed",
+      "passed": true,
+      "timestamp_utc": "2026-01-26T16:49:33.210776+00:00"
+    }
+  ],
+  "timestamp_utc": "2026-01-26T16:49:33.210779+00:00"
+}

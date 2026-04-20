@@ -1,0 +1,22 @@
+=== Bug 1: Chat final_text — expect helpfulResponse in done event ===
+          final_text: helpfulResponse,
+          citations: [],
+          proposals: [],
+
+=== Bug 2: Activity CSS — expect conditional p-2 -m-2 ===
+          className={cn(
+            'lg:col-span-2 flex flex-col min-h-0 transition-all duration-300 rounded-lg',
+            highlightedSection && highlightedSection !== 'runs' && 'ring-2 ring-primary bg-primary/5 p-2 -m-2'
+          )}
+        >
+--
+          className={cn(
+            'flex flex-col min-h-0 transition-all duration-300 rounded-lg',
+            highlightedStat === 'runs' && 'ring-2 ring-primary bg-primary/5 p-2 -m-2'
+          )}
+        >
+
+=== Bug 3: Quarantine working — expect derived state ===
+  // Derived: any operation in progress
+  const working = approving || rejecting || escalating || bulkProcessing || deleting;
+

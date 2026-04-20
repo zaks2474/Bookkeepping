@@ -1,0 +1,2 @@
+    email_facts_count     INTEGER DEFAULT 0,
+    last_email_ingestion  TIMESTAMPTZ,

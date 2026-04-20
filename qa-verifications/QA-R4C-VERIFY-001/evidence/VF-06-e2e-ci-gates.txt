@@ -1,0 +1,138 @@
+=== VF-06.1 E2E INVENTORY ===
+/home/zaks/zakops-agent-api/apps/dashboard/tests/deals-bulk-delete.spec.ts
+/home/zaks/zakops-agent-api/apps/dashboard/tests/quarantine-delete.spec.ts
+/home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/deal-routing-create.spec.ts
+/home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/quarantine-actions.spec.ts
+/home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/graceful-degradation.spec.ts
+/home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/chat-shared.spec.ts
+/home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/phase-coverage.spec.ts
+/home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/no-dead-ui.spec.ts
+/home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/smoke.spec.ts
+/home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/backend-up.spec.ts
+/home/zaks/zakops-agent-api/apps/dashboard/e2e/workflow_verification.spec.ts
+/home/zaks/zakops-agent-api/apps/dashboard/e2e/chat.spec.ts
+/home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/backend-up.spec.ts:5
+/home/zaks/zakops-agent-api/apps/dashboard/tests/quarantine-delete.spec.ts:3
+/home/zaks/zakops-agent-api/apps/dashboard/e2e/chat.spec.ts:5
+/home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/graceful-degradation.spec.ts:11
+/home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/quarantine-actions.spec.ts:5
+/home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/chat-shared.spec.ts:5
+/home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/smoke.spec.ts:1
+/home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/phase-coverage.spec.ts:17
+/home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/deal-routing-create.spec.ts:4
+/home/zaks/zakops-agent-api/apps/dashboard/e2e/workflow_verification.spec.ts:7
+/home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/no-dead-ui.spec.ts:5
+/home/zaks/zakops-agent-api/apps/dashboard/tests/deals-bulk-delete.spec.ts:3
+
+=== VF-06.2 DEAD-UI SPEC PRESENCE ===
+-rw-r--r-- 1 zaks zaks 4274 Feb 10 07:08 /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/no-dead-ui.spec.ts
+14:  '/dashboard',
+15:  '/deals',
+16:  '/actions',
+17:  '/quarantine',
+18:  '/settings',
+19:  '/hq',
+20:  '/agent/activity',
+21:  '/chat',
+22:  '/onboarding',
+
+=== VF-06.3 PHASE COVERAGE SPEC ===
+-rw-r--r-- 1 zaks zaks 6683 Feb 10 07:09 /home/zaks/zakops-agent-api/apps/dashboard/tests/e2e/phase-coverage.spec.ts
+7: * - Phase 3: Error boundaries, correlation ID
+8: * - Phase 4: Pagination, filter persistence, keyboard nav
+9: * - Phase 5: /hq and /agent/activity page loads
+18:  test('settings page loads with section navigation', async ({ page }) => {
+19:    await page.goto('/settings', { waitUntil: 'networkidle' });
+22:    // Should show settings heading
+33:  test('settings page shows email integration section', async ({ page }) => {
+34:    await page.goto('/settings', { waitUntil: 'networkidle' });
+44:  test('onboarding page loads without crashing', async ({ page }) => {
+45:    await page.goto('/onboarding', { waitUntil: 'networkidle' });
+48:    // Should show onboarding content (either the wizard or completed state)
+65:  test('API requests include correlation ID header', async ({ page }) => {
+71:        if (headers['x-correlation-id']) {
+78:    // Page should have made at least one API call with correlation ID
+79:    // Note: correlation ID is added by apiFetch in client-side calls
+87:  test('deals page has pagination controls when >20 items', async ({ page }) => {
+91:    // If there are >20 deals, pagination controls should be visible
+92:    const paginationText = page.getByText('Page', { exact: false });
+93:    const hasPagination = (await paginationText.count()) > 0;
+95:    // Either pagination is shown (many deals) or page loads fine (few deals)
+102:  test('deals filters persist in URL', async ({ page }) => {
+103:    // Navigate with filter params
+150:  test('/hq page loads with stats and pipeline', async ({ page }) => {
+151:    await page.goto('/hq', { waitUntil: 'networkidle' });
+160:  test('/agent/activity page loads with timeline', async ({ page }) => {
+161:    await page.goto('/agent/activity', { waitUntil: 'networkidle' });
+
+=== VF-06.4 API CONTRACT GATE SCRIPT ===
+-rwxr-xr-x 1 zaks zaks 3807 Feb 10 07:08 /home/zaks/zakops-agent-api/tools/infra/validate-api-contract.sh
+=== REC-040: Frontend API Contract Gate ===
+
+  Spec paths:     93
+  Frontend URLs:   23
+  Matched:         12
+  Dashboard-only:  11
+  Mismatched:      0
+
+PASS: All frontend API calls match backend OpenAPI spec
+
+=== VF-06.5 CI MAKE WIRING R4 GATES ===
+NO MAKEFILE MATCHES
+NO CI MATCHES
+
+=== VF-06.6 PLAYWRIGHT LIST HEALTH ===
+Listing tests:
+  [chromium] › backend-up.spec.ts:28:7 › Backend Up — Live Data › API returns real deal data through middleware proxy
+  [chromium] › backend-up.spec.ts:40:7 › Backend Up — Live Data › all pages render with zero console errors
+  [chromium] › backend-up.spec.ts:60:7 › Backend Up — Live Data › deal count parity: /hq total matches /deals total
+  [chromium] › chat-shared.spec.ts:4:7 › Chat + Agent Drawer — Batch 3 Verification › chat page loads and renders message input
+  [chromium] › chat-shared.spec.ts:15:7 › Chat + Agent Drawer — Batch 3 Verification › chat renders markdown as HTML, not raw text
+  [chromium] › chat-shared.spec.ts:36:7 › Chat + Agent Drawer — Batch 3 Verification › ask agent drawer opens from dashboard
+  [chromium] › chat-shared.spec.ts:56:7 › Chat + Agent Drawer — Batch 3 Verification › chat page markdown rendering produces HTML elements
+  [chromium] › deal-routing-create.spec.ts:4:7 › deal routing and create › navigate to /deals/new shows create form
+  [chromium] › deal-routing-create.spec.ts:12:7 › deal routing and create › /deals/new form creates deal and redirects
+  [chromium] › deal-routing-create.spec.ts:21:7 › deal routing and create › /deals/GLOBAL shows invalid ID page
+  [chromium] › graceful-degradation.spec.ts:66:7 › Graceful Degradation — Backend Down › API proxy returns JSON 502 (not HTML) when backend is down
+  [chromium] › graceful-degradation.spec.ts:85:7 › Graceful Degradation — Backend Down › /hq page renders without crashing
+  [chromium] › graceful-degradation.spec.ts:104:7 › Graceful Degradation — Backend Down › /deals page renders without crashing
+  [chromium] › graceful-degradation.spec.ts:120:7 › Graceful Degradation — Backend Down › /actions page renders without crashing
+  [chromium] › graceful-degradation.spec.ts:136:7 › Graceful Degradation — Backend Down › /quarantine page renders without crashing
+  [chromium] › graceful-degradation.spec.ts:152:7 › Graceful Degradation — Backend Down › /dashboard page renders without crashing
+  [chromium] › graceful-degradation.spec.ts:168:7 › Graceful Degradation — Backend Down › full navigation sweep — no page crashes
+  [chromium] › no-dead-ui.spec.ts:62:9 › REC-041: No Dead UI › /dashboard — no 404/405 on page load
+  [chromium] › no-dead-ui.spec.ts:107:9 › REC-041: No Dead UI › /dashboard — click buttons without errors
+  [chromium] › no-dead-ui.spec.ts:62:9 › REC-041: No Dead UI › /deals — no 404/405 on page load
+  [chromium] › no-dead-ui.spec.ts:107:9 › REC-041: No Dead UI › /deals — click buttons without errors
+  [chromium] › no-dead-ui.spec.ts:62:9 › REC-041: No Dead UI › /actions — no 404/405 on page load
+  [chromium] › no-dead-ui.spec.ts:107:9 › REC-041: No Dead UI › /actions — click buttons without errors
+  [chromium] › no-dead-ui.spec.ts:62:9 › REC-041: No Dead UI › /quarantine — no 404/405 on page load
+  [chromium] › no-dead-ui.spec.ts:107:9 › REC-041: No Dead UI › /quarantine — click buttons without errors
+  [chromium] › no-dead-ui.spec.ts:62:9 › REC-041: No Dead UI › /settings — no 404/405 on page load
+  [chromium] › no-dead-ui.spec.ts:107:9 › REC-041: No Dead UI › /settings — click buttons without errors
+  [chromium] › no-dead-ui.spec.ts:62:9 › REC-041: No Dead UI › /hq — no 404/405 on page load
+  [chromium] › no-dead-ui.spec.ts:107:9 › REC-041: No Dead UI › /hq — click buttons without errors
+  [chromium] › no-dead-ui.spec.ts:62:9 › REC-041: No Dead UI › /agent/activity — no 404/405 on page load
+  [chromium] › no-dead-ui.spec.ts:107:9 › REC-041: No Dead UI › /agent/activity — click buttons without errors
+  [chromium] › no-dead-ui.spec.ts:62:9 › REC-041: No Dead UI › /chat — no 404/405 on page load
+  [chromium] › no-dead-ui.spec.ts:107:9 › REC-041: No Dead UI › /chat — click buttons without errors
+  [chromium] › no-dead-ui.spec.ts:62:9 › REC-041: No Dead UI › /onboarding — no 404/405 on page load
+  [chromium] › no-dead-ui.spec.ts:107:9 › REC-041: No Dead UI › /onboarding — click buttons without errors
+  [chromium] › phase-coverage.spec.ts:18:7 › Phase 1: Settings › settings page loads with section navigation
+  [chromium] › phase-coverage.spec.ts:33:7 › Phase 1: Settings › settings page shows email integration section
+  [chromium] › phase-coverage.spec.ts:44:7 › Phase 2: Onboarding › onboarding page loads without crashing
+  [chromium] › phase-coverage.spec.ts:55:7 › Phase 3: Quality › error boundaries render on broken pages
+  [chromium] › phase-coverage.spec.ts:65:7 › Phase 3: Quality › API requests include correlation ID header
+  [chromium] › phase-coverage.spec.ts:87:7 › Phase 4: UX Polish › deals page has pagination controls when >20 items
+  [chromium] › phase-coverage.spec.ts:102:7 › Phase 4: UX Polish › deals filters persist in URL
+  [chromium] › phase-coverage.spec.ts:116:7 › Phase 4: UX Polish › escape closes dialogs
+  [chromium] › phase-coverage.spec.ts:135:7 › Phase 4: UX Polish › chat input responds to Enter key
+  [chromium] › phase-coverage.spec.ts:150:7 › Phase 5: Page Audits › /hq page loads with stats and pipeline
+  [chromium] › phase-coverage.spec.ts:160:7 › Phase 5: Page Audits › /agent/activity page loads with timeline
+  [chromium] › phase-coverage.spec.ts:170:7 › Phase 5: Page Audits › bulk archive endpoint responds
+  [chromium] › quarantine-actions.spec.ts:4:7 › Quarantine & Actions — Batch 2 Verification › quarantine page loads and shows items
+  [chromium] › quarantine-actions.spec.ts:15:7 › Quarantine & Actions — Batch 2 Verification › quarantine item selection loads preview
+  [chromium] › quarantine-actions.spec.ts:38:7 › Quarantine & Actions — Batch 2 Verification › actions page loads and shows capabilities
+  [chromium] › quarantine-actions.spec.ts:48:7 › Quarantine & Actions — Batch 2 Verification › actions clear-completed button exists
+  [chromium] › smoke.spec.ts:3:5 › smoke: dashboard loads
+Total: 52 tests in 8 files

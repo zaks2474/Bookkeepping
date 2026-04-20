@@ -1,0 +1,43 @@
+=== GT-6: T-6 Memory Sync ===
+gate_t6_memory_sync() {
+  local run_dir="$1"
+  local run_id="$2"
+  log "Gate T-6: Memory Sync"
+  local fails=0
+
+  # Update TRIPASS_LATEST_RUN.md
+  cat > "$LATEST_PTR" << EOF
+# TriPass — Latest Run Pointer
+## Updated: $(timestamp)
+
+**Latest Run ID:** ${run_id}
+**Path:** ${run_dir}
+**Status:** COMPLETED
+EOF
+  echo "  DONE: TRIPASS_LATEST_RUN.md updated"
+
+  # Append to CHANGES.md
+  local changes_entry="## $(date +%Y-%m-%d) — TriPass Run: ${run_id}
+- **Type:** TriPass pipeline run
+- **Run directory:** ${run_dir}
+- **Status:** COMPLETED
+- **Files created:** Run directory with passes 1-3 + evidence
+"
+  if [ -f "$CHANGES_LOG" ]; then
+    local tmp
+    tmp=$(mktemp)
+    head -1 "$CHANGES_LOG" > "$tmp"
+    echo "" >> "$tmp"
+    echo "$changes_entry" >> "$tmp"
+    tail -n +2 "$CHANGES_LOG" >> "$tmp"
+    mv "$tmp" "$CHANGES_LOG"
+    echo "  DONE: CHANGES.md updated"
+  else
+    echo "  WARN: CHANGES.md not found"
+    fails=$((fails + 1))
+  fi
+
+  [ "$fails" -eq 0 ] && return 0 || return 1
+}
+
+

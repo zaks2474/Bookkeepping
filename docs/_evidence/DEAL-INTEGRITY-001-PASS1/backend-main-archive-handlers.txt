@@ -1,0 +1,101 @@
+    pool: asyncpg.Pool = Depends(get_db)
+):
+    """Add a note to a deal's event history."""
+    async with pool.acquire() as conn:
+        # Verify deal exists
+        deal = await conn.fetchrow(
+            "SELECT deal_id FROM zakops.deals WHERE deal_id = $1 AND deleted = FALSE",
+            deal_id
+        )
+        if not deal:
+            raise HTTPException(status_code=404, detail=f"Deal {deal_id} not found")
+
+        # Record note as an event
+        event_id = await conn.fetchval(
+            """
+            INSERT INTO zakops.deal_events (deal_id, event_type, event_source, actor, payload)
+            VALUES ($1, 'note_added', 'api', 'ui_user', $2::jsonb)
+            RETURNING id
+            """,
+            deal_id,
+            json.dumps({"content": note.content, "category": note.category})
+        )
+
+    return {"success": True, "event_id": str(event_id)}
+
+
+# REMEDIATION-V3 [ZK-ISSUE-0022]: Archive/restore endpoints
+@app.post("/api/deals/{deal_id}/archive")
+async def archive_deal(
+    deal_id: str,
+    pool: asyncpg.Pool = Depends(get_db)
+):
+    """Archive a deal by moving it to archived stage."""
+    async with pool.acquire() as conn:
+        # Verify deal exists and is not already archived
+        deal = await conn.fetchrow(
+            "SELECT deal_id, stage FROM zakops.deals WHERE deal_id = $1 AND deleted = FALSE",
+            deal_id
+        )
+        if not deal:
+            raise HTTPException(status_code=404, detail=f"Deal {deal_id} not found")
+
+        if deal['stage'] == 'archived':
+            return {"success": True, "message": "Deal already archived", "deal_id": deal_id}
+
+        prev_stage = deal['stage']
+
+        # Update to archived stage
+        await conn.execute(
+            """
+            UPDATE zakops.deals
+            SET stage = 'archived', updated_at = NOW()
+            WHERE deal_id = $1
+            """,
+            deal_id
+        )
+
+        # Record event
+        await conn.execute(
+            """
+            INSERT INTO zakops.deal_events (deal_id, event_type, event_source, actor, payload)
+            VALUES ($1, 'deal_archived', 'api', 'ui_user', $2::jsonb)
+            """,
+            deal_id,
+            json.dumps({"previous_stage": prev_stage})
+        )
+
+    return {"success": True, "deal_id": deal_id, "previous_stage": prev_stage}
+
+
+@app.post("/api/deals/{deal_id}/restore")
+async def restore_deal(
+    deal_id: str,
+    target_stage: ValidStage = "inbound",
+    pool: asyncpg.Pool = Depends(get_db)
+):
+    """Restore a deal from archived status to a specified stage."""
+    async with pool.acquire() as conn:
+        # Verify deal exists and is archived
+        deal = await conn.fetchrow(
+            "SELECT deal_id, stage FROM zakops.deals WHERE deal_id = $1 AND deleted = FALSE",
+            deal_id
+        )
+        if not deal:
+            raise HTTPException(status_code=404, detail=f"Deal {deal_id} not found")
+
+        if deal['stage'] != 'archived':
+            return {"success": False, "message": f"Deal is not archived (current stage: {deal['stage']})", "deal_id": deal_id}
+
+        # Update to target stage
+        await conn.execute(
+            """
+            UPDATE zakops.deals
+            SET stage = $2, updated_at = NOW()
+            WHERE deal_id = $1
+            """,
+            deal_id, target_stage
+        )
+
+        # Record event
+        await conn.execute(

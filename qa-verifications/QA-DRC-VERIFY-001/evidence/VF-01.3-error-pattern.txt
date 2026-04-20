@@ -1,0 +1,12 @@
+=== VF-01.3: backend_unavailable pattern ===
+HAS 502: src/app/api/quarantine/[id]/route.ts
+HAS 502: src/app/api/quarantine/bulk-process/route.ts
+HAS 502: src/app/api/quarantine/bulk-delete/route.ts
+HAS 502: src/app/api/quarantine/[id]/undo-approve/route.ts
+HAS 502: src/app/api/actions/capabilities/route.ts
+HAS 502: src/app/api/actions/[id]/approve/route.ts
+HAS 502: src/app/api/actions/[id]/cancel/route.ts
+HAS 502: src/app/api/actions/[id]/retry/route.ts
+HAS 502: src/app/api/actions/[id]/update/route.ts
+HAS 502: src/app/api/actions/metrics/route.ts
+Result: 10/10 have backend_unavailable pattern

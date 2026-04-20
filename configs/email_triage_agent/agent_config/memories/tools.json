@@ -1,0 +1,46 @@
+{
+  "tools": [
+    {
+      "name": "gmail_read_emails",
+      "mcp_server_url": null
+    },
+    {
+      "name": "gmail_get_thread",
+      "mcp_server_url": null
+    },
+    {
+      "name": "gmail_list_labels",
+      "mcp_server_url": null
+    },
+    {
+      "name": "gmail_create_label",
+      "mcp_server_url": null
+    },
+    {
+      "name": "gmail_apply_label",
+      "mcp_server_url": null
+    },
+    {
+      "name": "gmail_mark_as_read",
+      "mcp_server_url": null
+    },
+    {
+      "name": "gmail_draft_email",
+      "mcp_server_url": null
+    }
+  ],
+  "interrupt_config": {
+    "send_email": true,
+    "delete_email": true,
+    "batch_delete_emails": true,
+    "create_label": true,
+    "update_label": true,
+    "delete_label": true,
+    "create_filter": true,
+    "create_filter_from_template": true,
+    "list_filters": true,
+    "get_filter": true,
+    "delete_filter": true,
+    "batch_modify_emails": true
+  }
+}

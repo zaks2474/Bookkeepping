@@ -1,0 +1,6 @@
+=== A7.5 ===
+517:TRIPASS_TOOL := $(MONOREPO_ROOT)/tools/tripass/tripass.sh
+521:	@bash $(TRIPASS_TOOL) init
+526:	@bash $(TRIPASS_TOOL) run $(MISSION) --mode $(or $(MODE),forensic) $(if $(REPOS),--repos $(REPOS)) $(if $(SKIP_PASS4),--skip-pass4) $(if $(GENERATE_ONLY),--generate-only)
+530:	@bash $(TRIPASS_TOOL) status $(RUN_ID)
+534:	@bash $(TRIPASS_TOOL) gates $(RUN_ID)

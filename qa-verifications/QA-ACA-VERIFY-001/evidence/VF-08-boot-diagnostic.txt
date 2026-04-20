@@ -1,0 +1,21 @@
+=== VF-08: Boot Diagnostic CHECK 7 (AC-7) ===
+
+File: /home/zaks/.claude/hooks/session-start.sh (lines 248-284)
+
+Logic:
+1. Reads canonical count: grep -oP '## The \K\d+(?= Contract)' from contract-surfaces.md ✓
+2. Checks 3 agent config files for surface table row count ✓
+3. Compares each file's count to canonical count ✓
+4. Reports:
+   - PASS: "Agent config surface count OK (3/3 match canonical=17)" ✓
+   - WARN (not FAIL): "N/3 agent config(s) have stale surface count" ✓
+   - WARN: "No agent config files found to check" ✓
+   - WARN: "Could not read canonical surface count" ✓
+
+Severity: WARN (check_warn), NOT FAIL (check_fail) ✓
+Rationale: stop hook auto-fixes drift, so blocking session start is unnecessary
+
+Live evidence from boot diagnostics:
+  CHECK 7: PASS — Agent config surface count OK (3/3 match canonical=17) ✓
+
+VERDICT: PASS — CHECK 7 exists, uses WARN not FAIL, currently passing

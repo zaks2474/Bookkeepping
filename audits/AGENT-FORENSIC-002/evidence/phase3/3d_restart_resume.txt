@@ -1,0 +1,43 @@
+=== STEP 3.14 — Restart-Resume HITL ===
+Date: Tue Feb  3 02:14:38 UTC 2026
+
+--- DL-0037 current stage ---
+ deal_id |  stage  
+---------+---------
+ DL-0037 | inbound
+(1 row)
+
+
+--- Invoke: Move DL-0037 to due_diligence ---
+{"thread_id":"f002-restart-001","status":"awaiting_approval","content":null,"pending_approval":{"approval_id":"ea82a675-2efc-4b7e-9d1b-5739df66a8ae","tool":"transition_deal","args":{"deal_id":"DL-0037","from_stage":"unknown","to_stage":"due_diligence","reason":null},"permission_tier":"CRITICAL","requested_by":"forensic-auditor","requested_at":"2026-02-03T02:14:41.058170Z"},"actions_taken":[],"error":null}
+
+--- Get approval ID ---
+Approval ID: ea82a675-2efc-4b7e-9d1b-5739df66a8ae
+
+--- Restarting agent-api container ---
+time="2026-02-02T20:14:41-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+ Container zakops-agent-api  Restarting
+ Container zakops-agent-api  Started
+
+--- Waiting for health ---
+Attempt 1: {"status":"healthy","version":"1.0.0","environment":"development","components":{"api":"healthy","database":"healthy"},"timestamp":"2026-02-03T02:14:50.353375"}
+Agent API is healthy
+
+--- Approve after restart ---
+{"thread_id":"f002-restart-001","status":"completed","content":"","pending_approval":null,"actions_taken":[{"tool":"transition_deal","result":{"ok":true}}],"error":null}
+
+--- DL-0037 stage after approval (SQL) ---
+ deal_id |  stage  
+---------+---------
+ DL-0037 | inbound
+(1 row)
+
+
+--- Approval status ---
+time="2026-02-02T20:14:53-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-02T20:14:53-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+                  id                  |  status  
+--------------------------------------+----------
+ ea82a675-2efc-4b7e-9d1b-5739df66a8ae | approved
+(1 row)
+

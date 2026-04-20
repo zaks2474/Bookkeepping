@@ -1,0 +1,216 @@
+{
+  "agent_identity": {
+    "agent_name": "Claude-Opus-4-5",
+    "run_id": "20260204-0345-PASS3-FINAL",
+    "date_time": "2026-02-04T03:45:00Z",
+    "repo_revision": "07db465760f88f892b56b8eb18e1746b64f7ddf0",
+    "pass_type": "PASS 3 (FINAL SYNTHESIS)"
+  },
+  "source_documents": [
+    {
+      "pass": "V3 Plan",
+      "agent": "Claude-Opus-4-5",
+      "run_id": "20260204-0212-b214408d",
+      "score": 28
+    },
+    {
+      "pass": "V3 Plan",
+      "agent": "Gemini-CLI",
+      "run_id": "20260204-0221-gemini",
+      "score": 23
+    },
+    {
+      "pass": "V3 Plan",
+      "agent": "Codex",
+      "run_id": "20260204-021313-1158",
+      "score": 29
+    },
+    {
+      "pass": "PASS 1",
+      "agent": "Claude-Opus-4-5",
+      "run_id": "20260204-0304-24645315"
+    },
+    {
+      "pass": "PASS 2",
+      "agent": "Codex",
+      "run_id": "20260204-0310-5abffd"
+    }
+  ],
+  "decision_set": {
+    "D-FINAL-01": {
+      "topic": "Source-of-Truth Database Model",
+      "decision": "PostgreSQL zakops.deals as SOLE source of truth",
+      "consensus": "ALL 3 PLANS AGREE",
+      "deprecated": ["deal_registry.json", "ingest_state.db (deal tables)"],
+      "verification": "RT-DB-SOT canary test"
+    },
+    "D-FINAL-02": {
+      "topic": "Deal Taxonomy and Stage Model",
+      "decision": "Keep 9-stage canonical model from workflow.py",
+      "consensus": "ALL 3 PLANS AGREE",
+      "stages": ["inbound", "screening", "qualified", "loi", "diligence", "closing", "portfolio", "junk", "archived"],
+      "default_stage": "inbound"
+    },
+    "D-FINAL-03": {
+      "topic": "Agent Tool Contract Boundaries",
+      "decision": "Agent calls backend HTTP APIs ONLY",
+      "consensus": "ALL 3 PLANS AGREE",
+      "tools": [
+        {"name": "get_deal", "endpoint": "GET /api/deals/{id}", "hitl": false},
+        {"name": "list_deals", "endpoint": "GET /api/deals", "hitl": false},
+        {"name": "search_deals", "endpoint": "POST /rag/query", "hitl": false},
+        {"name": "transition_deal", "endpoint": "POST /api/deals/{id}/transition", "hitl": true},
+        {"name": "create_deal", "endpoint": "POST /api/deals", "hitl": true},
+        {"name": "add_note", "endpoint": "POST /api/deals/{id}/notes", "hitl": false}
+      ]
+    },
+    "D-FINAL-04": {
+      "topic": "Email Ingestion Architecture",
+      "decision": "Refactor ingestion to POST to /api/quarantine",
+      "consensus": "ALL 3 PLANS AGREE",
+      "idempotency_key": "(message_id, mailbox, account) + body_hash",
+      "safety_features": ["attachment_scanning", "size_limits", "virus_check", "pii_redaction"]
+    },
+    "D-FINAL-05": {
+      "topic": "RAG/Embeddings Architecture",
+      "decision": "Central RAG service with deal_id keying",
+      "consensus": "Claude + Codex detailed",
+      "consistency_contract": {
+        "max_stale_age": "1 hour",
+        "reconciliation_threshold": "5%",
+        "retry_max": 3
+      }
+    },
+    "D-FINAL-06": {
+      "topic": "HITL Approval Persistence",
+      "decision": "Mirror approvals to backend DB with correlation_id",
+      "consensus": "Codex approach (unified audit)",
+      "fields": ["correlation_id", "deal_id", "action_type", "actor", "status"]
+    },
+    "D-FINAL-07": {
+      "topic": "Authentication Model",
+      "decision": "API key for services; user JWT auth in Phase 5; correlation_id in Phase 0",
+      "consensus": "Resolved conflict",
+      "auth_methods": {
+        "dashboard_to_backend": "API Key (X-API-Key)",
+        "dashboard_user": "JWT session (Phase 5)",
+        "agent_to_backend": "API Key",
+        "correlation": "X-Correlation-ID (Phase 0)"
+      }
+    }
+  },
+  "phases": [
+    {
+      "phase": 0,
+      "name": "Stop the Bleeding",
+      "objective": "Establish traceability, fix endpoint mismatches",
+      "issues_covered": ["ZK-ISSUE-0006", "ZK-ISSUE-0007", "ZK-ISSUE-0010", "ZK-ISSUE-0011", "ZK-ISSUE-0012", "ZK-ISSUE-0018"],
+      "duration_days": "3-5",
+      "tasks": 12,
+      "dependencies": []
+    },
+    {
+      "phase": 1,
+      "name": "Data Truth Unification",
+      "objective": "Make PostgreSQL SOLE source of truth",
+      "issues_covered": ["ZK-ISSUE-0001", "ZK-ISSUE-0008", "ZK-ISSUE-0014"],
+      "duration_days": "7-10",
+      "tasks": 9,
+      "dependencies": ["Phase 0"]
+    },
+    {
+      "phase": 2,
+      "name": "Contract Alignment",
+      "objective": "Ensure all API contracts correct",
+      "issues_covered": ["ZK-ISSUE-0003", "ZK-ISSUE-0004", "ZK-ISSUE-0013", "ZK-ISSUE-0022"],
+      "duration_days": "5-7",
+      "tasks": 9,
+      "dependencies": ["Phase 1"]
+    },
+    {
+      "phase": 3,
+      "name": "Deal Lifecycle Correctness",
+      "objective": "Stages, HITL, idempotency correct",
+      "issues_covered": ["ZK-ISSUE-0009", "ZK-ISSUE-0015", "ZK-ISSUE-0016"],
+      "duration_days": "5-7",
+      "tasks": 7,
+      "dependencies": ["Phase 2"]
+    },
+    {
+      "phase": 4,
+      "name": "Deal Knowledge System",
+      "objective": "Email ingestion, RAG, action executors",
+      "issues_covered": ["ZK-ISSUE-0002", "ZK-ISSUE-0019", "ZK-ISSUE-0020", "ZK-ISSUE-0021"],
+      "duration_days": "10-14",
+      "tasks": 14,
+      "dependencies": ["Phase 3"]
+    },
+    {
+      "phase": 5,
+      "name": "Hardening",
+      "objective": "User auth, retention, monitoring",
+      "issues_covered": ["ZK-ISSUE-0005", "ZK-ISSUE-0017"],
+      "duration_days": "7-10",
+      "tasks": 10,
+      "dependencies": ["Phase 4"]
+    },
+    {
+      "phase": 6,
+      "name": "Legacy Decommission",
+      "objective": "Remove legacy, final verification, changelog documentation",
+      "issues_covered": ["ALL"],
+      "duration_days": "3-5",
+      "tasks": 10,
+      "dependencies": ["Phase 5"],
+      "changelog_strategy": {
+        "file": "/home/zaks/bookkeeping/CHANGES.md",
+        "required_header": "LEGACY DECOMMISSION COMPLETE",
+        "verification_command": "rg 'LEGACY DECOMMISSION COMPLETE' /home/zaks/bookkeeping/CHANGES.md"
+      }
+    }
+  ],
+  "coverage_matrix": [
+    {"issue_id": "ZK-ISSUE-0001", "title": "Split-brain persistence", "severity": "P0", "phase": 1, "tasks": "T1.1-T1.9", "verification": "RT-DB-SOT canary test"},
+    {"issue_id": "ZK-ISSUE-0002", "title": "Email ingestion disabled", "severity": "P0", "phase": 4, "tasks": "T4.1-T4.5", "verification": "Email -> quarantine -> deal trace"},
+    {"issue_id": "ZK-ISSUE-0003", "title": "Quarantine no deal creation", "severity": "P1", "phase": 2, "tasks": "T2.1-T2.3", "verification": "Approve -> deal exists atomically"},
+    {"issue_id": "ZK-ISSUE-0004", "title": "No DataRoom folders", "severity": "P1", "phase": 2, "tasks": "T2.2", "verification": "Create deal -> folder exists"},
+    {"issue_id": "ZK-ISSUE-0005", "title": "Dashboard no auth", "severity": "P1", "phase": 5, "tasks": "T5.1-T5.3", "verification": "Login required"},
+    {"issue_id": "ZK-ISSUE-0006", "title": "Wrong quarantine endpoint", "severity": "P1", "phase": 0, "tasks": "T0.1", "verification": "Dashboard approve works (200)"},
+    {"issue_id": "ZK-ISSUE-0007", "title": "Stage taxonomy conflicts", "severity": "P1", "phase": 0, "tasks": "T0.4-T0.5", "verification": "No legacy stages in code"},
+    {"issue_id": "ZK-ISSUE-0008", "title": "Actions split Postgres/SQLite", "severity": "P1", "phase": 1, "tasks": "T1.6", "verification": "Single zakops.actions table"},
+    {"issue_id": "ZK-ISSUE-0009", "title": "Agent no create_deal", "severity": "P2", "phase": 3, "tasks": "T3.1-T3.2", "verification": "Agent creates deal with HITL"},
+    {"issue_id": "ZK-ISSUE-0010", "title": "RAG unverified", "severity": "P2", "phase": "0,4", "tasks": "T0.9, T4.8-T4.11", "verification": "Health OK; search returns results"},
+    {"issue_id": "ZK-ISSUE-0011", "title": "No event correlation", "severity": "P2", "phase": 0, "tasks": "T0.6-T0.8", "verification": "Matching correlation_ids"},
+    {"issue_id": "ZK-ISSUE-0012", "title": "Notes endpoint mismatch", "severity": "P2", "phase": 0, "tasks": "T0.2-T0.3", "verification": "Notes endpoint works (201)"},
+    {"issue_id": "ZK-ISSUE-0013", "title": "Capabilities/metrics 501", "severity": "P2", "phase": 2, "tasks": "T2.4-T2.5", "verification": "Endpoints return 200"},
+    {"issue_id": "ZK-ISSUE-0014", "title": "sys.path hack", "severity": "P2", "phase": 1, "tasks": "T1.5", "verification": "No sys.path in code"},
+    {"issue_id": "ZK-ISSUE-0015", "title": "Approval expiry lazy", "severity": "P3", "phase": 3, "tasks": "T3.5-T3.6", "verification": "Stale approvals auto-expired"},
+    {"issue_id": "ZK-ISSUE-0016", "title": "No duplicate detection", "severity": "P2", "phase": 3, "tasks": "T3.4", "verification": "Duplicates rejected (409)"},
+    {"issue_id": "ZK-ISSUE-0017", "title": "No retention policy", "severity": "P3", "phase": 5, "tasks": "T5.5-T5.6", "verification": "Policy documented + job scheduled"},
+    {"issue_id": "ZK-ISSUE-0018", "title": "Zod schema mismatch", "severity": "P2", "phase": 0, "tasks": "T0.11-T0.12", "verification": "Mismatches logged"},
+    {"issue_id": "ZK-ISSUE-0019", "title": "Executors unwired", "severity": "P2", "phase": 4, "tasks": "T4.6-T4.8", "verification": "3+ executors working"},
+    {"issue_id": "ZK-ISSUE-0020", "title": "SSE not implemented", "severity": "P2", "phase": 4, "tasks": "T4.12", "verification": "SSE works OR documented"},
+    {"issue_id": "ZK-ISSUE-0021", "title": "No scheduling/reminders", "severity": "P2", "phase": 4, "tasks": "T4.13-T4.14", "verification": "Reminders fire"},
+    {"issue_id": "ZK-ISSUE-0022", "title": "Archive/restore missing", "severity": "P3", "phase": 2, "tasks": "T2.6-T2.7", "verification": "Endpoints work (200)"}
+  ],
+  "rt_gates": [
+    {"gate_id": "RT-DB-SOT", "name": "Split-brain proof", "phase": 1},
+    {"gate_id": "RT-TIMEOUT", "name": "Anti-hang enforcement", "phase": "All"},
+    {"gate_id": "RT-PATH-MATRIX", "name": "Endpoint coverage", "phase": 2},
+    {"gate_id": "RT-ERROR-REDACT", "name": "Error redaction", "phase": 5},
+    {"gate_id": "RT-GOLDEN-PATH", "name": "E2E smoke test", "phase": 4},
+    {"gate_id": "RT-CORRELATION", "name": "Trace linkage", "phase": 0}
+  ],
+  "metrics": {
+    "total_issues": 22,
+    "p0_issues": 2,
+    "p1_issues": 6,
+    "p2_issues": 11,
+    "p3_issues": 3,
+    "total_tasks": 69,
+    "total_phases": 7,
+    "total_decisions": 7,
+    "total_gates": 13,
+    "estimated_duration_days": "40-58"
+  }
+}

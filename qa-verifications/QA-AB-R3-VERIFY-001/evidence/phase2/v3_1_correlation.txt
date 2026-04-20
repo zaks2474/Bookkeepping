@@ -1,0 +1,21 @@
+181:        # R3 REMEDIATION [P2.1]: Extract or generate correlation_id
+182:        correlation_id = request.headers.get("X-Correlation-ID") or str(uuid.uuid4())
+184:        # Bind correlation_id to structlog context for all subsequent logs
+185:        logger.bind(correlation_id=correlation_id)
+191:            correlation_id=correlation_id,
+195:        # R3 REMEDIATION [P2.1]: Include correlation_id in metadata for tool propagation
+197:        metadata["correlation_id"] = correlation_id
+236:            correlation_id=correlation_id,
+40:# R3 REMEDIATION [P2.1]: Context variable for correlation_id propagation
+41:_correlation_id_ctx: ContextVar[str] = ContextVar("correlation_id", default="")
+44:def set_correlation_id(correlation_id: str) -> None:
+45:    """Set correlation_id in context for tool HTTP calls."""
+46:    _correlation_id_ctx.set(correlation_id)
+49:def get_correlation_id() -> str:
+50:    """Get correlation_id from context."""
+51:    return _correlation_id_ctx.get()
+55:    """Get headers for backend API requests including auth and correlation_id."""
+59:    # R3 REMEDIATION [P2.1]: Include correlation_id for end-to-end tracing
+60:    correlation_id = get_correlation_id()
+61:    if correlation_id:
+62:        headers["X-Correlation-ID"] = correlation_id

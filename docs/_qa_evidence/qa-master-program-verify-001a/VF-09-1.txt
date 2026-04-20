@@ -1,0 +1,12 @@
+/home/zaks/zakops-backend/src/api/orchestration/routers/preferences.py:282:    """GET /api/user/email-config response."""
+/home/zaks/zakops-backend/src/api/orchestration/routers/preferences.py:290:    """POST /api/user/email-config payload."""
+/home/zaks/zakops-backend/src/api/orchestration/routers/preferences.py:295:@router.get("/email-config", response_model=EmailConfigResponse)
+/home/zaks/zakops-backend/src/api/orchestration/routers/preferences.py:296:async def get_email_config():
+/home/zaks/zakops-backend/src/api/orchestration/routers/preferences.py:302:            "SELECT email_config FROM zakops.user_preferences WHERE user_id = $1",
+/home/zaks/zakops-backend/src/api/orchestration/routers/preferences.py:319:@router.post("/email-config", response_model=EmailConfigResponse)
+/home/zaks/zakops-backend/src/api/orchestration/routers/preferences.py:320:async def save_email_config(body: EmailConfigCreate):
+/home/zaks/zakops-backend/src/api/orchestration/routers/preferences.py:337:            INSERT INTO zakops.user_preferences (user_id, email_config, updated_at)
+/home/zaks/zakops-backend/src/api/orchestration/routers/preferences.py:340:            SET email_config = $2::jsonb, updated_at = $3
+/home/zaks/zakops-backend/src/api/orchestration/routers/preferences.py:350:@router.delete("/email-config")
+/home/zaks/zakops-backend/src/api/orchestration/routers/preferences.py:351:async def delete_email_config():
+/home/zaks/zakops-backend/src/api/orchestration/routers/preferences.py:359:            SET email_config = NULL, updated_at = NOW()

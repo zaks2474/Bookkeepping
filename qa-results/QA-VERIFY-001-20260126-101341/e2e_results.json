@@ -1,0 +1,81 @@
+{
+  "summary": {
+    "passed": 0,
+    "total": 2
+  },
+  "test_suite": "E2E",
+  "tests": [
+    {
+      "details": {
+        "create": {
+          "elapsed_ms": 10,
+          "method": "POST",
+          "ok": true,
+          "request_json": {
+            "canonical_name": "QA-VERIFY-001 E2E Deal 1769444035",
+            "stage": "inbound",
+            "status": "active"
+          },
+          "response_headers": {
+            "content-length": "181",
+            "content-type": "application/json",
+            "date": "Mon, 26 Jan 2026 16:13:55 GMT",
+            "server": "uvicorn"
+          },
+          "response_json": {
+            "error": {
+              "code": "INTERNAL_ERROR",
+              "details": null,
+              "message": "An internal error occurred",
+              "timestamp": "2026-01-26T16:13:55.387869Z",
+              "trace_id": "bd68b0d8-00cf-4572-bee2-b7e890f4b453"
+            }
+          },
+          "response_text": "{\"error\":{\"code\":\"INTERNAL_ERROR\",\"message\":\"An internal error occurred\",\"details\":null,\"trace_id\":\"bd68b0d8-00cf-4572-bee2-b7e890f4b453\",\"timestamp\":\"2026-01-26T16:13:55.387869Z\"}}",
+          "status_code": 500,
+          "url": "http://localhost:8091/api/deals"
+        },
+        "deal_id_from_db": "DL-0005"
+      },
+      "id": "4.1",
+      "name": "E2E: create deal then GET by id (API + DB)",
+      "passed": false,
+      "timestamp_utc": "2026-01-26T16:13:55.465046+00:00"
+    },
+    {
+      "details": {
+        "api": {
+          "elapsed_ms": 6,
+          "method": "GET",
+          "ok": true,
+          "request_json": null,
+          "response_headers": {
+            "content-length": "181",
+            "content-type": "application/json",
+            "date": "Mon, 26 Jan 2026 16:13:55 GMT",
+            "server": "uvicorn"
+          },
+          "response_json": {
+            "error": {
+              "code": "INTERNAL_ERROR",
+              "details": null,
+              "message": "An internal error occurred",
+              "timestamp": "2026-01-26T16:13:55.519828Z",
+              "trace_id": "7481b789-dde6-4588-8774-d7b9655e56cd"
+            }
+          },
+          "response_text": "{\"error\":{\"code\":\"INTERNAL_ERROR\",\"message\":\"An internal error occurred\",\"details\":null,\"trace_id\":\"7481b789-dde6-4588-8774-d7b9655e56cd\",\"timestamp\":\"2026-01-26T16:13:55.519828Z\"}}",
+          "status_code": 500,
+          "url": "http://localhost:8091/api/deals?status=active"
+        },
+        "api_count": null,
+        "db_count": "4"
+      },
+      "id": "4.2",
+      "name": "E2E: backend active deals count API vs DB (must match)",
+      "passed": false,
+      "timestamp_utc": "2026-01-26T16:13:55.521743+00:00"
+    }
+  ],
+  "timestamp_utc": "2026-01-26T16:13:55.566149+00:00"
+}

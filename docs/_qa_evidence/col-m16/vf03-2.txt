@@ -1,0 +1,4 @@
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/chat/ExportButton.tsx:67:      const result = await attachThreadToDeal(threadId, dealId);
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/chat/ExportButton.tsx:69:        toast.success('Transcript attached to deal');
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/chat/ExportButton.tsx:71:        toast.error(result?.error || 'Failed to attach transcript');
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/chat/ExportButton.tsx:74:      toast.error('Failed to attach transcript');

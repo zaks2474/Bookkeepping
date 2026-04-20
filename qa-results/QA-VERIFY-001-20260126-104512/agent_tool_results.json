@@ -1,0 +1,82 @@
+{
+  "summary": {
+    "passed": 1,
+    "total": 2
+  },
+  "test_suite": "Agent Tools",
+  "tests": [
+    {
+      "details": {
+        "request": {
+          "elapsed_ms": 3818,
+          "method": "POST",
+          "ok": true,
+          "request_json": {
+            "actor_id": "qa-verify-001",
+            "message": "List deals (QA). If tools are available, use them; otherwise explain error."
+          },
+          "response_headers": {
+            "content-length": "297",
+            "content-type": "application/json",
+            "date": "Mon, 26 Jan 2026 16:45:25 GMT",
+            "server": "uvicorn",
+            "x-request-id": "c7258aaa",
+            "x-response-time": "3.817s"
+          },
+          "response_json": {
+            "detail": "1 validation error for Message\ncontent\n  String should have at most 3000 characters [type=string_too_long, input_value='{\"query\":\"QA\",\"results\":...4780689173}],\"count\":5}', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.12/v/string_too_long"
+          },
+          "response_text": "{\"detail\":\"1 validation error for Message\\ncontent\\n  String should have at most 3000 characters [type=string_too_long, input_value='{\\\"query\\\":\\\"QA\\\",\\\"results\\\":...4780689173}],\\\"count\\\":5}', input_type=str]\\n    For further information visit https://errors.pydantic.dev/2.12/v/string_too_long\"}",
+          "status_code": 500,
+          "url": "http://localhost:8095/api/v1/agent/invoke"
+        }
+      },
+      "id": "2.2.1",
+      "name": "Agent tool attempt: list deals (may exercise tool gateway)",
+      "passed": false,
+      "timestamp_utc": "2026-01-26T16:45:29.666792+00:00"
+    },
+    {
+      "details": {
+        "backend_health": {
+          "elapsed_ms": 2,
+          "method": "GET",
+          "ok": true,
+          "request_json": null,
+          "response_headers": {
+            "content-length": "79",
+            "content-type": "application/json",
+            "date": "Mon, 26 Jan 2026 16:45:29 GMT",
+            "referrer-policy": "strict-origin-when-cross-origin",
+            "server": "uvicorn",
+            "x-content-type-options": "nosniff",
+            "x-frame-options": "DENY",
+            "x-trace-id": "1bf37543-8cbe-4469-b77f-85e98d689375",
+            "x-xss-protection": "1; mode=block"
+          },
+          "response_json": {
+            "status": "healthy",
+            "timestamp": "2026-01-26T16:45:29.669233",
+            "version": "1.0.0"
+          },
+          "response_text": "{\"status\":\"healthy\",\"timestamp\":\"2026-01-26T16:45:29.669233\",\"version\":\"1.0.0\"}",
+          "status_code": 200,
+          "url": "http://localhost:8091/health"
+        },
+        "legacy_8090": {
+          "elapsed_ms": 0,
+          "error": "ConnectionError(MaxRetryError(\"HTTPConnectionPool(host='localhost', port=8090): Max retries exceeded with url: /health (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7b2c066580e0>: Failed to establish a new connection: [Errno 111] Connection refused'))\"))",
+          "method": "GET",
+          "ok": false,
+          "request_json": null,
+          "url": "http://localhost:8090/health"
+        }
+      },
+      "id": "2.2.2",
+      "name": "Agent integration sanity: backend reachable, legacy 8090 dead",
+      "passed": true,
+      "timestamp_utc": "2026-01-26T16:45:29.670239+00:00"
+    }
+  ],
+  "timestamp_utc": "2026-01-26T16:45:29.670247+00:00"
+}

@@ -1,0 +1,47 @@
+=== STEP R0.5: P0 AFTER Verification ===
+Timestamp: 2026-02-02T23:32:49Z
+
+--- UF-001: No auth → /agent/invoke → expect 401 ---
+HTTP: 401
+
+--- UF-001: No auth → /api/v1/agent/invoke → expect 401 ---
+HTTP: 401
+
+--- UF-001: No auth → /agent/approvals → expect 401 ---
+HTTP: 401
+
+--- UF-001: No auth → /agent/threads/test/state → expect 401 ---
+HTTP: 401
+
+--- UF-001: No auth → /agent/invoke/stream → expect 401 ---
+HTTP: 401
+
+--- UF-001: Verify 401 response body is generic ---
+{"detail":"Authentication required"}
+
+--- UF-007: Verify no str(e) in code ---
+str(e) instances remaining: 0
+
+--- UF-008: compare_digest in code ---
+185:        if hmac.compare_digest(x_service_token, settings.DASHBOARD_SERVICE_TOKEN):
+
+--- UF-004: output_validation wired in graph.py ---
+69:from app.core.security.output_validation import sanitize_llm_output
+573:                sanitization_result = sanitize_llm_output(response_text)
+647:                sanitization_result = sanitize_llm_output(response_text)
+
+--- UF-010: CORS test from evil origin ---
+Evil origin CORS: No CORS header
+
+--- UF-010: CORS test from allowed origin ---
+Allowed origin CORS: No CORS header
+
+--- UF-005: /docs, /redoc, /metrics (dev mode - should still work) ---
+/docs → HTTP 200
+/redoc → HTTP 200
+/metrics → HTTP 200
+(These return 200 in dev mode, which is correct. They would be 404 in production.)
+
+--- Health check (regression) ---
+/health → HTTP 200
+

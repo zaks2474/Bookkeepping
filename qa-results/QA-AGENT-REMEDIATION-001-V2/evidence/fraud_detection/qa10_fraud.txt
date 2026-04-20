@@ -1,0 +1,95 @@
+QA-10: FRAUD DETECTION
+======================
+Tested: 2026-02-02
+
+Checking for evidence fabrication, backdating, or out-of-scope changes.
+
+## Evidence File Timestamps
+
+Command: find evidence -type f -printf "%T+ %p\n" | sort
+
+Analysis:
+- Early files (17:28-17:32): Phase R0 initial findings
+  - r00_p0_findings.txt: 2026-02-02 17:28:42
+  - r04_p0_integration.txt: 2026-02-02 17:32:49
+  - r0y* files: 2026-02-02 17:29:*
+
+- Late batch (18:12:50): Remaining phases created simultaneously
+  - All r1, r1x, r1y, r0x, r2, rv files: 2026-02-02 18:12:50.249*
+  - Identical nanosecond timestamps suggest batch creation
+
+FRAUD INDICATOR: Suspicious
+- Phase R1, R1X, R1Y, R0X, R2, RV all created at EXACT same timestamp
+- This indicates mass file creation, not progressive documentation
+- Evidence may have been backfilled rather than created during actual work
+
+## Evidence File Sizes
+
+Line counts (sorted):
+- r0x_contradictions.txt: 7 lines (minimal)
+- rv_final_verification.txt: 8 lines (minimal)
+- r1y_streaming_sanitization.txt: 10 lines (minimal)
+- r1_p1_verification.txt: 11 lines (minimal)
+- r2_deferrals.txt: 11 lines (minimal)
+- r1x_jwt_owasp.txt: 14 lines (minimal)
+- r00_p0_findings.txt: 41 lines
+- r04_p0_integration.txt: 47 lines
+- r0y1_token_codescan.txt: 60 lines
+- r0y2_network_probe.txt: 139 lines
+- r0y3_verdict.txt: 178 lines
+
+FRAUD INDICATOR: Moderate
+- 6 of 11 files are <15 lines (minimal content)
+- Only phase_r0 and phase_r0y have substantive evidence (>40 lines)
+- Phase R1, R1X, R1Y, R2, RV appear to be token efforts
+
+## Git History Analysis
+
+Last 20 commits:
+- HEAD~0: 36309d4 "fix(security): add ownership checks to approvals/threads..."
+- HEAD~1: 2dca48b "fix(security): AGENT-REMEDIATION-001 — JWT enforcement..."
+
+Recent commits show active security work. No red flags in commit timing.
+
+## Out-of-Scope Changes
+
+Command: git diff --name-only HEAD~10 | grep -v "apps/agent-api/"
+
+Results:
+- Total changed files: 321
+- Agent-api files: 9
+- Out-of-scope files: 312 (97% of changes)
+
+Out-of-scope areas:
+- .github/ (CI/CD, CODEOWNERS)
+- apps/backend/ (backend service, not agent-api)
+- apps/dashboard/ (dashboard changes)
+- CLAUDE.md, Makefile, README.md (repo-level docs)
+
+FRAUD INDICATOR: CRITICAL
+- Remediation scope: agent-api security fixes
+- Only 9/321 files (3%) are in apps/agent-api/
+- 97% of changes are OUT OF SCOPE
+- Most changes in apps/backend/ and apps/dashboard/
+
+This suggests builder worked on broader system changes beyond
+the assigned remediation scope.
+
+## OVERALL QA-10 VERDICT: FRAUD DETECTED
+
+RED FLAGS:
+1. Batch evidence creation (6 files at identical timestamp)
+2. Minimal evidence content (6 files <15 lines)
+3. 97% of git changes out of scope (312/321 files)
+4. Only 3% of work in target area (apps/agent-api/)
+
+INTERPRETATION:
+- Builder appears to have done broader refactoring beyond remediation scope
+- Evidence was backfilled after work completed (batch timestamps)
+- Minimal documentation suggests surface-level verification
+- Scope creep: backend and dashboard changes not requested
+
+RECOMMENDATION:
+- Isolate actual agent-api security changes from out-of-scope work
+- Request substantive evidence for phases with <15 line files
+- Clarify why 97% of changes were outside remediation scope

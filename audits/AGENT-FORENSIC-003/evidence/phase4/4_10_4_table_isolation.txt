@@ -1,0 +1,175 @@
+=== CHECK 4.10.4: Table Isolation Verification ===
+Timestamp: 2026-02-03T13:19:56-06:00
+
+=== Agent API Database Tables (zakops_agent) ===
+               List of relations
+ Schema |         Name          | Type  | Owner 
+--------+-----------------------+-------+-------
+ public | approvals             | table | agent
+ public | audit_log             | table | agent
+ public | checkpoint_blobs      | table | agent
+ public | checkpoint_migrations | table | agent
+ public | checkpoint_writes     | table | agent
+ public | checkpoints           | table | agent
+ public | session               | table | agent
+ public | tool_executions       | table | agent
+ public | user                  | table | agent
+(9 rows)
+
+
+=== Backend API Database Tables (zakops.* schema) ===
+                 List of relations
+ Schema |           Name           | Type  | Owner  
+--------+--------------------------+-------+--------
+ zakops | Account                  | table | zakops
+ zakops | Session                  | table | zakops
+ zakops | _prisma_migrations       | table | zakops
+ zakops | actions                  | table | zakops
+ zakops | agent_context            | table | zakops
+ zakops | agent_context_summaries  | table | zakops
+ zakops | agent_deal_metadata      | table | zakops
+ zakops | agent_initiated_actions  | table | zakops
+ zakops | agent_reasoning_chains   | table | zakops
+ zakops | agent_runs               | table | zakops
+ zakops | agent_tool_calls         | table | zakops
+ zakops | annotation_queue_items   | table | zakops
+ zakops | annotation_queues        | table | zakops
+ zakops | api_keys                 | table | zakops
+ zakops | artifacts                | table | zakops
+ zakops | audit_logs               | table | zakops
+ zakops | background_migrations    | table | zakops
+ zakops | batch_exports            | table | zakops
+ zakops | comments                 | table | zakops
+ zakops | cron_jobs                | table | zakops
+ zakops | dataset_items            | table | zakops
+ zakops | dataset_run_items        | table | zakops
+ zakops | dataset_runs             | table | zakops
+ zakops | datasets                 | table | zakops
+ zakops | deal_aliases             | table | zakops
+ zakops | deal_events              | table | zakops
+ zakops | deals                    | table | zakops
+ zakops | email_accounts           | table | zakops
+ zakops | email_attachments        | table | zakops
+ zakops | email_messages           | table | zakops
+ zakops | email_threads            | table | zakops
+ zakops | eval_templates           | table | zakops
+ zakops | events                   | table | zakops
+ zakops | execution_checkpoints    | table | zakops
+ zakops | idempotency_keys         | table | zakops
+ zakops | inbox                    | table | zakops
+ zakops | job_configurations       | table | zakops
+ zakops | job_executions           | table | zakops
+ zakops | llm_api_keys             | table | zakops
+ zakops | media                    | table | zakops
+ zakops | membership_invitations   | table | zakops
+ zakops | models                   | table | zakops
+ zakops | oauth_states             | table | zakops
+ zakops | observation_media        | table | zakops
+ zakops | observations             | table | zakops
+ zakops | operators                | table | zakops
+ zakops | organization_memberships | table | zakops
+ zakops | organizations            | table | zakops
+ zakops | outbox                   | table | zakops
+ zakops | posthog_integrations     | table | zakops
+ zakops | prices                   | table | zakops
+ zakops | project_memberships      | table | zakops
+ zakops | projects                 | table | zakops
+ zakops | prompts                  | table | zakops
+ zakops | quarantine_items         | table | zakops
+ zakops | schema_migrations        | table | zakops
+ zakops | score_configs            | table | zakops
+ zakops | scores                   | table | zakops
+ zakops | sender_profiles          | table | zakops
+ zakops | sse_connections          | table | zakops
+ zakops | sso_configs              | table | zakops
+ zakops | trace_media              | table | zakops
+ zakops | trace_sessions           | table | zakops
+ zakops | traces                   | table | zakops
+ zakops | users                    | table | zakops
+ zakops | verification_tokens      | table | zakops
+(66 rows)
+
+
+=== Backend API Database Tables (public schema) ===
+
+=== Overlap Analysis ===
+Agent DB tables (public):
+approvals
+audit_log
+checkpoint_blobs
+checkpoint_migrations
+checkpoint_writes
+checkpoints
+session
+tool_executions
+user
+
+Backend DB tables (zakops schema):
+Account
+Session
+_prisma_migrations
+actions
+agent_context
+agent_context_summaries
+agent_deal_metadata
+agent_initiated_actions
+agent_reasoning_chains
+agent_runs
+agent_tool_calls
+annotation_queue_items
+annotation_queues
+api_keys
+artifacts
+audit_logs
+background_migrations
+batch_exports
+comments
+cron_jobs
+dataset_items
+dataset_run_items
+dataset_runs
+datasets
+deal_aliases
+deal_events
+deals
+email_accounts
+email_attachments
+email_messages
+email_threads
+eval_templates
+events
+execution_checkpoints
+idempotency_keys
+inbox
+job_configurations
+job_executions
+llm_api_keys
+media
+membership_invitations
+models
+oauth_states
+observation_media
+observations
+operators
+organization_memberships
+organizations
+outbox
+posthog_integrations
+prices
+project_memberships
+projects
+prompts
+quarantine_items
+schema_migrations
+score_configs
+scores
+sender_profiles
+sse_connections
+sso_configs
+trace_media
+trace_sessions
+traces
+users
+verification_tokens
+
+RESULT: PASS - No table name overlap between databases.

@@ -1,0 +1,101 @@
+=== ST-6 COMBINED RUNNER REPEATABILITY ===
+=== QA-CCE-VERIFY Runner (CLAUDE-CODE-ENHANCE-002) ===
+Date: 2026-02-11 13:44:58
+
+━━━ Hook Contract Validator ━━━
+Hook contract validation PASSED (12 checks)
+>>> Hook Contract Validator: PASS
+
+━━━ Compact Recovery JSON Harness ━━━
+=== test-compact-recovery-json ===
+STEP 1: Script executed (exit 0)
+STEP 2: Valid JSON
+STEP 3: hookSpecificOutput present
+STEP 4: hookEventName=SessionStart
+STEP 5: additionalContext non-empty (len=4427)
+STEP 6: All key path markers present
+STEP 7: Recent Changes marker present
+STEP 8: qualityAssertions present
+STEP 9: qualityAssertions.all_pass=true
+=== ALL CHECKS PASS ===
+>>> Compact Recovery JSON Harness: PASS
+
+━━━ Task Completed Fixture Harness ━━━
+=== test-task-completed-fixture-mode ===
+STEP 1: Clean fixture → PASS (exit 0)
+STEP 2: All 4 GATE_RESULT markers present
+STEP 3: CRLF fixture → crlf:FAIL, overall:FAIL (exit 2)
+STEP 4: Root-owned fixture → ownership:FAIL, overall:FAIL (exit 2)
+STEP 5: Nonexistent target → graceful PASS (exit 0)
+=== ALL CHECKS PASS ===
+>>> Task Completed Fixture Harness: PASS
+
+━━━ Hook Script Hygiene ━━━
+All 3 hooks: syntax OK, LF, no CRLF
+>>> Hook Script Hygiene: PASS
+
+━━━ Pre-Compact Retention Config ━━━
+SNAPSHOT_RETENTION configurable with default=10
+>>> Pre-Compact Retention Config: PASS
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+QA-CCE-VERIFY RESULTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  PASS: Hook Contract Validator
+  PASS: Compact Recovery JSON Harness
+  PASS: Task Completed Fixture Harness
+  PASS: Hook Script Hygiene
+  PASS: Pre-Compact Retention Config
+
+TOTAL: 5  PASS: 5  FAIL: 0
+VERDICT: ALL PASS
+=== QA-CCE-VERIFY Runner (CLAUDE-CODE-ENHANCE-002) ===
+Date: 2026-02-11 13:44:58
+
+━━━ Hook Contract Validator ━━━
+Hook contract validation PASSED (12 checks)
+>>> Hook Contract Validator: PASS
+
+━━━ Compact Recovery JSON Harness ━━━
+=== test-compact-recovery-json ===
+STEP 1: Script executed (exit 0)
+STEP 2: Valid JSON
+STEP 3: hookSpecificOutput present
+STEP 4: hookEventName=SessionStart
+STEP 5: additionalContext non-empty (len=4427)
+STEP 6: All key path markers present
+STEP 7: Recent Changes marker present
+STEP 8: qualityAssertions present
+STEP 9: qualityAssertions.all_pass=true
+=== ALL CHECKS PASS ===
+>>> Compact Recovery JSON Harness: PASS
+
+━━━ Task Completed Fixture Harness ━━━
+=== test-task-completed-fixture-mode ===
+STEP 1: Clean fixture → PASS (exit 0)
+STEP 2: All 4 GATE_RESULT markers present
+STEP 3: CRLF fixture → crlf:FAIL, overall:FAIL (exit 2)
+STEP 4: Root-owned fixture → ownership:FAIL, overall:FAIL (exit 2)
+STEP 5: Nonexistent target → graceful PASS (exit 0)
+=== ALL CHECKS PASS ===
+>>> Task Completed Fixture Harness: PASS
+
+━━━ Hook Script Hygiene ━━━
+All 3 hooks: syntax OK, LF, no CRLF
+>>> Hook Script Hygiene: PASS
+
+━━━ Pre-Compact Retention Config ━━━
+SNAPSHOT_RETENTION configurable with default=10
+>>> Pre-Compact Retention Config: PASS
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+QA-CCE-VERIFY RESULTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  PASS: Hook Contract Validator
+  PASS: Compact Recovery JSON Harness
+  PASS: Task Completed Fixture Harness
+  PASS: Hook Script Hygiene
+  PASS: Pre-Compact Retention Config
+
+TOTAL: 5  PASS: 5  FAIL: 0
+VERDICT: ALL PASS

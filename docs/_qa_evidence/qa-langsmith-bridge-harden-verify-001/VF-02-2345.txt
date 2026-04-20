@@ -1,0 +1,9 @@
+50:# Backend API key (for X-API-Key header on write calls to backend)
+709:    headers = {"X-API-Key": BACKEND_API_KEY}
+801:                headers={"X-API-Key": BACKEND_API_KEY},
+908:                headers={"X-API-Key": BACKEND_API_KEY},
+---
+Line 50 in function: 
+Line 709 in function: def zakops_inject_quarantine(
+Line 801 in function: def zakops_create_action(
+Line 908 in function: def zakops_approve_quarantine(action_id: str) -> dict:

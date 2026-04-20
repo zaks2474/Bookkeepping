@@ -1,0 +1,4 @@
+-- DEFAULT partition as safety net (GAP-C3 fix)
+CREATE TABLE IF NOT EXISTS turn_snapshots_default PARTITION OF turn_snapshots DEFAULT;
+-- DEFAULT partition (GAP-C3 fix)
+CREATE TABLE IF NOT EXISTS cost_ledger_default PARTITION OF cost_ledger DEFAULT;

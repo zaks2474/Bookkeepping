@@ -1,0 +1,322 @@
+===============================================================================
+H3 EVIDENCE: Golden Payload Parse Proof
+Mission: RT-HARDEN-001
+Date: 2026-02-06
+Analyst: Claude (automated evidence gathering)
+===============================================================================
+
+SOURCE FILES
+  Golden payloads:  /home/zaks/zakops-agent-api/apps/dashboard/golden/
+  OpenAPI spec:     /home/zaks/zakops-agent-api/packages/contracts/openapi/zakops-api.json
+
+===============================================================================
+1. GOLDEN PAYLOAD STRUCTURE ANALYSIS
+===============================================================================
+
+--- deals.json ---
+  Shape: Array of DealResponse objects (24 items)
+  Top-level keys per item:
+    deal_id            (string)         e.g. "DL-0028"
+    canonical_name     (string)         e.g. "QA Outbox Test Corp"
+    display_name       (string|null)    e.g. null
+    folder_path        (string|null)    e.g. null
+    stage              (string)         e.g. "inbound"
+    status             (string)         e.g. "active"
+    identifiers        (object)         e.g. {}
+    company_info       (object)         e.g. {}
+    broker             (object)         e.g. {}
+    metadata           (object)         e.g. {}
+    created_at         (datetime)       e.g. "2026-02-05T20:15:38.808126Z"
+    updated_at         (datetime)       e.g. "2026-02-05T20:15:38.808126Z"
+    days_since_update  (number)         e.g. 0.0
+    action_count       (integer)        e.g. 0
+    alias_count        (integer)        e.g. 0
+
+--- actions.json ---
+  Shape: Array of ActionResponse objects (9 items)
+  Top-level keys per item:
+    action_id              (string)       e.g. "QA-ACT-PENDING-APPROVAL"
+    deal_id                (string|null)  e.g. null
+    capability_id          (string)       e.g. "agent"
+    action_type            (string)       e.g. "qa_status_test"
+    title                  (string)       e.g. "qa_status_test"
+    summary                (string|null)  e.g. null
+    status                 (string)       e.g. "pending_approval"
+    created_at             (datetime)     e.g. "2026-02-04T22:45:39.147125Z"
+    updated_at             (datetime)     e.g. "2026-02-04T22:45:39.147125Z"
+    risk_level             (string)       e.g. "medium"
+    requires_human_review  (boolean)      e.g. false
+    inputs                 (object)       e.g. {}
+    outputs                (object)       e.g. {}
+    deal_name              (string|null)  e.g. null
+    deal_stage             (string|null)  e.g. null
+
+--- events.json ---
+  Shape: Object with wrapper keys
+  Top-level keys:
+    events  (array)   empty array []
+    count   (integer) 0
+  Note: This is a wrapper/envelope shape, not a raw DealEvent array.
+        DealEvent schema fields: id, deal_id, event_type, created_at, actor, details, source
+
+--- quarantine.json ---
+  Shape: Array of QuarantineResponse objects (3 items)
+  Top-level keys per item:
+    id               (string/uuid)      e.g. "0c4673b4-6c09-4f4b-8cd7-c90e5b5dba65"
+    message_id       (string)           e.g. "r2-3a-test-1770234921"
+    email_subject    (string)           e.g. "R2-3a Test: Auto Deal Creation"
+    sender           (string)           e.g. "testbroker@dealflow.com"
+    sender_domain    (string)           e.g. "dealflow.com"
+    received_at      (datetime|null)    e.g. null
+    classification   (string)           e.g. "unknown"
+    urgency          (string)           e.g. "NORMAL"
+    confidence       (number|null)      e.g. null
+    company_name     (string|null)      e.g. null
+    broker_name      (string|null)      e.g. null
+    status           (string)           e.g. "pending"
+    created_at       (datetime)         e.g. "2026-02-04T19:55:21.185555Z"
+    sender_name      (string|null)      e.g. null
+    sender_company   (string|null)      e.g. null
+    is_broker        (boolean|null)     e.g. null
+
+--- error-validation-400.json ---
+  Shape: Object (single error envelope)
+  Top-level keys (excluding _ prefixed):
+    error  (object)
+      error.code       (string)  "VALIDATION_ERROR"
+      error.message    (string)  "Request validation failed"
+      error.details    (array)   [{field, message, code}]
+      error.trace_id   (string)  UUID
+      error.timestamp  (string)  datetime
+  Metadata keys (prefixed with _):
+    _comment, _captured_at, _http_status
+
+--- error-404.json ---
+  Shape: Object (simple error)
+  Top-level keys (excluding _ prefixed):
+    detail  (string)  "Deal NONEXISTENT not found"
+  Metadata keys:
+    _comment, _captured_at, _http_status
+  NOTE: Does NOT match ErrorResponse schema -- uses FastAPI default
+        HTTPException format ({"detail": "..."}) instead of the structured
+        ErrorResponse envelope.
+
+--- error-401.json ---
+  Shape: Object (simple error)
+  Top-level keys (excluding _ prefixed):
+    error    (string)  "unauthorized"
+    message  (string)  "Invalid or missing API key"
+  Metadata keys:
+    _comment, _captured_at, _http_status
+  NOTE: Does NOT match ErrorResponse schema. Uses flat {error, message}
+        shape instead of nested {error: {code, message, ...}} envelope.
+
+--- error-500.json ---
+  Shape: Object (structured error envelope)
+  Top-level keys (excluding _ prefixed):
+    error  (object)
+      error.code       (string)  "INTERNAL_ERROR"
+      error.message    (string)  "An unexpected error occurred"
+      error.details    (null)
+      error.trace_id   (string)  UUID
+      error.timestamp  (string)  datetime
+    meta   (object)
+      meta.trace_id    (string)
+      meta.timestamp   (string)
+  Metadata keys:
+    _comment, _http_status
+
+
+===============================================================================
+2. OPENAPI SCHEMA CROSS-REFERENCE
+===============================================================================
+
+--- DealResponse (spec lines 578-697) ---
+  Schema properties:
+    deal_id, canonical_name, display_name, folder_path, stage, status,
+    identifiers, company_info, broker, metadata, created_at, updated_at,
+    days_since_update, action_count, alias_count
+  Required:
+    deal_id, canonical_name, display_name, folder_path, stage, status,
+    identifiers, company_info, broker, metadata, created_at, updated_at
+
+  MATCH with deals.json: FULL MATCH
+    All 15 schema properties present in golden payload.
+    All 12 required fields present.
+    Extra fields in payload: days_since_update, action_count, alias_count
+      (these ARE in schema as optional -- MATCH)
+
+--- ActionResponse (spec lines 44-155) ---
+  Schema properties:
+    action_id, deal_id, capability_id, action_type, title, summary, status,
+    created_at, updated_at, risk_level, requires_human_review, inputs, outputs
+  Required:
+    action_id, deal_id, capability_id, action_type, title, summary, status,
+    created_at, updated_at, risk_level, requires_human_review, inputs, outputs
+
+  MATCH with actions.json: PARTIAL MATCH (superset)
+    All 13 required schema fields present in golden payload.
+    Extra fields in payload NOT in schema:
+      - deal_name   (string|null)
+      - deal_stage  (string|null)
+    FINDING: Golden payload has 2 extra fields (deal_name, deal_stage)
+    that are NOT defined in the OpenAPI ActionResponse schema.
+    These are likely server-side enrichment fields added after the
+    spec was authored.
+
+--- DealEvent (spec lines 514-576) ---
+  Schema properties:
+    id, deal_id, event_type, created_at, actor, details, source
+  Required:
+    id, deal_id, event_type, created_at
+
+  MATCH with events.json: N/A (empty events array)
+    The events.json golden payload contains {"events":[], "count":0}.
+    The wrapper envelope uses keys "events" and "count", which
+    correspond to a list endpoint response shape, not a raw DealEvent.
+    The DealEvent schema itself cannot be verified against field names
+    because the events array is empty. The wrapper shape suggests a
+    DealEventListResponse or similar envelope (not explicitly in spec
+    as a named schema).
+
+--- QuarantineResponse (spec lines 1966-2128) ---
+  Schema properties:
+    id, message_id, email_subject, sender, sender_domain, received_at,
+    classification, urgency, confidence, company_name, broker_name, status,
+    created_at, sender_name, sender_company, is_broker
+  Required:
+    id, message_id, email_subject, sender, sender_domain, received_at,
+    classification, urgency, confidence, company_name, broker_name,
+    status, created_at
+
+  MATCH with quarantine.json: FULL MATCH
+    All 16 schema properties present in golden payload.
+    All 13 required fields present.
+    Extra fields in payload NOT in schema: NONE
+    Additional optional fields present: sender_name, sender_company, is_broker
+      (these ARE in schema -- MATCH)
+
+--- ErrorResponse (spec lines 1138-1194) ---
+  Schema properties:
+    error (object with: code, message, details, trace_id, timestamp)
+    meta  ($ref ResponseMeta)
+  Required within error: code, message
+
+  MATCH with error-validation-400.json: MATCH
+    Has error.code, error.message, error.details (array), error.trace_id,
+    error.timestamp -- all match ErrorResponse schema.
+    Missing: meta field (optional in schema).
+
+  MATCH with error-404.json: NO MATCH
+    Uses {"detail": "..."} format (FastAPI HTTPException default).
+    Does NOT use the ErrorResponse envelope at all.
+    FINDING: 404 errors use FastAPI default format, not the contract schema.
+
+  MATCH with error-401.json: NO MATCH
+    Uses {"error": "unauthorized", "message": "..."} flat format.
+    Does NOT use nested ErrorResponse envelope.
+    FINDING: 401 errors use custom flat format, not the contract schema.
+
+  MATCH with error-500.json: FULL MATCH
+    Has error.code, error.message, error.details, error.trace_id,
+    error.timestamp + meta object. Fully conforms to ErrorResponse schema.
+
+
+===============================================================================
+3. FIELD-BY-FIELD VERIFICATION MATRIX
+===============================================================================
+
+Legend: [OK] = field present and matches schema type
+        [+]  = extra field in payload, not in schema
+        [--] = field in schema, missing from payload
+        [!!] = type mismatch
+
+deals.json vs DealResponse:
+  [OK] deal_id          [OK] canonical_name   [OK] display_name
+  [OK] folder_path      [OK] stage            [OK] status
+  [OK] identifiers      [OK] company_info     [OK] broker
+  [OK] metadata         [OK] created_at       [OK] updated_at
+  [OK] days_since_update [OK] action_count    [OK] alias_count
+  Result: 15/15 fields OK. PASS.
+
+actions.json vs ActionResponse:
+  [OK] action_id        [OK] deal_id          [OK] capability_id
+  [OK] action_type      [OK] title            [OK] summary
+  [OK] status           [OK] created_at       [OK] updated_at
+  [OK] risk_level       [OK] requires_human_review
+  [OK] inputs           [OK] outputs
+  [+]  deal_name        [+]  deal_stage
+  Result: 13/13 schema fields OK. 2 extra fields. PASS (with note).
+
+quarantine.json vs QuarantineResponse:
+  [OK] id               [OK] message_id       [OK] email_subject
+  [OK] sender           [OK] sender_domain    [OK] received_at
+  [OK] classification   [OK] urgency          [OK] confidence
+  [OK] company_name     [OK] broker_name      [OK] status
+  [OK] created_at       [OK] sender_name      [OK] sender_company
+  [OK] is_broker
+  Result: 16/16 fields OK. PASS.
+
+events.json vs DealEvent:
+  Wrapper: {events: [], count: 0}
+  Individual DealEvent fields untestable (empty array).
+  Result: INCONCLUSIVE (no event items to verify).
+
+error-validation-400.json vs ErrorResponse:
+  [OK] error.code       [OK] error.message    [OK] error.details
+  [OK] error.trace_id   [OK] error.timestamp
+  [--] meta             (optional, acceptable)
+  Result: 5/5 required+optional error fields OK. PASS.
+
+error-404.json vs ErrorResponse:
+  [!!] Uses {detail: string} instead of {error: {code, message, ...}}
+  Result: FAIL -- does not conform to ErrorResponse schema.
+
+error-401.json vs ErrorResponse:
+  [!!] Uses {error: string, message: string} flat format
+  Result: FAIL -- does not conform to ErrorResponse schema.
+
+error-500.json vs ErrorResponse:
+  [OK] error.code       [OK] error.message    [OK] error.details
+  [OK] error.trace_id   [OK] error.timestamp  [OK] meta
+  Result: 6/6 fields OK. PASS.
+
+
+===============================================================================
+4. SUMMARY OF FINDINGS
+===============================================================================
+
+PASSES (5/8 golden payloads fully match their OpenAPI schema):
+  1. deals.json       -> DealResponse:      FULL MATCH (15/15 fields)
+  2. actions.json     -> ActionResponse:    MATCH with extras (13/13 + 2 extra)
+  3. quarantine.json  -> QuarantineResponse: FULL MATCH (16/16 fields)
+  4. error-400.json   -> ErrorResponse:     MATCH (meta optional, not present)
+  5. error-500.json   -> ErrorResponse:     FULL MATCH
+
+INCONCLUSIVE (1/8):
+  6. events.json      -> DealEvent:         Empty array, cannot verify item fields
+
+FAILURES (2/8 -- error payloads do not match ErrorResponse schema):
+  7. error-404.json   -> ErrorResponse:     FAIL (uses FastAPI default {detail})
+  8. error-401.json   -> ErrorResponse:     FAIL (uses flat {error, message})
+
+ISSUES IDENTIFIED:
+  A. actions.json contains 2 fields (deal_name, deal_stage) not declared in
+     the OpenAPI ActionResponse schema. The schema should be updated to
+     include these, or the backend should stop returning them.
+
+  B. error-404.json uses FastAPI's default HTTPException format {"detail": "..."}
+     instead of the structured ErrorResponse envelope. The backend 404 handler
+     does not wrap responses in the contract schema.
+
+  C. error-401.json uses a flat {"error": "...", "message": "..."} format
+     instead of the nested ErrorResponse envelope. The auth middleware
+     returns a non-standard error shape.
+
+  D. events.json is empty, so DealEvent field matching cannot be proven.
+     A golden payload with at least one event item should be captured for
+     complete evidence.
+
+===============================================================================
+END OF EVIDENCE
+===============================================================================

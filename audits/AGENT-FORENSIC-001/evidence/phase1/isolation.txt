@@ -1,0 +1,29 @@
+AGENT-FORENSIC-001 Phase 1 — Step 1.8: Multi-User Isolation
+=============================================================
+Date: 2026-02-02
+
+CHATBOT ENDPOINTS (auth-protected):
+[PASS] Sessions are user-scoped — get_user_sessions() filters by user_id
+[PASS] Session modification checks ownership: session_id != current_session → 403
+[PASS] Session deletion checks ownership: same check
+[PASS] Chat messages are scoped to session (LangGraph thread_id = session_id)
+
+AGENT ENDPOINTS (no auth):
+[FAIL] No user isolation at all — any caller can:
+       - List ALL pending approvals (GET /agent/approvals)
+       - View ANY thread state (GET /agent/threads/{id}/state)
+       - Approve/reject ANY approval (actor_id from request body — spoofable)
+       - Invoke agent with any actor_id
+
+[FAIL] Thread state endpoint returns data for any thread_id without ownership check
+[FAIL] Approval listing has optional actor_id filter but it's query-param-based and
+       caller-controlled — not enforced from auth token
+
+SESSION MANAGEMENT:
+[INFO] Chatbot: JWT-based sessions with 30-day expiry
+[INFO] Agent: Service token creates synthetic session (user_id=0, "service-session")
+[FAIL] Agent endpoints have no session concept at all
+
+CROSS-TENANT:
+[FAIL] No tenant isolation — single-tenant design
+       All data in same DB tables, no tenant_id column observed

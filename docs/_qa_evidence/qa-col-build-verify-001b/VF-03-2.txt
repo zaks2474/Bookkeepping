@@ -1,0 +1,19 @@
+7: * - Working: last 6 messages (real-time)
+8: * - Recall: brain facts + session summaries
+9: * - Archival: expired summaries
+35:  /** Server-provided count of working memory messages */
+36:  workingCount: number;
+37:  /** Server-provided count of recall items (brain facts + summaries) */
+38:  recallCount: number;
+39:  /** Server-provided count of archival items */
+40:  archivalCount: number;
+51:  workingCount,
+52:  recallCount,
+53:  archivalCount,
+60:      label: 'Working',
+61:      count: workingCount,
+67:      label: 'Recall',
+68:      count: recallCount,
+74:      label: 'Archival',
+75:      count: archivalCount,
+82:  const totalItems = workingCount + recallCount + archivalCount;

@@ -1,0 +1,38 @@
+/home/zaks/zakops-backend/src/core/events/models.py:19:class EventBase(BaseModel):
+/home/zaks/zakops-backend/src/core/events/models.py:28:    trace_id: str | None = None  # R2-4: Added for observability
+/home/zaks/zakops-backend/src/core/events/models.py:38:class AgentEvent(EventBase):
+/home/zaks/zakops-backend/src/core/events/models.py:64:class DealEvent(EventBase):
+/home/zaks/zakops-backend/src/core/events/models.py:87:class ActionEvent(EventBase):
+/home/zaks/zakops-backend/src/core/events/models.py:113:class WorkerEvent(EventBase):
+/home/zaks/zakops-backend/src/core/events/publisher.py:36:class EventPublisher:
+/home/zaks/zakops-backend/src/core/events/publisher.py:71:            "trace_id": getattr(event, 'trace_id', None),
+/home/zaks/zakops-backend/src/core/events/publisher.py:93:        if result.enriched_data.get("trace_id") and not getattr(event, 'trace_id', None):
+/home/zaks/zakops-backend/src/core/events/publisher.py:94:            event.trace_id = result.enriched_data["trace_id"]
+/home/zaks/zakops-backend/src/core/events/publisher.py:231:                correlation_id, trace_id, created_at
+/home/zaks/zakops-backend/src/core/events/publisher.py:240:            getattr(event, 'trace_id', None),
+/home/zaks/zakops-backend/src/core/events/query.py:24:class EventQueryService:
+/home/zaks/zakops-backend/src/core/events/schema.py:14:class EventCategory(str, Enum):
+/home/zaks/zakops-backend/src/core/events/schema.py:70:class StandardEvent:
+/home/zaks/zakops-backend/src/core/events/schema.py:78:        trace_id: Distributed tracing ID
+/home/zaks/zakops-backend/src/core/events/schema.py:88:    trace_id: str | None = None
+/home/zaks/zakops-backend/src/core/events/schema.py:110:            "trace_id": self.trace_id,
+/home/zaks/zakops-backend/src/core/events/schema.py:143:    trace_id: str | None = None
+/home/zaks/zakops-backend/src/core/events/schema.py:158:        trace_id=trace_id,
+/home/zaks/zakops-backend/src/core/events/schema.py:224:    trace_id: str,
+/home/zaks/zakops-backend/src/core/events/schema.py:234:        aggregate_id=trace_id,
+/home/zaks/zakops-backend/src/core/events/schema.py:235:        trace_id=trace_id,
+/home/zaks/zakops-backend/src/core/events/schema.py:246:    trace_id: str,
+/home/zaks/zakops-backend/src/core/events/schema.py:257:        aggregate_id=trace_id,
+/home/zaks/zakops-backend/src/core/events/schema.py:258:        trace_id=trace_id,
+/home/zaks/zakops-backend/src/core/events/taxonomy.py:14:class EventDomain(str, Enum):
+/home/zaks/zakops-backend/src/core/events/taxonomy.py:23:class DealEventType(str, Enum):
+/home/zaks/zakops-backend/src/core/events/taxonomy.py:32:class ActionEventType(str, Enum):
+/home/zaks/zakops-backend/src/core/events/taxonomy.py:43:class AgentEventType(str, Enum):
+/home/zaks/zakops-backend/src/core/events/taxonomy.py:55:class WorkerEventType(str, Enum):
+/home/zaks/zakops-backend/src/core/events/taxonomy.py:65:class SystemEventType(str, Enum):
+/home/zaks/zakops-backend/src/core/events/validator.py:19:- trace_id: Auto-generated if missing
+/home/zaks/zakops-backend/src/core/events/validator.py:77:class EventSchemaValidator:
+/home/zaks/zakops-backend/src/core/events/validator.py:179:        if not event_data.get("trace_id"):
+/home/zaks/zakops-backend/src/core/events/validator.py:180:            enriched["trace_id"] = str(uuid4())
+/home/zaks/zakops-backend/src/core/events/validator.py:233:class EventValidationError(Exception):
+/home/zaks/zakops-backend/src/core/outbox/models.py:39:    trace_id: UUID | None = None

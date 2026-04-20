@@ -1,0 +1,42 @@
+D-3 tool call budget enforcement snippet
+            state: The current agent state containing messages and tool calls.
+
+        Returns:
+            Command: Command object with updated messages and routing back to chat.
+        """
+        # R3 REMEDIATION [P2.1]: Set correlation_id context for tool HTTP calls
+        correlation_id = state.metadata.get("correlation_id", "")
+        if correlation_id:
+            set_correlation_id(correlation_id)
+
+        # R3 REMEDIATION [P1.4]: Check tool call budget
+        current_count = state.tool_call_count
+        tool_calls = state.messages[-1].tool_calls
+        new_count = current_count + len(tool_calls)
+
+        if new_count > MAX_TOOL_CALLS_PER_TURN:
+            logger.warning(
+                "tool_call_budget_exceeded",
+                current_count=current_count,
+                requested=len(tool_calls),
+                max_allowed=MAX_TOOL_CALLS_PER_TURN,
+            )
+            # Return error for all tool calls
+            outputs = [
+                ToolMessage(
+                    content=ToolResult.error_result(
+                        f"Tool call budget exceeded ({new_count}/{MAX_TOOL_CALLS_PER_TURN}). "
+                        "Please complete the task with fewer tool calls.",
+                        metadata={"budget_exceeded": True, "count": new_count, "max": MAX_TOOL_CALLS_PER_TURN}
+                    ).to_json_string(),
+                    name=tc["name"],
+                    tool_call_id=tc["id"],
+                )
+                for tc in tool_calls
+            ]
+            return Command(update={"messages": outputs, "tool_call_count": new_count}, goto="chat")
+
+        outputs = []
+        for tool_call in tool_calls:
+
+Observation: Exceeds budget -> returns Command with error ToolResult (hard stop).

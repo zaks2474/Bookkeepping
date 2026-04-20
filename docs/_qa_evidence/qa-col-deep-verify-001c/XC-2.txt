@@ -1,0 +1,12 @@
+=== GDPR Purge Skips Legal Holds ===
+Migration: zakops-agent-api/apps/agent-api/migrations/029_legal_hold.sql
+  - legal_hold_locks table with hold_type, released_at
+  - legal_hold_log audit table
+
+GDPR Service: zakops-agent-api/apps/agent-api/app/services/gdpr_service.py
+  - Line 62-64: LEFT JOIN legal_hold_locks — checks hold status
+  - Line 73-94: Skips threads with active legal holds
+  - Line 78-86: Logs skip to legal_hold_log
+  - Line 114-122: Logs delete to legal_hold_log
+
+RESULT: PASS — GDPR purge correctly references legal_hold_locks/legal_hold_log tables

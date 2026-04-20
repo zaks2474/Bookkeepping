@@ -1,0 +1,7 @@
+=== F3.4: Backend down Zod check (manual) ===
+Manual verification required:
+1. docker stop zakops-backend-backend-1
+2. Open browser console, navigate to /hq, /dashboard, /deals, /actions
+3. Verify: zero Zod-related messages in console
+4. docker start zakops-backend-backend-1
+VERDICT: DEFERRED-MANUAL (operator must confirm)

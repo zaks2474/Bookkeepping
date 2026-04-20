@@ -1,0 +1,8 @@
+Line 34: const USER_ROLE = process.env.ZAKOPS_USER_ROLE || 'ADMIN';
+Line 78: response.headers.set('X-User-Role', USER_ROLE);
+Line 100: 'X-User-Role': USER_ROLE,
+---
+Set in BOTH paths:
+  1. handledByRoutes pass-through (line 78)
+  2. Backend proxy headers (line 100)
+VERDICT: PASS

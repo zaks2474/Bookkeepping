@@ -1,0 +1,7 @@
+5:MVP: Markdown export with citations, proposals, evidence, Deal Brain impact.
+82:        # Collect all citations and proposals for appendix
+152:        # Appendix: Deal Brain (B3-06)
+155:            brain_section = self._get_brain_appendix_sync(deal_id)
+157:                lines.append("## Appendix C: Deal Brain")
+194:    def _get_brain_appendix_sync(self, deal_id: str) -> list[str]:
+195:        """Build Deal Brain appendix lines (best-effort, non-blocking)."""

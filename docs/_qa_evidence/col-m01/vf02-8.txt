@@ -1,0 +1,2 @@
+    created_at      TIMESTAMPTZ DEFAULT NOW(),
+    last_seen       TIMESTAMPTZ DEFAULT NOW(),

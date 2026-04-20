@@ -1,0 +1,1 @@
+65:    tool_call_count: int = Field(default=0, description="Number of tool calls in current turn")

@@ -1,0 +1,7 @@
+=== Transition function search in BACKEND_ROOT/src/*.py ===
+--- /home/zaks/zakops-backend/src/api/orchestration/main.py ---
+903:    """Archive a deal via centralized transition_deal_state() FSM."""
+907:                "SELECT * FROM zakops.transition_deal_state($1, 'archived', 'ui_user', 'archived via API')",
+933:    """Restore a deal from archived status via centralized transition_deal_state() FSM."""
+951:                "SELECT * FROM zakops.transition_deal_state($1, $2, 'ui_user', 'restored via API')",
+

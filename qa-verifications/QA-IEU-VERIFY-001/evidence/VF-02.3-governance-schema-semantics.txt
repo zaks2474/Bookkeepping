@@ -1,0 +1,49 @@
+=== VF-02.3 GOVERNANCE SCHEMA VALIDATOR SEMANTICS ===
+2:# validate-governance-anchor-schema.sh — Schema-backed governance anchor validation
+3:# Verifies required anchors exist in governance rule files
+7:SCHEMA_FILE="$(dirname "$0")/schemas/governance-anchor-contract.schema.json"
+9:PASS=0
+10:FAIL=0
+13:pass() { echo "  PASS: $1"; PASS=$((PASS + 1)); }
+14:fail() { echo "  FAIL: $1"; FAIL=$((FAIL + 1)); }
+24:  echo "Governance Anchor Schema Validation: FAIL ($PASS pass, $FAIL fail)"
+25:  exit 1
+29:# --- design-system.md ---
+31:echo "--- design-system.md ---"
+32:DS_FILE="$RULES_DIR/design-system.md"
+34:  fail "design-system.md not found"
+36:  pass "design-system.md exists"
+40:    pass "design-system.md has frontmatter"
+42:    fail "design-system.md missing frontmatter"
+45:  # Required anchors (11)
+60:  for anchor in "${DS_ANCHORS[@]}"; do
+61:    if grep -qi "$anchor" "$DS_FILE" 2>/dev/null; then
+62:      pass "Anchor: $anchor"
+65:      fail "Missing anchor: $anchor"
+68:  echo "  design-system.md: $DS_FOUND/${#DS_ANCHORS[@]} anchors"
+71:# --- accessibility.md ---
+73:echo "--- accessibility.md ---"
+74:ACC_FILE="$RULES_DIR/accessibility.md"
+76:  fail "accessibility.md not found"
+78:  pass "accessibility.md exists"
+81:    pass "accessibility.md has frontmatter"
+83:    fail "accessibility.md missing frontmatter"
+94:  for anchor in "${ACC_ANCHORS[@]}"; do
+95:    if grep -qi "$anchor" "$ACC_FILE" 2>/dev/null; then
+96:      pass "Anchor: $anchor"
+99:      fail "Missing anchor: $anchor"
+102:  echo "  accessibility.md: $ACC_FOUND/${#ACC_ANCHORS[@]} anchors"
+105:# --- component-patterns.md ---
+107:echo "--- component-patterns.md ---"
+108:CP_FILE="$RULES_DIR/component-patterns.md"
+110:  fail "component-patterns.md not found"
+112:  pass "component-patterns.md exists"
+115:    pass "component-patterns.md has frontmatter"
+117:    fail "component-patterns.md missing frontmatter"
+128:  for anchor in "${CP_ANCHORS[@]}"; do
+129:    if grep -qiE "$anchor" "$CP_FILE" 2>/dev/null; then
+130:      pass "Anchor: $anchor"
+133:      fail "Missing anchor: $anchor"
+136:  echo "  component-patterns.md: $CP_FOUND/${#CP_ANCHORS[@]} anchors"
+140:echo "Governance Anchor Schema Validation: $([ "$FAIL" -eq 0 ] && echo "PASS" || echo "FAIL") ($PASS pass, $FAIL fail, $WARN warn)"
+141:exit "$FAIL"

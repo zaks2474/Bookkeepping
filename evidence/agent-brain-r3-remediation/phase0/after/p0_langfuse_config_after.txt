@@ -1,0 +1,26 @@
+=== P0.3 LANGFUSE CONFIGURATION ===
+
+STATUS: DEFERRED (with documented plan)
+
+BEFORE STATE:
+- LANGFUSE_PUBLIC_KEY, LANGFUSE_SECRET_KEY, LANGFUSE_HOST are commented out in .env
+- App logs: "Langfuse tracing not configured — running without traces"
+
+CURRENT STATE:
+- Langfuse infrastructure ready in code (tracing.py exists)
+- Code gracefully no-ops when keys not set (no crash)
+- Warning logged on startup when keys missing
+
+DEPLOYMENT PLAN:
+1. Deploy Langfuse self-hosted instance OR obtain Langfuse Cloud credentials
+2. Set in .env.production:
+   LANGFUSE_PUBLIC_KEY=pk-xxx
+   LANGFUSE_SECRET_KEY=sk-xxx
+   LANGFUSE_HOST=https://cloud.langfuse.com (or self-hosted URL)
+3. Verify traces appear in Langfuse dashboard
+4. Add startup health check (P2.2 will harden this)
+
+TIMELINE: Phase 2 (P2.2) will complete Langfuse hardening
+TICKET: ZK-BRAIN-ISSUE-0003 remains open until Phase 2
+
+GATE P0.3: DEFERRED (acceptable per mission BLOCKER POLICY)

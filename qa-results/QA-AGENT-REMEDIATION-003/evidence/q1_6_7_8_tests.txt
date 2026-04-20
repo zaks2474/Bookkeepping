@@ -1,0 +1,52 @@
+=== Q1.6: AUTH REGRESSION TESTS ===
+
+TEST 1: Service-token endpoint rejects JWT
+- Request: POST /api/v1/agent/approvals/fake-id:approve with Authorization: Bearer fake.jwt.token
+- Response: 401 {"detail":"Authentication required"}
+- PASS: JWT correctly rejected
+
+TEST 2: Service-token endpoint accepts valid token
+- Request: POST /api/v1/agent/approvals/nonexistent:approve with X-Service-Token
+- Response: 404 {"detail":"Approval not found"}
+- PASS: Valid token accepted (404 = auth passed, approval not found)
+
+TEST 3: Service-token endpoint rejects missing token
+- Request: POST /api/v1/agent/approvals/fake:approve with no auth
+- Response: 401 {"detail":"Authentication required"}
+- PASS: Missing token rejected
+
+VERDICT: PASS
+
+=== Q1.7: IDEMPOTENCY DOUBLE-SUBMIT GUARD ===
+
+Approval ID: 92fad3cf-c459-486a-b96e-4a589d125d3b
+Deal: DL-IDEM2
+
+FIRST APPROVAL:
+- HTTP: 200
+- Result: {"status":"completed","ok":true}
+
+SECOND APPROVAL (same approval_id):
+- HTTP: 409
+- Result: {"detail":"Approval already resolved (status: approved)"}
+
+VERIFICATION:
+- Deal state: DL-IDEM2 = screening (transitioned only once)
+- Tool execution count: 1 (not duplicated)
+
+VERDICT: PASS
+
+=== Q1.8: ERROR REDACTION (UF-004) ===
+
+TEST: Non-existent deal FAKE-DEAL-999
+
+Error message returned:
+"Could not fetch deal FAKE-DEAL-999: HTTP 404"
+
+Sensitive info leakage checks:
+- Stack traces: NOT FOUND ✓
+- Connection strings: NOT FOUND ✓
+- Internal paths (/home/, /app/): NOT FOUND ✓
+- Passwords/secrets: NOT FOUND ✓
+
+VERDICT: PASS

@@ -1,0 +1,27 @@
+                                  View "zakops.v_pipeline_summary"
+      Column       |         Type          | Collation | Nullable | Default | Storage  | Description 
+-------------------+-----------------------+-----------+----------+---------+----------+-------------
+ stage             | character varying(50) |           |          |         | extended | 
+ count             | bigint                |           |          |         | plain    | 
+ avg_days_in_stage | numeric               |           |          |         | main     | 
+View definition:
+ SELECT deals.stage,
+    count(*) AS count,
+    round(avg(EXTRACT(day FROM now() - deals.updated_at)), 1) AS avg_days_in_stage
+   FROM deals
+  WHERE deals.deleted = false AND deals.status::text = 'active'::text
+  GROUP BY deals.stage
+  ORDER BY (
+        CASE deals.stage
+            WHEN 'inbound'::text THEN 1
+            WHEN 'screening'::text THEN 2
+            WHEN 'qualified'::text THEN 3
+            WHEN 'loi'::text THEN 4
+            WHEN 'diligence'::text THEN 5
+            WHEN 'closing'::text THEN 6
+            WHEN 'portfolio'::text THEN 7
+            WHEN 'junk'::text THEN 8
+            WHEN 'archived'::text THEN 9
+            ELSE 99
+        END);
+

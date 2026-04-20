@@ -1,0 +1,43 @@
+{
+  "agent_identity": {
+    "agent_name": "Codex",
+    "run_id": "20260204-1746-274978",
+    "date_time": "2026-02-04T17:46:31Z",
+    "repo_revision": "unknown"
+  },
+  "status": "PASS",
+  "gate_results": [
+    {
+      "gate": "GATE 1",
+      "status": "PASS",
+      "evidence": "Coverage matrix lists all 22 ZK-ISSUE IDs once each; no missing/duplicates."
+    },
+    {
+      "gate": "GATE 2",
+      "status": "PASS",
+      "evidence": "Phases R2-0..R2-9 include atomic tasks, owners, dependencies, rollback, measurable gates and acceptance criteria."
+    },
+    {
+      "gate": "GATE 3",
+      "status": "PASS",
+      "evidence": "Explicit gates (code/contract/integration/E2E/QA) with commands and expected outcomes in QA plan + mission gates."
+    },
+    {
+      "gate": "GATE 4",
+      "status": "PASS",
+      "evidence": "Decisions cover SOT DB, contract SOT, agent boundary/HITL, email ingestion, observability, RAG freshness."
+    },
+    {
+      "gate": "GATE 5",
+      "status": "PASS",
+      "evidence": "Deduped upgrade register with priorities, phases, and verification."
+    }
+  ],
+  "coverage": {
+    "total_v2_issues": 22,
+    "total_mapped": 22,
+    "missing_issue_ids": [],
+    "duplicate_issue_ids": [],
+    "ambiguous_mappings": []
+  }
+}

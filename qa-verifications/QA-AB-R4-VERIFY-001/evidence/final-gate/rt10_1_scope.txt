@@ -1,0 +1,20 @@
+=== R4 ALLOWED EDIT SCOPE ===
+Only these files should be modified for R4:
+
+TOOLS:
+  - app/core/langgraph/tools/deal_tools.py
+  - app/core/langgraph/tools/schemas.py
+  - app/core/langgraph/tools/__init__.py
+
+PROMPTS:
+  - app/core/prompts/system.md
+
+TESTS:
+  - evals/golden_traces/GT-032.json
+  - evals/golden_traces/GT-033.json
+  - evals/golden_traces/GT-034.json
+
+CI:
+  - scripts/validate_prompt_tools.py
+
+Any other file changes require explicit justification.

@@ -1,0 +1,7 @@
+Line 101: async def add_facts(self, deal_id: str, new_facts: list[dict]) -> dict:
+---
+Confidence scoring logic:
+  Line 319: 'confidence': 0.6 (in _keyword_extract_facts)
+  Facts contain 'confidence' field per fact dict
+  Deduplication by key: lines 106-116
+VERDICT: PASS

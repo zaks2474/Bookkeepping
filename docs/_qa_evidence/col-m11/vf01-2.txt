@@ -1,0 +1,9 @@
+apps/agent-api/app/core/langgraph/graph.py:427:                logger.debug("cost_recording_failed", error=str(cost_err))
+apps/agent-api/app/services/cost_repository.py:49:                    INSERT INTO cost_ledger
+apps/agent-api/app/services/chat_repository.py:465:                    INSERT INTO cost_ledger
+apps/agent-api/.venv/lib/python3.13/site-packages/passlib/tests/utils.py:1958:            # log rounds "50%" variance should only increase/decrease by 1 cost value
+apps/agent-api/.venv/lib/python3.13/site-packages/passlib/tests/test_handlers_argon2.py:23:    return dict(version=version, rounds=t, logM=logM, memory_cost=1<<logM, parallelism=p,
+apps/agent-api/.venv/lib/python3.13/site-packages/passlib/handlers/scrypt.py:193:    #   logN -- log cost setting
+apps/agent-api/.venv/lib/python3.13/site-packages/passlib/handlers/scrypt.py:238:    #   N: 6-bit log cost setting
+apps/agent-api/.venv/lib/python3.13/site-packages/passlib/utils/handlers.py:1759:        # XXX: could precalculate output of this in using() method, and save per-hash cost.
+apps/agent-api/.venv/lib/python3.13/site-packages/langsmith/testing/_internal.py:120:            save time and costs during testing. Recommended to commit the

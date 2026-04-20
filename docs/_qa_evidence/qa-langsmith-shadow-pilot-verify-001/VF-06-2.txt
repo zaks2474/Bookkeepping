@@ -1,0 +1,8 @@
+1418:    if source_type:
+1419-        conditions.append(f"q.source_type = ${param_idx}")
+1420-        params.append(source_type)
+1421-        param_idx += 1
+1423-    where_clause = " AND ".join(conditions) if conditions else "TRUE"
+1534:    if source_type not in VALID_SOURCE_TYPES:
+1538-                "error": "invalid_source_type",
+1539-                "message": f"source_type '{source_type}' is not allowed",

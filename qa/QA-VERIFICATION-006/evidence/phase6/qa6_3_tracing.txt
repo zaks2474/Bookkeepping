@@ -1,0 +1,16 @@
+=== QA-6.3: T5.7 Tracing ===
+/home/zaks/zakops-backend/src/api/shared/__init__.py:30:    get_trace_id,
+/home/zaks/zakops-backend/src/api/shared/__init__.py:33:    set_trace_id,
+/home/zaks/zakops-backend/src/api/shared/__init__.py:73:    "get_trace_id",
+/home/zaks/zakops-backend/src/api/shared/__init__.py:75:    "set_trace_id",
+/home/zaks/zakops-backend/src/api/shared/responses.py:27:    trace_id: str = Field(default_factory=lambda: str(uuid4()))
+/home/zaks/zakops-backend/src/api/shared/responses.py:45:            "trace_id": "abc-123",
+/home/zaks/zakops-backend/src/api/shared/responses.py:60:        trace_id: str | None = None
+/home/zaks/zakops-backend/src/api/shared/responses.py:63:            trace_id=trace_id or str(uuid4()),
+/home/zaks/zakops-backend/src/api/shared/responses.py:95:            "trace_id": "abc-123"
+/home/zaks/zakops-backend/src/api/shared/responses.py:111:        trace_id: str | None = None
+/home/zaks/zakops-backend/src/api/shared/responses.py:114:            trace_id=trace_id or str(uuid4()),
+/home/zaks/zakops-backend/src/api/shared/responses.py:143:    trace_id: str = Field(default_factory=lambda: str(uuid4()))
+/home/zaks/zakops-backend/src/api/shared/responses.py:151:        trace_id: str | None = None
+/home/zaks/zakops-backend/src/api/shared/responses.py:157:            trace_id=trace_id or str(uuid4())
+/home/zaks/zakops-backend/src/api/shared/responses.py:165:        trace_id: str | None = None

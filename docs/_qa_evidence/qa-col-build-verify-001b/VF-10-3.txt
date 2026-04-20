@@ -1,0 +1,2 @@
+    from app.services.gdpr_service import gdpr_purge
+    report = await gdpr_purge(body.user_id)

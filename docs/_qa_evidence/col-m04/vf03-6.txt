@@ -1,0 +1,1 @@
+CREATE INDEX IF NOT EXISTS idx_brain_history_deal ON zakops.deal_brain_history(deal_id, version DESC);

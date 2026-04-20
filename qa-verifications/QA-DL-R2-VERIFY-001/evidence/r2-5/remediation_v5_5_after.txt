@@ -1,0 +1,2 @@
+ERROR:  deal_transitions is immutable
+CONTEXT:  PL/pgSQL function prevent_deal_transitions_mods() line 3 at RAISE

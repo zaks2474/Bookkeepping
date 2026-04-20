@@ -1,0 +1,41 @@
+=== VF-04.1 SOURCE MESSAGE ID MAPPING ===
+/home/zaks/zakops-backend/src/api/orchestration/main.py:239:    message_id: str | None
+/home/zaks/zakops-backend/src/api/orchestration/main.py:282:      schema_version, correlation_id, email_body_snippet, source_message_id)
+/home/zaks/zakops-backend/src/api/orchestration/main.py:283:    - email_sync/manual/email: legacy validation (only message_id required)
+/home/zaks/zakops-backend/src/api/orchestration/main.py:286:    message_id: str
+/home/zaks/zakops-backend/src/api/orchestration/main.py:287:    # Alternate dedup key from bridge (mapped to message_id at boundary)
+/home/zaks/zakops-backend/src/api/orchestration/main.py:288:    source_message_id: str | None = None
+/home/zaks/zakops-backend/src/api/orchestration/main.py:291:    subject: str | None = None  # P1-02: legacy email_sync backward compat — mapped to email_subject
+/home/zaks/zakops-backend/src/api/orchestration/main.py:717:    alias_type: str = Query("gmail_message_id", description="Type of alias"),
+/home/zaks/zakops-backend/src/api/orchestration/main.py:720:    """Look up a deal by its alias (e.g., gmail_message_id).
+/home/zaks/zakops-backend/src/api/orchestration/main.py:936:    """Add an alias to a deal (e.g., gmail_message_id for email mapping).
+/home/zaks/zakops-backend/src/api/orchestration/main.py:964:                    detail=f"Alias already mapped to deal {existing['deal_id']}"
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1578:            q.message_id,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1639:            q.message_id,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1691:    Returns 201 for newly created items, 200 for dedup hits (existing message_id).
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1713:    # P1-04: Map source_message_id -> message_id at boundary
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1714:    message_id = item.message_id
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1715:    if item.source_message_id and not item.message_id:
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1716:        message_id = item.source_message_id
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1717:    elif item.source_message_id:
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1718:        message_id = item.source_message_id  # source_message_id takes priority
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1783:        SELECT q.id::text, q.message_id,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1801:        # Deduplicate by message_id
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1803:            "SELECT id FROM zakops.quarantine_items WHERE message_id = $1",
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1804:            message_id
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1816:                (id, message_id, subject, email_subject, sender, sender_name,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1830:            ON CONFLICT (message_id) DO NOTHING
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1831:            RETURNING id::text, message_id,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1845:            item_id, message_id,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1869:                _DEDUP_SELECT + " WHERE q.message_id = $1", message_id
+/home/zaks/zakops-backend/src/api/orchestration/main.py:2038:                        json.dumps({'quarantine_item_id': item_id, 'message_id': item.get('message_id')}),
+/home/zaks/zakops-backend/src/api/orchestration/main.py:2203:                        'message_id': item.get('message_id'),
+/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py:700:    source_message_id: str,
+/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py:740:        source_message_id: Unique identifier for deduplication (mapped to message_id)
+/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py:769:        "source_message_id": source_message_id,
+/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py:777:    if not source_message_id:
+/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py:778:        errors.append("source_message_id is required")
+/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py:804:    # P1-06: Build full payload with source_message_id mapped to message_id
+/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py:806:        "source_message_id": source_message_id,
+/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py:807:        "message_id": source_message_id,
+/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py:883:        log_error(f"Failed to inject quarantine item: {e}", {"source_message_id": source_message_id})

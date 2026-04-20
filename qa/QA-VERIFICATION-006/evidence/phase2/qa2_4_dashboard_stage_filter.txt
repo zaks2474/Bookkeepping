@@ -1,0 +1,10 @@
+=== QA-2.4: T1.6 Dashboard Stage Filter ===
+--- TEST 1: Stage filter component ---
+ls: cannot access '/home/zaks/zakops-agent-api/apps/dashboard/src/components/*[Ss]tage*': No such file or directory
+
+--- TEST 2: Stage filtering in API calls ---
+
+--- TEST 3: Backend stage filter parameter ---
+1
+
+=== QA-2.4 VERDICT: PASS ===

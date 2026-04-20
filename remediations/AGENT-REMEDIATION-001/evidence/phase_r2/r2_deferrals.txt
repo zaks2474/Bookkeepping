@@ -1,0 +1,11 @@
+=== Phase R2: P2 Hardening Deferrals ===
+
+UF-012: python-jose → PyJWT. Low-severity CVEs. DEFERRED to production sprint.
+UF-013: No internal TLS. Single-host dev. DEFERRED.
+UF-014: Single uvicorn worker. Dev load adequate. DEFERRED.
+UF-015: Langfuse restart loop. Backend stack scope. DEFERRED.
+UF-016: Source bind-mount. Dev appropriate. DEFERRED.
+UF-017: Rate limits memory-only. Single instance. DEFERRED.
+UF-018: RAG /health 404. Out of scope. DEFERRED.
+UF-019: MCP root 404. By design. DEFERRED.
+UF-020: Orchestration /health. Out of scope. DEFERRED.

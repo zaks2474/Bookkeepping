@@ -1,0 +1,70 @@
+=== XC-5 VALIDATION COMMAND AGREEMENT ===
+echo "\033[36m=== Contract Surface Validation ===\033[0m"
+bash tools/infra/validate-contract-surfaces.sh
+echo "\033[32mContract surface validation passed\033[0m"
+echo "\033[36m=== Sync Types ===\033[0m"
+cd /home/zaks/zakops-agent-api/apps/dashboard && npx openapi-typescript ../../packages/contracts/openapi/zakops-api.json -o src/lib/api-types.generated.ts
+echo "\033[32mTypes regenerated from committed spec\033[0m"
+echo "\033[36m=== Sync Agent Types ===\033[0m"
+cd /home/zaks/zakops-agent-api/apps/dashboard && npx openapi-typescript ../../packages/contracts/openapi/agent-api.json -o src/lib/agent-api-types.generated.ts
+echo "\033[32mAgent API types regenerated from committed spec\033[0m"
+echo "\033[36m[dashboard]\033[0m Linting..."
+cd apps/dashboard && npm run lint
+echo "\033[36m=== Contract Surface Validation ===\033[0m"
+bash tools/infra/validate-contract-surfaces.sh
+echo "\033[32mContract surface validation passed\033[0m"
+echo "\033[36m=== Agent Config Validation ===\033[0m"
+bash tools/infra/validate-agent-config.sh
+echo "\033[32mAgent config validation passed\033[0m"
+echo "\033[36m=== SSE Schema Validation ===\033[0m"
+python3 tools/infra/validate_sse_schema.py
+echo "\033[32mSSE schema validation passed\033[0m"
+echo "\033[36m=== Local Validation (Offline) ===\033[0m"
+cd /home/zaks/zakops-agent-api/apps/dashboard && npx tsc --noEmit
+make check-redocly-debt
+make[1]: Entering directory '/home/zaks/zakops-agent-api'
+IGNORES=$(grep -c "^    - " /home/zaks/zakops-agent-api/.redocly.lint-ignore.yaml 2>/dev/null || echo 0); \
+CEILING=57; \
+echo "Redocly ignores: $IGNORES (ceiling: $CEILING)"; \
+if [ "$IGNORES" -gt "$CEILING" ]; then \
+	echo "\033[33mRedocly ignore count ($IGNORES) exceeds ceiling ($CEILING)\033[0m"; \
+	exit 1; \
+fi
+make[1]: Leaving directory '/home/zaks/zakops-agent-api'
+echo "\033[32mAll local validations passed\033[0m"
+echo "\033[36m=== Fast Validation (Offline) ===\033[0m"
+cd /home/zaks/zakops-agent-api/apps/dashboard && npx tsc --noEmit
+make check-redocly-debt
+make[1]: Entering directory '/home/zaks/zakops-agent-api'
+IGNORES=$(grep -c "^    - " /home/zaks/zakops-agent-api/.redocly.lint-ignore.yaml 2>/dev/null || echo 0); \
+CEILING=57; \
+echo "Redocly ignores: $IGNORES (ceiling: $CEILING)"; \
+if [ "$IGNORES" -gt "$CEILING" ]; then \
+	echo "\033[33mRedocly ignore count ($IGNORES) exceeds ceiling ($CEILING)\033[0m"; \
+	exit 1; \
+fi
+make[1]: Leaving directory '/home/zaks/zakops-agent-api'
+echo "\033[32mFast validations passed\033[0m"
+echo "\033[36m=== Contract Surface Validation ===\033[0m"
+bash tools/infra/validate-contract-surfaces.sh
+echo "\033[32mContract surface validation passed\033[0m"
+echo "\033[36m=== Agent Config Validation ===\033[0m"
+bash tools/infra/validate-agent-config.sh
+echo "\033[32mAgent config validation passed\033[0m"
+echo "\033[36m=== SSE Schema Validation ===\033[0m"
+python3 tools/infra/validate_sse_schema.py
+echo "\033[32mSSE schema validation passed\033[0m"
+echo "\033[36m=== Migration Assertion ===\033[0m"
+bash tools/infra/migration-assertion.sh
+echo "\033[32mMigration assertion passed\033[0m"
+echo "\033[36m=== Full Validation (All Gates) ===\033[0m"
+if rg -n "httpx\.(AsyncClient|get|post|put|patch|delete)" apps/agent-api/app/core/langgraph/tools/deal_tools.py; then \
+	echo "FAIL\033[0m: Raw httpx client usage found in deal_tools.py (use BackendClient)"; \
+	exit 1; \
+fi
+if command -v gemini >/dev/null 2>&1 && command -v codex >/dev/null 2>&1; then \
+	echo "\033[32mINFO\033[0m: gemini + codex CLIs available"; \
+else \
+	echo "\033[33mWARN\033[0m: gemini/codex CLI not found (informational only)"; \
+fi
+echo "\033[32mFull validations passed\033[0m"

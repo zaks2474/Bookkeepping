@@ -1,0 +1,53 @@
+=== QA-0.1: SERVICE HEALTH BASELINE ===
+Date: $(date -Iseconds)
+--- Backend API (8091) ---
+{
+    "status": "healthy",
+    "timestamp": "2026-02-04T07:26:15.563923",
+    "version": "1.0.0",
+    "components": {
+        "sse_streaming": "not_implemented",
+        "outbox_worker": "placeholder (0 actions processed)"
+    },
+    "not_implemented": {
+        "sse_events": "501 \u2014 real-time event streaming planned for future release",
+        "execute_proposal": "501 \u2014 chat proposal execution planned for future release",
+        "actions_capabilities": "501 \u2014 action capability definitions planned for future release",
+        "actions_metrics": "501 \u2014 action metrics aggregation planned for future release"
+    },
+    "mocked": {
+        "agent_activity": "Returns empty state \u2014 agent activity tracking not yet connected",
+        "chat_sessions": "Returns empty state \u2014 chat session persistence not yet implemented"
+    }
+}
+
+--- Agent API (8095) ---
+{
+    "status": "healthy",
+    "version": "1.0.0",
+    "environment": "development",
+    "components": {
+        "api": "healthy",
+        "database": "healthy"
+    },
+    "timestamp": "2026-02-04T07:26:15.590731"
+}
+
+--- Dashboard (3003) ---
+Dashboard HTTP: 307
+
+--- RAG Service (8052) ---
+{"name":"RAG REST API","version":"2.0.0","status":"running","database_connected":true,"endpoints":["POST /rag/query - Search the knowledge base","POST /rag/add - Add content directly","GET /rag/sources - List available sources","GET /rag/stats - Get database statistics","DELETE /rag/url?url=<url> - Delete content by URL"]}
+--- Docker Containers ---
+NAMES                            STATUS                          PORTS
+zakops-backend-backend-1         Up 14 minutes (healthy)         0.0.0.0:8091->8091/tcp, [::]:8091->8091/tcp
+zakops-agent-api                 Up 7 hours (healthy)            0.0.0.0:8095->8000/tcp, [::]:8095->8000/tcp
+zakops-agent-db                  Up 7 hours (healthy)            5432/tcp
+zakops-backend-langfuse-1        Restarting (1) 53 seconds ago   
+zakops-backend-outbox-worker-1   Up 40 hours (healthy)           8091/tcp
+openwebui                        Up 45 hours (healthy)           0.0.0.0:3000->8080/tcp, [::]:3000->8080/tcp
+vllm-qwen                        Up 45 hours                     0.0.0.0:8000->8000/tcp, [::]:8000->8000/tcp
+rag-rest-api                     Up 27 hours                     0.0.0.0:8052->8080/tcp, [::]:8052->8080/tcp
+rag-db                           Up 45 hours                     0.0.0.0:5434->5432/tcp, [::]:5434->5432/tcp
+zakops-postgres-1                Up 14 minutes (healthy)         0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp
+zakops-redis-1                   Up 45 hours (healthy)           0.0.0.0:6379->6379/tcp, [::]:6379->6379/tcp

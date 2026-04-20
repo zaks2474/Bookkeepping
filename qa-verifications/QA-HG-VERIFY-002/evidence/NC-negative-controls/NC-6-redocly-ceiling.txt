@@ -1,0 +1,8 @@
+=== NC-6: Redocly Debt Ceiling ===
+Before line count: 70
+After line count: 71
+Redocly ignores: 58 (ceiling: 57)
+[33mRedocly ignore count (58) exceeds ceiling (57)[0m
+make: *** [Makefile:401: check-redocly-debt] Error 1
+Reverted to 70 lines
+NC-6 PASS: Ceiling caught the increase (exit 2)

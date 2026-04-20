@@ -1,0 +1,21 @@
+=== V5.5 ===
+3. **CLAUDE.md files** — System documentation Claude reads at session start
+
+## CLAUDE.md — The Constitution
+
+ZakOps uses **two CLAUDE.md files**, each serving a distinct purpose:
+--
+| File | Lines | Purpose |
+|------|-------|---------|
+| `/home/zaks/CLAUDE.md` (root) | 64 | Operational reference: service map, golden commands, secrets policy, repo paths. Loaded for ALL sessions starting from `/home/zaks/` |
+| `/home/zaks/zakops-agent-api/CLAUDE.md` (monorepo) | 143 (ceiling 150) | Full system guide: contract surfaces, pre/post-task protocols, non-negotiable rules, agent delegation, autonomy ladder, rollback procedures. Loaded when working in the monorepo |
+
+The **monorepo CLAUDE.md** is the authoritative constitution. The root CLAUDE.md is a quick-reference supplement. Both are loaded by Claude Code when the working context includes both directories (via `additionalDirectories`).
+
+**Key principle:** Keep CLAUDE.md short. Put detailed knowledge in path-scoped rules and skills.
+--
+| `playwright` | Disabled | `npx -y @playwright/mcp` | Browser automation (available but not active) |
+
+### System-Level Config (`/root/.claude/settings.json`)
+
+| Server | Status | Command | Purpose |

@@ -1,0 +1,26 @@
+All route definitions:
+43:@router.post("/chat", response_model=ChatResponse)
+80:@router.post("/chat/stream")
+152:@router.get("/messages", response_model=ChatResponse)
+178:@router.delete("/messages")
+243:@router.get("/threads")
+270:@router.post("/threads", status_code=201)
+305:@router.get("/threads/{thread_id}/messages")
+336:@router.patch("/threads/{thread_id}")
+361:@router.delete("/threads/{thread_id}")
+395:@router.get("/threads/{thread_id}/export")
+417:@router.post("/threads/{thread_id}/attach")
+455:@router.post("/proposals/execute")
+504:@router.get("/threads/{thread_id}/snapshots")
+524:@router.post("/admin/replay")
+538:@router.post("/admin/counterfactual")
+558:@router.post("/admin/compliance/purge")
+570:@router.get("/sentiment/{deal_id}")
+---
+Endpoint coverage:
+  GET /threads (list): 3
+  GET /threads/{id}/messages: 3
+  POST /threads (create): 3
+  PATCH /threads/{id}: 3
+  DELETE /threads/{id}: 4
+VERDICT: PASS — all 5 endpoint categories present

@@ -1,0 +1,10 @@
+            "ghost_facts", "stage_notes", "entities",
+                       "entities", "momentum_components") and isinstance(val, (dict, list)):
+        entity_type: str,
+        normalized_name: str,
+                (entity_type, normalized_name, deal_id, metadata)
+            ON CONFLICT (entity_type, normalized_name, deal_id) DO UPDATE SET
+            entity_type, normalized_name, deal_id,
+    async def get_cross_deal_entities(self, entity_type: str, normalized_name: str) -> list[dict]:
+            WHERE entity_type = $1 AND normalized_name = $2
+            entity_type, normalized_name,

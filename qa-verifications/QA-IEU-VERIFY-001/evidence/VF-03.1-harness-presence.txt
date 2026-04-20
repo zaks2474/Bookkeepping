@@ -1,0 +1,13 @@
+=== VF-03.1 FIXTURE + HARNESS PRESENCE ===
+total 20
+drwxr-xr-x 2 zaks zaks 4096 Feb 10 16:12 .
+drwxr-xr-x 4 zaks zaks 4096 Feb 10 16:11 ..
+-rw-r--r-- 1 zaks zaks  400 Feb 10 16:12 clean.py
+-rw-r--r-- 1 zaks zaks   63 Feb 10 16:12 empty.py
+-rw-r--r-- 1 zaks zaks  550 Feb 10 16:12 violation.py
+total 8
+drwxr-xr-x 2 zaks zaks 4096 Feb 10 16:11 .
+drwxr-xr-x 4 zaks zaks 4096 Feb 10 16:11 ..
+-rwxr-xr-x 1 zaks zaks 2093 Feb 10 16:12 /home/zaks/zakops-agent-api/tools/infra/tests/test-validate-gatee-scan.sh
+-rwxr-xr-x 1 zaks zaks 4380 Feb 10 16:12 /home/zaks/zakops-agent-api/tools/infra/tests/test-validate-surfaces10-14.sh
+-rwxr-xr-x 1 zaks zaks 4618 Feb 10 16:12 /home/zaks/zakops-agent-api/tools/infra/validate-stop-hook-selftest.sh

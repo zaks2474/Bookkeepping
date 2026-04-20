@@ -1,0 +1,5 @@
+=== DROP-C3: PG-001 (/dashboard Promise.all fragility) ===
+VERDICT: ADDRESSED
+Evidence: V-L4.3 confirms dashboard/page.tsx uses Promise.allSettled
+with 6-way individual result checking (not Promise.all).
+The PG-001 fragility gap has been resolved.

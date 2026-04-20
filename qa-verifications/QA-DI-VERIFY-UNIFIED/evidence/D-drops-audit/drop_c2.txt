@@ -1,0 +1,36 @@
+===============================================================
+DROP-C2: DealBoard Dual Data-Fetching Path
+===============================================================
+
+PATH 1: DealBoard.tsx (Component — Client-Side SWR)
+  File: /home/zaks/zakops-agent-api/apps/dashboard/src/components/deals/DealBoard.tsx
+  Line 17: import { useDeals, useTransitionDeal } from '@/lib/api-client';
+  Line 136: const { data: deals, isLoading, error } = useDeals({ status: 'active' });
+  
+  Error handling:
+  Line 186: try {
+  Line 195: } catch (error) {
+  Line 196:   console.error('Failed to transition deal:', error);
+  Line 213: if (error) {
+  Line 219:   <span>Failed to load deals: {error.message}</span>
+  VERDICT: PASS — has try/catch + error state rendering
+
+PATH 2: deals/page.tsx (Page — Direct API Fetch)
+  File: /home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx
+  Line 50: import { archiveDeal, bulkArchiveDeals, getDeals, type Deal } from '@/lib/api';
+  Line 104: const data = await getDeals(params);
+  
+  Error handling:
+  Dedicated error boundary: /home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/error.tsx
+  - Lines 8-32: Full error page with error.message display and reset button
+  Detail page: /home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx
+  - Lines 106-155: useState<string|null>(null) for error, try/catch, Promise.allSettled
+  VERDICT: PASS — has error boundary + try/catch + per-fetch error handling
+
+DUAL PATH SUMMARY:
+- DealBoard.tsx uses SWR hooks (useDeals) from api-client for real-time board view
+- deals/page.tsx uses direct getDeals() from api.ts for server-rendered list
+- Both paths have error handling ✓
+- Both paths import from separate modules (api-client vs api) ✓
+
+VERDICT: PASS — Dual data-fetching confirmed, both with error handling

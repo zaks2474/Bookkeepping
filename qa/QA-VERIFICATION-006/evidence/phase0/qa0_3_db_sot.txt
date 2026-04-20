@@ -1,0 +1,28 @@
+=== QA-0.3: RT-DB-SOT ===
+--- STEP 1: Postgres Container Inventory ---
+zakops-backend-postgres-1        postgres:15-alpine                   Up 13 minutes (healthy)         
+zakops-postgres-1                postgres:15-alpine                   Up 34 minutes (healthy)         0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp
+Total Postgres containers: 2
+
+--- STEP 2: Service DB configurations ---
+Agent container: zakops-agent-api
+                "POSTGRES_HOST=db",
+                "POSTGRES_PORT=5432",
+                "DATABASE_URL=postgresql://agent:agent_secure_pass_123@db:5432/zakops_agent",
+Backend container: zakops-backend-backend-1
+                "DATABASE_URL=postgresql://zakops:zakops_dev@postgres:5432/zakops",
+
+--- STEP 3: Live DB Identity ---
+ current_database | current_user | inet_server_addr | inet_server_port 
+------------------+--------------+------------------+------------------
+ zakops_agent     | agent        |                  |                 
+(1 row)
+
+time="2026-02-04T01:46:47-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-04T01:46:47-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+service "postgres" is not running
+
+QA-0.3 VERDICT: 2 Postgres containers (Agent + Backend) - EXPECTED
+Agent DB: zakops_agent (CORRECT)
+Backend DB: zakops (CORRECT)
+NO SPLIT-BRAIN DETECTED

@@ -1,0 +1,78 @@
+=== AUTO-COLLECTED EVIDENCE (Cycle 1) ===
+Timestamp: 2026-01-24T23:44:56Z
+
+--- git status ---
+ M scripts/bring_up_tests.sh
+ M scripts/phase0_phase1_gates.sh
+?? app/core/cost_tracking.py
+?? app/core/routing.py
+?? app/services/rag_rest.py
+?? evals/datasets/
+?? evals/retrieval_eval.py
+?? evals/tool_accuracy_eval.py
+?? scripts/no_split_brain_scan.sh
+?? scripts/phase2_4_5_gates.sh
+
+--- Recent changes (git diff --stat) ---
+ gate_artifacts/approve.json                      |   2 +-
+ gate_artifacts/artifact_bundle.tar.gz            | Bin 12954 -> 13024 bytes
+ gate_artifacts/artifact_bundle.zip               | Bin 12954 -> 13024 bytes
+ gate_artifacts/audit_immutability_test.log       |  17 ++
+ gate_artifacts/auth_negative_tests.json          |   4 +-
+ gate_artifacts/auth_negative_tests.json.tmp      |   4 +-
+ gate_artifacts/build.log                         |  40 ++---
+ gate_artifacts/chaos_kill9.log                   |  21 +++
+ gate_artifacts/checkpoint_kill9_test.log         |  20 +--
+ gate_artifacts/concurrency_n50.log               |  59 +++++++
+ gate_artifacts/concurrent_approves.log           |   6 +-
+ gate_artifacts/cost_report.json                  |  13 ++
+ gate_artifacts/db_invariants.sql.out             |  98 +++++------
+ gate_artifacts/dependency_licenses.json          |   2 +-
+ gate_artifacts/encryption_verify.log             |   4 +-
+ gate_artifacts/env_no_localhost_lint.log         |   4 +-
+ gate_artifacts/eval_dataset_manifest.json        |   2 +-
+ gate_artifacts/gate_registry.json                |  62 ++++++-
+ gate_artifacts/gate_registry_lint.log            |   2 +-
+ gate_artifacts/health.json                       |   2 +-
+ gate_artifacts/invoke_hitl.json                  |   2 +-
+ gate_artifacts/kill9_encrypted.log               |   2 +-
+ gate_artifacts/langfuse_selfhost_gate.log        |   2 +-
+ gate_artifacts/local_percent_report.json         |   7 +
+ gate_artifacts/mcp_conformance.json              |   7 +
+ gate_artifacts/mock_safety_test.log              |   2 +-
+ gate_artifacts/no_split_brain_retrieval_scan.log |   2 +-
+ gate_artifacts/pii_canary_report.json            |   4 +-
+ gate_artifacts/pii_canary_report.json.log        |   4 +-
+ gate_artifacts/policy_config_snapshot.json       |  14 ++
+
+--- Directory listing (top-level) ---
+total 456
+drwxr-xr-x 15 zaks zaks   4096 Jan 24 14:32 .
+drwxrwx--- 45 zaks zaks   4096 Jan 23 18:09 ..
+drwxr-xr-x  3 zaks zaks   4096 Jan 22 23:19 .cursor
+-rw-r--r--  1 zaks zaks    586 Jan 22 23:19 .dockerignore
+-rw-r--r--  1 zaks zaks   1632 Jan 23 10:04 .env.development
+-rw-r--r--  1 zaks zaks   1072 Jan 22 23:19 .env.example
+drwxr-xr-x  8 zaks zaks   4096 Jan 24 17:44 .git
+drwxr-xr-x  3 zaks zaks   4096 Jan 22 23:19 .github
+-rw-r--r--  1 zaks zaks    235 Jan 22 23:19 .gitignore
+-rw-r--r--  1 root root   1788 Jan 24 14:27 .labloop.yaml
+-rw-r--r--  1 zaks zaks      5 Jan 22 23:19 .python-version
+drwxr-xr-x  2 zaks zaks   4096 Jan 22 23:19 .vscode
+-rw-r--r--  1 zaks zaks   6877 Jan 22 23:19 AGENTS.md
+-rw-r--r--  1 zaks zaks   1229 Jan 22 23:19 Dockerfile
+-rw-r--r--  1 zaks zaks   1075 Jan 22 23:19 LICENSE
+-rw-r--r--  1 zaks zaks   6752 Jan 22 23:19 Makefile
+-rw-r--r--  1 root root   1802 Jan 24 14:32 PORTS.md
+-rw-r--r--  1 zaks zaks  14693 Jan 22 23:19 README.md
+-rw-r--r--  1 zaks zaks    619 Jan 22 23:19 SECURITY.md
+-rw-r--r--  1 zaks zaks   7980 Jan 23 01:15 WHAT_CHANGED.md
+drwxr-xr-x  9 zaks zaks   4096 Jan 23 09:50 app
+-rw-r--r--  1 zaks zaks   3134 Jan 23 11:18 docker-compose.yml
+drwxr-xr-x  6 zaks zaks   4096 Jan 24 14:32 docs
+drwxr-xr-x  5 zaks zaks   4096 Jan 24 16:51 evals
+drwxr-xr-x  2 zaks zaks   4096 Jan 24 17:44 gate_artifacts
+drwxr-xr-x  3 zaks zaks   4096 Jan 22 23:19 grafana
+drwxr-xr-x  2 zaks zaks   4096 Jan 24 14:31 logs
+drwxr-xr-x  2 zaks zaks   4096 Jan 22 23:59 migrations
+drwxr-xr-x  2 zaks zaks   4096 Jan 22 23:19 prometheus

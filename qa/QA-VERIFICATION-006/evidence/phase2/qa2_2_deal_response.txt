@@ -1,0 +1,44 @@
+=== QA-2.2: T1.3 DealResponse Model ===
+--- TEST 1: DealResponse in main.py ---
+class DealResponse(BaseModel):
+    deal_id: str
+    canonical_name: str
+    display_name: str | None
+    folder_path: str | None
+    stage: str
+    status: str
+    identifiers: dict[str, Any]
+    company_info: dict[str, Any]
+    broker: dict[str, Any]
+    metadata: dict[str, Any]
+    created_at: datetime
+    updated_at: datetime
+    days_since_update: float | None = None
+    action_count: int | None = None
+    alias_count: int | None = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class ActionResponse(BaseModel):
+
+--- TEST 2: Live API response fields ---
+[
+  "action_count",
+  "alias_count",
+  "broker",
+  "canonical_name",
+  "company_info",
+  "created_at",
+  "days_since_update",
+  "deal_id",
+  "display_name",
+  "folder_path",
+  "identifiers",
+  "metadata",
+  "stage",
+  "status",
+  "updated_at"
+]
+
+=== QA-2.2 VERDICT: PASS ===

@@ -1,0 +1,44 @@
+=== Q1.3: Interrupt Exception Guard (CR-4) ===
+Files with interrupt(): /home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py
+
+=== /home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py ===
+        for tool_call in state.messages[-1].tool_calls:
+            tool_result = await self.tools_by_name[tool_call["name"]].ainvoke(tool_call["args"])
+            outputs.append(
+                ToolMessage(
+                    content=tool_result,
+                    name=tool_call["name"],
+                    tool_call_id=tool_call["id"],
+                )
+            )
+        return Command(update={"messages": outputs}, goto="chat")
+
+    async def _approval_gate(self, state: GraphState, config: RunnableConfig) -> Command:
+        """Approval gate node - interrupts execution for HITL approval.
+
+        This node is triggered when tool calls require human approval.
+        It uses LangGraph's interrupt() to pause execution.
+
+        Args:
+            state: Current graph state with pending tool calls
+            config: Runtime configuration
+
+        Returns:
+            Command: Either continues to tool_call (approved) or back to chat (rejected)
+        """
+        thread_id = config["configurable"]["thread_id"]
+
+
+--- Bare except patterns that could swallow GraphInterrupt ---
+152:            except Exception as e:
+170:        except Exception as e:
+184:        except Exception as e:
+247:        except Exception as e:
+389:            except Exception as e:
+457:            except Exception as e:
+593:        except Exception as e:
+681:        except Exception as e:
+729:        except Exception as e:
+769:        except Exception as e:
+
+NOTE: Need manual verification that interrupt() not inside swallowing try/except

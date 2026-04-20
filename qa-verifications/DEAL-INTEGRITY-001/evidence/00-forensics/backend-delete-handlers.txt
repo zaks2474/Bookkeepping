@@ -1,0 +1,11 @@
+/home/zaks/zakops-backend/src/workers/actions_runner.py:721:        # The API process can mutate the registry (e.g., archive/delete deals). Executors call
+/home/zaks/zakops-backend/src/agent/bridge/agent_contract.py:329:| `archive_deal` | Archive deal permanently |
+/home/zaks/zakops-backend/src/core/deal_registry.py:1029:    def archive_deal(self, deal_id: str, reason: str = "", source: str = "manual"):
+/home/zaks/zakops-backend/src/core/deal_registry.py:1123:    def mark_deal_deleted(self, deal_id: str, operator: str, *, reason: str | None = None) -> bool:
+/home/zaks/zakops-backend/src/core/auth/permissions.py:22:    DEALS_DELETE = "deals:delete"
+/home/zaks/zakops-backend/src/api/orchestration/routers/deals_bulk_delete.py:11:router = APIRouter(prefix="/api/deals", tags=["deals_bulk_delete"])
+/home/zaks/zakops-backend/src/api/orchestration/routers/deals_bulk_delete.py:14:async def delete_deals_bulk_delete():
+/home/zaks/zakops-backend/src/api/orchestration/routers/deals_bulk_delete.py:15:    """Handle DELETE for deals_bulk_delete."""
+/home/zaks/zakops-backend/src/api/orchestration/main.py:868:async def archive_deal(
+/home/zaks/zakops-backend/src/api/orchestration/main.py:883:            return {"success": True, "message": "Deal already archived", "deal_id": deal_id}
+/home/zaks/zakops-backend/src/api/orchestration/main.py:927:            return {"success": False, "message": f"Deal is not archived (current stage: {deal['stage']})", "deal_id": deal_id}

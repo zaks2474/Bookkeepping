@@ -1,0 +1,21 @@
+=== B-section services and file existence ===
+B1: citation_audit.py
+-rw-r--r-- 1 root root 4836 Feb 13 15:38 /home/zaks/zakops-agent-api/apps/agent-api/app/core/security/citation_audit.py
+B2: replay_service.py
+-rw-r--r-- 1 root root 9007 Feb 13 14:33 /home/zaks/zakops-agent-api/apps/agent-api/app/services/replay_service.py
+B3: counterfactual_service.py
+-rw-r--r-- 1 root root 9981 Feb 13 15:39 /home/zaks/zakops-agent-api/apps/agent-api/app/services/counterfactual_service.py
+B4: node_registry.py
+-rw-r--r-- 1 root root 13411 Feb 13 14:44 /home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/node_registry.py
+B5: rag_rest.py
+-rw-r--r-- 1 root root 16010 Feb 13 15:45 /home/zaks/zakops-agent-api/apps/agent-api/app/services/rag_rest.py
+B6: export_service.py
+-rw-r--r-- 1 root root 10754 Feb 13 14:32 /home/zaks/zakops-agent-api/apps/agent-api/app/services/export_service.py
+B7: proposal_service.py
+-rw-r--r-- 1 root root 10799 Feb 13 14:32 /home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py
+B8: drift_detection.py
+-rw-r--r-- 1 zaks zaks 6100 Feb 13 01:31 /home/zaks/zakops-agent-api/apps/agent-api/app/services/drift_detection.py
+B9: snapshot_writer.py
+-rw-r--r-- 1 zaks zaks 8910 Feb 13 02:00 /home/zaks/zakops-agent-api/apps/agent-api/app/services/snapshot_writer.py
+B10: summarizer.py
+-rw-r--r-- 1 root root 12198 Feb 13 14:33 /home/zaks/zakops-agent-api/apps/agent-api/app/services/summarizer.py

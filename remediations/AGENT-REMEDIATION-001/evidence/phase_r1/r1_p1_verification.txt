@@ -1,0 +1,11 @@
+=== Phase R1: P1 Security Verification ===
+Timestamp: $(date -u +%Y-%m-%dT%H:%M:%SZ)
+
+UF-005: /docs, /redoc, /metrics gated behind Environment.DEVELOPMENT
+UF-007: 0 instances of detail=str(e) remaining
+UF-008: hmac.compare_digest() at auth.py:185
+UF-009: SSE errors return generic messages
+UF-010: CORS restricted to explicit origins
+UF-004: sanitize_llm_output wired in invoke + resume + streaming paths
+
+All P1 findings verified fixed.

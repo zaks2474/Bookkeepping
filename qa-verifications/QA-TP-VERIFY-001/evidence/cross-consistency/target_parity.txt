@@ -1,0 +1,10 @@
+=== XC-1: Target parity ===
+MEMORY: tripass-gates
+tripass-init
+tripass-run
+tripass-status
+MAKEFILE: tripass-gates
+tripass-init
+tripass-run
+tripass-status
+MATCH=true

@@ -1,0 +1,21 @@
+=== B1 PROOF: Write auth enforcement ===
+Mission Gate 1 requires: "Any write endpoint tested returns 401/403 without key"
+                         "Same endpoint returns 200/201 with key"
+Mission scope: "Ensure all write calls (POST/PUT/PATCH/DELETE) carry X-API-Key"
+NOTE: GET auth is NOT in mission scope. Backend enforces auth on writes only.
+
+--- POST /api/deals/DL-0062/archive without key ---
+{"error":"unauthorized","message":"Invalid or missing API key"}
+HTTP_STATUS: 401
+
+--- POST /api/deals/DL-0062/archive with INVALID key ---
+{"error":"unauthorized","message":"Invalid or missing API key"}
+HTTP_STATUS: 401
+
+--- POST /api/deals/DL-0062/archive with EMPTY key ---
+{"error":"unauthorized","message":"Invalid or missing API key"}
+HTTP_STATUS: 401
+
+--- POST /api/deals/DL-0062/archive with VALID key ---
+{"success":true,"deal_id":"DL-0062","previous_stage":"inbound"}
+HTTP_STATUS: 200

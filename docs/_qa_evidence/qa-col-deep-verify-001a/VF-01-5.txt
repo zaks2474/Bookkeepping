@@ -1,0 +1,10 @@
+cost_ledger partition:
+168:CREATE TABLE IF NOT EXISTS cost_ledger ( -- PARTITION BY RANGE(created_at)
+---
+DEFAULT partition:
+189:CREATE TABLE IF NOT EXISTS cost_ledger_default PARTITION OF cost_ledger DEFAULT;
+---
+deal_cost_summary VIEW:
+196:CREATE OR REPLACE VIEW deal_cost_summary AS
+---
+196:CREATE OR REPLACE VIEW deal_cost_summary AS

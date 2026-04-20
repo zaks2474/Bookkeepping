@@ -1,0 +1,6 @@
+Files importing generated types: 1
+Files importing legacy schemas: 0
+8: * Source of truth: components['schemas'] from api-types.generated.ts
+13:import type { components } from '../lib/api-types.generated';
+Files importing from bridge (types/api.ts): 13
+PASS: 1 files directly import generated types

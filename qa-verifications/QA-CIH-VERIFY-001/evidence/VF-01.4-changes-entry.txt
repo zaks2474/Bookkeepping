@@ -1,0 +1,21 @@
+=== VF-01.4 CHANGES ENTRY ===
+3:## 2026-02-10 — CI-HARDENING-001: CI and Pipeline Hardening for Frontend Governance
+9:- Hardened stop.sh project detection with 3-path fallback: env override → git rev-parse → known path (/home/zaks/zakops-agent-api). Constrained PATH no longer silently skips gates.
+11:- Created `validate-frontend-governance.sh` — validates required anchors across design-system, accessibility, component-patterns rules
+12:- Created `validate-gatee-scan.sh` — CI-safe Gate E scanner with rg→grep fallback and explicit rc handling
+15:- Added `make validate-frontend-governance` aggregate target, wired into `validate-local`
+16:- Replaced inline CI Gate E (rg-only) with script-based `validate-gatee-scan.sh`
+21:- `/home/zaks/.claude/hooks/stop.sh` — project detection fallback hardening
+27:- `tools/infra/validate-frontend-governance.sh`
+28:- `tools/infra/validate-gatee-scan.sh`
+31:- `/home/zaks/bookkeeping/docs/CI-HARDENING-001-BASELINE.md`
+32:- `/home/zaks/bookkeeping/docs/CI-HARDENING-001-COMPLETION.md`
+35:- Baseline: `/home/zaks/bookkeeping/docs/CI-HARDENING-001-BASELINE.md`
+36:- Completion: `/home/zaks/bookkeeping/docs/CI-HARDENING-001-COMPLETION.md`
+57:**Mission:** Close frontend-governance backlog from FRONTEND-INFRASTRUCTURE-AUDIT.md and harden stop.sh Gate E PATH resilience.
+61:- Hardened stop.sh Gate E with rg/grep fallback and fail-closed scanner error handling (was fail-open)
+69:- `/home/zaks/.claude/hooks/stop.sh`
+92:**Remediation:** Updated stop.sh Gate B label from "9 surfaces" to "14 surfaces" (stale cosmetic label).
+95:- `/home/zaks/.claude/hooks/stop.sh` (Gate B label: 9 -> 14)
+775:  - `~/.claude/hooks/stop.sh` — Added TriPass active-run awareness (lockfile check)
+858:2026-02-06: **V5PP MISSION EXECUTED — CLAUDE CODE BRAIN RESET COMPLETE (Opus 4.6)**: Executed the full V5PP final mission prompt (14 fixes). **Fix 0 Discovery:** Full inventory of current state — dual settings.json (/root vs /home/zaks), services UP, no repo-level .claude/, existing 12 user-level commands, 140 allow rules. **Fix 11 Backup:** Created ~/claude-backup-20260206/. **Fix 1.5 Permissions:** Added 12 deny rules to both settings.json files (Edit/Write blocks on *.generated.ts, *_models.py, .env). **Fix 1.6 Rules:** Created 4 path-scoped rule files in .claude/rules/ (contract-surfaces, backend-api, agent-tools, dashboard-types) with YAML frontmatter. **Fix 1 CLAUDE.md:** Rewrote as 100-line constitution (project roots, 5 services, 3 databases, 7 contract surfaces table, pre/post protocols, 8 non-negotiable rules, essential commands, pointers to 4 rules). **Fix 2 Commands:** Created 9 repo-level command files (.claude/commands/: after-change, permissions-audit, hooks-check, infra-check, sync-all, sync-backend-types, sync-agent-types, validate, check-drift). **Fix 3 Manifest:** Added 5 new sections to generate-manifest.sh (Contract Surfaces, Generated Type Files, Dependency Graph/Impact Matrix, Claude Code Config, SDK Status) — now 262 lines. **Fix 4 Validation:** Created validate-contract-surfaces.sh (freshness checks, bridge import enforcement, typed SDK enforcement, spec presence). **Fix 5 Dependency Graph:** Impact matrix with CI-safe column, service-DB mapping, codegen flow diagram — in generate-manifest.sh. **Fix 6 Hooks:** Extended pre-edit.sh with generated file blocking, created stop.sh for session-end validation, registered Stop hook in settings.json. **Fix 7 Makefile:** Verified 0 hardcoded paths (portable since V4). **Fix 8 Spec Freshness Bot:** Added RAG API + MCP tool schema checks (was missing 2 of 5 specs). **Fix 9 Enforcement:** Added 4 V5PP checks to validate-enforcement.sh (CLAUDE.md line count <150, >=3 rules, >=8 deny rules, all sync targets present). Also fixed Check 1 to find CLAUDE.md at repo root. **Fix 10 Tier Split:** Added validate-contract-surfaces + validate-enforcement targets to Makefile, added validate-contract-surfaces to validate-local deps, CI confirmed validate-local only. **ALL 14 GATES PASS.** Files created: 14 new files. Files modified: 6 existing files. Total: 20 files touched.

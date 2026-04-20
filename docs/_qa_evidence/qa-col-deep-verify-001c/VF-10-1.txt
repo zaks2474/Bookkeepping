@@ -1,0 +1,9 @@
+=== 4 retention tiers defined ===
+Found in: /home/zaks/zakops-agent-api/apps/agent-api/app/services/retention_policy.py
+Lines 19-24: RETENTION_TIERS = {
+    "default": 30,       # 30 days
+    "deal_scoped": 90,   # 90 days
+    "legal_hold": 365,   # 365 days
+    "compliance": None,  # None = forever
+}
+RESULT: PASS — All 4 tiers match spec: default(30d), deal_scoped(90d), legal_hold(365d), compliance(forever)

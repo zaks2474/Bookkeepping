@@ -1,0 +1,7 @@
+INJECTION_PATTERNS list (lines 40-61): 15 patterns
+  HIGH (7): instruction_override x2, role_hijack, system_override, safety_override, prompt_extraction x2
+  MEDIUM (4): role_injection, format_injection, fenced_injection, chatml_injection
+  LOW (4): xss_attempt x2, sql_injection x2
+---
+Pattern count: 15 (>= 12 threshold)
+VERDICT: PASS

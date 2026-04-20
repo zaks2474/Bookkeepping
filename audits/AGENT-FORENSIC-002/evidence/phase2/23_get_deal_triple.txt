@@ -1,0 +1,134 @@
+=== STEP 2.3: get_deal — Triple Proof ===
+=== PROOF 1: Direct backend query (ground truth) ===
+Expecting value: line 2 column 1 (char 1)
+
+
+=== PROOF 2: Agent invoke ===
+{
+    "detail": "Authentication required"
+}
+=== PROOF 2a: Agent DB — tool_executions record ===
+time="2026-02-02T20:49:22-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-02T20:49:22-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+ERROR:  column "thread_id" does not exist
+LINE 4:     WHERE thread_id = 'f002-tool-get-001'
+                  ^
+=== PROOF 2b: Agent DB — audit_log for this thread ===
+time="2026-02-02T20:49:22-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-02T20:49:22-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+ event_type | payload | created_at 
+------------+---------+------------
+(0 rows)
+
+=== PROOF 2c: Backend access log (tool request received) ===
+backend-1  | {"timestamp": "2026-02-02T16:28:26.809168Z", "level": "INFO", "logger": "src.core.deals.workflow", "message": "Deal DL-0033 transitioned: inbound -> screening", "trace_id": "no-trace", "span_id": null}
+backend-1  | {"timestamp": "2026-02-02T16:28:26.848314Z", "level": "WARNING", "logger": "src.api.shared.middleware.error_handler", "message": "Validation Error: 1 field(s)", "trace_id": "no-trace", "span_id": null, "path": "/api/deals", "errors": [{"field": "body.canonical_name", "message": "Field required", "code": "missing"}]}
+backend-1  | {"timestamp": "2026-02-02T16:28:26.853963Z", "level": "WARNING", "logger": "src.api.shared.middleware.error_handler", "message": "Validation Error: 1 field(s)", "trace_id": "no-trace", "span_id": null, "path": "/api/deals", "errors": [{"field": "body", "message": "Input should be a valid dictionary or object to extract fields from", "code": "model_attributes_type"}]}
+backend-1  | {"timestamp": "2026-02-03T02:15:22.869617Z", "level": "WARNING", "logger": "src.api.shared.middleware.error_handler", "message": "Validation Error: 1 field(s)", "trace_id": "no-trace", "span_id": null, "path": "/api/auth/register", "errors": [{"field": "body.69", "message": "JSON decode error", "code": "json_invalid"}]}
+backend-1  | {"timestamp": "2026-02-03T02:15:22.877828Z", "level": "WARNING", "logger": "src.api.shared.middleware.error_handler", "message": "Validation Error: 1 field(s)", "trace_id": "no-trace", "span_id": null, "path": "/api/auth/login", "errors": [{"field": "body.69", "message": "JSON decode error", "code": "json_invalid"}]}
+=== PROOF 3: Structured cross-reference (NOT substring) ===
+
+TRIPLE PROOF CHECKLIST:
+  [1] Backend ground truth captured? [Y/N]
+  [2a] tool_executions row exists for this thread? [Y/N]
+  [2b] audit_log has tool.called event? [Y/N]
+  [2c] Backend log shows request from agent? [Y/N]
+  [3] Structured fields match (stage, company)? [Y/N]
+ALL 5 must be YES for G2.2 PASS
+\n--- SUPPLEMENT: Backend deal raw response (status + body) ---
+HTTP/1.1 307 Temporary Redirect
+date: Tue, 03 Feb 2026 02:49:35 GMT
+server: uvicorn
+content-length: 0
+location: http://localhost:8091/api/deals
+x-trace-id: 27e7c5f31fce412bb022d930c2e7caf5
+x-content-type-options: nosniff
+x-frame-options: DENY
+x-xss-protection: 1; mode=block
+referrer-policy: strict-origin-when-cross-origin
+
+\n--- SUPPLEMENT: tool_executions columns ---
+time="2026-02-02T20:49:35-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-02T20:49:35-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+                                  Table "public.tool_executions"
+     Column      |           Type           | Collation | Nullable |           Default            
+-----------------+--------------------------+-----------+----------+------------------------------
+ id              | character varying(36)    |           | not null | uuid_generate_v4()::text
+ approval_id     | character varying(36)    |           |          | 
+ idempotency_key | character varying(255)   |           | not null | 
+ tool_name       | character varying(255)   |           | not null | 
+ tool_args       | text                     |           | not null | 
+ status          | character varying(20)    |           | not null | 'claimed'::character varying
+ result          | text                     |           |          | 
+ success         | boolean                  |           | not null | false
+ error_message   | text                     |           |          | 
+ claimed_at      | timestamp with time zone |           | not null | now()
+ executed_at     | timestamp with time zone |           |          | 
+ completed_at    | timestamp with time zone |           |          | 
+ created_at      | timestamp with time zone |           |          | now()
+Indexes:
+    "tool_executions_pkey" PRIMARY KEY, btree (id)
+    "idx_tool_executions_approval_id" btree (approval_id)
+    "idx_tool_executions_idempotency_key" btree (idempotency_key)
+    "idx_tool_executions_success" btree (success)
+    "idx_tool_executions_tool_name" btree (tool_name)
+    "tool_executions_idempotency_key_key" UNIQUE CONSTRAINT, btree (idempotency_key)
+Check constraints:
+    "tool_executions_status_check" CHECK (status::text = ANY (ARRAY['claimed'::character varying, 'running'::character varying, 'succeeded'::character varying, 'failed'::character varying]::text[]))
+Foreign-key constraints:
+    "tool_executions_approval_id_fkey" FOREIGN KEY (approval_id) REFERENCES approvals(id) ON DELETE SET NULL
+
+\n--- SUPPLEMENT: audit_log columns ---
+time="2026-02-02T20:49:35-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-02T20:49:35-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+                                    Table "public.audit_log"
+      Column       |           Type           | Collation | Nullable |         Default          
+-------------------+--------------------------+-----------+----------+--------------------------
+ id                | character varying(36)    |           | not null | uuid_generate_v4()::text
+ created_at        | timestamp with time zone |           | not null | now()
+ actor_id          | character varying(255)   |           | not null | 
+ event_type        | character varying(100)   |           | not null | 
+ thread_id         | character varying(255)   |           |          | 
+ approval_id       | character varying(36)    |           |          | 
+ tool_execution_id | character varying(36)    |           |          | 
+ payload           | jsonb                    |           | not null | '{}'::jsonb
+Indexes:
+    "audit_log_pkey" PRIMARY KEY, btree (id)
+    "idx_audit_log_actor_id" btree (actor_id)
+    "idx_audit_log_approval_id" btree (approval_id)
+    "idx_audit_log_created_at" btree (created_at)
+    "idx_audit_log_event_type" btree (event_type)
+    "idx_audit_log_thread_id" btree (thread_id)
+Check constraints:
+    "audit_log_event_type_check" CHECK (event_type::text = ANY (ARRAY['approval_created'::character varying, 'approval_claimed'::character varying, 'approval_approved'::character varying, 'approval_rejected'::character varying, 'approval_expired'::character varying, 'tool_execution_started'::character varying, 'tool_execution_completed'::character varying, 'tool_execution_failed'::character varying, 'stale_claim_reclaimed'::character varying]::text[]))
+
+\n--- SUPPLEMENT: Ground truth from /api/deals list (since /api/deals/{id} redirects) ---
+PARSE_ERROR Expecting value: line 1 column 1 (char 0)
+\n--- SUPPLEMENT: Ground truth from /api/deals list (since /api/deals/{id} redirects) ---
+NOT FOUND
+\n--- SUPPLEMENT: /api/deals payload inspection (first 2 items keys) ---
+PARSE_ERROR Expecting value: line 1 column 1 (char 0)
+\n--- SUPPLEMENT: /api/deals payload inspection (first 2 items keys) ---
+['action_count', 'alias_count', 'broker', 'canonical_name', 'company_info', 'created_at', 'days_since_update', 'deal_id', 'display_name', 'folder_path', 'identifiers', 'metadata', 'stage', 'status', 'updated_at']
+{'deal_id': 'DL-0037', 'canonical_name': 'QA Rerun Test', 'display_name': 'QA Rerun', 'folder_path': None, 'stage': 'inbound', 'status': 'active', 'identifiers': {}, 'company_info': {}, 'broker': {}, 'metadata': {}, 'created_at': '2026-02-02T19:42:19.724126Z', 'updated_at': '2026-02-02T19:42:19.724126Z', 'days_since_update': 0.0, 'action_count': 0, 'alias_count': 0}
+['action_count', 'alias_count', 'broker', 'canonical_name', 'company_info', 'created_at', 'days_since_update', 'deal_id', 'display_name', 'folder_path', 'identifiers', 'metadata', 'stage', 'status', 'updated_at']
+{'deal_id': 'DL-0036', 'canonical_name': 'QA Regression Test', 'display_name': 'QA Regression', 'folder_path': None, 'stage': 'inbound', 'status': 'active', 'identifiers': {}, 'company_info': {}, 'broker': {}, 'metadata': {}, 'created_at': '2026-02-02T19:26:43.779105Z', 'updated_at': '2026-02-02T19:26:43.779105Z', 'days_since_update': 0.0, 'action_count': 0, 'alias_count': 0}
+\n--- SUPPLEMENT: Ground truth fields from /api/deals list (using canonical_name/display_name) ---
+NOT FOUND
+\n--- SUPPLEMENT: Ground truth fields from /api/deals list (using canonical_name/display_name) ---
+NOT FOUND
+\n--- SUPPLEMENT: Ground truth fields from /api/deals list (using canonical_name/display_name) ---
+STAGE=inbound
+COMPANY=QA Rerun Test
+ID=DL-0037
+VALUE=?
+\n--- SUPPLEMENT: tool_executions recent rows (schema lacks thread_id) ---
+time="2026-02-02T20:52:39-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-02T20:52:39-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+                  id                  |    tool_name    | success |          created_at           
+--------------------------------------+-----------------+---------+-------------------------------
+ 85039890-93e7-4150-98a8-cf521b26395e | transition_deal | t       | 2026-02-03 02:15:07.137654+00
+ 86ff1d69-143a-4aa6-9baf-a4b3be0e3443 | transition_deal | t       | 2026-02-03 02:14:50.430629+00
+ 2766bd77-87ad-4d88-a7e4-b75134ddac20 | transition_deal | t       | 2026-02-03 02:12:38.006155+00
+(3 rows)
+

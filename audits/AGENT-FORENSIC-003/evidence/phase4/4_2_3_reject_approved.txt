@@ -1,0 +1,6 @@
+=== CHECK 4.2.3: Reject an already-approved approval (invalid transition) ===
+Approval ID: b652bc7f-39b4-4da3-8692-da2ac76267be
+Timestamp: 2026-02-03T13:08:37-06:00
+
+{"detail":"Cannot reject approval (status: approved)"}
+HTTP_CODE: 409

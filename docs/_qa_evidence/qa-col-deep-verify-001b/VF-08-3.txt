@@ -1,0 +1,4 @@
+59:    critique_result: dict | None = None
+120:                        critique_result,
+142:                        critique_result = EXCLUDED.critique_result,
+166:                    json.dumps(snapshot.critique_result) if snapshot.critique_result else None,

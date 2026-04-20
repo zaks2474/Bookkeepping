@@ -1,0 +1,7 @@
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/dashboard/AnomalyBadge.tsx
+=== /home/zaks/zakops-agent-api/apps/dashboard/src/components/dashboard/AnomalyBadge.tsx ===
+'use client';
+
+import { useEffect, useState } from 'react';
+import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';

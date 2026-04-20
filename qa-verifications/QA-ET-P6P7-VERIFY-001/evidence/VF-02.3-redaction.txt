@@ -1,0 +1,4 @@
+def _redact_params(params: dict) -> dict:
+            redacted[k] = _redact_params(v)
+    record.extra_data = _redact_params(params)
+    record.extra_data = _redact_params(details) if details else {}

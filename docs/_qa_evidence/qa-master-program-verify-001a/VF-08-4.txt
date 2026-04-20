@@ -1,0 +1,4 @@
+295:                # F-13: processed_by/processing_action live in raw_content JSONB, not separate columns
+300:                        raw_content = COALESCE(raw_content, '{}'::jsonb) || jsonb_build_object(
+301:                            'processed_by', 'retention_cleanup',
+302:                            'processing_action', 'auto_rejected_stale',

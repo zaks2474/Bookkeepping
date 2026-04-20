@@ -1,0 +1,26 @@
+=== VF-02.4 MANIFEST SCHEMA VALIDATOR SEMANTICS ===
+3:# Enforces required fields and expected surface entries in INFRASTRUCTURE_MANIFEST.md
+6:MANIFEST="${MANIFEST:-/home/zaks/zakops-agent-api/INFRASTRUCTURE_MANIFEST.md}"
+7:SCHEMA_FILE="$(dirname "$0")/schemas/manifest-contract-surfaces.schema.json"
+8:EXPECTED_COUNT=14
+10:PASS=0
+11:FAIL=0
+14:pass() { echo "  PASS: $1"; PASS=$((PASS + 1)); }
+15:fail() { echo "  FAIL: $1"; FAIL=$((FAIL + 1)); }
+23:  fail "INFRASTRUCTURE_MANIFEST.md not found at $MANIFEST"
+25:  echo "Manifest Contract Section Validation: FAIL ($PASS pass, $FAIL fail)"
+26:  exit 1
+34:  echo "Manifest Contract Section Validation: FAIL ($PASS pass, $FAIL fail)"
+35:  exit 1
+40:HEADER=$(grep -i "Contract Surfaces" "$MANIFEST" 2>/dev/null | head -1) || HEADER=""
+42:  pass "Contract Surfaces header found"
+49:  fail "No Contract Surfaces header found"
+60:# Check 5: All surface IDs present (S1 through S14)
+73:# Check 6: Status field validation (each entry has present or PASS)
+76:  if ! echo "$line" | grep -qE "(present|PASS)"; then
+83:  pass "All entries have valid status (present or PASS)"
+95:# Check 8: S10-S14 labels present
+96:NEW_SURFACES=("S10 Dependency" "S11 Env" "S12 Error" "S13 Test" "S14 Performance")
+106:  pass "All S10-S14 labels present ($NS_FOUND/${#NEW_SURFACES[@]})"
+110:echo "Manifest Contract Section Validation: $([ "$FAIL" -eq 0 ] && echo "PASS" || echo "FAIL") ($PASS pass, $FAIL fail, $WARN warn)"
+111:exit "$FAIL"

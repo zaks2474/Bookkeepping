@@ -1,0 +1,54 @@
+/home/zaks/zakops-backend/src/core/actions/policy.py:240:        await self._emit_event(
+/home/zaks/zakops-backend/src/core/actions/policy.py:375:        await self._emit_event(
+/home/zaks/zakops-backend/src/core/actions/policy.py:443:        await self._emit_event(
+/home/zaks/zakops-backend/src/core/actions/policy.py:475:    async def _emit_event(
+/home/zaks/zakops-backend/src/core/agent/actions.py:163:        await self._emit_event(
+/home/zaks/zakops-backend/src/core/agent/actions.py:197:        await self._emit_event(
+/home/zaks/zakops-backend/src/core/agent/actions.py:226:        await self._emit_event(
+/home/zaks/zakops-backend/src/core/agent/actions.py:268:        await self._emit_event(
+/home/zaks/zakops-backend/src/core/agent/actions.py:618:    async def _emit_event(
+/home/zaks/zakops-backend/src/core/agent/reasoning.py:187:        await self._emit_event(
+/home/zaks/zakops-backend/src/core/agent/reasoning.py:237:        await self._emit_event(
+/home/zaks/zakops-backend/src/core/agent/reasoning.py:274:        await self._emit_event(
+/home/zaks/zakops-backend/src/core/agent/reasoning.py:306:        await self._emit_event(
+/home/zaks/zakops-backend/src/core/agent/reasoning.py:614:    async def _emit_event(
+/home/zaks/zakops-backend/src/core/agent/callbacks.py:4:Handles events from agent execution and emits to event system.
+/home/zaks/zakops-backend/src/core/outbox/processor.py:19:from ..events.handlers import dispatch_event
+/home/zaks/zakops-backend/src/core/outbox/processor.py:173:                await dispatch_event(entry["event_type"], event_data)
+/home/zaks/zakops-backend/src/core/outbox/transactional.py:32:            await txn.emit(
+/home/zaks/zakops-backend/src/core/outbox/transactional.py:60:    async def emit(
+/home/zaks/zakops-backend/src/core/outbox/transactional.py:91:    async def emit_batch(
+/home/zaks/zakops-backend/src/core/outbox/transactional.py:106:            entry = await self.emit(correlation_id, event_type, event_data)
+/home/zaks/zakops-backend/src/core/outbox/transactional.py:111:    def emitted_events(self) -> list[OutboxEntry]:
+/home/zaks/zakops-backend/src/core/outbox/transactional.py:112:        """Get list of events emitted in this transaction."""
+/home/zaks/zakops-backend/src/core/outbox/transactional.py:124:            await txn.emit(deal_id, "deal.created", {...})
+/home/zaks/zakops-backend/src/core/events/integration.py:29:def emit_deal_event(event_type: DealEventType):
+/home/zaks/zakops-backend/src/core/events/integration.py:31:    Decorator to emit a deal event after a function completes.
+/home/zaks/zakops-backend/src/core/events/integration.py:40:        @emit_deal_event(DealEventType.CREATED)
+/home/zaks/zakops-backend/src/core/events/integration.py:88:                    logger.warning(f"Failed to emit deal event: {e}")
+/home/zaks/zakops-backend/src/core/events/integration.py:95:def emit_action_event(event_type: ActionEventType):
+/home/zaks/zakops-backend/src/core/events/integration.py:97:    Decorator to emit an action event after a function completes.
+/home/zaks/zakops-backend/src/core/events/integration.py:103:        @emit_action_event(ActionEventType.APPROVED)
+/home/zaks/zakops-backend/src/core/events/integration.py:166:                    logger.warning(f"Failed to emit action event: {e}")
+/home/zaks/zakops-backend/src/core/events/integration.py:174:async def emit_via_outbox(
+/home/zaks/zakops-backend/src/core/events/integration.py:182:    Manually emit an event via the outbox.
+/home/zaks/zakops-backend/src/core/events/integration.py:184:    Use this when you need to emit events outside of decorators.
+/home/zaks/zakops-backend/src/core/events/integration.py:187:        await emit_via_outbox(
+/home/zaks/zakops-backend/src/core/events/handlers.py:59:async def dispatch_event(event_type: str, event_data: dict[str, Any]):
+/home/zaks/zakops-backend/src/core/events/handlers.py:228:    register_handler("deal.created", handle_deal_created)
+/home/zaks/zakops-backend/src/core/events/handlers.py:229:    register_handler("deal.stage_changed", handle_stage_changed)
+/home/zaks/zakops-backend/src/core/chat_orchestrator.py:98:- Do NOT invent placeholder deal IDs like "DEAL-2025-XXX". If you don't know the deal_id, ask the user to select a deal (do not emit a proposal).
+/home/zaks/zakops-backend/src/api/orchestration/routers/invoke.py:58:    Events are emitted in real-time via SSE.
+/home/zaks/zakops-backend/src/api/orchestration/agent_invocation.py:925:    """Start a run and emit the run_started event."""
+/home/zaks/zakops-backend/src/api/orchestration/agent_invocation.py:945:    """Complete a run and emit the run_completed event."""
+/home/zaks/zakops-backend/src/api/orchestration/agent_invocation.py:975:    """Fail a run and emit the run_failed event."""
+/home/zaks/zakops-backend/src/api/orchestration/agent_invocation.py:997:async def emit_stream_token(
+/home/zaks/zakops-backend/src/api/shared/security.py:34:    async def dispatch(self, request: Request, call_next: Callable) -> Response:
+/home/zaks/zakops-backend/src/api/shared/middleware/trace.py:63:    async def dispatch(self, request: Request, call_next):
+/home/zaks/zakops-backend/src/api/shared/middleware/cooldown.py:24:    async def dispatch(self, request: Request, call_next: Callable) -> Response:
+/home/zaks/zakops-backend/src/api/shared/middleware/auth.py:65:    async def dispatch(self, request: Request, call_next: Callable) -> Response:
+/home/zaks/zakops-backend/src/api/shared/middleware/tracing.py:41:    async def dispatch(self, request: Request, call_next: Callable) -> Response:
+/home/zaks/zakops-backend/src/api/shared/middleware/apikey.py:19:    async def dispatch(self, request: Request, call_next: Callable) -> Response:
+/home/zaks/zakops-backend/src/api/shared/middleware/idempotency.py:51:    async def dispatch(self, request: Request, call_next: Callable) -> Response:
+/home/zaks/zakops-backend/src/api/shared/middleware/metrics.py:7:Tracks request timing, status codes, and emits metrics for monitoring.
+/home/zaks/zakops-backend/src/api/shared/middleware/metrics.py:41:    async def dispatch(self, request: Request, call_next: Callable) -> Response:

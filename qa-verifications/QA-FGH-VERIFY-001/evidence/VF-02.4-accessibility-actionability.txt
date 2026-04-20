@@ -1,0 +1,13 @@
+=== VF-02.4 ACCESSIBILITY ACTIONABILITY ===
+12:- Use semantic HTML elements (`<nav>`, `<main>`, `<section>`, `<article>`, `<aside>`, `<header>`, `<footer>`) over generic `<div>` wrappers
+18:- All interactive elements must be keyboard-reachable (Tab/Shift+Tab)
+20:- Modals must trap focus inside and return focus to trigger on close
+22:- Visible focus indicators — never `outline: none` without a visible replacement
+25:- Target WCAG AA minimum: 4.5:1 for normal text, 3:1 for large text (18px+ bold or 24px+)
+30:- Prefer native HTML semantics over ARIA (`<button>` over `<div role="button">`)
+31:- When ARIA is necessary: `aria-label` for icon-only buttons, `aria-live` for dynamic content updates, `aria-expanded` for collapsible sections
+32:- Form inputs must have associated `<label>` elements or `aria-label`
+33:- Do not use `aria-hidden="true"` on focusable elements
+36:- Wrap non-essential animations with `prefers-reduced-motion` media query
+38:- Pattern: `@media (prefers-reduced-motion: reduce) { .animated { animation: none; transition: none; } }`
+42:- SVG icons used as interactive elements need `aria-label` or `<title>` inside

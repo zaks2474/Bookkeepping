@@ -1,0 +1,27 @@
+================================================================================
+NC-0: INTEGRITY HARNESS — Git Status for All 3 Repos
+================================================================================
+Timestamp: 2026-02-08
+
+=== MONOREPO (zakops-agent-api) ===
+Branch: fix/full-remediation-001
+Dirty files: 2 (untracked)
+  ?? "Exit: "
+  ?? echo
+
+=== BACKEND (zakops-backend) ===
+Modified (tracked): 29 files
+Untracked: 5 files
+Total dirty: 34
+
+=== ZAKS-LLM (Zaks-llm) ===
+Modified (tracked): 6 files
+Untracked: 35+ files
+Total dirty: 41+
+
+SUMMARY:
+  Monorepo: 2 dirty (benign untracked artifacts)
+  Backend: 34 dirty (active development branch)
+  Zaks-llm: 41+ dirty (many untracked experiment files)
+
+Note: None of the dirty files affect the QA verification targets.

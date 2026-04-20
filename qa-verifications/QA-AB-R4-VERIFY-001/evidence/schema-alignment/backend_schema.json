@@ -1,0 +1,62 @@
+{
+  "action_count": {
+    "type": "integer",
+    "example": 0
+  },
+  "alias_count": {
+    "type": "integer",
+    "example": 0
+  },
+  "broker": {
+    "type": "object",
+    "keys": []
+  },
+  "canonical_name": {
+    "type": "string",
+    "example": "QA Outbox Test Corp"
+  },
+  "company_info": {
+    "type": "object",
+    "keys": []
+  },
+  "created_at": {
+    "type": "string",
+    "example": "2026-02-05T20:15:38.808126Z"
+  },
+  "days_since_update": {
+    "type": "number",
+    "example": 0.0
+  },
+  "deal_id": {
+    "type": "string",
+    "example": "DL-0028"
+  },
+  "display_name": {
+    "type": "null",
+    "example": null
+  },
+  "folder_path": {
+    "type": "null",
+    "example": null
+  },
+  "identifiers": {
+    "type": "object",
+    "keys": []
+  },
+  "metadata": {
+    "type": "object",
+    "keys": []
+  },
+  "stage": {
+    "type": "string",
+    "example": "inbound"
+  },
+  "status": {
+    "type": "string",
+    "example": "active"
+  },
+  "updated_at": {
+    "type": "string",
+    "example": "2026-02-05T20:15:38.808126Z"
+  }
+}

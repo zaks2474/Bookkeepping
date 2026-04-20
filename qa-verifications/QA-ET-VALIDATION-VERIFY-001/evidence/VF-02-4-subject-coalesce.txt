@@ -1,0 +1,23 @@
+=== VF-02.4 SUBJECT COALESCE ===
+/home/zaks/zakops-backend/src/api/orchestration/main.py:240:    # P1-03: display_subject = COALESCE(email_subject, subject) for transitional rendering
+/home/zaks/zakops-backend/src/api/orchestration/main.py:241:    display_subject: str | None = None
+/home/zaks/zakops-backend/src/api/orchestration/main.py:242:    email_subject: str | None = None
+/home/zaks/zakops-backend/src/api/orchestration/main.py:281:    - langsmith_* sources: strict required fields (email_subject, sender, classification,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:290:    email_subject: str | None = None
+/home/zaks/zakops-backend/src/api/orchestration/main.py:343:    "email_subject", "sender", "classification", "schema_version",
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1507:            COALESCE(q.email_subject, q.subject) AS display_subject,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1508:            q.email_subject,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1575:            COALESCE(q.email_subject, q.subject) AS display_subject,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1576:            q.email_subject,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1674:        if not item.email_subject:
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1675:            missing.append("email_subject")
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1719:               COALESCE(q.email_subject, q.subject) AS display_subject,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1720:               q.email_subject, q.sender, q.sender_name, q.sender_domain,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1751:                (id, message_id, subject, email_subject, sender, sender_name,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1767:                      COALESCE(email_subject, subject) AS display_subject,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1768:                      email_subject, sender, sender_name, sender_domain,
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1781:            item.email_subject,  # $3: subject (legacy column, same value)
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1782:            item.email_subject,  # $4: email_subject (canonical column)
+/home/zaks/zakops-backend/src/api/orchestration/main.py:1994:                        'email_subject': subject,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:427:                    const subj = item.email_subject || item.subject || 'Unknown subject';
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:514:                  {selectedItem ? (selectedItem.email_subject || selectedItem.subject || 'Email preview') : 'Select an item'}

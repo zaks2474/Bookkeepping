@@ -1,0 +1,8 @@
+54:├── Day 6: DL-009, DL-010 (Quarantine approve/preview) — REC-009, REC-010
+113:- Address P1 limitations: quarantine approval/preview, action endpoints, markdown rendering, settings test connection, etc.
+184:| REC-010 | Fix preview to use correct quarantine item ID endpoint | P1 | Fix preview to use correct quarantine item ID endpoint | Implement exactly as stated in the recommendation; update UI, Next.js API routes, and backend where needed. | Gate 0 Preflight; ensure target files/services are reachable; if write, ensure API key injection is in place (REC-005). | Preview loads content | 01-endpoint-proofs.md; 03-e2e-results.txt |
+242:| UP-22 | Bulk action preview/rollback | Low | Phase 4+ (Polish/Optional) | Included in Gate B/C or explicit upgrade verification in execution tasks. |
+475:| `quarantine-preview-wrong_id-actions` | DL-010 | Preview uses `/api/actions/{id}` but quarantine items have different IDs | Codex, Claude | Quarantine | Preview | Wrong ID | Quarantine detail |
+541:| `quarantine-preview-fix_id` | REC-010 | Fix preview to use correct quarantine item ID endpoint | Quarantine detail | Preview loads content | Codex, Claude |
+924:├── Day 6: DL-009, DL-010 (Quarantine approve/preview) — REC-009, REC-010
+986:| UP-22 | Bulk action preview/rollback | UX | Codex | Low |

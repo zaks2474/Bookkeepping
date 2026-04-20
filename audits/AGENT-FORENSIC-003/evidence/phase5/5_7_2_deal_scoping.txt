@@ -1,0 +1,23 @@
+=== CHECK 5.7.2: Deal Scoping in Chat ===
+Timestamp: 2026-02-03T13:22:14-06:00
+
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:92:  const dealId = params.id as string;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:121:        getDeal(dealId),
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:122:        getDealEvents(dealId, 50),
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:123:        getDealCaseFile(dealId),
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:124:        getDealEnrichment(dealId),
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:125:        getDealMaterials(dealId),
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:126:        getKineticActions({ deal_id: dealId }),
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:254:  }, [dealId]);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:261:      const result = await transitionDeal(dealId, selectedTransition, transitionReason, transitionApprovedBy);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:283:      const result = await addDealNote(dealId, noteContent);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:321:          {error || `Deal "${dealId}" not found or could not be loaded`}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:324:          Endpoint: /api/deals/{dealId}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:354:            {deal.canonical_name || deal.deal_id}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:371:            <span className='text-sm text-muted-foreground'>{deal.deal_id}</span>
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:378:          <Link href={`/chat?deal_id=${dealId}`}>
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:546:                      <Link href={`/actions?deal_id=${dealId}`}>
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:570:                      <Link href={`/actions?deal_id=${dealId}`}>
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:1211:                {deal.state_machine?.advisory_context || 'Move deal to next stage'}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:1260:                        onClick={() => router.push(`/actions?deal_id=${dealId}&selected=${action.action_id}`)}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:1304:              <Link href={`/actions?deal_id=${dealId}`}>

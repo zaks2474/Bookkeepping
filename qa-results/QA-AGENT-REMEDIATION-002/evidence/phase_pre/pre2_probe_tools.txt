@@ -1,0 +1,20 @@
+=== PRE-2.1: Probe Tool Availability ===
+--- Container: zakops-agent-api ---
+curl: NOT FOUND
+wget: NOT FOUND
+python3: /usr/local/bin/python3
+
+--- Container: zakops-backend-backend-1 ---
+curl: /usr/bin/curl
+wget: NOT FOUND
+python3: /usr/local/bin/python3
+
+=== PRE-2.2: Service Connectivity Probes ===
+--- Host → Agent API ---
+HTTP 200
+--- Host → Backend API ---
+HTTP 200
+--- Host → Dashboard ---
+HTTP 307
+--- Agent API container → Backend (via host.docker.internal) ---
+HTTP 200

@@ -1,0 +1,14 @@
+=== Contract codes ===
+| **201 Created** | New quarantine item created |
+| **200 OK** | Dedup hit — item with same `message_id` already exists |
+| **400 Bad Request** | Invalid payload or unrecognized `source_type` (must be one of: `email`, `email_sync`, `langsmith_shadow`, `langsmith_live`, `manual`) |
+| **401 Unauthorized** | Missing or invalid `X-API-Key` |
+| **429 Too Many Requests** | Rate limit exceeded |
+| **503 Service Not Configured** | `ZAKOPS_API_KEY` not set (fail-closed) |
+=== Code: 400 for bad source_type ===
+745:        raise HTTPException(status_code=400, detail="No fields to update")
+981:                raise HTTPException(status_code=400, detail=f"Deal {deal_id} is deleted")
+982:            raise HTTPException(status_code=400, detail=err_msg)
+1055:            raise HTTPException(status_code=400, detail=str(e))
+1208:                status_code=400,
+=== Code: 429 rate limit ===

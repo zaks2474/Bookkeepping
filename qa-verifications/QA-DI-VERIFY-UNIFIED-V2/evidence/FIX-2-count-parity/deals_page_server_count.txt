@@ -1,0 +1,9 @@
+=== F2.3: /deals uses server count ===
+72:  const [totalCount, setTotalCount] = useState<number>(0);
+107:      setTotalCount(result.totalCount);
+397:              {totalCount} Deal{totalCount !== 1 ? 's' : ''}
+---
+Header display line:
+397:              {totalCount} Deal{totalCount !== 1 ? 's' : ''}
+totalCount references: 3
+VERDICT: PASS

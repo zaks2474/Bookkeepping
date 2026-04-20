@@ -1,0 +1,15 @@
+=== STEP 2.8: Streaming — Hardened (GPT RT-6) ===
+--- MDv2 streaming ---
+Elapsed: 0.01s
+Lines captured: 1
+data: events: 0
+Model tokens found: False
+---
+{"detail":"Authentication required"}
+---
+GATE CHECK:
+  >=3 data: events: FAIL (0)
+  Model tokens present: FAIL
+  First output < 5s: PASS (0.01s)
+--- V1 chatbot streaming ---
+{"detail":"Not authenticated. Provide either X-Service-Token or Bearer token."}

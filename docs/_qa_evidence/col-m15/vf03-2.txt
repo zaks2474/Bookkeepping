@@ -1,0 +1,14 @@
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/encryption.py:1:"""At-rest encryption for checkpoint data using AES-256-GCM.
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/encryption.py:107:class CheckpointEncryption:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/encryption.py:108:    """AES-256-GCM encryption for checkpoint data."""
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/encryption.py:193:_checkpoint_encryption: Optional[CheckpointEncryption] = None
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/encryption.py:196:def get_checkpoint_encryption() -> CheckpointEncryption:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/encryption.py:201:        _checkpoint_encryption = CheckpointEncryption()
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/jose/constants.py:59:    AES_PSEUDO = {A128CBC, A192CBC, A256CBC, A128GCM, A192GCM, A256GCM}
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/jose/constants.py:60:    AES_JWE_ENC = {A128CBC_HS256, A192CBC_HS384, A256CBC_HS512, A128GCM, A192GCM, A256GCM}
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/ddgs/http_client2.py:78:    "TLS_AES_128_GCM_SHA256", "TLS_AES_256_GCM_SHA384", "TLS_CHACHA20_POLY1305_SHA256",
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/ddgs/http_client2.py:80:    "ECDHE-ECDSA-AES128-GCM-SHA256", "ECDHE-ECDSA-CHACHA20-POLY1305", "ECDHE-RSA-AES128-GCM-SHA256",
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/ddgs/http_client2.py:81:    "ECDHE-RSA-CHACHA20-POLY1305", "ECDHE-ECDSA-AES256-GCM-SHA384", "ECDHE-RSA-AES256-GCM-SHA384",
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/ddgs/http_client2.py:83:    "ECDHE-ECDSA-AES128-GCM-SHA256", "ECDHE-ECDSA-CHACHA20-POLY1305", "ECDHE-RSA-AES128-GCM-SHA256",
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/ddgs/http_client2.py:84:    "ECDHE-RSA-CHACHA20-POLY1305", "ECDHE-ECDSA-AES256-GCM-SHA384", "ECDHE-RSA-AES256-GCM-SHA384",
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/ddgs/http_client2.py:88:    "ECDHE-RSA-AES256-SHA", "AES256-GCM-SHA384", "AES256-SHA256", "AES256-SHA", "DES-CBC3-SHA",

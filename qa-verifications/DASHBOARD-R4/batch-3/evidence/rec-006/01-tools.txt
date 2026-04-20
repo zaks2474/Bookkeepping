@@ -1,0 +1,14 @@
+Agent tool: list_deals (deal_tools.py)
+  Default status filter: "active" (matches backend + dashboard)
+  Returns metadata.source = "backend_api"
+  Uses BackendClient.list_deals() — same data source as dashboard
+
+Agent system.md tool routing:
+  "How many deals?" → list_deals
+  NEVER use search_deals for counting
+  MUST call tool before answering counts
+
+Deal counts at preflight:
+  backend=48
+  dashboard=48
+  ALIGNED

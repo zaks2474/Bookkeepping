@@ -1,0 +1,17 @@
+=== QA-6.2: T5.5+T5.6 Retention ===
+--- Retention/archive mechanism ---
+time="2026-02-04T01:54:49-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-04T01:54:49-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+                                Table "public.audit_log_archive"
+      Column       |           Type           | Collation | Nullable |         Default          
+-------------------+--------------------------+-----------+----------+--------------------------
+ id                | character varying(36)    |           | not null | uuid_generate_v4()::text
+ created_at        | timestamp with time zone |           | not null | now()
+ actor_id          | character varying(255)   |           | not null | 
+ event_type        | character varying(100)   |           | not null | 
+ thread_id         | character varying(255)   |           |          | 
+ approval_id       | character varying(36)    |           |          | 
+ tool_execution_id | character varying(36)    |           |          | 
+ payload           | jsonb                    |           | not null | '{}'::jsonb
+Indexes:
+    "audit_log_archive_pkey" PRIMARY KEY, btree (id)

@@ -1,0 +1,8 @@
+=== XC-4 CI WIRING VS POLICY SCRIPTS ===
+41:              - 'tools/infra/validate-gatee-scan.sh'
+279:        run: bash tools/infra/validate-gatee-scan.sh
+288:          bash tools/infra/validate-ci-gatee-policy.sh
+289:          bash tools/infra/validate-surface-count-consistency.sh
+292:        run: STRICT=1 bash tools/infra/validate-surface14.sh
+-rwxr-xr-x 1 zaks zaks 2247 Feb 10 16:14 /home/zaks/zakops-agent-api/tools/infra/validate-ci-gatee-policy.sh
+-rwxr-xr-x 1 zaks zaks 3351 Feb 10 16:14 /home/zaks/zakops-agent-api/tools/infra/validate-surface-count-consistency.sh

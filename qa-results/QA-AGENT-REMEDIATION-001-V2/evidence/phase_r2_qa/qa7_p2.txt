@@ -1,0 +1,77 @@
+QA-7: P2 HARDENING VERIFICATION
+================================
+Tested: 2026-02-02
+
+All P2 findings were marked DEFERRED in finding_to_fix_matrix.md.
+Testing to verify deferral is accurate (no accidental fixes).
+
+## UF-012: python-jose dependency
+
+Command: grep "python-jose|jose" /home/zaks/zakops-agent-api/apps/agent-api/pyproject.toml
+
+Result:
+    "python-jose[cryptography]>=3.4.0",
+
+Status: DEFERRED
+VERIFY: PASS (still present, correctly deferred)
+
+## UF-015: Langfuse restart loop
+
+Command: docker ps --format "table {{.Names}}\t{{.Status}}" | grep -i langfuse
+
+Result:
+zakops-backend-langfuse-1        Restarting (1) 40 seconds ago
+
+Status: DEFERRED (backend service, out of scope for agent-api remediation)
+VERIFY: PASS (issue persists as expected)
+
+## UF-018: RAG /health 404
+
+Command: curl -s -o /dev/null -w "%{http_code}" http://localhost:8052/health
+
+Result: 404
+
+Status: DEFERRED (separate service, out of scope)
+VERIFY: PASS (404 persists as expected)
+
+## UF-019: MCP root 404
+
+Command: curl -s -o /dev/null -w "%{http_code}" http://localhost:9100/
+
+Result: 404
+
+Status: DEFERRED (by design, MCP doesn't serve root path)
+VERIFY: PASS (404 expected and correct)
+
+## UF-020: Backend /health
+
+Command: curl -s -o /dev/null -w "%{http_code}" http://localhost:8091/health
+
+Result: 200
+
+Status: DEFERRED (marked as "empty" in original finding)
+VERIFY: ANOMALY
+- Builder marked this as deferred/out-of-scope
+- Actual test shows 200 OK (working correctly)
+- This appears to have been a false finding in original audit
+
+## UF-022: curl missing in container
+
+Command: docker exec zakops-agent-api which curl
+
+Result: Exit code 1 (curl not found)
+
+Status: DEFERRED (use python urllib instead)
+VERIFY: PASS (curl still missing as expected)
+
+## OVERALL QA-7 VERDICT: PASS
+
+All P2 findings correctly deferred:
+- UF-012: python-jose still present (replace in future)
+- UF-015: Langfuse still restarting (backend issue)
+- UF-018: RAG still 404 (separate service)
+- UF-019: MCP still 404 (by design)
+- UF-020: Actually returns 200 (possible false finding)
+- UF-022: curl still missing (use python instead)
+
+No P2 findings were accidentally fixed. Deferral decisions are appropriate.

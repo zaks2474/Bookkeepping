@@ -1,0 +1,5 @@
+graph.py line 451: asyncio.create_task(snapshot_writer.write(snap))
+---
+TurnSnapshot created at lines 435-450 with full turn metadata
+Written via fire-and-forget create_task
+VERDICT: PASS

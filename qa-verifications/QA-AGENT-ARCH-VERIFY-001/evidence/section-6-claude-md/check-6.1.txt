@@ -1,0 +1,9 @@
+=== CHECK 6.1: Delegation Protocol ===
+PASS Delegation protocol section found
+65:## Agent Delegation Protocol
+67:Agents: `/contract-guardian` (sonnet), `/arch-reviewer` (opus), `/test-engineer` (sonnet)
+69:- **After any code change:** contract-guardian runs automatically via stop hook (Fast Tier).
+72:  Run `/arch-reviewer` with a short description of the intended change.
+73:- **After new feature/endpoint:** run `/test-engineer` to generate tests.
+74:- **For CLI tools:** use `gemini`/`codex` directly (optional, no delegation).
+CHECK 6.1: PASS

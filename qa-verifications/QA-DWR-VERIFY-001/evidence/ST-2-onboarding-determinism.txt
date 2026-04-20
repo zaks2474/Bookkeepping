@@ -1,0 +1,392 @@
+=== ST-2 ONBOARDING DETERMINISM ===
+
+> zakops-dashboard@1.0.0 test
+> vitest run src/__tests__/onboarding-sequence.test.tsx
+
+
+[1m[46m RUN [49m[22m [36mv4.0.17 [39m[90m/home/zaks/zakops-agent-api/apps/dashboard[39m
+
+[90mstderr[2m | src/__tests__/onboarding-sequence.test.tsx[2m > [22m[2mOnboarding Wizard Step Sequencing[2m > [22m[2mshould start at step 0 (Welcome) by default, not backendStep
+[22m[39mWarning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+
+[90mstderr[2m | src/__tests__/onboarding-sequence.test.tsx[2m > [22m[2mOnboarding Wizard Step Sequencing[2m > [22m[2mshould always start at step 0 regardless of initialStep parameter
+[22m[39mWarning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+
+[90mstderr[2m | src/__tests__/onboarding-sequence.test.tsx[2m > [22m[2mOnboarding Wizard Step Sequencing[2m > [22m[2mshould advance exactly one step on Continue
+[22m[39mWarning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+
+[90mstderr[2m | src/__tests__/onboarding-sequence.test.tsx[2m > [22m[2mOnboarding Wizard Step Sequencing[2m > [22m[2mshould load backendStep when resumeFromBackend is called
+[22m[39mWarning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+
+[90mstderr[2m | src/__tests__/onboarding-sequence.test.tsx[2m > [22m[2mOnboarding Wizard Step Sequencing[2m > [22m[2mshould reset to step 0 on start fresh
+[22m[39mWarning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+
+[90mstderr[2m | src/__tests__/onboarding-sequence.test.tsx[2m > [22m[2mOnboarding Wizard Step Sequencing[2m > [22m[2mshould not auto-resume on mount
+[22m[39mWarning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+
+[90mstderr[2m | src/__tests__/onboarding-sequence.test.tsx[2m > [22m[2mOnboarding Wizard Step Sequencing[2m > [22m[2mshould persist step to backend on forward navigation
+[22m[39mWarning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+
+[90mstderr[2m | src/__tests__/onboarding-sequence.test.tsx[2m > [22m[2mOnboarding Wizard Step Sequencing[2m > [22m[2mshould allow backward navigation without backend update
+[22m[39mWarning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+
+ [32m✓[39m src/__tests__/onboarding-sequence.test.tsx [2m([22m[2m9 tests[22m[2m)[22m[32m 28[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m9 passed[39m[22m[90m (9)[39m
+[2m   Start at [22m 00:02:31
+[2m   Duration [22m 484ms[2m (transform 45ms, setup 27ms, import 84ms, tests 28ms, environment 265ms)[22m
+
+--- run 2 ---
+
+> zakops-dashboard@1.0.0 test
+> vitest run src/__tests__/onboarding-sequence.test.tsx
+
+
+[1m[46m RUN [49m[22m [36mv4.0.17 [39m[90m/home/zaks/zakops-agent-api/apps/dashboard[39m
+
+[90mstderr[2m | src/__tests__/onboarding-sequence.test.tsx[2m > [22m[2mOnboarding Wizard Step Sequencing[2m > [22m[2mshould start at step 0 (Welcome) by default, not backendStep
+[22m[39mWarning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+
+[90mstderr[2m | src/__tests__/onboarding-sequence.test.tsx[2m > [22m[2mOnboarding Wizard Step Sequencing[2m > [22m[2mshould always start at step 0 regardless of initialStep parameter
+[22m[39mWarning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+
+[90mstderr[2m | src/__tests__/onboarding-sequence.test.tsx[2m > [22m[2mOnboarding Wizard Step Sequencing[2m > [22m[2mshould advance exactly one step on Continue
+[22m[39mWarning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+
+[90mstderr[2m | src/__tests__/onboarding-sequence.test.tsx[2m > [22m[2mOnboarding Wizard Step Sequencing[2m > [22m[2mshould load backendStep when resumeFromBackend is called
+[22m[39mWarning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+
+[90mstderr[2m | src/__tests__/onboarding-sequence.test.tsx[2m > [22m[2mOnboarding Wizard Step Sequencing[2m > [22m[2mshould reset to step 0 on start fresh
+[22m[39mWarning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+
+[90mstderr[2m | src/__tests__/onboarding-sequence.test.tsx[2m > [22m[2mOnboarding Wizard Step Sequencing[2m > [22m[2mshould not auto-resume on mount
+[22m[39mWarning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+
+[90mstderr[2m | src/__tests__/onboarding-sequence.test.tsx[2m > [22m[2mOnboarding Wizard Step Sequencing[2m > [22m[2mshould persist step to backend on forward navigation
+[22m[39mWarning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+
+[90mstderr[2m | src/__tests__/onboarding-sequence.test.tsx[2m > [22m[2mOnboarding Wizard Step Sequencing[2m > [22m[2mshould allow backward navigation without backend update
+[22m[39mWarning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/home/zaks/zakops-agent-api/apps/dashboard/node_modules/@testing-library/react/dist/pure.js:328:5)
+
+ [32m✓[39m src/__tests__/onboarding-sequence.test.tsx [2m([22m[2m9 tests[22m[2m)[22m[32m 27[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m9 passed[39m[22m[90m (9)[39m
+[2m   Start at [22m 00:02:31
+[2m   Duration [22m 514ms[2m (transform 47ms, setup 25ms, import 90ms, tests 27ms, environment 287ms)[22m
+

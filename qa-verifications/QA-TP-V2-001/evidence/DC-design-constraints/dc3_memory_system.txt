@@ -1,0 +1,23 @@
+=== DC-3: Memory System Integration ===
+--- DC-3.1: Completed runs recorded in MEMORY.md ---
+76:- TRIPASS-INTEGRATE-002: Complete (2026-02-09) — Multi-agent pipeline orchestrator, 9 AC all PASS
+79:### TriPass Pipeline (tools/tripass/tripass.sh)
+82:- Makefile: `tripass-init`, `tripass-run MISSION=<file>`, `tripass-status`, `tripass-gates RUN_ID=<id>`
+83:- Runs: `/home/zaks/bookkeeping/docs/_tripass_runs/`
+84:- Templates: `/home/zaks/bookkeeping/docs/_tripass_templates/`
+85:- SOP: `/home/zaks/bookkeeping/docs/TRIPASS_SOP.md`
+
+--- DC-3.2: Key findings captured ---
+79:### TriPass Pipeline (tools/tripass/tripass.sh)
+82:- Makefile: `tripass-init`, `tripass-run MISSION=<file>`, `tripass-status`, `tripass-gates RUN_ID=<id>`
+83:- Runs: `/home/zaks/bookkeeping/docs/_tripass_runs/`
+84:- Templates: `/home/zaks/bookkeeping/docs/_tripass_templates/`
+
+--- DC-3.3: Memory-sync sentinel pattern used ---
+57:    tripass_runs)
+58:      local runs_dir="/home/zaks/bookkeeping/docs/_tripass_runs"
+65:    tripass_latest)
+105:TRIPASS_RUNS=$(gather_fact tripass_runs)
+106:TRIPASS_LATEST=$(gather_fact tripass_latest)
+157:- **Facts:** CLAUDE.md=${CLAUDE_MD_LINES}L | deny=${DENY_RULES} | hooks=${HOOK_COUNT} | rules=${RULE_COUNT} | redocly=${REDOCLY_IGNORES} | cmds=${COMMAND_COUNT} | specs: backend=${BACKEND_SPEC}, agent=${AGENT_SPEC} | make=${MAKE_TARGETS} targets | tripass: ${TRIPASS_RUNS} runs (latest: ${TRIPASS_LATEST})
+

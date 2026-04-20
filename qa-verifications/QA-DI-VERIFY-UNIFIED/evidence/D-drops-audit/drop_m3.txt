@@ -1,0 +1,24 @@
+===============================================================
+DROP-M3: Q Constraints Q1-Q10 Answered
+===============================================================
+
+Source: /home/zaks/bookkeeping/qa-verifications/DEAL-INTEGRITY-UNIFIED/final-verification.md
+Section: "4. Mandatory Platform Constraints (Q1-Q10)"
+
+| Constraint | Topic                              | Status              |
+|------------|-------------------------------------|---------------------|
+| Q1         | Backfill reversibility              | SATISFIED           |
+| Q2         | Production observability            | SATISFIED           |
+| Q3         | Deployment and rollback sequencing  | SATISFIED           |
+| Q4         | Automated test strategy             | SATISFIED           |
+| Q5         | Agent API and RAG service impact    | PARTIALLY SATISFIED |
+| Q6         | Contract sync enforcement           | SATISFIED           |
+| Q7         | Lifecycle model (Option A with FSM) | SATISFIED           |
+| Q8         | Concurrency safety                  | SATISFIED           |
+| Q9         | Performance baselines               | SATISFIED           |
+| Q10        | Governance model                    | SATISFIED           |
+
+All 10 constraints have explicit entries in the final verification report.
+Q5 is the only one marked PARTIALLY SATISFIED (RAG re-index deferred as CS-003).
+
+VERDICT: PASS — All Q1-Q10 addressed; 9/10 fully satisfied, 1/10 partially satisfied with documented deferral

@@ -1,0 +1,34 @@
+=== ST-3 HOOK CONTRACT SELF-TEST ===
+=== Stop Hook Self-Test ===
+
+  PASS: Hook file exists
+
+--- Detection Branch Analysis ---
+  PASS: Branch 1: env-override (MONOREPO_ROOT_OVERRIDE)
+  PASS: Branch 2: git-rev-parse
+  PASS: Branch 3: known-path-fallback
+
+--- Fail-Closed Semantics ---
+  PASS: Fail-closed: 9 exit-2 markers (gate failures block stop)
+  PASS: Explicit skip reasons: 3 SKIP messages
+
+--- Gate Label Verification ---
+  PASS: Label: Gate A present
+  PASS: Label: Gate B present
+  PASS: Label: Gate E present
+
+--- Time Budget ---
+  PASS: Time budget enforcement: 3 checks
+
+--- Gate E Scanner Fallback ---
+  PASS: Gate E: rg scanner check present
+  PASS: Gate E: grep fallback present
+
+--- Signature Validation ---
+  PASS: Makefile signature check: validate-fast target lookup
+
+--- Runtime Branch Tests ---
+  PASS: Runtime: env-override branch works
+  PASS: Runtime: known-path-fallback branch works
+
+Stop Hook Self-Test: PASS (15 pass, 0 fail, 0 warn)

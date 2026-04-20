@@ -1,0 +1,20 @@
+total 48
+drwxr-xr-x  2 root root 4096 Feb  6 10:09 .
+drwxr-xr-x 19 root root 4096 Feb  6 11:54 ..
+-rw-r--r--  1 root root 3243 Feb  6 00:35 actions.json
+-rw-r--r--  1 root root 9398 Feb  6 00:35 deals.json
+-rw-r--r--  1 root root  208 Feb  6 07:24 error-401.json
+-rw-r--r--  1 root root  168 Feb  6 07:24 error-404.json
+-rw-r--r--  1 root root  471 Feb  6 07:24 error-500.json
+-rw-r--r--  1 root root  550 Feb  6 07:24 error-validation-400.json
+-rw-r--r--  1 root root   23 Feb  6 00:35 events.json
+-rw-r--r--  1 root root 1339 Feb  6 00:35 quarantine.json
+  actions.json: array, 9 items, 3243 bytes
+  deals.json: array, 25 items, 9398 bytes
+  error-401.json: object, 5 keys, 208 bytes
+  error-404.json: object, 4 keys, 168 bytes
+  error-500.json: object, 4 keys, 471 bytes
+  error-validation-400.json: object, 4 keys, 550 bytes
+  events.json: object, 2 keys, 23 bytes
+  WARNING: Suspiciously small
+  quarantine.json: array, 3 items, 1339 bytes

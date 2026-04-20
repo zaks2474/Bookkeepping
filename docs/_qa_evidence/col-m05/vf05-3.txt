@@ -1,0 +1,5 @@
+ * Shows: summary, facts, risks, decisions, assumptions, open items,
+ * Shows: summary, facts, risks, decisions, assumptions, open items,
+ * Shows: summary, facts, risks, decisions, assumptions, open items,
+ * Shows: summary, facts, risks, decisions, assumptions, open items,
+type BrainTab = 'facts' | 'risks' | 'decisions' | 'assumptions' | 'open_items' | 'ghost' | 'entities';

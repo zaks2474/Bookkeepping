@@ -1,0 +1,18 @@
+=== R3.C.1: Deal Chat Scoping ===
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:188:  const initialDealId = searchParams.get('deal_id');
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:238:    // Skip if we have a deal_id in URL (fresh start with deal)
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:257:            setSelectedDealId(backendSession.scope?.deal_id || '');
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:377:      return { type: 'deal', deal_id: selectedDealId };
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:839:                    <SelectItem key={deal.deal_id} value={deal.deal_id}>
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:840:                      {deal.canonical_name || deal.deal_id}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:962:                    ? `Ask about ${deals.find((d) => d.deal_id === selectedDealId)?.canonical_name || selectedDealId}...`
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1109:                    {proposal.deal_id && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1111:                        {proposal.deal_id}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:378:          <Link href={`/chat?deal_id=${dealId}`}>
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/route.ts:95:    if (body.scope?.deal_id) {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/route.ts:102:            deal_id: body.scope.deal_id,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/route.ts:204:function generateHelpfulResponse(query: string, scope?: { type?: string; deal_id?: string }): string {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealChat.tsx:59:  dealId: string;
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealChat.tsx:89:  dealId,
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/AgentDrawer.tsx:173:function AgentChat({ dealId, dealName, initialQuestion }: AgentChatProps) {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/AgentDrawer.tsx:204:          ? `I'll help you with ${dealName || dealId}. You asked: "${userMessage.content}"\n\nThis feature connects to the agent backend. For now, please use the Chat page for full agent interactions.`

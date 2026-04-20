@@ -1,0 +1,15 @@
+=== V2: SUPPLY-CHAIN AUDIT ===
+--- Pinned Version Check ---
+PASS openapi-typescript: 7.10.1 (pinned: True)
+PASS typescript: 5.7.2 (pinned: True)
+PASS zod: 3.25.76 (pinned: True)
+PASS eslint: 8.48.0 (pinned: True)
+
+--- Risky Generator Check ---
+PASS: orval NOT found
+PASS: swagger-codegen NOT found
+PASS: openapi-generator NOT found
+PASS: autorest NOT found
+
+--- Lockfile Check ---
+PASS: package-lock.json exists

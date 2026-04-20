@@ -1,0 +1,341 @@
+- generic [active] [ref=e1]:
+  - region "Notifications alt+T"
+  - generic [ref=e6]:
+    - generic [ref=e7]:
+      - link "Back to Dashboard" [ref=e8] [cursor=pointer]:
+        - /url: /dashboard
+        - img [ref=e9]
+        - text: Back to Dashboard
+      - heading "Settings" [level=1] [ref=e12]
+      - paragraph [ref=e13]: Manage your AI provider, integrations, notifications, and preferences.
+    - generic [ref=e14]:
+      - combobox [ref=e16]:
+        - generic:
+          - generic:
+            - img
+            - text: AI Provider
+        - img
+      - generic [ref=e17]:
+        - region "AI Provider" [ref=e18]:
+          - generic [ref=e19]:
+            - generic [ref=e22]:
+              - img [ref=e24]
+              - generic [ref=e27]:
+                - generic [ref=e28]: AI Provider
+                - generic [ref=e29]: Select and configure the AI provider for chat and agent operations.
+            - generic [ref=e30]:
+              - generic [ref=e31]:
+                - generic [ref=e33] [cursor=pointer]:
+                  - img [ref=e35]
+                  - generic [ref=e38]:
+                    - generic [ref=e39]:
+                      - text: Local vLLM (Qwen)
+                      - generic [ref=e40]: Primary
+                    - generic [ref=e41]: Qwen 2.5 32B running on local infrastructure
+                - generic [ref=e43] [cursor=pointer]:
+                  - img [ref=e45]
+                  - generic [ref=e52]:
+                    - generic [ref=e53]: OpenAI
+                    - generic [ref=e54]: GPT-4o, GPT-4 Turbo, GPT-3.5
+                - generic [ref=e56] [cursor=pointer]:
+                  - img [ref=e58]
+                  - generic [ref=e62]:
+                    - generic [ref=e63]:
+                      - text: Anthropic Claude
+                      - generic [ref=e64]: Fallback
+                    - generic [ref=e65]: Claude 3.5 Sonnet, Claude 3 Opus
+                - generic [ref=e67] [cursor=pointer]:
+                  - img [ref=e69]
+                  - generic [ref=e71]:
+                    - generic [ref=e72]: Custom Endpoint
+                    - generic [ref=e73]: OpenAI-compatible API endpoint
+              - generic [ref=e74]:
+                - generic [ref=e76]:
+                  - img [ref=e77]
+                  - text: Local vLLM (Qwen) Configuration
+                - generic [ref=e80]:
+                  - generic [ref=e81]:
+                    - generic [ref=e82]: Endpoint URL
+                    - textbox "Endpoint URL" [ref=e83]:
+                      - /placeholder: http://localhost:8095
+                      - text: http://localhost:8095
+                  - generic [ref=e84]:
+                    - generic [ref=e85]: Model
+                    - combobox "Model" [ref=e86]:
+                      - generic: Qwen/Qwen2.5-32B-Instruct-AWQ
+                      - img
+                  - button "Test Connection" [ref=e87]:
+                    - img
+                    - text: Test Connection
+              - generic [ref=e88]:
+                - heading "Architecture Note" [level=4] [ref=e89]
+                - list [ref=e90]:
+                  - listitem [ref=e91]:
+                    - strong [ref=e92]: "Primary:"
+                    - text: Local vLLM (Qwen 2.5 32B) on port 8095
+                  - listitem [ref=e93]:
+                    - strong [ref=e94]: "Fallback:"
+                    - text: Cloud Claude (automatic when local fails)
+                  - listitem [ref=e95]: Sensitive data (SSN, tax IDs, bank accounts) is blocked from cloud providers
+            - generic [ref=e96]:
+              - button "Reset to Defaults" [ref=e98]:
+                - img
+                - text: Reset to Defaults
+              - generic [ref=e99]:
+                - generic [ref=e100]:
+                  - img
+                  - text: Stored on this device
+                - button "Save" [disabled]:
+                  - img
+                  - text: Save
+        - region "Email Integration" [ref=e101]:
+          - generic [ref=e102]:
+            - generic [ref=e105]:
+              - img [ref=e107]
+              - generic [ref=e110]:
+                - generic [ref=e111]: Email Integration
+                - generic [ref=e112]: Connect your email to enable deal-related communications and email triage.
+            - alert [ref=e114]:
+              - img [ref=e115]
+              - generic [ref=e118]: Email integration is not available in this environment. Contact your administrator to enable this feature.
+        - region "Agent Configuration" [ref=e119]:
+          - generic [ref=e120]:
+            - generic [ref=e123]:
+              - img [ref=e125]
+              - generic [ref=e129]:
+                - generic [ref=e130]: Agent Configuration
+                - generic [ref=e131]: Control how the AI agent operates and what it can do autonomously.
+            - generic [ref=e132]:
+              - generic [ref=e133]:
+                - generic [ref=e134]:
+                  - img [ref=e136]
+                  - generic [ref=e140]:
+                    - generic [ref=e141]: Enable AI Agent
+                    - paragraph [ref=e142]: Let the agent assist with deal analysis and actions
+                - switch "Enable AI Agent" [checked] [ref=e143]
+              - generic [ref=e144]:
+                - generic [ref=e145]:
+                  - img [ref=e146]
+                  - generic [ref=e149]: Approval Mode
+                - radiogroup [ref=e150]:
+                  - generic [ref=e151] [cursor=pointer]:
+                    - radio "Manual Everything Most Control All agent actions require your approval" [ref=e152]
+                    - generic [ref=e153]:
+                      - generic [ref=e154]:
+                        - generic [ref=e155]: Manual Everything
+                        - generic [ref=e156]: Most Control
+                      - paragraph [ref=e157]: All agent actions require your approval
+                  - generic [ref=e158] [cursor=pointer]:
+                    - radio "Auto-approve Low Risk Recommended Read-only operations run automatically; writes need approval" [checked] [ref=e159]:
+                      - img [ref=e160]
+                    - generic [ref=e162]:
+                      - generic [ref=e163]:
+                        - generic [ref=e164]: Auto-approve Low Risk
+                        - generic [ref=e165]: Recommended
+                      - paragraph [ref=e166]: Read-only operations run automatically; writes need approval
+                  - generic [ref=e167] [cursor=pointer]:
+                    - radio "Auto-approve Medium Risk Faster Most operations run automatically; only high-impact actions need approval" [ref=e168]
+                    - generic [ref=e169]:
+                      - generic [ref=e170]:
+                        - generic [ref=e171]: Auto-approve Medium Risk
+                        - generic [ref=e172]: Faster
+                      - paragraph [ref=e173]: Most operations run automatically; only high-impact actions need approval
+              - button "Advanced Settings" [ref=e175]:
+                - img [ref=e176]
+                - text: Advanced Settings
+              - generic [ref=e178]:
+                - heading "Risk Levels" [level=4] [ref=e179]
+                - generic [ref=e180]:
+                  - generic [ref=e181]:
+                    - generic [ref=e182]: Low
+                    - generic [ref=e183]: Read data, search documents, analyze content
+                  - generic [ref=e184]:
+                    - generic [ref=e185]: Medium
+                    - generic [ref=e186]: Update deal profiles, create notes, move stages
+                  - generic [ref=e187]:
+                    - generic [ref=e188]: High
+                    - generic [ref=e189]: Send emails, create documents, external actions
+            - generic [ref=e190]:
+              - button "Reset to Defaults" [ref=e192]:
+                - img
+                - text: Reset to Defaults
+              - generic [ref=e193]:
+                - button "Save" [disabled]:
+                  - img
+                  - text: Save
+        - region "Notifications" [ref=e194]:
+          - generic [ref=e195]:
+            - generic [ref=e198]:
+              - img [ref=e200]
+              - generic [ref=e203]:
+                - generic [ref=e204]: Notifications
+                - generic [ref=e205]: Choose how and when you want to be notified.
+            - generic [ref=e206]:
+              - generic [ref=e207]:
+                - heading "Notification Channels" [level=3] [ref=e208]
+                - generic [ref=e209]:
+                  - generic [ref=e210]:
+                    - generic [ref=e211]:
+                      - img [ref=e212]
+                      - generic [ref=e215]:
+                        - generic [ref=e216]: Email Notifications
+                        - paragraph [ref=e217]: Receive notifications about pending approvals and deal updates
+                    - switch "Email Notifications" [checked] [ref=e218]
+                  - generic [ref=e219]:
+                    - generic [ref=e220]:
+                      - img [ref=e221]
+                      - generic [ref=e224]:
+                        - generic [ref=e225]: In-App Notifications
+                        - paragraph [ref=e226]: Real-time alerts within the dashboard
+                    - switch "In-App Notifications" [checked] [ref=e227]
+              - generic [ref=e228]:
+                - heading "What to Notify About" [level=3] [ref=e229]
+                - generic [ref=e230]:
+                  - generic [ref=e231]:
+                    - generic [ref=e232]:
+                      - img [ref=e233]
+                      - generic [ref=e236]: Approval Alerts
+                    - radiogroup [ref=e237]:
+                      - generic [ref=e238] [cursor=pointer]:
+                        - radio "All approvals Every action requiring your approval" [checked] [ref=e239]:
+                          - img [ref=e240]
+                        - generic [ref=e242]:
+                          - text: All approvals
+                          - paragraph [ref=e243]: Every action requiring your approval
+                      - generic [ref=e244] [cursor=pointer]:
+                        - radio "Critical only Outbound emails and LOIs only" [ref=e245]
+                        - generic [ref=e246]:
+                          - text: Critical only
+                          - paragraph [ref=e247]: Outbound emails and LOIs only
+                      - generic [ref=e248] [cursor=pointer]:
+                        - radio "None Check manually in the dashboard" [ref=e249]
+                        - generic [ref=e250]:
+                          - text: None
+                          - paragraph [ref=e251]: Check manually in the dashboard
+                  - generic [ref=e252]:
+                    - generic [ref=e253]:
+                      - img [ref=e254]
+                      - generic [ref=e258]:
+                        - generic [ref=e259]: Deal Stage Changes
+                        - paragraph [ref=e260]: When deals move through the pipeline
+                    - switch "Deal Stage Changes" [checked] [ref=e261]
+                  - generic [ref=e262]:
+                    - generic [ref=e263]:
+                      - img [ref=e264]
+                      - generic [ref=e268]:
+                        - generic [ref=e269]: Agent Activity
+                        - paragraph [ref=e270]: When the agent completes analyses or drafts
+                    - switch "Agent Activity" [checked] [ref=e271]
+              - generic [ref=e272]:
+                - generic [ref=e273]:
+                  - img [ref=e274]
+                  - generic [ref=e276]: Activity Digest
+                - radiogroup [ref=e277]:
+                  - generic [ref=e278] [cursor=pointer]:
+                    - radio "Daily Summary every morning at 8am" [checked] [ref=e279]:
+                      - img [ref=e280]
+                    - generic [ref=e282]:
+                      - text: Daily
+                      - paragraph [ref=e283]: Summary every morning at 8am
+                  - generic [ref=e284] [cursor=pointer]:
+                    - radio "Weekly Summary every Monday morning" [ref=e285]
+                    - generic [ref=e286]:
+                      - text: Weekly
+                      - paragraph [ref=e287]: Summary every Monday morning
+                  - generic [ref=e288] [cursor=pointer]:
+                    - radio "None No digest emails" [ref=e289]
+                    - generic [ref=e290]:
+                      - text: None
+                      - paragraph [ref=e291]: No digest emails
+              - generic [ref=e292]:
+                - generic [ref=e293]:
+                  - img [ref=e294]
+                  - generic [ref=e296]:
+                    - generic [ref=e297]: Quiet Hours
+                    - paragraph [ref=e298]: Pause notifications from 22:00 to 08:00
+                - switch "Quiet Hours" [ref=e299]
+            - generic [ref=e300]:
+              - button "Reset to Defaults" [ref=e302]:
+                - img
+                - text: Reset to Defaults
+              - generic [ref=e303]:
+                - button "Save" [disabled]:
+                  - img
+                  - text: Save
+        - region "Data & Privacy" [ref=e304]:
+          - generic [ref=e305]:
+            - generic [ref=e308]:
+              - img [ref=e310]
+              - generic [ref=e313]:
+                - generic [ref=e314]: Data & Privacy
+                - generic [ref=e315]: Manage your data retention, exports, and account.
+            - generic [ref=e316]:
+              - generic [ref=e317]:
+                - generic [ref=e318]: Completed Action Retention
+                - paragraph [ref=e319]: Completed actions older than this period will be automatically removed.
+                - combobox "Completed Action Retention" [ref=e320]:
+                  - generic: 30 days
+                  - img
+              - generic [ref=e321]:
+                - generic [ref=e322]: Data Export
+                - paragraph [ref=e323]: Download all your deals, actions, and settings as a JSON archive.
+                - button "Export All Data" [ref=e324]:
+                  - img
+                  - text: Export All Data
+              - generic [ref=e325]:
+                - generic [ref=e326]:
+                  - img [ref=e327]
+                  - heading "Danger Zone" [level=4] [ref=e329]
+                - paragraph [ref=e330]: Permanently delete your account and all associated data. This action cannot be undone.
+                - list [ref=e331]:
+                  - listitem [ref=e332]: All deals and deal history will be deleted
+                  - listitem [ref=e333]: All actions, approvals, and quarantine items will be removed
+                  - listitem [ref=e334]: Email integrations will be disconnected
+                  - listitem [ref=e335]: Agent configuration and preferences will be cleared
+                - button "Delete Account" [ref=e336]:
+                  - img
+                  - text: Delete Account
+        - region "Appearance" [ref=e337]:
+          - generic [ref=e338]:
+            - generic [ref=e341]:
+              - img [ref=e343]
+              - generic [ref=e348]:
+                - generic [ref=e349]: Appearance
+                - generic [ref=e350]: Customize the look and feel of your dashboard.
+            - generic [ref=e351]:
+              - generic [ref=e352]:
+                - generic [ref=e353]: Theme
+                - generic [ref=e354]:
+                  - button "System" [ref=e355]:
+                    - img [ref=e357]
+                    - img [ref=e360]
+                    - generic [ref=e362]: System
+                  - button "Light" [ref=e363]:
+                    - img [ref=e365]
+                    - generic [ref=e368]: Light
+                  - button "Dark" [ref=e369]:
+                    - img [ref=e371]
+                    - generic [ref=e373]: Dark
+              - generic [ref=e374]:
+                - generic [ref=e375]:
+                  - img [ref=e376]
+                  - generic [ref=e379]: Timezone
+                - combobox "Timezone" [ref=e380]:
+                  - generic: America/Chicago
+                  - img
+                - paragraph [ref=e381]: "Currently: 12:53 PM CST"
+              - generic [ref=e382]:
+                - generic [ref=e383]: Layout
+                - generic [ref=e384]:
+                  - generic [ref=e385]:
+                    - generic [ref=e386]: Sidebar Collapsed
+                    - paragraph [ref=e387]: Start with the sidebar collapsed by default
+                  - switch "Sidebar Collapsed" [ref=e388]
+                - generic [ref=e389]:
+                  - generic [ref=e390]:
+                    - generic [ref=e391]: Dense Mode
+                    - paragraph [ref=e392]: Use compact spacing throughout the interface
+                  - switch "Dense Mode" [ref=e393]
+  - button "Open Next.js Dev Tools" [ref=e399] [cursor=pointer]:
+    - img [ref=e400]
+  - alert [ref=e5]

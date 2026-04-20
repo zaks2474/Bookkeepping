@@ -1,0 +1,7 @@
+=== STEP 0.14: Logging Readiness (GPT 0.E) ===
+INFO:     127.0.0.1:55098 - "GET /health HTTP/1.1" 200 OK
+[2m2026-02-02T21:58:05.181472Z[0m [[32m[1minfo     [0m] [1mhealth_check_called           [0m [[0m[1m[34mapp.core.logging[0m][0m [36menvironment[0m=[35mdevelopment[0m [36mfilename[0m=[35mmain.py[0m [36mfunc_name[0m=[35mhealth_check[0m [36mlineno[0m=[35m152[0m [36mmodule[0m=[35mmain[0m [36mpathname[0m=[35m/app/app/main.py[0m
+INFO:     127.0.0.1:54542 - "GET /health HTTP/1.1" 200 OK
+[2m2026-02-02T21:58:35.275267Z[0m [[32m[1minfo     [0m] [1mhealth_check_called           [0m [[0m[1m[34mapp.core.logging[0m][0m [36menvironment[0m=[35mdevelopment[0m [36mfilename[0m=[35mmain.py[0m [36mfunc_name[0m=[35mhealth_check[0m [36mlineno[0m=[35m152[0m [36mmodule[0m=[35mmain[0m [36mpathname[0m=[35m/app/app/main.py[0m
+INFO:     127.0.0.1:51282 - "GET /health HTTP/1.1" 200 OK
+Baseline captured: 14a_agent_baseline_logs.txt

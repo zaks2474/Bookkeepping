@@ -1,0 +1,31 @@
+=== CHECK 5.2.3: Dashboard SSE Parser Logic ===
+Timestamp: 2026-02-03T13:23:17-06:00
+
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:463:          const tokenData = event.data as { token?: string };
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:474:          const progressData = event.data as ProgressStep;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:478:          evidenceSummary = event.data as ChatEvidenceSummary;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:488:          const doneData = event.data as {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:527:          const errorData = event.data as { message?: string };
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/route.ts:58:      const stream = new ReadableStream({
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/route.ts:85:          'Content-Type': 'text/event-stream',
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/route.ts:114:          const stream = new ReadableStream({
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/route.ts:134:              'Content-Type': 'text/event-stream',
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/route.ts:151:    const stream = new ReadableStream({
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/route.ts:183:        'Content-Type': 'text/event-stream',
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1151:  const reader = response.body?.getReader();
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1156:  const decoder = new TextDecoder();
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent/providers/local.ts:177:      const reader = response.body.getReader();
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/agent/providers/local.ts:178:      const decoder = new TextDecoder();
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-client.ts:458:    ws.onmessage = (event) => {
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-client.ts:460:        const data = JSON.parse(event.data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/use-realtime-events.ts:214:            Accept: 'text/event-stream',
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/use-realtime-events.ts:222:        const reader = response.body?.getReader();
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/use-realtime-events.ts:238:        const decoder = new TextDecoder();
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/use-realtime-events.ts:487:      ws.onmessage = (event) => {
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/use-realtime-events.ts:489:          const data = JSON.parse(event.data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/AgentRunTimeline.tsx:238:        const run = event.data?.run;
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/AgentRunTimeline.tsx:260:        const toolCall = event.data?.toolCall;
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/AgentRunTimeline.tsx:273:        const toolCall = event.data?.toolCall;
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/AgentRunTimeline.tsx:325:            {event.data?.error && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/AgentRunTimeline.tsx:327:                {event.data.error}
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/agent/AgentRunTimeline.tsx:351:        const toolCall = event.data?.toolCall;

@@ -1,0 +1,5 @@
+    model_name              VARCHAR(100) NOT NULL,
+    provider                VARCHAR(50) NOT NULL,
+    temperature             FLOAT,
+    max_completion_tokens   INTEGER,
+    tool_definitions        JSONB,

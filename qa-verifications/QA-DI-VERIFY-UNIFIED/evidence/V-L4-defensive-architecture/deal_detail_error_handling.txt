@@ -1,0 +1,74 @@
+=== V-L4: Error Handling - deals/[id]/page.tsx ===
+Date: 2026-02-09T04:57:17Z
+
+File: /home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx
+
+>> allSettled matches:
+124:      // DEAL-INTEGRITY-UNIFIED L4: Promise.allSettled for graceful degradation
+125:      const results = await Promise.allSettled([
+
+>> catch matches:
+154:    } catch (err) {
+178:    } catch (err) {
+200:    } catch (err) {
+219:    } catch (err) {
+238:    } catch (err) {
+257:    } catch (err) {
+302:    } catch (err) {
+320:    } catch (err) {
+
+>> error/Error matches:
+106:  const [error, setError] = useState<string | null>(null);
+122:    setError(null);
+137:        setError(results[0].status === 'rejected' ? String(results[0].reason) : 'Deal not found');
+143:      else console.error('Failed to load events:', results[1].reason);
+145:      else console.error('Failed to load case file:', results[2].reason);
+147:      else console.error('Failed to load enrichment:', results[3].reason);
+149:      else console.error('Failed to load materials:', results[4].reason);
+151:      else console.error('Failed to load actions:', results[5].reason);
+153:      else console.error('Failed to load capabilities:', results[6].reason);
+155:      setError(err instanceof Error ? err.message : 'Failed to load deal');
+166:  const handleApprove = async (actionId: string, approvedBy: string): Promise<{ success: boolean; error?: string }> => {
+174:        const error = result.error || 'Failed to approve action';
+175:        toast.error(error);
+176:        return { success: false, error };
+179:      const error = err instanceof Error ? err.message : 'Failed to approve action';
+180:      toast.error(error);
+181:      return { success: false, error };
+185:  const handleRun = async (actionId: string): Promise<{ success: boolean; error?: string; reason?: string }> => {
+193:        const error = result.error || 'Failed to run action';
+196:          toast.error(error);
+198:        return { success: false, error, reason: result.reason };
+201:      const error = err instanceof Error ? err.message : 'Failed to run action';
+202:      toast.error(error);
+203:      return { success: false, error };
+207:  const handleCancel = async (actionId: string, reason?: string): Promise<{ success: boolean; error?: string }> => {
+215:        const error = result.error || 'Failed to cancel action';
+216:        toast.error(error);
+217:        return { success: false, error };
+220:      const error = err instanceof Error ? err.message : 'Failed to cancel action';
+221:      toast.error(error);
+222:      return { success: false, error };
+226:  const handleRetry = async (actionId: string): Promise<{ success: boolean; error?: string }> => {
+234:        const error = result.error || 'Failed to retry action';
+235:        toast.error(error);
+236:        return { success: false, error };
+239:      const error = err instanceof Error ? err.message : 'Failed to retry action';
+240:      toast.error(error);
+241:      return { success: false, error };
+245:  const handleUpdateInputs = async (actionId: string, inputs: Record<string, unknown>): Promise<{ success: boolean; error?: string }> => {
+253:        const error = result.error || 'Failed to update inputs';
+254:        toast.error(error);
+255:        return { success: false, error };
+258:      const error = err instanceof Error ? err.message : 'Failed to update inputs';
+259:      toast.error(error);
+260:      return { success: false, error };
+270:  // Slug guard: show error for reserved/invalid slugs
+300:        alert(`Transition failed: ${result.message || 'Unknown error'}`);
+303:      alert(`Error: ${err instanceof Error ? err.message : 'Unknown error'}`);
+321:      alert(`Error: ${err instanceof Error ? err.message : 'Unknown error'}`);
+346:  if (error || !deal) {
+352:          {error || `Deal "${dealId}" not found or could not be loaded`}
+
+>> fallback matches:
+(none)

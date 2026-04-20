@@ -1,0 +1,21 @@
+=== VF-06.1 COMPLETION REPORT ===
+-rw-r--r-- 1 root root 7295 Feb 10 11:06 /home/zaks/bookkeeping/docs/MISSION-INFRA-TRUTH-REPAIR-001-COMPLETION.md
+17:| AC-1 | Agent Skill Path Integrity | **PASS** | All 3 agent files use `/home/zaks/.claude/skills/` absolute paths. 0 `~/.claude/skills` hits in agent configs. |
+18:| AC-2 | Agent Ownership Integrity | **PASS** | All agent files owned by `zaks:zaks`. |
+19:| AC-3 | Frontend Skill Activation | **PASS** | `/home/zaks/.claude/skills/frontend-design/SKILL.md` exists, owned by `zaks:zaks`. |
+20:| AC-4 | 9-Surface Validator Integrity | **PASS** | `validate-contract-surfaces.sh` checks and reports all 9 surfaces (S1-S9). Output: "PASS: ALL 9 CONTRACT SURFACE CHECKS PASSED". |
+21:| AC-5 | Validation Pipeline Integrity | **PASS** | `make validate-local` passes. `make validate-full` passes all gates except pre-existing `validate-migrations` (DB connectivity — not introduced by this mission). |
+22:| AC-6 | Snapshot Fail-Fast Integrity | **PASS** | `make infra-snapshot` returns non-zero on generator failure (tested with `INFRA_TOOLS=/nonexistent`), zero only on success. |
+23:| AC-7 | Manifest Truth Integrity | **PASS** | Manifest contract surface section reports all 9 surfaces with truthful status. No false NOT FOUND for existing files. Dynamic counts for commands, rules, deny rules, agents, skills, hooks. |
+24:| AC-8 | Count Reconciliation Integrity | **PASS** | 4-way reconciliation: contract-surfaces.md=9, CLAUDE.md=9, validator=9, manifest=9. |
+25:| AC-9 | No Regressions | **PASS** | All baseline-passing gates still pass. Stop hook budget increased from 15s to 25s to accommodate S8+S9 checks. Boot diagnostics CHECK 2 extended without regression. |
+26:| AC-10 | Bookkeeping | **PASS** | This report + CHANGES.md entry. |
+88:2. **validate_prompt_tools.py** — Requires running DB container; skipped in offline validation (WARN, not FAIL).
+94:**MISSION-SURFACES-10-14-REGISTER-001** remains blocked until this mission is marked PASS by QA.
+107:| `make validate-local` | PASS |
+108:| `make validate-fast` | PASS |
+109:| `make validate-contract-surfaces` | PASS (9/9) |
+110:| `make validate-agent-config` | PASS |
+111:| `make validate-sse-schema` | PASS |
+112:| `make infra-snapshot` | PASS (9-surface manifest) |
+113:| `bash tools/infra/validate-surface9.sh` | PASS (5/5 checks) |

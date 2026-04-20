@@ -1,0 +1,2 @@
+=== ST-1 UNKNOWN SCHEMA VERSION ===
+{"error":{"code":"VALIDATION_ERROR","message":"Request validation failed","details":[{"field":"body.schema_version","message":"Value error, Unknown schema_version '9.9.9'. Allowed: ['1.0.0']","code":"value_error"}],"trace_id":"f777c002-4f8a-4301-9d9a-bd2ad641a43a","timestamp":"2026-02-15T04:28:14.563519Z"}}

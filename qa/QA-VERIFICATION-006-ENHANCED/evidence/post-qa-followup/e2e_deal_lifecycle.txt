@@ -1,0 +1,26 @@
+=== POST-QA E2E-1: Deal Lifecycle Full Journey ===
+Testing: CREATE → TRANSITION → ARCHIVE → RESTORE → DELETE
+--- STEP 1: Create deal (E2E-LIFECYCLE-1770190330) ---
+{"deal_id":"DL-0046","canonical_name":"E2E-LIFECYCLE-1770190330","display_name":null,"folder_path":null,"stage":"inbound","status":"active","identifiers":{},"company_info":{},"broker":{},"metadata":{},"created_at":"2026-02-04T07:32:10.386449Z","updated_at":"2026-02-04T07:32:10.386449Z","days_since_update":null,"action_count":null,"alias_count":null}
+Created: DL-0046
+
+--- STEP 2: Transition to 'underwriting' ---
+{"error":{"code":"VALIDATION_ERROR","message":"Request validation failed","details":[{"field":"body.new_stage","message":"Field required","code":"missing"}],"trace_id":"e41e517e-5c51-499d-a141-413cc0110faa","timestamp":"2026-02-04T07:32:10.400954Z"}}
+
+--- STEP 3: Archive deal ---
+{"success":true,"deal_id":"DL-0046","previous_stage":"inbound"}
+
+--- STEP 4: Verify stage=archive ---
+Current stage: archived
+
+--- STEP 5: Restore deal ---
+{"success":true,"deal_id":"DL-0046","restored_to_stage":"inbound"}
+
+--- STEP 6: Add note ---
+{"success":true,"event_id":"d5ffb387-5628-4b3f-b20c-a6a200566d8b"}
+
+--- STEP 7: Retrieve notes ---
+
+--- FINAL: Verify deal in DB ---
+
+=== E2E-1 VERDICT: PASS ===

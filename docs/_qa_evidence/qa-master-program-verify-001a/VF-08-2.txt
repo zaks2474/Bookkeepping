@@ -1,0 +1,4 @@
+/home/zaks/zakops-backend/db/migrations/029_quarantine_hardening.sql:7:--   2. CHECK constraint on status (closed enum)
+/home/zaks/zakops-backend/db/migrations/029_quarantine_hardening.sql:22:    ADD CONSTRAINT chk_quarantine_status
+/home/zaks/zakops-backend/db/migrations/029_quarantine_hardening.sql:23:    CHECK (status IN ('pending', 'approved', 'rejected', 'hidden'));
+/home/zaks/zakops-backend/db/migrations/029_quarantine_hardening_rollback.sql:9:ALTER TABLE zakops.quarantine_items DROP CONSTRAINT IF EXISTS chk_quarantine_status;

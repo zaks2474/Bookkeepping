@@ -1,0 +1,491 @@
+=== ST-2 VALIDATE-SURFACES-NEW DETERMINISM ===
+[36m=== Surfaces 10-14 + Schema Validation ===[0m
+=== SURFACE 10: DEPENDENCY HEALTH CONTRACT ===
+
+--- Check 1: Source Artifact ---
+  PASS: SERVICE-TOPOLOGY.md exists (95 lines)
+
+--- Check 2: Service Config File Resolution ---
+  PASS: Dashboard — app directory exists
+  PASS: Backend — docker-compose exists
+  PASS: Agent API — docker-compose exists
+  PASS: RAG — repository directory exists
+
+--- Check 3: Health Endpoint Source Resolution ---
+  PASS: Backend health router exists
+  PASS: Agent API main.py exists (health endpoint source)
+  PASS: Dashboard middleware exists (502 handler)
+  PASS: Resilience config exists (circuit breaker source)
+
+--- Check 4: Forbidden Port 8090 ---
+  PASS: No active port 8090 references (2 decommissioned warnings OK)
+
+--- Check 5: Canonical Port Alignment ---
+  PASS: Dashboard port 3003 documented
+  PASS: Backend port 8091 documented
+  PASS: Agent port 8095 documented
+  PASS: RAG port 8052 documented
+
+================================
+PASS: SURFACE 10 DEPENDENCY HEALTH CONTRACT (0 warning(s))
+=== SURFACE 11: ENV REGISTRY CONTRACT ===
+
+--- Check 1: Source Artifact ---
+  PASS: ENV-CROSSREF.md exists (104 lines)
+
+--- Check 2: Cross-Service Variable Discovery ---
+  Cross-service variables: 7 found, 0 not in .env.example
+  PASS: Cross-service variable coverage acceptable
+
+--- Check 3: Service Env File Presence ---
+  PASS: Backend .env.example exists (169 lines)
+  PASS: Agent-API .env.example exists (64 lines)
+  PASS: Dashboard .env.example exists (55 lines)
+
+--- Check 4: Secret Variable Coverage ---
+  PASS: Secret variables annotated in registry (4 entries marked **secret**)
+
+--- Check 5: Forbidden Port 8090 ---
+  PASS: No port 8090 references in .env.example files
+
+================================
+PASS: SURFACE 11 ENV REGISTRY CONTRACT (0 warning(s))
+=== SURFACE 12: ERROR TAXONOMY CONTRACT ===
+
+--- Check 1: Source Artifact ---
+  PASS: ERROR-SHAPES.md exists (158 lines)
+
+--- Check 2: Shape Count ---
+  PASS: 6 error shapes documented (expected >= 6)
+
+--- Check 3: Source File Resolution ---
+  PASS: Shape 1 source — responses.py exists
+  PASS: Shape 1 source — error_codes.py exists
+  PASS: Shape 3 source — agent main.py exists
+  PASS: Shape 4 source — rate_limiter.py exists
+  PASS: Shape 6 source — middleware.ts exists
+
+--- Check 4: Dashboard Error Normalizer ---
+  PASS: error-normalizer.ts handles multiple shapes (detail=12, error=12 references)
+
+--- Check 5: ApiError Class ---
+  PASS: ApiError class present in api.ts (18 references)
+
+================================
+PASS: SURFACE 12 ERROR TAXONOMY CONTRACT (0 warning(s))
+=== SURFACE 13: TEST COVERAGE CONTRACT ===
+
+--- Check 1: Source Artifact ---
+  PASS: TEST-COVERAGE-GAPS.md exists (270 lines)
+
+--- Check 2: Test Directory Presence ---
+  PASS: Backend unit — exists (7 test files)
+  PASS: Backend integration — exists (10 test files)
+  PASS: Backend E2E — exists (9 test files)
+  PASS: Backend contract — exists (4 test files)
+  PASS: Backend security — exists (2 test files)
+  PASS: Agent-API security — exists (6 test files)
+  PASS: Dashboard E2E (Playwright) — exists (8 test files)
+  PASS: Dashboard unit (Vitest) — exists (3 test files)
+  Summary: 8/8 declared test directories found
+
+--- Check 3: Test Framework Configs ---
+  PASS: Backend pyproject.toml exists (pytest config)
+  PASS: Agent-API pyproject.toml exists (pytest config)
+  PASS: Dashboard package.json exists (vitest/playwright config)
+
+--- Check 4: Critical Test Artifacts ---
+  PASS: deal-integrity.test.ts exists
+  PASS: Playwright specs found (12 files)
+  PASS: Backend gate tests found (9 files)
+
+--- Check 5: Known Gaps Documented ---
+  PASS: RAG zero-test gap explicitly documented
+
+================================
+PASS: SURFACE 13 TEST COVERAGE CONTRACT (0 warning(s))
+=== SURFACE 14: PERFORMANCE BUDGET CONTRACT ===
+Mode: ADVISORY
+
+--- Check 1: Source Artifact ---
+  PASS: PERFORMANCE-BUDGET.md exists (73 lines)
+
+--- Check 2: Threshold Coverage ---
+  PASS: 16 measurable thresholds found (minimum 5)
+  PASS: 30 table rows — structured budget tables present
+
+--- Check 3: OpenAPI Spec Size Budget ---
+  PASS: zakops-api.json — 208786 bytes (limit: 512000)
+  PASS: agent-api.json — 73612 bytes (limit: 204800)
+  PASS: rag-api.json — 7053 bytes (limit: 51200)
+
+--- Check 4: Dashboard Bundle Size ---
+  INFO: Static directory size: 187 MB (dev limit: 300 MB)
+  PASS: Dashboard static within dev budget
+  INFO: main-app.js: 7599321 bytes (limit: 2097152)
+  WARN: main-app.js exceeds 2 MB limit (advisory)
+
+--- Check 5: Budget Section Completeness ---
+  Budget sections: 4/4 present
+  PASS: All required budget sections present
+
+================================
+PASS: SURFACE 14 PERFORMANCE BUDGET CONTRACT (1 warning(s))
+=== Performance Budget Schema Validation ===
+
+  PASS: PERFORMANCE-BUDGET.md exists
+  PASS: Schema file exists
+  PASS: Section found: API Latency
+  PASS: Section found: Bundle Size
+  PASS: Section found: Payload Size
+  PASS: Section found: Spec Size
+  PASS: Section found: Ownership
+  PASS: Has millisecond/second targets (8 references)
+  PASS: Has megabyte targets (2 references)
+  PASS: Has kilobyte targets (8 references)
+  PASS: Threshold count: 16 (minimum 5)
+  PASS: Measurement methodology documented
+  PASS: Advisory/strict mode semantics documented
+
+Performance Budget Schema Validation: PASS (13 pass, 0 fail, 0 warn)
+=== Manifest Contract Section Schema Validation ===
+
+  PASS: Manifest file exists
+  PASS: Schema file exists
+  PASS: Contract Surfaces header found
+  PASS: Header references 14 surfaces
+  PASS: Entry count: 14 (expected 14)
+  PASS: All surface IDs S1-S14 present
+  PASS: All entries have valid status (present or PASS)
+  PASS: Generation timestamp present
+  PASS: All S10-S14 labels present (5/5)
+
+Manifest Contract Section Validation: PASS (9 pass, 0 fail, 0 warn)
+[32mSurfaces 10-14 + schema validation passed[0m
+[36m=== Surfaces 10-14 + Schema Validation ===[0m
+=== SURFACE 10: DEPENDENCY HEALTH CONTRACT ===
+
+--- Check 1: Source Artifact ---
+  PASS: SERVICE-TOPOLOGY.md exists (95 lines)
+
+--- Check 2: Service Config File Resolution ---
+  PASS: Dashboard — app directory exists
+  PASS: Backend — docker-compose exists
+  PASS: Agent API — docker-compose exists
+  PASS: RAG — repository directory exists
+
+--- Check 3: Health Endpoint Source Resolution ---
+  PASS: Backend health router exists
+  PASS: Agent API main.py exists (health endpoint source)
+  PASS: Dashboard middleware exists (502 handler)
+  PASS: Resilience config exists (circuit breaker source)
+
+--- Check 4: Forbidden Port 8090 ---
+  PASS: No active port 8090 references (2 decommissioned warnings OK)
+
+--- Check 5: Canonical Port Alignment ---
+  PASS: Dashboard port 3003 documented
+  PASS: Backend port 8091 documented
+  PASS: Agent port 8095 documented
+  PASS: RAG port 8052 documented
+
+================================
+PASS: SURFACE 10 DEPENDENCY HEALTH CONTRACT (0 warning(s))
+=== SURFACE 11: ENV REGISTRY CONTRACT ===
+
+--- Check 1: Source Artifact ---
+  PASS: ENV-CROSSREF.md exists (104 lines)
+
+--- Check 2: Cross-Service Variable Discovery ---
+  Cross-service variables: 7 found, 0 not in .env.example
+  PASS: Cross-service variable coverage acceptable
+
+--- Check 3: Service Env File Presence ---
+  PASS: Backend .env.example exists (169 lines)
+  PASS: Agent-API .env.example exists (64 lines)
+  PASS: Dashboard .env.example exists (55 lines)
+
+--- Check 4: Secret Variable Coverage ---
+  PASS: Secret variables annotated in registry (4 entries marked **secret**)
+
+--- Check 5: Forbidden Port 8090 ---
+  PASS: No port 8090 references in .env.example files
+
+================================
+PASS: SURFACE 11 ENV REGISTRY CONTRACT (0 warning(s))
+=== SURFACE 12: ERROR TAXONOMY CONTRACT ===
+
+--- Check 1: Source Artifact ---
+  PASS: ERROR-SHAPES.md exists (158 lines)
+
+--- Check 2: Shape Count ---
+  PASS: 6 error shapes documented (expected >= 6)
+
+--- Check 3: Source File Resolution ---
+  PASS: Shape 1 source — responses.py exists
+  PASS: Shape 1 source — error_codes.py exists
+  PASS: Shape 3 source — agent main.py exists
+  PASS: Shape 4 source — rate_limiter.py exists
+  PASS: Shape 6 source — middleware.ts exists
+
+--- Check 4: Dashboard Error Normalizer ---
+  PASS: error-normalizer.ts handles multiple shapes (detail=12, error=12 references)
+
+--- Check 5: ApiError Class ---
+  PASS: ApiError class present in api.ts (18 references)
+
+================================
+PASS: SURFACE 12 ERROR TAXONOMY CONTRACT (0 warning(s))
+=== SURFACE 13: TEST COVERAGE CONTRACT ===
+
+--- Check 1: Source Artifact ---
+  PASS: TEST-COVERAGE-GAPS.md exists (270 lines)
+
+--- Check 2: Test Directory Presence ---
+  PASS: Backend unit — exists (7 test files)
+  PASS: Backend integration — exists (10 test files)
+  PASS: Backend E2E — exists (9 test files)
+  PASS: Backend contract — exists (4 test files)
+  PASS: Backend security — exists (2 test files)
+  PASS: Agent-API security — exists (6 test files)
+  PASS: Dashboard E2E (Playwright) — exists (8 test files)
+  PASS: Dashboard unit (Vitest) — exists (3 test files)
+  Summary: 8/8 declared test directories found
+
+--- Check 3: Test Framework Configs ---
+  PASS: Backend pyproject.toml exists (pytest config)
+  PASS: Agent-API pyproject.toml exists (pytest config)
+  PASS: Dashboard package.json exists (vitest/playwright config)
+
+--- Check 4: Critical Test Artifacts ---
+  PASS: deal-integrity.test.ts exists
+  PASS: Playwright specs found (12 files)
+  PASS: Backend gate tests found (9 files)
+
+--- Check 5: Known Gaps Documented ---
+  PASS: RAG zero-test gap explicitly documented
+
+================================
+PASS: SURFACE 13 TEST COVERAGE CONTRACT (0 warning(s))
+=== SURFACE 14: PERFORMANCE BUDGET CONTRACT ===
+Mode: ADVISORY
+
+--- Check 1: Source Artifact ---
+  PASS: PERFORMANCE-BUDGET.md exists (73 lines)
+
+--- Check 2: Threshold Coverage ---
+  PASS: 16 measurable thresholds found (minimum 5)
+  PASS: 30 table rows — structured budget tables present
+
+--- Check 3: OpenAPI Spec Size Budget ---
+  PASS: zakops-api.json — 208786 bytes (limit: 512000)
+  PASS: agent-api.json — 73612 bytes (limit: 204800)
+  PASS: rag-api.json — 7053 bytes (limit: 51200)
+
+--- Check 4: Dashboard Bundle Size ---
+  INFO: Static directory size: 187 MB (dev limit: 300 MB)
+  PASS: Dashboard static within dev budget
+  INFO: main-app.js: 7599321 bytes (limit: 2097152)
+  WARN: main-app.js exceeds 2 MB limit (advisory)
+
+--- Check 5: Budget Section Completeness ---
+  Budget sections: 4/4 present
+  PASS: All required budget sections present
+
+================================
+PASS: SURFACE 14 PERFORMANCE BUDGET CONTRACT (1 warning(s))
+=== Performance Budget Schema Validation ===
+
+  PASS: PERFORMANCE-BUDGET.md exists
+  PASS: Schema file exists
+  PASS: Section found: API Latency
+  PASS: Section found: Bundle Size
+  PASS: Section found: Payload Size
+  PASS: Section found: Spec Size
+  PASS: Section found: Ownership
+  PASS: Has millisecond/second targets (8 references)
+  PASS: Has megabyte targets (2 references)
+  PASS: Has kilobyte targets (8 references)
+  PASS: Threshold count: 16 (minimum 5)
+  PASS: Measurement methodology documented
+  PASS: Advisory/strict mode semantics documented
+
+Performance Budget Schema Validation: PASS (13 pass, 0 fail, 0 warn)
+=== Manifest Contract Section Schema Validation ===
+
+  PASS: Manifest file exists
+  PASS: Schema file exists
+  PASS: Contract Surfaces header found
+  PASS: Header references 14 surfaces
+  PASS: Entry count: 14 (expected 14)
+  PASS: All surface IDs S1-S14 present
+  PASS: All entries have valid status (present or PASS)
+  PASS: Generation timestamp present
+  PASS: All S10-S14 labels present (5/5)
+
+Manifest Contract Section Validation: PASS (9 pass, 0 fail, 0 warn)
+[32mSurfaces 10-14 + schema validation passed[0m
+[36m=== Surfaces 10-14 + Schema Validation ===[0m
+=== SURFACE 10: DEPENDENCY HEALTH CONTRACT ===
+
+--- Check 1: Source Artifact ---
+  PASS: SERVICE-TOPOLOGY.md exists (95 lines)
+
+--- Check 2: Service Config File Resolution ---
+  PASS: Dashboard — app directory exists
+  PASS: Backend — docker-compose exists
+  PASS: Agent API — docker-compose exists
+  PASS: RAG — repository directory exists
+
+--- Check 3: Health Endpoint Source Resolution ---
+  PASS: Backend health router exists
+  PASS: Agent API main.py exists (health endpoint source)
+  PASS: Dashboard middleware exists (502 handler)
+  PASS: Resilience config exists (circuit breaker source)
+
+--- Check 4: Forbidden Port 8090 ---
+  PASS: No active port 8090 references (2 decommissioned warnings OK)
+
+--- Check 5: Canonical Port Alignment ---
+  PASS: Dashboard port 3003 documented
+  PASS: Backend port 8091 documented
+  PASS: Agent port 8095 documented
+  PASS: RAG port 8052 documented
+
+================================
+PASS: SURFACE 10 DEPENDENCY HEALTH CONTRACT (0 warning(s))
+=== SURFACE 11: ENV REGISTRY CONTRACT ===
+
+--- Check 1: Source Artifact ---
+  PASS: ENV-CROSSREF.md exists (104 lines)
+
+--- Check 2: Cross-Service Variable Discovery ---
+  Cross-service variables: 7 found, 0 not in .env.example
+  PASS: Cross-service variable coverage acceptable
+
+--- Check 3: Service Env File Presence ---
+  PASS: Backend .env.example exists (169 lines)
+  PASS: Agent-API .env.example exists (64 lines)
+  PASS: Dashboard .env.example exists (55 lines)
+
+--- Check 4: Secret Variable Coverage ---
+  PASS: Secret variables annotated in registry (4 entries marked **secret**)
+
+--- Check 5: Forbidden Port 8090 ---
+  PASS: No port 8090 references in .env.example files
+
+================================
+PASS: SURFACE 11 ENV REGISTRY CONTRACT (0 warning(s))
+=== SURFACE 12: ERROR TAXONOMY CONTRACT ===
+
+--- Check 1: Source Artifact ---
+  PASS: ERROR-SHAPES.md exists (158 lines)
+
+--- Check 2: Shape Count ---
+  PASS: 6 error shapes documented (expected >= 6)
+
+--- Check 3: Source File Resolution ---
+  PASS: Shape 1 source — responses.py exists
+  PASS: Shape 1 source — error_codes.py exists
+  PASS: Shape 3 source — agent main.py exists
+  PASS: Shape 4 source — rate_limiter.py exists
+  PASS: Shape 6 source — middleware.ts exists
+
+--- Check 4: Dashboard Error Normalizer ---
+  PASS: error-normalizer.ts handles multiple shapes (detail=12, error=12 references)
+
+--- Check 5: ApiError Class ---
+  PASS: ApiError class present in api.ts (18 references)
+
+================================
+PASS: SURFACE 12 ERROR TAXONOMY CONTRACT (0 warning(s))
+=== SURFACE 13: TEST COVERAGE CONTRACT ===
+
+--- Check 1: Source Artifact ---
+  PASS: TEST-COVERAGE-GAPS.md exists (270 lines)
+
+--- Check 2: Test Directory Presence ---
+  PASS: Backend unit — exists (7 test files)
+  PASS: Backend integration — exists (10 test files)
+  PASS: Backend E2E — exists (9 test files)
+  PASS: Backend contract — exists (4 test files)
+  PASS: Backend security — exists (2 test files)
+  PASS: Agent-API security — exists (6 test files)
+  PASS: Dashboard E2E (Playwright) — exists (8 test files)
+  PASS: Dashboard unit (Vitest) — exists (3 test files)
+  Summary: 8/8 declared test directories found
+
+--- Check 3: Test Framework Configs ---
+  PASS: Backend pyproject.toml exists (pytest config)
+  PASS: Agent-API pyproject.toml exists (pytest config)
+  PASS: Dashboard package.json exists (vitest/playwright config)
+
+--- Check 4: Critical Test Artifacts ---
+  PASS: deal-integrity.test.ts exists
+  PASS: Playwright specs found (12 files)
+  PASS: Backend gate tests found (9 files)
+
+--- Check 5: Known Gaps Documented ---
+  PASS: RAG zero-test gap explicitly documented
+
+================================
+PASS: SURFACE 13 TEST COVERAGE CONTRACT (0 warning(s))
+=== SURFACE 14: PERFORMANCE BUDGET CONTRACT ===
+Mode: ADVISORY
+
+--- Check 1: Source Artifact ---
+  PASS: PERFORMANCE-BUDGET.md exists (73 lines)
+
+--- Check 2: Threshold Coverage ---
+  PASS: 16 measurable thresholds found (minimum 5)
+  PASS: 30 table rows — structured budget tables present
+
+--- Check 3: OpenAPI Spec Size Budget ---
+  PASS: zakops-api.json — 208786 bytes (limit: 512000)
+  PASS: agent-api.json — 73612 bytes (limit: 204800)
+  PASS: rag-api.json — 7053 bytes (limit: 51200)
+
+--- Check 4: Dashboard Bundle Size ---
+  INFO: Static directory size: 187 MB (dev limit: 300 MB)
+  PASS: Dashboard static within dev budget
+  INFO: main-app.js: 7599321 bytes (limit: 2097152)
+  WARN: main-app.js exceeds 2 MB limit (advisory)
+
+--- Check 5: Budget Section Completeness ---
+  Budget sections: 4/4 present
+  PASS: All required budget sections present
+
+================================
+PASS: SURFACE 14 PERFORMANCE BUDGET CONTRACT (1 warning(s))
+=== Performance Budget Schema Validation ===
+
+  PASS: PERFORMANCE-BUDGET.md exists
+  PASS: Schema file exists
+  PASS: Section found: API Latency
+  PASS: Section found: Bundle Size
+  PASS: Section found: Payload Size
+  PASS: Section found: Spec Size
+  PASS: Section found: Ownership
+  PASS: Has millisecond/second targets (8 references)
+  PASS: Has megabyte targets (2 references)
+  PASS: Has kilobyte targets (8 references)
+  PASS: Threshold count: 16 (minimum 5)
+  PASS: Measurement methodology documented
+  PASS: Advisory/strict mode semantics documented
+
+Performance Budget Schema Validation: PASS (13 pass, 0 fail, 0 warn)
+=== Manifest Contract Section Schema Validation ===
+
+  PASS: Manifest file exists
+  PASS: Schema file exists
+  PASS: Contract Surfaces header found
+  PASS: Header references 14 surfaces
+  PASS: Entry count: 14 (expected 14)
+  PASS: All surface IDs S1-S14 present
+  PASS: All entries have valid status (present or PASS)
+  PASS: Generation timestamp present
+  PASS: All S10-S14 labels present (5/5)
+
+Manifest Contract Section Validation: PASS (9 pass, 0 fail, 0 warn)
+[32mSurfaces 10-14 + schema validation passed[0m
+EXIT=0

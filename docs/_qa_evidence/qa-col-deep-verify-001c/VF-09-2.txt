@@ -1,0 +1,5 @@
+=== Legal hold protection in GDPR purge ===
+Line 62-64: LEFT JOIN legal_hold_locks lh ON t.thread_id = lh.thread_id
+Line 73-94: if row["has_legal_hold"]: skips thread, logs to legal_hold_log
+Logs reason: "GDPR purge skipped — active legal hold"
+RESULT: PASS — GDPR purge explicitly skips legal-held threads

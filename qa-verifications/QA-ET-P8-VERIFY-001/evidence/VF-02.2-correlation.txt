@@ -1,0 +1,21 @@
+            if hasattr(record, "correlation_id"):
+                log_entry["correlation_id"] = record.correlation_id
+def log_tool_call(tool_name: str, params: dict, correlation_id: str = None):
+    correlation_id = correlation_id or str(uuid.uuid4())[:8]
+    record.correlation_id = correlation_id
+def log_error(error: str, details: Optional[dict] = None, correlation_id: str = None):
+    correlation_id = correlation_id or str(uuid.uuid4())[:8]
+    record.correlation_id = correlation_id
+    correlation_id: str,
+        correlation_id: Tracking ID for end-to-end tracing
+        "correlation_id": correlation_id,
+    if not correlation_id:
+        errors.append("correlation_id is required")
+        "correlation_id": correlation_id,
+    if correlation_id:
+        headers["X-Correlation-ID"] = correlation_id
+            cid = correlation_id
+                    "correlation_id": cid,
+                        "correlation_id": cid,
+                    "correlation_id": cid,
+                    "correlation_id": cid,

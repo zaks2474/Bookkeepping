@@ -1,0 +1,5 @@
+434:    async def generate_json(
+485:            logger.debug("generate_json_success", model=model, schema=schema.__name__, content_len=len(content))
+491:            logger.error("generate_json_http_error", model=model, error=str(e))
+494:            logger.error("generate_json_parse_error", model=model, error=str(e))
+497:            logger.error("generate_json_validation_error", model=model, schema=schema.__name__, error=str(e))

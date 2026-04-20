@@ -1,0 +1,57 @@
+=== VF-05.5 STOP HOOK COMPATIBILITY ===
+=== Session End Validation (Fast Tier) ===
+Gate A: validate-fast
+[36m=== Fast Validation (Offline) ===[0m
+cd /home/zaks/zakops-agent-api/apps/dashboard && npx tsc --noEmit
+make[1]: Entering directory '/home/zaks/zakops-agent-api'
+Redocly ignores: 57 (ceiling: 57)
+make[1]: Leaving directory '/home/zaks/zakops-agent-api'
+[32mFast validations passed[0m
+Gate B: validate-contract-surfaces (9 surfaces)
+=== CONTRACT SURFACE VALIDATION ===
+
+--- Generated File Freshness ---
+  PASS: Surface 1: Backend -> Dashboard: current
+  PASS: Surface 2: Backend -> Agent SDK: current
+  PASS: Surface 4: Agent -> Dashboard: current
+  PASS: Surface 5: RAG -> Backend SDK: current
+
+--- Reference Schema Existence ---
+  PASS: Surface 3: Agent OpenAPI: exists
+  PASS: Surface 6: MCP Tools: exists
+  PASS: Surface 7: SSE Events: exists
+
+--- Bridge Import Enforcement ---
+  PASS: No direct generated file imports found
+
+--- Typed SDK Enforcement ---
+  PASS: deal_tools.py uses typed SDK (0 untyped patterns)
+
+--- Surface 8: Agent Config Alignment ---
+  PASS: Surface 8: Agent config alignment check passed
+
+--- Surface 9: Design System Conventions ---
+  PASS: Surface 9: Design system convention check passed
+
+--- Surface 10: Dependency Health ---
+  PASS: Surface 10: Dependency health check passed
+
+--- Surface 11: Env Registry ---
+  PASS: Surface 11: Env registry check passed
+
+--- Surface 12: Error Taxonomy ---
+  PASS: Surface 12: Error taxonomy check passed
+
+--- Surface 13: Test Coverage ---
+  PASS: Surface 13: Test coverage check passed
+
+--- Surface 14: Performance Budget ---
+  PASS: Surface 14: Performance budget check passed
+
+================================
+PASS: ALL 14 CONTRACT SURFACE CHECKS PASSED
+Gate E: raw httpx client usage check
+/home/zaks/.claude/hooks/stop.sh: line 41: rg: command not found
+All gates passed.
+Running memory-sync...
+memory-sync: Updated 2026-02-10T18:03:27Z — CLAUDE.md=149L deny=12 hooks=7 rules=5 redocly=57

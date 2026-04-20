@@ -1,0 +1,8 @@
+=== Summarizer references to session_summaries ===
+44:                FROM session_summaries
+91:                FROM session_summaries
+100:                INSERT INTO session_summaries
+287:    # 1. Rolling summary from session_summaries
+
+=== Migration 004 creates session_summaries ===
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:98:CREATE TABLE IF NOT EXISTS session_summaries (

@@ -1,0 +1,4 @@
+// COL-V2 S10.2: Phase 1 — X-User-Id header (prototype single-user)
+const USER_ID = process.env.ZAKOPS_USER_ID || 'zak';
+      response.headers.set('X-User-Id', USER_ID);
+    'X-User-Id': USER_ID,

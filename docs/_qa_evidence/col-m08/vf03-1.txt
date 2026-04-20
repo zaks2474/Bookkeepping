@@ -1,0 +1,21 @@
+apps/agent-api/app/core/langgraph/graph.py:65:from app.schemas.agent import HITL_TOOLS, requires_approval
+apps/agent-api/app/core/langgraph/graph.py:464:                hitl_calls = [tc for tc in response_message.tool_calls if requires_approval(tc["name"])]
+apps/agent-api/app/core/prompts/__init__.py:98:    from app.schemas.agent import HITL_TOOLS
+apps/agent-api/app/core/prompts/__init__.py:105:            requires_hitl=tool.name in HITL_TOOLS,
+apps/agent-api/app/core/prompts/__init__.py:122:        hitl_marker = " **(requires HITL approval)**" if tool.requires_hitl else ""
+apps/agent-api/app/core/prompts/__init__.py:123:        lines.append(f"{i}. **{tool.name}**{hitl_marker} - {tool.description}")
+apps/agent-api/app/core/tracing.py:363:        with trace_hitl_approval(approval_id, tool_name, thread_id) as span:
+apps/agent-api/app/core/tracing.py:377:    with trace_span(f"hitl:{tool_name}", full_metadata) as span:
+apps/agent-api/app/schemas/agent.py:170:HITL_TOOLS = frozenset([
+apps/agent-api/app/schemas/agent.py:185:    return tool_name in HITL_TOOLS
+apps/agent-api/.venv/lib/python3.13/site-packages/langgraph/types.py:399:    The `interrupt` function enables human-in-the-loop workflows by pausing graph
+apps/agent-api/.venv/lib/python3.13/site-packages/langgraph/pregel/_loop.py:658:                            "Docs: https://docs.langchain.com/oss/python/langgraph/add-human-in-the-loop#resume-multiple-interrupts-with-one-invocation."
+apps/agent-api/.venv/lib/python3.13/site-packages/langgraph/prebuilt/tool_node.py:261:    and support human-in-the-loop workflows where graph execution may be paused
+apps/agent-api/.venv/lib/python3.13/site-packages/langgraph/prebuilt/chat_agent_executor.py:409:            Useful for implementing human-in-the-loop, guardrails, validation, or other post-processing.
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain/agents/middleware/human_in_the_loop.py:111:    """Configuration for an action requiring human in the loop.
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain/agents/middleware/human_in_the_loop.py:168:        """Initialize the human in the loop middleware.
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain/agents/middleware/__init__.py:13:from .human_in_the_loop import (
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/_api/deprecation.py:14:    "tool-calling, persistence of state, and human-in-the-loop workflows. For "
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/agents/agent_toolkits/vectorstore/base.py:29:        "tool-calling, persistence of state, and human-in-the-loop workflows. "
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/agents/agent_toolkits/vectorstore/base.py:126:        "tool-calling, persistence of state, and human-in-the-loop workflows. "
+apps/agent-api/scripts/validate_prompt_tools.py:108:            hitl_marker = " [HITL]" if tool.requires_hitl else ""

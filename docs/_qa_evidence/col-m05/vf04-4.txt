@@ -1,0 +1,11 @@
+/home/zaks/zakops-backend/src/core/agent/anomaly_detector.py:                    "metric": {"current": round(momentum_score, 1), "previous": round(momentum_prev, 1), "drop": round(drop, 1)},
+/home/zaks/zakops-backend/src/core/agent/momentum_calculator.py:Computes a 0-100 composite metric per deal combining five signals:
+/home/zaks/zakops-backend/src/core/agent/momentum_calculator.py:  80-100: Green (accelerating)
+/home/zaks/zakops-backend/src/core/agent/momentum_calculator.py:def _clamp(value: float, lo: float = 0.0, hi: float = 100.0) -> float:
+/home/zaks/zakops-backend/src/core/agent/momentum_calculator.py:    At median: 60. At 2x median: 20. At 3x: 0. Under median: 80-100.
+/home/zaks/zakops-backend/src/core/agent/momentum_calculator.py:            "stage_velocity": round(score_velocity(
+/home/zaks/zakops-backend/src/core/agent/momentum_calculator.py:            "event_frequency": round(score_frequency(
+/home/zaks/zakops-backend/src/core/agent/momentum_calculator.py:            "open_item_completion": round(score_completion(
+/home/zaks/zakops-backend/src/core/agent/momentum_calculator.py:            "risk_trajectory": round(score_risk_trend(
+/home/zaks/zakops-backend/src/core/agent/momentum_calculator.py:            "action_rate": round(score_actions(
+/home/zaks/zakops-backend/src/core/agent/momentum_calculator.py:        score = round(_clamp(score), 1)

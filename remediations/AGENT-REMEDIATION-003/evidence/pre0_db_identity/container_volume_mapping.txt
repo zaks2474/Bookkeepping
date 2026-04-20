@@ -1,0 +1,39 @@
+=== PRE-0.4: Container/Volume Mapping ===
+
+--- Active Postgres Containers ---
+1. zakops-postgres-1 (postgres:15-alpine)
+   - Port: 5432 exposed
+   - Network: zakops_network  
+   - Used by: zakops-backend-backend-1 (via DATABASE_URL=postgres:5432)
+   - Status: ACTIVE - This is the backend's database
+
+2. zakops-agent-db (pgvector/pgvector:pg16)
+   - Port: 5432 (internal only)
+   - Container name set explicitly
+   - Used by: zakops-agent-api
+   - Status: ACTIVE - This is the agent's database
+
+--- Orphan Container (RISK) ---
+3. zakops-backend-postgres-1 (postgres:15-alpine)
+   - Port: None exposed
+   - Network: {} (NO NETWORK CONNECTIONS)
+   - Used by: NOTHING
+   - Status: ORPHAN - Should be removed
+   - Risk: Could cause confusion if someone connects to wrong container
+
+--- Volumes ---
+- agent-api_agent-postgres-data (agent DB)
+- zakops_postgres_data (backend DB)
+- docker_postgres-data (unknown - possibly orphan)
+
+--- Network Analysis ---
+zakops_network members:
+  - zakops-backend-backend-1 (backend app)
+  - zakops-postgres-1 (backend DB - resolves to 'postgres' hostname)
+  - zakops-backend-outbox-worker-1
+  - zakops-redis-1
+
+=== PRE-0.4 VERDICT: PASS (with warning) ===
+- 2 active Postgres containers correctly isolated (backend + agent)
+- 1 orphan container (zakops-backend-postgres-1) should be cleaned up
+- No cross-contamination risk between active containers

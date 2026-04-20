@@ -1,0 +1,37 @@
+200:    approved_by: str = "ui_user"
+249:    action: str = Field(..., pattern="^(approve|reject)$")
+565:async def create_deal(deal: DealCreate, pool: asyncpg.Pool = Depends(get_db)):
+736:    This is used by executors to create email-to-deal mappings.
+988:        conditions.append("a.status IN ('pending_approval', 'queued')")
+1013:            COALESCE(a.requires_approval, false) AS requires_human_review,
+1022:            CASE a.status WHEN 'pending_approval' THEN 0 WHEN 'queued' THEN 1 ELSE 2 END,
+1075:            COALESCE(a.requires_approval, false) AS requires_human_review,
+1093:@app.post("/api/actions/{action_id}/approve")
+1094:async def approve_action(
+1096:    approval: ActionApprove,
+1108:        if action['status'] not in ('pending_approval', 'ready'):
+1111:                detail=f"Action is not pending approval (status: {action['status']})"
+1124:                "action": "approved",
+1125:                "by": approval.approved_by,
+1127:                "notes": approval.notes
+1131:    return {"status": "approved", "action_id": action_id}
+1148:        if action['status'] not in ('pending_approval', 'ready'):
+1151:                detail=f"Action is not pending approval (status: {action['status']})"
+1364:    """Process a quarantine item (approve or reject).
+1366:    R2-3a.1: When approving without an explicit deal_id, atomically create
+1370:        # Use transaction for atomicity (R2-3a.1)
+1371:        async with conn.transaction():
+1384:            new_status = 'approved' if process.action == 'approve' else 'rejected'
+1387:            # R2-3a.1: Auto-create deal on approve if no deal_id provided
+1388:            if process.action == 'approve' and not deal_id:
+1432:                        'source': 'quarantine_approval',
+1435:                        'approved_by': process.processed_by,
+1443:                        $1, 'deal_created', 'quarantine_approval', $2, $3::jsonb
+1450:                        'source': 'quarantine_approval',
+1481:        "deal_created": process.action == 'approve' and not process.deal_id
+1513:            "SELECT COUNT(*) FROM zakops.actions WHERE status IN ('pending_approval', 'queued')"
+1562:# View for pending tool approvals
+1563:@app.get("/api/pending-tool-approvals")
+1564:async def api_pending_tool_approvals(
+1568:    """List all pending tool approvals across all threads."""
+1572:            SELECT * FROM zakops.v_pending_tool_approvals

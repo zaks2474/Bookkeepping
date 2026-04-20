@@ -1,0 +1,45 @@
+=== AUTO-COLLECTED EVIDENCE (Cycle 1) ===
+Timestamp: 2026-01-25T23:14:42Z
+
+--- git status ---
+?? .test_venv/
+?? apps/dashboard/e2e/workflow_verification.spec.ts
+?? apps/dashboard/gate_artifacts/
+?? apps/dashboard/test-results/
+?? apps/dashboard/tools/
+?? artifacts/validation/
+?? tools/validation/
+
+--- Recent changes (git diff --stat) ---
+ .env.example                      | 45 ++++++++++++++++++++++++
+ .github/CODEOWNERS                | 23 ++++++++++++
+ CONTRIBUTING.md                   | 37 ++++++++++++++++++++
+ LICENSE                           | 27 ++++++---------
+ Makefile                          |  9 ++++-
+ README.md                         |  2 +-
+ SECURITY.md                       | 30 ++++++++++++++++
+ tools/gates/release_ready_gate.sh | 73 +++++++++++++++++++++++++++++++++++++++
+ 8 files changed, 227 insertions(+), 19 deletions(-)
+
+--- Directory listing (top-level) ---
+total 88
+drwxr-xr-x 13 zaks zaks  4096 Jan 25 13:54 .
+drwxrwx--- 45 zaks zaks  4096 Jan 23 18:09 ..
+-rw-r--r--  1 root root  1848 Jan 25 13:54 .env.example
+drwxr-xr-x  8 zaks zaks  4096 Jan 25 17:14 .git
+drwxr-xr-x  3 zaks zaks  4096 Jan 25 13:54 .github
+-rw-r--r--  1 root root  2890 Jan 24 23:20 .gitignore
+drwxr-xr-x  5 root root  4096 Jan 25 02:12 .test_venv
+-rw-r--r--  1 root root   946 Jan 25 13:54 CONTRIBUTING.md
+-rw-r--r--  1 root root   435 Jan 25 13:54 LICENSE
+-rw-r--r--  1 root root 11167 Jan 25 13:54 Makefile
+-rw-r--r--  1 root root  2521 Jan 25 13:54 README.md
+-rw-r--r--  1 root root   726 Jan 25 13:54 SECURITY.md
+drwxr-xr-x  5 root root  4096 Jan 24 23:18 apps
+drwxr-xr-x 17 root root  4096 Jan 25 17:06 artifacts
+drwxr-xr-x  3 root root  4096 Jan 25 13:54 db
+drwxr-xr-x  5 root root  4096 Jan 25 13:54 deployments
+drwxr-xr-x 20 zaks zaks  4096 Jan 25 13:54 docs
+drwxr-xr-x  5 root root  4096 Jan 25 13:54 ops
+drwxr-xr-x  5 root root  4096 Jan 25 13:54 packages
+drwxr-xr-x 13 root root  4096 Jan 25 17:06 tools

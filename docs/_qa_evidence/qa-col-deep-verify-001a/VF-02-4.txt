@@ -1,0 +1,14 @@
+Cascade delete coverage:
+  session_summaries: FOUND (line 219)
+  turn_snapshots: FOUND (line 222)
+  cost_ledger: FOUND (line 226)
+  cross_db_outbox: FOUND (line 230)
+  decision_ledger: FOUND (line 236, redact not delete)
+  checkpoint: FOUND (lines 248-258, checkpoint_writes + checkpoint_blobs + checkpoints)
+  thread_ownership: FOUND (line 260)
+  chat_messages: CASCADE via FK (ON DELETE CASCADE on thread)
+  chat_threads: FOUND (line 264)
+---
+Total lines: 62
+Tables covered: 9+ (session_summaries, turn_snapshots, cost_ledger, cross_db_outbox, decision_ledger, audit_log, checkpoint_writes, checkpoint_blobs, checkpoints, thread_ownership, chat_threads)
+VERDICT: PASS (11 tables touched, exceeds 6 minimum)

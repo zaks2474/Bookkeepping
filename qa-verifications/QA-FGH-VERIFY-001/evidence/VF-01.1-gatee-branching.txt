@@ -1,0 +1,13 @@
+=== VF-01.1 GATE E BRANCHING ===
+39:  # Gate E — Raw httpx client usage in deal_tools.py (must be 0)
+40:  # PATH-resilient: prefers rg, falls back to grep -nE, fails closed on scanner error
+41:  echo "Gate E: raw httpx client usage check"
+45:    echo "ERROR: Gate E target file not found: $GATE_E_TARGET"
+48:  if command -v rg >/dev/null 2>&1; then
+50:  elif command -v grep >/dev/null 2>&1; then
+53:    echo "ERROR: Gate E failed — no scanner available (neither rg nor grep in PATH). Fail closed."
+60:    echo "ERROR: Gate E failed (raw httpx client usage found). Blocking stop hook."
+65:    echo "  Gate E: PASS (no raw httpx usage)"
+67:    # Scanner error (rc >= 2) — fail closed
+68:    echo "ERROR: Gate E scanner error (exit $GATE_E_RC). Fail closed."
+73:    echo "ERROR: Stop hook exceeded 30s budget after Gate E."

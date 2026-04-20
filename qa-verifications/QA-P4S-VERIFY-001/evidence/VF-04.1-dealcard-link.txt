@@ -1,0 +1,7 @@
+=== VF-04.1 DEALCARD LINK NAVIGATION ===
+--- Check Link import ---
+9:import Link from 'next/link';
+--- Check Link wrapper in DealCard ---
+61:            <Link href={`/deals/${deal.deal_id}`} className="flex-1 min-w-0 hover:opacity-80 transition-opacity">
+--- Drag handle should remain separate ---
+56:              {...provided.dragHandleProps}

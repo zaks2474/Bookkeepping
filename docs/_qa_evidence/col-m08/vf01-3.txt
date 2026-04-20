@@ -1,0 +1,2 @@
+apps/agent-api/app/core/langgraph/graph.py:626:                # COL-V2 S9.2/S9.3: Dual scope + role tool access check
+apps/agent-api/app/core/langgraph/graph.py:635:                    denial = filter_denied_message(tool_name, scope, role)

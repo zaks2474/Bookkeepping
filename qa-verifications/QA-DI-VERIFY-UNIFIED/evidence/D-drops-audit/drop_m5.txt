@@ -1,0 +1,31 @@
+===============================================================
+DROP-M5: Column Name Accuracy
+===============================================================
+
+Live query: SELECT column_name FROM information_schema.columns
+  WHERE table_schema = 'zakops' AND table_name = 'deals'
+  ORDER BY ordinal_position;
+
+Actual columns (14 total):
+  1. deal_id
+  2. canonical_name
+  3. display_name
+  4. folder_path
+  5. stage
+  6. status
+  7. identifiers
+  8. company_info
+  9. broker
+ 10. metadata
+ 11. deleted
+ 12. created_at
+ 13. updated_at
+ 14. audit_trail
+
+Key observations:
+- stage and status are separate columns (consistent with ADR-001 Option A decision)
+- deleted column exists (soft-delete pattern)
+- audit_trail column exists (lifecycle tracking)
+- No lifecycle_state column (Option C not yet migrated)
+
+VERDICT: PASS — Column names are accurate and consistent with documented schema

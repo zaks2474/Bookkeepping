@@ -1,0 +1,43 @@
+=== STEP 2.6: HITL Recognition — Triple Proof ===
+--- Pre-test counts ---
+time="2026-02-02T20:53:17-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-02T20:53:17-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+ pre_approvals 
+---------------
+             6
+(1 row)
+
+ pre_audit 
+-----------
+        13
+(1 row)
+
+--- Deal current stage (ground truth) ---
+Deal DL-0037 stage: inbound
+--- Trigger HITL ---
+{
+    "detail": "Authentication required"
+}
+--- PROOF 1: Agent DB approval record ---
+time="2026-02-02T20:53:17-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-02T20:53:17-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+                  id                  |   thread_id   |    tool_name    |                                          tool_args                                           | status  |                                        idempotency_key                                         |          expires_at           |          created_at           
+--------------------------------------+---------------+-----------------+----------------------------------------------------------------------------------------------+---------+------------------------------------------------------------------------------------------------+-------------------------------+-------------------------------
+ 18f3a017-ec93-4222-abf1-52b8121e80ae | f002-hitl-001 | transition_deal | {"deal_id": "DL-0020", "from_stage": "unknown", "to_stage": "due_diligence", "reason": null} | pending | f002-hitl-001:transition_deal:a2cb7e61a65487804951a793125a55f7b70a024bced2697b5f9e27fe0b76ac9d | 2026-02-03 03:06:45.418829+00 | 2026-02-03 02:06:45.419004+00
+(1 row)
+
+--- PROOF 2: Deal stage UNCHANGED (no premature execution) ---
+Before: inbound | After HITL: inbound
+CORRECT: No premature execution
+--- PROOF 3: audit_log has approval.requested event ---
+time="2026-02-02T20:53:17-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-02T20:53:17-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+ event_type | created_at 
+------------+------------
+(0 rows)
+
+TRIPLE PROOF:
+  [1] Approval row exists with status=pending? [Y/N]
+  [2] Deal stage unchanged in backend DB? [Y/N]
+  [3] audit_log has approval event? [Y/N]
+ALL 3 must be YES for G2.5 PASS

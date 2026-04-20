@@ -1,0 +1,4 @@
+84:async def handle_deal_created(event_data: dict[str, Any]):
+110:async def handle_stage_changed(event_data: dict[str, Any]):
+228:    register_handler("deal.created", handle_deal_created)
+229:    register_handler("deal.stage_changed", handle_stage_changed)

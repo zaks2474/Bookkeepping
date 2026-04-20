@@ -1,0 +1,248 @@
+{
+  "agent_identity": {
+    "agent_name": "Claude-Opus-4-5",
+    "run_id": "20260204-0304-24645315",
+    "date_time": "2026-02-04T03:04:00Z",
+    "repo_revision": "07db465760f88f892b56b8eb18e1746b64f7ddf0",
+    "pass_type": "PASS1"
+  },
+  "evaluation_scope": {
+    "plans_evaluated": 3,
+    "issues_in_v2_register": 22,
+    "plans": [
+      {
+        "agent": "Claude-Opus-4-5",
+        "run_id": "20260204-0212-b214408d",
+        "repo_revision": "a09538f04ed278c32ad6f2a037069b353bf5f797",
+        "phases": 7,
+        "decision_sets": 7
+      },
+      {
+        "agent": "Gemini-CLI",
+        "run_id": "20260204-0221-gemini",
+        "repo_revision": "unknown",
+        "phases": 6,
+        "decision_sets": 4
+      },
+      {
+        "agent": "Codex",
+        "run_id": "20260204-021313-1158",
+        "repo_revision": "a09538f04ed278c32ad6f2a037069b353bf5f797",
+        "phases": 7,
+        "decision_sets": 7
+      }
+    ]
+  },
+  "coverage_summary": {
+    "Claude-Opus-4-5": {
+      "issues_covered": 22,
+      "issues_missing": 0,
+      "decision_sets_complete": 7
+    },
+    "Gemini-CLI": {
+      "issues_covered": 21,
+      "issues_missing": 1,
+      "missing_issues": ["ZK-ISSUE-0021"],
+      "decision_sets_complete": 4
+    },
+    "Codex": {
+      "issues_covered": 22,
+      "issues_missing": 0,
+      "decision_sets_complete": 7
+    }
+  },
+  "coverage_matrix": [
+    {"issue_id": "ZK-ISSUE-0001", "severity": "P0", "title": "Split-brain persistence", "claude_phase": 1, "gemini_phase": 1, "codex_phase": 1, "consensus": true},
+    {"issue_id": "ZK-ISSUE-0002", "severity": "P0", "title": "Email ingestion disabled", "claude_phase": 4, "gemini_phase": 0, "codex_phase": 4, "consensus": "partial"},
+    {"issue_id": "ZK-ISSUE-0003", "severity": "P1", "title": "Quarantine approval no deal", "claude_phase": 2, "gemini_phase": 2, "codex_phase": 3, "consensus": true},
+    {"issue_id": "ZK-ISSUE-0004", "severity": "P1", "title": "No DataRoom folders", "claude_phase": 2, "gemini_phase": 2, "codex_phase": 4, "consensus": true},
+    {"issue_id": "ZK-ISSUE-0005", "severity": "P1", "title": "Dashboard no auth", "claude_phase": 5, "gemini_phase": 3, "codex_phase": 0, "consensus": "partial"},
+    {"issue_id": "ZK-ISSUE-0006", "severity": "P1", "title": "Wrong quarantine endpoint", "claude_phase": 0, "gemini_phase": 2, "codex_phase": 2, "consensus": true},
+    {"issue_id": "ZK-ISSUE-0007", "severity": "P1", "title": "Stage taxonomy conflicts", "claude_phase": 0, "gemini_phase": 3, "codex_phase": 3, "consensus": true},
+    {"issue_id": "ZK-ISSUE-0008", "severity": "P1", "title": "Actions split Postgres/SQLite", "claude_phase": 1, "gemini_phase": 1, "codex_phase": 1, "consensus": true},
+    {"issue_id": "ZK-ISSUE-0009", "severity": "P2", "title": "Agent no create_deal", "claude_phase": 3, "gemini_phase": 4, "codex_phase": 2, "consensus": true},
+    {"issue_id": "ZK-ISSUE-0010", "severity": "P2", "title": "RAG unverified", "claude_phase": 0, "gemini_phase": 0, "codex_phase": 4, "consensus": "partial"},
+    {"issue_id": "ZK-ISSUE-0011", "severity": "P2", "title": "No event correlation", "claude_phase": 3, "gemini_phase": 4, "codex_phase": 0, "consensus": "partial"},
+    {"issue_id": "ZK-ISSUE-0012", "severity": "P2", "title": "Notes endpoint mismatch", "claude_phase": 0, "gemini_phase": 2, "codex_phase": 2, "consensus": true},
+    {"issue_id": "ZK-ISSUE-0013", "severity": "P2", "title": "Capabilities/metrics 501", "claude_phase": 2, "gemini_phase": 4, "codex_phase": 4, "consensus": true},
+    {"issue_id": "ZK-ISSUE-0014", "severity": "P2", "title": "sys.path hack", "claude_phase": 1, "gemini_phase": 1, "codex_phase": 1, "consensus": true},
+    {"issue_id": "ZK-ISSUE-0015", "severity": "P3", "title": "Approval expiry lazy", "claude_phase": 3, "gemini_phase": 4, "codex_phase": 5, "consensus": true},
+    {"issue_id": "ZK-ISSUE-0016", "severity": "P2", "title": "No duplicate detection", "claude_phase": 3, "gemini_phase": 3, "codex_phase": 3, "consensus": true},
+    {"issue_id": "ZK-ISSUE-0017", "severity": "P3", "title": "No retention policy", "claude_phase": 5, "gemini_phase": 5, "codex_phase": 5, "consensus": true},
+    {"issue_id": "ZK-ISSUE-0018", "severity": "P2", "title": "Zod schema mismatch", "claude_phase": 2, "gemini_phase": 3, "codex_phase": 2, "consensus": true},
+    {"issue_id": "ZK-ISSUE-0019", "severity": "P2", "title": "Executors unwired", "claude_phase": 4, "gemini_phase": 4, "codex_phase": 4, "consensus": true},
+    {"issue_id": "ZK-ISSUE-0020", "severity": "P2", "title": "SSE not implemented", "claude_phase": 4, "gemini_phase": 5, "codex_phase": 5, "consensus": true},
+    {"issue_id": "ZK-ISSUE-0021", "severity": "P2", "title": "No scheduling/reminders", "claude_phase": 4, "gemini_phase": "backlog", "codex_phase": 4, "consensus": false},
+    {"issue_id": "ZK-ISSUE-0022", "severity": "P3", "title": "Archive/restore missing", "claude_phase": 2, "gemini_phase": 2, "codex_phase": 3, "consensus": true}
+  ],
+  "no_drop_findings": {
+    "missing_issues": [
+      {
+        "finding_id": "NDF-001",
+        "issue_id": "ZK-ISSUE-0021",
+        "plan": "Gemini-CLI",
+        "description": "Scheduling/reminders marked as Backlog instead of active phase",
+        "risk": "MEDIUM"
+      }
+    ],
+    "duplicated_coverage": [
+      {
+        "finding_id": "NDF-002",
+        "issue_id": "ZK-ISSUE-0001",
+        "plans": ["Claude", "Gemini", "Codex"],
+        "risk": "LOW",
+        "assessment": "beneficial_redundancy"
+      },
+      {
+        "finding_id": "NDF-003",
+        "issue_id": "ZK-ISSUE-0014",
+        "plans": ["Claude", "Gemini", "Codex"],
+        "risk": "LOW",
+        "assessment": "beneficial_redundancy"
+      }
+    ],
+    "conflicts": [
+      {
+        "finding_id": "NDF-004",
+        "area": "Auth timing",
+        "claude": "Phase 5",
+        "gemini": "Phase 3",
+        "codex": "Phase 0",
+        "recommendation": "Phase 5 (Claude approach)"
+      },
+      {
+        "finding_id": "NDF-005",
+        "area": "Email ingestion timing",
+        "claude": "Phase 4",
+        "gemini": "Phase 0 (dry-run)",
+        "codex": "Phase 4",
+        "recommendation": "Gemini dry-run in Phase 0 valuable"
+      },
+      {
+        "finding_id": "NDF-006",
+        "area": "Correlation ID timing",
+        "claude": "Phase 3",
+        "gemini": "Phase 4",
+        "codex": "Phase 0",
+        "recommendation": "Phase 0 (Codex approach)"
+      }
+    ],
+    "risky_assumptions": [
+      {
+        "finding_id": "NDF-007",
+        "plan": "All",
+        "assumption": "RAG service will be stable",
+        "risk": "HIGH",
+        "mitigation": "Add health check gating in Phase 0"
+      },
+      {
+        "finding_id": "NDF-008",
+        "plan": "All",
+        "assumption": "JSON to Postgres migration will be lossless",
+        "risk": "MEDIUM",
+        "mitigation": "Require dry-run with validation"
+      },
+      {
+        "finding_id": "NDF-009",
+        "plan": "Gemini",
+        "assumption": "Email ingestion cron can run dry-run in Phase 0",
+        "risk": "LOW",
+        "mitigation": "Verify cron job can be enabled in dry-run mode"
+      },
+      {
+        "finding_id": "NDF-010",
+        "plan": "All",
+        "assumption": "Dashboard Zod schemas are only source of silent failures",
+        "risk": "MEDIUM",
+        "mitigation": "Comprehensive API contract testing"
+      }
+    ],
+    "underspecified_areas": [
+      {"finding_id": "NDF-011", "area": "Rollback procedures", "plans": "All"},
+      {"finding_id": "NDF-012", "area": "Data migration validation", "plans": "All"},
+      {"finding_id": "NDF-013", "area": "SSE implementation details", "plans": "Claude, Codex"},
+      {"finding_id": "NDF-014", "area": "Scheduling framework choice", "plans": "Claude, Codex"}
+    ]
+  },
+  "plan_quality_scorecard": {
+    "dimensions": ["Issue Coverage", "Decision Clarity", "Phase Sequencing", "Verification Rigor", "Risk Management", "Actionability"],
+    "max_score_per_dimension": 5,
+    "max_total": 30,
+    "scores": {
+      "Claude-Opus-4-5": {
+        "Issue Coverage": 5,
+        "Decision Clarity": 5,
+        "Phase Sequencing": 5,
+        "Verification Rigor": 5,
+        "Risk Management": 4,
+        "Actionability": 4,
+        "total": 28
+      },
+      "Gemini-CLI": {
+        "Issue Coverage": 4,
+        "Decision Clarity": 4,
+        "Phase Sequencing": 4,
+        "Verification Rigor": 4,
+        "Risk Management": 3,
+        "Actionability": 4,
+        "total": 23
+      },
+      "Codex": {
+        "Issue Coverage": 5,
+        "Decision Clarity": 5,
+        "Phase Sequencing": 5,
+        "Verification Rigor": 5,
+        "Risk Management": 4,
+        "Actionability": 5,
+        "total": 29
+      }
+    },
+    "ranking": ["Codex", "Claude-Opus-4-5", "Gemini-CLI"]
+  },
+  "decision_consensus": {
+    "agreed": [
+      {"decision": "Source of Truth", "value": "PostgreSQL zakops.deals"},
+      {"decision": "Stage Taxonomy", "value": "9-stage canonical model"},
+      {"decision": "Agent Contract", "value": "API-first (no direct DB writes)"},
+      {"decision": "Email Ingestion Target", "value": "POST to /api/quarantine"},
+      {"decision": "HITL Approach", "value": "Approval required for mutations"}
+    ],
+    "divergent": [
+      {"decision": "Auth timing", "recommendation": "Phase 5 (Claude)"},
+      {"decision": "Correlation ID timing", "recommendation": "Phase 0 (Codex)"},
+      {"decision": "Approval storage", "recommendation": "Backend mirror (Codex)"},
+      {"decision": "RAG architecture depth", "recommendation": "Codex approach"}
+    ],
+    "missing": [
+      "Backup strategy",
+      "Incident response",
+      "Performance testing"
+    ]
+  },
+  "recommended_actions": {
+    "high_priority": [
+      {"id": 1, "action": "Promote ZK-ISSUE-0021 from Backlog to active phase"},
+      {"id": 2, "action": "Align auth timing decision"},
+      {"id": 3, "action": "Align correlation ID timing decision"}
+    ],
+    "medium_priority": [
+      {"id": 4, "action": "Add explicit rollback scripts to each phase"},
+      {"id": 5, "action": "Define data migration validation criteria"},
+      {"id": 6, "action": "Specify SSE event types and payloads"},
+      {"id": 7, "action": "Clarify scheduling framework"}
+    ],
+    "low_priority": [
+      {"id": 8, "action": "Add backup strategy to Phase 5"},
+      {"id": 9, "action": "Add incident response procedures to Phase 6"},
+      {"id": 10, "action": "Add performance/load testing to Phase 5"}
+    ]
+  },
+  "source_references": {
+    "v2_issues_register": "/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_HONEST_ASSESSMENT_V2.md",
+    "plans": [
+      "/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3.Claude-Opus-4-5.20260204-0212-b214408d.md",
+      "/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3.Gemini-CLI.20260204-0221-gemini.md",
+      "/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3.Codex.20260204-021313-1158.md"
+    ]
+  }
+}

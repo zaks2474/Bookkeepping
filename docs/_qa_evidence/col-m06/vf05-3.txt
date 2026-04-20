@@ -1,0 +1,3 @@
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:81:from app.core.security.canary_tokens import inject_canary, verify_no_leakage
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:1125:                if not verify_no_leakage(response_text):
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:1388:                if asst_content and not verify_no_leakage(asst_content):

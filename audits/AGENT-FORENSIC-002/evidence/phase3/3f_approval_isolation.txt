@@ -1,0 +1,65 @@
+=== STEP 3.16 — Approval Ownership Isolation ===
+Date: Tue Feb  3 02:15:22 UTC 2026
+
+--- Register fresh user ---
+{"error":{"code":"VALIDATION_ERROR","message":"Request validation failed","details":[{"field":"body.69","message":"JSON decode error","code":"json_invalid"}],"trace_id":"12b72f49-c3d2-4092-889a-05b9de90a023","timestamp":"2026-02-03T02:15:22.869997Z"}}
+
+--- Login ---
+{"error":{"code":"VALIDATION_ERROR","message":"Request validation failed","details":[{"field":"body.69","message":"JSON decode error","code":"json_invalid"}],"trace_id":"8e841b45-82c9-44da-8115-2b06947e6324","timestamp":"2026-02-03T02:15:22.877883Z"}}
+
+Isolation JWT: NONE...
+
+Using approval ID: 18f3a017-ec93-4222-abf1-52b8121e80ae
+
+--- GET /agent/approvals with user JWT ---
+* Host localhost:8095 was resolved.
+* IPv6: ::1
+* IPv4: 127.0.0.1
+*   Trying [::1]:8095...
+* Connected to localhost (::1) port 8095
+> GET /agent/approvals HTTP/1.1
+> Host: localhost:8095
+> User-Agent: curl/8.5.0
+> Accept: */*
+> Authorization: Bearer NONE
+> 
+< HTTP/1.1 401 Unauthorized
+< date: Tue, 03 Feb 2026 02:15:22 GMT
+< server: uvicorn
+< www-authenticate: Bearer
+< content-length: 36
+< content-type: application/json
+< x-request-id: 1d58902e
+< x-response-time: 0.001s
+< 
+{ [36 bytes data]
+* Connection #0 to host localhost left intact
+{"detail":"Authentication required"}
+
+--- POST approve with user JWT ---
+* Host localhost:8095 was resolved.
+* IPv6: ::1
+* IPv4: 127.0.0.1
+*   Trying [::1]:8095...
+* Connected to localhost (::1) port 8095
+> POST /agent/approvals/18f3a017-ec93-4222-abf1-52b8121e80ae:approve HTTP/1.1
+> Host: localhost:8095
+> User-Agent: curl/8.5.0
+> Accept: */*
+> Authorization: Bearer NONE
+> Content-Type: application/json
+> Content-Length: 29
+> 
+} [29 bytes data]
+< HTTP/1.1 401 Unauthorized
+< date: Tue, 03 Feb 2026 02:15:22 GMT
+< server: uvicorn
+< www-authenticate: Bearer
+< content-length: 36
+< content-type: application/json
+< x-request-id: 71d718b4
+< x-response-time: 0.001s
+< 
+{ [36 bytes data]
+* Connection #0 to host localhost left intact
+{"detail":"Authentication required"}

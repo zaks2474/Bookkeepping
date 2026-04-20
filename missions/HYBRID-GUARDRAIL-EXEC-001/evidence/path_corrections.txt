@@ -1,0 +1,36 @@
+# Path Discovery & Corrections
+# Mission: HYBRID-GUARDRAIL-EXEC-001
+
+## Verified Paths
+BACKEND_ROOT=/home/zaks/zakops-backend                           # CONFIRMED
+DASHBOARD_ROOT=/home/zaks/zakops-agent-api/apps/dashboard         # CONFIRMED (active on port 3003, Next.js v15.5.9)
+AGENT_ROOT=/home/zaks/zakops-agent-api/apps/agent-api             # CONFIRMED
+INFRA_SCRIPTS=/home/zaks/tools/infra/                             # CONFIRMED (12 scripts)
+VALIDATION_SCRIPTS=/home/zaks/tools/validation/                   # CONFIRMED (4 scripts)
+MAKEFILE=/home/zaks/Makefile                                      # CONFIRMED
+CLAUDE_MD=/home/zaks/.claude/CLAUDE.md                            # CONFIRMED
+BOOKKEEPING=/home/zaks/bookkeeping                                # CONFIRMED
+OUTPUT_ROOT=/home/zaks/bookkeeping/missions/HYBRID-GUARDRAIL-EXEC-001
+
+## Key Files
+OPENAPI_PY=/home/zaks/zakops-backend/src/api/shared/openapi.py   # CONFIRMED (302 lines)
+API_SCHEMAS_TS=/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-schemas.ts  # CONFIRMED (500 lines)
+TSCONFIG=/home/zaks/zakops-agent-api/apps/dashboard/tsconfig.json # CONFIRMED
+
+## Path Corrections from Mission Doc
+- Mission said DASHBOARD_ROOT="/home/zaks/zakops-agent-api/apps/dashboard" → CORRECT
+- Mission said INFRA_ROOT="/home/zaks/zakops-agent-api" → CORRECTED to /home/zaks (Makefile is at /home/zaks/Makefile)
+- V4 infra scripts at /home/zaks/tools/infra/ (not under zakops-agent-api)
+- V4 validation scripts at /home/zaks/tools/validation/ (dashboard-network-capture.sh, sse-validation.sh, rag-routing-proof.sh)
+
+## NOTE: Two dashboards exist
+- /home/zaks/zakops-dashboard/ (488 lines api-schemas.ts, INACTIVE)
+- /home/zaks/zakops-agent-api/apps/dashboard/ (500 lines api-schemas.ts, ACTIVE on port 3003)
+- Using the ACTIVE one for this mission.
+
+## Service Status at Mission Start
+- Backend: UP (healthy) at :8091
+- Dashboard: UP at :3003 (Next.js v15.5.9, pid 79204)
+- Agent API: UP (healthy) at :8095
+- zakops-backend-postgres-1: RESTARTING (known issue — restart loop)
+- zakops-postgres: UP (healthy) at :5435

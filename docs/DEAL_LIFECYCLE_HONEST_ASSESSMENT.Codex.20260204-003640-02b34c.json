@@ -1,0 +1,493 @@
+{
+  "agent_identity": {
+    "agent_name": "Codex",
+    "agent_version": "GPT-5",
+    "run_id": "20260204-003640-02b34c",
+    "repo_revision": "a09538f04ed278c32ad6f2a037069b353bf5f797",
+    "date_time": "2026-02-04T00:41:03Z"
+  },
+  "deal_model": {
+    "tables": [
+      "zakops.deals",
+      "zakops.deal_events",
+      "zakops.deal_aliases",
+      "zakops.quarantine_items",
+      "zakops.actions",
+      "approvals (agent db)",
+      "tool_executions (agent db)",
+      "audit_log (agent db)",
+      "/home/zaks/DataRoom/.deal-registry/deal_registry.json",
+      "/home/zaks/DataRoom/.deal-registry/events/*.jsonl",
+      "ZAKOPS_STATE_DB (SQLite)"
+    ],
+    "fields": {
+      "zakops.deals": [
+        "deal_id",
+        "canonical_name",
+        "display_name",
+        "folder_path",
+        "stage",
+        "status",
+        "identifiers",
+        "company_info",
+        "broker",
+        "metadata",
+        "deleted",
+        "created_at",
+        "updated_at"
+      ],
+      "zakops.quarantine_items": [
+        "id",
+        "deal_id",
+        "sender",
+        "subject",
+        "message_id",
+        "body_preview",
+        "raw_content",
+        "reason",
+        "confidence",
+        "status",
+        "reviewed_by",
+        "reviewed_at",
+        "received_at",
+        "created_at",
+        "updated_at"
+      ],
+      "DealRegistry.Deal": [
+        "deal_id",
+        "canonical_name",
+        "display_name",
+        "folder_path",
+        "stage",
+        "status",
+        "identifiers",
+        "company_info",
+        "broker",
+        "aliases",
+        "metadata",
+        "created_at",
+        "updated_at",
+        "deleted"
+      ],
+      "approvals": [
+        "id",
+        "thread_id",
+        "tool_name",
+        "tool_args",
+        "actor_id",
+        "status",
+        "idempotency_key",
+        "claimed_at",
+        "resolved_at",
+        "expires_at"
+      ]
+    },
+    "source_of_truth": [
+      "Active backend uses Postgres via orchestration API (Dockerfile -> src.api.orchestration.main) [Dockerfile, src/api/orchestration/main.py]",
+      "Legacy deal_lifecycle API uses DataRoom DealRegistry JSON [src/api/deal_lifecycle/main.py, src/core/deal_registry.py]"
+    ]
+  },
+  "states": [
+    {
+      "state": "inbound",
+      "ref": "src/core/deals/workflow.py:DealStage"
+    },
+    {
+      "state": "screening",
+      "ref": "src/core/deals/workflow.py:DealStage"
+    },
+    {
+      "state": "qualified",
+      "ref": "src/core/deals/workflow.py:DealStage"
+    },
+    {
+      "state": "loi",
+      "ref": "src/core/deals/workflow.py:DealStage"
+    },
+    {
+      "state": "diligence",
+      "ref": "src/core/deals/workflow.py:DealStage"
+    },
+    {
+      "state": "closing",
+      "ref": "src/core/deals/workflow.py:DealStage"
+    },
+    {
+      "state": "portfolio",
+      "ref": "src/core/deals/workflow.py:DealStage"
+    },
+    {
+      "state": "junk",
+      "ref": "src/core/deals/workflow.py:DealStage"
+    },
+    {
+      "state": "archived",
+      "ref": "src/core/deals/workflow.py:DealStage"
+    }
+  ],
+  "transitions": [
+    {
+      "from": "inbound",
+      "to": "screening",
+      "trigger": "POST /api/deals/{id}/transition",
+      "entrypoint_ref": "src/core/deals/workflow.py:STAGE_TRANSITIONS"
+    },
+    {
+      "from": "inbound",
+      "to": "junk",
+      "trigger": "POST /api/deals/{id}/transition",
+      "entrypoint_ref": "src/core/deals/workflow.py:STAGE_TRANSITIONS"
+    },
+    {
+      "from": "inbound",
+      "to": "archived",
+      "trigger": "POST /api/deals/{id}/transition",
+      "entrypoint_ref": "src/core/deals/workflow.py:STAGE_TRANSITIONS"
+    },
+    {
+      "from": "screening",
+      "to": "qualified",
+      "trigger": "POST /api/deals/{id}/transition",
+      "entrypoint_ref": "src/core/deals/workflow.py:STAGE_TRANSITIONS"
+    },
+    {
+      "from": "screening",
+      "to": "junk",
+      "trigger": "POST /api/deals/{id}/transition",
+      "entrypoint_ref": "src/core/deals/workflow.py:STAGE_TRANSITIONS"
+    },
+    {
+      "from": "screening",
+      "to": "archived",
+      "trigger": "POST /api/deals/{id}/transition",
+      "entrypoint_ref": "src/core/deals/workflow.py:STAGE_TRANSITIONS"
+    },
+    {
+      "from": "qualified",
+      "to": "loi",
+      "trigger": "POST /api/deals/{id}/transition",
+      "entrypoint_ref": "src/core/deals/workflow.py:STAGE_TRANSITIONS"
+    },
+    {
+      "from": "qualified",
+      "to": "junk",
+      "trigger": "POST /api/deals/{id}/transition",
+      "entrypoint_ref": "src/core/deals/workflow.py:STAGE_TRANSITIONS"
+    },
+    {
+      "from": "qualified",
+      "to": "archived",
+      "trigger": "POST /api/deals/{id}/transition",
+      "entrypoint_ref": "src/core/deals/workflow.py:STAGE_TRANSITIONS"
+    },
+    {
+      "from": "loi",
+      "to": "diligence",
+      "trigger": "POST /api/deals/{id}/transition",
+      "entrypoint_ref": "src/core/deals/workflow.py:STAGE_TRANSITIONS"
+    },
+    {
+      "from": "loi",
+      "to": "qualified",
+      "trigger": "POST /api/deals/{id}/transition",
+      "entrypoint_ref": "src/core/deals/workflow.py:STAGE_TRANSITIONS"
+    },
+    {
+      "from": "loi",
+      "to": "junk",
+      "trigger": "POST /api/deals/{id}/transition",
+      "entrypoint_ref": "src/core/deals/workflow.py:STAGE_TRANSITIONS"
+    },
+    {
+      "from": "loi",
+      "to": "archived",
+      "trigger": "POST /api/deals/{id}/transition",
+      "entrypoint_ref": "src/core/deals/workflow.py:STAGE_TRANSITIONS"
+    },
+    {
+      "from": "diligence",
+      "to": "closing",
+      "trigger": "POST /api/deals/{id}/transition",
+      "entrypoint_ref": "src/core/deals/workflow.py:STAGE_TRANSITIONS"
+    },
+    {
+      "from": "diligence",
+      "to": "loi",
+      "trigger": "POST /api/deals/{id}/transition",
+      "entrypoint_ref": "src/core/deals/workflow.py:STAGE_TRANSITIONS"
+    },
+    {
+      "from": "diligence",
+      "to": "junk",
+      "trigger": "POST /api/deals/{id}/transition",
+      "entrypoint_ref": "src/core/deals/workflow.py:STAGE_TRANSITIONS"
+    },
+    {
+      "from": "diligence",
+      "to": "archived",
+      "trigger": "POST /api/deals/{id}/transition",
+      "entrypoint_ref": "src/core/deals/workflow.py:STAGE_TRANSITIONS"
+    },
+    {
+      "from": "closing",
+      "to": "portfolio",
+      "trigger": "POST /api/deals/{id}/transition",
+      "entrypoint_ref": "src/core/deals/workflow.py:STAGE_TRANSITIONS"
+    },
+    {
+      "from": "closing",
+      "to": "diligence",
+      "trigger": "POST /api/deals/{id}/transition",
+      "entrypoint_ref": "src/core/deals/workflow.py:STAGE_TRANSITIONS"
+    },
+    {
+      "from": "closing",
+      "to": "junk",
+      "trigger": "POST /api/deals/{id}/transition",
+      "entrypoint_ref": "src/core/deals/workflow.py:STAGE_TRANSITIONS"
+    },
+    {
+      "from": "closing",
+      "to": "archived",
+      "trigger": "POST /api/deals/{id}/transition",
+      "entrypoint_ref": "src/core/deals/workflow.py:STAGE_TRANSITIONS"
+    },
+    {
+      "from": "portfolio",
+      "to": "archived",
+      "trigger": "POST /api/deals/{id}/transition",
+      "entrypoint_ref": "src/core/deals/workflow.py:STAGE_TRANSITIONS"
+    },
+    {
+      "from": "junk",
+      "to": "inbound",
+      "trigger": "POST /api/deals/{id}/transition",
+      "entrypoint_ref": "src/core/deals/workflow.py:STAGE_TRANSITIONS"
+    },
+    {
+      "from": "junk",
+      "to": "archived",
+      "trigger": "POST /api/deals/{id}/transition",
+      "entrypoint_ref": "src/core/deals/workflow.py:STAGE_TRANSITIONS"
+    }
+  ],
+  "scenarios": [
+    {
+      "name": "New deal enters quarantine",
+      "expected": "Pending item in zakops.quarantine_items",
+      "implemented_status": "PARTIALLY IMPLEMENTED",
+      "evidence_refs": [
+        "src/api/orchestration/main.py:create_quarantine_item",
+        "src/api/orchestration/main.py:process_quarantine"
+      ]
+    },
+    {
+      "name": "Duplicate deal detection",
+      "expected": "Deduplicate by message_id or alias",
+      "implemented_status": "PARTIALLY IMPLEMENTED",
+      "evidence_refs": [
+        "src/api/orchestration/main.py:create_quarantine_item",
+        "src/core/deal_registry.py:DealMatcher"
+      ]
+    },
+    {
+      "name": "HITL approval flow",
+      "expected": "Approvals with pending/approved/rejected/expired",
+      "implemented_status": "IMPLEMENTED (agent API)",
+      "evidence_refs": [
+        "apps/agent-api/app/models/approval.py:ApprovalStatus",
+        "apps/agent-api/app/api/v1/agent.py"
+      ]
+    },
+    {
+      "name": "Manual user edits",
+      "expected": "PATCH /api/deals updates deal",
+      "implemented_status": "NEEDS VERIFICATION",
+      "evidence_refs": [
+        "src/api/orchestration/main.py:update_deal"
+      ]
+    },
+    {
+      "name": "Agent-driven updates",
+      "expected": "transition_deal tool calls /api/deals/{id}/transition",
+      "implemented_status": "IMPLEMENTED",
+      "evidence_refs": [
+        "apps/agent-api/app/core/langgraph/tools/deal_tools.py:transition_deal",
+        "src/api/orchestration/routers/workflow.py:transition_deal_stage"
+      ]
+    },
+    {
+      "name": "Missing auth token",
+      "expected": "Writes require X-API-Key when configured",
+      "implemented_status": "CONFIG-DEPENDENT",
+      "evidence_refs": [
+        "src/api/shared/middleware/apikey.py:APIKeyMiddleware",
+        "apps/dashboard/src/middleware.ts"
+      ]
+    },
+    {
+      "name": "Split-brain DB risk",
+      "expected": "One source of truth",
+      "implemented_status": "RISK PRESENT",
+      "evidence_refs": [
+        "db/init/001_base_tables.sql:zakops.deals",
+        "src/core/deal_registry.py:Deal",
+        "src/actions/engine/store.py:SCHEMA_SQL"
+      ]
+    },
+    {
+      "name": "Deal exists in DB but not visible in UI",
+      "expected": "UI lists /api/deals",
+      "implemented_status": "POSSIBLE",
+      "evidence_refs": [
+        "src/api/orchestration/main.py:list_deals",
+        "apps/dashboard/src/lib/api.ts:getDeals",
+        "src/actions/executors/deal_create_from_email.py:CreateDealFromEmailExecutor"
+      ]
+    },
+    {
+      "name": "UI shows deal but agent cannot list",
+      "expected": "Agent uses same backend",
+      "implemented_status": "NEEDS VERIFICATION",
+      "evidence_refs": [
+        "apps/agent-api/app/core/langgraph/tools/deal_tools.py:_get_backend_headers",
+        "src/api/shared/middleware/apikey.py:APIKeyMiddleware"
+      ]
+    },
+    {
+      "name": "Partial failure (RAG down)",
+      "expected": "search_deals returns error",
+      "implemented_status": "IMPLEMENTED",
+      "evidence_refs": [
+        "apps/agent-api/app/core/langgraph/tools/deal_tools.py:search_deals"
+      ]
+    },
+    {
+      "name": "Retry/idempotency",
+      "expected": "Idempotency keys prevent duplicate transitions",
+      "implemented_status": "IMPLEMENTED",
+      "evidence_refs": [
+        "src/core/deals/workflow.py:transition_stage",
+        "src/api/shared/middleware/cooldown.py:TransitionCooldownMiddleware"
+      ]
+    },
+    {
+      "name": "Deletion/archive",
+      "expected": "Archive endpoint or deleted flag",
+      "implemented_status": "PARTIALLY IMPLEMENTED",
+      "evidence_refs": [
+        "db/init/001_base_tables.sql:zakops.deals",
+        "src/api/deal_lifecycle/main.py:archive_deal"
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "id": "G-001",
+      "title": "Split-brain Deal sources (Postgres vs DataRoom JSON)",
+      "severity": "P0",
+      "evidence_refs": [
+        "Dockerfile",
+        "src/api/orchestration/main.py",
+        "src/core/deal_registry.py:Deal"
+      ],
+      "remediation_steps": [
+        "Select a single source of truth",
+        "Migrate legacy registry data into Postgres",
+        "Retire legacy deal_lifecycle API or add sync"
+      ]
+    },
+    {
+      "id": "G-002",
+      "title": "Quarantine approval does not create deals in active backend",
+      "severity": "P1",
+      "evidence_refs": [
+        "src/api/orchestration/main.py:process_quarantine"
+      ],
+      "remediation_steps": [
+        "Add atomic approve endpoint that creates deal",
+        "Link quarantine approval to deal creation action"
+      ]
+    },
+    {
+      "id": "G-003",
+      "title": "Dashboard calls legacy /api/quarantine/{id}/resolve",
+      "severity": "P1",
+      "evidence_refs": [
+        "apps/dashboard/src/lib/api.ts:resolveQuarantineItem",
+        "src/api/orchestration/main.py:process_quarantine"
+      ],
+      "remediation_steps": [
+        "Update UI to /process or add /resolve alias to orchestration API"
+      ]
+    },
+    {
+      "id": "G-004",
+      "title": "Stage taxonomy conflicts across components",
+      "severity": "P1",
+      "evidence_refs": [
+        "src/core/deals/workflow.py:DealStage",
+        "db/migrations/023_stage_check_constraint.sql",
+        "/home/zaks/scripts/deal_state_machine.py:DealStage",
+        "db/init/001_base_tables.sql:zakops.deals"
+      ],
+      "remediation_steps": [
+        "Align all stage enums to canonical list",
+        "Remove legacy stage machine or gate it behind feature flag",
+        "Fix DB default stage"
+      ]
+    },
+    {
+      "id": "G-005",
+      "title": "Actions system split (Postgres vs SQLite)",
+      "severity": "P1",
+      "evidence_refs": [
+        "src/api/orchestration/main.py:list_actions",
+        "src/actions/engine/store.py:SCHEMA_SQL"
+      ],
+      "remediation_steps": [
+        "Migrate action engine to Postgres",
+        "Deprecate SQLite store"
+      ]
+    },
+    {
+      "id": "G-006",
+      "title": "Deal notes endpoint mismatch",
+      "severity": "P2",
+      "evidence_refs": [
+        "apps/dashboard/src/lib/api.ts:addDealNote",
+        "src/api/deal_lifecycle/main.py:add_deal_note"
+      ],
+      "remediation_steps": [
+        "Add /api/deals/{id}/note to orchestration API or update UI"
+      ]
+    },
+    {
+      "id": "G-007",
+      "title": "Actions capabilities/metrics not implemented",
+      "severity": "P2",
+      "evidence_refs": [
+        "src/api/orchestration/main.py:get_action_capabilities",
+        "src/api/orchestration/main.py:get_action_metrics"
+      ],
+      "remediation_steps": [
+        "Implement capability registry and metrics aggregation"
+      ]
+    }
+  ],
+  "comparison_to_prior": {
+    "new_findings": [
+      "Active backend runs orchestration API (Postgres-first) [Dockerfile]",
+      "UI uses /api/quarantine/{id}/resolve but active backend exposes /process [apps/dashboard/src/lib/api.ts, src/api/orchestration/main.py]",
+      "Actions system split between Postgres and SQLite [src/api/orchestration/main.py, src/actions/engine/store.py]"
+    ],
+    "conflicts": [
+      "Multiple stage taxonomies exist (core workflow vs legacy deal_state_machine) [src/core/deals/workflow.py, /home/zaks/scripts/deal_state_machine.py]",
+      "Quarantine approval in active backend does not create deals [src/api/orchestration/main.py:process_quarantine]"
+    ],
+    "confirmations": [
+      "DataRoom registry is separate from Postgres deals [src/core/deal_registry.py, db/init/001_base_tables.sql]",
+      "transition_deal tool is HITL-gated and calls backend transition endpoint [apps/agent-api/app/core/langgraph/tools/deal_tools.py, apps/agent-api/app/schemas/agent.py]"
+    ]
+  }
+}

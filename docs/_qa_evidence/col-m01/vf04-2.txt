@@ -1,0 +1,1 @@
+    id              VARCHAR(36) PRIMARY KEY DEFAULT gen_random_uuid()::text,

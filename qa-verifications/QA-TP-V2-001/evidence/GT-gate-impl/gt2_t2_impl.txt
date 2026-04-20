@@ -1,0 +1,28 @@
+=== GT-2: T-2 Output Completeness ===
+gate_t2_completeness() {
+  local run_dir="$1"
+  local skip_pass4="${2:-false}"
+  log "Gate T-2: Output Completeness"
+  local fails=0
+
+  # Pass 1: exactly 3 reports (count *_report.md only)
+  local p1_count
+  p1_count=$(find "$run_dir/01_pass1" -name "*_report.md" 2>/dev/null | wc -l)
+  if [ "$p1_count" -eq 3 ]; then
+    echo "  PASS: Pass 1 — $p1_count/3 reports"
+  else
+    echo "  FAIL: Pass 1 — $p1_count/3 reports"
+    fails=$((fails + 1))
+  fi
+
+  # Pass 2: exactly 3 reviews (count *_review.md only)
+  local p2_count
+  p2_count=$(find "$run_dir/02_pass2" -name "*_review.md" 2>/dev/null | wc -l)
+  if [ "$p2_count" -eq 3 ]; then
+    echo "  PASS: Pass 2 — $p2_count/3 reviews"
+  else
+    echo "  FAIL: Pass 2 — $p2_count/3 reviews"
+    fails=$((fails + 1))
+  fi
+
+

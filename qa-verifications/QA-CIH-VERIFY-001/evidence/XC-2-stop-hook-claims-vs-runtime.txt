@@ -1,0 +1,38 @@
+=== XC-2 STOP HOOK CLAIMS VS RUNTIME ===
+10:# ── Project Detection (multi-path, CI-HARDENING-001 Step 1) ──
+11:# Order: 1) env override  2) git rev-parse  3) known path fallback
+19:  DETECTION_METHOD="env-override"
+22:# 2) git rev-parse when available
+24:  MONOREPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || echo "")
+34:  DETECTION_METHOD="known-path-fallback"
+66:  # Gate E — Raw httpx client usage in deal_tools.py (must be 0)
+68:  echo "Gate E: raw httpx client usage check"
+72:    echo "ERROR: Gate E target file not found: $GATE_E_TARGET"
+80:    echo "ERROR: Gate E failed — no scanner available (neither rg nor grep in PATH). Fail closed."
+87:    echo "ERROR: Gate E failed (raw httpx client usage found). Blocking stop hook."
+92:    echo "  Gate E: PASS (no raw httpx usage)"
+94:    # Scanner error (rc >= 2) — fail closed
+95:    echo "ERROR: Gate E scanner error (exit $GATE_E_RC). Fail closed."
+100:    echo "ERROR: Stop hook exceeded 30s budget after Gate E."
+108:    echo "SKIP: No trusted monorepo root found (git unavailable, known path /home/zaks/zakops-agent-api absent)."
+110:    echo "SKIP: Monorepo root found ($MONOREPO_ROOT) but Makefile missing."
+112:    echo "SKIP: Monorepo root found ($MONOREPO_ROOT) but Makefile lacks validate-fast target."
+114:  echo "Validation gates not executed."
+--- VF-02.4 Normal Runtime ---
+=== VF-02.4 STOP HOOK NORMAL RUNTIME ===
+=== Session End Validation (Fast Tier) ===
+Project detected via git-rev-parse: /home/zaks/zakops-agent-api
+Gate A: validate-fast
+[36m=== Fast Validation (Offline) ===[0m
+--- VF-02.5 Constrained PATH ---
+=== VF-02.5 STOP HOOK CONSTRAINED PATH ===
+=== Session End Validation (Fast Tier) ===
+Project detected via known-path-fallback: /home/zaks/zakops-agent-api
+Gate A: validate-fast
+fatal: detected dubious ownership in repository at '/home/zaks/zakops-agent-api'
+--- VF-02.6 Env Override ---
+=== VF-02.6 STOP HOOK ENV OVERRIDE BRANCH ===
+=== Session End Validation (Fast Tier) ===
+Project detected via env-override: /home/zaks/zakops-agent-api
+Gate A: validate-fast
+fatal: detected dubious ownership in repository at '/home/zaks/zakops-agent-api'

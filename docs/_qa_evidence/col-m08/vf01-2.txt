@@ -1,0 +1,1 @@
+apps/agent-api/app/services/export_service.py:69:        lines.append(f"**Scope:** {thread_dict.get('scope_type', 'global')}")

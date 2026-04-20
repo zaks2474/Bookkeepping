@@ -1,0 +1,8 @@
+273-    injection_metadata: dict | None = None  # LangSmith run_id, agent version, etc.
+1514:    source_type = item.source_type or request.headers.get("X-Source-Type") or "email"
+1516-    # Store extended fields in raw_content jsonb
+1560-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9::jsonb, 'pending', $10, $11)
+1562-            RETURNING id::text, message_id, subject AS email_subject, sender,
+1784:                        'source_type': item.get('source_type', 'email'),
+1785-                        'correlation_id': str(item.get('correlation_id') or ''),
+1787-                    json.dumps({}),

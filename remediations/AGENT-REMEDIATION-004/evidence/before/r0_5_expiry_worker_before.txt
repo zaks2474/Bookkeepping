@@ -1,0 +1,60 @@
+=== R0.5 Expiry Worker BEFORE ===
+--- Expiry/schedule patterns in code ---
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:540:                            expires_at=datetime.now(UTC) + timedelta(seconds=APPROVAL_TIMEOUT),
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:548:                        approval_expires_at = approval.expires_at
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:557:                            "expires_at": approval_expires_at,
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/security/agent_auth.py:56:    """Token has expired."""
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/security/agent_auth.py:95:        expires_at: datetime,
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/security/agent_auth.py:101:        self.expires_at = expires_at
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/security/agent_auth.py:116:    expires_delta: Optional[timedelta] = None,
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/security/agent_auth.py:128:        expires_delta: Token expiration time
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/security/agent_auth.py:135:    if expires_delta is None:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/security/agent_auth.py:136:        expires_delta = timedelta(hours=1)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/security/agent_auth.py:138:    expire = datetime.now(UTC) + expires_delta
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/security/agent_auth.py:145:        "exp": expire,
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/security/agent_auth.py:157:        expires_at=expire.isoformat(),
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/security/agent_auth.py:176:        TokenExpiredError: If token is expired
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/security/agent_auth.py:206:        expires_at = datetime.fromtimestamp(exp, tz=UTC) if exp else datetime.now(UTC)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/security/agent_auth.py:254:            expires_at=expires_at,
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/security/agent_auth.py:258:        logger.warning("agent_token_expired")
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/security/agent_auth.py:259:        raise TokenExpiredError("Token has expired")
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/security/agent_auth.py:351:    - expired: An expired token
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/security/agent_auth.py:366:    expired_payload = {
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/security/agent_auth.py:374:    expired = jwt.encode(expired_payload, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/security/agent_auth.py:422:        "expired": expired,
+/home/zaks/zakops-agent-api/apps/agent-api/app/utils/auth.py:22:def create_access_token(thread_id: str, expires_delta: Optional[timedelta] = None) -> Token:
+/home/zaks/zakops-agent-api/apps/agent-api/app/utils/auth.py:27:        expires_delta: Optional expiration time delta.
+/home/zaks/zakops-agent-api/apps/agent-api/app/utils/auth.py:32:    if expires_delta:
+/home/zaks/zakops-agent-api/apps/agent-api/app/utils/auth.py:33:        expire = datetime.now(UTC) + expires_delta
+/home/zaks/zakops-agent-api/apps/agent-api/app/utils/auth.py:35:        expire = datetime.now(UTC) + timedelta(days=settings.JWT_ACCESS_TOKEN_EXPIRE_DAYS)
+/home/zaks/zakops-agent-api/apps/agent-api/app/utils/auth.py:39:        "exp": expire,
+/home/zaks/zakops-agent-api/apps/agent-api/app/utils/auth.py:46:    logger.info("token_created", thread_id=thread_id, expires_at=expire.isoformat())
+/home/zaks/zakops-agent-api/apps/agent-api/app/utils/auth.py:48:    return Token(access_token=encoded_jwt, expires_at=expire)
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/agent.py:268:                      AND (expires_at IS NULL OR expires_at > :now)
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/agent.py:285:                    approval.expires_at and datetime.now(UTC) > approval.expires_at
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/agent.py:287:                    # Update to expired if not already
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/agent.py:291:                    raise HTTPException(status_code=400, detail="Approval has expired")
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/agent.py:673:                if not a.expires_at or datetime.now(UTC) < a.expires_at
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/auth.py:296:        return TokenResponse(access_token=token.access_token, token_type="bearer", expires_at=token.expires_at)
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/auth.py:327:            expires_at=token.expires_at.isoformat(),
+/home/zaks/zakops-agent-api/apps/agent-api/app/models/approval.py:27:    EXPIRED = "expired"
+/home/zaks/zakops-agent-api/apps/agent-api/app/models/approval.py:50:        expires_at: Expiration timestamp for pending approvals
+/home/zaks/zakops-agent-api/apps/agent-api/app/models/approval.py:71:    expires_at: Optional[datetime] = Field(default=None)
+/home/zaks/zakops-agent-api/apps/agent-api/app/models/approval.py:113:    APPROVAL_EXPIRED = "approval_expired"
+/home/zaks/zakops-agent-api/apps/agent-api/app/schemas/agent.py:31:    EXPIRED = "expired"
+/home/zaks/zakops-agent-api/apps/agent-api/app/schemas/auth.py:21:        expires_at: The token expiration timestamp.
+/home/zaks/zakops-agent-api/apps/agent-api/app/schemas/auth.py:26:    expires_at: datetime = Field(..., description="The token expiration timestamp")
+/home/zaks/zakops-agent-api/apps/agent-api/app/schemas/auth.py:35:        expires_at: When the token expires
+/home/zaks/zakops-agent-api/apps/agent-api/app/schemas/auth.py:40:    expires_at: datetime = Field(..., description="When the token expires")
+
+--- Stale pending approvals (if any) ---
+--- Stale pending approvals (if any) ---
+                  id                  | status  |          expires_at           | expiry_state 
+--------------------------------------+---------+-------------------------------+--------------
+ 18f3a017-ec93-4222-abf1-52b8121e80ae | pending | 2026-02-03 03:06:45.418829+00 | EXPIRED
+ 0a8b039c-6e53-4f1c-a731-b0243fb8c6b4 | pending | 2026-02-03 03:08:31.385549+00 | EXPIRED
+ f18e5414-2987-439d-a802-05ca190fbadd | pending | 2026-02-03 18:11:58.959391+00 | EXPIRED
+ bf8c6106-b9e5-4301-af0f-db1f474394f5 | pending | 2026-02-03 18:12:07.435135+00 | EXPIRED
+ 25151166-d589-40a9-86d6-3ecdbb42090c | pending | 2026-02-03 18:17:04.156951+00 | EXPIRED
+(5 rows)
+

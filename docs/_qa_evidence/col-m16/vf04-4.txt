@@ -1,0 +1,4 @@
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/messages/block_translators/google_genai.py:147:                if doc_format == "pdf" and "bytes" in source:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/messages/block_translators/bedrock_converse.py:71:                if document.get("format") == "pdf":
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/document_loaders/parsers/pdf.py:701:            from pdfminer.converter import PDFLayoutAnalyzer
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/document_loaders/confluence.py:714:            from pdf2image import convert_from_bytes

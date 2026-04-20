@@ -1,0 +1,14 @@
+=== STEP 2.13: Security Regression in Phase 2 (GPT RT-13) ===
+--- Wrong service token on agent endpoint ---
+agent/invoke wrong token: HTTP 401
+--- Missing token ---
+agent/invoke no token: HTTP 401
+--- JWT on service-token endpoint ---
+agent/invoke JWT-only: HTTP 401
+--- Service-token on JWT endpoint ---
+sessions service-token: HTTP 404
+ALL must be 401/403. Any 200 = P0 REGRESSION.
+\n--- SUPPLEMENT: /agent/approvals auth regression ---
+/agent/approvals no auth: HTTP 401
+/agent/approvals wrong token: HTTP 401
+/agent/approvals JWT-only: HTTP 401

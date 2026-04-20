@@ -1,0 +1,2 @@
+                if current_version != process.expected_version:
+                        detail=f"Version conflict: expected {process.expected_version}, current {current_version}. Another operator may have modified this item."

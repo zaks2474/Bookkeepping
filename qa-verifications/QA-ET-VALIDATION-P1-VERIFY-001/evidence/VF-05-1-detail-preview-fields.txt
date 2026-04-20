@@ -1,0 +1,60 @@
+=== VF-05.1 DETAIL ENDPOINT PREVIEW FIELDS ===
+257:    email_body_snippet: str | None = None
+258:    triage_summary: str | None = None
+282:      schema_version, correlation_id, email_body_snippet, source_message_id)
+304:    email_body_snippet: str | None = None
+306:    triage_summary: str | None = None
+352:    "correlation_id", "email_body_snippet",
+1523:        conditions.append(f"COALESCE(q.raw_content->>'classification', 'unknown') = ${param_idx}")
+1533:        conditions.append(f"UPPER(COALESCE(q.urgency, q.raw_content->>'urgency', 'normal')) = ${param_idx}")
+1555:                CASE UPPER(COALESCE(q.urgency, q.raw_content->>'urgency', 'normal'))
+1569:            CASE UPPER(COALESCE(q.urgency, q.raw_content->>'urgency', 'normal'))
+1586:            COALESCE(q.raw_content->>'classification', 'unknown') AS classification,
+1587:            UPPER(COALESCE(q.urgency, q.raw_content->>'urgency', 'normal')) AS urgency,
+1589:            COALESCE(q.company_name, q.raw_content->>'company_name') AS company_name,
+1590:            COALESCE(q.broker_name, q.raw_content->>'broker_name') AS broker_name,
+1594:            q.email_body_snippet,
+1595:            q.triage_summary,
+1647:            COALESCE(q.raw_content->>'classification', 'unknown') AS classification,
+1648:            UPPER(COALESCE(q.urgency, q.raw_content->>'urgency', 'normal')) AS urgency,
+1650:            COALESCE(q.company_name, q.raw_content->>'company_name') AS company_name,
+1651:            COALESCE(q.broker_name, q.raw_content->>'broker_name') AS broker_name,
+1655:            q.email_body_snippet,
+1656:            q.triage_summary,
+1749:        if not item.email_body_snippet:
+1750:            missing.append("email_body_snippet")
+1761:    # P1-05: Truncate email_body_snippet to 500 chars
+1762:    email_body_snippet = item.email_body_snippet
+1763:    if email_body_snippet and len(email_body_snippet) > 500:
+1764:        email_body_snippet = email_body_snippet[:500]
+1766:    # Store extended fields in raw_content jsonb (backward compat + overflow)
+1767:    raw_content = {
+1776:        raw_content["injection_metadata"] = item.injection_metadata
+1777:    # P1-05: Store full body in raw_content for "Expand" button
+1779:        raw_content["email_body_full"] = item.raw_body
+1787:               COALESCE(q.raw_content->>'classification', 'unknown') AS classification,
+1788:               UPPER(COALESCE(q.urgency, q.raw_content->>'urgency', 'normal')) AS urgency,
+1789:               q.confidence, COALESCE(q.company_name, q.raw_content->>'company_name') AS company_name,
+1790:               COALESCE(q.broker_name, q.raw_content->>'broker_name') AS broker_name,
+1792:               q.email_body_snippet, q.triage_summary, q.source_thread_id,
+1817:                 sender_domain, sender_company, body_preview, email_body_snippet,
+1818:                 triage_summary, received_at, confidence, reason, raw_content,
+1835:                      COALESCE(raw_content->>'classification', 'unknown') AS classification,
+1836:                      UPPER(COALESCE(urgency, raw_content->>'urgency', 'normal')) AS urgency,
+1839:                      email_body_snippet, triage_summary, source_thread_id,
+1851:            email_body_snippet,  # $10
+1852:            item.triage_summary, item.received_at, item.confidence,
+1854:            _json.dumps(raw_content),  # $15
+1902:                raw_content = COALESCE(raw_content, '{}'::jsonb) || jsonb_build_object(
+1955:                    raw_content = COALESCE(raw_content, '{}'::jsonb) || jsonb_build_object(
+1999:                    "SELECT id, status, version, subject, email_subject, sender, raw_content "
+2059:                        version = version + 1, raw_content = COALESCE(raw_content, '{}'::jsonb) || $4::jsonb,
+2132:                        raw_content = COALESCE(raw_content, '{}'::jsonb) || $2::jsonb
+2154:                raw_content = item.get('raw_content') or {}
+2155:                if isinstance(raw_content, str):
+2157:                        raw_content = json.loads(raw_content)
+2159:                        raw_content = {}
+2170:                if raw_content.get('broker_name'):
+2171:                    broker_info['name'] = raw_content['broker_name']
+2282:                    k: item.get(k) or (item.get('raw_content') or {}).get(k)
+2294:                    raw_content = COALESCE(raw_content, '{}'::jsonb) || $6::jsonb,

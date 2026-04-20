@@ -1,0 +1,11 @@
+HTTP/1.1 401 Unauthorized
+date: Sun, 08 Feb 2026 00:26:29 GMT
+server: uvicorn
+content-length: 63
+content-type: application/json
+x-content-type-options: nosniff
+x-frame-options: DENY
+x-xss-protection: 1; mode=block
+referrer-policy: strict-origin-when-cross-origin
+
+{"error":"unauthorized","message":"Invalid or missing API key"}

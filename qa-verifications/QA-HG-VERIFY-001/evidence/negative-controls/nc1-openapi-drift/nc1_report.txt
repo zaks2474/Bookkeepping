@@ -1,0 +1,17 @@
+=== NC-1: OPENAPI DRIFT GATE NEGATIVE CONTROL ===
+1. Before hash: 1e046132598d15594cfe63f21678ce35
+2. After sabotage hash: ade74e0b7486245091371b1f61a463e9
+3. Running make sync-types (should regenerate and remove sabotage)...
+=== Fetching OpenAPI spec ===
+=== Running codegen ===
+✨ openapi-typescript 7.10.1
+🚀 openapi.json → src/lib/api-types.generated.ts [99.4ms]
+=== Formatting ===
+=== Type check ===
+✅ sync-types complete
+4. After sync hash: 1e046132598d15594cfe63f21678ce35
+✅ PASS: Sabotage marker removed — sync-types regenerated file correctly
+5. CI drift detection simulation:
+   Before: 1e046132598d15594cfe63f21678ce35
+   After sync: 1e046132598d15594cfe63f21678ce35
+   Hashes match — file is deterministic ✅

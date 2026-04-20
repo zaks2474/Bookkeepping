@@ -1,0 +1,104 @@
+## DB statuses
+      status      
+------------------
+ cancelled
+ completed
+ failed
+ pending
+ pending_approval
+ queued
+ ready
+ rejected
+ running
+(9 rows)
+
+\n## Backend enums
+## core/actions/policy.py
+class ActionStatus(str, Enum):
+    PENDING = "pending"
+    PENDING_APPROVAL = "pending_approval"
+    QUEUED = "queued"
+    READY = "ready"
+    RUNNING = "running"
+    COMPLETED = "completed"
+    FAILED = "failed"
+    CANCELLED = "cancelled"
+    REJECTED = "rejected"
+
+
+@dataclass
+class ActionPolicy:
+    """Policy rules for an action type."""
+    action_type: str
+    requires_approval_for: list[InitiatorType]
+    min_approval_level: InitiatorType  # Who can approve
+    risk_level: RiskLevel
+    required_approvers: int = 1  # Phase 18.7: Number of approvers required
+
+
+## actions/engine/models.py
+13:ActionStatus = Literal["pending", "pending_approval", "queued", "ready", "running", "completed", "failed", "cancelled", "rejected"]
+\n## TS ActionStatus
+132:export type ActionStatus =
+133-  | 'pending'
+134-  | 'pending_approval'
+135-  | 'queued'
+136-  | 'ready'
+137-  | 'running'
+138-  | 'completed'
+139-  | 'failed'
+140-  | 'cancelled'
+141-  | 'rejected';
+142-
+143-export type RiskLevel = 'low' | 'medium' | 'high';
+144-
+145-export type ActionSource = 'chat' | 'ui' | 'system' | 'agent' | 'api';
+146-
+147-export interface Action {
+148-  action_id: string;
+149-  deal_id: string | null;
+150-  capability_id: string;
+151-  action_type: string;
+152-  title: string;
+\n## Zod ActionStatus
+31:export const ActionStatusSchema = z.enum([
+32-  'pending',
+33-  'pending_approval',
+34-  'queued',
+35-  'ready',
+36-  'running',
+37-  'completed',
+38-  'failed',
+39-  'cancelled',
+40-  'rejected',
+41-]);
+42-
+43-export const RiskLevelSchema = z.enum(['low', 'medium', 'high']);
+--
+199:  status: ActionStatusSchema,
+200-  created_at: z.string(),
+201-  updated_at: z.string(),
+202-  risk_level: RiskLevelSchema,
+203-  requires_human_review: z.boolean(),
+204-  inputs: z.record(z.unknown()),
+205-  outputs: z.record(z.unknown()),
+206-  // Optional fields (exist in backend but may be null)
+207-  deal_id: z.string().nullable().optional(),
+208-  summary: z.string().nullable().optional(),
+209-  deal_name: z.string().nullable().optional(),
+210-  deal_stage: DealStageSchema.nullable().optional(),
+211-  // Phantom fields (NOT in backend - kept for future compatibility, all optional)
+--
+317:export type ActionStatus = z.infer<typeof ActionStatusSchema>;
+318-export type RiskLevel = z.infer<typeof RiskLevelSchema>;
+319-export type ActionSource = z.infer<typeof ActionSourceSchema>;
+320-export type QuarantineClassification = z.infer<typeof QuarantineClassificationSchema>;
+321-export type QuarantineStatus = z.infer<typeof QuarantineStatusSchema>;
+322-export type SenderType = z.infer<typeof SenderTypeSchema>;
+323-export type Deal = z.infer<typeof DealSchema>;
+324-export type DealCreate = z.infer<typeof DealCreateSchema>;
+325-export type DealUpdate = z.infer<typeof DealUpdateSchema>;
+326-export type DealEvent = z.infer<typeof DealEventSchema>;
+327-export type DealAlias = z.infer<typeof DealAliasSchema>;
+328-export type Action = z.infer<typeof ActionSchema>;
+329-export type ActionApprove = z.infer<typeof ActionApproveSchema>;

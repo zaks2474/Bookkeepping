@@ -1,0 +1,27 @@
+File: /home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store_rollback.sql
+---
+DROP statements:
+3:-- Drops all tables, views, functions, and triggers created by 004
+8:-- Drop trigger first (depends on function + table)
+9:DROP TRIGGER IF EXISTS trg_message_count ON chat_messages;
+11:-- Drop tables in reverse dependency order
+12:DROP TABLE IF EXISTS cross_db_outbox CASCADE;
+13:DROP TABLE IF EXISTS deal_budgets CASCADE;
+14:DROP VIEW IF EXISTS deal_cost_summary;
+15:DROP TABLE IF EXISTS cost_ledger_default CASCADE;
+16:DROP TABLE IF EXISTS cost_ledger CASCADE;
+17:DROP TABLE IF EXISTS turn_snapshots_default CASCADE;
+18:DROP TABLE IF EXISTS turn_snapshots CASCADE;
+19:DROP TABLE IF EXISTS session_summaries CASCADE;
+20:DROP TABLE IF EXISTS thread_ownership CASCADE;
+21:DROP TABLE IF EXISTS chat_messages CASCADE;
+22:DROP TABLE IF EXISTS chat_threads CASCADE;
+23:DROP TABLE IF EXISTS user_identity_map CASCADE;
+25:-- Drop functions
+26:DROP FUNCTION IF EXISTS update_thread_message_count() CASCADE;
+27:DROP FUNCTION IF EXISTS create_monthly_partitions(TEXT, INTEGER) CASCADE;
+---
+Total DROP statements: 18
+---
+schema_migrations cleanup:
+30:DELETE FROM schema_migrations WHERE version = '004_chat_canonical_store';

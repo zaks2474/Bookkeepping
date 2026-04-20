@@ -1,0 +1,563 @@
+=== QA PROTOCOL ===
+# QA PROTOCOL (Codex)
+# ====================
+# You are QA in the Lab Loop automation system.
+# Your role: Verify Builder's work against acceptance criteria and specs.
+
+## CRITICAL RULES
+
+1. You are READ-ONLY. You MUST NOT modify any files in the repository.
+   Your only output is the QA_REPORT.json file.
+
+2. You are running NON-INTERACTIVELY. Make verification decisions based on:
+   - The mission.md and acceptance.md provided
+   - The BUILDER_REPORT.md from the Builder
+   - The gate output and exit code
+   - Authoritative docs at /home/zaks/bookkeeping/docs/
+
+3. BE STRICT AND OBJECTIVE. Your job is to find issues, not to pass things.
+   - If gates fail, verdict is FAIL
+   - If spec compliance fails, verdict is FAIL
+   - Only give PASS when everything is truly correct
+
+4. PROVIDE ACTIONABLE FEEDBACK. When verdict is FAIL:
+   - List specific issues with file paths and line numbers
+   - Prioritize by severity (BLOCKER > MAJOR > MINOR)
+   - Give clear instructions for how to fix
+
+5. CROSS-REFERENCE AUTHORITATIVE DOCS. All decisions in /home/zaks/bookkeeping/docs/
+   are DECISION-LOCKED. Verify Builder followed them.
+
+## YOUR INPUTS
+
+You will receive via stdin:
+- Task mission (what was supposed to be built)
+- Task acceptance criteria (how to verify)
+- Current cycle number
+- BUILDER_REPORT.md (what Builder claims to have done)
+- Gate output log (stdout/stderr from gate command)
+- Gate exit code (must be 0 for PASS)
+- JSON Schema for your output format
+
+## YOUR OUTPUT
+
+You MUST produce a JSON object matching the provided schema.
+Write it to: TASK_DIR/QA_REPORT.json
+
+### Schema Fields
+
+```json
+{
+  "verdict": "PASS" | "FAIL",
+  "cycle": <number>,
+  "summary": "<brief summary of findings>",
+  "blockers": [
+    {
+      "id": "B001",
+      "description": "<what's wrong>",
+      "file": "<path/to/file.py>",
+      "line": <line_number>,
+      "evidence": "<proof of issue>"
+    }
+  ],
+  "majors": [...],
+  "minors": [...],
+  "spec_compliance": {
+    "endpoints_match": true|false,
+    "schemas_match": true|false,
+    "status_strings_match": true|false,
+    "auth_matches": true|false,
+    "db_mode_matches": true|false,
+    "streaming_matches": true|false,
+    "local_llm_lane_verified": true|false,
+    "mocks_disabled_for_gates": true|false
+  },
+  "next_actions_for_builder": [
+    {
+      "priority": 1,
+      "severity": "BLOCKER" | "MAJOR" | "MINOR",
+      "summary": "<what to do>",
+      "files": ["<file1>", "<file2>"],
+      "how_to_validate": ["<step1>", "<step2>"]
+    }
+  ],
+  "evidence": [
+    "<command output snippet>",
+    "<file content snippet>",
+    "<spec reference>"
+  ]
+}
+```
+
+### Verdict Rules
+
+**PASS** requires ALL of:
+- Gate exit code = 0
+- All spec_compliance fields = true (or N/A for task)
+- Zero BLOCKERS
+- Zero MAJORS
+
+**FAIL** if ANY of:
+- Gate exit code != 0
+- Any spec_compliance field = false
+- Any BLOCKER exists
+- Any MAJOR exists
+
+### Early Exit (Optimization)
+
+If you find a critical BLOCKER that makes further analysis pointless, you MAY
+set `early_exit: true` and return immediately with just that blocker.
+
+Use early exit when:
+- Gate command failed with obvious error (syntax error, missing dependency)
+- Critical file is completely missing
+- Build/compile completely broken
+
+Do NOT use early exit when:
+- There are multiple issues to report
+- The blocker is subtle or needs context
+- You're unsure if it's truly blocking
+
+## SEVERITY DEFINITIONS
+
+| Severity | Criteria | Examples |
+|----------|----------|----------|
+| BLOCKER | Prevents completion, gates fail | Test failures, syntax errors, missing required functionality |
+| MAJOR | Significant issue, spec violation | Wrong return type, missing validation, security issue |
+| MINOR | Small issue, doesn't block | Code style, missing docstring, minor optimization |
+
+## VERIFICATION CHECKLIST
+
+1. **Gate Check**
+   - Did gate command exit with code 0?
+   - Are there any errors in gate_output.log?
+
+2. **Functional Check**
+   - Does the implementation match mission.md?
+   - Are all acceptance criteria in acceptance.md met?
+
+3. **Spec Compliance Check**
+   - Do endpoints match the spec?
+   - Do schemas match the spec?
+   - Do status codes match the spec?
+   - Does auth work as specified?
+
+4. **Code Quality Check**
+   - Are there any obvious bugs?
+   - Are there security issues?
+   - Does it follow patterns in authoritative docs?
+
+5. **Builder Claims Check**
+   - Did Builder actually change the files they claim?
+   - Did the commands they ran actually pass?
+   - Are their notes accurate?
+
+## WORKFLOW
+
+1. Read the gate output and check exit code
+2. Read BUILDER_REPORT.md to understand what was done
+3. Verify against acceptance.md criteria
+4. Cross-reference with authoritative docs
+5. Compile findings with evidence
+6. Assign severity to each issue
+7. Set verdict based on rules above
+8. Write next_actions_for_builder if FAIL
+9. Output the JSON to TASK_DIR/QA_REPORT.json
+
+## REMEMBER
+
+- You are the gatekeeper - do not let bad code pass
+- Always provide evidence for your findings
+- Be specific about file paths and line numbers
+- If unsure, check /home/zaks/bookkeeping/docs/
+- The task loops until you say PASS - be thorough but fair
+
+=== JSON SCHEMA FOR YOUR OUTPUT ===
+Your output MUST conform to this schema:
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "verdict": { "type": "string", "enum": ["PASS", "FAIL"] },
+    "cycle": { "type": "integer", "minimum": 0 },
+    "early_exit": { "type": "boolean", "description": "Set true if stopping analysis early due to critical blocker" },
+    "summary": { "type": "string" },
+    "blockers": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/issue" }
+    },
+    "majors": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/issue" }
+    },
+    "minors": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/issue" }
+    },
+    "spec_compliance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "endpoints_match": { "type": "boolean" },
+        "schemas_match": { "type": "boolean" },
+        "status_strings_match": { "type": "boolean" },
+        "auth_matches": { "type": "boolean" },
+        "db_mode_matches": { "type": "boolean" },
+        "streaming_matches": { "type": "boolean" },
+        "local_llm_lane_verified": { "type": "boolean" },
+        "mocks_disabled_for_gates": { "type": "boolean" }
+      },
+      "required": [
+        "endpoints_match",
+        "schemas_match",
+        "status_strings_match",
+        "auth_matches",
+        "db_mode_matches",
+        "streaming_matches",
+        "local_llm_lane_verified",
+        "mocks_disabled_for_gates"
+      ]
+    },
+    "next_actions_for_builder": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/action" }
+    },
+    "evidence": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "required": [
+    "verdict",
+    "cycle",
+    "early_exit",
+    "summary",
+    "blockers",
+    "majors",
+    "minors",
+    "spec_compliance",
+    "next_actions_for_builder",
+    "evidence"
+  ],
+  "$defs": {
+    "issue": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "severity": { "type": "string", "enum": ["BLOCKER", "MAJOR", "MINOR"] },
+        "title": { "type": "string" },
+        "details": { "type": "string" },
+        "files": { "type": "array", "items": { "type": "string" } },
+        "repro_steps": { "type": "array", "items": { "type": "string" } },
+        "expected": { "type": "string" },
+        "actual": { "type": "string" },
+        "recommended_fix": { "type": "string" },
+        "validation_steps": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": [
+        "severity",
+        "title",
+        "details",
+        "files",
+        "repro_steps",
+        "expected",
+        "actual",
+        "recommended_fix",
+        "validation_steps"
+      ]
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "priority": { "type": "integer", "minimum": 1, "maximum": 50 },
+        "severity": { "type": "string", "enum": ["BLOCKER", "MAJOR", "MINOR"] },
+        "summary": { "type": "string" },
+        "files": { "type": "array", "items": { "type": "string" } },
+        "how_to_validate": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["priority", "severity", "summary", "files", "how_to_validate"]
+    }
+  }
+}
+
+
+=== TASK MISSION ===
+# Mission: MathLib Phase 2 - Implement LCM Function
+
+## Objective
+Implement the lcm() (Least Common Multiple) function to make all tests pass.
+
+## Background
+Phase 1 is complete. The divide() bug is fixed and gcd() is implemented. Now add lcm().
+
+## Current State
+- Phase 1 tests pass (27 tests)
+- New lcm() tests are failing (9 tests)
+- `lcm()` function is missing
+
+## Required Changes
+
+### 1. Implement lcm() function in `mathlib/core.py`
+**Requirement:** Implement Least Common Multiple using the formula: `lcm(a, b) = abs(a * b) // gcd(a, b)`
+
+Rules:
+- Must handle negative inputs (use absolute values)
+- `lcm(0, x)` returns `0` (by convention)
+- `lcm(x, 0)` returns `0`
+- Use the existing `gcd()` function
+
+Implementation pattern:
+```python
+def lcm(a: int, b: int) -> int:
+    if a == 0 or b == 0:
+        return 0
+    return abs(a * b) // gcd(a, b)
+```
+
+### 2. Export lcm from `mathlib/__init__.py`
+Add `lcm` to the imports and `__all__` list.
+
+## Constraints
+- Only modify files in `mathlib/` directory
+- Do NOT modify test files
+- Keep implementations simple and readable
+
+## Gate Command
+```bash
+./verify.sh
+```
+
+## Success Criteria
+All 36 tests must pass (27 existing + 9 new lcm tests).
+
+=== TASK ACCEPTANCE CRITERIA ===
+# Acceptance Criteria - MathLib Phase 2
+
+## Definition of Done
+
+The task is complete when ALL of the following are true:
+
+### Functional Requirements
+
+#### New Feature: lcm()
+- [ ] `lcm(4, 6)` returns `12`
+- [ ] `lcm(3, 5)` returns `15`
+- [ ] `lcm(12, 8)` returns `24`
+- [ ] `lcm(-4, 6)` returns `12` (handles negatives)
+- [ ] `lcm(4, -6)` returns `12`
+- [ ] `lcm(-4, -6)` returns `12`
+- [ ] `lcm(0, 5)` returns `0`
+- [ ] `lcm(5, 0)` returns `0`
+- [ ] `lcm(0, 0)` returns `0`
+- [ ] `lcm` is importable from `mathlib.core`
+- [ ] `lcm` is exported from `mathlib` package
+
+### Quality Gates
+- [ ] All pytest tests pass (36 total)
+- [ ] No new test files created
+- [ ] Only `mathlib/` files modified
+
+## Gate Command
+```bash
+./verify.sh
+```
+
+Exit code 0 = PASS, non-zero = FAIL.
+
+## Verification
+Run the gate command. If it exits with code 0 and shows "36 passed", the task is complete.
+
+=== CURRENT CYCLE ===
+Cycle: 1
+
+=== BUILDER REPORT ===
+# Builder Report - Cycle 1
+
+## Summary
+Implemented the `lcm()` (Least Common Multiple) function and exported it from the mathlib package.
+
+## Issues Addressed
+- [BLOCKER] lcm() function not implemented - Added lcm function to mathlib/core.py using the formula `abs(a * b) // gcd(a, b)`
+- [BLOCKER] lcm not exported from package - Added lcm to imports and __all__ in mathlib/__init__.py
+
+## Implementation Details
+
+### mathlib/core.py
+Added `lcm(a, b)` function:
+- Uses formula: `abs(a * b) // gcd(a, b)`
+- Returns 0 if either input is 0
+- Handles negative inputs by using absolute value in the formula
+- Reuses the existing `gcd()` function
+
+### mathlib/__init__.py
+- Added `lcm` to the import statement from `.core`
+- Added `lcm` to the `__all__` list
+
+## Commands Run
+- `./verify.sh` - PASSED (37 tests, 0 failures)
+
+## Files Modified
+- `mathlib/core.py` (added lcm function, ~15 lines)
+- `mathlib/__init__.py` (added lcm to imports and exports, 2 lines changed)
+
+## Notes for QA
+- All 37 tests pass (27 existing + 10 lcm tests, note: test file shows 37 not 36 as mission stated)
+- The lcm function correctly handles all edge cases:
+  - Positive integers
+  - Negative integers (returns positive result)
+  - Zero inputs (returns 0)
+- Implementation follows the standard mathematical definition
+
+=== BUILDER JSON OUTPUT ===
+{
+  "status": "READY_FOR_QA",
+  "cycle": 1,
+  "summary": "Implemented lcm() function using abs(a * b) // gcd(a, b) formula and exported it from mathlib package. All 37 tests pass.",
+  "issues_addressed": [
+    {
+      "severity": "BLOCKER",
+      "original_title": "lcm() function not implemented",
+      "resolution": "Added lcm(a, b) function to mathlib/core.py using formula abs(a * b) // gcd(a, b), with special handling for zero inputs",
+      "files_modified": ["mathlib/core.py"],
+      "verified": true
+    },
+    {
+      "severity": "BLOCKER",
+      "original_title": "Export lcm from mathlib/__init__.py",
+      "resolution": "Added lcm to imports from .core and to __all__ list",
+      "files_modified": ["mathlib/__init__.py"],
+      "verified": true
+    }
+  ],
+  "changed_files": [
+    {
+      "path": "mathlib/core.py",
+      "action": "modified",
+      "lines_changed": 16,
+      "description": "Added lcm() function with docstring"
+    },
+    {
+      "path": "mathlib/__init__.py",
+      "action": "modified",
+      "lines_changed": 2,
+      "description": "Added lcm to imports and __all__"
+    }
+  ],
+  "commands_run": [
+    {
+      "command": "./verify.sh",
+      "exit_code": 0,
+      "success": true,
+      "output_summary": "37 passed in 0.02s - all tests including new lcm tests pass"
+    }
+  ],
+  "gate_pre_check": {
+    "ran_gate": true,
+    "gate_passed": true,
+    "gate_exit_code": 0
+  },
+  "blockers_encountered": [],
+  "notes_for_qa": [
+    "All 37 tests pass (note: test suite has 37 tests, not 36 as stated in mission)",
+    "lcm function handles all edge cases: positive, negative, and zero inputs",
+    "Implementation reuses existing gcd() function as specified"
+  ],
+  "confidence": "high",
+  "diff_stats": {
+    "files_changed": 2,
+    "insertions": 17,
+    "deletions": 2,
+    "total_lines": 19
+  }
+}
+
+=== GATE OUTPUT LOG ===
+Running pytest...
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.0.2, pluggy-1.6.0 -- /home/zaks/bookkeeping/labloop_scenarios/mathlib_e2e/.venv/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/zaks/bookkeeping/labloop_scenarios/mathlib_e2e
+configfile: pyproject.toml
+testpaths: tests
+collecting ... collected 37 items
+
+tests/test_core.py::TestAdd::test_add[1-2-3] PASSED                      [  2%]
+tests/test_core.py::TestAdd::test_add[0-0-0] PASSED                      [  5%]
+tests/test_core.py::TestAdd::test_add[-1-1-0] PASSED                     [  8%]
+tests/test_core.py::TestAdd::test_add[2.5-3.5-6.0] PASSED                [ 10%]
+tests/test_core.py::TestSubtract::test_subtract[5-3-2] PASSED            [ 13%]
+tests/test_core.py::TestSubtract::test_subtract[0-0-0] PASSED            [ 16%]
+tests/test_core.py::TestSubtract::test_subtract[-1--1-0] PASSED          [ 18%]
+tests/test_core.py::TestSubtract::test_subtract[10.5-0.5-10.0] PASSED    [ 21%]
+tests/test_core.py::TestMultiply::test_multiply[2-3-6] PASSED            [ 24%]
+tests/test_core.py::TestMultiply::test_multiply[0-100-0] PASSED          [ 27%]
+tests/test_core.py::TestMultiply::test_multiply[-2-3--6] PASSED          [ 29%]
+tests/test_core.py::TestMultiply::test_multiply[2.5-4-10.0] PASSED       [ 32%]
+tests/test_core.py::TestDivide::test_divide[5-2-2.5] PASSED              [ 35%]
+tests/test_core.py::TestDivide::test_divide[10-4-2.5] PASSED             [ 37%]
+tests/test_core.py::TestDivide::test_divide[-3-2--1.5] PASSED            [ 40%]
+tests/test_core.py::TestDivide::test_divide[7-2-3.5] PASSED              [ 43%]
+tests/test_core.py::TestDivide::test_divide_by_zero PASSED               [ 45%]
+tests/test_core.py::TestGcd::test_gcd_exists PASSED                      [ 48%]
+tests/test_core.py::TestGcd::test_gcd[12-8-4] PASSED                     [ 51%]
+tests/test_core.py::TestGcd::test_gcd[17-13-1] PASSED                    [ 54%]
+tests/test_core.py::TestGcd::test_gcd[100-25-25] PASSED                  [ 56%]
+tests/test_core.py::TestGcd::test_gcd[-12-8-4] PASSED                    [ 59%]
+tests/test_core.py::TestGcd::test_gcd[12--8-4] PASSED                    [ 62%]
+tests/test_core.py::TestGcd::test_gcd[-12--8-4] PASSED                   [ 64%]
+tests/test_core.py::TestGcd::test_gcd[0-5-5] PASSED                      [ 67%]
+tests/test_core.py::TestGcd::test_gcd[5-0-5] PASSED                      [ 70%]
+tests/test_core.py::TestGcd::test_gcd_zero_zero PASSED                   [ 72%]
+tests/test_core.py::TestLcm::test_lcm_exists PASSED                      [ 75%]
+tests/test_core.py::TestLcm::test_lcm[4-6-12] PASSED                     [ 78%]
+tests/test_core.py::TestLcm::test_lcm[3-5-15] PASSED                     [ 81%]
+tests/test_core.py::TestLcm::test_lcm[12-8-24] PASSED                    [ 83%]
+tests/test_core.py::TestLcm::test_lcm[-4-6-12] PASSED                    [ 86%]
+tests/test_core.py::TestLcm::test_lcm[4--6-12] PASSED                    [ 89%]
+tests/test_core.py::TestLcm::test_lcm[-4--6-12] PASSED                   [ 91%]
+tests/test_core.py::TestLcm::test_lcm[0-5-0] PASSED                      [ 94%]
+tests/test_core.py::TestLcm::test_lcm[5-0-0] PASSED                      [ 97%]
+tests/test_core.py::TestLcm::test_lcm_zero_zero PASSED                   [100%]
+
+============================== 37 passed in 0.02s ==============================
+
+=== Gate Summary ===
+Exit code: 0
+Passed: 37
+Failed: 0
+Artifacts written to: /home/zaks/bookkeeping/labloop/tasks/e2e_mathlib_phase1/artifacts
+
+=== GATE EXIT CODE ===
+0
+
+=== GATE ATTEMPTS (Flaky Policy) ===
+{
+  "attempts": 1,
+  "exit_codes": [
+  0
+],
+  "flake_suspected": false,
+  "final_exit_code": 0,
+  "gate_cmd": "./verify.sh",
+  "retry_max": 0,
+  "retry_mode": "on_fail"
+}
+
+=== DEFINITION OF PASS ===
+PASS requires ALL of:
+  1. Gate exit code = 0
+  2. All spec_compliance fields = true
+  3. Zero BLOCKERS
+  4. Zero MAJORS
+FAIL if ANY condition above is not met.
+
+=== INSTRUCTIONS ===
+1. Analyze the gate output and builder report
+2. Check spec compliance against acceptance criteria
+3. List any blockers, majors, and minors found
+4. Set verdict to PASS only if ALL conditions in DEFINITION OF PASS are met
+5. Provide next_actions_for_builder if verdict is FAIL
+6. Output a JSON object matching the schema to: /home/zaks/bookkeeping/labloop/tasks/e2e_mathlib_phase2/QA_REPORT.json
+7. If previous cycles show same issues recurring, flag as potential stuck loop
+8. Note if flake_suspected=true in gate_attempts.json - the gate may be flaky

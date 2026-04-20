@@ -1,0 +1,19 @@
+QA-4.1: UF-008 Timing-Safe Token Comparison
+==============================================
+
+Test 1: Search for compare_digest usage
+Result:
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/auth.py:185:        if hmac.compare_digest(x_service_token, settings.DASHBOARD_SERVICE_TOKEN):
+
+Test 2: Search for hmac import
+Result:
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/auth.py:7:import hmac
+
+Test 3: Search for unsafe token/secret comparison (== operator)
+Result: No matches found (excluding tests and comments)
+
+VERDICT: PASS
+Evidence: 
+- hmac.compare_digest is properly imported and used in auth.py line 185
+- No unsafe == comparisons found on tokens or secrets
+- Timing-safe comparison is implemented correctly

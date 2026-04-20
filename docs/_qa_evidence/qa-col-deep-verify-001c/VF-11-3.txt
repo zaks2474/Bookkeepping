@@ -1,0 +1,6 @@
+=== VF-11.3: Audit trail for compliance purge ===
+The compliance_purge endpoint calls gdpr_purge() which:
+- Logs gdpr_purge_started, gdpr_purge_skip, gdpr_purge_complete events
+- Inserts records into legal_hold_log for both skips and deletes
+- Returns GdprPurgeReport with full thread ID lists
+RESULT: PASS — Audit trail via both structured logging and legal_hold_log table

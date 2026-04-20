@@ -1,0 +1,12 @@
+=== R0.3 JSON.parse Inventory BEFORE ===
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:94:// localStorage Persistence
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:149:      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:166:    const raw = localStorage.getItem(STORAGE_KEY);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:168:    const data = JSON.parse(raw) as StoredSession;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:179:    localStorage.removeItem(STORAGE_KEY);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:238:  // Session Restoration (backend-first, then localStorage fallback)
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:248:      // First, try localStorage to get sessionId
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:282:          console.log('Backend session not found, falling back to localStorage:', err);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:286:      // Fallback: restore from localStorage
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:302:        console.log('Session restored from localStorage');
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1467:              <Badge variant='secondary' className='text-[10px]'>+localStorage</Badge>

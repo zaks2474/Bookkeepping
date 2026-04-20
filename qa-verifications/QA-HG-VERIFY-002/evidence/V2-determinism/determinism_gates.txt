@@ -1,0 +1,26 @@
+=== DG-1: Codegen Idempotency ===
+✨ openapi-typescript 7.10.1
+🚀 ../../packages/contracts/openapi/zakops-api.json → src/lib/api-types.generated.ts [99.2ms]
+[32mTypes regenerated from committed spec[0m
+Diff lines after first sync: 0
+✨ openapi-typescript 7.10.1
+🚀 ../../packages/contracts/openapi/zakops-api.json → src/lib/api-types.generated.ts [101.2ms]
+[32mTypes regenerated from committed spec[0m
+Diff lines after second sync: 0
+DG-1 PASS: Idempotent (same diff after two runs)
+
+=== DG-2: OpenAPI Spec Determinism ===
+DG-2 PASS: Spec canonically sorted (jq -S idempotent)
+
+=== DG-3: Agent API Spec Determinism ===
+DG-3 PASS: Agent spec canonically sorted
+
+=== DG-4: Redocly Lint Stability ===
+Please provide a valid path to the configuration file.
+
+DG-4: Lint output captured
+
+=== DG-5: TypeScript Compile Stability ===
+tsc exit: 0
+DG-5 PASS: TypeScript compiles cleanly
+Date: 2026-02-06T17:38:27-06:00

@@ -1,0 +1,49 @@
+QA-2: CONTRADICTION RECONCILIATION VERIFICATION
+===============================================
+Tested: 2026-02-02
+
+## Contradiction Source
+V1 audit reported:
+1. User/tenant isolation: FAIL
+2. Rate limiting: PASS
+
+V2 audit (Codex) reported:
+1. User/tenant isolation: Partial pass (exists but not enforced)
+2. Rate limiting: FAIL (no limits)
+
+## Evidence Location
+/home/zaks/bookkeeping/remediations/AGENT-REMEDIATION-001/evidence/phase_r0x/
+
+## Evidence Content
+
+File: r0x_contradictions.txt (372 bytes)
+
+Reconciliation claims:
+1. UF-011 (Rate limiting): "Confirmed functional. slowapi rate limiting is active. V2 Codex may have tested before limits engaged."
+2. UF-021 (Session name update): "Endpoint exists at PATCH /api/v1/auth/session/{id}/name. Codex may have used wrong path."
+
+## Critical Assessment
+
+CONTRADICTION #1: Rate Limiting (V1 PASS vs V2 FAIL)
+- Builder reconciliation: Claims rate limiting is functional and V2 may have tested timing issue
+- Substantive evidence: NO
+- What's missing:
+  - No actual rate limit test (multiple rapid requests)
+  - No slowapi configuration verification
+  - No rate limit logs
+  - Just assertion without proof
+
+CONTRADICTION #2: Isolation (V1 FAIL vs V2 Partial Pass)
+- This contradiction is NOT mentioned in phase_r0x
+- Builder focused on wrong contradictions (UF-021 is not a V1/V2 conflict)
+
+## VERDICT: PARTIAL FAIL
+
+Reconciliation evidence EXISTS but is NOT SUBSTANTIVE:
+- Rate limiting claim has no test proof
+- Wrong contradictions addressed (UF-021 not relevant)
+- Missing the actual V1/V2 isolation contradiction
+- Evidence file is 372 bytes (minimal content)
+
+The builder created the directory and file but did not provide forensic
+depth (no curl tests, no rate limit triggers, no isolation boundary tests).

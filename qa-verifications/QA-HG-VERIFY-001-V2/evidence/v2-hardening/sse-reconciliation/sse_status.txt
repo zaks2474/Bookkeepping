@@ -1,0 +1,15 @@
+=== V2: SSE RECONCILIATION ===
+/api/events/stream: HTTP/1.1 405 Method Not Allowed
+  Content-Type: content-type: application/json
+x-content-type-options: nosniff
+/events/stream: HTTP/1.1 404 Not Found
+  Content-Type: content-type: application/json
+x-content-type-options: nosniff
+/stream: HTTP/1.1 404 Not Found
+  Content-Type: content-type: application/json
+x-content-type-options: nosniff
+/sse: HTTP/1.1 404 Not Found
+  Content-Type: content-type: application/json
+x-content-type-options: nosniff
+=== SSE SCOPE DECISION ===
+SSE endpoints not serving text/event-stream = SSE either not implemented or not in scope for this mission

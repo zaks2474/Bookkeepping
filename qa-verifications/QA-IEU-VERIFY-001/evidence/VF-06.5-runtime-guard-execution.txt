@@ -1,0 +1,125 @@
+=== VF-06.5 RUNTIME GUARD EXECUTION ===
+=== Stale Surface Label Scanner ===
+
+  PASS: stop.sh — no stale labels
+  PASS: ci.yml — no stale labels
+  PASS: CLAUDE.md — no stale labels
+  PASS: validate-contract-surfaces.sh — no stale labels
+  PASS: INFRASTRUCTURE_MANIFEST.md — no stale labels
+
+  PASS: No stale surface labels found across 5 files
+
+Stale Surface Label Scanner: PASS (6 pass, 0 fail, 0 warn)
+=== CLAUDE Surface Table Guard ===
+
+  PASS: CLAUDE.md exists
+  PASS: Header references 14 surfaces
+  PASS: Table has 14 rows (expected 14)
+  PASS: All S10-S14 labels present (5/5)
+  PASS: Surface numbers 10-14 all present in table
+
+CLAUDE Surface Table Guard: PASS (5 pass, 0 fail)
+=== Governance Policy Drift Check ===
+
+--- Surface 9 validator references ---
+  PASS: accessibility.md referenced in validate-surface9.sh
+  PASS: component-patterns.md referenced in validate-surface9.sh
+
+--- CI workflow governance wiring ---
+  PASS: validate-rule-frontmatter.sh referenced in ci.yml
+  PASS: validate-frontend-governance.sh referenced in ci.yml
+  PASS: validate-gatee-scan.sh referenced in ci.yml
+
+--- Makefile governance target ---
+  PASS: validate-frontend-governance target exists
+
+--- validate-local governance inclusion ---
+  PASS: validate-frontend-governance is a validate-local dependency
+
+--- Port 8090 governance rule check ---
+  PASS: No port 8090 in governance rule files
+
+--- Enhancement guard wiring ---
+  PASS: validate-surfaces-new target exists
+  PASS: validate-hook-contract target exists
+  PASS: validate-enhancements target exists
+
+--- CI enhancement gate wiring ---
+  PASS: validate-ci-gatee-policy.sh referenced in ci.yml
+  PASS: validate-surface-count-consistency.sh referenced in ci.yml
+
+--- Governance validation benchmark ---
+  PASS: validate-frontend-governance completed in 23ms (budget: 5000ms)
+
+Governance Drift Check: PASS (no drift)
+=== Pre-Commit Guards ===
+
+--- Stale Surface Label Check ---
+=== Stale Surface Label Scanner ===
+
+  PASS: stop.sh — no stale labels
+  PASS: ci.yml — no stale labels
+  PASS: CLAUDE.md — no stale labels
+  PASS: validate-contract-surfaces.sh — no stale labels
+  PASS: INFRASTRUCTURE_MANIFEST.md — no stale labels
+
+  PASS: No stale surface labels found across 5 files
+
+Stale Surface Label Scanner: PASS (6 pass, 0 fail, 0 warn)
+
+--- CLAUDE Surface Table Check ---
+=== CLAUDE Surface Table Guard ===
+
+  PASS: CLAUDE.md exists
+  PASS: Header references 14 surfaces
+  PASS: Table has 14 rows (expected 14)
+  PASS: All S10-S14 labels present (5/5)
+  PASS: Surface numbers 10-14 all present in table
+
+CLAUDE Surface Table Guard: PASS (5 pass, 0 fail)
+
+--- Governance Anchor Check ---
+=== Governance Anchor Schema Validation ===
+
+  PASS: Schema file exists
+
+--- design-system.md ---
+  PASS: design-system.md exists
+  PASS: design-system.md has frontmatter
+  PASS: Anchor: Skill Preload
+  PASS: Anchor: Responsive Breakpoint
+  PASS: Anchor: Z-Index
+  PASS: Anchor: Dark Mode
+  PASS: Anchor: Animation Performance
+  PASS: Anchor: State Management
+  PASS: Anchor: Anti-convergence
+  PASS: Anchor: Data Fetching
+  PASS: Anchor: Error Handling
+  PASS: Anchor: CSS Architecture
+  PASS: Anchor: Import Discipline
+  design-system.md: 11/11 anchors
+
+--- accessibility.md ---
+  PASS: accessibility.md exists
+  PASS: accessibility.md has frontmatter
+  PASS: Anchor: Semantic Structure
+  PASS: Anchor: Keyboard Navigation
+  PASS: Anchor: Color Contrast
+  PASS: Anchor: ARIA
+  PASS: Anchor: Reduced Motion
+  accessibility.md: 5/5 anchors
+
+--- component-patterns.md ---
+  PASS: component-patterns.md exists
+  PASS: component-patterns.md has frontmatter
+  PASS: Anchor: Server vs Client
+  PASS: Anchor: Loading.*Empty.*Error
+  PASS: Anchor: Suspense
+  PASS: Anchor: State Ownership
+  PASS: Anchor: Composability
+  component-patterns.md: 5/5 anchors
+
+Governance Anchor Schema Validation: PASS (28 pass, 0 fail, 0 warn)
+
+=== Pre-Commit Guards: ALL PASSED ===
+EXIT=0

@@ -1,0 +1,96 @@
+1207-                "at": datetime.now(UTC).isoformat(),
+1208-                "notes": approval.notes
+1209-            }])
+1210-        )
+1211-
+1212:    return {"status": "approved", "action_id": action_id}
+1213-
+1214-
+1215-@app.post("/api/actions/{action_id}/reject")
+1216-async def reject_action(
+1217-    action_id: str,
+1218-    rejection: ActionReject,
+1219-    pool: asyncpg.Pool = Depends(get_db)
+1220-):
+1221-    """Reject a pending action."""
+1222-    async with pool.acquire() as conn:
+--
+1697-async def process_quarantine(
+1698-    item_id: str,
+1699-    process: QuarantineProcess,
+1700-    pool: asyncpg.Pool = Depends(get_db)
+1701-):
+1702:    """Process a quarantine item (approve or reject).
+1703-
+1704-    R2-3a.1: When approving without an explicit deal_id, atomically create
+1705-    a new deal from the quarantine item data.
+1706-    """
+1707-    async with pool.acquire() as conn:
+1708-        # Use transaction for atomicity (R2-3a.1)
+1709-        async with conn.transaction():
+1710-            item = await conn.fetchrow(
+1711-                "SELECT * FROM zakops.quarantine_items WHERE id = $1",
+1712-                item_id
+--
+1717-                raise HTTPException(
+1718-                    status_code=400,
+1719-                    detail=f"Item is not pending (status: {item['status']})"
+1720-                )
+1721-
+1722:            new_status = 'approved' if process.action == 'approve' else 'rejected'
+1723-            deal_id = process.deal_id
+1724-
+1725-            # R2-3a.1: Auto-create deal on approve if no deal_id provided
+1726:            if process.action == 'approve' and not deal_id:
+1727-                # Generate new deal ID
+1728-                deal_id = await conn.fetchval("SELECT zakops.next_deal_id()")
+1729-
+1730-                # Extract info from quarantine item
+1731-                raw_content = item.get('raw_content') or {}
+1732-                if isinstance(raw_content, str):
+1733-                    try:
+1734-                        raw_content = json.loads(raw_content)
+1735-                    except json.JSONDecodeError:
+1736-                        raw_content = {}
+--
+1755-                    'from_stage': None,
+1756-                    'from_status': None,
+1757-                    'to_stage': 'inbound',
+1758-                    'to_status': 'active',
+1759-                    'actor': process.processed_by or 'system',
+1760:                    'reason': 'Promoted from quarantine approval',
+1761-                    'quarantine_item_id': item_id,
+1762-                    'at': datetime.utcnow().isoformat(),
+1763-                }])
+1764-                await conn.execute(
+1765-                    """
+1766-                    INSERT INTO zakops.deals (
+1767-                        deal_id, canonical_name, display_name, folder_path,
+1768-                        stage, status, identifiers, company_info, broker, metadata,
+1769-                        audit_trail
+1770-                    ) VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb, $8::jsonb, $9::jsonb, $10::jsonb, $11::jsonb)
+--
+1785-                        'correlation_id': str(item.get('correlation_id') or ''),
+1786-                    }),
+1787-                    json.dumps({}),
+1788-                    json.dumps(broker_info),
+1789-                    json.dumps({
+1790:                        'source': 'quarantine_approval',
+1791-                        'quarantine_item_id': item_id,
+1792-                        'original_subject': subject,
+---WORKFLOW_REFS---
+713:    # Lifecycle fields must go through transition_deal_state() FSM — see ADR-001
+952:    """Archive a deal via centralized transition_deal_state() FSM."""
+956:                "SELECT * FROM zakops.transition_deal_state($1, 'archived', 'ui_user', 'archived via API')",
+988:    """Bulk-archive deals via centralized transition_deal_state() FSM.
+1000:                    "SELECT * FROM zakops.transition_deal_state($1, 'archived', $2, $3)",
+1016:    """Restore a deal from archived status via centralized transition_deal_state() FSM."""
+1034:                "SELECT * FROM zakops.transition_deal_state($1, $2, 'ui_user', 'restored via API')",
+---
+---ANALYSIS---
+transition_deal_state() is a SQL function for stage changes on EXISTING deals (archive, restore, etc.)
+Quarantine approval (process_quarantine) is a deal CREATION, not a transition.
+It uses: (1) inline INSERT INTO zakops.deals, (2) record_deal_event(), (3) outbox INSERT
+It does NOT call transition_deal_state() or DealWorkflowEngine.
+ADR-001 states transition_deal_state() is for 'ALL deal state changes' but quarantine-to-deal is initial creation.
+PARTIAL: Audit trail and outbox are present, but FSM choke point is bypassed for creation.

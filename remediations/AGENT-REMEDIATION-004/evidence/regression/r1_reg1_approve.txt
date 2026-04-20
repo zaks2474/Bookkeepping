@@ -1,0 +1,5 @@
+=== R1.REG.1: Approve ===
+{"thread_id":"remediation-004-reg-1770151885","status":"completed","content":"I encountered an issue while trying to move deal `DEAL-001` to the `screening` stage. It seems the deal ID `DEAL-001` could not be found. Please verify the deal ID and try again.","pending_approval":null,"actions_taken":[{"tool":"transition_deal","result":{"ok":false,"error":"Could not fetch deal DEAL-001: HTTP 404","backend_status":404}}],"error":"Tool execution did not complete"}
+HTTP_CODE: 200
+
+=== Double-approve (should 409) ===

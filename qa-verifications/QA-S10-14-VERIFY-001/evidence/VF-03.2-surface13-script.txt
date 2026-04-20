@@ -1,0 +1,82 @@
+=== VF-03.2 SURFACE13 SCRIPT ===
+-rwxr-xr-x 1 zaks zaks 5146 Feb 10 11:49 /home/zaks/zakops-agent-api/tools/infra/validate-surface13.sh
+#!/usr/bin/env bash
+# validate-surface13.sh — Surface 13: Test Coverage Contract
+# Validates TEST-COVERAGE-GAPS.md against actual test artifact presence
+# Contract is presence-based — not pass-rate or runtime coverage
+# CI-safe: does NOT require running services or test execution
+set -euo pipefail
+
+FAILURES=0
+WARNINGS=0
+
+COVERAGE_DOC="/home/zaks/bookkeeping/docs/TEST-COVERAGE-GAPS.md"
+MONOREPO="/home/zaks/zakops-agent-api"
+BACKEND="/home/zaks/zakops-backend"
+RAG="/home/zaks/Zaks-llm"
+
+echo "=== SURFACE 13: TEST COVERAGE CONTRACT ==="
+echo ""
+
+# ── CHECK 1: Source artifact exists ──────────────────────────────────
+echo "--- Check 1: Source Artifact ---"
+if [ -f "$COVERAGE_DOC" ]; then
+  LINES=$(wc -l < "$COVERAGE_DOC")
+  echo "  PASS: TEST-COVERAGE-GAPS.md exists ($LINES lines)"
+else
+  echo "  FAIL: TEST-COVERAGE-GAPS.md not found at $COVERAGE_DOC"
+  FAILURES=$((FAILURES+1))
+  echo ""
+  echo "================================"
+  echo "FAIL: $FAILURES CHECK(S) FAILED"
+  exit 1
+fi
+
+# ── CHECK 2: Declared test directories exist ─────────────────────────
+echo ""
+echo "--- Check 2: Test Directory Presence ---"
+
+DECLARED=0
+FOUND=0
+
+for dir_entry in \
+  "$BACKEND/tests/unit|Backend unit" \
+  "$BACKEND/tests/integration|Backend integration" \
+  "$BACKEND/tests/e2e|Backend E2E" \
+  "$BACKEND/tests/contract|Backend contract" \
+  "$BACKEND/tests/security|Backend security" \
+  "$MONOREPO/apps/agent-api/tests/security|Agent-API security" \
+  "$MONOREPO/apps/dashboard/tests/e2e|Dashboard E2E (Playwright)" \
+  "$MONOREPO/apps/dashboard/src/__tests__|Dashboard unit (Vitest)"; do
+
+  dir="${dir_entry%%|*}"
+  name="${dir_entry#*|}"
+  DECLARED=$((DECLARED+1))
+
+  if [ -d "$dir" ]; then
+    count=$(find "$dir" -maxdepth 2 -type f \( -name "*.py" -o -name "*.ts" -o -name "*.tsx" -o -name "*.spec.ts" \) 2>/dev/null | wc -l)
+    echo "  PASS: $name — exists ($count test files)"
+    FOUND=$((FOUND+1))
+  else
+    echo "  FAIL: $name — directory missing ($dir)"
+    FAILURES=$((FAILURES+1))
+  fi
+done
+
+echo "  Summary: $FOUND/$DECLARED declared test directories found"
+
+# ── CHECK 3: Test framework configs exist ────────────────────────────
+echo ""
+echo "--- Check 3: Test Framework Configs ---"
+
+# Backend pytest
+if [ -f "$BACKEND/pyproject.toml" ]; then
+  echo "  PASS: Backend pyproject.toml exists (pytest config)"
+else
+  echo "  FAIL: Backend pyproject.toml missing"
+  FAILURES=$((FAILURES+1))
+fi
+
+# Agent-API pytest
+if [ -f "$MONOREPO/apps/agent-api/pyproject.toml" ]; then
+  echo "  PASS: Agent-API pyproject.toml exists (pytest config)"

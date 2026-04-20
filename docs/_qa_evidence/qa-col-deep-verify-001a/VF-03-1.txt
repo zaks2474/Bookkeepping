@@ -1,0 +1,9 @@
+File: /home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/chatbot.py
+---
+Line 243: @router.get('/threads')
+Line 244: async def list_threads(...)
+Line 256: user_id = str(session.user_id)
+Line 258: threads, total = await chat_repository.list_threads(user_id=user_id, ...)
+---
+user_id filtering: YES — list_threads passes user_id to repository
+VERDICT: PASS

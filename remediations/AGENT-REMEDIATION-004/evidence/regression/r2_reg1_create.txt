@@ -1,0 +1,22 @@
+=== R2.REG.1: Create approval ===
+{
+    "thread_id": "remediation-004-r2reg2-1770152280",
+    "status": "awaiting_approval",
+    "content": null,
+    "pending_approval": {
+        "approval_id": "16b29226-40d0-44b5-9ced-2fe08fca6657",
+        "tool": "transition_deal",
+        "args": {
+            "deal_id": "DL-CHAOS",
+            "from_stage": "qualified",
+            "to_stage": "loi"
+        },
+        "permission_tier": "CRITICAL",
+        "requested_by": "r2-tester",
+        "requested_at": "2026-02-03T20:58:02.693271Z"
+    },
+    "actions_taken": [],
+    "error": null
+}
+
+Approval ID: 16b29226-40d0-44b5-9ced-2fe08fca6657

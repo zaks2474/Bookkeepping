@@ -1,0 +1,21 @@
+sync-types: ## Regenerate TypeScript types from committed OpenAPI spec
+	@echo "$(CYAN)=== Sync Types ===$(RESET)"
+	cd $(DASHBOARD_ROOT) && npx openapi-typescript ../../packages/contracts/openapi/zakops-api.json -o src/lib/api-types.generated.ts
+	@echo "$(GREEN)Types regenerated from committed spec$(RESET)"
+
+update-spec: ## Fetch live OpenAPI spec from backend and commit
+	@echo "$(CYAN)=== Update Spec ===$(RESET)"
+	@curl -sf $(BACKEND_API)/openapi.json | jq -S . > $(OPENAPI_SPEC) || \
+		{ echo "$(YELLOW)Backend not reachable at $(BACKEND_API)$(RESET)"; exit 1; }
+	@echo "$(GREEN)Spec updated from live backend$(RESET)"
+
+check-contract-drift: ## Verify committed spec matches live backend (canonical JSON)
+	@echo "$(CYAN)=== Contract Drift Check ===$(RESET)"
+	@curl -sf $(BACKEND_API)/openapi.json -o /tmp/live-spec.json || \
+		{ echo "$(YELLOW)Backend not reachable — skipping$(RESET)"; exit 0; }
+	@jq -S . /tmp/live-spec.json > /tmp/live-spec-canonical.json
+	@jq -S . $(OPENAPI_SPEC) > /tmp/committed-spec-canonical.json
+	@if diff /tmp/live-spec-canonical.json /tmp/committed-spec-canonical.json > /dev/null; then \
+		echo "$(GREEN)Committed spec matches live backend$(RESET)"; \
+	else \
+		echo "$(YELLOW)DRIFT DETECTED: committed spec does not match live backend$(RESET)"; \

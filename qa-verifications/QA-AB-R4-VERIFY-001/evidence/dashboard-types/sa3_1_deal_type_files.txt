@@ -1,0 +1,1453 @@
+=== /home/zaks/zakops-agent-api/apps/dashboard/src/components/operator-hq/ActivityFeed.tsx ===
+/**
+ * ActivityFeed Component
+ *
+ * Live feed of recent system activity.
+ */
+
+'use client';
+
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Badge } from '@/components/ui/badge';
+import {
+  IconArrowRight,
+  IconFile,
+  IconMail,
+  IconRobot,
+  IconUser,
+  IconCheck,
+  IconX,
+  IconClock,
+  IconAlertTriangle,
+  IconEye,
+  IconBriefcase,
+} from '@tabler/icons-react';
+import { format, formatDistanceToNow, isToday } from 'date-fns';
+import type { DealEvent } from '@/types/api';
+import { DEAL_STAGE_LABELS } from '@/types/execution-contracts';
+
+// =============================================================================
+// Types
+// =============================================================================
+
+interface ActivityFeedProps {
+  events: DealEvent[];
+  isLoading?: boolean;
+  maxHeight?: string;
+  className?: string;
+}
+
+// =============================================================================
+// Event Config
+// =============================================================================
+
+const EVENT_CONFIG: Record<
+  string,
+  {
+    icon: typeof IconClock;
+    color: string;
+  }
+> = {
+  stage_changed: { icon: IconArrowRight, color: 'text-blue-500 bg-blue-500/10' },
+  document_uploaded: { icon: IconFile, color: 'text-green-500 bg-green-500/10' },
+  email_received: { icon: IconMail, color: 'text-purple-500 bg-purple-500/10' },
+  email_sent: { icon: IconMail, color: 'text-cyan-500 bg-cyan-500/10' },
+  agent_action: { icon: IconRobot, color: 'text-amber-500 bg-amber-500/10' },
+  action_completed: { icon: IconCheck, color: 'text-green-500 bg-green-500/10' },
+  action_failed: { icon: IconX, color: 'text-red-500 bg-red-500/10' },
+  deal_created: { icon: IconBriefcase, color: 'text-blue-500 bg-blue-500/10' },
+  default: { icon: IconClock, color: 'text-gray-500 bg-gray-500/10' },
+};
+
+// =============================================================================
+// Component
+// =============================================================================
+
+export function ActivityFeed({
+  events,
+  isLoading = false,
+  maxHeight = 'calc(100vh - 20rem)',
+  className = '',
+}: ActivityFeedProps) {
+  if (isLoading) {
+    return (
+      <div className={`space-y-3 ${className}`}>
+        {[...Array(5)].map((_, i) => (
+          <div key={i} className="flex gap-3 animate-pulse">
+            <div className="w-8 h-8 bg-muted rounded-full" />
+            <div className="flex-1 space-y-2">
+              <div className="h-4 w-3/4 bg-muted rounded" />
+              <div className="h-3 w-1/2 bg-muted rounded" />
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (events.length === 0) {
+    return (
+      <div className={`text-center py-12 ${className}`}>
+        <IconClock className="w-12 h-12 text-muted-foreground/50 mx-auto mb-3" />
+        <p className="text-sm text-muted-foreground">No recent activity</p>
+      </div>
+    );
+  }
+
+  // Group events by date
+  const groupedEvents: { date: string; label: string; events: DealEvent[] }[] = [];
+  const eventsByDate: Record<string, DealEvent[]> = {};
+
+  for (const event of events) {
+    const date = format(new Date(event.created_at), 'yyyy-MM-dd');
+    if (!eventsByDate[date]) {
+      eventsByDate[date] = [];
+    }
+    eventsByDate[date].push(event);
+  }
+
+  for (const [date, dateEvents] of Object.entries(eventsByDate)) {
+    groupedEvents.push({
+      date,
+      label: isToday(new Date(date)) ? 'Today' : format(new Date(date), 'MMMM d'),
+      events: dateEvents,
+    });
+  }
+
+  return (
+    <ScrollArea style={{ height: maxHeight }} className={className}>
+      <div className="space-y-6 pr-4">
+        {groupedEvents.map((group) => (
+          <div key={group.date}>
+            <div className="flex items-center gap-2 mb-3 sticky top-0 bg-background py-1 z-10">
+              <span className="text-sm font-medium">{group.label}</span>
+              <div className="flex-1 h-px bg-border" />
+              <Badge variant="outline" className="text-xs">
+                {group.events.length}
+              </Badge>
+            </div>
+
+            <div className="space-y-3">
+              {group.events.map((event) => (
+                <ActivityItem key={event.id} event={event} />
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </ScrollArea>
+  );
+}
+
+// =============================================================================
+// Activity Item
+// =============================================================================
+
+interface ActivityItemProps {
+  event: DealEvent;
+}
+
+function ActivityItem({ event }: ActivityItemProps) {
+  const config = EVENT_CONFIG[event.event_type] || EVENT_CONFIG.default;
+  const Icon = config.icon;
+
+  // Generate description
+  const getDescription = () => {
+    // R2-1: Null-safe access to event.details
+    const details = event.details ?? {};
+
+    switch (event.event_type) {
+      case 'stage_changed':
+        return (
+          <>
+            Deal moved to{' '}
+            <strong>{DEAL_STAGE_LABELS[details.to_stage as keyof typeof DEAL_STAGE_LABELS] || String(details.to_stage || 'unknown')}</strong>
+          </>
+        );
+      case 'document_uploaded':
+        return (
+          <>
+            Document uploaded: <strong>{String(details.filename || 'file')}</strong>
+          </>
+        );
+      case 'email_received':
+        return (
+          <>
+            Email received from <strong>{String(details.from || 'unknown')}</strong>
+          </>
+        );
+      case 'agent_action':
+        return (
+          <>
+            Agent executed <strong>{String(details.tool_name || 'action')}</strong>
+          </>
+        );
+      case 'deal_created':
+        return <>New deal created</>;
+      default:
+        return <>{event.event_type.replace(/_/g, ' ')}</>;
+    }
+  };
+
+  return (
+    <div className="flex gap-3 group">
+      <div className={`p-2 rounded-lg ${config.color} shrink-0`}>
+        <Icon className="w-4 h-4" />
+      </div>
+
+      <div className="flex-1 min-w-0">
+        <p className="text-sm">{getDescription()}</p>
+        <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5">
+          <span>
+            {format(new Date(event.created_at), 'HH:mm')}
+          </span>
+          {event.actor && (
+            <>
+              <span>•</span>
+              <span className="flex items-center gap-1">
+                {event.source === 'agent' ? (
+                  <IconRobot className="w-3 h-3" />
+                ) : (
+                  <IconUser className="w-3 h-3" />
+                )}
+                {event.actor}
+              </span>
+            </>
+          )}
+          <span>•</span>
+          <span className="truncate">{event.deal_id}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default ActivityFeed;
+
+=== /home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealHeader.tsx ===
+/**
+ * DealHeader Component
+ *
+ * Header for deal workspace showing:
+ * - Deal name and stage
+ * - Priority badge
+ * - Key metrics (EBITDA, Revenue, Price)
+ * - Quick actions
+ */
+
+'use client';
+
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import {
+  IconArrowLeft,
+  IconDots,
+  IconFolder,
+  IconMail,
+  IconEdit,
+  IconArchive,
+  IconTrash,
+  IconExternalLink,
+  IconClock,
+  IconBuilding,
+  IconMapPin,
+  IconUser,
+} from '@tabler/icons-react';
+import Link from 'next/link';
+import { formatDistanceToNow } from 'date-fns';
+import type { Deal, DealStage, Priority } from '@/types/api';
+import { DEAL_STAGE_LABELS, DEAL_STAGE_COLORS } from '@/types/execution-contracts';
+
+// =============================================================================
+// Types
+// =============================================================================
+
+interface DealHeaderProps {
+  deal: Deal;
+  onStageChange?: (stage: DealStage) => void;
+  onArchive?: () => void;
+  onEdit?: () => void;
+  onOpenFolder?: () => void;
+  showBackLink?: boolean;
+  className?: string;
+}
+
+// =============================================================================
+// Priority Config
+// =============================================================================
+
+const PRIORITY_CONFIG: Record<Priority, { label: string; className: string }> = {
+  HIGH: { label: 'High Priority', className: 'bg-red-500/10 text-red-500 border-red-500/20' },
+  MEDIUM: { label: 'Medium', className: 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20' },
+  LOW: { label: 'Low', className: 'bg-gray-500/10 text-gray-500 border-gray-500/20' },
+};
+
+// =============================================================================
+// Component
+// =============================================================================
+
+export function DealHeader({
+  deal,
+  onStageChange,
+  onArchive,
+  onEdit,
+  onOpenFolder,
+  showBackLink = true,
+  className = '',
+}: DealHeaderProps) {
+  const stageLabel = DEAL_STAGE_LABELS[deal.stage];
+  const stageColor = DEAL_STAGE_COLORS[deal.stage];
+  const priorityConfig = PRIORITY_CONFIG[deal.metadata.priority];
+
+  // Format currency
+  const formatCurrency = (value: number | null) => {
+    if (!value) return '—';
+    if (value >= 1_000_000) {
+      return `$${(value / 1_000_000).toFixed(1)}M`;
+    }
+    if (value >= 1_000) {
+      return `$${(value / 1_000).toFixed(0)}K`;
+    }
+    return `$${value.toLocaleString()}`;
+  };
+
+  // Get stage badge color
+  const getStageBadgeClass = () => {
+    switch (stageColor) {
+      case 'blue':
+        return 'bg-blue-500/10 text-blue-500 border-blue-500/20';
+      case 'cyan':
+        return 'bg-cyan-500/10 text-cyan-500 border-cyan-500/20';
+      case 'green':
+        return 'bg-green-500/10 text-green-500 border-green-500/20';
+      case 'yellow':
+        return 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20';
+      case 'orange':
+        return 'bg-orange-500/10 text-orange-500 border-orange-500/20';
+      case 'purple':
+        return 'bg-purple-500/10 text-purple-500 border-purple-500/20';
+      case 'emerald':
+        return 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20';
+      case 'gray':
+        return 'bg-gray-500/10 text-gray-500 border-gray-500/20';
+      case 'slate':
+        return 'bg-slate-500/10 text-slate-500 border-slate-500/20';
+      default:
+        return 'bg-gray-500/10 text-gray-500 border-gray-500/20';
+    }
+  };
+
+  return (
+    <div className={`border-b bg-card ${className}`}>
+      {/* Top row: Back link, name, actions */}
+      <div className="px-6 py-4">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex items-start gap-4">
+            {showBackLink && (
+              <Link href="/deals">
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                  <IconArrowLeft className="w-4 h-4" />
+                </Button>
+              </Link>
+            )}
+
+            <div>
+              {/* Deal name */}
+              <h1 className="text-xl font-semibold flex items-center gap-3">
+                {deal.display_name || deal.canonical_name}
+                <Badge variant="outline" className={getStageBadgeClass()}>
+                  {stageLabel}
+                </Badge>
+                <Badge variant="outline" className={priorityConfig.className}>
+                  {priorityConfig.label}
+                </Badge>
+              </h1>
+
+              {/* Company info row */}
+              <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
+                {deal.company_info.company_name && (
+                  <span className="flex items-center gap-1">
+                    <IconBuilding className="w-3.5 h-3.5" />
+                    {deal.company_info.company_name}
+                  </span>
+                )}
+                {deal.company_info.location && (
+                  <span className="flex items-center gap-1">
+                    <IconMapPin className="w-3.5 h-3.5" />
+                    {deal.company_info.location}
+                  </span>
+                )}
+                {deal.company_info.sector && (
+                  <Badge variant="outline" className="text-xs">
+                    {deal.company_info.sector}
+                  </Badge>
+                )}
+              </div>
+
+              {/* Broker info */}
+              {deal.broker.name && (
+                <div className="flex items-center gap-2 mt-1 text-sm text-muted-foreground">
+                  <IconUser className="w-3.5 h-3.5" />
+                  <span>
+                    {deal.broker.name}
+                    {deal.broker.company && ` at ${deal.broker.company}`}
+                  </span>
+                  {deal.broker.email && (
+                    <a
+                      href={`mailto:${deal.broker.email}`}
+                      className="text-primary hover:underline"
+                    >
+                      {deal.broker.email}
+                    </a>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Actions */}
+          <div className="flex items-center gap-2">
+            {/* Last updated */}
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <IconClock className="w-3 h-3" />
+                    {formatDistanceToNow(new Date(deal.updated_at), { addSuffix: true })}
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>Last updated</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+
+            {/* Quick actions */}
+            {onOpenFolder && deal.folder_path && (
+              <Button variant="ghost" size="sm" onClick={onOpenFolder}>
+                <IconFolder className="w-4 h-4 mr-1" />
+                Files
+              </Button>
+            )}
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                  <IconDots className="w-4 h-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {onEdit && (
+                  <DropdownMenuItem onClick={onEdit}>
+                    <IconEdit className="w-4 h-4 mr-2" />
+                    Edit Deal
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuItem>
+                  <IconMail className="w-4 h-4 mr-2" />
+                  Email Broker
+                </DropdownMenuItem>
+                {deal.folder_path && (
+                  <DropdownMenuItem onClick={onOpenFolder}>
+                    <IconExternalLink className="w-4 h-4 mr-2" />
+                    Open Folder
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuSeparator />
+                {onArchive && (
+                  <DropdownMenuItem onClick={onArchive} className="text-destructive">
+                    <IconArchive className="w-4 h-4 mr-2" />
+                    Archive Deal
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
+      </div>
+
+      {/* Metrics row */}
+      <div className="px-6 py-3 border-t bg-muted/30 flex items-center gap-8">
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-muted-foreground uppercase tracking-wider">
+            Asking
+          </span>
+          <span className="font-semibold">
+            {formatCurrency(deal.metadata.asking_price)}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-muted-foreground uppercase tracking-wider">
+            EBITDA
+          </span>
+          <span className="font-semibold">
+            {formatCurrency(deal.metadata.ebitda)}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-muted-foreground uppercase tracking-wider">
+            Revenue
+          </span>
+          <span className="font-semibold">
+            {formatCurrency(deal.metadata.revenue)}
+          </span>
+        </div>
+
+        {deal.metadata.employees && (
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-muted-foreground uppercase tracking-wider">
+              Employees
+            </span>
+            <span className="font-semibold">{deal.metadata.employees}</span>
+          </div>
+        )}
+
+        {/* NDA Status */}
+        {deal.metadata.nda_status !== 'none' && (
+          <Badge
+            variant="outline"
+            className={
+              deal.metadata.nda_status === 'signed'
+                ? 'bg-green-500/10 text-green-500 border-green-500/20'
+                : deal.metadata.nda_status === 'requested'
+                ? 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20'
+                : 'bg-red-500/10 text-red-500 border-red-500/20'
+            }
+          >
+            NDA: {deal.metadata.nda_status}
+          </Badge>
+        )}
+
+        {/* CIM indicator */}
+        {deal.metadata.cim_received && (
+          <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
+            CIM Received
+          </Badge>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default DealHeader;
+
+=== /home/zaks/zakops-agent-api/apps/dashboard/src/components/operator-hq/OperatorHQ.tsx ===
+/**
+ * OperatorHQ Component
+ *
+ * Central command center for operators showing:
+ * - Today's stats
+ * - Pending approvals
+ * - Active deals by stage
+ * - Recent activity
+ * - Quick actions
+ */
+
+'use client';
+
+import { useState } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  IconTrendingUp,
+  IconInbox,
+  IconShieldCheck,
+  IconClock,
+  IconRobot,
+  IconArrowRight,
+  IconRefresh,
+  IconAlertTriangle,
+  IconCheck,
+  IconActivity,
+} from '@tabler/icons-react';
+import { ApprovalQueue } from '@/components/approvals/ApprovalQueue';
+import { PipelineOverview } from './PipelineOverview';
+import { ActivityFeed } from './ActivityFeed';
+import { QuickStats } from './QuickStats';
+import type { PipelineStats, DealEvent, Action } from '@/types/api';
+
+// =============================================================================
+// Types
+// =============================================================================
+
+interface OperatorHQProps {
+  stats?: PipelineStats;
+  recentEvents?: DealEvent[];
+  pendingActions?: Action[];
+  isLoading?: boolean;
+  onRefresh?: () => void;
+  className?: string;
+}
+
+// =============================================================================
+// Component
+// =============================================================================
+
+export function OperatorHQ({
+  stats,
+  recentEvents = [],
+  pendingActions = [],
+  isLoading = false,
+  onRefresh,
+  className = '',
+}: OperatorHQProps) {
+  const [activeTab, setActiveTab] = useState<'overview' | 'approvals' | 'activity'>('overview');
+
+  // Count urgent items
+  const urgentCount = pendingActions.filter((a) => a.risk_level === 'high').length;
+
+  return (
+    <div className={`flex flex-col h-full ${className}`}>
+      {/* Header */}
+      <div className="px-6 py-4 border-b bg-card flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-semibold flex items-center gap-2">
+            <IconActivity className="w-5 h-5 text-primary" />
+            Operator HQ
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Your command center for deal operations
+          </p>
+        </div>
+
+        <div className="flex items-center gap-3">
+          {urgentCount > 0 && (
+            <Badge variant="destructive" className="gap-1">
+              <IconAlertTriangle className="w-3 h-3" />
+              {urgentCount} urgent
+            </Badge>
+          )}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onRefresh}
+            disabled={isLoading}
+          >
+            <IconRefresh className={`w-4 h-4 mr-1 ${isLoading ? 'animate-spin' : ''}`} />
+            Refresh
+          </Button>
+        </div>
+      </div>
+
+      {/* Quick stats row */}
+      <QuickStats stats={stats} isLoading={isLoading} />
+
+      {/* Main content */}
+      <div className="flex-1 overflow-hidden">
+        <Tabs
+          value={activeTab}
+          onValueChange={(v) => setActiveTab(v as typeof activeTab)}
+          className="h-full flex flex-col"
+        >
+          <TabsList className="w-full justify-start rounded-none border-b bg-transparent px-6 pt-2">
+            <TabsTrigger value="overview" className="gap-2">
+              <IconTrendingUp className="w-4 h-4" />
+              Pipeline
+            </TabsTrigger>
+            <TabsTrigger value="approvals" className="gap-2">
+              <IconShieldCheck className="w-4 h-4" />
+              Approvals
+              {pendingActions.filter((a) => a.status === 'pending_approval').length > 0 && (
+                <Badge variant="default" className="ml-1 h-5 px-1.5 bg-amber-500">
+                  {pendingActions.filter((a) => a.status === 'pending_approval').length}
+                </Badge>
+              )}
+            </TabsTrigger>
+            <TabsTrigger value="activity" className="gap-2">
+              <IconClock className="w-4 h-4" />
+              Activity
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="overview" className="flex-1 overflow-hidden mt-0 p-6">
+            <PipelineOverview stats={stats} isLoading={isLoading} />
+          </TabsContent>
+
+          <TabsContent value="approvals" className="flex-1 overflow-hidden mt-0">
+            <ApprovalQueue
+              variant="full"
+              maxHeight="calc(100vh - 16rem)"
+            />
+          </TabsContent>
+
+          <TabsContent value="activity" className="flex-1 overflow-hidden mt-0 p-6">
+            <ActivityFeed events={recentEvents} isLoading={isLoading} />
+          </TabsContent>
+        </Tabs>
+      </div>
+    </div>
+  );
+}
+
+export default OperatorHQ;
+
+=== /home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealAgentPanel.tsx ===
+/**
+ * DealAgentPanel Component
+ *
+ * Deal-specific agent activity panel.
+ * Shows recent agent activity filtered to this deal.
+ * Uses useAgentActivity hook as single source of truth.
+ */
+
+'use client';
+
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Skeleton } from '@/components/ui/skeleton';
+import {
+  IconRobot,
+  IconClock,
+  IconPlayerPlay,
+  IconShieldCheck,
+  IconChartBar,
+  IconFileText,
+  IconMail,
+  IconActivity,
+  IconMessageCircle,
+  IconCircleCheck,
+  IconCircleX,
+} from '@tabler/icons-react';
+import { useAgentActivity } from '@/hooks/useAgentActivity';
+import { useAskAgent } from '@/components/agent/AgentDrawer';
+import type { AgentActivityEvent, AgentRecentRun, AgentEventType } from '@/types/agent-activity';
+import { formatDistanceToNow } from 'date-fns';
+import { cn } from '@/lib/utils';
+
+// =============================================================================
+// Types
+// =============================================================================
+
+interface DealAgentPanelProps {
+  /** Deal ID to filter activity */
+  dealId: string;
+  /** Deal name for display and context */
+  dealName?: string;
+  /** Maximum height */
+  maxHeight?: string;
+  /** Additional class names */
+  className?: string;
+  /** Show header (default true) */
+  showHeader?: boolean;
+}
+
+// =============================================================================
+// Helper Functions
+// =============================================================================
+
+function getEventIcon(type: AgentEventType) {
+  if (type.startsWith('deal.')) return IconChartBar;
+  if (type.startsWith('doc.')) return IconFileText;
+  if (type.startsWith('email.') || type.startsWith('loi.')) return IconMail;
+  if (type.startsWith('approval.')) return IconShieldCheck;
+  if (type.startsWith('agent.')) return IconRobot;
+  return IconActivity;
+}
+
+function getRunStatusBadge(status: AgentRecentRun['status']) {
+  switch (status) {
+    case 'completed':
+      return <Badge variant="default" className="bg-green-500 gap-1"><IconCircleCheck className="h-3 w-3" />Done</Badge>;
+    case 'failed':
+      return <Badge variant="destructive" className="gap-1"><IconCircleX className="h-3 w-3" />Failed</Badge>;
+    case 'cancelled':
+      return <Badge variant="secondary" className="gap-1">Cancelled</Badge>;
+    default:
+      return <Badge variant="outline">{status}</Badge>;
+  }
+}
+
+// =============================================================================
+// Component
+// =============================================================================
+
+export function DealAgentPanel({
+  dealId,
+  dealName,
+  maxHeight = '400px',
+  className = '',
+  showHeader = true,
+}: DealAgentPanelProps) {
+  const { data, isLoading, error } = useAgentActivity({ dealId });
+  const askAgent = useAskAgent();
+
+  // Filter data for this deal (API should already filter, but double-check)
+  const dealEvents = data?.recent?.filter(e => e.dealId === dealId) ?? [];
+  const dealRuns = data?.recentRuns?.filter(r => r.dealId === dealId) ?? [];
+  const currentRun = data?.currentRun?.dealId === dealId ? data.currentRun : undefined;
+
+  // Handle "Ask Agent" button
+  const handleAskAgent = () => {
+    askAgent({
+      dealId,
+      dealName,
+      initialQuestion: '',
+    });
+  };
+
+  return (
+    <Card className={cn('flex flex-col', className)}>
+      {showHeader && (
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2 text-base">
+                <IconRobot className="h-4 w-4" />
+                Agent Activity
+              </CardTitle>
+              <CardDescription className="text-xs">
+                {dealEvents.length} event{dealEvents.length !== 1 ? 's' : ''}, {dealRuns.length} run{dealRuns.length !== 1 ? 's' : ''}
+              </CardDescription>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleAskAgent}
+              className="gap-1.5"
+            >
+              <IconMessageCircle className="h-3.5 w-3.5" />
+              Ask Agent
+            </Button>
+          </div>
+        </CardHeader>
+      )}
+
+      <CardContent className={cn('flex-1 min-h-0', !showHeader && 'pt-4')}>
+        {/* Current Run Banner */}
+        {currentRun && (
+          <div className="mb-3 p-2 rounded-lg bg-primary/10 border border-primary/20">
+            <div className="flex items-center gap-2">
+              <IconPlayerPlay className="h-4 w-4 text-primary animate-pulse" />
+              <span className="text-sm font-medium">{currentRun.progressLabel}</span>
+            </div>
+            <p className="text-xs text-muted-foreground mt-1 pl-6">
+              Started {formatDistanceToNow(new Date(currentRun.startedAt), { addSuffix: true })}
+            </p>
+          </div>
+        )}
+
+        <ScrollArea style={{ maxHeight }} className="pr-2">
+          {isLoading ? (
+            <div className="space-y-2">
+              {[...Array(3)].map((_, i) => (
+                <Skeleton key={i} className="h-12 w-full" />
+              ))}
+            </div>
+          ) : error ? (
+            <div className="text-center py-4 text-muted-foreground">
+              <p className="text-sm">Failed to load activity</p>
+            </div>
+          ) : dealEvents.length === 0 && dealRuns.length === 0 ? (
+            <EmptyState onAskAgent={handleAskAgent} />
+          ) : (
+            <div className="space-y-4">
+              {/* Recent Runs */}
+              {dealRuns.length > 0 && (
+                <div>
+                  <h4 className="text-xs font-medium text-muted-foreground mb-2">Recent Runs</h4>
+                  <div className="space-y-2">
+                    {dealRuns.slice(0, 3).map((run) => (
+                      <RunItem key={run.runId} run={run} />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Recent Events */}
+              {dealEvents.length > 0 && (
+                <div>
+                  <h4 className="text-xs font-medium text-muted-foreground mb-2">Recent Activity</h4>
+                  <div className="space-y-1">
+                    {dealEvents.slice(0, 5).map((event) => (
+                      <EventItem key={event.id} event={event} />
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </ScrollArea>
+      </CardContent>
+    </Card>
+  );
+}
+
+// =============================================================================
+// Sub-components
+// =============================================================================
+
+function EmptyState({ onAskAgent }: { onAskAgent: () => void }) {
+  return (
+    <div className="flex flex-col items-center justify-center py-6 text-muted-foreground">
+      <IconRobot className="h-8 w-8 mb-2 opacity-50" />
+      <p className="text-sm">No agent activity for this deal</p>
+      <Button
+        variant="link"
+        size="sm"
+        onClick={onAskAgent}
+        className="mt-2"
+      >
+        Ask agent for help
+      </Button>
+    </div>
+  );
+}
+
+function EventItem({ event }: { event: AgentActivityEvent }) {
+  const Icon = getEventIcon(event.type);
+
+  return (
+    <div className="flex items-start gap-2 p-2 rounded hover:bg-accent/50 transition-colors">
+      <div className="p-1 rounded-full bg-primary/10 shrink-0">
+        <Icon className="h-3 w-3 text-primary" />
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-xs truncate">{event.label}</p>
+        <span className="text-xs text-muted-foreground">
+          {formatDistanceToNow(new Date(event.timestamp), { addSuffix: true })}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function RunItem({ run }: { run: AgentRecentRun }) {
+  return (
+    <div className="p-2 rounded-lg border hover:bg-accent/50 transition-colors">
+      <div className="flex items-center justify-between gap-2 mb-1">
+        {getRunStatusBadge(run.status)}
+        <span className="text-xs text-muted-foreground">
+          {formatDistanceToNow(new Date(run.startedAt), { addSuffix: true })}
+        </span>
+      </div>
+      <p className="text-xs truncate">{run.summary}</p>
+      <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
+        <span>{run.toolsCalled} tools</span>
+        <span>{run.approvalsRequested} approvals</span>
+      </div>
+    </div>
+  );
+}
+
+export default DealAgentPanel;
+
+=== /home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-schemas.ts ===
+/**
+ * ZakOps Orchestration API Zod Schemas
+ * Runtime validation for API data
+ */
+
+import { z } from 'zod';
+
+// =============================================================================
+// ENUMS
+// =============================================================================
+
+export const DealStageSchema = z.enum([
+  'inbound',
+  'screening',
+  'qualified',
+  'loi',
+  'diligence',
+  'closing',
+  'portfolio',
+  'junk',
+  'archived',
+]);
+
+export const DealStatusSchema = z.enum(['active', 'junk', 'merged', 'archived']);
+
+export const PrioritySchema = z.enum(['HIGH', 'MEDIUM', 'LOW', 'NORMAL']);
+
+export const NdaStatusSchema = z.enum(['none', 'requested', 'signed', 'expired']);
+
+// R2-1.3 FIX: Aligned with backend lowercase status values
+export const ActionStatusSchema = z.enum([
+  'pending',
+  'pending_approval',
+  'queued',
+  'ready',
+  'running',
+  'completed',
+  'failed',
+  'cancelled',
+  'rejected',
+]);
+
+export const RiskLevelSchema = z.enum(['low', 'medium', 'high']);
+
+export const ActionSourceSchema = z.enum(['chat', 'ui', 'system', 'agent', 'api']);
+
+export const QuarantineClassificationSchema = z.enum(['DEAL_SIGNAL', 'UNCERTAIN', 'JUNK', 'unknown']);
+
+export const QuarantineStatusSchema = z.enum(['pending', 'approved', 'rejected', 'expired']);
+
+export const SenderTypeSchema = z.enum(['broker', 'seller', 'advisor', 'platform', 'unknown']);
+
+// =============================================================================
+// NESTED SCHEMAS
+// =============================================================================
+
+export const DealIdentifiersSchema = z.object({
+  listing_ids: z.array(z.string()).optional().default([]),
+  broker_reference_ids: z.array(z.string()).optional().default([]),
+  bizbuysell_id: z.string().nullable().optional(),
+  axial_id: z.string().nullable().optional(),
+  internal_codes: z.array(z.string()).optional().default([]),
+}).passthrough();
+
+export const CompanyInfoSchema = z.object({
+  company_name: z.string().nullable().optional(),
+  legal_entity: z.string().nullable().optional(),
+  dba_names: z.array(z.string()).optional().default([]),
+  location: z.string().nullable().optional(),
+  sector: z.string().nullable().optional(),
+  franchise_system: z.string().nullable().optional(),
+}).passthrough();
+
+export const BrokerInfoSchema = z.object({
+  broker_id: z.string().nullable().optional(),
+  name: z.string().nullable().optional(),
+  email: z.string().nullable().optional(),
+  phone: z.string().nullable().optional(),
+  company: z.string().nullable().optional(),
+  quality_rating: PrioritySchema.optional(),
+  sectors: z.array(z.string()).optional().default([]),
+  domain: z.string().nullable().optional(),
+}).passthrough();
+
+export const DealMetadataSchema = z.object({
+  priority: PrioritySchema.optional(),
+  asking_price: z.number().nullable().optional(),
+  ebitda: z.number().nullable().optional(),
+  revenue: z.number().nullable().optional(),
+  employees: z.number().nullable().optional(),
+  nda_status: NdaStatusSchema.optional(),
+  cim_received: z.boolean().optional(),
+  junk_reason: z.string().nullable().optional(),
+}).passthrough();
+
+// FIX: Changed to .nullable().optional() to handle backend null values
+export const AuditEntrySchema = z.object({
+  action: z.string(),
+  by: z.string(),
+  at: z.string(),
+  notes: z.string().nullable().optional(),
+  reason: z.string().nullable().optional(),
+}).passthrough();
+
+// FIX: Changed to .nullable().optional() to handle backend null values
+export const ArtifactSchema = z.object({
+  type: z.string(),
+  path: z.string(),
+  size: z.number().nullable().optional(),
+  created_at: z.string(),
+}).passthrough();
+
+export const QuarantineLinkSchema = z.object({
+  url: z.string(),
+  type: z.string(),
+  vendor_hint: z.string().nullable(),
+  auth_required: z.boolean(),
+  source_email_id: z.string(),
+  source_timestamp: z.string(),
+});
+
+// =============================================================================
+// MAIN ENTITY SCHEMAS
+// =============================================================================
+
+export const DealSchema = z.object({
+  deal_id: z.string(),
+  canonical_name: z.string(),
+  display_name: z.string().nullable().optional(),
+  folder_path: z.string().nullable().optional(),
+  stage: DealStageSchema,
+  status: DealStatusSchema,
+  identifiers: DealIdentifiersSchema.or(z.record(z.unknown())).optional(),
+  company_info: CompanyInfoSchema.or(z.record(z.unknown())).optional(),
+  broker: BrokerInfoSchema.or(z.record(z.unknown())).optional(),
+  metadata: DealMetadataSchema.or(z.record(z.unknown())).optional(),
+  email_thread_ids: z.array(z.string()).optional().default([]),
+  created_at: z.string(),
+  updated_at: z.string(),
+  days_since_update: z.number().nullable().optional(),
+  action_count: z.number().nullable().optional(),
+  alias_count: z.number().nullable().optional(),
+});
+
+export const DealCreateSchema = z.object({
+  canonical_name: z.string().min(1),
+  display_name: z.string().optional(),
+  folder_path: z.string().optional(),
+  stage: DealStageSchema.optional(),
+  status: DealStatusSchema.optional(),
+  identifiers: DealIdentifiersSchema.partial().optional(),
+  company_info: CompanyInfoSchema.partial().optional(),
+  broker: BrokerInfoSchema.partial().optional(),
+  metadata: DealMetadataSchema.partial().optional(),
+});
+
+export const DealUpdateSchema = z.object({
+  canonical_name: z.string().min(1).optional(),
+  display_name: z.string().optional(),
+  folder_path: z.string().optional(),
+  stage: DealStageSchema.optional(),
+  status: DealStatusSchema.optional(),
+  identifiers: DealIdentifiersSchema.partial().optional(),
+  company_info: CompanyInfoSchema.partial().optional(),
+  broker: BrokerInfoSchema.partial().optional(),
+  metadata: DealMetadataSchema.partial().optional(),
+});
+
+// FIX: Changed to .nullable().optional() to handle backend null values
+export const DealEventSchema = z.object({
+  id: z.string(),
+  deal_id: z.string().nullable().optional(),
+  event_type: z.string(),
+  source: z.string().nullable().optional(),
+  actor: z.string().nullable().optional(),
+  details: z.record(z.unknown()).nullable().optional(),
+  created_at: z.string(),
+}).passthrough();
+
+// FIX: Changed to .nullable().optional() to handle backend null values
+export const DealAliasSchema = z.object({
+  id: z.string(),
+  deal_id: z.string().nullable().optional(),
+  alias: z.string(),
+  alias_type: z.string(),
+  created_at: z.string(),
+}).passthrough();
+
+// R2-1.6 FIX: Aligned with backend ActionResponse - phantom fields made optional
+// Backend fields: action_id, deal_id, capability_id, action_type, title, summary,
+//                 status, created_at, updated_at, risk_level, requires_human_review,
+//                 inputs, outputs, deal_name, deal_stage
+export const ActionSchema = z.object({
+  // Required fields (exist in backend)
+  action_id: z.string(),
+  capability_id: z.string(),
+  action_type: z.string(),
+  title: z.string(),
+  status: ActionStatusSchema,
+  created_at: z.string(),
+  updated_at: z.string(),
+  risk_level: RiskLevelSchema,
+  requires_human_review: z.boolean(),
+  inputs: z.record(z.unknown()),
+  outputs: z.record(z.unknown()),
+  // Optional fields (exist in backend but may be null)
+  deal_id: z.string().nullable().optional(),
+  summary: z.string().nullable().optional(),
+  deal_name: z.string().nullable().optional(),
+  deal_stage: DealStageSchema.nullable().optional(),
+  // Phantom fields (NOT in backend - kept for future compatibility, all optional)
+  started_at: z.string().nullable().optional(),
+  completed_at: z.string().nullable().optional(),
+  scheduled_for: z.string().nullable().optional(),
+  duration_seconds: z.number().nullable().optional(),
+  created_by: z.string().nullable().optional(),
+  source: ActionSourceSchema.nullable().optional(),
+  idempotency_key: z.string().nullable().optional(),
+  retry_count: z.number().nullable().optional(),
+  max_retries: z.number().nullable().optional(),
+  next_retry_at: z.string().nullable().optional(),
+  parent_action_id: z.string().nullable().optional(),
+  root_action_id: z.string().nullable().optional(),
+  chain_depth: z.number().nullable().optional(),
+  audit_trail: z.array(AuditEntrySchema).nullable().optional(),
+  artifacts: z.array(ArtifactSchema).nullable().optional(),
+  error_message: z.string().nullable().optional(),
+}).passthrough();
+
+export const ActionApproveSchema = z.object({
+  approved_by: z.string().optional(),
+  notes: z.string().optional(),
+});
+
+export const ActionRejectSchema = z.object({
+  rejected_by: z.string().optional(),
+  reason: z.string().min(1),
+});
+
+export const QuarantineItemSchema = z.object({
+  id: z.string(),
+  action_id: z.string().nullable().optional(),
+  message_id: z.string().nullable().optional(),
+  thread_id: z.string().nullable().optional(),
+  email_subject: z.string().nullable().optional(),
+  sender: z.string().nullable().optional(),
+  sender_domain: z.string().nullable().optional(),
+  received_at: z.string().nullable().optional(),
+  classification: QuarantineClassificationSchema.optional(),
+  urgency: PrioritySchema.optional(),
+  confidence: z.number().nullable().optional(),
+  company_name: z.string().nullable().optional(),
+  broker_name: z.string().nullable().optional(),
+  links: z.array(QuarantineLinkSchema).optional(),
+  quarantine_dir: z.string().nullable().optional(),
+  email_content_path: z.string().nullable().optional(),
+  triage_summary_path: z.string().nullable().optional(),
+  status: QuarantineStatusSchema.optional(),
+  processed_at: z.string().nullable().optional(),
+  processed_by: z.string().nullable().optional(),
+  processing_result: z.string().nullable().optional(),
+  created_deal_id: z.string().nullable().optional(),
+  created_at: z.string().optional(),
+  updated_at: z.string().optional(),
+  sender_name: z.string().nullable().optional(),
+  sender_company: z.string().nullable().optional(),
+  is_broker: z.boolean().nullable().optional(),
+}).passthrough();
+
+export const QuarantineProcessSchema = z.object({
+  action: z.enum(['approve', 'reject']),
+  processed_by: z.string().optional(),
+  deal_id: z.string().optional(),
+  notes: z.string().optional(),
+});
+
+export const SenderProfileSchema = z.object({
+  id: z.number(),
+  email: z.string(),
+  domain: z.string(),
+  name: z.string().nullable(),
+  company: z.string().nullable(),
+  role: z.string().nullable(),
+  sender_type: SenderTypeSchema,
+  quality_rating: PrioritySchema,
+  is_broker: z.boolean(),
+  total_emails: z.number(),
+  deal_emails: z.number(),
+  last_email_at: z.string().nullable(),
+  associated_deal_ids: z.array(z.string()),
+  created_at: z.string(),
+  updated_at: z.string(),
+});
+
+export const PipelineStageSummarySchema = z.object({
+  stage: DealStageSchema,
+  count: z.number(),
+  avg_days_in_stage: z.number().nullable(),
+});
+
+export const PipelineStatsSchema = z.object({
+  total_active_deals: z.number(),
+  pending_actions: z.number(),
+  quarantine_pending: z.number(),
+  recent_events_24h: z.number(),
+  deals_by_stage: z.record(DealStageSchema, z.number()),
+});
+
+// =============================================================================
+// TYPE EXPORTS
+// =============================================================================
+
+export type DealStage = z.infer<typeof DealStageSchema>;
+export type DealStatus = z.infer<typeof DealStatusSchema>;
+export type Priority = z.infer<typeof PrioritySchema>;
+export type NdaStatus = z.infer<typeof NdaStatusSchema>;
+export type ActionStatus = z.infer<typeof ActionStatusSchema>;
+export type RiskLevel = z.infer<typeof RiskLevelSchema>;
+export type ActionSource = z.infer<typeof ActionSourceSchema>;
+export type QuarantineClassification = z.infer<typeof QuarantineClassificationSchema>;
+export type QuarantineStatus = z.infer<typeof QuarantineStatusSchema>;
+export type SenderType = z.infer<typeof SenderTypeSchema>;
+export type Deal = z.infer<typeof DealSchema>;
+export type DealCreate = z.infer<typeof DealCreateSchema>;
+export type DealUpdate = z.infer<typeof DealUpdateSchema>;
+export type DealEvent = z.infer<typeof DealEventSchema>;
+export type DealAlias = z.infer<typeof DealAliasSchema>;
+export type Action = z.infer<typeof ActionSchema>;
+export type ActionApprove = z.infer<typeof ActionApproveSchema>;
+export type ActionReject = z.infer<typeof ActionRejectSchema>;
+export type QuarantineItem = z.infer<typeof QuarantineItemSchema>;
+export type QuarantineProcess = z.infer<typeof QuarantineProcessSchema>;
+export type SenderProfile = z.infer<typeof SenderProfileSchema>;
+export type PipelineStageSummary = z.infer<typeof PipelineStageSummarySchema>;
+export type PipelineStats = z.infer<typeof PipelineStatsSchema>;
+
+// =============================================================================
+// EXECUTION CONTRACT SCHEMAS (Phase 1)
+// =============================================================================
+
+export const ToolRiskLevelSchema = z.enum(['low', 'medium', 'high', 'critical']);
+
+export const AgentRunEventTypeSchema = z.enum([
+  'run_created',
+  'run_started',
+  'run_completed',
+  'run_failed',
+  'run_cancelled',
+]);
+
+export const AgentToolEventTypeSchema = z.enum([
+  'tool_call_started',
+  'tool_call_completed',
+  'tool_call_failed',
+  'tool_approval_required',
+  'tool_approval_granted',
+  'tool_approval_denied',
+]);
+
+export const AgentStreamEventTypeSchema = z.enum([
+  'stream_start',
+  'stream_token',
+  'stream_end',
+  'stream_error',
+]);
+
+export const AgentEventTypeSchema = z.union([
+  AgentRunEventTypeSchema,
+  AgentToolEventTypeSchema,
+  AgentStreamEventTypeSchema,
+]);
+
+export const ThreadStatusSchema = z.enum(['active', 'archived']);
+
+export const RunStatusSchema = z.enum(['pending', 'running', 'completed', 'failed', 'cancelled']);
+
+export const AgentEventBaseSchema = z.object({
+  event_id: z.string(),
+  event_type: AgentEventTypeSchema,
+  thread_id: z.string(),
+  run_id: z.string(),
+  timestamp: z.string(),
+});
+
+export const AgentRunEventSchema = AgentEventBaseSchema.extend({
+  event_type: AgentRunEventTypeSchema,
+  data: z.object({
+    assistant_id: z.string(),
+    status: RunStatusSchema,
+    error: z.string().optional(),
+    duration_ms: z.number().optional(),
+  }),
+});
+
+export const AgentToolCallEventSchema = AgentEventBaseSchema.extend({
+  event_type: AgentToolEventTypeSchema,
+  data: z.object({
+    tool_call_id: z.string(),
+    tool_name: z.string(),
+    tool_input: z.record(z.unknown()),
+    tool_output: z.unknown().optional(),
+    risk_level: ToolRiskLevelSchema,
+    requires_approval: z.boolean(),
+    approved_by: z.string().optional(),
+    error: z.string().optional(),
+    duration_ms: z.number().optional(),
+  }),
+});
+
+export const AgentStreamEventSchema = AgentEventBaseSchema.extend({
+  event_type: AgentStreamEventTypeSchema,
+  data: z.object({
+    token: z.string().optional(),
+    content: z.string().optional(),
+    error: z.string().optional(),
+  }),
+});
+
+export const AgentEventSchema = z.union([
+  AgentRunEventSchema,
+  AgentToolCallEventSchema,
+  AgentStreamEventSchema,
+]);
+
+export const ToolCallStatusSchema = z.enum([
+  'pending',
+  'approved',
+  'rejected',
+  'completed',
+  'failed',
+]);
+
+export const AgentToolCallSchema = z.object({
+  tool_call_id: z.string(),
+  run_id: z.string(),
+  tool_name: z.string(),
+  tool_input: z.record(z.unknown()),
+  tool_output: z.unknown().nullable(),
+  status: ToolCallStatusSchema,
+  requires_approval: z.boolean(),
+  approved_by: z.string().nullable(),
+  approved_at: z.string().nullable(),
+  started_at: z.string().nullable(),
+  completed_at: z.string().nullable(),
+  error: z.string().nullable(),
+  created_at: z.string(),
+});
+
+export const AgentThreadSchema = z.object({
+  thread_id: z.string(),
+  deal_id: z.string().nullable(),
+  assistant_id: z.string(),
+  status: ThreadStatusSchema,
+  metadata: z.record(z.unknown()),
+  created_at: z.string(),
+  updated_at: z.string(),
+});
+
+export const AgentRunSchema = z.object({
+  run_id: z.string(),
+  thread_id: z.string(),
+  assistant_id: z.string(),
+  status: RunStatusSchema,
+  started_at: z.string().nullable(),
+  completed_at: z.string().nullable(),
+  error: z.string().nullable(),
+  tool_calls: z.array(AgentToolCallSchema),
+  metadata: z.record(z.unknown()),
+  created_at: z.string(),
+  updated_at: z.string(),
+});
+
+export const ToolManifestEntrySchema = z.object({
+  tool_id: z.string(),
+  name: z.string(),
+  description: z.string(),
+  risk_level: ToolRiskLevelSchema,
+  requires_approval: z.boolean(),
+  allowed_deal_stages: z.array(DealStageSchema).optional(),
+  rate_limit: z
+    .object({
+      max_calls: z.number(),
+      window_seconds: z.number(),
+    })
+    .optional(),
+});
+
+// Type exports for execution contracts
+export type ToolRiskLevel = z.infer<typeof ToolRiskLevelSchema>;
+export type AgentRunEventType = z.infer<typeof AgentRunEventTypeSchema>;
+export type AgentToolEventType = z.infer<typeof AgentToolEventTypeSchema>;
+export type AgentStreamEventType = z.infer<typeof AgentStreamEventTypeSchema>;
+export type AgentEventType = z.infer<typeof AgentEventTypeSchema>;
+export type ThreadStatus = z.infer<typeof ThreadStatusSchema>;
+export type RunStatus = z.infer<typeof RunStatusSchema>;
+export type AgentEvent = z.infer<typeof AgentEventSchema>;
+export type AgentToolCall = z.infer<typeof AgentToolCallSchema>;
+export type AgentThread = z.infer<typeof AgentThreadSchema>;
+export type AgentRun = z.infer<typeof AgentRunSchema>;
+export type ToolManifestEntry = z.infer<typeof ToolManifestEntrySchema>;
+

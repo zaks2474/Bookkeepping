@@ -1,0 +1,10 @@
+CF_ACCESS_REQUIRED = os.getenv("ZAKOPS_CF_ACCESS_REQUIRED", "false").lower() == "true"  # P7-01: Layer 1
+                    headers={"Authorization": f"Bearer {BACKEND_API_KEY}"},
+    P7-01: CF Access header validation (when ZAKOPS_CF_ACCESS_REQUIRED=true).
+            cf_jwt = request.headers.get("Cf-Access-Jwt-Assertion", "")
+        auth_header = request.headers.get("Authorization", "")
+            logger.warning(f"AUTH FAIL [L2]: Missing Authorization header. "
+                content={"error": "Missing Authorization header"}
+                content={"error": "Invalid Authorization header format"}
+            "layer1_cf_access": "required" if CF_ACCESS_REQUIRED else "disabled",
+                         cf_access_required=CF_ACCESS_REQUIRED)

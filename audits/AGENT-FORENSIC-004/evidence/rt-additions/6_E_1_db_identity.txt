@@ -1,0 +1,26 @@
+=== CHECK 6.E.1 — Per-Service DB Identity Proof ===
+--- AGENT API DB ---
+time="2026-02-03T16:52:48-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-03T16:52:48-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+   db_name    | db_host | db_port |                                                          pg_version                                                          |         server_version          |          query_time           
+--------------+---------+---------+------------------------------------------------------------------------------------------------------------------------------+---------------------------------+-------------------------------
+ zakops_agent |         |         | PostgreSQL 16.11 (Debian 16.11-1.pgdg12+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14+deb12u1) 12.2.0, 64-bit | 16.11 (Debian 16.11-1.pgdg12+1) | 2026-02-03 22:52:48.199138+00
+(1 row)
+
+      data_directory      
+--------------------------
+ /var/lib/postgresql/data
+(1 row)
+
+
+--- BACKEND API DB ---
+ db_name | db_host | db_port |                                        pg_version                                        | server_version |          query_time           
+---------+---------+---------+------------------------------------------------------------------------------------------+----------------+-------------------------------
+ zakops  |         |         | PostgreSQL 15.15 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit | 15.15          | 2026-02-03 22:52:48.322917+00
+(1 row)
+
+      data_directory      
+--------------------------
+ /var/lib/postgresql/data
+(1 row)
+

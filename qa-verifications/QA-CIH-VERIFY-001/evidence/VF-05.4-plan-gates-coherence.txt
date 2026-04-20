@@ -1,0 +1,10 @@
+=== VF-05.4 PLAN-GATES COHERENCE ===
+250:  plan-gates:
+269:      - name: Gate B — Contract Surfaces
+270:        run: bash tools/infra/validate-contract-surfaces.sh
+272:      - name: Gate C — Agent Config (Surface 8)
+273:        run: bash tools/infra/validate-agent-config.sh
+275:      - name: Gate D — SSE Schema Validation
+276:        run: python3 tools/infra/validate_sse_schema.py
+278:      - name: Gate E — Raw httpx client usage (CI-HARDENING-001: script-based with fallback)
+287:  # Gate Check (Full Suite)

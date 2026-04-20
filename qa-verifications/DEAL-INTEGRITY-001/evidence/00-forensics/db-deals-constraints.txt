@@ -1,0 +1,3 @@
+deals_pkey|PRIMARY KEY (deal_id)
+deals_canonical_name_unique|UNIQUE (canonical_name)
+chk_deals_stage|CHECK (((stage)::text = ANY ((ARRAY['inbound'::character varying, 'screening'::character varying, 'qualified'::character varying, 'loi'::character varying, 'diligence'::character varying, 'closing'::character varying, 'portfolio'::character varying, 'junk'::character varying, 'archived'::character varying])::text[])))

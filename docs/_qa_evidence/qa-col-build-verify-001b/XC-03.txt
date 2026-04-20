@@ -1,0 +1,19 @@
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealHeader.tsx:54:  /** Momentum score (0-100) from backend brain/momentum endpoint */
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealHeader.tsx:55:  momentumScore?: number | null;
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealHeader.tsx:65:function getMomentumConfig(score: number | null | undefined) {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealHeader.tsx:94:  momentumScore,
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealHeader.tsx:105:  const momentum = getMomentumConfig(momentumScore);
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealHeader.tsx:334:        {momentumScore !== null && momentumScore !== undefined && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealHeader.tsx:339:            <Badge variant="outline" className={`${momentum.bg} ${momentum.color} font-semibold`}>
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealHeader.tsx:340:              <momentum.Icon className="w-3 h-3 mr-1" />
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealHeader.tsx:341:              {momentum.label}/100
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealBrain.tsx:8: * ghost knowledge, entities, and momentum score.
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealBrain.tsx:90:function momentumColor(score: number | null): string {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealBrain.tsx:97:function momentumIcon(score: number | null) {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealBrain.tsx:231:  const MomentumIcon = momentumIcon(brain.momentum_score);
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealBrain.tsx:252:      {/* Header with momentum */}
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealBrain.tsx:261:              {brain.momentum_score !== null && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealBrain.tsx:262:                <div className={`flex items-center gap-1 text-sm font-semibold ${momentumColor(brain.momentum_score)}`}>
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealBrain.tsx:264:                  {Math.round(brain.momentum_score)}/100
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealBrain.tsx:517:      {brain.momentum_components && Object.keys(brain.momentum_components).length > 0 && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealBrain.tsx:527:                  {Object.entries(brain.momentum_components).map(([key, val]) => (

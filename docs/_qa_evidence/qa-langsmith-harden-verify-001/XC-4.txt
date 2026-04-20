@@ -1,0 +1,12 @@
+=== Contract ===
+1. **Injection**: Caller sends `X-Correlation-ID` header (or omits for auto-generated UUID).
+2. **Storage**: `correlation_id` stored in `zakops.quarantine_items` row.
+3. **Approval**: Original `correlation_id` from quarantine row forwarded to `zakops.outbox` INSERT.
+4. **Fallback**: Legacy items without `correlation_id` fall back to `gen_random_uuid()`.
+=== Code ===
+1512: correlation_id = request.headers.get("X-Correlation-ID") or request.headers.get("x-correlation-id")
+1559: correlation_id, source_type)  -- stored in quarantine_items INSERT
+1575: correlation_id, source_type,  -- stored in quarantine_items INSERT
+1829: # Forward original correlation_id from quarantine item (not gen_random_uuid())
+1830: outbox_correlation = item.get('correlation_id') or str(uuid.uuid4())
+VERDICT: Contract chain matches code: header -> storage -> outbox forward -> uuid fallback. PASS.

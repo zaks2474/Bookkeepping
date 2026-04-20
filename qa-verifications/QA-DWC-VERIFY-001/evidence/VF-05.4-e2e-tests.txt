@@ -1,0 +1,8 @@
+M-04 (chat): 3 files (chat-interaction-closure, chat-responsive-toolbar, chat-shared) >= 2 PASS
+M-05 (deal): 3 files (deal-workspace-mobile-readability, deal-workspace-tab-truthfulness, deal-routing-create) >= 2 PASS
+M-06 (actions): 2 files (actions-detail-workflow, actions-mobile-primary-controls) >= 2 PASS
+M-07 (quarantine+deals): 3 files (deals-list-responsive-nuqs, quarantine-actions, quarantine-mobile-responsiveness) >= 2 PASS
+M-08 (activity+hq): 2 files (agent-activity-mobile-density, hq-pipeline-legibility-and-controls) >= 2 PASS
+M-09 (dashboard+onboarding): 3 files (dashboard-responsive-counts, dashboard-worldclass-remediation, onboarding-responsive-polish) >= 2 PASS
+M-10 (settings+new-deal): 2 files (settings-mobile-layout-and-degraded-states, new-deal-responsive-create-flow) >= 2 PASS
+All 7 missions have >= 2 E2E test files. PASS

@@ -1,0 +1,49 @@
+=== QA-4.4: T3.5+T3.6 Approval Expiry ===
+--- Expiry mechanism in code ---
+/home/zaks/zakops-agent-api/apps/agent-api/app/schemas/auth.py:21:        expires_at: The token expiration timestamp.
+/home/zaks/zakops-agent-api/apps/agent-api/app/schemas/auth.py:26:    expires_at: datetime = Field(..., description="The token expiration timestamp")
+/home/zaks/zakops-agent-api/apps/agent-api/app/schemas/auth.py:35:        expires_at: When the token expires
+/home/zaks/zakops-agent-api/apps/agent-api/app/schemas/auth.py:40:    expires_at: datetime = Field(..., description="When the token expires")
+/home/zaks/zakops-agent-api/apps/agent-api/app/schemas/agent.py:31:    EXPIRED = "expired"
+/home/zaks/zakops-agent-api/apps/agent-api/app/models/approval.py:27:    EXPIRED = "expired"
+/home/zaks/zakops-agent-api/apps/agent-api/app/models/approval.py:50:        expires_at: Expiration timestamp for pending approvals
+/home/zaks/zakops-agent-api/apps/agent-api/app/models/approval.py:71:    expires_at: Optional[datetime] = Field(default=None)
+/home/zaks/zakops-agent-api/apps/agent-api/app/models/approval.py:113:    APPROVAL_EXPIRED = "approval_expired"
+/home/zaks/zakops-agent-api/apps/agent-api/app/models/approval.py:117:    STALE_CLAIM_RECLAIMED = "stale_claim_reclaimed"
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/auth.py:296:        return TokenResponse(access_token=token.access_token, token_type="bearer", expires_at=token.expires_at)
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/auth.py:327:            expires_at=token.expires_at.isoformat(),
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/agent.py:95:async def _reclaim_stale_approvals(db: Session) -> int:
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/agent.py:101:    stale_threshold = datetime.now(UTC) - timedelta(seconds=STALE_CLAIM_TIMEOUT_SECONDS)
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/agent.py:111:        params={"threshold": stale_threshold},
+
+--- Approvals table schema ---
+time="2026-02-04T01:53:26-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-04T01:53:26-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+                                     Table "public.approvals"
+      Column      |           Type           | Collation | Nullable |           Default            
+------------------+--------------------------+-----------+----------+------------------------------
+ id               | character varying(36)    |           | not null | uuid_generate_v4()::text
+ thread_id        | character varying(255)   |           | not null | 
+ checkpoint_id    | character varying(255)   |           |          | 
+ tool_name        | character varying(255)   |           | not null | 
+ tool_args        | text                     |           | not null | 
+ actor_id         | character varying(255)   |           | not null | 
+ status           | character varying(20)    |           | not null | 'pending'::character varying
+ idempotency_key  | character varying(255)   |           | not null | 
+ claimed_at       | timestamp with time zone |           |          | 
+ resolved_at      | timestamp with time zone |           |          | 
+ resolved_by      | character varying(255)   |           |          | 
+ rejection_reason | text                     |           |          | 
+ expires_at       | timestamp with time zone |           |          | 
+ created_at       | timestamp with time zone |           |          | now()
+Indexes:
+    "approvals_pkey" PRIMARY KEY, btree (id)
+    "approvals_idempotency_key_key" UNIQUE CONSTRAINT, btree (idempotency_key)
+    "idx_approvals_actor_id" btree (actor_id)
+    "idx_approvals_claimed_stale" btree (claimed_at) WHERE status::text = 'claimed'::text
+    "idx_approvals_expires_at" btree (expires_at) WHERE status::text = 'pending'::text
+    "idx_approvals_idempotency_key" btree (idempotency_key)
+    "idx_approvals_status" btree (status)
+    "idx_approvals_thread_id" btree (thread_id)
+    "idx_approvals_tool_name" btree (tool_name)
+Check constraints:

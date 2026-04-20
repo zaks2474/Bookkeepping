@@ -1,0 +1,379 @@
+apps/agent-api/evals/tool_accuracy_eval.py:30:    model_config = ConfigDict(extra="forbid")
+apps/agent-api/app/core/langgraph/tools/deal_tools.py:133:    Uses extra='forbid' to reject unexpected fields (strict validation).
+apps/agent-api/app/core/langgraph/tools/deal_tools.py:138:    model_config = ConfigDict(extra="forbid")
+apps/agent-api/app/core/langgraph/tools/deal_tools.py:148:    model_config = ConfigDict(extra="forbid")
+apps/agent-api/app/core/langgraph/tools/deal_tools.py:155:    model_config = ConfigDict(extra="forbid")
+apps/agent-api/app/core/langgraph/tools/deal_tools.py:167:    model_config = ConfigDict(extra="forbid")
+apps/agent-api/app/core/langgraph/tools/deal_tools.py:189:    model_config = ConfigDict(extra="forbid")
+apps/agent-api/app/core/langgraph/tools/deal_tools.py:206:    model_config = ConfigDict(extra="forbid")
+apps/agent-api/app/core/langgraph/tools/deal_tools.py:1092:    model_config = ConfigDict(extra="forbid")
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/example_selectors/semantic_similarity.py:48:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/tools/base.py:273:    extra: str = "forbid"
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/prompts/few_shot.py:46:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/prompts/few_shot.py:168:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/prompts/few_shot.py:371:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/prompts/few_shot_with_templates.py:98:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/chains/pebblo_retrieval/base.py:195:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/chains/llm_requests.py:43:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/agent_toolkits/playwright/toolkit.py:73:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/thirdai_neuraldb.py:39:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/thirdai_neuraldb.py:341:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/chat_models/reka.py:158:    model_config = ConfigDict(extra="forbid")
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/chat_models/edenai.py:301:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/chat_models/dappier.py:74:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/chat_models/oci_generative_ai.py:584:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/chat_models/premai.py:323:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/chat_models/bedrock.py:236:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/retrievers/thirdai_neuraldb.py:25:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/retrievers/pinecone_hybrid_search.py:121:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/retrievers/qdrant_sparse_vector_retriever.py:60:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/retrievers/arcee.py:53:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/retrievers/azure_ai_search.py:119:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/document_compressors/flashrank_rerank.py:38:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/document_compressors/volcengine_rerank.py:38:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/document_compressors/dashscope_rerank.py:31:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/document_compressors/llmlingua_filter.py:77:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/document_compressors/infinity_rerank.py:46:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/document_compressors/jina_rerank.py:32:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/document_compressors/rankllm_rerank.py:45:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/cross_encoders/huggingface.py:48:    model_config = ConfigDict(extra="forbid", protected_namespaces=())
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/cross_encoders/sagemaker_endpoint.py:93:        arbitrary_types_allowed=True, extra="forbid", protected_namespaces=()
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/utilities/dalle_image_generator.py:76:    model_config = ConfigDict(extra="forbid", protected_namespaces=())
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/utilities/asknews.py:23:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/utilities/google_jobs.py:29:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/utilities/searx_search.py:247:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/utilities/clickup.py:286:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/utilities/jira.py:53:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/utilities/google_lens.py:34:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/utilities/bing_search.py:38:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/utilities/zapier.py:49:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/utilities/dataherald.py:26:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/utilities/requests.py:26:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/utilities/requests.py:151:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/utilities/graphql.py:21:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/utilities/bibtex.py:40:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/utilities/github.py:40:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/utilities/infobip.py:19:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/utilities/dataforseo_api_search.py:16:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/utilities/twilio.py:48:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/utilities/steam.py:34:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/utilities/google_search.py:61:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/utilities/metaphor_search.py:24:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/utilities/google_scholar.py:51:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/utilities/gitlab.py:36:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/utilities/tavily_search.py:24:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/utilities/google_places_api.py:42:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/utilities/openweathermap.py:23:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/utilities/alpha_vantage.py:22:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/utilities/duckduckgo_search.py:41:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/utilities/serpapi.py:57:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/utilities/google_trends.py:33:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/utilities/google_books.py:29:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/utilities/awslambda.py:34:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/utilities/merriam_webster.py:32:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/utilities/passio_nutrition_ai.py:125:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/utilities/jina_search.py:20:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/utilities/google_finance.py:29:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/utilities/golden_query.py:28:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/utilities/wolfram_alpha.py:25:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/tools/office365/messages_search.py:70:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/tools/office365/events_search.py:74:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/databricks.py:407:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/predictionguard.py:64:    model_config = ConfigDict(extra="forbid")
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/rwkv.py:78:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/aviary.py:126:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/bananadev.py:48:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/edenai.py:73:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/cerebriumai.py:43:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/modal.py:39:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/symblai_nebula.py:64:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/beam.py:77:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/konko.py:64:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/ai21.py:72:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/ipex_llm.py:36:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/huggingface_hub.py:60:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/self_hosted.py:148:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/pipelineai.py:46:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/huggingface_text_gen_inference.py:107:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/together.py:70:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/mosaicml.py:63:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/forefrontai.py:50:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/manifest.py:16:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/gpt4all.py:100:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/cohere.py:163:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/oci_generative_ai.py:109:        extra="forbid", arbitrary_types_allowed=True, protected_namespaces=()
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/oci_generative_ai.py:255:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/aleph_alpha.py:166:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/gradient_ai.py:79:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/self_hosted_hugging_face.py:172:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/huggingface_pipeline.py:74:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/mlx_pipeline.py:79:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/clarifai.py:53:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/watsonxllm.py:99:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/amazon_api_gateway.py:48:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/arcee.py:55:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/petals.py:67:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/sagemaker_endpoint.py:255:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/stochasticai.py:39:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/huggingface_endpoint.py:130:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/llamafile.py:117:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/bedrock.py:783:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/nlpcloud.py:55:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/ollama.py:408:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/replicate.py:61:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/deepinfra.py:42:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/llms/opaqueprompts.py:37:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/embeddings/edenai.py:33:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/embeddings/ovhcloud.py:27:    model_config = ConfigDict(extra="forbid", protected_namespaces=())
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/embeddings/dashscope.py:122:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/embeddings/textembed.py:68:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/embeddings/embaas.py:60:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/embeddings/clova.py:63:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/embeddings/minimax.py:122:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/embeddings/cloudflare_workersai.py:52:    model_config = ConfigDict(extra="forbid", protected_namespaces=())
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/embeddings/voyageai.py:103:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/embeddings/ipex_llm.py:109:    model_config = ConfigDict(extra="forbid", protected_namespaces=())
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/embeddings/huggingface_hub.py:51:    model_config = ConfigDict(extra="forbid", protected_namespaces=())
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/embeddings/self_hosted.py:70:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/embeddings/tensorflow_hub.py:47:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/embeddings/huggingface.py:96:    model_config = ConfigDict(extra="forbid", protected_namespaces=())
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/embeddings/huggingface.py:215:    model_config = ConfigDict(extra="forbid", protected_namespaces=())
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/embeddings/huggingface.py:373:    model_config = ConfigDict(extra="forbid", protected_namespaces=())
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/embeddings/huggingface.py:428:    model_config = ConfigDict(extra="forbid", protected_namespaces=())
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/embeddings/oracleai.py:41:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/embeddings/mosaicml.py:45:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/embeddings/llamacpp.py:65:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/embeddings/cohere.py:53:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/embeddings/oci_generative_ai.py:99:    model_config = ConfigDict(extra="forbid", protected_namespaces=())
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/embeddings/openai.py:258:        populate_by_name=True, extra="forbid", protected_namespaces=()
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/embeddings/solar.py:79:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/embeddings/gradient_ai.py:55:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/embeddings/infinity_local.py:62:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/embeddings/johnsnowlabs.py:62:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/embeddings/openvino.py:257:    model_config = ConfigDict(extra="forbid", protected_namespaces=())
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/embeddings/infinity.py:48:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/embeddings/clarifai.py:46:    model_config = ConfigDict(extra="forbid", protected_namespaces=())
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/embeddings/laser.py:41:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/embeddings/modelscope_hub.py:42:    model_config = ConfigDict(extra="forbid", protected_namespaces=())
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/embeddings/localai.py:169:    model_config = ConfigDict(extra="forbid", protected_namespaces=())
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/embeddings/spacy_embeddings.py:25:    model_config = ConfigDict(extra="forbid", protected_namespaces=())
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/embeddings/llm_rails.py:36:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/embeddings/sagemaker_endpoint.py:114:        arbitrary_types_allowed=True, extra="forbid", protected_namespaces=()
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/embeddings/bedrock.py:78:    model_config = ConfigDict(extra="forbid", protected_namespaces=())
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/embeddings/ollama.py:150:    model_config = ConfigDict(extra="forbid", protected_namespaces=())
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/embeddings/deepinfra.py:57:    model_config = ConfigDict(extra="forbid", protected_namespaces=())
+apps/agent-api/.venv/lib/python3.13/site-packages/mem0/configs/vector_stores/vertex_ai_vector_search.py:18:    model_config = ConfigDict(extra="forbid")
+apps/agent-api/.venv/lib/python3.13/site-packages/mem0/configs/rerankers/config.py:12:    model_config = {"extra": "forbid"}
+apps/agent-api/.venv/lib/python3.13/site-packages/mem0/client/project.py:24:    model_config = ConfigDict(validate_assignment=True, extra="forbid")
+apps/agent-api/.venv/lib/python3.13/site-packages/datamodel_code_generator/types.py:240:            extra='forbid',
+apps/agent-api/.venv/lib/python3.13/site-packages/datamodel_code_generator/types.py:251:            extra = 'forbid'
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:18:class AbortReshardingOperation(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:22:class AbortShardTransfer(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:28:class AbortTransferOperation(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:32:class AbsExpression(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:61:class Batch(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:67:class BinaryQuantization(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:71:class BinaryQuantizationConfig(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:93:class BoolIndexParams(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:102:class ChangeAliasesOperation(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:113:class ClearPayloadOperation(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:273:class CollectionParamsDiff(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:366:class ContextExamplePair(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:371:class ContextPair(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:376:class ContextQuery(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:380:class CountRequest(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:406:class CreateAlias(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:421:class CreateAliasOperation(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:425:class CreateCollection(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:475:class CreateFieldIndex(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:480:class CreateShardingKey(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:496:class CreateShardingKeyOperation(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:506:class DatetimeExpression(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:510:class DatetimeIndexParams(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:523:class DatetimeKeyExpression(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:527:class DatetimeRange(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:538:class DecayParamsExpression(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:553:class DeleteAlias(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:561:class DeleteAliasOperation(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:569:class DeleteOperation(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:573:class DeletePayload(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:590:class DeletePayloadOperation(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:594:class DeleteVectors(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:605:class DeleteVectorsOperation(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:618:class DiscoverInput(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:625:class DiscoverQuery(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:629:class DiscoverRequest(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:669:class DiscoverRequestBatch(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:687:class DivExpression(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:691:class DivParams(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:697:class Document(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:711:class DropReplicaOperation(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:715:class DropShardingKey(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:719:class DropShardingKeyOperation(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:733:class ExpDecayExpression(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:737:class ExpExpression(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:741:class FacetRequest(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:798:class FieldCondition(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:822:class Filter(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:835:class FilterSelector(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:840:class FloatIndexParams(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:853:class FormulaQuery(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:870:class FusionQuery(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:874:class GaussDecayExpression(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:878:class GeoBoundingBox(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:893:class GeoDistance(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:897:class GeoDistanceParams(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:902:class GeoIndexParams(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:911:class GeoLineString(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:919:class GeoPoint(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:928:class GeoPolygon(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:943:class GeoRadius(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:987:class HasIdCondition(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:995:class HasVectorCondition(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1034:class HnswConfigDiff(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1068:class Image(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1112:class InferenceObject(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1133:class InitFrom(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1328:class IntegerIndexParams(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1345:class IsEmptyCondition(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1353:class IsNullCondition(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1361:class KeywordIndexParams(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1406:class LinDecayExpression(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1410:class LnExpression(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1446:class LocksOption(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1451:class Log10Expression(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1455:class LookupLocation(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1471:class MatchAny(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1479:class MatchExcept(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1489:class MatchPhrase(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1497:class MatchText(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1505:class MatchValue(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1537:class MinShould(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1542:class Mmr(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1573:class MoveShard(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1582:class MoveShardOperation(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1586:class MultExpression(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1594:class MultiVectorConfig(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1598:class NamedSparseVector(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1607:class NamedVector(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1616:class NearestQuery(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1624:class NegExpression(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1628:class Nested(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1637:class NestedCondition(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1696:class OptimizersConfigDiff(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1746:class OrderBy(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1757:class OrderByQuery(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1761:class OverwritePayloadOperation(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1775:class PayloadField(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1821:class PayloadSelectorExclude(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1825:class PayloadSelectorInclude(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1867:class PointIdsList(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1872:class PointRequest(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1884:class PointStruct(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1890:class PointVectors(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1895:class PointsBatch(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1900:class PointsList(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1905:class PowExpression(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1909:class PowParams(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1914:class Prefetch(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1941:class ProductQuantization(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1945:class ProductQuantizationConfig(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1950:class QuantizationSearchParams(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:1968:class QueryGroupsRequest(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:2012:class QueryRequest(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:2047:class QueryRequestBatch(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:2075:class Range(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:2099:class RecommendGroupsRequest(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:2140:class RecommendInput(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:2152:class RecommendQuery(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:2156:class RecommendRequest(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:2197:class RecommendRequestBatch(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:2240:class RenameAlias(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:2249:class RenameAliasOperation(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:2257:class Replica(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:2290:class ReplicateShard(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:2299:class ReplicateShardOperation(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:2337:class RestartTransfer(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:2344:class RestartTransferOperation(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:2364:class SampleQuery(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:2368:class ScalarQuantization(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:2372:class ScalarQuantizationConfig(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:2402:class ScrollRequest(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:2436:class SearchGroupsRequest(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:2486:class SearchMatrixRequest(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:2502:class SearchParams(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:2522:class SearchRequest(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:2554:class SearchRequestBatch(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:2608:class SetPayload(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:2630:class SetPayloadOperation(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:2656:class ShardSnapshotRecover(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:2768:class SnapshotRecover(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:2818:class SnowballParams(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:2838:class SparseIndexParams(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:2890:class SparseVector(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:2910:class SparseVectorParams(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:2945:class SqrtExpression(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:2949:class StartResharding(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:2955:class StartReshardingOperation(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:2973:class StopwordsSet(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:2978:class StrictModeConfig(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:3062:class StrictModeMultivector(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:3070:class StrictModeSparse(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:3078:class SumExpression(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:3092:class TextIndexParams(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:3147:class UpdateCollection(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:3177:class UpdateOperations(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:3198:class UpdateVectors(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:3203:class UpdateVectorsOperation(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:3207:class UpsertOperation(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:3224:class UuidIndexParams(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:3234:class ValuesCount(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:3284:class VectorParams(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:3312:class VectorParamsDiff(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:3392:class WalConfigDiff(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:3403:class WithLookup(BaseModel, extra="forbid"):
+apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/fastembed_common.py:27:class QueryResponse(BaseModel, extra="forbid"):  # type: ignore
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic_settings/main.py:478:        extra='forbid',
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic_settings/sources/providers/dotenv.py:107:        is_extra_allowed = self.config.get('extra') != 'forbid'
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/mypy.py:976:                forbid_extra = arg.value == 'forbid'
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/mypy.py:978:                forbid_extra = arg.name == 'forbid'
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/mypy.py:991:            return ModelConfigData(forbid_extra=forbid_extra)
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/mypy.py:1183:        self.forbid_extra = forbid_extra
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/deprecated/decorator.py:241:            config_wrapper.config_dict['extra'] = 'forbid'
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/v1/mypy.py:583:                forbid_extra = substmt.rvalue.value == 'forbid'
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/v1/mypy.py:585:                forbid_extra = substmt.rvalue.name == 'forbid'
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/v1/mypy.py:589:            return ModelConfigData(forbid_extra=forbid_extra)
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/v1/mypy.py:765:        self.forbid_extra = forbid_extra
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/v1/decorator.py:262:                extra = getattr(CustomConfig, 'extra', Extra.forbid)
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/v1/schema.py:650:    if model.__config__.extra == 'forbid':
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/v1/env_settings.py:89:        extra: Extra = Extra.forbid
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/json_schema.py:1370:            if extra == 'forbid':
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/json_schema.py:1531:            elif extra == 'forbid':
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/main.py:307:            Because no validation is performed with a call to `model_construct()`, having `model_config.extra == 'forbid'` does not result in
+apps/agent-api/.venv/lib/python3.13/site-packages/pydantic/config.py:95:          model_config = ConfigDict(extra='forbid')
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/chains/llm_summarization_checker/base.py:111:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/chains/sequential.py:26:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/chains/sequential.py:139:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/chains/natbot/base.py:65:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/chains/conversation/base.py:116:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/chains/combine_documents/map_rerank.py:91:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/chains/combine_documents/reduce.py:222:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/chains/combine_documents/stuff.py:163:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/chains/combine_documents/map_reduce.py:139:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/chains/combine_documents/refine.py:110:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/chains/router/embedding_router.py:27:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/chains/router/base.py:80:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/chains/llm_math/base.py:164:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/chains/llm.py:97:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/chains/mapreduce.py:86:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/chains/conversational_retrieval/base.py:108:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/chains/hyde/base.py:37:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/chains/elasticsearch_database/base.py:60:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/chains/llm_checker/base.py:105:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/chains/retrieval_qa/base.py:53:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/chains/qa_with_sources/base.py:107:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/indexes/vectorstore.py:31:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/indexes/vectorstore.py:205:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/retrievers/document_compressors/cohere_rerank.py:37:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/retrievers/document_compressors/cross_encoder_rerank.py:27:        extra="forbid",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_openai/embeddings/base.py:259:        extra="forbid", populate_by_name=True, protected_namespaces=()

@@ -1,0 +1,4 @@
+globals.css has 0 dark: TailwindCSS utility classes.
+Dark mode is handled via CSS custom properties in the :root/.dark selectors.
+The dashboard uses shadcn/ui theming with oklch color space variables.
+PASS: dark mode support exists via CSS variable theming, not dark: utilities.

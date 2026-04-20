@@ -1,0 +1,13 @@
+            ON CONFLICT (message_id) DO NOTHING
+            RETURNING id::text, message_id, subject AS email_subject, sender,
+                      NULLIF(split_part(sender, '@', 2), '') AS sender_domain,
+                      received_at,
+                      raw_content->>'classification' AS classification,
+                      UPPER(COALESCE(raw_content->>'urgency', 'MEDIUM')) AS urgency,
+--
+        # Race condition safety: if ON CONFLICT triggered (row is None),
+        # fetch the existing record that won the race
+        if row is None:
+            row = await conn.fetchrow(
+                """SELECT q.id, q.message_id, q.subject AS email_subject,
+                          q.sender,

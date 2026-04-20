@@ -1,0 +1,1 @@
+apps/agent-api/app/services/cost_repository.py:115:    async def get_avg_daily_cost(self, deal_id: str, days: int = 7) -> float:

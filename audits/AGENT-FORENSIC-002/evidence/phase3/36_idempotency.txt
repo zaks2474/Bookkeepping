@@ -1,0 +1,15 @@
+=== STEP 3.7: Idempotency — Double-Approve (MANDATORY) ===
+Re-approving already-approved: 1d17d04c-e2c1-4b03-ac81-96f6dcbd06d4
+Pre-test executions for this approval: 1
+--- Double-approve attempt ---
+{
+    "detail": "Not Found"
+}
+{
+    "detail": "Authentication required"
+}
+Post-test executions: 1 (was 1)
+PASS: Idempotent — no duplicate execution
+
+AUDIT NOTE: Double-approve API calls returned Not Found / Authentication required.
+Result is UNVERIFIED; only observed that tool_executions count did not change.

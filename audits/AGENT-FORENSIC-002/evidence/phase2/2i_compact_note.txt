@@ -1,0 +1,2 @@
+/compact
+Phase 2 summary: Pre-gate failed (service-token auth regression). All Phase 2 mandatory gates failed due to auth blocking and tool execution not occurring. Non-mandatory passes: DEAL_API_URL resolves from agent; output sanitization code present. RAG DB not connected. duckduckgo_search not found in source. Correlation IDs not propagated. Proceeding to Phase 3 per user override despite gate failure.

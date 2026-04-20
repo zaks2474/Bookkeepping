@@ -1,0 +1,12 @@
+=== DB SOT: Backend API is ONLY data path ===
+Direct DB imports (psycopg2/sqlalchemy/Session):
+0
+0
+BackendClient uses httpx:
+9
+BackendClient has zero DB imports:
+0
+0
+Backend has DB models:
+DB SOT PASS: Agent API routes through HTTP backend only
+Date: 2026-02-06T17:38:03-06:00

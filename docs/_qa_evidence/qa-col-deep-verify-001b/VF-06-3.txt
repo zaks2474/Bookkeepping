@@ -1,0 +1,3 @@
+183:    async def check_budget(self, deal_id: str) -> dict:
+212:                "budget_hard_cap_exceeded",
+219:                "reason": "hard_cap_exceeded",

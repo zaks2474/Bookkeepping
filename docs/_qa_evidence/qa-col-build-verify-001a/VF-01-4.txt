@@ -1,0 +1,5 @@
+88:from app.core.security.citation_audit import audit_citations
+1040:                audit_result = audit_citations(assistant_message)
+1043:                        "citation_audit_quality_low",
+1053:                        "citation_audit_passed",
+1058:                logger.debug("citation_audit_error", error=str(cite_err))

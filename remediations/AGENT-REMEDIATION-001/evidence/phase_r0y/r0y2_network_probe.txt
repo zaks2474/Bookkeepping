@@ -1,0 +1,139 @@
+==============================================================================
+PHASE R0Y.2 - NETWORK BOUNDARY CHECK
+==============================================================================
+Date: 2026-02-02
+Scope: Dashboard API routes (/api/*)
+
+SECTION 1: API ROUTE HANDLER ANALYSIS
+==============================================================================
+
+SERVICE_TOKEN USAGE IN API ROUTES:
+Found in: /home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/complete/route.ts
+
+Code snippet (lines 3-4):
+  const AGENT_API_URL = process.env.NEXT_PUBLIC_AGENT_API_URL || process.env.AGENT_API_URL || 'http://localhost:8095';
+  const AGENT_SERVICE_TOKEN = process.env.AGENT_SERVICE_TOKEN || process.env.DASHBOARD_SERVICE_TOKEN || '';
+
+Code snippet (lines 21-28):
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+
+  // Add service token for authentication if configured
+  if (AGENT_SERVICE_TOKEN) {
+    headers['X-Service-Token'] = AGENT_SERVICE_TOKEN;
+  }
+
+Location: SERVERS-SIDE ONLY
+- Token is loaded from environment at build time
+- Token is ONLY used when constructing OUTBOUND fetch headers (to Agent API)
+- Token is NEVER included in response back to browser
+
+Other API Routes Verified:
+- /api/chat (route.ts) - No token handling
+- /api/actions/* - No token handling
+- /api/quarantine/* - No token handling
+- /api/agent/activity - No token handling
+
+SECTION 2: RESPONSE HEADER INSPECTION
+==============================================================================
+
+Test 1: GET /api/chat (health check)
+Command: curl -s -D - http://localhost:3003/api/chat 2>&1 | head -30
+
+Response Headers:
+  HTTP/1.1 200 OK
+  vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+  content-type: application/json
+  Date: Mon, 02 Feb 2026 23:28:53 GMT
+  Connection: keep-alive
+  Keep-Alive: timeout=5
+  Transfer-Encoding: chunked
+
+Result: NO SERVICE_TOKEN LEAKAGE
+No X-Service-Token header present
+No X-SERVICE-TOKEN header present
+No Authorization header present
+No secret tokens in headers
+
+Test 2: POST /api/chat (chat request)
+Command: curl -s -D - http://localhost:3003/api/chat -X POST -H "Content-Type: application/json" -d '{"query":"test"}' 2>&1 | head -50
+
+Response Headers:
+  HTTP/1.1 200 OK
+  vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+  cache-control: no-cache
+  connection: keep-alive
+  content-type: text/event-stream
+  Date: Mon, 02 Feb 2026 23:28:59 GMT
+  Transfer-Encoding: chunked
+
+Result: NO SERVICE_TOKEN LEAKAGE
+No X-Service-Token header in response
+Content is SSE stream (event/data format)
+No token data visible in response body
+
+Test 3: POST /api/chat/complete (complete chat)
+Command: curl -s -D - http://localhost:3003/api/chat/complete -X POST -H "Content-Type: application/json" -d '{"query":"test"}' 2>&1 | head -40
+
+Response Headers:
+  HTTP/1.1 200 OK
+  vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+  content-type: application/json
+  Date: Mon, 02 Feb 2026 23:29:05 GMT
+  Connection: keep-alive
+  Keep-Alive: timeout=5
+  Transfer-Encoding: chunked
+
+Result: NO SERVICE_TOKEN LEAKAGE
+No X-Service-Token header in response
+Response body contains chat history and assistant responses only
+No authentication headers exposed
+
+Test 4: GET /api/actions/completed-count
+Command: curl -s -D - http://localhost:3003/api/actions/completed-count 2>&1 | head -20
+
+Response Headers:
+  HTTP/1.1 200 OK
+  vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+  content-type: application/json
+  Date: Mon, 02 Feb 2026 23:29:07 GMT
+  Connection: keep-alive
+  Keep-Alive: timeout=5
+  Transfer-Encoding: chunked
+
+Result: NO SERVICE_TOKEN LEAKAGE
+No X-Service-Token header in response
+Content is JSON metadata only
+
+==============================================================================
+SECTION 3: DATA FLOW VERIFICATION
+==============================================================================
+
+Dashboard → Agent API Communication:
+1. Browser makes request to /api/chat/complete (POST)
+2. Dashboard server-side code reads DASHBOARD_SERVICE_TOKEN from process.env
+3. Dashboard creates new fetch() to Agent API at http://localhost:8095
+4. Token is ADDED to X-Service-Token header for the OUTBOUND request
+5. Agent API responds to Dashboard
+6. Dashboard returns response to browser WITHOUT including the token
+
+Critical Boundary: The X-Service-Token header is ONLY used for server-to-server
+communication (Dashboard → Agent API). It is NEVER included in any response sent
+back to the browser.
+
+==============================================================================
+VERDICT SUMMARY:
+==============================================================================
+
+PASS - No token leakage detected:
+
+Evidence:
+1. Response headers from /api/* routes never contain X-Service-Token
+2. No Authorization or secret headers exposed in any HTTP response
+3. Token only used for server-side outbound authentication (to Agent API)
+4. Token completely hidden from browser in all test scenarios
+5. All response bodies contain only application data, no secrets
+
+Conclusion: The DASHBOARD_SERVICE_TOKEN is properly encapsulated on the server
+side and never transmitted back to the client.

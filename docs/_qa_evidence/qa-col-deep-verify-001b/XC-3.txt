@@ -1,0 +1,8 @@
+=== Proposal handler types in service ===
+22:PROPOSAL_HANDLERS = {
+104:        handler_name = PROPOSAL_HANDLERS.get(proposal_type)
+109:                by="system", extra={"error": f"No handler for type '{proposal_type}'"},
+111:            return {"success": False, "error": f"No handler for proposal type '{proposal_type}'"}
+
+=== Spec S15 proposal types (from actionable items) ===
+Expected: stage_transition, add_note, create_deal, assign_deal, update_priority, escalate, correct_brain_summary, update_deal_field, bulk_action (9 types per B7)

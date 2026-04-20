@@ -1,0 +1,34 @@
+=== VF-02.3 BRIDGE SCHEMA EXPANSION ===
+698:def zakops_inject_quarantine(
+700:    source_message_id: str,
+701:    email_subject: str,
+704:    schema_version: str,
+718:    extraction_evidence: Optional[dict] = None,
+719:    field_confidences: Optional[dict] = None,
+727:    attachments: Optional[list] = None,
+740:        source_message_id: Unique identifier for deduplication (mapped to message_id)
+741:        email_subject: Email subject line (required — displayed in quarantine list)
+744:        schema_version: Schema version string (must be "1.0.0")
+756:        extraction_evidence: Per-field extraction evidence dict
+757:        field_confidences: Per-field confidence scores dict
+763:        attachments: List of attachment metadata dicts
+768:    log_tool_call("zakops_inject_quarantine", {
+769:        "source_message_id": source_message_id,
+772:        "schema_version": schema_version,
+777:    if not source_message_id:
+778:        errors.append("source_message_id is required")
+779:    if not email_subject:
+780:        errors.append("email_subject is required")
+785:    if not schema_version:
+786:        errors.append("schema_version is required")
+787:    if schema_version and schema_version not in ("1.0.0",):
+788:        errors.append(f"Unknown schema_version '{schema_version}'. Allowed: ['1.0.0']")
+804:    # P1-06: Build full payload with source_message_id mapped to message_id
+806:        "source_message_id": source_message_id,
+807:        "message_id": source_message_id,
+808:        "email_subject": email_subject,
+811:        "schema_version": schema_version,
+827:        "extraction_evidence": extraction_evidence,
+828:        "field_confidences": field_confidences,
+834:        "attachments": attachments,
+883:        log_error(f"Failed to inject quarantine item: {e}", {"source_message_id": source_message_id})

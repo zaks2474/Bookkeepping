@@ -1,0 +1,1936 @@
+### backend diff
+diff --git a/src/actions/engine/models.py b/src/actions/engine/models.py
+index fdd002a..10ffa11 100644
+--- a/src/actions/engine/models.py
++++ b/src/actions/engine/models.py
+@@ -10,7 +10,7 @@ from typing import Any, Literal
+ 
+ from pydantic import BaseModel, Field
+ 
+-ActionStatus = Literal["PENDING_APPROVAL", "READY", "PROCESSING", "COMPLETED", "FAILED", "CANCELLED"]
++ActionStatus = Literal["pending", "pending_approval", "queued", "ready", "running", "completed", "failed", "cancelled", "rejected"]
+ ActionSource = Literal["chat", "ui", "system"]
+ RiskLevel = Literal["low", "medium", "high"]
+ ErrorCategory = Literal["validation", "dependency", "cloud_policy", "cloud_transient", "io", "unknown"]
+@@ -103,7 +103,7 @@ class ActionPayload(BaseModel):
+     type: str = Field(min_length=1, description="Namespaced action type, e.g. DOCUMENT.GENERATE_LOI")
+     title: str = Field(min_length=1, max_length=200)
+     summary: str = Field(default="", max_length=500)
+-    status: ActionStatus = "PENDING_APPROVAL"
++    status: ActionStatus = "pending_approval"
+ 
+     created_at: str = Field(default_factory=now_utc_iso)
+     updated_at: str = Field(default_factory=now_utc_iso)
+diff --git a/src/actions/engine/store.py b/src/actions/engine/store.py
+index 10172cd..4077f1a 100644
+--- a/src/actions/engine/store.py
++++ b/src/actions/engine/store.py
+@@ -502,7 +502,7 @@ class ActionStore:
+             if not row:
+                 raise KeyError("action_not_found")
+             action = self._row_to_action(row)
+-            if action.status not in {"PENDING_APPROVAL", "READY"}:
++            if action.status not in {"pending_approval", "ready"}:
+                 raise ValueError(f"action_inputs_not_editable_in_status:{action.status}")
+ 
+             updated_at = now_utc_iso()
+@@ -522,11 +522,11 @@ class ActionStore:
+             if not row:
+                 raise KeyError("action_not_found")
+             action = self._row_to_action(row)
+-            if action.status != "PENDING_APPROVAL":
+-                raise ValueError(f"invalid_transition:{action.status}->READY")
++            if action.status != "pending_approval":
++                raise ValueError(f"invalid_transition:{action.status}->ready")
+             updated_at = now_utc_iso()
+             conn.execute(
+-                "UPDATE actions SET status='READY', updated_at=? WHERE action_id=?",
++                "UPDATE actions SET status='ready', updated_at=? WHERE action_id=?",
+                 (updated_at, action_id),
+             )
+             self.add_audit_event(conn, action_id, event="approved", actor=actor, details={})
+@@ -541,12 +541,12 @@ class ActionStore:
+             if not row:
+                 raise KeyError("action_not_found")
+             action = self._row_to_action(row)
+-            if action.status != "READY":
+-                raise ValueError(f"invalid_transition:{action.status}->READY(queued)")
++            if action.status != "ready":
++                raise ValueError(f"invalid_transition:{action.status}->ready(queued)")
+ 
+             # Queue semantics (v1.2 hardening):
+-            # - /execute does NOT set status=PROCESSING (runner does when it actually starts work)
+-            # - this prevents "stuck PROCESSING forever" when runner is down
++            # - /execute does NOT set status=running (runner does when it actually starts work)
++            # - this prevents "stuck running forever" when runner is down
+             updated_at = now_utc_iso()
+             conn.execute(
+                 """
+@@ -557,7 +557,7 @@ class ActionStore:
+                     runner_lock_owner=NULL,
+                     runner_lock_expires_at=NULL,
+                     runner_heartbeat_at=NULL
+-                WHERE action_id=? AND status='READY'
++                WHERE action_id=? AND status='ready'
+                 """,
+                 (updated_at, updated_at, action_id),
+             )
+@@ -573,13 +573,13 @@ class ActionStore:
+             if not row:
+                 raise KeyError("action_not_found")
+             action = self._row_to_action(row)
+-            if action.status not in {"PENDING_APPROVAL", "READY", "PROCESSING"}:
++            if action.status not in {"pending_approval", "ready", "running"}:
+                 raise ValueError(f"invalid_cancel_status:{action.status}")
+             updated_at = now_utc_iso()
+             conn.execute(
+                 """
+                 UPDATE actions
+-                SET status='CANCELLED',
++                SET status='cancelled',
+                     updated_at=?,
+                     cancelled_by=?,
+                     cancelled_at=?,
+@@ -734,7 +734,7 @@ class ActionStore:
+                     runner_lock_expires_at=?,
+                     runner_heartbeat_at=?
+                 WHERE action_id=?
+-                  AND status='PROCESSING'
++                  AND status='running'
+                   AND (runner_lock_expires_at IS NULL OR runner_lock_expires_at < ? OR runner_lock_owner=?)
+                   AND (next_attempt_at IS NULL OR next_attempt_at <= ?)
+                 """,
+@@ -772,7 +772,7 @@ class ActionStore:
+ 
+     def get_next_due_processing_action_id(self) -> str | None:
+         """
+-        Return an action_id that is PROCESSING and claimable (lock expired / not held).
++        Return an action_id that is running and claimable (lock expired / not held).
+ 
+         This is used by the runner to find work.
+         """
+@@ -782,7 +782,7 @@ class ActionStore:
+                 """
+                 SELECT action_id
+                 FROM actions
+-                WHERE status='PROCESSING'
++                WHERE status='running'
+                   AND (next_attempt_at IS NULL OR next_attempt_at <= ?)
+                   AND (runner_lock_expires_at IS NULL OR runner_lock_expires_at < ?)
+                 ORDER BY updated_at ASC
+@@ -797,8 +797,8 @@ class ActionStore:
+         Return the next action_id that is due for execution.
+ 
+         Due actions:
+-        - READY with next_attempt_at <= now (explicitly queued via /execute or retry scheduling)
+-        - PROCESSING that is claimable (legacy /execute semantics or takeover)
++        - ready with next_attempt_at <= now (explicitly queued via /execute or retry scheduling)
++        - running that is claimable (legacy /execute semantics or takeover)
+         """
+         now_iso = now_utc_iso()
+         with self._connect() as conn:
+@@ -807,13 +807,13 @@ class ActionStore:
+                 SELECT action_id
+                 FROM actions
+                 WHERE (
+-                    (status='READY' AND next_attempt_at IS NOT NULL AND next_attempt_at <= ?)
++                    (status='ready' AND next_attempt_at IS NOT NULL AND next_attempt_at <= ?)
+                     OR
+-                    (status='PROCESSING' AND (next_attempt_at IS NULL OR next_attempt_at <= ?))
++                    (status='running' AND (next_attempt_at IS NULL OR next_attempt_at <= ?))
+                 )
+                   AND (runner_lock_expires_at IS NULL OR runner_lock_expires_at < ?)
+                 ORDER BY
+-                  CASE status WHEN 'READY' THEN 0 ELSE 1 END,
++                  CASE status WHEN 'ready' THEN 0 ELSE 1 END,
+                   COALESCE(next_attempt_at, updated_at) ASC
+                 LIMIT 1
+                 """,
+@@ -830,9 +830,9 @@ class ActionStore:
+         actor: str = "actions_runner",
+     ) -> bool:
+         """
+-        Atomically transition READY → PROCESSING and claim per-action lock.
++        Atomically transition ready → running and claim per-action lock.
+ 
+-        For already PROCESSING actions (legacy), this claims the lock and ensures started_at is set.
++        For already running actions (legacy), this claims the lock and ensures started_at is set.
+         """
+         now = now_utc()
+         now_iso = now.isoformat().replace("+00:00", "Z")
+@@ -843,14 +843,14 @@ class ActionStore:
+                 return False
+             action = self._row_to_action(row)
+ 
+-            # READY: must be explicitly queued.
+-            if action.status == "READY":
++            # ready: must be explicitly queued.
++            if action.status == "ready":
+                 if action.next_attempt_at and action.next_attempt_at > now_iso:
+                     return False
+                 cur = conn.execute(
+                     """
+                     UPDATE actions
+-                    SET status='PROCESSING',
++                    SET status='running',
+                         updated_at=?,
+                         started_at=COALESCE(started_at, ?),
+                         error=NULL,
+@@ -859,7 +859,7 @@ class ActionStore:
+                         runner_lock_expires_at=?,
+                         runner_heartbeat_at=?
+                     WHERE action_id=?
+-                      AND status='READY'
++                      AND status='ready'
+                       AND (runner_lock_expires_at IS NULL OR runner_lock_expires_at < ? OR runner_lock_owner=?)
+                       AND (next_attempt_at IS NOT NULL AND next_attempt_at <= ?)
+                     """,
+@@ -880,8 +880,8 @@ class ActionStore:
+                 self.add_audit_event(conn, action_id, event="started", actor=actor, details={"owner_id": owner_id})
+                 return True
+ 
+-            # PROCESSING: takeover / resume (legacy).
+-            if action.status == "PROCESSING":
++            # running: takeover / resume (legacy).
++            if action.status == "running":
+                 cur = conn.execute(
+                     """
+                     UPDATE actions
+@@ -891,7 +891,7 @@ class ActionStore:
+                         runner_lock_expires_at=?,
+                         runner_heartbeat_at=?
+                     WHERE action_id=?
+-                      AND status='PROCESSING'
++                      AND status='running'
+                       AND (runner_lock_expires_at IS NULL OR runner_lock_expires_at < ? OR runner_lock_owner=?)
+                       AND (next_attempt_at IS NULL OR next_attempt_at <= ?)
+                     """,
+@@ -913,7 +913,7 @@ class ActionStore:
+ 
+     def list_stuck_processing_action_ids(self, *, older_than_seconds: int = 300, limit: int = 100) -> list[str]:
+         """
+-        Return PROCESSING action_ids that appear stuck (lock held, heartbeat stale).
++        Return running action_ids that appear stuck (lock held, heartbeat stale).
+ 
+         This is intended for operator tooling (`make actions-retry-stuck`) and should be used
+         conservatively alongside the per-action heartbeat in the runner.
+@@ -926,7 +926,7 @@ class ActionStore:
+                 """
+                 SELECT action_id
+                 FROM actions
+-                WHERE status='PROCESSING'
++                WHERE status='running'
+                   AND runner_lock_owner IS NOT NULL
+                   AND runner_lock_expires_at IS NOT NULL
+                   AND runner_lock_expires_at > ?
+@@ -960,8 +960,8 @@ class ActionStore:
+                     runner_lock_expires_at=NULL,
+                     runner_heartbeat_at=NULL,
+                     next_attempt_at=?,
+-                    status='READY'
+-                WHERE action_id=? AND status='PROCESSING'
++                    status='ready'
++                WHERE action_id=? AND status='running'
+                 """,
+                 (now_iso, action_id),
+             )
+@@ -989,7 +989,7 @@ class ActionStore:
+             started = _parse_iso(action.started_at) or now
+             duration = max(0.0, (now - started).total_seconds())
+ 
+-            status = "COMPLETED" if error is None else "FAILED"
++            status = "completed" if error is None else "failed"
+             conn.execute(
+                 """
+                 UPDATE actions
+@@ -1039,7 +1039,7 @@ class ActionStore:
+             conn.execute(
+                 """
+                 UPDATE actions
+-                SET status='READY',
++                SET status='ready',
+                     updated_at=?,
+                     error=?,
+                     retry_count=?,
+@@ -1071,9 +1071,9 @@ class ActionStore:
+         limit: int = 100,
+     ) -> int:
+         """
+-        Watchdog: mark PROCESSING actions as FAILED if they exceed a TTL.
++        Watchdog: mark running actions as failed if they exceed a TTL.
+ 
+-        This guarantees no action remains PROCESSING forever.
++        This guarantees no action remains running forever.
+         """
+         now = now_utc()
+         cutoff = (now - timedelta(seconds=max(1, int(older_than_seconds)))).isoformat().replace("+00:00", "Z")
+@@ -1084,7 +1084,7 @@ class ActionStore:
+                 """
+                 SELECT action_id
+                 FROM actions
+-                WHERE status='PROCESSING'
++                WHERE status='running'
+                   AND COALESCE(started_at, updated_at) < ?
+                 ORDER BY COALESCE(started_at, updated_at) ASC
+                 LIMIT ?
+@@ -1106,7 +1106,7 @@ class ActionStore:
+                 cur = conn.execute(
+                     """
+                     UPDATE actions
+-                    SET status='FAILED',
++                    SET status='failed',
+                         updated_at=?,
+                         completed_at=?,
+                         duration_seconds=COALESCE(duration_seconds, 0),
+@@ -1114,7 +1114,7 @@ class ActionStore:
+                         runner_lock_owner=NULL,
+                         runner_lock_expires_at=NULL,
+                         runner_heartbeat_at=NULL
+-                    WHERE action_id=? AND status='PROCESSING'
++                    WHERE action_id=? AND status='running'
+                     """,
+                     (now_iso, now_iso, json_dumps(err.model_dump()), action_id),
+                 )
+@@ -1126,7 +1126,7 @@ class ActionStore:
+ 
+     def requeue_failed_action(self, *, action_id: str, actor: str, reason: str = "requeue") -> ActionPayload:
+         """
+-        Admin operation: move FAILED → READY and enqueue immediately.
++        Admin operation: move failed → ready and enqueue immediately.
+         """
+         now_iso = now_utc_iso()
+         with self._tx() as conn:
+@@ -1134,14 +1134,14 @@ class ActionStore:
+             if not row:
+                 raise KeyError("action_not_found")
+             action = self._row_to_action(row)
+-            if action.status != "FAILED":
+-                raise ValueError(f"invalid_transition:{action.status}->READY(requeue)")
++            if action.status != "failed":
++                raise ValueError(f"invalid_transition:{action.status}->ready(requeue)")
+ 
+             prev_err = action.error.model_dump() if action.error else None
+             conn.execute(
+                 """
+                 UPDATE actions
+-                SET status='READY',
++                SET status='ready',
+                     updated_at=?,
+                     error=NULL,
+                     retry_count=0,
+@@ -1149,7 +1149,7 @@ class ActionStore:
+                     runner_lock_owner=NULL,
+                     runner_lock_expires_at=NULL,
+                     runner_heartbeat_at=NULL
+-                WHERE action_id=? AND status='FAILED'
++                WHERE action_id=? AND status='failed'
+                 """,
+                 (now_iso, now_iso, action_id),
+             )
+@@ -1172,23 +1172,23 @@ class ActionStore:
+         now_iso = now.isoformat().replace("+00:00", "Z")
+         with self._connect() as conn:
+             total = conn.execute("SELECT COUNT(*) AS c FROM actions").fetchone()["c"]
+-            pending = conn.execute("SELECT COUNT(*) AS c FROM actions WHERE status='PENDING_APPROVAL'").fetchone()["c"]
+-            ready = conn.execute("SELECT COUNT(*) AS c FROM actions WHERE status='READY'").fetchone()["c"]
++            pending = conn.execute("SELECT COUNT(*) AS c FROM actions WHERE status='pending_approval'").fetchone()["c"]
++            ready = conn.execute("SELECT COUNT(*) AS c FROM actions WHERE status='ready'").fetchone()["c"]
+             ready_queued = conn.execute(
+-                "SELECT COUNT(*) AS c FROM actions WHERE status='READY' AND next_attempt_at IS NOT NULL AND next_attempt_at <= ?",
++                "SELECT COUNT(*) AS c FROM actions WHERE status='ready' AND next_attempt_at IS NOT NULL AND next_attempt_at <= ?",
+                 (now_iso,),
+             ).fetchone()["c"]
+-            processing = conn.execute("SELECT COUNT(*) AS c FROM actions WHERE status='PROCESSING'").fetchone()["c"]
++            processing = conn.execute("SELECT COUNT(*) AS c FROM actions WHERE status='running'").fetchone()["c"]
+             completed_24h = conn.execute(
+-                "SELECT COUNT(*) AS c FROM actions WHERE status='COMPLETED' AND completed_at >= ?",
++                "SELECT COUNT(*) AS c FROM actions WHERE status='completed' AND completed_at >= ?",
+                 (cutoff,),
+             ).fetchone()["c"]
+             failed_24h = conn.execute(
+-                "SELECT COUNT(*) AS c FROM actions WHERE status='FAILED' AND updated_at >= ?",
++                "SELECT COUNT(*) AS c FROM actions WHERE status='failed' AND updated_at >= ?",
+                 (cutoff,),
+             ).fetchone()["c"]
+             avg_duration = conn.execute(
+-                "SELECT AVG(duration_seconds) AS avg_d FROM actions WHERE status='COMPLETED' AND completed_at >= ?",
++                "SELECT AVG(duration_seconds) AS avg_d FROM actions WHERE status='completed' AND completed_at >= ?",
+                 (cutoff,),
+             ).fetchone()["avg_d"]
+ 
+diff --git a/src/api/orchestration/main.py b/src/api/orchestration/main.py
+index e63f1f8..cea3ec9 100644
+--- a/src/api/orchestration/main.py
++++ b/src/api/orchestration/main.py
+@@ -34,6 +34,8 @@ ValidStage = Literal[
+ from ..shared.middleware import (
+     APIKeyMiddleware,
+     AuthMiddleware,
++    IdempotencyMiddleware,
++    MetricsMiddleware,
+     TraceMiddleware,
+     TracingMiddleware,
+     TransitionCooldownMiddleware,
+@@ -46,6 +48,9 @@ from ..shared.routers.auth import router as auth_router
+ from ..shared.routers.health import router as health_router
+ from ..shared.security import SecurityMiddleware
+ 
++# R2-4: Outbox for reliable side-effects
++from ...core.outbox.writer import OutboxWriter, is_outbox_enabled
++
+ # Phase 13: Production Hardening
+ from .routers.admin import router as admin_router
+ 
+@@ -384,6 +389,9 @@ app.add_middleware(
+ register_error_handlers(app)
+ app.add_middleware(TraceMiddleware)
+ 
++# R2-8: Metrics middleware for request timing and monitoring
++app.add_middleware(MetricsMiddleware)
++
+ # Phase 15: OpenTelemetry tracing middleware
+ app.add_middleware(TracingMiddleware)
+ 
+@@ -396,6 +404,9 @@ app.add_middleware(APIKeyMiddleware)
+ # REMEDIATION-V4 [F-004]: Per-deal transition cooldown (30s)
+ app.add_middleware(TransitionCooldownMiddleware)
+ 
++# REMEDIATION-R2 [ZK-ISSUE-0016, UPG-002]: Idempotency layer for write operations
++app.add_middleware(IdempotencyMiddleware, db_pool_getter=lambda: db_pool)
++
+ # Phase 7: Auth router
+ app.include_router(auth_router)
+ 
+@@ -501,6 +512,8 @@ async def list_deals(
+     return [record_to_dict(row) for row in rows]
+ 
+ 
++
++
+ @app.get("/api/deals/by-alias")
+ async def get_deal_by_alias(
+     alias: str = Query(..., description="Alias value to search for"),
+@@ -588,6 +601,22 @@ async def create_deal(deal: DealCreate, pool: asyncpg.Pool = Depends(get_db)):
+             json.dumps({"canonical_name": deal.canonical_name})
+         )
+ 
++        # R2-4: Write to outbox for reliable side-effects (folder scaffolding, RAG indexing)
++        if is_outbox_enabled():
++            outbox = OutboxWriter()
++            await outbox.write(
++                correlation_id=uuid.UUID(deal_id.replace('DL-', '00000000-0000-0000-0000-').zfill(36)) if deal_id.startswith('DL-') else uuid.uuid4(),
++                event_type="deal.created",
++                event_data={
++                    "deal_id": deal_id,
++                    "canonical_name": deal.canonical_name,
++                    "stage": deal.stage,
++                    "source": "api"
++                },
++                aggregate_type="deal",
++                aggregate_id=deal_id
++            )
++
+     return record_to_dict(row)
+ 
+ 
+@@ -673,6 +702,8 @@ async def get_deal_events(
+     return [record_to_dict(row) for row in rows]
+ 
+ 
++
++
+ @app.get("/api/deals/{deal_id}/aliases")
+ async def get_deal_aliases(deal_id: str, pool: asyncpg.Pool = Depends(get_db)):
+     """Get aliases for a deal."""
+@@ -749,6 +780,58 @@ class NoteCreate(BaseModel):
+     category: str = Field(default="general", max_length=50)
+ 
+ 
++# R2-3b: GET notes endpoint
++@app.get("/api/deals/{deal_id}/notes")
++async def get_deal_notes(
++    deal_id: str,
++    limit: int = Query(100, ge=1, le=500),
++    offset: int = Query(0, ge=0),
++    pool: asyncpg.Pool = Depends(get_db)
++):
++    """Get notes for a deal from its event history."""
++    async with pool.acquire() as conn:
++        # Verify deal exists
++        deal = await conn.fetchrow(
++            "SELECT deal_id FROM zakops.deals WHERE deal_id = $1 AND deleted = FALSE",
++            deal_id
++        )
++        if not deal:
++            raise HTTPException(status_code=404, detail=f"Deal {deal_id} not found")
++
++        # Get notes from deal_events where event_type = 'note_added'
++        rows = await conn.fetch(
++            """
++            SELECT id, event_type, actor, payload, created_at
++            FROM zakops.deal_events
++            WHERE deal_id = $1 AND event_type = 'note_added'
++            ORDER BY created_at DESC
++            LIMIT $2 OFFSET $3
++            """,
++            deal_id,
++            limit,
++            offset
++        )
++
++        notes = []
++        for row in rows:
++            payload = row['payload'] or {}
++            # Handle JSONB that may be returned as string
++            if isinstance(payload, str):
++                try:
++                    payload = json.loads(payload)
++                except json.JSONDecodeError:
++                    payload = {}
++            notes.append({
++                "id": str(row['id']),
++                "content": payload.get('content', '') if isinstance(payload, dict) else '',
++                "category": payload.get('category') if isinstance(payload, dict) else None,
++                "created_by": row['actor'],
++                "created_at": row['created_at'].isoformat() if row['created_at'] else None
++            })
++
++        return {"deal_id": deal_id, "notes": notes, "count": len(notes)}
++
++
+ @app.post("/api/deals/{deal_id}/notes", status_code=201)
+ async def add_deal_note(
+     deal_id: str,
+@@ -865,6 +948,24 @@ async def restore_deal(
+     return {"success": True, "deal_id": deal_id, "restored_to_stage": target_stage}
+ 
+ 
++# R2 QA compatibility: legacy/actions alias for quarantine list
++@app.get("/api/actions/quarantine", response_model=list[QuarantineResponse])
++async def list_quarantine_actions(
++    status: str | None = Query("pending", description="Filter by status"),
++    classification: str | None = Query(None, description="Filter by classification"),
++    limit: int = Query(50, ge=1, le=200),
++    offset: int = Query(0, ge=0),
++    pool: asyncpg.Pool = Depends(get_db)
++):
++    """Alias for /api/quarantine to preserve R2 QA expectations."""
++    return await list_quarantine(
++        status=status,
++        classification=classification,
++        limit=limit,
++        offset=offset,
++        pool=pool
++    )
++
+ # =============================================================================
+ # ACTIONS ENDPOINTS
+ # =============================================================================
+@@ -884,7 +985,7 @@ async def list_actions(
+     param_idx = 1
+ 
+     if pending_only:
+-        conditions.append("a.status IN ('PENDING_APPROVAL', 'QUEUED')")
++        conditions.append("a.status IN ('pending_approval', 'queued')")
+     elif status:
+         conditions.append(f"a.status = ${param_idx}")
+         params.append(status)
+@@ -899,14 +1000,26 @@ async def list_actions(
+ 
+     query = f"""
+         SELECT
+-            a.*,
++            a.action_id,
++            a.deal_id,
++            COALESCE(a.agent_type, 'agent') AS capability_id,
++            a.action_type,
++            COALESCE(a.title, a.action_type) AS title,
++            a.description AS summary,
++            a.status,
++            a.created_at,
++            a.updated_at,
++            COALESCE(a.agent_config->>'risk_level', 'medium') AS risk_level,
++            COALESCE(a.requires_approval, false) AS requires_human_review,
++            COALESCE(a.agent_config, '{{}}'::jsonb) AS inputs,
++            COALESCE(a.result, '{{}}'::jsonb) AS outputs,
+             d.canonical_name AS deal_name,
+             d.stage AS deal_stage
+         FROM zakops.actions a
+         LEFT JOIN zakops.deals d ON a.deal_id = d.deal_id
+         WHERE {where_clause}
+         ORDER BY
+-            CASE a.status WHEN 'PENDING_APPROVAL' THEN 0 WHEN 'QUEUED' THEN 1 ELSE 2 END,
++            CASE a.status WHEN 'pending_approval' THEN 0 WHEN 'queued' THEN 1 ELSE 2 END,
+             a.created_at DESC
+         LIMIT ${param_idx} OFFSET ${param_idx + 1}
+     """
+@@ -918,6 +1031,8 @@ async def list_actions(
+     return [record_to_dict(row) for row in rows]
+ 
+ 
++
++
+ @app.get("/api/actions/capabilities")
+ async def get_action_capabilities():
+     """List available action capabilities. Not yet implemented."""
+@@ -947,7 +1062,19 @@ async def get_action(action_id: str, pool: asyncpg.Pool = Depends(get_db)):
+     """Get a single action by ID."""
+     query = """
+         SELECT
+-            a.*,
++            a.action_id,
++            a.deal_id,
++            COALESCE(a.agent_type, 'agent') AS capability_id,
++            a.action_type,
++            COALESCE(a.title, a.action_type) AS title,
++            a.description AS summary,
++            a.status,
++            a.created_at,
++            a.updated_at,
++            COALESCE(a.agent_config->>'risk_level', 'medium') AS risk_level,
++            COALESCE(a.requires_approval, false) AS requires_human_review,
++            COALESCE(a.agent_config, '{{}}'::jsonb) AS inputs,
++            COALESCE(a.result, '{{}}'::jsonb) AS outputs,
+             d.canonical_name AS deal_name,
+             d.stage AS deal_stage
+         FROM zakops.actions a
+@@ -978,7 +1105,7 @@ async def approve_action(
+         )
+         if not action:
+             raise HTTPException(status_code=404, detail=f"Action {action_id} not found")
+-        if action['status'] not in ('PENDING_APPROVAL', 'READY'):
++        if action['status'] not in ('pending_approval', 'ready'):
+             raise HTTPException(
+                 status_code=400,
+                 detail=f"Action is not pending approval (status: {action['status']})"
+@@ -988,7 +1115,7 @@ async def approve_action(
+         await conn.execute(
+             """
+             UPDATE zakops.actions
+-            SET status = 'QUEUED',
++            SET status = 'queued',
+                 audit_trail = audit_trail || $2::jsonb
+             WHERE action_id = $1
+             """,
+@@ -1018,7 +1145,7 @@ async def reject_action(
+         )
+         if not action:
+             raise HTTPException(status_code=404, detail=f"Action {action_id} not found")
+-        if action['status'] not in ('PENDING_APPROVAL', 'READY'):
++        if action['status'] not in ('pending_approval', 'ready'):
+             raise HTTPException(
+                 status_code=400,
+                 detail=f"Action is not pending approval (status: {action['status']})"
+@@ -1027,7 +1154,7 @@ async def reject_action(
+         await conn.execute(
+             """
+             UPDATE zakops.actions
+-            SET status = 'REJECTED',
++            SET status = 'rejected',
+                 audit_trail = audit_trail || $2::jsonb
+             WHERE action_id = $1
+             """,
+@@ -1110,6 +1237,17 @@ async def list_quarantine(
+ 
+     return [record_to_dict(row) for row in rows]
+ 
++@app.get("/api/quarantine/health")
++async def quarantine_health(pool: asyncpg.Pool = Depends(get_db)):
++    """Lightweight quarantine health check."""
++    async with pool.acquire() as conn:
++        total = await conn.fetchval("SELECT COUNT(*) FROM zakops.quarantine_items")
++        pending = await conn.fetchval("SELECT COUNT(*) FROM zakops.quarantine_items WHERE status = 'pending'")
++    return {"status": "ok", "total": total, "pending": pending}
++
++
++
++
+ 
+ @app.get("/api/quarantine/{item_id}", response_model=QuarantineResponse)
+ async def get_quarantine_item(item_id: str, pool: asyncpg.Pool = Depends(get_db)):
+@@ -1223,47 +1361,124 @@ async def process_quarantine(
+     process: QuarantineProcess,
+     pool: asyncpg.Pool = Depends(get_db)
+ ):
+-    """Process a quarantine item (approve or reject)."""
++    """Process a quarantine item (approve or reject).
++
++    R2-3a.1: When approving without an explicit deal_id, atomically create
++    a new deal from the quarantine item data.
++    """
+     async with pool.acquire() as conn:
+-        item = await conn.fetchrow(
+-            "SELECT * FROM zakops.quarantine_items WHERE id = $1",
+-            item_id
+-        )
+-        if not item:
+-            raise HTTPException(status_code=404, detail=f"Quarantine item {item_id} not found")
+-        if item['status'] != 'pending':
+-            raise HTTPException(
+-                status_code=400,
+-                detail=f"Item is not pending (status: {item['status']})"
++        # Use transaction for atomicity (R2-3a.1)
++        async with conn.transaction():
++            item = await conn.fetchrow(
++                "SELECT * FROM zakops.quarantine_items WHERE id = $1",
++                item_id
+             )
++            if not item:
++                raise HTTPException(status_code=404, detail=f"Quarantine item {item_id} not found")
++            if item['status'] != 'pending':
++                raise HTTPException(
++                    status_code=400,
++                    detail=f"Item is not pending (status: {item['status']})"
++                )
+ 
+-        new_status = 'approved' if process.action == 'approve' else 'rejected'
++            new_status = 'approved' if process.action == 'approve' else 'rejected'
++            deal_id = process.deal_id
++
++            # R2-3a.1: Auto-create deal on approve if no deal_id provided
++            if process.action == 'approve' and not deal_id:
++                # Generate new deal ID
++                deal_id = await conn.fetchval("SELECT zakops.next_deal_id()")
++
++                # Extract info from quarantine item
++                raw_content = item.get('raw_content') or {}
++                if isinstance(raw_content, str):
++                    try:
++                        raw_content = json.loads(raw_content)
++                    except json.JSONDecodeError:
++                        raw_content = {}
++
++                # Build canonical name from subject or sender
++                subject = item.get('subject') or ''
++                sender = item.get('sender') or ''
++                canonical_name = subject[:100] if subject else f"Deal from {sender}"[:100]
++                if not canonical_name:
++                    canonical_name = f"Quarantine item {item_id}"
++
++                # Extract broker info if available
++                broker_info = {}
++                if raw_content.get('broker_name'):
++                    broker_info['name'] = raw_content['broker_name']
++                if sender:
++                    broker_info['email'] = sender
++
++                # Create deal from quarantine item
++                await conn.execute(
++                    """
++                    INSERT INTO zakops.deals (
++                        deal_id, canonical_name, display_name, folder_path,
++                        stage, status, identifiers, company_info, broker, metadata
++                    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
++                    """,
++                    deal_id,
++                    canonical_name,
++                    canonical_name,  # display_name = canonical_name
++                    None,  # folder_path
++                    'inbound',  # initial stage
++                    'active',
++                    json.dumps({'quarantine_item_id': item_id, 'message_id': item.get('message_id')}),
++                    json.dumps({}),
++                    json.dumps(broker_info),
++                    json.dumps({
++                        'source': 'quarantine_approval',
++                        'quarantine_item_id': item_id,
++                        'original_subject': subject,
++                        'approved_by': process.processed_by,
++                    })
++                )
+ 
+-        await conn.execute(
+-            """
+-            UPDATE zakops.quarantine_items
+-            SET status = $2,
+-                reviewed_at = NOW(),
+-                deal_id = COALESCE($5, deal_id),
+-                raw_content = COALESCE(raw_content, '{}'::jsonb) || jsonb_build_object(
+-                    'processed_by', $3,
+-                    'processing_action', $4,
+-                    'processed_at', NOW()
+-                ),
+-                updated_at = NOW()
+-            WHERE id = $1
+-            """,
+-            item_id,
+-            new_status,
+-            process.processed_by,
+-            process.action,
+-            process.deal_id
+-        )
++                # Record deal creation event
++                await conn.execute(
++                    """
++                    SELECT zakops.record_deal_event(
++                        $1, 'deal_created', 'quarantine_approval', $2, $3::jsonb
++                    )
++                    """,
++                    deal_id,
++                    process.processed_by,
++                    json.dumps({
++                        'canonical_name': canonical_name,
++                        'source': 'quarantine_approval',
++                        'quarantine_item_id': item_id
++                    })
++                )
++
++            # Update quarantine item with status and deal_id
++            await conn.execute(
++                """
++                UPDATE zakops.quarantine_items
++                SET status = $2,
++                    reviewed_at = NOW(),
++                    deal_id = COALESCE($5, deal_id),
++                    raw_content = COALESCE(raw_content, '{{}}'::jsonb) || jsonb_build_object(
++                        'processed_by', $3::text,
++                        'processing_action', $4::text,
++                        'processed_at', NOW()
++                    ),
++                    updated_at = NOW()
++                WHERE id = $1
++                """,
++                item_id,
++                new_status,
++                process.processed_by,
++                process.action,
++                deal_id
++            )
+ 
+     return {
+         "status": new_status,
+         "item_id": item_id,
+-        "deal_id": process.deal_id
++        "deal_id": deal_id,
++        "deal_created": process.action == 'approve' and not process.deal_id
+     }
+ 
+ 
+@@ -1295,7 +1510,7 @@ async def get_pipeline_stats(pool: asyncpg.Pool = Depends(get_db)):
+ 
+         # Pending actions
+         pending_actions = await conn.fetchval(
+-            "SELECT COUNT(*) FROM zakops.actions WHERE status IN ('PENDING_APPROVAL', 'QUEUED')"
++            "SELECT COUNT(*) FROM zakops.actions WHERE status IN ('pending_approval', 'queued')"
+         )
+ 
+         # Quarantine items
+@@ -1473,6 +1688,22 @@ async def get_sender(email: str, pool: asyncpg.Pool = Depends(get_db)):
+     return dict(row)
+ 
+ 
++@app.get("/api/agent/activity")
++async def list_agent_activity(
++    limit: int = Query(50, ge=1, le=200),
++    pool: asyncpg.Pool = Depends(get_db)
++):
++    """List recent agent activity by deal (view-backed)."""
++    query = """
++        SELECT * FROM zakops.v_agent_deal_activity
++        ORDER BY last_interaction DESC NULLS LAST
++        LIMIT $1
++    """
++    async with pool.acquire() as conn:
++        rows = await conn.fetch(query, limit)
++    return [dict(row) for row in rows]
++
++
+ # =============================================================================
+ # MAIN
+ # =============================================================================
+diff --git a/src/api/shared/routers/hitl.py b/src/api/shared/routers/hitl.py
+index 42ecd0a..3aaa518 100644
+--- a/src/api/shared/routers/hitl.py
++++ b/src/api/shared/routers/hitl.py
+@@ -115,7 +115,7 @@ async def assess_action_risk(request: RiskAssessmentRequest):
+ 
+ @router.get("/approval-queue", response_model=list[ActionQueueItem])
+ async def get_approval_queue(
+-    status: str | None = Query("PENDING_APPROVAL", description="Filter by status"),
++    status: str | None = Query("pending_approval", description="Filter by status"),
+     risk_level: str | None = Query(None, description="Filter by risk level"),
+     deal_id: str | None = Query(None, description="Filter by deal ID"),
+     limit: int = Query(50, ge=1, le=200, description="Max results"),
+@@ -151,7 +151,7 @@ async def get_approval_queue(
+             details->>'action_type' as action_type,
+             COALESCE(details->>'title', details->>'action_type') as title,
+             COALESCE(details->>'risk_level', 'medium') as risk_level,
+-            'PENDING_APPROVAL' as status,
++            'pending_approval' as status,
+             created_at,
+             deal_id
+         FROM zakops.deal_events
+@@ -179,7 +179,7 @@ async def get_approval_queue(
+             action_type=row.get("action_type", "unknown"),
+             title=row.get("title", "Untitled"),
+             risk_level=row.get("risk_level", "medium"),
+-            status=row.get("status", "PENDING_APPROVAL"),
++            status=row.get("status", "pending_approval"),
+             created_at=row["created_at"].isoformat() if row.get("created_at") else "",
+             deal_id=str(row.get("deal_id")) if row.get("deal_id") else None,
+         )
+diff --git a/src/core/actions/executor.py b/src/core/actions/executor.py
+index c7a1b8c..a34baf5 100644
+--- a/src/core/actions/executor.py
++++ b/src/core/actions/executor.py
+@@ -20,14 +20,14 @@ logger = logging.getLogger(__name__)
+ 
+ class ActionStatus(str, Enum):
+     """Action statuses."""
+-    PENDING_APPROVAL = "PENDING_APPROVAL"
+-    READY = "READY"
+-    QUEUED = "QUEUED"
+-    APPROVED = "approved"
+-    REJECTED = "REJECTED"
+-    EXECUTING = "EXECUTING"
+-    COMPLETED = "COMPLETED"
+-    FAILED = "FAILED"
++    PENDING_APPROVAL = "pending_approval"
++    QUEUED = "queued"
++    READY = "ready"
++    RUNNING = "running"
++    REJECTED = "rejected"
++    COMPLETED = "completed"
++    FAILED = "failed"
++    CANCELLED = "cancelled"
+ 
+ 
+ class ActionExecutor:
+@@ -63,7 +63,7 @@ class ActionExecutor:
+ 
+         # Check if action is in an executable state
+         status = action["status"]
+-        if status not in (ActionStatus.QUEUED.value, ActionStatus.APPROVED.value):
++        if status not in (ActionStatus.QUEUED.value, ActionStatus.READY.value):
+             raise ValueError(f"Action not in executable state: {status}")
+ 
+         now = datetime.now(UTC)
+@@ -72,7 +72,7 @@ class ActionExecutor:
+         # Mark as executing
+         await db.execute(
+             "UPDATE zakops.actions SET status = $2, updated_at = $3 WHERE action_id = $1",
+-            action_id, ActionStatus.EXECUTING.value, now
++            action_id, ActionStatus.RUNNING.value, now
+         )
+ 
+         # Emit execution started event
+diff --git a/src/core/actions/policy.py b/src/core/actions/policy.py
+index 2341ebb..9a28fda 100644
+--- a/src/core/actions/policy.py
++++ b/src/core/actions/policy.py
+@@ -34,14 +34,15 @@ class RiskLevel(str, Enum):
+ 
+ 
+ class ActionStatus(str, Enum):
+-    DRAFT = "draft"
++    PENDING = "pending"
+     PENDING_APPROVAL = "pending_approval"
+-    PENDING_ADDITIONAL_APPROVAL = "pending_additional_approval"  # Phase 18.7
+-    APPROVED = "approved"
+-    REJECTED = "rejected"
+-    EXECUTING = "executing"
++    QUEUED = "queued"
++    READY = "ready"
++    RUNNING = "running"
+     COMPLETED = "completed"
+     FAILED = "failed"
++    CANCELLED = "cancelled"
++    REJECTED = "rejected"
+ 
+ 
+ @dataclass
+@@ -195,7 +196,7 @@ class ActionPolicyEnforcer:
+         if policy.requires_approval(initiator_type):
+             status = ActionStatus.PENDING_APPROVAL
+         else:
+-            status = ActionStatus.APPROVED  # Auto-approved per policy
++            status = ActionStatus.QUEUED  # Auto-approved per policy
+ 
+         db = await get_database()
+         action_id = str(uuid4())
+@@ -295,8 +296,6 @@ class ActionPolicyEnforcer:
+         current_status = row["status"]
+         valid_statuses = [
+             ActionStatus.PENDING_APPROVAL.value,
+-            ActionStatus.PENDING_ADDITIONAL_APPROVAL.value,
+-            "pending_additional_approval"  # String form
+         ]
+ 
+         if current_status not in valid_statuses:
+@@ -343,11 +342,11 @@ class ActionPolicyEnforcer:
+ 
+         if approvals_have >= approvals_needed:
+             # Fully approved
+-            new_status = ActionStatus.APPROVED.value
++            new_status = ActionStatus.QUEUED.value
+             message = "Action approved and ready for execution"
+         else:
+             # Needs more approvals
+-            new_status = ActionStatus.PENDING_ADDITIONAL_APPROVAL.value
++            new_status = ActionStatus.PENDING_APPROVAL.value
+             remaining = approvals_needed - approvals_have
+             message = f"Approval recorded. {remaining} more approval(s) required."
+ 
+@@ -357,8 +356,8 @@ class ActionPolicyEnforcer:
+                 UPDATE actions
+                 SET status = $1,
+                     approvals = $2,
+-                    approved_at = CASE WHEN $1 = 'approved' THEN NOW() ELSE approved_at END,
+-                    approved_by = CASE WHEN $1 = 'approved' THEN $3 ELSE approved_by END
++                    approved_at = CASE WHEN $1 = 'queued' THEN NOW() ELSE approved_at END,
++                    approved_by = CASE WHEN $1 = 'queued' THEN $3 ELSE approved_by END
+                 WHERE id = $4
+             """, new_status, json.dumps(existing_approvals), approver_id, action_id)
+         except Exception as e:
+@@ -384,7 +383,7 @@ class ActionPolicyEnforcer:
+                 "approver_type": approver_type.value,
+                 "approvals_have": approvals_have,
+                 "approvals_needed": approvals_needed,
+-                "fully_approved": new_status == ActionStatus.APPROVED.value,
++                "fully_approved": new_status == ActionStatus.QUEUED.value,
+                 "policy_version": row.get("policy_version", POLICY_VERSION),
+                 "comments": comments,
+                 "approval_timestamp": datetime.now(UTC).isoformat(),
+diff --git a/src/core/agent/actions.py b/src/core/agent/actions.py
+index 27fd5eb..98db508 100644
+--- a/src/core/agent/actions.py
++++ b/src/core/agent/actions.py
+@@ -44,7 +44,7 @@ class AgentActionStatus(str, Enum):
+     def to_action_status(self) -> str:
+         mapping = {
+             self.PROPOSED: "pending_approval",
+-            self.APPROVED: "approved",
++            self.APPROVED: "queued",
+             self.REJECTED: "rejected",
+             self.EXECUTED: "completed",
+             self.FAILED: "failed",
+@@ -56,10 +56,13 @@ class AgentActionStatus(str, Enum):
+         mapping = {
+             "pending_approval": cls.PROPOSED,
+             "pending": cls.PROPOSED,
+-            "approved": cls.APPROVED,
++            "queued": cls.APPROVED,
++            "ready": cls.APPROVED,
++            "running": cls.APPROVED,
+             "rejected": cls.REJECTED,
+             "completed": cls.EXECUTED,
+             "failed": cls.FAILED,
++            "cancelled": cls.REJECTED,
+         }
+         return mapping.get(status, cls.PROPOSED)
+ 
+diff --git a/src/core/agent/invoker.py b/src/core/agent/invoker.py
+index 82f3fdb..08796b7 100644
+--- a/src/core/agent/invoker.py
++++ b/src/core/agent/invoker.py
+@@ -231,7 +231,7 @@ class AgentInvoker:
+         risk = assess_risk(action_type, action_data)
+ 
+         action_id = uuid4()
+-        status = "PENDING_APPROVAL" if risk.requires_approval else "QUEUED"
++        status = "pending_approval" if risk.requires_approval else "queued"
+ 
+         try:
+             # Generate action_id in zakops format
+diff --git a/src/core/chat_orchestrator.py b/src/core/chat_orchestrator.py
+index bfcd732..55b3b3c 100644
+--- a/src/core/chat_orchestrator.py
++++ b/src/core/chat_orchestrator.py
+@@ -339,7 +339,7 @@ class ChatOrchestrator:
+ 
+                     store = ActionStore()
+                     action = store.get_action(action_id)
+-                    if not action or action.status != "COMPLETED":
++                    if not action or action.status != "completed":
+                         continue
+                     for art in action.artifacts or []:
+                         if not str(getattr(art, "filename", "")).lower().endswith(".md"):
+@@ -355,7 +355,7 @@ class ChatOrchestrator:
+             from actions.engine.store import ActionStore
+ 
+             store = ActionStore()
+-            candidates = store.list_actions(deal_id=deal_id, status="COMPLETED", limit=25)
++            candidates = store.list_actions(deal_id=deal_id, status="completed", limit=25)
+             for a in candidates:
+                 if (a.type or "").upper() not in {"COMMUNICATION.DRAFT_EMAIL", "DILIGENCE.REQUEST_DOCS"}:
+                     continue
+@@ -1879,7 +1879,7 @@ class ChatOrchestrator:
+         - stage_transition: Move deal to new stage
+         - add_note: Add note to deal case file
+         - create_task (or schedule_action alias): Create deferred action
+-        - create_action: Create a Kinetic Action record (PENDING_APPROVAL)
++        - create_action: Create a Kinetic Action record (pending_approval)
+         - draft_email: Generate and store email draft (MUST use Gemini Pro)
+         - request_docs: Request documents from broker
+ 
+@@ -2195,7 +2195,7 @@ class ChatOrchestrator:
+                     type=action_type,
+                     title=title,
+                     summary=summary,
+-                    status="PENDING_APPROVAL",
++                    status="pending_approval",
+                     created_by=approved_by,
+                     source="chat",
+                     risk_level=risk_level,
+@@ -2209,14 +2209,14 @@ class ChatOrchestrator:
+                 # The human approved this proposal; treat that as approval for the action record.
+                 # This avoids "double approval" friction while preserving the action audit trail.
+                 try:
+-                    if created_action.status == "PENDING_APPROVAL":
++                    if created_action.status == "pending_approval":
+                         created_action = store.approve_action(created_action.action_id, actor=approved_by)
+                 except Exception:
+                     pass
+ 
+-                # Optionally enqueue for runner execution (runner will transition to PROCESSING).
++                # Optionally enqueue for runner execution (runner will transition to running).
+                 try:
+-                    if auto_run and created_action.status == "READY":
++                    if auto_run and created_action.status == "ready":
+                         created_action = store.request_execute(created_action.action_id, actor=approved_by)
+                 except Exception:
+                     pass
+@@ -2368,7 +2368,7 @@ class ChatOrchestrator:
+                         type="DILIGENCE.REQUEST_DOCS",
+                         title=f"Request docs ({doc_type})",
+                         summary=description,
+-                        status="PENDING_APPROVAL",
++                        status="pending_approval",
+                         created_by=approved_by,
+                         source="chat",
+                         risk_level="medium",
+@@ -2377,12 +2377,12 @@ class ChatOrchestrator:
+                         inputs={"doc_type": doc_type, "description": description},
+                     )
+                     action, created_new = store.create_action(action_payload)
+-                    if action.status == "PENDING_APPROVAL":
++                    if action.status == "pending_approval":
+                         try:
+                             action = store.approve_action(action.action_id, actor=approved_by)
+                         except Exception:
+                             pass
+-                    if action.status == "READY":
++                    if action.status == "ready":
+                         try:
+                             action = store.request_execute(action.action_id, actor=approved_by)
+                         except Exception:
+@@ -2444,73 +2444,55 @@ class ChatOrchestrator:
+             return
+ 
+     def _execute_stage_transition(self, *, deal_id: str, to_stage: str, reason: str, approved_by: str) -> dict[str, Any]:
+-        """Execute a stage transition using the local control plane (no HTTP self-calls)."""
+-        from deal_events import DealEventStore
+-        from deal_registry import DealRegistry
+-        from deal_state_machine import DealStage, DealStateMachine
+-
+-        registry_path = "/home/zaks/DataRoom/.deal-registry/deal_registry.json"
+-        registry = DealRegistry(registry_path)
+-        deal = registry.get_deal(deal_id)
+-        if not deal:
+-            return {"success": False, "error": f"Deal not found: {deal_id}"}
+-
+-        sm = DealStateMachine(deal.stage, deal_id)
+-        target = DealStage.from_str(to_stage)
+-
+-        if not sm.can_transition_to(target):
+-            allowed = [s.value for s in sm.get_allowed_transitions()]
+-            return {"success": False, "error": f"Invalid transition: {deal.stage} -> {to_stage}. Allowed: {allowed}"}
+-
+-        needs_approval = sm.requires_approval(target)
+-        if needs_approval and not approved_by:
+-            return {"success": False, "error": f"Transition to {to_stage} requires approval (approved_by)"}
+-
+-        result = sm.transition(target, approved=bool(approved_by))
+-        if result.success:
+-            registry.update_deal(deal_id, stage=to_stage)
+-            registry.save()
+-
+-            event_store = DealEventStore()
+-            event_store.create_event(
+-                deal_id=deal_id,
+-                event_type="stage_changed",
+-                actor=approved_by or "chat",
+-                data={
+-                    "from_stage": deal.stage,
+-                    "to_stage": to_stage,
+-                    "reason": reason,
+-                    "approved_by": approved_by,
+-                },
+-            )
++        """Execute a stage transition via Backend API (Postgres SOT)."""
++        api_base = os.getenv("ZAKOPS_BACKEND_URL", "http://localhost:8091")
++        api_key = os.getenv("ZAKOPS_API_KEY", "")
+ 
+-        return {
+-            "success": result.success,
+-            "message": result.message,
+-            "from_stage": result.from_stage.value,
+-            "to_stage": result.to_stage.value,
+-            "approval_required": result.approval_required,
+-        }
++        try:
++            with httpx.Client(timeout=10.0) as client:
++                response = client.post(
++                    f"{api_base}/api/deals/{deal_id}/transition",
++                    headers={"X-Api-Key": api_key, "Content-Type": "application/json"},
++                    json={
++                        "target_stage": to_stage,
++                        "reason": reason,
++                        "approved_by": approved_by or "chat",
++                    },
++                )
++                if response.status_code == 200:
++                    data = response.json()
++                    return {
++                        "success": True,
++                        "message": f"Transitioned to {to_stage}",
++                        "from_stage": data.get("previous_stage", ""),
++                        "to_stage": data.get("current_stage", to_stage),
++                        "approval_required": False,
++                    }
++                else:
++                    error_data = response.json() if response.headers.get("content-type", "").startswith("application/json") else {}
++                    return {"success": False, "error": error_data.get("message", f"HTTP {response.status_code}")}
++        except Exception as e:
++            return {"success": False, "error": str(e)}
+ 
+     def _execute_add_note(self, *, deal_id: str, content: str, category: str) -> dict[str, Any]:
+-        """Add a note event to a deal (local control plane)."""
+-        from deal_events import DealEventStore
+-        from deal_registry import DealRegistry
+-
+-        registry_path = "/home/zaks/DataRoom/.deal-registry/deal_registry.json"
+-        registry = DealRegistry(registry_path)
+-        deal = registry.get_deal(deal_id)
+-        if not deal:
+-            return {"success": False, "error": f"Deal not found: {deal_id}"}
+-
+-        event_store = DealEventStore()
+-        event = event_store.create_event(
+-            deal_id=deal_id,
+-            event_type="note_added",
+-            actor="operator",
+-            data={"content": content, "category": category},
+-        )
+-        return {"success": True, "event_id": getattr(event, "event_id", None)}
++        """Add a note to a deal via Backend API (Postgres SOT)."""
++        api_base = os.getenv("ZAKOPS_BACKEND_URL", "http://localhost:8091")
++        api_key = os.getenv("ZAKOPS_API_KEY", "")
++
++        try:
++            with httpx.Client(timeout=10.0) as client:
++                response = client.post(
++                    f"{api_base}/api/deals/{deal_id}/notes",
++                    headers={"X-Api-Key": api_key, "Content-Type": "application/json"},
++                    json={"content": content, "category": category},
++                )
++                if response.status_code in (200, 201):
++                    data = response.json()
++                    return {"success": True, "event_id": data.get("event_id") or data.get("note_id")}
++                else:
++                    return {"success": False, "error": f"HTTP {response.status_code}"}
++        except Exception as e:
++            return {"success": False, "error": str(e)}
+ 
+     def _execute_request_docs(
+         self,
+diff --git a/src/workers/actions_runner.py b/src/workers/actions_runner.py
+index 02ecd77..a5509f8 100644
+--- a/src/workers/actions_runner.py
++++ b/src/workers/actions_runner.py
+@@ -194,7 +194,7 @@ def _enqueue_follow_on_actions(
+             type=action_type,
+             title=title,
+             summary=summary,
+-            status="PENDING_APPROVAL",
++            status="pending_approval",
+             created_by="actions_runner",
+             source="system",
+             risk_level=risk_level,  # type: ignore[arg-type]
+@@ -266,7 +266,7 @@ def process_one_action(
+         action = store.get_action(action_id)
+         if not action:
+             return
+-        if action.status != "PROCESSING":
++        if action.status != "running":
+             return
+ 
+         deal = registry.get_deal(action.deal_id) if action.deal_id else None
+@@ -459,7 +459,7 @@ def process_one_action(
+                 from actions.memory.store import ActionMemoryStore, build_summary_from_action
+ 
+                 refreshed = store.get_action(action.action_id)
+-                if refreshed and refreshed.status in {"COMPLETED", "FAILED"}:
++                if refreshed and refreshed.status in {"completed", "failed"}:
+                     reg = get_unified_manifest_registry()
+                     entry = None
+                     try:
+@@ -590,7 +590,7 @@ def process_one_action(
+                 from actions.memory.store import ActionMemoryStore, build_summary_from_action
+ 
+                 refreshed = store.get_action(action.action_id)
+-                if refreshed and refreshed.status in {"COMPLETED", "FAILED"}:
++                if refreshed and refreshed.status in {"completed", "failed"}:
+                     artifacts_payload = [
+                         {
+                             "artifact_id": a.artifact_id,
+@@ -703,7 +703,7 @@ def main() -> int:
+         if args.action_id:
+             action_id = args.action_id.strip()
+         else:
+-            # Watchdog: ensure no action stays PROCESSING forever.
++            # Watchdog: ensure no action stays running forever.
+             try:
+                 store.mark_processing_timeouts(older_than_seconds=int(args.processing_ttl_seconds), actor="actions_runner_watchdog")
+             except Exception:
+
+### frontend diff
+diff --git a/apps/dashboard/src/app/actions/page.tsx b/apps/dashboard/src/app/actions/page.tsx
+index 6b7a48e..323310c 100644
+--- a/apps/dashboard/src/app/actions/page.tsx
++++ b/apps/dashboard/src/app/actions/page.tsx
+@@ -85,17 +85,17 @@ import { ActionInputForm, validateFormValues } from '@/components/actions/action
+ // Tab definitions with their filter criteria
+ const STATUS_TABS = [
+   { value: 'all', label: 'All', icon: IconBolt },
+-  { value: 'PENDING_APPROVAL', label: 'Pending Approval', icon: IconShieldCheck },
+-  { value: 'READY', label: 'Ready', icon: IconClock },
+-  { value: 'PROCESSING', label: 'Processing', icon: IconPlayerPlay },
+-  { value: 'COMPLETED', label: 'Completed', icon: IconCircleCheck },
+-  { value: 'FAILED', label: 'Failed', icon: IconCircleX },
++  { value: 'pending_approval', label: 'Pending Approval', icon: IconShieldCheck },
++  { value: 'ready', label: 'Ready', icon: IconClock },
++  { value: 'running', label: 'Processing', icon: IconPlayerPlay },
++  { value: 'completed', label: 'Completed', icon: IconCircleCheck },
++  { value: 'failed', label: 'Failed', icon: IconCircleX },
+ ] as const;
+ 
+ // Polling configuration
+ const POLL_INTERVAL_MS = 3000; // Poll every 3 seconds
+ const POLL_TIMEOUT_MS = 120000; // Stop polling after 2 minutes
+-const TERMINAL_STATUSES: KineticActionStatus[] = ['COMPLETED', 'FAILED', 'CANCELLED'];
++const TERMINAL_STATUSES: KineticActionStatus[] = ['completed', 'failed', 'cancelled', 'rejected'];
+ 
+ // API configuration - log warning if misconfigured
+ const API_BASE_URL = typeof window !== 'undefined' ? window.location.origin : '';
+@@ -231,11 +231,11 @@ export default function ActionsCommandCenter() {
+           // If terminal state, stop polling and show toast
+           if (TERMINAL_STATUSES.includes(action.status)) {
+             stopPolling();
+-            if (action.status === 'COMPLETED') {
++            if (action.status === 'completed') {
+               toast.success(`Action completed: ${action.title}`);
+-            } else if (action.status === 'FAILED') {
++            } else if (action.status === 'failed') {
+               toast.error(`Action failed: ${action.error?.message || 'Unknown error'}`);
+-            } else if (action.status === 'CANCELLED') {
++            } else if (action.status === 'cancelled') {
+               toast.info(`Action cancelled: ${action.title}`);
+             }
+           }
+@@ -263,7 +263,7 @@ export default function ActionsCommandCenter() {
+     fetchData();
+     // Auto-refresh every 30 seconds for PROCESSING actions
+     const interval = setInterval(() => {
+-      if (actions.some(a => a.status === 'PROCESSING')) {
++      if (actions.some(a => a.status === 'running')) {
+         fetchData();
+       }
+     }, 30000);
+@@ -280,17 +280,17 @@ export default function ActionsCommandCenter() {
+       setActiveStatFilter(filterId);
+       // Sync tab filter for relevant statuses
+       if (filterId === 'pending_approval') {
+-        setStatusFilter('PENDING_APPROVAL');
+-        updateUrl({ status: 'PENDING_APPROVAL' });
++        setStatusFilter('pending_approval');
++        updateUrl({ status: 'pending_approval' });
+       } else if (filterId === 'processing') {
+-        setStatusFilter('PROCESSING');
+-        updateUrl({ status: 'PROCESSING' });
++        setStatusFilter('running');
++        updateUrl({ status: 'running' });
+       } else if (filterId === 'failed_24h') {
+-        setStatusFilter('FAILED');
+-        updateUrl({ status: 'FAILED' });
++        setStatusFilter('failed');
++        updateUrl({ status: 'failed' });
+       } else if (filterId === 'completed_24h') {
+-        setStatusFilter('COMPLETED');
+-        updateUrl({ status: 'COMPLETED' });
++        setStatusFilter('completed');
++        updateUrl({ status: 'completed' });
+       }
+     }
+   };
+@@ -699,7 +699,7 @@ export default function ActionsCommandCenter() {
+                 )}
+               </CardDescription>
+               <CardTitle className="text-3xl text-amber-500">
+-                {metrics.pending_approval ?? statusCounts['PENDING_APPROVAL'] ?? 0}
++                {metrics.pending_approval ?? statusCounts['pending_approval'] ?? 0}
+               </CardTitle>
+             </CardHeader>
+           </button>
+@@ -719,7 +719,7 @@ export default function ActionsCommandCenter() {
+                 )}
+               </CardDescription>
+               <CardTitle className="text-3xl text-purple-500">
+-                {statusCounts['RUNNING'] ?? statusCounts['PROCESSING'] ?? 0}
++                {statusCounts['running'] ?? statusCounts['running'] ?? 0}
+               </CardTitle>
+             </CardHeader>
+           </button>
+@@ -761,7 +761,7 @@ export default function ActionsCommandCenter() {
+                 )}
+               </CardDescription>
+               <CardTitle className="text-3xl text-destructive">
+-                {metrics.failed_today ?? statusCounts['FAILED'] ?? 0}
++                {metrics.failed_today ?? statusCounts['failed'] ?? 0}
+               </CardTitle>
+             </CardHeader>
+           </button>
+@@ -787,7 +787,7 @@ export default function ActionsCommandCenter() {
+                 )}
+               </CardDescription>
+               <CardTitle className="text-3xl text-amber-500">
+-                {statusCounts['PENDING_APPROVAL'] ?? 0}
++                {statusCounts['pending_approval'] ?? 0}
+               </CardTitle>
+             </CardHeader>
+           </button>
+@@ -797,8 +797,8 @@ export default function ActionsCommandCenter() {
+                 setActiveStatFilter(null);
+               } else {
+                 setActiveStatFilter('ready');
+-                setStatusFilter('READY');
+-                updateUrl({ status: 'READY' });
++                setStatusFilter('ready');
++                updateUrl({ status: 'ready' });
+               }
+             }}
+             className={`text-left rounded-xl border transition-all duration-200 hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-primary/50 ${
+@@ -815,7 +815,7 @@ export default function ActionsCommandCenter() {
+                 )}
+               </CardDescription>
+               <CardTitle className="text-3xl text-blue-500">
+-                {statusCounts['READY'] ?? 0}
++                {statusCounts['ready'] ?? 0}
+               </CardTitle>
+             </CardHeader>
+           </button>
+@@ -825,8 +825,8 @@ export default function ActionsCommandCenter() {
+                 setActiveStatFilter(null);
+               } else {
+                 setActiveStatFilter('completed');
+-                setStatusFilter('COMPLETED');
+-                updateUrl({ status: 'COMPLETED' });
++                setStatusFilter('completed');
++                updateUrl({ status: 'completed' });
+               }
+             }}
+             className={`text-left rounded-xl border transition-all duration-200 hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-primary/50 ${
+@@ -843,7 +843,7 @@ export default function ActionsCommandCenter() {
+                 )}
+               </CardDescription>
+               <CardTitle className="text-3xl text-green-500">
+-                {statusCounts['COMPLETED'] ?? 0}
++                {statusCounts['completed'] ?? 0}
+               </CardTitle>
+             </CardHeader>
+           </button>
+@@ -853,8 +853,8 @@ export default function ActionsCommandCenter() {
+                 setActiveStatFilter(null);
+               } else {
+                 setActiveStatFilter('failed');
+-                setStatusFilter('FAILED');
+-                updateUrl({ status: 'FAILED' });
++                setStatusFilter('failed');
++                updateUrl({ status: 'failed' });
+               }
+             }}
+             className={`text-left rounded-xl border transition-all duration-200 hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-primary/50 ${
+@@ -871,7 +871,7 @@ export default function ActionsCommandCenter() {
+                 )}
+               </CardDescription>
+               <CardTitle className="text-3xl text-destructive">
+-                {statusCounts['FAILED'] ?? 0}
++                {statusCounts['failed'] ?? 0}
+               </CardTitle>
+             </CardHeader>
+           </button>
+@@ -950,7 +950,7 @@ export default function ActionsCommandCenter() {
+                   {label}
+                   {statusCounts[value] > 0 && (
+                     <Badge
+-                      variant={value === 'FAILED' ? 'destructive' : 'secondary'}
++                      variant={value === 'failed' ? 'destructive' : 'secondary'}
+                       className="ml-1"
+                     >
+                       {statusCounts[value]}
+@@ -1244,7 +1244,7 @@ export default function ActionsCommandCenter() {
+             <div className="mt-4 p-3 rounded-lg bg-muted">
+               <p className="text-sm font-medium">
+                 {actions.filter(a => {
+-                  if (a.status !== 'COMPLETED') return false;
++                  if (a.status !== 'completed') return false;
+                   if (showClearConfirm?.age === 'all') return true;
+                   const completedAt = a.completed_at ? new Date(a.completed_at) : null;
+                   if (!completedAt) return false;
+diff --git a/apps/dashboard/src/components/actions/action-card.tsx b/apps/dashboard/src/components/actions/action-card.tsx
+index c37a382..08456ff 100644
+--- a/apps/dashboard/src/components/actions/action-card.tsx
++++ b/apps/dashboard/src/components/actions/action-card.tsx
+@@ -60,42 +60,60 @@ const STATUS_CONFIGS: Record<
+     className: string;
+   }
+ > = {
+-  PENDING_APPROVAL: {
++  pending: {
++    label: 'Pending',
++    icon: IconClock,
++    variant: 'default',
++    className: 'bg-gray-500 hover:bg-gray-600',
++  },
++  pending_approval: {
+     label: 'Pending Approval',
+     icon: IconShieldCheck,
+     variant: 'default',
+     className: 'bg-amber-500 hover:bg-amber-600',
+   },
+-  READY: {
++  queued: {
++    label: 'Queued',
++    icon: IconClock,
++    variant: 'secondary',
++    className: 'bg-sky-500 hover:bg-sky-600 text-white',
++  },
++  ready: {
+     label: 'Ready',
+     icon: IconClock,
+     variant: 'secondary',
+     className: 'bg-blue-500 hover:bg-blue-600 text-white',
+   },
+-  PROCESSING: {
++  running: {
+     label: 'Processing',
+     icon: IconLoader2,
+     variant: 'secondary',
+     className: 'bg-purple-500 hover:bg-purple-600 text-white animate-pulse',
+   },
+-  COMPLETED: {
++  completed: {
+     label: 'Completed',
+     icon: IconCircleCheck,
+     variant: 'secondary',
+     className: 'bg-green-600 hover:bg-green-700 text-white',
+   },
+-  FAILED: {
++  failed: {
+     label: 'Failed',
+     icon: IconCircleX,
+     variant: 'destructive',
+     className: '',
+   },
+-  CANCELLED: {
++  cancelled: {
+     label: 'Cancelled',
+     icon: IconX,
+     variant: 'outline',
+     className: 'text-muted-foreground',
+   },
++  rejected: {
++    label: 'Rejected',
++    icon: IconX,
++    variant: 'outline',
++    className: 'text-orange-600 border-orange-300',
++  },
+ };
+ 
+ // Processing timeout threshold (2 minutes)
+@@ -151,7 +169,7 @@ export function ActionCard({
+ 
+   // Detect stuck PROCESSING actions
+   useEffect(() => {
+-    if (action.status === 'PROCESSING' && action.started_at) {
++    if (action.status === 'running' && action.started_at) {
+       const startedAt = new Date(action.started_at).getTime();
+       const now = Date.now();
+       const isCurrentlyStuck = (now - startedAt) > PROCESSING_STUCK_THRESHOLD_MS;
+@@ -287,11 +305,11 @@ export function ActionCard({
+     }
+   };
+ 
+-  const canEdit = action.status === 'PENDING_APPROVAL' && onUpdateInputs;
+-  const canApprove = action.status === 'PENDING_APPROVAL' && onApprove;
+-  const canRun = action.status === 'READY' && onRun;
+-  const canCancel = (action.status === 'PENDING_APPROVAL' || action.status === 'READY') && onCancel;
+-  const canRetry = action.status === 'FAILED' && action.error?.retryable !== false && onRetry;
++  const canEdit = action.status === 'pending_approval' && onUpdateInputs;
++  const canApprove = action.status === 'pending_approval' && onApprove;
++  const canRun = action.status === 'ready' && onRun;
++  const canCancel = (action.status === 'pending_approval' || action.status === 'queued' || action.status === 'ready') && onCancel;
++  const canRetry = action.status === 'failed' && action.error?.retryable !== false && onRetry;
+ 
+   // Compact card for lists
+   if (compact) {
+@@ -310,7 +328,7 @@ export function ActionCard({
+               variant={statusConfig.variant}
+               className={`shrink-0 gap-1 ${statusConfig.className}`}
+             >
+-              <StatusIcon className={`h-3 w-3 ${action.status === 'PROCESSING' ? 'animate-spin' : ''}`} />
++              <StatusIcon className={`h-3 w-3 ${action.status === 'running' ? 'animate-spin' : ''}`} />
+               {statusConfig.label}
+             </Badge>
+             {isStuck && (
+@@ -351,7 +369,7 @@ export function ActionCard({
+                 variant={statusConfig.variant}
+                 className={`gap-1 ${statusConfig.className}`}
+               >
+-                <StatusIcon className={`h-3 w-3 ${action.status === 'PROCESSING' ? 'animate-spin' : ''}`} />
++                <StatusIcon className={`h-3 w-3 ${action.status === 'running' ? 'animate-spin' : ''}`} />
+                 {statusConfig.label}
+               </Badge>
+               {isStuck && (
+@@ -413,7 +431,7 @@ export function ActionCard({
+         )}
+ 
+         {/* Progress indicator for PROCESSING status */}
+-        {action.status === 'PROCESSING' && (
++        {action.status === 'running' && (
+           <div className="space-y-2">
+             <div className="flex items-center justify-between text-sm">
+               <span className="text-muted-foreground">
+@@ -431,7 +449,7 @@ export function ActionCard({
+         )}
+ 
+         {/* Error display for FAILED status */}
+-        {action.status === 'FAILED' && action.error && (
++        {action.status === 'failed' && action.error && (
+           <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-3">
+             <div className="flex items-start gap-2">
+               <IconAlertTriangle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+@@ -468,7 +486,7 @@ export function ActionCard({
+         )}
+ 
+         {/* Artifacts for COMPLETED status */}
+-        {action.status === 'COMPLETED' && action.artifacts.length > 0 && (
++        {action.status === 'completed' && action.artifacts.length > 0 && (
+           <div className="space-y-2">
+             <h4 className="text-sm font-medium flex items-center gap-2">
+               <IconDownload className="h-4 w-4" />
+diff --git a/apps/dashboard/src/lib/api-schemas.ts b/apps/dashboard/src/lib/api-schemas.ts
+index 0deb39f..a082422 100644
+--- a/apps/dashboard/src/lib/api-schemas.ts
++++ b/apps/dashboard/src/lib/api-schemas.ts
+@@ -23,26 +23,28 @@ export const DealStageSchema = z.enum([
+ 
+ export const DealStatusSchema = z.enum(['active', 'junk', 'merged', 'archived']);
+ 
+-export const PrioritySchema = z.enum(['HIGH', 'MEDIUM', 'LOW']);
++export const PrioritySchema = z.enum(['HIGH', 'MEDIUM', 'LOW', 'NORMAL']);
+ 
+ export const NdaStatusSchema = z.enum(['none', 'requested', 'signed', 'expired']);
+ 
++// R2-1.3 FIX: Aligned with backend lowercase status values
+ export const ActionStatusSchema = z.enum([
+-  'PENDING_APPROVAL',
+-  'QUEUED',
+-  'READY',
+-  'RUNNING',
+-  'COMPLETED',
+-  'FAILED',
+-  'CANCELLED',
+-  'REJECTED',
++  'pending',
++  'pending_approval',
++  'queued',
++  'ready',
++  'running',
++  'completed',
++  'failed',
++  'cancelled',
++  'rejected',
+ ]);
+ 
+ export const RiskLevelSchema = z.enum(['low', 'medium', 'high']);
+ 
+ export const ActionSourceSchema = z.enum(['chat', 'ui', 'system', 'agent', 'api']);
+ 
+-export const QuarantineClassificationSchema = z.enum(['DEAL_SIGNAL', 'UNCERTAIN', 'JUNK']);
++export const QuarantineClassificationSchema = z.enum(['DEAL_SIGNAL', 'UNCERTAIN', 'JUNK', 'unknown']);
+ 
+ export const QuarantineStatusSchema = z.enum(['pending', 'approved', 'rejected', 'expired']);
+ 
+@@ -91,20 +93,22 @@ export const DealMetadataSchema = z.object({
+   junk_reason: z.string().nullable().optional(),
+ }).passthrough();
+ 
++// FIX: Changed to .nullable().optional() to handle backend null values
+ export const AuditEntrySchema = z.object({
+   action: z.string(),
+   by: z.string(),
+   at: z.string(),
+-  notes: z.string().optional(),
+-  reason: z.string().optional(),
+-});
++  notes: z.string().nullable().optional(),
++  reason: z.string().nullable().optional(),
++}).passthrough();
+ 
++// FIX: Changed to .nullable().optional() to handle backend null values
+ export const ArtifactSchema = z.object({
+   type: z.string(),
+   path: z.string(),
+-  size: z.number().optional(),
++  size: z.number().nullable().optional(),
+   created_at: z.string(),
+-});
++}).passthrough();
+ 
+ export const QuarantineLinkSchema = z.object({
+   url: z.string(),
+@@ -162,57 +166,66 @@ export const DealUpdateSchema = z.object({
+   metadata: DealMetadataSchema.partial().optional(),
+ });
+ 
++// FIX: Changed to .nullable().optional() to handle backend null values
+ export const DealEventSchema = z.object({
+   id: z.string(),
+-  deal_id: z.string(),
++  deal_id: z.string().nullable().optional(),
+   event_type: z.string(),
+-  source: z.string(),
+-  actor: z.string().nullable(),
+-  details: z.record(z.unknown()).nullable(),
++  source: z.string().nullable().optional(),
++  actor: z.string().nullable().optional(),
++  details: z.record(z.unknown()).nullable().optional(),
+   created_at: z.string(),
+-});
++}).passthrough();
+ 
++// FIX: Changed to .nullable().optional() to handle backend null values
+ export const DealAliasSchema = z.object({
+   id: z.string(),
+-  deal_id: z.string().optional(),
++  deal_id: z.string().nullable().optional(),
+   alias: z.string(),
+   alias_type: z.string(),
+   created_at: z.string(),
+-});
++}).passthrough();
+ 
++// R2-1.6 FIX: Aligned with backend ActionResponse - phantom fields made optional
++// Backend fields: action_id, deal_id, capability_id, action_type, title, summary,
++//                 status, created_at, updated_at, risk_level, requires_human_review,
++//                 inputs, outputs, deal_name, deal_stage
+ export const ActionSchema = z.object({
++  // Required fields (exist in backend)
+   action_id: z.string(),
+-  deal_id: z.string().nullable(),
+   capability_id: z.string(),
+   action_type: z.string(),
+   title: z.string(),
+-  summary: z.string().nullable(),
+   status: ActionStatusSchema,
+   created_at: z.string(),
+   updated_at: z.string(),
+-  started_at: z.string().nullable(),
+-  completed_at: z.string().nullable(),
+-  scheduled_for: z.string().nullable(),
+-  duration_seconds: z.number().nullable(),
+-  created_by: z.string(),
+-  source: ActionSourceSchema,
+   risk_level: RiskLevelSchema,
+   requires_human_review: z.boolean(),
+-  idempotency_key: z.string().nullable(),
+   inputs: z.record(z.unknown()),
+   outputs: z.record(z.unknown()),
+-  retry_count: z.number(),
+-  max_retries: z.number(),
+-  next_retry_at: z.string().nullable(),
+-  parent_action_id: z.string().nullable(),
+-  root_action_id: z.string().nullable(),
+-  chain_depth: z.number(),
+-  audit_trail: z.array(AuditEntrySchema),
+-  artifacts: z.array(ArtifactSchema),
+-  error_message: z.string().nullable(),
+-  deal_name: z.string().optional(),
+-  deal_stage: DealStageSchema.optional(),
+-});
++  // Optional fields (exist in backend but may be null)
++  deal_id: z.string().nullable().optional(),
++  summary: z.string().nullable().optional(),
++  deal_name: z.string().nullable().optional(),
++  deal_stage: DealStageSchema.nullable().optional(),
++  // Phantom fields (NOT in backend - kept for future compatibility, all optional)
++  started_at: z.string().nullable().optional(),
++  completed_at: z.string().nullable().optional(),
++  scheduled_for: z.string().nullable().optional(),
++  duration_seconds: z.number().nullable().optional(),
++  created_by: z.string().nullable().optional(),
++  source: ActionSourceSchema.nullable().optional(),
++  idempotency_key: z.string().nullable().optional(),
++  retry_count: z.number().nullable().optional(),
++  max_retries: z.number().nullable().optional(),
++  next_retry_at: z.string().nullable().optional(),
++  parent_action_id: z.string().nullable().optional(),
++  root_action_id: z.string().nullable().optional(),
++  chain_depth: z.number().nullable().optional(),
++  audit_trail: z.array(AuditEntrySchema).nullable().optional(),
++  artifacts: z.array(ArtifactSchema).nullable().optional(),
++  error_message: z.string().nullable().optional(),
++}).passthrough();
+ 
+ export const ActionApproveSchema = z.object({
+   approved_by: z.string().optional(),
+@@ -226,33 +239,33 @@ export const ActionRejectSchema = z.object({
+ 
+ export const QuarantineItemSchema = z.object({
+   id: z.string(),
+-  action_id: z.string().nullable(),
+-  message_id: z.string().nullable(),
+-  thread_id: z.string().nullable(),
+-  email_subject: z.string().nullable(),
+-  sender: z.string().nullable(),
+-  sender_domain: z.string().nullable(),
+-  received_at: z.string().nullable(),
+-  classification: QuarantineClassificationSchema,
+-  urgency: PrioritySchema,
+-  confidence: z.number().nullable(),
+-  company_name: z.string().nullable(),
+-  broker_name: z.string().nullable(),
+-  links: z.array(QuarantineLinkSchema),
+-  quarantine_dir: z.string().nullable(),
+-  email_content_path: z.string().nullable(),
+-  triage_summary_path: z.string().nullable(),
+-  status: QuarantineStatusSchema,
+-  processed_at: z.string().nullable(),
+-  processed_by: z.string().nullable(),
+-  processing_result: z.string().nullable(),
+-  created_deal_id: z.string().nullable(),
+-  created_at: z.string(),
+-  updated_at: z.string(),
+-  sender_name: z.string().optional(),
+-  sender_company: z.string().optional(),
+-  is_broker: z.boolean().optional(),
+-});
++  action_id: z.string().nullable().optional(),
++  message_id: z.string().nullable().optional(),
++  thread_id: z.string().nullable().optional(),
++  email_subject: z.string().nullable().optional(),
++  sender: z.string().nullable().optional(),
++  sender_domain: z.string().nullable().optional(),
++  received_at: z.string().nullable().optional(),
++  classification: QuarantineClassificationSchema.optional(),
++  urgency: PrioritySchema.optional(),
++  confidence: z.number().nullable().optional(),
++  company_name: z.string().nullable().optional(),
++  broker_name: z.string().nullable().optional(),
++  links: z.array(QuarantineLinkSchema).optional(),
++  quarantine_dir: z.string().nullable().optional(),
++  email_content_path: z.string().nullable().optional(),
++  triage_summary_path: z.string().nullable().optional(),
++  status: QuarantineStatusSchema.optional(),
++  processed_at: z.string().nullable().optional(),
++  processed_by: z.string().nullable().optional(),
++  processing_result: z.string().nullable().optional(),
++  created_deal_id: z.string().nullable().optional(),
++  created_at: z.string().optional(),
++  updated_at: z.string().optional(),
++  sender_name: z.string().nullable().optional(),
++  sender_company: z.string().nullable().optional(),
++  is_broker: z.boolean().nullable().optional(),
++}).passthrough();
+ 
+ export const QuarantineProcessSchema = z.object({
+   action: z.enum(['approve', 'reject']),
+diff --git a/apps/dashboard/src/lib/api.ts b/apps/dashboard/src/lib/api.ts
+index 3dc8c0a..01116a2 100644
+--- a/apps/dashboard/src/lib/api.ts
++++ b/apps/dashboard/src/lib/api.ts
+@@ -364,13 +364,26 @@ async function apiFetch<T>(
+ ): Promise<T> {
+   const url = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+ 
++  // R2-2.3: Add Idempotency-Key header for write operations
++  const headers: HeadersInit = {
++    'Content-Type': 'application/json',
++    ...options.headers,
++  };
++
++  // Auto-generate idempotency key for write methods
++  const method = options.method?.toUpperCase() || 'GET';
++  if (['POST', 'PUT', 'PATCH'].includes(method)) {
++    // Only add if not already provided
++    const existingHeaders = options.headers as Record<string, string> | undefined;
++    if (!existingHeaders?.['Idempotency-Key'] && !existingHeaders?.['idempotency-key']) {
++      (headers as Record<string, string>)['Idempotency-Key'] = crypto.randomUUID();
++    }
++  }
++
+   try {
+     const response = await fetch(url, {
+       ...options,
+-      headers: {
+-        'Content-Type': 'application/json',
+-        ...options.headers,
+-      },
++      headers,
+       cache: 'no-store',
+     });
+ 
+@@ -1279,14 +1292,18 @@ export async function getChatSession(sessionId: string): Promise<{
+ 
+ /**
+  * Kinetic Action statuses (state machine)
++ * R2-1.3 FIX: Aligned with backend lowercase status values
+  */
+ export const KINETIC_ACTION_STATUSES = [
+-  'PENDING_APPROVAL',
+-  'READY',
+-  'PROCESSING',
+-  'COMPLETED',
+-  'FAILED',
+-  'CANCELLED',
++  'pending',
++  'pending_approval',
++  'queued',
++  'ready',
++  'running',
++  'completed',
++  'failed',
++  'cancelled',
++  'rejected',
+ ] as const;
+ 
+ export type KineticActionStatus = (typeof KINETIC_ACTION_STATUSES)[number];
+@@ -1564,21 +1581,22 @@ export async function getKineticActions(params?: {
+   }
+ 
+   // Fallback: convert legacy actions to Kinetic format
++  // R2-1.3 FIX: Use lowercase status values
+   const legacyActions = await getActions({
+     deal_id: params?.deal_id,
+-    status: params?.status === 'COMPLETED' ? 'completed' : params?.status === 'PENDING_APPROVAL' ? 'pending' : undefined,
++    status: params?.status === 'completed' ? 'completed' : params?.status === 'pending_approval' ? 'pending' : undefined,
+   });
+ 
+   return legacyActions.map(a => ({
+     action_id: a.action_id,
+-    deal_id: a.deal_id,
++    deal_id: a.deal_id ?? '',
+     action_type: a.action_type,
+     title: a.action_type,
+-    status: a.status === 'completed' ? 'COMPLETED' : 'PENDING_APPROVAL' as KineticActionStatus,
++    status: (a.status === 'completed' ? 'completed' : 'pending') as KineticActionStatus,
+     inputs: a.data || {},
+     artifacts: [],
+-    created_at: a.scheduled_for,
+-    updated_at: a.scheduled_for,
++    created_at: a.scheduled_for ?? new Date().toISOString(),
++    updated_at: a.scheduled_for ?? new Date().toISOString(),
+     retry_count: 0,
+     max_retries: 3,
+   }));

@@ -1,0 +1,34 @@
+=== STEP 0.12: DB Write Canary (GPT 0.C) ===
+Pre-test user count:
+ user_count 
+------------
+          0
+(1 row)
+
+Existing forensic users (if any):
+ email | created_at 
+-------+------------
+(0 rows)
+
+Will verify after Phase 1.3 user registration
+Post-registration user count:
+Forensic users (post-registration):
+Post-registration user count:
+ user_count 
+------------
+          1
+(1 row)
+
+Forensic users (post-registration):
+Post-registration user count:
+ user_count 
+------------
+          1
+(1 row)
+
+Forensic users (post-registration):
+          email          |         created_at         
+-------------------------+----------------------------
+ forensic-001@zakops.com | 2026-02-02 22:12:36.122179
+(1 row)
+

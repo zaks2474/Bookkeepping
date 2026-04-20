@@ -1,0 +1,12 @@
+DECISION_OPTIONS=11
+89:### Option A: GO LIVE
+99:**If GO LIVE:**
+108:### Option B: EXTEND
+110:**Criteria — ANY triggers EXTEND:**
+116:**If EXTEND:**
+120:4. If still borderline after Week 2 → move to REFINE
+124:### Option C: REFINE
+126:**Criteria — ANY triggers REFINE:**
+132:**If REFINE:**
+136:4. Create mission: LANGSMITH-REFINE-001 to address root causes
+143:**Decision:** [ GO LIVE / EXTEND / REFINE ]

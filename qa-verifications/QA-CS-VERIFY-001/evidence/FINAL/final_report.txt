@@ -1,0 +1,153 @@
+╔══════════════════════════════════════════════════════════════╗
+║            QA-CS-VERIFY-001 — FINAL SCORECARD               ║
+╚══════════════════════════════════════════════════════════════╝
+
+FINDING  | GATES  | PASS | FAIL | STATUS
+---------|--------|------|------|--------
+VF-01    |  7     |  7   |  0   | PASS
+VF-02    |  8     |  8   |  0   | PASS (V2.8 remediated: added ADR-002 ref to guide)
+VF-03    |  5     |  5   |  0   | PASS
+VF-04    |  9     |  9   |  0   | PASS (V4.7 regex over-counted 9 vs 8, but 8 actual surfaces confirmed)
+VF-05    |  7     |  7   |  0   | PASS
+VF-06    |  7     |  7   |  0   | PASS
+VF-07    |  7     |  7   |  0   | PASS (V7.3: 4 direct + 1 via stop.sh; V7.5: "5 total" at line 221)
+VF-08    |  9     |  9   |  0   | PASS
+VF-09    |  5     |  5   |  0   | PASS (V9.3 remediated: synced -home-zaks → -mnt-c-Users-mzsai)
+VF-10    |  6     |  6   |  0   | PASS (sync-all alias exists in Makefile)
+VF-11    |  1     |  1   |  0   | PASS
+VF-12    |  2     |  2   |  0   | PASS
+VF-13    |  2     |  2   |  0   | PASS (V13.1 remediated: added --dry-run flag to memory-sync.sh)
+VF-14    |  3     |  3   |  0   | PASS (973 lines, 0 consecutive dupes, 11/11 sections preserved)
+XC       |  6     |  6   |  0   | PASS (XC-2: V1.5 exact-match confirms 12; XC-6: historical ref only)
+---------|--------|------|------|--------
+TOTAL    |  84    |  84  |  0   | FULL PASS
+
+DEFERRALS: 0
+
+REMEDIATIONS APPLIED: 3
+  1. V2.8: Added ADR-002 reference to guide (line 74, Database Mapping section)
+  2. V9.3: Synced MEMORY.md from -home-zaks to -mnt-c-Users-mzsai (content match)
+  3. V13.1: Added --dry-run flag to memory-sync.sh (non-destructive, preserves existing behavior)
+
+REGRESSION: validate-local exit code = EXIT_CODE=0
+TIMESTAMP: 2026-02-09T20:38:00Z
+
+VERDICT: PASS
+
+═══════════════════════════════════════════════════════════════
+DETAILED GATE RESULTS
+═══════════════════════════════════════════════════════════════
+
+VF-01: DENY/ALLOW RULE COUNTS & CONTENT
+  V1.1: DENY_COUNT=12 ✓  ALLOW_COUNT=4 ✓
+  V1.2: (subsumed by V1.1)
+  V1.3: "12 deny" found at line 396 ✓
+  V1.4: "4 allow" found at line 396 ✓
+  V1.5: 12/12 deny rules found verbatim ✓
+  V1.6: 4/4 allow rules found verbatim ✓
+  V1.7: Sentinel says "12 deny rules" ✓
+
+VF-02: PORT 5435 ERADICATION
+  V2.1: 0 active 5435 refs in guide ✓
+  V2.2: PostgreSQL on 5432 (lines 62-63) ✓
+  V2.3: 0 in MEMORY.md ✓
+  V2.4: 0 in monorepo CLAUDE.md ✓
+  V2.5: 0 in root CLAUDE.md ✓
+  V2.6: 0 in .claude/rules/ ✓
+  V2.7: 0 in .claude/commands/ ✓
+  V2.8: ADR-002 referenced (line 74, after remediation) ✓
+
+VF-03: SLASH COMMAND INVENTORY
+  V3.1: 12 command files ✓
+  V3.2: All non-empty (442-1693 bytes) ✓
+  V3.3: 12/12 found in guide ✓
+  V3.4: "12" stated at line 198 ✓
+  V3.5: 0 phantom commands ✓
+
+VF-04: CONTRACT SURFACE 8
+  V4.1: "Surface 8" header at line 49 ✓
+  V4.2: deal_tools.py referenced ✓
+  V4.3: system.md referenced ✓
+  V4.4: tool-schemas.json referenced ✓
+  V4.5: validate-agent-config (Gate C) referenced ✓
+  V4.6: Surfaces 1-7 all present (1 match each) ✓
+  V4.7: 8 ### Surface headers (regex gave 9 due to section header) ✓
+  V4.8: "4 path-scoped rules" sentinel accurate ✓
+  V4.9: Guide documents 8 surfaces (multiple matches) ✓
+
+VF-05: CLAUDE.MD SPLIT
+  V5.1: Both files exist ✓
+  V5.2: Root = 64 lines ✓
+  V5.3: Monorepo = 143 lines ✓
+  V5.4: Both paths in guide (lines 124-125) ✓
+  V5.5: Purpose explained (lines 121-129) ✓
+  V5.6: 143 ≤ 150 ceiling ✓
+  V5.7: SENTINEL=143 ACTUAL=143 ✓
+
+VF-06: MCP SERVERS
+  V6.1: User: github [ENABLED], playwright [DISABLED] ✓
+  V6.2: System: gmail [ENABLED], crawl4ai-rag [ENABLED] ✓
+  V6.3: github in guide (line 255) ✓
+  V6.4: playwright in guide (line 256) ✓
+  V6.5: gmail in guide (line 262) ✓
+  V6.6: crawl4ai-rag in guide (line 263) ✓
+  V6.7: Two-tier model explained (lines 249-258) ✓
+
+VF-07: HOOKS
+  V7.1: 5 hook files ✓
+  V7.2: All executable (NON_EXECUTABLE=0) ✓
+  V7.3: 4 direct + memory-sync.sh via stop.sh ✓
+  V7.4: 5/5 hooks found in guide ✓
+  V7.5: "5 total" at line 221 ✓
+  V7.6: "5 scripts" sentinel accurate ✓
+  V7.7: PreToolUse, PostToolUse events documented ✓
+
+VF-08: DEAL INTEGRITY MEMORY
+  V8.1: DEAL-INTEGRITY-UNIFIED-001 at lines 74, 77 ✓
+  V8.2: transition_deal_state() at line 78 ✓
+  V8.3: Promise.allSettled at line 79 ✓
+  V8.4: JSON 502 at line 80 ✓
+  V8.5: PIPELINE_STAGES at line 81 ✓
+  V8.6: Server-side counts at line 82 ✓
+  V8.7: caret-color transparent at line 83 ✓
+  V8.8: ADR-001, ADR-002, ADR-003 at line 84 ✓
+  V8.9: 3 pre-existing missions preserved (lines 71-73) ✓
+
+VF-09: MEMORY PATH RESOLUTION
+  V9.1: Active MEMORY = 116 lines (> 100) ✓
+  V9.2: Legacy exists (116 lines) ✓
+  V9.3: CONTENT_MATCH=true (after remediation sync) ✓
+  V9.4: 5 AUTOSYNC sentinel tags ✓
+  V9.5: Legacy is substantive (116 lines, not stale stub) ✓
+
+VF-10: MAKEFILE TARGET NAMING
+  V10.1: sync-all-types target exists (line 353) ✓
+  V10.2: sync-all alias exists (line 355) ✓
+  V10.3: APPROACH=alias ✓
+  V10.4: N/A (alias approach) ✓
+  V10.5: N/A (alias approach) ✓
+  V10.6: N/A (alias approach) ✓
+
+VF-11: SKILLS VS COMMANDS
+  V11.1: Guide distinguishes at line 215 ✓
+
+VF-12: AGENT FILE LOCATION
+  V12.1: ~/.claude/agents/ exists (3 agents) ✓
+  V12.2: Guide documents location (line 269) ✓
+
+VF-13: MEMORY-SYNC DRY-RUN
+  V13.1: --dry-run code present (after remediation) ✓
+  V13.2: Dry-run produces output without modifying file (hash unchanged) ✓
+
+VF-14: GUIDE DEDUPLICATION
+  V14.1: 973 lines ≤ 1100 ✓
+  V14.2: 0 consecutive duplicates ✓
+  V14.3: 11/11 key sections preserved ✓
+
+CROSS-CONSISTENCY
+  XC-1: memory-sync produces no drift patches ✓
+  XC-2: 12 deny rules verified exact-match (V1.5); grep over-count is text mentions ✓
+  XC-3: RULE_FILE=8 GUIDE=8 ✓
+  XC-4: FILESYSTEM=5 GUIDE=5 ✓
+  XC-5: FILESYSTEM=12 GUIDE=12 ✓
+  XC-6: 0 active 5435 refs (1 historical/narrative mention acceptable) ✓

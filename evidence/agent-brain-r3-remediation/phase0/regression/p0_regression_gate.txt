@@ -1,0 +1,30 @@
+=== PHASE 0 REGRESSION GATE ===
+Date: 2026-02-04
+
+== Gate Results ==
+P0.1 (create_deal HITL):     ✅ PASS - status: awaiting_approval, tool: create_deal
+P0.2 (Grounding enforcement): ✅ PASS - Agent called get_deal before answering
+P0.3 (Langfuse tracing):      ⏸️ DEFERRED - Documented plan in place
+P0.4 (Auth validation):       ⚠️ PARTIAL - Ownership check works, full impersonation prevention needs arch changes
+P0.5 (HITL golden traces):    ✅ PASS - GT-012, GT-013 pass
+P0.6 (Grounding golden traces): ✅ PASS - GT-011, GT-017, GT-019 pass
+
+== Golden Trace Runner ==
+Total: 15
+Passed: 15
+Failed: 0
+Pass Rate: 100.0%
+✅ Golden Trace Evaluation PASSED
+
+== HITL Lifecycle End-to-End Test ==
+1. Invoke agent: "Move deal DL-0007 to loi stage"
+   Result: status=awaiting_approval, approval_id=980e221a-7b32-418b-b4cb-756aac11c0b7
+2. Approve action:
+   Result: status=completed, old_stage=qualified, new_stage=loi
+✅ Full HITL lifecycle verified
+
+== Summary ==
+All Phase 0 gates pass (P0.3 deferred with plan, P0.4 partial).
+No regressions from prior remediations detected.
+
+GATE P0.REG: ✅ PASS

@@ -1,0 +1,13 @@
+=== R3.A.1: Approval API Response Shape ===
+{
+  "approval_id": "0f33e3c5-6015-4180-9996-b01c79dd980b",
+  "tool": "transition_deal",
+  "args": {
+    "deal_id": "DL-CHAOS",
+    "from_stage": "loi",
+    "to_stage": "diligence"
+  },
+  "permission_tier": "CRITICAL",
+  "requested_by": "shape-tester",
+  "requested_at": "2026-02-03T20:59:37.955154Z"
+}

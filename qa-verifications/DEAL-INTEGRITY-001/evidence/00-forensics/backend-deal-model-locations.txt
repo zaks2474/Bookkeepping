@@ -1,0 +1,26 @@
+/home/zaks/zakops-backend/src/actions/executors/deal_backfill_sender_history.py:635:class DealBackfillSenderHistoryExecutor(ActionExecutor):
+/home/zaks/zakops-backend/src/core/deal_registry.py:94:class DealMetadata:
+/home/zaks/zakops-backend/src/core/deal_registry.py:117:class Deal:
+/home/zaks/zakops-backend/src/core/deal_registry.py:388:class DealMatcher:
+/home/zaks/zakops-backend/src/core/deal_registry.py:739:class DealRegistry:
+/home/zaks/zakops-backend/src/core/agent/context_store.py:47:class DealContextSummary:
+/home/zaks/zakops-backend/src/core/agent/deal_api_client.py:102:class DealAPIConfig:
+/home/zaks/zakops-backend/src/core/agent/deal_api_client.py:120:class DealAPIError(Exception):
+/home/zaks/zakops-backend/src/core/agent/deal_api_client.py:134:class DealNotFoundError(DealAPIError):
+/home/zaks/zakops-backend/src/core/agent/deal_api_client.py:139:class DealAPICircuitOpenError(DealAPIError):
+/home/zaks/zakops-backend/src/core/agent/deal_api_client.py:144:class DealAPIClient:
+/home/zaks/zakops-backend/src/core/agent/langsmith_tools.py:27:class DealInsightsInput(BaseModel):
+/home/zaks/zakops-backend/src/core/deals/workflow.py:40:class DealStage(str, Enum):
+/home/zaks/zakops-backend/src/core/deals/workflow.py:79:class DealWorkflowEngine:
+/home/zaks/zakops-backend/src/core/events/taxonomy.py:23:class DealEventType(str, Enum):
+/home/zaks/zakops-backend/src/core/events/models.py:64:class DealEvent(EventBase):
+/home/zaks/zakops-backend/src/api/orchestration/routers/email.py:130:class DealThreadsResponse(BaseModel):
+/home/zaks/zakops-backend/src/api/orchestration/routers/search.py:38:class DealSearchResult(BaseModel):
+/home/zaks/zakops-backend/src/api/orchestration/routers/search.py:49:class DealSearchResponse(BaseModel):
+/home/zaks/zakops-backend/src/api/orchestration/routers/models/deals_bulk_delete.py:10:class DealsBulkDeleteItem(BaseModel):
+/home/zaks/zakops-backend/src/api/orchestration/routers/models/deals_bulk_delete.py:16:class DealsBulkDeleteResponse(BaseModel):
+/home/zaks/zakops-backend/src/api/orchestration/main.py:106:class DealBase(BaseModel):
+/home/zaks/zakops-backend/src/api/orchestration/main.py:126:class DealCreate(DealBase):
+/home/zaks/zakops-backend/src/api/orchestration/main.py:133:class DealUpdate(BaseModel):
+/home/zaks/zakops-backend/src/api/orchestration/main.py:159:class DealResponse(BaseModel):
+/home/zaks/zakops-backend/src/api/orchestration/main.py:262:class DealEvent(BaseModel):

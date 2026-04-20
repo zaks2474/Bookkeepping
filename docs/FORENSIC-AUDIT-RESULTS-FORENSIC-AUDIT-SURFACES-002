@@ -1,0 +1,1228 @@
+Performance Budget Contract
+
+
+The dashboard currently has no declared performance boundaries. If Claude Code adds a heavy charting library, introduces a large client-side data transformation, or nests API calls sequentially where they could be parallel, nothing flags it. The middleware proxy returns JSON 502 on backend failure, but there's no contract that says "this page should load in under X seconds" or "this API call should resolve in under Y milliseconds." A performance budget manifest would declare the acceptable thresholds per page and per API route — initial page load time, largest contentful paint, total bundle size contribution per route, maximum sequential API calls per page load, and maximum acceptable payload size from any single endpoint. The path-scoped rule would trigger when Claude Code works on page components or API client code, injecting the budgets so it's aware of the constraints before adding dependencies or changing data-fetching patterns. The validator would check for obvious violations: new package imports that exceed a size threshold, sequential await chains that could be Promise.allSettled, API responses that exceed payload limits. This prevents the slow creep of performance degradation that's invisible on a developer's machine but painful on real networks — and it extends the Deal Integrity mission's Promise.allSettled discipline from a binary rule into a quantified performance architecture.
+So the final five:
+
+Surface 10 — Dependency Health (pre-task service topology awareness)
+Surface 11 — Secret & Environment Variable Registry (cross-service config integrity)
+Surface 12 — Error Taxonomy Contract (structured error routing beyond warn/error binary)
+Surface 13 — Test Coverage Contract (declared coverage requirements per path)
+Surface 14 — Performance Budget Contract (quantified performance thresholds per route)
+
+
+
+
+
+ ## Mission ID: FORENSIC-AUDIT-SURFACES-002
+  ## Date: 2026-02-09
+  ## Classification: Pre-Implementation Ground Truth Verification
+  ## Prerequisite: V6-GUIDE-REGEN-001 (must be complete or in progress)
+  ## Purpose: Verify what exists today before designing Surfaces 10–14
+
+  ---
+
+  ## Mission Objective
+
+  Before implementing five new contract surfaces (Dependency Health, Secret & Environment Variable Registry, Error Taxonomy, Test Coverage Contract,
+  Performance Budget), we must understand exactly what the codebase already does in each of these areas. The goal is to discover what patterns,
+  conventions, configurations, and ad-hoc implementations already exist — so the new surfaces codify reality and fill gaps, rather than imposing
+  structures that conflict with or duplicate what's already there.
+
+  **This is a READ-ONLY audit. Do not modify any files. Report findings only.**
+
+  For every audit area, produce:
+  - **WHAT EXISTS** — actual files, patterns, conventions, configurations found in the codebase
+  - **WHAT'S AD-HOC** — things that are done inconsistently or without a declared standard
+  - **WHAT'S MISSING** — gaps where no pattern exists at all
+  - **WHAT WOULD BREAK** — if a surface were imposed naively, what existing patterns would conflict
+
+  ---
+
+  ## AREA 1: Dependency Health (Future Surface 10)
+
+  ### What We Want to Know
+  Before building a dependency health manifest and pre-task health sweep, we need to understand how services currently discover and communicate with
+  each other, what health checking already exists, and how failures are currently detected.
+
+  ### Investigation Targets
+
+  **Service topology and discovery:**
+  - How does the dashboard know where the backend is? Hardcoded URL? Environment variable? Middleware config?
+  - How does the agent-api find the backend? Direct connection? Service discovery?
+  - How does the backend find PostgreSQL? DSN in environment? Config file?
+  - How does the RAG service connect to its dependencies?
+  - Is there a central place that declares "service X lives at port Y" or is it scattered across .env files and config?
+
+  **Existing health endpoints:**
+  - Which services expose `/health` endpoints? What do they return? Just a 200 OK, or structured data (DB connection status, upstream availability,
+  version info)?
+  - Are health endpoints documented anywhere?
+  - Does anything currently call these health endpoints proactively (monitoring, startup checks, watchdogs)?
+
+  **Startup dependency checks:**
+  - The Deal Integrity mission introduced a DSN gate — the backend refuses to start on the wrong database. Are there similar startup gates in other
+  services?
+  - Does any service check that its upstream dependencies are available before accepting requests?
+  - What happens when a service starts but PostgreSQL isn't ready yet? Crash? Retry? Silent failure?
+
+  **Failure detection at runtime:**
+  - The middleware proxy returns JSON 502 when the backend is down. How does it detect "backend is down"? Timeout? Connection refused? Health check?
+  - When the RAG service is unavailable, how does the agent-api handle it?
+  - Are there any circuit breaker patterns in use?
+  - What's the current timeout configuration for inter-service calls?
+
+  **Docker Compose / container orchestration:**
+  - Does docker-compose define `depends_on` or `healthcheck` directives?
+  - Is there a startup ordering? Or do services race?
+  - Are restart policies configured?
+
+  ### Files and Locations to Examine
+  - All `.env` files across services (redact secrets, capture variable names and connection patterns only)
+  - Docker Compose files (all compose YAML files in the project)
+  - Backend startup code (particularly the DSN gate and database connection initialization)
+  - Agent-api startup and connection code
+  - RAG service startup and connection code
+  - Dashboard middleware configuration (the proxy setup)
+  - All `/health` endpoint implementations
+  - Any monitoring or watchdog scripts
+
+  ---
+
+  ## AREA 2: Secret & Environment Variable Registry (Future Surface 11)
+
+  ### What We Want to Know
+  Before building an environment variable registry, we need a complete inventory of every environment variable across every service, where they're
+  defined, what they contain, and where duplication or conflict exists.
+
+  ### Investigation Targets
+
+  **Complete variable inventory:**
+  - For each service (dashboard, backend, agent-api, RAG, vLLM, OpenWebUI), what environment variables are defined?
+  - Which variables are required vs optional?
+  - Which variables have default values in code vs requiring explicit configuration?
+  - Are there any variables that exist in .env files but are never actually read by the code?
+  - Are there any variables that the code expects but are missing from .env files (relying on defaults or failing silently)?
+
+  **Cross-service overlap and conflict:**
+  - Which variable names appear in multiple services' .env files?
+  - Do any shared variable names point to DIFFERENT values across services (e.g., DATABASE_URL pointing to different databases)?
+  - Are there variables that SHOULD be shared (same database, same API key) but are defined independently in each service's .env?
+  - Was the split-brain database issue (port 5432 vs 5435) caused by inconsistent DATABASE_URL values across services? Is that fully resolved?
+
+  **Naming conventions:**
+  - Is there a consistent naming pattern? (e.g., ZAKOPS_*, SERVICE_NAME_*, standard prefixes?)
+  - Are database connection variables consistently named (DATABASE_URL vs DB_HOST + DB_PORT + DB_NAME vs POSTGRES_*)?
+  - Are API keys and secrets consistently suffixed (_KEY, _SECRET, _TOKEN)?
+
+  **Secret sensitivity classification:**
+  - Which variables contain actual secrets (API keys, passwords, tokens)?
+  - Which contain configuration (ports, hostnames, feature flags)?
+  - Which contain runtime parameters (log levels, timeout values)?
+  - Are any secrets hardcoded in source code instead of environment variables?
+
+  **Existing protections:**
+  - The 4 deny rules for .env editing — do they cover ALL .env files across ALL services or just specific ones?
+  - Is there a `.env.example` or `.env.template` for any service? Are they current?
+  - Is there any validation on startup that checks for required variables and fails fast on missing ones?
+  - Are any variables documented in README files or CLAUDE.md?
+
+  ### Files and Locations to Examine
+  - All `.env` files across all services (capture variable names, NOT values for secrets)
+  - All `.env.example` or `.env.template` files
+  - All configuration loading code (where each service reads its environment)
+  - `~/.claude/settings.json` — the 4 .env deny rules, confirm exact patterns
+  - Docker Compose files — any `environment:` sections
+  - All `config.py`, `config.ts`, `settings.py`, or similar configuration modules
+  - Source code that reads `process.env.*` or `os.environ.*` or `os.getenv()`
+  - Any README or documentation that lists required variables
+
+  ---
+
+  ## AREA 3: Error Taxonomy (Future Surface 12)
+
+  ### What We Want to Know
+  Before building an error taxonomy contract, we need to understand how errors currently flow through the system — from backend to dashboard, from
+  external services to internal handling — and how consistently they're classified and handled.
+
+  ### Investigation Targets
+
+  **Backend error responses:**
+  - What error response format does the backend use? Structured JSON with error codes? Plain text? Mixed?
+  - Is there a consistent error response schema (e.g., `{ error: string, code: string, details: object }`)?
+  - How are different error types distinguished? HTTP status codes only? Custom error codes? Error type fields?
+  - Are validation errors (400) structured differently from server errors (500)?
+  - Does the backend return domain-specific error codes (e.g., INVALID_DEAL_STATE, STAGE_TRANSITION_DENIED)?
+
+  **Agent-api error handling:**
+  - How does the agent-api communicate errors to the dashboard?
+  - Are SSE error events structured?
+  - What happens when a tool call fails? How is the failure communicated?
+
+  **Dashboard error handling patterns:**
+  - How many distinct patterns exist for handling API errors in dashboard components?
+  - The middleware proxy returns JSON 502 — what does the dashboard do when it receives a 502 vs a 400 vs a 500?
+  - Are there shared error handling utilities, or does each component handle errors independently?
+  - How do React error boundaries currently classify errors? What gets caught vs what propagates?
+  - What user-facing error messages exist? Are they consistent in tone and format?
+
+  **Console logging classification:**
+  - The Deal Integrity mission established `console.warn` for expected degradation and `console.error` for unexpected failures
+  - How consistently is this applied? Are there files that still use `console.error` for expected degradation paths?
+  - Are there `console.log` calls being used for error conditions?
+  - Is there any structured logging (log levels, error codes, correlation IDs) beyond the basic console methods?
+
+  **Retry and recovery patterns:**
+  - Which API calls have retry logic?
+  - Is retry behavior consistent (same backoff strategy, same max retries)?
+  - Which errors are considered retryable vs terminal?
+  - Does the middleware proxy retry before returning 502, or does it fail immediately?
+
+  **Error reporting and observability:**
+  - Is there any error tracking service (Sentry, LogRocket, etc.) integrated?
+  - Are errors logged server-side with enough context to diagnose issues?
+  - Does the correlation ID from the middleware proxy propagate through the error chain?
+
+  ### Files and Locations to Examine
+  - Backend error handling middleware and response formatting code
+  - Backend validation logic and error response patterns
+  - Agent-api error handling and SSE error events
+  - Dashboard API client code (`apps/dashboard/src/lib/api.ts` and similar)
+  - Dashboard middleware (`apps/dashboard/middleware.ts`)
+  - All React error boundary components
+  - All `catch` blocks in dashboard code — categorize what they do
+  - All `console.error` and `console.warn` usage across the dashboard
+  - Any shared error utilities or error type definitions
+  - Middleware proxy error handling logic
+
+  ---
+
+  ## AREA 4: Test Coverage Contract (Future Surface 13)
+
+  ### What We Want to Know
+  Before building a test coverage contract, we need a complete map of what testing exists, what patterns are used, what's covered, and — critically —
+  what's not covered.
+
+  ### Investigation Targets
+
+  **Test inventory:**
+  - List every test file across all services (dashboard, backend, agent-api, RAG)
+  - For each test file: what type of test is it (unit, integration, E2E, smoke)?
+  - What testing frameworks are in use per service?
+  - What's the total test count per service?
+
+  **E2E test coverage map:**
+  - The Deal Integrity mission created 22 E2E tests across 8 spec files
+  - Which dashboard pages have E2E coverage? Which don't?
+  - Which API endpoints are exercised by E2E tests? Which aren't?
+  - Are graceful degradation paths tested (backend down, partial data)?
+  - Are FSM state transitions tested end-to-end?
+
+  **Backend test coverage:**
+  - Does the backend have unit tests for API endpoints?
+  - Are database migrations tested?
+  - Is the FSM (`transition_deal_state()`) tested with all valid and invalid transitions?
+  - Are CHECK constraints and triggers tested?
+  - Are error responses tested (correct status codes, correct response format)?
+
+  **Agent-api test coverage:**
+  - Are tool functions tested?
+  - Are SSE event flows tested?
+  - Is error handling tested?
+
+  **Test infrastructure:**
+  - Is there a test database separate from development?
+  - Are tests run in CI/CD? Or only locally?
+  - Are there any Makefile targets for running tests (e.g., `make test`, `make test-e2e`)?
+  - What's the current pass rate? Are there any flaky or skipped tests?
+
+  **Coverage gaps (critical paths without tests):**
+  - Which API endpoints have zero test coverage?
+  - Which dashboard pages have zero E2E tests?
+  - Are there any FSM state transitions that aren't tested?
+  - Is the middleware proxy behavior tested (502 response, API key forwarding, correlation ID)?
+  - Are the contract surface sync commands tested (do they actually produce correct output)?
+  - Is the TriPass pipeline tested?
+
+  **Test patterns and conventions:**
+  - Is there a consistent test file naming convention?
+  - Is there a consistent test structure (arrange/act/assert, describe/it, etc.)?
+  - Are test utilities shared or duplicated across test files?
+  - Are there test fixtures or factories for common data structures (deals, stages, users)?
+
+  ### Files and Locations to Examine
+  - All directories named `tests/`, `test/`, `__tests__/`, `spec/` across all services
+  - All files matching `*.test.*`, `*.spec.*`, `*_test.*` patterns
+  - Makefile — test-related targets
+  - CI/CD configuration files (GitHub Actions, etc.) if they exist
+  - Test configuration files (jest.config, vitest.config, pytest.ini, etc.)
+  - Package.json scripts related to testing
+  - Any test utilities, fixtures, or helper files
+
+  ---
+
+  ## AREA 5: Performance Budget (Future Surface 14)
+
+  ### What We Want to Know
+  Before building a performance budget contract, we need to understand the current performance characteristics of the system — what's fast, what's
+  slow, what's measured, and what's completely unmonitored.
+
+  ### Investigation Targets
+
+  **Current performance measurements:**
+  - Are there any existing performance benchmarks or baselines documented?
+  - Did the Deal Integrity mission establish any performance baselines (the status report mentioned "performance baselines" in Layer 5)?
+  - Are there response time targets for any API endpoints?
+  - Is there any client-side performance monitoring (Web Vitals, custom timers)?
+
+  **API response times:**
+  - Which API endpoints are likely the slowest (complex queries, aggregations, multi-table joins)?
+  - Does the pipeline summary endpoint (server-side counts) have a known response time?
+  - Are there any API endpoints that make upstream calls (backend → RAG, backend → agent) adding latency?
+  - What timeout values are configured in the middleware proxy?
+
+  **Frontend bundle characteristics:**
+  - What's the current bundle size for the dashboard?
+  - Are there any particularly large dependencies?
+  - Is code splitting in use? Per-route or per-component?
+  - Is there lazy loading for any components or pages?
+  - What frameworks/libraries contribute most to bundle size?
+
+  **Database query performance:**
+  - Are there any known slow queries?
+  - Is the `v_pipeline_summary` view (server-side counts) efficient?
+  - Are there appropriate indexes for common query patterns?
+  - Are there any N+1 query patterns?
+
+  **Data-fetching patterns:**
+  - How many parallel API calls does a typical dashboard page make?
+  - Are there any sequential call chains where parallelism would help?
+  - What's the typical payload size for deal list endpoints?
+  - Is there pagination? What are the default page sizes?
+  - Is there any client-side caching?
+
+  **Existing performance safeguards:**
+  - `Promise.allSettled` for parallel fetching — established by Deal Integrity
+  - Middleware proxy timeout — what's the current value?
+  - Are there any rate limits on API endpoints?
+  - Are there any query result limits in the backend?
+  - Is there any request debouncing or throttling in the dashboard?
+
+  **Build and development performance:**
+  - How long does `next build` take for the dashboard?
+  - How long does a full test suite run take?
+  - Are there any particularly slow build steps?
+
+  ### Files and Locations to Examine
+  - Dashboard `package.json` — dependency inventory and sizes
+  - Dashboard Next.js configuration — code splitting, optimization settings
+  - Dashboard page components — count API calls per page, identify sequential vs parallel patterns
+  - Backend API route handlers — identify complex queries, upstream calls
+  - Backend database queries — particularly aggregation and join patterns
+  - Database migration files — index definitions
+  - Middleware proxy configuration — timeout values
+  - Any existing benchmark or performance test files
+  - Deal Integrity E2E test baselines (if performance assertions exist)
+  - Build configuration files (next.config.js, tsconfig.json, etc.)
+
+  ---
+
+  ## OUTPUT FORMAT
+
+  Produce a consolidated report with this structure:
+
+  ```
+  # FORENSIC AUDIT RESULTS — FORENSIC-AUDIT-SURFACES-002
+  ## Date: 2026-02-09
+  ## Auditor: Claude Code
+
+  ### Executive Summary
+  - Total investigation areas: 5
+  - For each area: brief one-line assessment of readiness for surface implementation
+
+  ### Area 1: Dependency Health — Findings
+  #### What Exists
+  [Actual health endpoints, startup checks, Docker healthchecks, service discovery patterns]
+  #### What's Ad-Hoc
+  [Inconsistent health checking, missing startup gates, undocumented dependencies]
+  #### What's Missing
+  [No pre-task health sweep, no dependency manifest, no circuit breakers, etc.]
+  #### What Would Break
+  [Any existing patterns that a naively imposed surface would conflict with]
+  #### Recommended Manifest Contents
+  [Based on what was discovered, what should the manifest declare?]
+
+  ### Area 2: Secret & Environment Variable Registry — Findings
+  [Same structure]
+
+  ### Area 3: Error Taxonomy — Findings
+  [Same structure]
+
+  ### Area 4: Test Coverage Contract — Findings
+  [Same structure]
+
+  ### Area 5: Performance Budget — Findings
+  [Same structure]
+
+  ### Cross-Cutting Observations
+  [Patterns that affect multiple surfaces, shared infrastructure gaps, dependency ordering recommendations]
+
+  ### Implementation Priority Recommendation
+  [Based on findings: which surface has the most ad-hoc chaos and would benefit most from being formalized first? Which has the most existing
+  structure and would be easiest to surface-ify?]
+  ```
+
+  ---
+
+  ## Guardrails
+
+  1. **Read-only.** Do not modify any files. This is an investigation mission
+  2. **Redact secrets.** When examining .env files, capture variable NAMES and patterns, never values for secrets (API keys, passwords, tokens). Non-
+  secret values (ports, hostnames, log levels) may be captured
+  3. **Be thorough over fast.** For each area, read the actual source files. Do not rely on file names or directory structures alone — open the files
+  and understand what the code does
+  4. **Report what IS, not what SHOULD BE.** The findings should describe actual current state. Recommendations come in the dedicated section, not
+  mixed with findings
+  5. **Flag surprises.** If something unexpected is discovered (an undocumented service, a hidden dependency, a secret in source code), flag it
+  prominently
+  6. **Cross-reference with existing surfaces.** Note any overlap between what a new surface would govern and what existing Surfaces 1–9 already
+  cover. The new surfaces must complement, not duplicate
+
+  ---
+
+  ## Verification Gates
+
+  ### Gate FA-1: Completeness
+  All 5 areas have findings with all 4 subsections populated (What Exists, What's Ad-Hoc, What's Missing, What Would Break). No "not investigated" or
+  "TBD" entries.
+
+  ### Gate FA-2: Evidence-Based
+  Every finding references a specific file path or code location. No claims without evidence.
+
+  ### Gate FA-3: Variable Inventory
+  Area 2 (Secret & Environment Variable Registry) includes a complete cross-service variable inventory table showing variable name, which services
+  use it, sensitivity classification (secret/config/runtime), and whether it's duplicated across services.
+
+  ### Gate FA-4: Test Coverage Map
+  Area 4 (Test Coverage Contract) includes a coverage matrix showing: each API endpoint (tested/untested), each dashboard page (E2E coverage yes/no),
+  each FSM transition (tested/untested).
+
+  ### Gate FA-5: Cross-Cutting Analysis
+  The Cross-Cutting Observations section identifies at least the dependency ordering between the 5 surfaces (which surfaces depend on others being in
+  place first) and any shared infrastructure gaps.
+
+  ---
+
+  ## Stop Condition
+
+  Stop when all 5 areas are fully investigated, the report is complete with all sections populated, and all verification gates pass. The report is
+  the sole deliverable of this mission.
+
+  ---
+
+  *End of Mission Prompt — FORENSIC-AUDIT-SURFACES-002*
+
+
+
+
+
+
+
+# FORENSIC AUDIT RESULTS - FORENSIC-AUDIT-SURFACES-002
+
+  ## Date: 2026-02-09
+
+  ## Auditor: Claude Code
+
+  ### Executive Summary
+
+  - Total investigation areas: 5
+  - Dependency Health: partial readiness; health endpoints and docker healthchecks exist but discovery and startup gating are inconsistent and no
+    unified manifest exists (zakops-backend/src/api/shared/routers/health.py, zakops-backend/docker-compose.yml, zakops-agent-api/apps/agent-api/
+    docker-compose.yml, zakops-agent-api/apps/dashboard/src/middleware.ts, Zaks-llm/src/api/rag_rest_api.py)
+  - Secret & Env Registry: low readiness; many env variables across services, inconsistent naming, and docs drift; no central registry (zakops-
+    backend/.env*, zakops-agent-api/apps/agent-api/.env*, zakops-agent-api/apps/dashboard/.env*, zakops-agent-api/apps/dashboard/README.md, zakops-
+    agent-api/deployments/docker/docker-compose.yml)
+  - Error Taxonomy: mixed readiness; backend has structured error codes but many endpoints still emit FastAPI default errors; agent-api uses different
+    shapes; dashboard normalizes multiple shapes (zakops-backend/src/api/shared/error_codes.py, zakops-backend/src/api/shared/middleware/
+    error_handler.py, zakops-agent-api/apps/agent-api/app/main.py, zakops-agent-api/apps/dashboard/src/lib/error-normalizer.ts)
+  - Test Coverage Contract: low readiness; many endpoints untested, E2E coverage gaps, FSM transition tests out of sync and some tests skipped
+    (zakops-backend/tests/**, zakops-agent-api/apps/dashboard/tests/**, zakops-agent-api/apps/dashboard/src/__tests__/deal-integrity.test.ts, zakops-
+    backend/tests/unit/test_idempotency.py, zakops-backend/tests/integration/test_golden_path_deal.py)
+  - Performance Budget: low readiness; instrumentation/benchmarks exist but no declared budgets or baselines; perf checks are ad-hoc (zakops-backend/
+    src/api/shared/middleware/metrics.py, zakops-backend/src/core/chat_benchmark.py, zakops-agent-api/apps/dashboard/audit/risk-assessment.md)
+
+  ### Area 1: Dependency Health — Findings
+
+  #### What Exists
+
+  - Docker Compose defines core service topology, ports, and healthchecks for postgres/redis/backend/outbox/langfuse with depends_on: service_healthy
+    (zakops-backend/docker-compose.yml)
+  - Agent-api compose defines db + agent-api healthchecks and dependency ordering (zakops-agent-api/apps/agent-api/docker-compose.yml)
+  - Monorepo deployment compose defines agent-api, dashboard, rag-rest, postgres, redis, and observability services; includes base URLs and defaults
+    (zakops-agent-api/deployments/docker/docker-compose.yml)
+  - Backend exposes /health, /health/live, /health/ready, /health/startup, /health/detailed, /health/metrics with DB and outbox checks (zakops-
+    backend/src/api/shared/routers/health.py)
+  - Agent-api exposes /health with DB + tracing status in response (zakops-agent-api/apps/agent-api/app/main.py)
+  - RAG REST exposes root / as a health/info response with database_connected flag (Zaks-llm/src/api/rag_rest_api.py)
+  - Backend startup DSN gate validates canonical DB identity and fails fast on mismatch (zakops-backend/src/api/orchestration/main.py)
+  - Dashboard middleware proxy returns JSON 502 with correlation ID when backend fetch fails (zakops-agent-api/apps/dashboard/src/middleware.ts)
+  - Health verification scripts call backend, RAG, and orchestration health endpoints (zakops-agent-api/apps/dashboard/tools/gates/verify_services.sh)
+  - Agent-api resilience config defines timeouts/retries/circuit breakers for backend/RAG/MCP/vLLM/Langfuse (zakops-agent-api/apps/agent-api/app/core/
+    resilience.py)
+  - Backend Deal API client has circuit breaker + retry configuration from env (zakops-backend/src/core/agent/deal_api_client.py)
+
+  #### What's Ad-Hoc
+
+  - Multiple env names for backend URL and agent URL in dashboard code (API_URL, BACKEND_URL, NEXT_PUBLIC_API_URL, AGENT_API_URL, AGENT_LOCAL_URL),
+    creating inconsistent discovery (zakops-agent-api/apps/dashboard/src/middleware.ts, zakops-agent-api/apps/dashboard/src/app/api/chat/route.ts,
+    zakops-agent-api/apps/dashboard/src/lib/backend-fetch.ts, zakops-agent-api/apps/dashboard/next.config.ts)
+  - RAG health mismatch: agent-api RAG client health check calls / while resilience config declares /health (zakops-agent-api/apps/agent-api/app/
+    services/rag_rest.py, zakops-agent-api/apps/agent-api/app/core/resilience.py)
+  - Port drift: dashboard Makefile assumes backend on 8090, while dashboard env and backend compose use 8091 (zakops-agent-api/apps/dashboard/
+    Makefile, zakops-agent-api/apps/dashboard/.env.local, zakops-backend/docker-compose.yml)
+  - Agent-api DB startup behavior differs by environment (production logs and continues; non-prod raises) rather than a single explicit gate (zakops-
+    agent-api/apps/agent-api/app/services/database.py)
+  - RAG service starts even if DB connection fails and only signals failure at runtime (Zaks-llm/src/api/rag_rest_api.py)
+  - Resilience config exists but HTTP clients use their own timeouts and do not visibly reference the shared config (zakops-agent-api/apps/agent-api/
+    app/core/resilience.py, zakops-agent-api/apps/agent-api/app/services/backend_client.py, zakops-agent-api/apps/agent-api/app/services/rag_rest.py)
+
+  #### What's Missing
+
+  - No single dependency manifest; service topology and base URLs are scattered across compose, env files, and code (zakops-backend/docker-
+    compose.yml, zakops-agent-api/deployments/docker/docker-compose.yml, zakops-agent-api/apps/dashboard/src/middleware.ts, zakops-agent-api/apps/
+    agent-api/app/core/config.py)
+  - No standardized health response schema across services (backend returns structured status/checks; agent-api returns components; RAG returns name/
+    version/status) (zakops-backend/src/api/shared/routers/health.py, zakops-agent-api/apps/agent-api/app/main.py, Zaks-llm/src/api/rag_rest_api.py)
+  - No integrated pre-task health sweep in app code; only scripts/tools exist (zakops-agent-api/apps/dashboard/tools/gates/verify_services.sh)
+  - Dashboard proxy fetch has no explicit timeout or retry policy (default fetch behavior) (zakops-agent-api/apps/dashboard/src/middleware.ts)
+
+  #### What Would Break
+
+  - Enforcing a uniform /health endpoint would fail for RAG (uses /) unless RAG is updated (Zaks-llm/src/api/rag_rest_api.py, zakops-agent-api/apps/
+    agent-api/app/services/rag_rest.py)
+  - Requiring a single canonical backend URL env name would break current dashboard code paths that expect API_URL/BACKEND_URL/NEXT_PUBLIC_API_URL
+    (zakops-agent-api/apps/dashboard/src/middleware.ts, zakops-agent-api/apps/dashboard/next.config.ts, zakops-agent-api/apps/dashboard/src/app/api/
+    chat/route.ts)
+  - Enforcing startup dependency gates would change agent-api and RAG behavior that currently allow startup without DB connectivity (zakops-agent-api/
+    apps/agent-api/app/services/database.py, Zaks-llm/src/api/rag_rest_api.py)
+  - Standardizing port assumptions would break Makefile/smoke scripts currently pointing at port 8090 (zakops-agent-api/apps/dashboard/Makefile,
+    zakops-agent-api/apps/dashboard/smoke-test.sh)
+
+  #### Recommended Manifest Contents
+
+  - Service registry: name, base URL, port, and discovery variable(s) (evidence of current dispersion: zakops-backend/docker-compose.yml, zakops-
+    agent-api/deployments/docker/docker-compose.yml, zakops-agent-api/apps/dashboard/.env.local)
+  - Health endpoint path(s) and expected schema per service (zakops-backend/src/api/shared/routers/health.py, zakops-agent-api/apps/agent-api/app/
+    main.py, Zaks-llm/src/api/rag_rest_api.py)
+  - Startup gate policy (fail-fast vs degraded) per service (zakops-backend/src/api/orchestration/main.py, zakops-agent-api/apps/agent-api/app/
+    services/database.py, Zaks-llm/src/api/rag_rest_api.py)
+  - Timeouts/retries/circuit breaker parameters per dependency (zakops-agent-api/apps/agent-api/app/core/resilience.py, zakops-backend/src/core/agent/
+    deal_api_client.py)
+  - Required environment variables for each dependency (see Area 2 inventory)
+
+  ### Area 2: Secret & Environment Variable Registry — Findings
+
+  #### What Exists
+
+  - Env files present for backend, agent-api, and dashboard (zakops-backend/.env, zakops-backend/.env.example, zakops-backend/infra/
+    production/.env.production, zakops-agent-api/apps/agent-api/.env*, zakops-agent-api/apps/dashboard/.env*)
+  - Env loading logic selects .env.{env} files in agent-api (zakops-agent-api/apps/agent-api/app/core/config.py)
+  - Compose files set environment values for backend, agent-api, dashboard, and rag-rest (zakops-backend/docker-compose.yml, zakops-agent-api/apps/
+    agent-api/docker-compose.yml, zakops-agent-api/deployments/docker/docker-compose.yml)
+  - RAG REST env usage defined in code (Zaks-llm/src/api/rag_rest_api.py) and OpenWebUI envs defined in compose (Zaks-llm/docker-compose.yml)
+  - .env edit deny rules exist and cover .env, .env.* globally (/home/zaks/.claude/settings.json)
+
+  Variable Inventory (names only; compiled from env files + code references + compose configs listed above)
+  (tab-separated; “Duplicated” = appears in >1 service)
+
+  Variable	Services	Sensitivity	Duplicated
+  AGENT_API_URL	dashboard	config	no
+  AGENT_JWT_AUDIENCE	agent-api	config	no
+  AGENT_JWT_ENFORCE	agent-api	config	no
+  AGENT_JWT_ISSUER	agent-api	config	no
+  AGENT_JWT_REQUIRED_ROLE	agent-api	config	no
+  AGENT_LOCAL_API_KEY	dashboard	secret	no
+  AGENT_LOCAL_TIMEOUT	dashboard	runtime	no
+  AGENT_LOCAL_URL	dashboard	config	no
+  AGENT_PROVIDER	dashboard	config	no
+  AGENT_SERVICE_TOKEN	dashboard	secret	no
+  ALERTING_ENABLED	backend	config	no
+  ALLOWED_ORIGINS	agent-api	config	no
+  ALLOW_CLOUD_DEFAULT	backend	config	no
+  ALLOW_REGISTRATION	backend	config	no
+  ALLOW_TOOL_MOCKS	agent-api	config	no
+  API_HOST	backend	config	no
+  API_PORT	backend	config	no
+  API_URL	dashboard	config	no
+  API_V1_STR	agent-api	config	no
+  APP_ENV	backend,agent-api	config	yes
+  APP_VERSION	backend	config	no
+  ARTIFACT_S3_BUCKET	backend	config	no
+  ARTIFACT_S3_REGION	backend	config	no
+  ARTIFACT_STORAGE_BACKEND	backend	config	no
+  ARTIFACT_STORAGE_PATH	backend	config	no
+  AUTH_REQUIRED	backend	config	no
+  AWS_REGION	backend	config	no
+  AWS_S3_BUCKET	backend	config	no
+  AWS_S3_ENDPOINT_URL	backend	config	no
+  BACKEND_PORT	backend	config	no
+  BACKEND_URL	dashboard	config	no
+  BENCHMARK_API_BASE	backend	config	no
+  BENCHMARK_ITERATIONS	backend	config	no
+  BENCHMARK_RESULTS_DIR	backend	config	no
+  BUILD_TIME	backend	config	no
+  CHAT_BUDGET_STATE	backend	runtime	no
+  CHAT_CACHE_DEAL_TTL	backend	runtime	no
+  CHAT_CACHE_DOC_TTL	backend	runtime	no
+  CHAT_CACHE_ENABLED	backend	config	no
+  CHAT_CACHE_GLOBAL_TTL	backend	runtime	no
+  CHAT_CACHE_MAX_ENTRIES	backend	runtime	no
+  CHAT_COMPLEXITY_PRO_THRESHOLD	backend	runtime	no
+  CHAT_DETERMINISTIC_EXTENDED	backend	runtime	no
+  CHAT_PERSISTENCE_ENABLED	backend	config	no
+  CHAT_RETRIEVAL_DEDUPE_THRESHOLD	backend	runtime	no
+  CHAT_RETRIEVAL_SNIPPET_MAX	backend	runtime	no
+  CHAT_RETRIEVAL_TOP_K	backend	config	no
+  CODEX_MAX_ACTIONS_PER_DEAL_HOUR	backend	runtime	no
+  CODEX_MAX_RISK_AUTO	backend	runtime	no
+  COOKIE_DOMAIN	backend	config	no
+  COOKIE_HTTP_ONLY	backend	config	no
+  COOKIE_SAMESITE	backend	config	no
+  COOKIE_SECURE	backend	config	no
+  CORS_ALLOW_CREDENTIALS	backend	config	no
+  CORS_ORIGINS	backend	config	no
+  DASHBOARD_SERVICE_TOKEN	dashboard,agent-api	secret	yes
+  DATABASE_BACKEND	backend	config	no
+  DATABASE_MAX_OVERFLOW	backend	runtime	no
+  DATABASE_POOL_SIZE	backend	runtime	no
+  DATABASE_URL	backend,agent-api	config	yes
+  DATAROOM_ROOT	backend	config	no
+  DEAL_API_BACKOFF	backend	runtime	no
+  DEAL_API_RETRIES	backend	runtime	no
+  DEAL_API_TIMEOUT	backend	runtime	no
+  DEAL_API_URL	backend,agent-api	config	yes
+  DEAL_BACKFILL_MAX_THREAD_MESSAGES	backend	runtime	no
+  DEAL_BACKFILL_MIN_CONFIDENCE_SAME	backend	runtime	no
+  DEAL_BACKFILL_SENDER_LOOKBACK_DAYS	backend	config	no
+  DEAL_BACKFILL_SENDER_MAX_MESSAGES	backend	runtime	no
+  DEAL_BACKFILL_SENDER_MODE	backend	config	no
+  DEAL_LIFECYCLE_API_HOST	backend	config	no
+  DEAL_LIFECYCLE_API_PORT	backend	config	no
+  DEAL_REGISTRY_PATH	backend	config	no
+  DEBUG	backend,agent-api	runtime	yes
+  DEFAULT_LLM_MODEL	agent-api	config	no
+  DEFAULT_LLM_TEMPERATURE	agent-api	config	no
+  DEFAULT_MODEL	backend	config	no
+  DESCRIPTION	agent-api	config	no
+  DISABLE_LONG_TERM_MEMORY	agent-api	config	no
+  DUAL_WRITE_ENABLED	backend	config	no
+  EMAIL_BACKFILL_LOG_PATH	backend	runtime	no
+  EMAIL_BACKFILL_MAX_ATTACHMENT_MB	backend	runtime	no
+  EMAIL_BACKFILL_SAFE_EXTS	backend	config	no
+  EMAIL_TRIAGE_STATE_DB	backend	config	no
+  ENABLE_API_DOCS	agent-api	config	no
+  ENVIRONMENT	backend	config	no
+  EVALUATION_API_KEY	agent-api	secret	no
+  EVALUATION_BASE_URL	agent-api	config	no
+  EVALUATION_LLM	agent-api	config	no
+  EVALUATION_SLEEP_TIME	agent-api	config	no
+  EVENT_HANDLERS_ENABLED	backend	config	no
+  EVENT_VALIDATION_MODE	backend	config	no
+  FOLDER_SCAFFOLDING_ENABLED	backend	config	no
+  GATE_ARTIFACT_DIR	backend	config	no
+  GEMINI_API_KEY	backend	secret	no
+  GEMINI_API_KEY_FILE	backend	secret	no
+  GEMINI_DAILY_BUDGET	backend	runtime	no
+  GEMINI_MODEL_FLASH	backend	runtime	no
+  GEMINI_MODEL_PRO	backend	runtime	no
+  GEMINI_RPM_LIMIT	backend	runtime	no
+  GEMINI_TIMEOUT_MS	backend	runtime	no
+  GIT_COMMIT	backend	config	no
+  GOOGLE_CLIENT_ID	backend	config	no
+  GOOGLE_CLIENT_SECRET	backend	secret	no
+  GOOGLE_REDIRECT_URI	backend	config	no
+  HITL_APPROVAL_TIMEOUT_SECONDS	agent-api	runtime	no
+  HITL_MAX_PENDING_APPROVALS	agent-api	runtime	no
+  JWT_ACCESS_TOKEN_EXPIRE_DAYS	agent-api	runtime	no
+  JWT_ALGORITHM	agent-api	config	no
+  JWT_SECRET_KEY	agent-api	secret	no
+  KINETIC_USE_LLM_DRAFT	backend	config	no
+  LANGFUSE_HOST	agent-api	config	no
+  LANGFUSE_PUBLIC_KEY	agent-api	secret	no
+  LANGFUSE_SECRET_KEY	agent-api	secret	no
+  LANGSMITH_API_KEY	backend	secret	no
+  LANGSMITH_PROJECT	backend	config	no
+  LANGSMITH_TRACING_V2	backend	config	no
+  LOCAL_EMBEDDER_MODEL	agent-api	config	no
+  LOCAL_EMBEDDER_URL	agent-api	config	no
+  LOG_DIR	agent-api	runtime	no
+  LOG_FORMAT	backend,agent-api	runtime	yes
+  LOG_LEVEL	backend,agent-api	runtime	yes
+  LOG_STRUCTURED	backend	runtime	no
+  LONG_TERM_MEMORY_COLLECTION_NAME	agent-api	config	no
+  LONG_TERM_MEMORY_EMBEDDER_MODEL	agent-api	config	no
+  LONG_TERM_MEMORY_MODEL	agent-api	config	no
+  MAX_LLM_CALL_RETRIES	agent-api	runtime	no
+  MAX_TOKENS	agent-api	config	no
+  MAX_TOOL_CALLS_PER_TURN	agent-api	runtime	no
+  MCP_HOST	backend	config	no
+  MCP_PORT	backend	config	no
+  MCP_URL	agent-api	config	no
+  METRICS_ENABLED	backend	config	no
+  MODEL_ALLOW_DEPRECATED	backend	config	no
+  MODEL_FALLBACK	backend	config	no
+  MODEL_PRIMARY	backend	config	no
+  NEXT_PUBLIC_AGENT_API_URL	dashboard	config	no
+  NEXT_PUBLIC_API_URL	dashboard	config	no
+  NODE_ENV	dashboard	config	no
+  OAUTH_VERIFIER_KEY	backend	secret	no
+  OLLAMA_API_URL	rag-rest	config	no
+  OLLAMA_EMBEDDING_DIM	rag-rest	config	no
+  OLLAMA_EMBED_MODEL	rag-rest	config	no
+  OPENAI_API_BASE	backend	config	no
+  OPENAI_API_BASE_URLS	openwebui	config	no
+  OPENAI_API_KEY	backend,agent-api	secret	yes
+  OPENAI_API_KEYS	openwebui	secret	no
+  OTEL_CONSOLE_EXPORT	backend	config	no
+  OTEL_ENABLED	backend	config	no
+  OTEL_EXPORTER_OTLP_ENDPOINT	backend	config	no
+  OTEL_SDK_DISABLED	agent-api	config	no
+  OTEL_SERVICE_NAME	backend	config	no
+  OUTBOX_BASE_BACKOFF_SECONDS	backend	runtime	no
+  OUTBOX_BATCH_SIZE	backend	runtime	no
+  OUTBOX_ENABLED	backend	config	no
+  OUTBOX_MAX_ATTEMPTS	backend	runtime	no
+  OUTBOX_MAX_BACKOFF_SECONDS	backend	runtime	no
+  OUTBOX_POLL_INTERVAL	backend	runtime	no
+  OUTBOX_PROCESSOR_ENABLED	backend	config	no
+  OUTLOOK_CLIENT_ID	backend	config	no
+  OUTLOOK_CLIENT_SECRET	backend	secret	no
+  OUTLOOK_ENABLED	backend	config	no
+  OUTLOOK_REDIRECT_URI	backend	config	no
+  POSTGRES_DB	backend,agent-api	config	yes
+  POSTGRES_HOST	agent-api	config	no
+  POSTGRES_MAX_OVERFLOW	agent-api	runtime	no
+  POSTGRES_PASSWORD	backend,agent-api	secret	yes
+  POSTGRES_POOL_SIZE	agent-api	runtime	no
+  POSTGRES_PORT	backend,agent-api	config	yes
+  POSTGRES_URL	rag-rest	config	no
+  POSTGRES_USER	backend,agent-api	config	yes
+  PRODUCTION_EXPOSURE	agent-api	config	no
+  PROJECT_NAME	agent-api	config	no
+  RAG_API_URL	backend	config	no
+  RAG_AUTO_INDEX_ENABLED	backend	config	no
+  RAG_ENDPOINT	backend	config	no
+  RAG_REST_TIMEOUT	agent-api	runtime	no
+  RAG_REST_URL	backend,agent-api	config	yes
+  RAG_SOURCE	backend	config	no
+  RAG_TIMEOUT	backend	runtime	no
+  RATE_LIMIT_AGENT	agent-api	runtime	no
+  RATE_LIMIT_AUTH_REQUESTS_PER_MINUTE	backend	runtime	no
+  RATE_LIMIT_CHAT	agent-api	runtime	no
+  RATE_LIMIT_CHAT_STREAM	agent-api	runtime	no
+  RATE_LIMIT_DEFAULT	agent-api	runtime	no
+  RATE_LIMIT_LOGIN	agent-api	runtime	no
+  RATE_LIMIT_MESSAGES	agent-api	runtime	no
+  RATE_LIMIT_REQUESTS_PER_MINUTE	backend	runtime	no
+  RATE_LIMIT_STORAGE	agent-api	runtime	no
+  READ_FROM	backend	config	no
+  REDIS_PORT	backend	config	no
+  REDIS_URL	backend	config	no
+  RETENTION_BATCH_SIZE	backend	runtime	no
+  RETENTION_DRY_RUN	backend	config	no
+  RETENTION_IDEMPOTENCY_HOURS	backend	config	no
+  RETENTION_JUNK_DEALS_DAYS	backend	config	no
+  RETENTION_OUTBOX_DEAD_DAYS	backend	config	no
+  RETENTION_OUTBOX_DELIVERED_DAYS	backend	config	no
+  RETENTION_QUARANTINE_PENDING_DAYS	backend	config	no
+  RETENTION_QUARANTINE_REJECTED_DAYS	backend	config	no
+  SAFETY_MODE	dashboard	config	no
+  SESSION_COOKIE_HTTPONLY	backend	config	no
+  SESSION_COOKIE_SAMESITE	backend	config	no
+  SESSION_COOKIE_SECURE	backend	config	no
+  SESSION_EXPIRY_HOURS	backend	config	no
+  SESSION_SECRET	backend	secret	no
+  SLACK_WEBHOOK_URL	backend	secret	no
+  SLOW_REQUEST_THRESHOLD_MS	backend	runtime	no
+  SMTP_HOST	backend	config	no
+  SMTP_PASSWORD	backend	secret	no
+  SMTP_PORT	backend	config	no
+  SMTP_USER	backend	secret	no
+  SQLITE_PATH	backend	config	no
+  SSE_AUTH_REQUIRED	backend	config	no
+  SSE_EVENT_REPLAY_HOURS	backend	runtime	no
+  SSE_HEARTBEAT_INTERVAL	backend	runtime	no
+  SSE_MAX_CONNECTIONS	backend	runtime	no
+  SSE_MAX_CONNECTIONS_PER_USER	backend	runtime	no
+  SSE_MAX_TOTAL_CONNECTIONS	backend	runtime	no
+  SSE_STALE_TIMEOUT	backend	runtime	no
+  TOKEN_ENCRYPTION_KEY	backend	secret	no
+  USE_LOCAL_EMBEDDINGS	agent-api	config	no
+  VERSION	agent-api	config	no
+  VLLM_BASE_URL	agent-api	config	no
+  VLLM_ENDPOINT	backend	config	no
+  VLLM_MODEL	backend	config	no
+  VLLM_TIMEOUT	backend	runtime	no
+  VLLM_TIMEOUT_MS	backend	runtime	no
+  VLLM_TIMEOUT_S	backend	runtime	no
+  WEBUI_AUTH	openwebui	config	no
+  ZAKOPS_ACTION_PROCESSING_TTL_SECONDS	backend	runtime	no
+  ZAKOPS_API_KEY	dashboard,backend,agent-api	secret	yes
+  ZAKOPS_BACKEND_TIMEOUT	backend	runtime	no
+  ZAKOPS_BACKEND_TOKEN	backend	secret	no
+  ZAKOPS_BACKEND_URL	backend	config	no
+  ZAKOPS_BRAIN_MODE	backend	config	no
+  ZAKOPS_BRAIN_TIMEOUT	backend	runtime	no
+  ZAKOPS_BRAIN_TIMEOUT_S	backend	runtime	no
+  ZAKOPS_BRAIN_URL	backend	config	no
+  ZAKOPS_BRIDGE_API_KEY	backend	secret	no
+  ZAKOPS_BRIDGE_HOST	backend	config	no
+  ZAKOPS_BRIDGE_PORT	backend	config	no
+  ZAKOPS_CAPABILITIES_DIR	backend	config	no
+  ZAKOPS_COMPOSE_PROJECT	backend	config	no
+  ZAKOPS_DATABASE_URL	backend	config	no
+  ZAKOPS_DEAL_API_URL	backend	config	no
+  ZAKOPS_DRAFT_EMAIL_PROVIDER	backend	config	no
+  ZAKOPS_ENRICH_DOWNLOAD_PUBLIC_LINKS	backend	config	no
+  ZAKOPS_HITL_AUTO_APPROVE_LOW_RISK	backend	config	no
+  ZAKOPS_HITL_DEFAULT_REQUIRES_APPROVAL	backend	config	no
+  ZAKOPS_HITL_DEFAULT_RISK_LEVEL	backend	runtime	no
+  ZAKOPS_OPERATOR_NAME	backend	config	no
+  ZAKOPS_PLANNER_LLM_TIMEOUT_SECONDS	backend	runtime	no
+  ZAKOPS_PLANNER_MODE	backend	config	no
+  ZAKOPS_PLANNER_USE_LLM	backend	config	no
+  ZAKOPS_PLAN_SPEC_SCHEMA_PATH	backend	config	no
+  ZAKOPS_RAG_API_URL	backend	config	no
+  ZAKOPS_RAG_URL_PREFIX	backend	config	no
+  ZAKOPS_SCRIPTS_PATH	backend	config	no
+  ZAKOPS_SEND_EMAIL_TOOL	backend	config	no
+  ZAKOPS_SSE_MODE	backend	config	no
+  ZAKOPS_STATE_DB	backend	config	no
+  ZAKOPS_TOOL_GATEWAY_ENABLED	backend	config	no
+
+  #### What's Ad-Hoc
+
+  - Inconsistent naming for the same concept (API_URL, BACKEND_URL, NEXT_PUBLIC_API_URL) across dashboard code paths (zakops-agent-api/apps/dashboard/
+    src/middleware.ts, zakops-agent-api/apps/dashboard/next.config.ts, zakops-agent-api/apps/dashboard/src/app/api/chat/route.ts)
+  - Docs drift: dashboard README references env.example.txt and feature flags not used in code (zakops-agent-api/apps/dashboard/README.md)
+  - Hardcoded default service token in compose (sensitive default value) rather than requiring explicit config (zakops-agent-api/deployments/docker/
+    docker-compose.yml)
+  - Duplicate dashboard codebases with distinct env sets (monorepo dashboard vs standalone repo) (/home/zaks/zakops-agent-api/apps/
+    dashboard/.env.local, /home/zaks/zakops-dashboard/.env.local)
+  - Agent-api .env only includes two variables while config requires many (e.g., DATABASE_URL raises if missing) (zakops-agent-api/apps/agent-
+    api/.env, zakops-agent-api/apps/agent-api/app/core/config.py)
+  - Code expects envs not present in examples (e.g., LOCAL_EMBEDDER_URL, RAG_REST_TIMEOUT) (zakops-agent-api/apps/agent-api/app/core/config.py,
+    zakops-agent-api/apps/agent-api/.env.example)
+
+  #### What's Missing
+
+  - A single, authoritative registry that marks required vs optional and provides defaults per service (inferred from scattered env + code usage
+    across files above)
+  - Consistent secret classification and rotation guidance; secrets appear in compose defaults and env files without central policy (zakops-agent-api/
+    deployments/docker/docker-compose.yml, zakops-backend/.env)
+  - Startup validation across all services (backend has DSN gate; agent-api only enforces DATABASE_URL, RAG does not) (zakops-backend/src/api/
+    orchestration/main.py, zakops-agent-api/apps/agent-api/app/core/config.py, Zaks-llm/src/api/rag_rest_api.py)
+
+  #### What Would Break
+
+  - Enforcing a strict registry would require reconciling duplicate names and defaults (e.g., API_URL vs BACKEND_URL vs NEXT_PUBLIC_API_URL) (zakops-
+    agent-api/apps/dashboard/src/middleware.ts, zakops-agent-api/apps/dashboard/next.config.ts)
+  - Removing defaults would break compose that embeds defaults (e.g., DASHBOARD_SERVICE_TOKEN) (zakops-agent-api/deployments/docker/docker-
+    compose.yml)
+  - Requiring env-example parity would flag missing variables used by code (e.g., LOCAL_EMBEDDER_URL) (zakops-agent-api/apps/agent-api/app/core/
+    config.py, zakops-agent-api/apps/agent-api/.env.example)
+
+  #### Recommended Manifest Contents
+
+  - Per-service env registry: variable name, description, required/optional, default, sensitivity, and usage location (evidence sources listed above)
+  - Cross-service shared variables with alignment rules (e.g., ZAKOPS_API_KEY, RAG_REST_URL, DATABASE_URL) (zakops-agent-api/apps/dashboard/src/
+    middleware.ts, zakops-backend/src/api/shared/middleware/apikey.py, zakops-agent-api/apps/agent-api/app/services/backend_client.py)
+  - Explicit prohibition of default secrets in compose (zakops-agent-api/deployments/docker/docker-compose.yml)
+  - Validation rules on startup for required variables per service (zakops-backend/src/api/orchestration/main.py, zakops-agent-api/apps/agent-api/app/
+    core/config.py)
+
+  ### Area 3: Error Taxonomy — Findings
+
+  #### What Exists
+
+  - Backend defines ErrorCode enum and structured ErrorResponse with middleware handler for APIException/validation/generic errors (zakops-backend/
+    src/api/shared/error_codes.py, zakops-backend/src/api/shared/responses.py, zakops-backend/src/api/shared/middleware/error_handler.py)
+  - Backend returns structured health metrics and includes X-Trace-ID via tracing middleware (zakops-backend/src/api/shared/middleware/tracing.py,
+    zakops-backend/src/api/shared/routers/health.py)
+  - Dashboard normalizes three backend error shapes (FastAPI detail, auth error string, structured error object) (zakops-agent-api/apps/dashboard/src/
+    lib/error-normalizer.ts)
+  - Dashboard ApiError class centralizes error handling and intercepts error payloads even on 200 responses (zakops-agent-api/apps/dashboard/src/lib/
+    api.ts)
+  - Agent-api has a RequestValidationError handler returning {detail, errors} (zakops-agent-api/apps/agent-api/app/main.py)
+  - Agent-api rate limit errors return {error, detail, retry_after} (zakops-agent-api/apps/agent-api/app/core/middleware/rate_limiter.py)
+  - Agent-api SSE stream returns event: error with simple JSON payload (zakops-agent-api/apps/agent-api/app/api/v1/agent.py)
+  - Dashboard middleware proxy returns JSON 502 with backend_unavailable and correlation ID (zakops-agent-api/apps/dashboard/src/middleware.ts)
+  - Surface 9 manifest codifies console.warn vs console.error expectations (zakops-agent-api/apps/dashboard/src/types/design-system-manifest.ts)
+
+  #### What's Ad-Hoc
+
+  - Many backend endpoints raise FastAPI HTTPException with detail strings, bypassing structured ErrorResponse (zakops-backend/src/api/orchestration/
+    main.py)
+  - Agent-api mixes error shapes (validation handler, rate limit handler, HTTPException detail strings) without a single schema (zakops-agent-api/
+    apps/agent-api/app/main.py, zakops-agent-api/apps/agent-api/app/core/middleware/rate_limiter.py, zakops-agent-api/apps/agent-api/app/api/v1/*.py)
+  - Dashboard server routes sometimes log console.error on expected degradation while Surface 9 requires console.warn (zakops-agent-api/apps/
+    dashboard/src/app/api/agent/activity/route.ts, zakops-agent-api/apps/dashboard/src/types/design-system-manifest.ts)
+  - SSE error payloads are free-form and not aligned with HTTP error schema (zakops-agent-api/apps/agent-api/app/api/v1/agent.py)
+
+  #### What's Missing
+
+  - Unified, cross-service error schema for backend + agent-api + RAG (backend has one, others do not) (zakops-backend/src/api/shared/responses.py,
+    zakops-agent-api/apps/agent-api/app/main.py, Zaks-llm/src/api/rag_rest_api.py)
+  - Standardized machine-readable error codes in agent-api and RAG (backend uses ErrorCode; others do not) (zakops-backend/src/api/shared/
+    error_codes.py, zakops-agent-api/apps/agent-api/app/api/v1/*.py)
+  - Guaranteed correlation ID propagation into error payloads (backend only adds X-Trace-ID header; correlation in body only for ErrorResponse)
+    (zakops-backend/src/api/shared/middleware/tracing.py, zakops-backend/src/api/shared/middleware/error_handler.py)
+
+  #### What Would Break
+
+  - Enforcing a strict error schema would break clients expecting detail or {error, message} shapes; dashboard normalizer currently supports multiple
+    shapes (zakops-agent-api/apps/dashboard/src/lib/error-normalizer.ts)
+  - Standardizing SSE error events would require updates to agent-api streaming responses and dashboard client expectations (zakops-agent-api/apps/
+    agent-api/app/api/v1/agent.py, zakops-agent-api/apps/dashboard/src/lib/api.ts)
+
+  #### Recommended Manifest Contents
+
+  - Error code registry with HTTP status mapping (backend ErrorCode can be source of truth) (zakops-backend/src/api/shared/error_codes.py)
+  - Required error payload schema for HTTP + SSE (include trace_id/correlation_id) (zakops-backend/src/api/shared/responses.py, zakops-agent-api/apps/
+    agent-api/app/api/v1/agent.py)
+  - Logging rules (warn vs error) aligned with Surface 9 (zakops-agent-api/apps/dashboard/src/types/design-system-manifest.ts)
+
+  ### Area 4: Test Coverage Contract — Findings
+
+  #### What Exists
+
+  - Backend test files (pytest):
+    zakops-backend/tests/security/test_security_regression.py
+    zakops-backend/tests/e2e/test_integration_smoke.py
+    zakops-backend/tests/e2e/test_full_workflow.py
+    zakops-backend/tests/e2e/test_agent_workflow.py
+    zakops-backend/tests/e2e/test_action_workflow.py
+    zakops-backend/tests/e2e/test_deal_workflow.py
+    zakops-backend/tests/e2e/test_event_streaming.py
+    zakops-backend/tests/e2e/test_hitl_workflow.py
+    zakops-backend/tests/unit/test_cursor_pagination.py
+    zakops-backend/tests/unit/test_email_service.py
+    zakops-backend/tests/unit/test_artifact_store.py
+    zakops-backend/tests/unit/test_model_registry.py
+    zakops-backend/tests/unit/test_idempotency.py
+    zakops-backend/tests/unit/test_agent_tools.py
+    zakops-backend/tests/integration/test_quarantine_delete.py
+    zakops-backend/tests/integration/test_ui_integration.py
+    zakops-backend/tests/integration/test_golden_path_email.py
+    zakops-backend/tests/integration/test_observability.py
+    zakops-backend/tests/integration/test_golden_path_deal.py
+    zakops-backend/tests/integration/test_golden_path_agent.py
+    zakops-backend/tests/integration/test_deals_bulk_delete.py
+    zakops-backend/tests/integration/test_sse_streaming.py
+    zakops-backend/tests/contract/test_contract_compliance.py
+    zakops-backend/tests/contract/test_sse_contract.py
+    zakops-backend/scripts/gates/tests/test_raw_content_scan.py
+    zakops-backend/scripts/gates/tests/test_prod_exposure_fail_closed.py
+    zakops-backend/scripts/gates/tests/test_resilience_config.py
+    zakops-backend/scripts/gates/tests/test_langfuse_selfhost.py
+    zakops-backend/scripts/gates/tests/test_secrets_hygiene.py
+    zakops-backend/scripts/gates/tests/test_deal_tools.py
+    zakops-backend/scripts/gates/tests/test_encryption.py
+    zakops-backend/scripts/gates/tests/test_deal_tools_execution.py
+    zakops-backend/scripts/gates/tests/test_safe_logger.py
+    zakops-backend/scripts/probes/phase2_e2e_hitl_test.py
+    zakops-backend/src/actions/tests/test_e2e_actions.py
+    zakops-backend/src/core/chat_smoke_test.py
+  - Agent-api test files (pytest):
+    zakops-agent-api/apps/agent-api/tests/security/test_pii_redaction.py
+    zakops-agent-api/apps/agent-api/tests/security/test_rbac_coverage.py
+    zakops-agent-api/apps/agent-api/tests/security/test_owasp_llm_top10.py
+    zakops-agent-api/apps/agent-api/tests/security/test_output_sanitization.py
+    zakops-agent-api/apps/agent-api/tests/security/test_rate_limits.py
+    zakops-agent-api/apps/agent-api/tests/test_cost_tracking.py
+    zakops-agent-api/apps/agent-api/scripts/test_trace_sink.py
+  - Dashboard test files (Vitest + Playwright):
+    zakops-agent-api/apps/dashboard/e2e/chat.spec.ts
+    zakops-agent-api/apps/dashboard/e2e/workflow_verification.spec.ts
+    zakops-agent-api/apps/dashboard/tests/e2e/backend-up.spec.ts
+    zakops-agent-api/apps/dashboard/tests/e2e/smoke.spec.ts
+    zakops-agent-api/apps/dashboard/tests/e2e/chat-shared.spec.ts
+    zakops-agent-api/apps/dashboard/tests/e2e/graceful-degradation.spec.ts
+    zakops-agent-api/apps/dashboard/tests/e2e/quarantine-actions.spec.ts
+    zakops-agent-api/apps/dashboard/tests/e2e/deal-routing-create.spec.ts
+    zakops-agent-api/apps/dashboard/tests/quarantine-delete.spec.ts
+    zakops-agent-api/apps/dashboard/tests/deals-bulk-delete.spec.ts
+    zakops-agent-api/apps/dashboard/src/__tests__/e2e/integration.test.tsx
+    zakops-agent-api/apps/dashboard/src/__tests__/deal-integrity.test.ts
+  - Test frameworks declared: backend uses pytest (zakops-backend/pyproject.toml), agent-api uses pytest (zakops-agent-api/apps/agent-api/
+    pyproject.toml), dashboard uses Vitest + Playwright (zakops-agent-api/apps/dashboard/package.json)
+  - E2E coverage includes backend-up and graceful-degradation suites that validate JSON 502 from proxy (zakops-agent-api/apps/dashboard/tests/e2e/
+    graceful-degradation.spec.ts)
+
+  #### What's Ad-Hoc
+
+  - Some backend tests are skipped entirely (golden path class is marked skip) (zakops-backend/tests/integration/test_golden_path_deal.py)
+  - FSM tests reference legacy stage names (initial_review, due_diligence, closed_won) that do not match current DealStage enum (inbound/screening/
+    qualified/...) (zakops-backend/tests/unit/test_idempotency.py, zakops-backend/src/core/deals/workflow.py)
+  - Some tests use non-canonical stage names in live API calls (e.g., stage: "lead" in golden path tests) (zakops-backend/tests/integration/
+    test_golden_path_deal.py)
+  - Agent-api CI only runs pytest evals/ (not tests/) and dashboard CI does not run Playwright (zakops-agent-api/.github/workflows/ci.yml)
+  - A Playwright spec appears inconsistent (navigates /deals but expects /deals-bulk-delete) (zakops-agent-api/apps/dashboard/tests/deals-bulk-
+    delete.spec.ts)
+
+  #### What's Missing
+
+  - Many API endpoints are untested (see coverage matrix below; 61 of 93 endpoints marked UNTESTED via string-match) (zakops-agent-api/packages/
+    contracts/openapi/zakops-api.json + tests listed above)
+  - E2E coverage gaps for dashboard pages /onboarding, /settings, /ui-test (zakops-agent-api/apps/dashboard/src/app/**/page.tsx, zakops-agent-api/
+    apps/dashboard/tests/**/*.spec.ts)
+  - FSM transition coverage for canonical stages (only archive/restore is exercised; most transitions untested) (zakops-backend/src/core/deals/
+    workflow.py, zakops-agent-api/apps/dashboard/src/__tests__/deal-integrity.test.ts)
+  - No RAG REST API tests found (RAG implementation exists without tests) (Zaks-llm/src/api/rag_rest_api.py, Zaks-llm/tests/** does not reference RAG)
+
+  #### What Would Break
+
+  - Enforcing a strict test coverage contract would fail immediately due to untested endpoints and page gaps (coverage matrix below; see untested
+    endpoints list)
+  - FSM transition contract would fail because existing tests target legacy stage names and do not cover current transition map (zakops-backend/tests/
+    unit/test_idempotency.py, zakops-backend/src/core/deals/workflow.py)
+
+  #### Test Coverage Map (API Endpoints)
+
+  Source of endpoints: zakops-agent-api/packages/contracts/openapi/zakops-api.json. Coverage is a conservative string-match against test files listed
+  above.
+
+  DELETE /api/admin/dlq/{entry_id}	UNTESTED
+  DELETE /api/integrations/email/accounts/{email_address}	UNTESTED
+  DELETE /api/integrations/email/threads/{thread_id}/link	UNTESTED
+  GET /api/actions	TESTED
+  GET /api/actions/capabilities	UNTESTED
+  GET /api/actions/kinetic	TESTED
+  GET /api/actions/metrics	UNTESTED
+  GET /api/actions/quarantine	UNTESTED
+  GET /api/actions/{action_id}	TESTED
+  GET /api/admin/dlq	UNTESTED
+  GET /api/admin/dlq/stats	UNTESTED
+  GET /api/admin/outbox/stats	UNTESTED
+  GET /api/admin/retention/stats	UNTESTED
+  GET /api/admin/sse/stats	UNTESTED
+  GET /api/admin/system/health	UNTESTED
+  GET /api/agent/activity	TESTED
+  GET /api/agent/langsmith/health	UNTESTED
+  GET /api/agent/models	UNTESTED
+  GET /api/agent/runs	TESTED
+  GET /api/agent/runs/{run_id}	UNTESTED
+  GET /api/agent/tools	TESTED
+  GET /api/auth/check	TESTED
+  GET /api/auth/me	TESTED
+  GET /api/chat/session/{session_id}	TESTED
+  GET /api/deals	TESTED
+  GET /api/deals/by-alias	UNTESTED
+  GET /api/deals/stages/summary	UNTESTED
+  GET /api/deals/{deal_id}	TESTED
+  GET /api/deals/{deal_id}/activity-summary	UNTESTED
+  GET /api/deals/{deal_id}/aliases	UNTESTED
+  GET /api/deals/{deal_id}/events	UNTESTED
+  GET /api/deals/{deal_id}/notes	UNTESTED
+  GET /api/deals/{deal_id}/stage-history	UNTESTED
+  GET /api/deals/{deal_id}/timeline	UNTESTED
+  GET /api/deals/{deal_id}/transitions	UNTESTED
+  GET /api/deals/{deal_id}/valid-transitions	UNTESTED
+  GET /api/events	TESTED
+  GET /api/events/stats	UNTESTED
+  GET /api/events/stream	TESTED
+  GET /api/integrations/email/accounts	UNTESTED
+  GET /api/integrations/email/deals/{deal_id}/threads	UNTESTED
+  GET /api/integrations/email/gmail/auth	UNTESTED
+  GET /api/integrations/email/gmail/callback	UNTESTED
+  GET /api/integrations/email/inbox	UNTESTED
+  GET /api/integrations/email/threads/{thread_id}	UNTESTED
+  GET /api/pending-tool-approvals	TESTED
+  GET /api/pipeline/stats	TESTED
+  GET /api/pipeline/summary	TESTED
+  GET /api/quarantine	TESTED
+  GET /api/quarantine/health	UNTESTED
+  GET /api/quarantine/{item_id}	TESTED
+  GET /api/search/actions	UNTESTED
+  GET /api/search/deals	UNTESTED
+  GET /api/search/global	UNTESTED
+  GET /api/senders	UNTESTED
+  GET /api/senders/{email}	UNTESTED
+  GET /api/version	TESTED
+  GET /health	TESTED
+  GET /health/detailed	UNTESTED
+  GET /health/live	TESTED
+  GET /health/metrics	UNTESTED
+  GET /health/ready	TESTED
+  GET /health/startup	UNTESTED
+  PATCH /api/deals/{deal_id}	TESTED
+  POST /api/actions/bulk/delete	UNTESTED
+  POST /api/actions/clear-completed	UNTESTED
+  POST /api/actions/{action_id}/approve	TESTED
+  POST /api/actions/{action_id}/execute	UNTESTED
+  POST /api/actions/{action_id}/reject	TESTED
+  POST /api/admin/dlq/purge-old	UNTESTED
+  POST /api/admin/dlq/retry-all	UNTESTED
+  POST /api/admin/dlq/{entry_id}/retry	UNTESTED
+  POST /api/admin/retention/cleanup	UNTESTED
+  POST /api/agent/invoke	TESTED
+  POST /api/agent/langsmith/invoke	UNTESTED
+  POST /api/agent/langsmith/invoke/stream	UNTESTED
+  POST /api/auth/login	TESTED
+  POST /api/auth/logout	UNTESTED
+  POST /api/auth/register	UNTESTED
+  POST /api/chat/execute-proposal	UNTESTED
+  POST /api/deals	TESTED
+  POST /api/deals/{deal_id}/aliases	UNTESTED
+  POST /api/deals/{deal_id}/archive	TESTED
+  POST /api/deals/{deal_id}/notes	UNTESTED
+  POST /api/deals/{deal_id}/restore	TESTED
+  POST /api/deals/{deal_id}/transition	TESTED
+  POST /api/events/broadcast	UNTESTED
+  POST /api/integrations/email/search	UNTESTED
+  POST /api/integrations/email/send	UNTESTED
+  POST /api/integrations/email/threads/link	UNTESTED
+  POST /api/quarantine	TESTED
+  POST /api/quarantine/{item_id}/delete	UNTESTED
+  POST /api/quarantine/{item_id}/process	UNTESTED
+
+  #### Test Coverage Map (Dashboard Pages, E2E)
+
+  Source of routes: zakops-agent-api/apps/dashboard/src/app/**/page.tsx. Coverage from Playwright specs in zakops-agent-api/apps/dashboard/tests/**
+  and zakops-agent-api/apps/dashboard/e2e/**.
+
+  /	E2E
+  /actions	E2E
+  /agent/activity	E2E
+  /chat	E2E
+  /dashboard	E2E
+  /deals	E2E
+  /deals/[id]	E2E
+  /deals/new	E2E
+  /hq	E2E
+  /onboarding	NO_E2E
+  /quarantine	E2E
+  /settings	NO_E2E
+  /ui-test	NO_E2E
+
+  #### Test Coverage Map (FSM Transitions)
+
+  Source of transitions: zakops-backend/src/core/deals/workflow.py. Evidence of archive/restore tests: zakops-agent-api/apps/dashboard/src/__tests__/
+  deal-integrity.test.ts.
+
+  inbound -> screening	UNTESTED
+  inbound -> junk	UNTESTED
+  inbound -> archived	TESTED (archive endpoint)
+  screening -> qualified	UNTESTED
+  screening -> junk	UNTESTED
+  screening -> archived	UNTESTED
+  qualified -> loi	UNTESTED
+  qualified -> junk	UNTESTED
+  qualified -> archived	UNTESTED
+  loi -> diligence	UNTESTED
+  loi -> qualified	UNTESTED
+  loi -> junk	UNTESTED
+  loi -> archived	UNTESTED
+  diligence -> closing	UNTESTED
+  diligence -> loi	UNTESTED
+  diligence -> junk	UNTESTED
+  diligence -> archived	UNTESTED
+  closing -> portfolio	UNTESTED
+  closing -> diligence	UNTESTED
+  closing -> junk	UNTESTED
+  closing -> archived	UNTESTED
+  portfolio -> archived	UNTESTED
+  junk -> inbound	UNTESTED
+  junk -> archived	UNTESTED
+
+  Note: POST /api/deals/{id}/restore?target_stage=inbound is tested but archived -> inbound is not represented in STAGE_TRANSITIONS (zakops-agent-api/
+  apps/dashboard/src/__tests__/deal-integrity.test.ts, zakops-backend/src/core/deals/workflow.py).
+
+  #### Recommended Manifest Contents
+
+  - Canonical test inventory per service (paths listed above) with type tags (unit/integration/e2e/contract) (zakops-backend/tests/**, zakops-agent-
+    api/apps/dashboard/tests/**)
+  - Required coverage thresholds per endpoint/page/transition (use openapi spec as source of truth) (zakops-agent-api/packages/contracts/openapi/
+    zakops-api.json)
+  - CI enforcement plan (which suites run in CI vs local) (zakops-agent-api/.github/workflows/ci.yml, zakops-backend/.github/workflows/contract-
+    tests.yml)
+  - Test DB strategy and isolation rules (e.g., docker exec usage in deal-integrity tests) (zakops-agent-api/apps/dashboard/src/__tests__/deal-
+    integrity.test.ts)
+
+  ### Area 5: Performance Budget — Findings
+
+  #### What Exists
+
+  - Backend request timing/metrics middleware with slow-request threshold (SLOW_REQUEST_THRESHOLD_MS) and response header X-Response-Time (zakops-
+    backend/src/api/shared/middleware/metrics.py)
+  - /health/metrics endpoint returns request metrics and includes threshold config (zakops-backend/src/api/shared/routers/health.py)
+  - Chat performance benchmark script with p50/p95 reporting (zakops-backend/src/core/chat_benchmark.py)
+  - Chat timing instrumentation with phase breakdown (zakops-backend/src/core/chat_timing.py)
+  - Agent-api Prometheus metrics with request/LLM histograms (zakops-agent-api/apps/agent-api/app/core/metrics.py)
+  - Database performance supports indexes and pipeline summary view (zakops-backend/db/migrations/001_foundation_tables.sql, zakops-backend/db/
+    migrations/023_stage_check_constraint.sql)
+  - Dashboard data fetching uses Promise.allSettled at page level to avoid blocking on partial failures (zakops-agent-api/apps/dashboard/src/app/
+    dashboard/page.tsx, zakops-agent-api/apps/dashboard/src/app/hq/page.tsx)
+  - React Query caching defaults reduce refetches (staleTime, retry) (zakops-agent-api/apps/dashboard/src/components/layout/providers.tsx)
+
+  #### What's Ad-Hoc
+
+  - Performance baselines are mentioned but not recorded (no actual numbers) (zakops-agent-api/apps/dashboard/audit/risk-assessment.md)
+  - Dashboard Makefile performance target uses external script path (/home/zaks/scripts/chat_benchmark.py) and assumes backend port 8090 (port drift)
+    (zakops-agent-api/apps/dashboard/Makefile)
+  - Dashboard pipeline API route uses Promise.all without fallback per request and fetches full deals list in server route, which can be heavy
+    (zakops-agent-api/apps/dashboard/src/app/api/pipeline/route.ts)
+  - No explicit timeout in dashboard proxy middleware fetch (zakops-agent-api/apps/dashboard/src/middleware.ts)
+
+  #### What's Missing
+
+  - No explicit performance budget or SLOs for key endpoints/pages (only a slow-request threshold) (zakops-backend/src/api/shared/middleware/
+    metrics.py)
+  - No Web Vitals or client-side performance instrumentation in dashboard (zakops-agent-api/apps/dashboard/src/**)
+  - No CI performance tests or bundle size budgets (zakops-agent-api/.github/workflows/ci.yml, zakops-agent-api/apps/dashboard/package.json)
+
+  #### What Would Break
+
+  - Enforcing tight response-time budgets could conflict with long LLM/RAG calls and existing timeouts (LLM benchmark uses 120s timeout) (zakops-
+    backend/src/core/chat_benchmark.py)
+  - Strict budgets on dashboard pipeline route could fail when it builds stage data from full deal list (zakops-agent-api/apps/dashboard/src/app/api/
+    pipeline/route.ts)
+
+  #### Recommended Manifest Contents
+
+  - Performance budgets per critical endpoint (p95/p99) and per page load (TTFB, data fetch latency) (zakops-backend/src/api/shared/middleware/
+    metrics.py, zakops-agent-api/apps/dashboard/src/app/dashboard/page.tsx)
+  - LLM/RAG latency budgets and timeout policy (zakops-backend/src/core/chat_benchmark.py, zakops-agent-api/apps/agent-api/app/services/rag_rest.py)
+  - Bundle size tracking + Web Vitals instrumentation requirement for dashboard (zakops-agent-api/apps/dashboard/package.json, zakops-agent-api/apps/
+    dashboard/src/**)
+
+  ### Cross-Cutting Observations
+
+  - Surface 9 design system manifest already codifies error handling and data fetching conventions; Surfaces 10–14 must align rather than duplicate
+    these rules (zakops-agent-api/apps/dashboard/src/types/design-system-manifest.ts)
+  - Duplicate dashboard codebases and port drift create conflicting assumptions about backend location (8090 vs 8091) and env files (zakops-agent-api/
+    apps/dashboard/Makefile, zakops-agent-api/apps/dashboard/.env.local, zakops-backend/docker-compose.yml, /home/zaks/zakops-dashboard/.env.local)
+  - FSM tests are out of sync with canonical stage taxonomy, which undermines both error taxonomy and test coverage surfaces (zakops-backend/tests/
+    unit/test_idempotency.py, zakops-backend/src/core/deals/workflow.py)
+  - Dependency health and env registry are tightly coupled; URL/port drift appears in both compose and dashboard code (zakops-agent-api/deployments/
+    docker/docker-compose.yml, zakops-agent-api/apps/dashboard/src/middleware.ts)
+  - Surface ordering dependency (recommended): Surface 11 (Env Registry) -> Surface 10 (Dependency Health) -> Surface 12 (Error Taxonomy) -> Surface
+    13 (Test Coverage Contract) -> Surface 14 (Performance Budget); env registry must define endpoints/URLs before health checks; error taxonomy
+    should be standardized before tests/budgets assert on error shapes (zakops-agent-api/apps/agent-api/app/core/config.py, zakops-backend/src/api/
+    shared/routers/health.py, zakops-backend/src/api/shared/error_codes.py, zakops-agent-api/apps/dashboard/src/types/design-system-manifest.ts)
+
+  ### Implementation Priority Recommendation
+
+  - Highest priority: Surface 11 (Secret & Env Registry) — most ad-hoc and highest blast radius due to inconsistent naming, doc drift, and default
+    secrets (zakops-agent-api/apps/dashboard/src/middleware.ts, zakops-agent-api/apps/dashboard/README.md, zakops-agent-api/deployments/docker/doer-
+    compose.yml)
+  - Next: Surface 10 (Dependency Health) — many pieces exist (health endpoints + healthchecks) but no unified manifest; easier to standardize once env
+    registry is stabilized (zakops-backend/src/api/shared/routers/health.py, zakops-backend/docker-compose.yml)
+  - Then: Surface 12 (Error Taxonomy) — backend has codes but cross-service shapes diverge; unify after dependency health so errors can include
+    dependency status consistently (zakops-backend/src/api/shared/error_codes.pykops-agent-api/apps/agent-api/app/main.py, zakops-agent-api/apps/
+    dashboard/src/lib/error-normalizer.ts)
+  - Then: Surface 13 (Test Coverage Contract) — many gaps and stale tests; needs stable endpoints/errors first (zakops-agent-api/packages/contracts/
+    openapi/zakops-api.json, zakops-backend/tests/unit/test_idempotency.py)
+  - Finally: Surface 14 (Performance Budget) — requires stable instrumentation + tests to enforce budgets (zakops-backend/src/api/shared/middleware/
+    metrics.py, zakops-bad/src/core/chat_benchmark.py)

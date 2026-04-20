@@ -1,0 +1,4 @@
+51:BACKEND_API_KEY = os.getenv("ZAKOPS_API_KEY", "")
+709:    headers = {"X-API-Key": BACKEND_API_KEY}
+801:                headers={"X-API-Key": BACKEND_API_KEY},
+908:                headers={"X-API-Key": BACKEND_API_KEY},

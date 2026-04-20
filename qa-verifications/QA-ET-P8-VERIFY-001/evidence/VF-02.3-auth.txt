@@ -1,0 +1,2 @@
+class BearerAuthMiddleware(BaseHTTPMiddleware):
+        a.add_middleware(BearerAuthMiddleware, api_key=API_KEY,

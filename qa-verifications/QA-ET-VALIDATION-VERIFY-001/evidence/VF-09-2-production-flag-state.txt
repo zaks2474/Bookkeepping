@@ -1,0 +1,6 @@
+=== VF-09.2 PRODUCTION FLAG STATE ===
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:223:- G0-02: `shadow_mode=ON` results in `source_type=langsmith_shadow` on injected items.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:441:- G5-01: `auto_route=OFF` sends all emails to quarantine.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:551:1. Retain `shadow_mode=ON`, `auto_route=OFF`, `delegate_actions=OFF`, `send_email_enabled=OFF` until readiness issues are resolved.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:560:- G8-06: Production safety flags are set (`shadow_mode=ON`, `auto_route=OFF`, `delegate_actions=OFF`, `send_email_enabled=OFF`).
+/home/zaks/bookkeeping/mission-checkpoints/MISSION-ET-VALIDATION-001.md:49:| G0-02 | shadow_mode=ON → source_type=langsmith_shadow | PASS |

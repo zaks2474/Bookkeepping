@@ -1,0 +1,29 @@
+=== CHECK 4.7.3a: Approve Thread A's approval ===
+Timestamp: 2026-02-03T13:17:30-06:00
+Approval ID: 3d52c78e-780f-4d30-b30d-871ad8d29671
+Thread ID: forensic-003-multi-a-1770146198
+
+=== API Call: POST /api/v1/agent/approvals/{id}:approve ===
+Using actor_id: multi-test-a (matches creation actor)
+{
+    "thread_id": "forensic-003-multi-a-1770146198",
+    "status": "completed",
+    "content": "Hello! How can I assist you today? If you have any questions or need help with managing deals, feel free to ask.",
+    "pending_approval": null,
+    "actions_taken": [
+        {
+            "tool": "transition_deal",
+            "result": {
+                "ok": false
+            }
+        }
+    ],
+    "error": "Tool execution did not complete"
+}
+
+=== Verify approval state changed ===
+                  id                  |            thread_id            |  status  |          resolved_at          | resolved_by  
+--------------------------------------+---------------------------------+----------+-------------------------------+--------------
+ 3d52c78e-780f-4d30-b30d-871ad8d29671 | forensic-003-multi-a-1770146198 | approved | 2026-02-03 19:17:31.618645+00 | multi-test-a
+(1 row)
+

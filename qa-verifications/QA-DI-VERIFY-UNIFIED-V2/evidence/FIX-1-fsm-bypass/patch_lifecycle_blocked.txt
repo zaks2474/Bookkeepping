@@ -1,0 +1,5 @@
+=== F1.1: PATCH rejects lifecycle fields ===
+Before: stage=inbound, status=active
+PATCH {stage: archived, status: deleted} -> HTTP 400: {"detail":"No fields to update"}
+After: stage=inbound, status=active
+VERDICT: PASS — lifecycle fields unchanged

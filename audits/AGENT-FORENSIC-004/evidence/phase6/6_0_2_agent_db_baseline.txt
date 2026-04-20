@@ -1,0 +1,10 @@
+=== CHECK 6.0.2 — Agent DB Accessible ===
+time="2026-02-03T16:52:32-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-03T16:52:32-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+   table_name    | count 
+-----------------+-------
+ approvals       |    47
+ audit_log       |   142
+ tool_executions |    34
+(3 rows)
+

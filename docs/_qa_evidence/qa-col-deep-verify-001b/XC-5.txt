@@ -1,0 +1,74 @@
+=== TurnSnapshot dataclass fields ===
+31:    thread_id: str
+32:    turn_number: int
+33:    user_id: str
+36:    rendered_system_prompt: str = ""
+37:    evidence_context: str | None = None
+38:    evidence_hash: str | None = None
+39:    post_trim_messages: list[dict] = field(default_factory=list)
+40:    rolling_summary: str | None = None
+41:    injection_scan_result: dict | None = None
+44:    model_name: str = ""
+45:    provider: str = ""
+46:    temperature: float | None = None
+47:    max_completion_tokens: int | None = None
+48:    tool_definitions: list[dict] | None = None
+51:    raw_completion: str | None = None
+52:    proposals_extracted: list[dict] = field(default_factory=list)
+53:    citations_extracted: list[dict] = field(default_factory=list)
+54:    completion_tokens: int | None = None
+55:    prompt_tokens: int | None = None
+56:    total_tokens: int | None = None
+59:    critique_result: dict | None = None
+62:    prompt_version: str | None = None
+63:    prompt_hash: str | None = None
+64:    latency_ms: int | None = None
+65:    routing_decision: str | None = None
+66:    routing_reason: str | None = None
+97:        Args:
+98:            snapshot: Complete turn snapshot
+100:        Returns:
+107:        try:
+198:        try:
+212:        try:
+
+=== turn_snapshots SQL columns ===
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:439:                    rendered_system_prompt=str(SYSTEM_PROMPT) if SYSTEM_PROMPT else "",
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:1082:                            """UPDATE turn_snapshots
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:1083:                               SET critique_result = $1
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/chat_repository.py:223:                text("DELETE FROM turn_snapshots WHERE thread_id = :thread_id"),
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/replay_service.py:134:            system_prompt = snapshot.get("rendered_system_prompt", "")
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/gdpr_service.py:102:                        "DELETE FROM turn_snapshots WHERE thread_id = $1", thread_id,
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/counterfactual_service.py:143:            evidence = snapshot.get("evidence_context", "") or ""
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/counterfactual_service.py:147:            snapshot["evidence_context"] = evidence
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/counterfactual_service.py:151:            prompt = snapshot.get("rendered_system_prompt", "")
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/counterfactual_service.py:155:            snapshot["rendered_system_prompt"] = prompt
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/counterfactual_service.py:172:            system_prompt = snapshot.get("rendered_system_prompt", "")
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/snapshot_writer.py:14:Snapshots are written to turn_snapshots table (partitioned by created_at).
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/snapshot_writer.py:36:    rendered_system_prompt: str = ""
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/snapshot_writer.py:37:    evidence_context: str | None = None
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/snapshot_writer.py:59:    critique_result: dict | None = None
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/snapshot_writer.py:70:        if self.evidence_context:
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/snapshot_writer.py:71:            self.evidence_hash = hashlib.sha256(self.evidence_context.encode()).hexdigest()
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/snapshot_writer.py:76:        if self.rendered_system_prompt:
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/snapshot_writer.py:77:            self.prompt_hash = hashlib.sha256(self.rendered_system_prompt.encode()).hexdigest()
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/snapshot_writer.py:112:                    INSERT INTO turn_snapshots (
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/snapshot_writer.py:114:                        rendered_system_prompt, evidence_context, evidence_hash,
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/snapshot_writer.py:120:                        critique_result,
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/snapshot_writer.py:142:                        critique_result = EXCLUDED.critique_result,
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/snapshot_writer.py:149:                    snapshot.rendered_system_prompt,
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/snapshot_writer.py:150:                    snapshot.evidence_context,
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/snapshot_writer.py:166:                    json.dumps(snapshot.critique_result) if snapshot.critique_result else None,
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/snapshot_writer.py:202:                    "SELECT * FROM turn_snapshots WHERE thread_id = $1 AND turn_number = $2",
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/snapshot_writer.py:219:                    FROM turn_snapshots
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store_rollback.sql:17:DROP TABLE IF EXISTS turn_snapshots_default CASCADE;
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store_rollback.sql:18:DROP TABLE IF EXISTS turn_snapshots CASCADE;
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:116:-- ----- turn_snapshots (partitioned) -----
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:117:CREATE TABLE IF NOT EXISTS turn_snapshots ( -- PARTITION BY RANGE(created_at)
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:125:    rendered_system_prompt  TEXT NOT NULL,
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:126:    evidence_context        TEXT,
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:148:    critique_result         JSONB,
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:165:CREATE TABLE IF NOT EXISTS turn_snapshots_default PARTITION OF turn_snapshots DEFAULT;
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/004_chat_canonical_store.sql:288:SELECT create_monthly_partitions('turn_snapshots', 3);
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/030_partition_automation.sql:2:-- Auto-creates monthly partitions for turn_snapshots and cost_ledger.
+/home/zaks/zakops-agent-api/apps/agent-api/migrations/030_partition_automation.sql:44:SELECT * FROM create_monthly_partitions('turn_snapshots', 3);

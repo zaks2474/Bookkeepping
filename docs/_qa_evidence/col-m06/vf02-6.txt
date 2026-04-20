@@ -1,0 +1,2 @@
+SEVERITY_ORDER = {"none": 0, "low": 1, "medium": 2, "high": 3}
+            if SEVERITY_ORDER[severity] > SEVERITY_ORDER[max_severity]:

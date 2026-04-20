@@ -1,0 +1,4 @@
+249:        """COL-V2 A-1: Hybrid dense+sparse retrieval with RRF fusion.
+257:            dense_weight: Weight for dense (semantic) results in RRF
+258:            sparse_weight: Weight for sparse (BM25) results in RRF
+290:                    similarity=r.get("rrf_score", r.get("similarity", 0.0)),

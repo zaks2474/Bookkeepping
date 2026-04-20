@@ -1,0 +1,15 @@
+=== VF-05.3 TOOLING POLICY PLAYWRIGHT GUIDANCE ===
+31:## 2. Playwright MCP
+35:**Config:** `/home/zaks/.claude/settings.json` → `mcpServers.playwright.disabled: true`
+38:1. Visual verification is not currently part of the automated validation pipeline
+39:2. Playwright MCP adds startup latency to every Claude Code session (~3-5s)
+40:3. Dashboard E2E tests exist independently (52 tests via the test suite) and do not require MCP integration
+41:4. Enabling Playwright MCP introduces network and browser-process dependencies that can cause session instability in WSL
+44:1. Edit `/home/zaks/.claude/settings.json`
+45:2. Change `"disabled": true` to `"disabled": false` under `mcpServers.playwright`
+47:4. Playwright tools (`browser_navigate`, `browser_screenshot`, etc.) become available
+55:- Do not leave Playwright MCP enabled permanently — disable after completing visual verification tasks
+57:- Playwright commands add latency; avoid in tight feedback loops
+66:| New component | `make validate-local`, `make validate-surface9` | E2E test, Playwright screenshot |
+67:| Styling/CSS change | `make validate-local`, manual browser check | Playwright screenshot comparison |
+70:| Accessibility improvement | `make validate-local` | Playwright + screen reader testing |

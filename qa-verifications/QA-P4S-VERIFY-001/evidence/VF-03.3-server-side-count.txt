@@ -1,0 +1,13 @@
+=== VF-03.3 SERVER SIDE DEAL COUNT ===
+--- All Deals description should NOT use filteredDeals.length ---
+client_side_length_in_description=1
+--- Should use pipelineData or stageCounts ---
+212:                      <>{pipelineData?.total_active ?? deals.length} active deal{(pipelineData?.total_active ?? deals.length) !== 1 ? 's' : ''}{pipelineData ? ` across ${STAGE_ORDER.filter(s => stageCounts[s] > 0).length} stage${STAGE_ORDER.filter(s => stageCounts[s] > 0).length !== 1 ? 's' : ''}` : ''}</>
+237:                    const count = stageCounts[stage];
+275:                      <>{selectedStage ? `${stageCounts[selectedStage] ?? 0} deal${(stageCounts[selectedStage] ?? 0) !== 1 ? 's' : ''} in ${selectedStage}` : `${pipelineData?.total_active ?? 0} deal${(pipelineData?.total_active ?? 0) !== 1 ? 's' : ''}`}</>
+
+--- ANALYSIS ---
+filteredDeals.length grep match is on line 334: '+{filteredDeals.length - 10} more deals'
+This is a list overflow indicator, NOT the description count text.
+The actual deal count description (line 212) uses pipelineData?.total_active ?? deals.length
+VERDICT: PASS (grep FALSE_POSITIVE)

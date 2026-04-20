@@ -1,0 +1,3 @@
+REM-005: Import check inside runtime container
+- Issue: Host python missing langgraph dependency, import check fails.
+- Fix: Run import verification inside zakops-agent-api container (actual runtime).

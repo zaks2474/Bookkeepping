@@ -1,0 +1,26 @@
+=== A4.7 ===
+verify_append_only() {
+  local evidence_dir="$1"
+  local logfile="$evidence_dir/append_only_log.txt"
+  if [ ! -f "$logfile" ]; then
+    echo "PASS: No append-only log yet"
+    return 0
+  fi
+  local prev_ws_size=0
+  local prev_ml_size=0
+  local violations=0
+  while IFS='|' read -r ts label size_field hash_field; do
+    local size
+    size=$(echo "$size_field" | grep -oP '\d+')
+    label=$(echo "$label" | xargs)
+    if [[ "$label" == *"WORKSPACE"* ]]; then
+      if [ "$size" -lt "$prev_ws_size" ]; then
+        violations=$((violations + 1))
+        log_err "WORKSPACE.md size decreased: $prev_ws_size -> $size at $ts"
+      fi
+      prev_ws_size=$size
+    elif [[ "$label" == *"MASTER_LOG"* ]]; then
+--
+gate_t1_append_only() {
+  local run_dir="$1"
+  log "Gate T-1: Append-Only Integrity"

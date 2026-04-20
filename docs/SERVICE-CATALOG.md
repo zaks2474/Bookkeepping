@@ -2,21 +2,19 @@
 
 Brief reference for services, ports, commands, config paths, data, and logs. Update as services change.
 
-## Claude Code FastAPI Wrapper
-- Purpose: OpenAI-compatible API for Claude CLI (OpenWebUI integration)
-- Port/URL: http://localhost:8090
-- Start/stop: `sudo systemctl start|stop|restart claude-code-api` (unit: `/etc/systemd/system/claude-code-api.service`)
-- Status: `systemctl status claude-code-api`
+## Claude Code FastAPI Wrapper (DECOMMISSIONED)
+- **Status: DECOMMISSIONED** — Port 8090 is no longer in use.
+- Purpose: Was OpenAI-compatible API for Claude CLI (OpenWebUI integration)
+- Port/URL: http://localhost:8090 (**DECOMMISSIONED**)
 - Config/code: `/home/zaks/claude-code-openwebui`
-- Logs: systemd journal (`journalctl -u claude-code-api`), app logs via uvicorn stdout
-- Notes: Uses Claude CLI at `/root/.npm-global/bin/claude`, MCP config at `/root/.config/Claude/claude_desktop_config.json`
+- Notes: Replaced by agent-api at port 8095. Do not restart or reference this service.
 
 ## OpenWebUI
 - Port/URL: http://localhost:3000
 - Start/stop: via docker compose stack `Zaks-llm`: `cd /home/zaks/Zaks-llm && docker compose up -d openwebui` / `docker compose restart openwebui`
 - Config/data: docker volume `open-webui` (mounted `/app/backend/data`); docs mount `/home/zaks/documents:/app/backend/data/docs`
 - Logs: `docker logs openwebui`
-- Notes: Model connection points to `http://localhost:8090/v1`; depends on `vllm-qwen` on port 8000
+- Notes: Model connection points to `http://localhost:8000/v1` (vLLM direct); depends on `vllm-qwen` on port 8000. Previous 8090 wrapper is decommissioned.
 
 ## Docker Services (Zaks-llm compose stack)
 - Path: `/home/zaks/Zaks-llm`
@@ -145,5 +143,38 @@ Brief reference for services, ports, commands, config paths, data, and logs. Upd
 - Usage:
   - Dry run: `python3 /home/zaks/scripts/zakops_approve_drafts.py /path/to/deal`
   - Approve: `python3 /home/zaks/scripts/zakops_approve_drafts.py /path/to/deal --approve`
+
+## ZakOps Backend (Deal Lifecycle API)
+- Purpose: FastAPI backend for deal management, actions, quarantine, agent orchestration
+- Port/URL: http://localhost:8091
+- Path: `/home/zaks/zakops-agent-api/apps/backend`
+- Start/stop: `cd /home/zaks/zakops-agent-api && COMPOSE_PROJECT_NAME=zakops docker compose up -d --no-deps backend`
+- Compose project: zakops (unified monorepo compose, containers: `zakops-backend-1`, `zakops-postgres-1`)
+- Middleware: CORS, TraceMiddleware (X-Trace-ID, X-Correlation-ID), MetricsMiddleware, AuthMiddleware, APIKeyMiddleware, IdempotencyMiddleware, SecurityMiddleware
+- OpenAPI: http://localhost:8091/openapi.json (83 paths, 56 schemas)
+- Database: `zakops` (user: `zakops`, host: via `zakops-postgres` container)
+- Notes: Container has no volume mounts — requires `docker compose build backend` for code changes
+
+## ZakOps Dashboard (Next.js)
+- Purpose: Deal management UI — deals, actions, quarantine, pipeline, agent runs
+- Port/URL: http://localhost:3003
+- Path: `/home/zaks/zakops-agent-api/apps/dashboard`
+- Start/stop: `cd /home/zaks/zakops-agent-api/apps/dashboard && npm run dev`
+- Type sync: `make sync-types` (fetches OpenAPI spec → codegen → format → typecheck)
+- Generated types: `src/lib/api-types.generated.ts` (openapi-typescript v7.10.1)
+- Manual types: `src/types/api.ts` (hybrid — imports generated types + manual refinements)
+- Notes: Two dashboards exist — this is the ACTIVE one (the other at `/home/zaks/zakops-dashboard` is inactive)
+
+## Infrastructure Validation Pipeline (Hybrid Guardrail V5)
+- Purpose: Codegen-enforced type safety + slim runtime validation
+- Path: `/home/zaks/zakops-agent-api/tools/infra/`
+- Makefile: `/home/zaks/zakops-agent-api/Makefile`
+- Key commands:
+  - `make sync-types` — OpenAPI → codegen → format → typecheck (87-120ms codegen)
+  - `make validate-all` — full system validation (infra-check + sync-types + rag-routing + secrets + enforcement)
+  - `make generate-preflight` — generates PREFLIGHT.md context bundle for Claude
+  - `make infra-check` — topology + DB assertion + migration + manifest age
+- CI: `.github/workflows/type-sync.yml` (codegen drift gate + Zod ceiling + legacy import check)
+- Total script lines: 967 (down from 3,369 after V4→V5 slimming)
 
 Add more services as needed following this pattern.

@@ -1,0 +1,25 @@
+=== VF-01.1 COMPLETION STRUCTURE ===
+109 /home/zaks/bookkeeping/docs/DASHBOARD-WORLDCLASS-REMEDIATION-001-COMPLETION.md
+32:| F-01 | Dashboard layout imbalance | Added scroll container with `overflow-y-auto` to dashboard page |
+33:| F-02 | Ask Agent drawer weak UX | Redesigned drawer: icon header, user/agent avatars, QuickAction empty state, "Full chat" link |
+34:| F-03 | Auto-refresh toast spam | `fetchData()` accepts `source` param; only `'manual'` triggers toast |
+35:| F-04 | Board view runtime crash | Defensive normalization: `Array.isArray(rawDeals) ? rawDeals : (rawDeals?.deals ?? [])` |
+36:| F-05 | Quarantine ghost input | localStorage persistence moved from onChange to post-action only |
+37:| F-06 | Chat lacks history rail | New `ChatHistoryRail` component + `chat-history.ts` session archive utility |
+38:| F-07 | Agent Activity is benchmark | Applied Agent Activity patterns: `bg-primary/10` icons, `group-hover` transitions, `cn()` utility |
+39:| F-08 | Onboarding step order | `viewStep` hardcoded to 0; explicit `resumeFromBackend()` for resume |
+40:| F-09 | Settings scroll/structure | Wrapped in `overflow-y-auto` container with `min-h-0` |
+41:| F-10 | Settings lacks return path | Added "Back to Dashboard" link with `IconArrowLeft` |
+56:| `tests/e2e/dashboard-worldclass-remediation.spec.ts` | 12 e2e tests covering F-01..F-10 |
+13:| AC-1 | Deals Board Reliability | PASS | DealBoard.tsx lines 142-143: defensive normalization handles both array and wrapped `{deals: Deal[]}` shapes |
+14:| AC-2 | Export Action Integrity | PASS | `api/settings/data/export/route.ts`: deterministic success/degraded path with error taxonomy |
+15:| AC-3 | Onboarding Step Order Integrity | PASS | `useOnboardingState.ts` line 155: `viewStep` starts at 0, canonical sequence enforced |
+16:| AC-4 | Onboarding Entry Consistency | PASS | Hook defaults to Welcome (step 0); resume requires explicit `resumeFromBackend()` call |
+17:| AC-5 | Quarantine Input Determinism | PASS | `quarantine/page.tsx`: localStorage read once on mount, write only after successful action |
+18:| AC-6 | Dashboard Layout Symmetry | PASS | `dashboard/page.tsx`: scroll container with `overflow-y-auto`, balanced grid layout |
+19:| AC-7 | Refresh Notification Quality | PASS | `dashboard/page.tsx`: `fetchData(source)` — only `source='manual'` shows toast |
+20:| AC-8 | Ask Agent Drawer Quality | PASS | `AgentDrawer.tsx`: redesigned with avatars, QuickAction buttons, "Full chat" link, auto-scroll |
+21:| AC-9 | Chat Information Architecture | PASS | `chat/page.tsx`: ChatHistoryRail, session archive, history toggle, improved provider selector |
+22:| AC-10 | Settings Navigation and Structure | PASS | `settings/page.tsx`: `overflow-y-auto` scroll container, "Back to Dashboard" link |
+23:| AC-11 | No Regressions | PASS | `make validate-local` PASS, `tsc --noEmit` PASS, 36/36 new unit tests PASS, 12 e2e tests written |
+24:| AC-12 | Bookkeeping Complete | PASS | This file + CHANGES.md updated |

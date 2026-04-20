@@ -1,0 +1,20 @@
+79:| `email_sync` | Items from the email synchronization pipeline |
+80:| `langsmith_shadow` | LangSmith shadow-mode items (measurement only) |
+81:| `langsmith_live` | LangSmith live-mode items |
+82:| `manual` | Manually injected items |
+87:1. Request body `source_type` field (highest priority)
+93:- **API**: `GET /api/quarantine?source_type=langsmith_shadow` — filters items by source type
+106:  "source_type": "string (optional)",
+85:### Priority
+86-
+87:1. Request body `source_type` field (highest priority)
+88-2. `X-Source-Type` request header
+89-3. Default: `"email"`
+90-
+91-### Filtering
+92-
+93-- **API**: `GET /api/quarantine?source_type=langsmith_shadow` — filters items by source type
+94-- **Dashboard**: Quarantine page has a source type dropdown filter in the header
+95-
+96----
+97-

@@ -1,0 +1,81 @@
+=== VF-03.1 STOP HOOK WIRING ===
+     1	#!/usr/bin/env bash
+     2	# Stop Hook — Run validation when session ends (V5PP)
+     3	# All output goes to stderr so Claude Code sees it properly
+     4	# (stdout "No stderr output" message was causing infinite re-trigger loop)
+     5	
+     6	exec 1>&2  # Redirect all stdout to stderr
+     7	
+     8	echo "=== Session End Validation (Fast Tier) ==="
+     9	
+    10	# Only run if in a recognized project
+    11	MONOREPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || echo "")
+    12	if [ -n "$MONOREPO_ROOT" ] && [ -f "$MONOREPO_ROOT/Makefile" ] && grep -q "validate-fast" "$MONOREPO_ROOT/Makefile" 2>/dev/null; then
+    13	  cd "$MONOREPO_ROOT"
+    14	
+    15	  START_TS=$(date +%s)
+    16	
+    17	  # Gate A — Fast offline validation (TypeScript + offline checks only)
+    18	  echo "Gate A: validate-fast"
+    19	  if ! timeout 12 make validate-fast 2>&1; then
+    20	    echo "ERROR: Gate A failed. Blocking stop hook."
+    21	    exit 2
+    22	  fi
+    23	  if [ $(( $(date +%s) - START_TS )) -gt 30 ]; then
+    24	    echo "ERROR: Stop hook exceeded 30s budget after Gate A."
+    25	    exit 2
+    26	  fi
+    27	
+    28	  # Gate B — Contract surfaces (all 9, including S8 + S9)
+    29	  echo "Gate B: validate-contract-surfaces (9 surfaces)"
+    30	  if ! timeout 20 bash tools/infra/validate-contract-surfaces.sh 2>&1; then
+    31	    echo "ERROR: Gate B failed. Blocking stop hook."
+    32	    exit 2
+    33	  fi
+    34	  if [ $(( $(date +%s) - START_TS )) -gt 30 ]; then
+    35	    echo "ERROR: Stop hook exceeded 30s budget after Gate B."
+    36	    exit 2
+    37	  fi
+    38	
+    39	  # Gate E — Raw httpx client usage in deal_tools.py (must be 0)
+    40	  echo "Gate E: raw httpx client usage check"
+    41	  if rg -n "httpx\\.(AsyncClient|get|post|put|patch|delete)" apps/agent-api/app/core/langgraph/tools/deal_tools.py; then
+    42	    echo "ERROR: Gate E failed (raw httpx client usage found). Blocking stop hook."
+    43	    exit 2
+    44	  fi
+    45	  if [ $(( $(date +%s) - START_TS )) -gt 30 ]; then
+    46	    echo "ERROR: Stop hook exceeded 30s budget after Gate E."
+    47	    exit 2
+    48	  fi
+    49	
+    50	  echo "All gates passed."
+    51	else
+    52	  echo "Not in a recognized project — skipping validation."
+    53	fi
+    54	
+    55	# ── TriPass Active Run Check (non-fatal) ──
+    56	TRIPASS_LOCK="/tmp/tripass.lock"
+    57	if [ -f "$TRIPASS_LOCK" ]; then
+    58	  TRIPASS_RUN_ID=$(cat "$TRIPASS_LOCK" 2>/dev/null)
+    59	  echo "WARNING: TriPass run in progress: ${TRIPASS_RUN_ID}"
+    60	  echo "Session ending mid-pipeline. Run may need manual completion."
+    61	  # Log to session log for next session pickup
+    62	  SESSION_LOG="/root/.claude/projects/-mnt-c-Users-mzsai/memory/session-log.md"
+    63	  if [ -f "$SESSION_LOG" ]; then
+    64	    sed -i "5a\\
+    65	### $(date -u +\"%Y-%m-%dT%H:%M:%SZ\")\\
+    66	- **TriPass:** INTERRUPTED — run ${TRIPASS_RUN_ID} was active when session ended\\
+    67	" "$SESSION_LOG" 2>/dev/null || true
+    68	  fi
+    69	fi
+    70	
+    71	# ── Memory Sync (non-fatal, 10s timeout) ──
+    72	MEMORY_SYNC="/home/zaks/.claude/hooks/memory-sync.sh"
+    73	if [ -f "$MEMORY_SYNC" ] && [ -x "$MEMORY_SYNC" ]; then
+    74	  echo "Running memory-sync..."
+    75	  timeout 10 bash "$MEMORY_SYNC" 2>&1 || {
+    76	    echo "WARNING: memory-sync failed (non-fatal)."
+    77	  }
+    78	fi
+    79	
+    80	exit 0

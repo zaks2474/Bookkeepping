@@ -1,0 +1,36 @@
+=== Backend (8091) ===
+{"status":"healthy","timestamp":"2026-02-02T21:23:07.748175","version":"1.0.0","components":{"sse_streaming":"not_implemented","outbox_worker":"placeholder (0 actions processed)"},"not_implemented":{"sse_events":"501 — real-time event streaming planned for future release","execute_proposal":"501 — chat proposal execution planned for future release","actions_capabilities":"501 — action capability definitions planned for future release","actions_metrics":"501 — action metrics aggregation planned for future release"},"mocked":{"agent_activity":"Returns empty state — agent activity tracking not yet connected","chat_sessions":"Returns empty state — chat session persistence not yet implemented"}}
+
+=== PostgreSQL (5432) ===
+REACHABLE
+
+=== vLLM (8000) ===
+
+
+=== Redis (6379) ===
+REACHABLE
+
+=== MCP (9100) ===
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import urllib.request; print(urllib.request.urlopen('http://host.docker.internal:9100/',timeout=3).read().decode()[:200])
+                                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/urllib/request.py", line 189, in urlopen
+    return opener.open(url, data, timeout)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/urllib/request.py", line 495, in open
+    response = meth(req, response)
+  File "/usr/local/lib/python3.13/urllib/request.py", line 604, in http_response
+    response = self.parent.error(
+        'http', request, response, code, msg, hdrs)
+  File "/usr/local/lib/python3.13/urllib/request.py", line 533, in error
+    return self._call_chain(*args)
+           ~~~~~~~~~~~~~~~~^^^^^^^
+  File "/usr/local/lib/python3.13/urllib/request.py", line 466, in _call_chain
+    result = func(*args)
+  File "/usr/local/lib/python3.13/urllib/request.py", line 613, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: Not Found
+
+=== RAG REST (8052) ===
+REACHABLE

@@ -1,0 +1,40 @@
+=== Q1.3: Interrupt Exception Guard (CR-4) - DETAILED ===
+
+INTERRUPT CALL LOCATION:
+Line 301 in _approval_gate():
+    approval_result = interrupt({
+        "type": "approval_required",
+        "pending_tool_calls": [tc.model_dump() for tc in state.pending_tool_calls],
+        "thread_id": thread_id,
+    })
+
+ANALYSIS OF EXCEPTION HANDLERS:
+
+| Line | Method | Re-raises? | Risk |
+|------|--------|------------|------|
+| 152 | _get_connection_pool | YES (raise e) | N/A - unrelated |
+| 170 | _get_relevant_memory | NO (swallows) | N/A - unrelated |
+| 184 | _update_long_term_memory | NO (swallows) | N/A - unrelated |
+| 247 | _chat | YES (raise Exception) | N/A - unrelated |
+| 389 | _execute_approved_tools | NO (converts to ToolMessage) | N/A - post-interrupt |
+| 457 | create_graph | YES (raise e) | N/A - graph creation |
+| 593 | invoke_with_hitl | YES (raise) | ✓ SAFE - re-raises |
+| 681 | resume_after_approval | YES (raise) | ✓ SAFE - re-raises |
+| 729 | resume_after_rejection | YES (raise) | ✓ SAFE - re-raises |
+| 769 | get_response | NO (swallows) | ⚠️ LEGACY - not HITL path |
+
+CRITICAL PATH VERIFICATION:
+1. _approval_gate contains interrupt() at line 301
+2. _approval_gate has NO internal try/except
+3. invoke_with_hitl calls graph.ainvoke() and re-raises any exceptions
+4. GraphInterrupt WILL propagate correctly
+
+CONCERN (LOW):
+- get_response (line 769) swallows exceptions
+- BUT: This is a legacy backward-compatibility method
+- The HITL flow uses invoke_with_hitl, NOT get_response
+- No impact on interrupt() propagation in HITL flow
+
+VERDICT: PASS
+The interrupt() call can properly raise GraphInterrupt which propagates through
+the HITL flow since all relevant exception handlers re-raise.

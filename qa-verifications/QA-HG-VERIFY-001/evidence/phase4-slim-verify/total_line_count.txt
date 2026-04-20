@@ -1,0 +1,13 @@
+=== LINE COUNT BY SCRIPT ===
+  scan-evidence-secrets.sh: 65
+  db-assertion.sh: 57
+  generate-manifest.sh: 156
+  migration-assertion.sh: 56
+  redact.sh: 13
+  generate-preflight.sh: 79
+  validate-enforcement.sh: 205
+  manifest-age-gate.sh: 72
+  discover-topology.sh: 107
+  rag-routing-proof.sh: 157
+GRAND TOTAL: 967 lines (target: <1,000)
+PASS: Total within target

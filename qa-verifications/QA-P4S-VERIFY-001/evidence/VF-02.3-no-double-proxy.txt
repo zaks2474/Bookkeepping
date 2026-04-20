@@ -1,0 +1,6 @@
+=== VF-02.3 NO DOUBLE PROXY ===
+--- Checking rewrites function is removed ---
+rewrite_function_count=0
+--- Checking for explanatory comment ---
+24:  // NOTE: /api/* proxying is handled by middleware.ts (returns JSON 502 on failure).
+25:  // Do NOT add rewrites for /api/* — would create a double-proxy.

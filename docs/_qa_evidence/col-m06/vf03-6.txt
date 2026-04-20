@@ -1,0 +1,3 @@
+import hashlib
+CANARY_PREFIX = "CANARY-"
+        """Generate a token with CANARY- prefix + sha256-derived hash."""

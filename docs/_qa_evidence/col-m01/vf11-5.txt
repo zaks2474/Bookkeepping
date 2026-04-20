@@ -1,0 +1,1 @@
+CREATE INDEX IF NOT EXISTS idx_outbox_pending ON cross_db_outbox(status, created_at) WHERE status = 'pending';

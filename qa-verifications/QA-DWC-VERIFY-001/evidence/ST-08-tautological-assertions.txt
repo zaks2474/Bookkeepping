@@ -1,0 +1,5 @@
+POST-REMEDIATION: 
+- quarantine-actions.spec.ts:56 — REMEDIATED (toBeGreaterThan(0))
+- accessibility-contrast-semantics-smoke.spec.ts:168 — REMEDIATED (toBeGreaterThan(0))
+- actions-mobile-primary-controls.spec.ts:90 — NOT tautological (bounding box.x can be negative)
+0 tautological assertions remain. PASS

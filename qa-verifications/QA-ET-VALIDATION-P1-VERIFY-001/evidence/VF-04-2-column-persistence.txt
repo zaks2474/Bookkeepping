@@ -1,0 +1,68 @@
+=== VF-04.2 DEDICATED COLUMN PERSISTENCE ===
+247:    received_at: datetime | None = None
+250:    confidence: float | None = None
+257:    email_body_snippet: str | None = None
+258:    triage_summary: str | None = None
+270:    extraction_evidence: dict | None = None
+271:    field_confidences: dict | None = None
+272:    attachments: list | None = None
+282:      schema_version, correlation_id, email_body_snippet, source_message_id)
+299:    confidence: float | None = None
+304:    email_body_snippet: str | None = None
+306:    triage_summary: str | None = None
+308:    received_at: datetime | None = None
+319:    extraction_evidence: dict | None = None
+320:    field_confidences: dict | None = None
+321:    attachments: list | None = None
+352:    "correlation_id", "email_body_snippet",
+1504:    confidence_min: float | None = Query(None, ge=0.0, le=1.0, description="Minimum confidence threshold"),
+1505:    confidence_max: float | None = Query(None, ge=0.0, le=1.0, description="Maximum confidence threshold"),
+1506:    sort_by: str | None = Query(None, description="Sort field: received_at, urgency, confidence, created_at"),
+1537:    if confidence_min is not None:
+1538:        conditions.append(f"COALESCE(q.confidence, 0) >= ${param_idx}")
+1539:        params.append(confidence_min)
+1542:    if confidence_max is not None:
+1543:        conditions.append(f"COALESCE(q.confidence, 0) <= ${param_idx}")
+1544:        params.append(confidence_max)
+1551:    valid_sorts = {"received_at", "urgency", "confidence", "created_at"}
+1560:        elif sort_by == "confidence":
+1561:            order_clause = f"COALESCE(q.confidence, 0) {sort_dir}, q.created_at DESC"
+1562:        elif sort_by == "received_at":
+1563:            order_clause = f"COALESCE(q.received_at, q.created_at) {sort_dir}"
+1585:            q.received_at,
+1588:            q.confidence,
+1594:            q.email_body_snippet,
+1595:            q.triage_summary,
+1605:            q.extraction_evidence,
+1606:            q.field_confidences,
+1607:            q.attachments
+1646:            q.received_at,
+1649:            q.confidence,
+1655:            q.email_body_snippet,
+1656:            q.triage_summary,
+1666:            q.extraction_evidence,
+1667:            q.field_confidences,
+1668:            q.attachments
+1749:        if not item.email_body_snippet:
+1750:            missing.append("email_body_snippet")
+1761:    # P1-05: Truncate email_body_snippet to 500 chars
+1762:    email_body_snippet = item.email_body_snippet
+1763:    if email_body_snippet and len(email_body_snippet) > 500:
+1764:        email_body_snippet = email_body_snippet[:500]
+1786:               q.sender_company, q.received_at,
+1789:               q.confidence, COALESCE(q.company_name, q.raw_content->>'company_name') AS company_name,
+1792:               q.email_body_snippet, q.triage_summary, q.source_thread_id,
+1796:               q.extraction_evidence, q.field_confidences, q.attachments
+1815:            INSERT INTO zakops.quarantine_items
+1817:                 sender_domain, sender_company, body_preview, email_body_snippet,
+1818:                 triage_summary, received_at, confidence, reason, raw_content,
+1822:                 extraction_evidence, field_confidences, attachments)
+1834:                      sender_company, received_at,
+1837:                      confidence, company_name, broker_name,
+1839:                      email_body_snippet, triage_summary, source_thread_id,
+1843:                      extraction_evidence, field_confidences, attachments
+1851:            email_body_snippet,  # $10
+1852:            item.triage_summary, item.received_at, item.confidence,
+1860:            _json.dumps(item.extraction_evidence or {}),  # $27
+1861:            _json.dumps(item.field_confidences or {}),  # $28
+1862:            _json.dumps(item.attachments or []),  # $29

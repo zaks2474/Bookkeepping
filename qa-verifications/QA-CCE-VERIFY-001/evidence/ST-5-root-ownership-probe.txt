@@ -1,0 +1,8 @@
+=== ST-5 ROOT OWNERSHIP PROBE ===
+rc=2
+Task quality gates FAILED:
+
+GATE 2 FAIL — Root-owned hook files (created in last hour):
+/home/zaks/.claude/hooks/qa-cce-st5-root.sh
+Fix: sudo chown zaks:zaks <file>
+PASS

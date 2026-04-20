@@ -1,0 +1,36 @@
+=== QA-1.1: T0.1 Quarantine Endpoint ===
+Verify Dashboard uses /process not /resolve
+--- TEST 1: Dashboard api.ts quarantine calls ---
+36:      if (process.env.NODE_ENV === 'development') {
+47:const coercedNumber = z.preprocess(coerceToNumber, z.number().nullable().optional());
+78:  broker: z.preprocess(coerceBrokerToString, z.string().nullable().optional()),
+82:  days_since_update: z.preprocess(coerceToNumber, z.number().optional()),
+164:  quarantine_id: z.string().optional(),
+172:  quarantine_reason: z.string().optional(),
+180:  quarantine_dir: z.string().optional().nullable(),
+213:  quarantine_dir: z.string().nullish(),
+253:  quarantine_rate: z.number().optional(),
+473:      if (process.env.NODE_ENV === 'development') {
+593: * Fetch deal enrichment data (materials, resolved names, etc.)
+653: * Fetch quarantine items - ALWAYS returns an array
+656:  const data = await apiFetch<unknown>('/api/quarantine');
+660:    console.error('Invalid quarantine response:', parsed.error);
+671: * Fetch quarantine health status
+675:    const data = await apiFetch<unknown>('/api/quarantine/health');
+679:      console.error('Invalid quarantine health response:', parsed.error);
+685:    console.error('Failed to fetch quarantine health:', error);
+691: * Resolve quarantine item
+693:export async function resolveQuarantineItem(
+
+--- TEST 2: Backend /process endpoint exists ---
+1220:@app.post("/api/quarantine/{item_id}/process")
+1221:async def process_quarantine(
+
+--- TEST 3: OpenAPI quarantine endpoints ---
+[
+  "/api/quarantine",
+  "/api/quarantine/{item_id}",
+  "/api/quarantine/{item_id}/process"
+]
+
+=== QA-1.1 VERDICT: PASS ===

@@ -1,0 +1,81 @@
+=== Entry point and structure ===
+total 44
+drwxr-xr-x  9 zaks zaks 4096 Feb  1 18:35 .
+drwxr-xr-x 11 root root 4096 Feb  1 18:35 ..
+drwxr-xr-x  2 zaks zaks 4096 Feb  2 04:51 __pycache__
+drwxr-xr-x  3 zaks zaks 4096 Jan 22 23:19 api
+drwxr-xr-x  8 zaks zaks 4096 Jan 29 21:13 core
+-rw-r--r--  1 root root 4987 Feb  1 18:35 main.py
+drwxr-xr-x  3 zaks zaks 4096 Jan 23 00:46 models
+drwxr-xr-x  3 zaks zaks 4096 Jan 23 09:06 schemas
+drwxr-xr-x  3 zaks zaks 4096 Jan 24 16:47 services
+drwxr-xr-x  3 zaks zaks 4096 Jan 23 09:51 utils
+
+=== All Python files ===
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/agent.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/api.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/auth.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/chatbot.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/config.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/cost_tracking.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/encryption.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/idempotency.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/__init__.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/__init__.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/duckduckgo_search.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/limiter.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/logging.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/metrics.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/middleware.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/middleware/__init__.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/middleware/rate_limiter.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/prompts/__init__.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/resilience.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/routing.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/security/__init__.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/security/agent_auth.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/security/output_validation.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/security/rbac_coverage.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/telemetry/__init__.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/telemetry/cost_tracking.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/main.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/models/approval.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/models/base.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/models/database.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/models/session.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/models/thread.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/models/user.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/schemas/__init__.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/schemas/agent.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/schemas/auth.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/schemas/chat.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/schemas/graph.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/__init__.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/database.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/llm.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/rag_rest.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/utils/__init__.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/utils/auth.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/utils/graph.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/utils/sanitization.py
+/home/zaks/zakops-agent-api/apps/agent-api/evals/evaluator.py
+/home/zaks/zakops-agent-api/apps/agent-api/evals/golden_trace_runner.py
+/home/zaks/zakops-agent-api/apps/agent-api/evals/helpers.py
+/home/zaks/zakops-agent-api/apps/agent-api/evals/main.py
+/home/zaks/zakops-agent-api/apps/agent-api/evals/metrics/__init__.py
+/home/zaks/zakops-agent-api/apps/agent-api/evals/retrieval_eval.py
+/home/zaks/zakops-agent-api/apps/agent-api/evals/schemas.py
+/home/zaks/zakops-agent-api/apps/agent-api/evals/tool_accuracy_eval.py
+/home/zaks/zakops-agent-api/apps/agent-api/tests/__init__.py
+/home/zaks/zakops-agent-api/apps/agent-api/tests/security/__init__.py
+/home/zaks/zakops-agent-api/apps/agent-api/tests/security/test_output_sanitization.py
+/home/zaks/zakops-agent-api/apps/agent-api/tests/security/test_owasp_llm_top10.py
+/home/zaks/zakops-agent-api/apps/agent-api/tests/security/test_pii_redaction.py
+/home/zaks/zakops-agent-api/apps/agent-api/tests/security/test_rate_limits.py
+/home/zaks/zakops-agent-api/apps/agent-api/tests/security/test_rbac_coverage.py
+/home/zaks/zakops-agent-api/apps/agent-api/tests/test_cost_tracking.py
+
+=== Lines of code (Python) ===
+11276

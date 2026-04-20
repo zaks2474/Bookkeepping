@@ -1,0 +1,10 @@
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:19:from app.services.backend_client import get_backend_client
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:184:        client = get_backend_client()
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:196:        client = get_backend_client()
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:207:        client = get_backend_client()
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:241:        client = get_backend_client()
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/proposal_service.py:275:        client = get_backend_client()
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/export_service.py:17:from app.services.backend_client import get_backend_client
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/export_service.py:202:            client = get_backend_client()
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/export_service.py:248:        # Store via backend API (BackendClient migration — B3-01)
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/export_service.py:250:            client = get_backend_client()

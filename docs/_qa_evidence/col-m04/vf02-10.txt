@@ -1,0 +1,4 @@
+    last_summarized_turn  INTEGER,
+    last_summarized_at    TIMESTAMPTZ,
+    last_fact_extraction  TIMESTAMPTZ,
+    contradiction_count   INTEGER DEFAULT 0,

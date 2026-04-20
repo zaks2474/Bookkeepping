@@ -1,0 +1,6 @@
+280:    def __init__(self, registry_path: str = "/home/zaks/DataRoom/.deal-registry/deal_registry.json"):
+281:        self.registry_path = Path(registry_path)
+282:        self.case_files_dir = Path("/home/zaks/DataRoom/.deal-registry/case_files")
+283:        self.events_dir = Path("/home/zaks/DataRoom/.deal-registry/events")
+284:        self.actions_path = Path("/home/zaks/DataRoom/.deal-registry/deferred_actions.json")
+SPLIT_BRAIN_REFS=2

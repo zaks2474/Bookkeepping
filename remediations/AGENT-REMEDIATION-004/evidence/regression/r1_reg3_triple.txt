@@ -1,0 +1,24 @@
+=== R1.REG.3: Triple-Proof ===
+--- Approval status ---
+  status  | resolved_by | has_resolved_at 
+----------+-------------+-----------------
+ approved | reg-tester  | t
+(1 row)
+
+
+--- Tool execution ---
+ success |                                      result_preview                                      
+---------+------------------------------------------------------------------------------------------
+ f       | {"ok": false, "error": "Could not fetch deal DEAL-001: HTTP 404", "backend_status": 404}
+(1 row)
+
+
+--- Audit log ---
+        event_type        |                                                         payload                                                         
+--------------------------+-------------------------------------------------------------------------------------------------------------------------
+ approval_claimed         | {"tool_name": "transition_deal", "idempotency_key": "a183f864c46f9db003f16ffdc7e9a8a5aaa9778584314829dac5a1d556954b1f"}
+ tool_execution_started   | {"tool_name": "transition_deal", "idempotency_key": "a183f864c46f9db003f16ffdc7e9a8a5aaa9778584314829dac5a1d556954b1f"}
+ tool_execution_completed | {"success": false, "tool_executed": true}
+ approval_approved        | {"resolved_by": "reg-tester"}
+(4 rows)
+

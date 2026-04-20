@@ -1,0 +1,1545 @@
+=== QA PROTOCOL ===
+# QA PROTOCOL (Codex)
+# ====================
+# You are QA in the Lab Loop automation system.
+# Your role: Verify Builder's work against acceptance criteria and specs.
+
+## CRITICAL RULES
+
+1. You are READ-ONLY. You MUST NOT modify any files in the repository.
+   Your only output is the QA_REPORT.json file.
+
+2. You are running NON-INTERACTIVELY. Make verification decisions based on:
+   - The mission.md and acceptance.md provided
+   - The BUILDER_REPORT.md from the Builder
+   - The gate output and exit code
+   - Authoritative docs at /home/zaks/bookkeeping/docs/
+
+3. BE STRICT AND OBJECTIVE. Your job is to find issues, not to pass things.
+   - If gates fail, verdict is FAIL
+   - If spec compliance fails, verdict is FAIL
+   - Only give PASS when everything is truly correct
+
+4. PROVIDE ACTIONABLE FEEDBACK. When verdict is FAIL:
+   - List specific issues with file paths and line numbers
+   - Prioritize by severity (BLOCKER > MAJOR > MINOR)
+   - Give clear instructions for how to fix
+
+5. CROSS-REFERENCE AUTHORITATIVE DOCS. All decisions in /home/zaks/bookkeeping/docs/
+   are DECISION-LOCKED. Verify Builder followed them.
+
+## YOUR INPUTS
+
+You will receive via stdin:
+- Task mission (what was supposed to be built)
+- Task acceptance criteria (how to verify)
+- Current cycle number
+- BUILDER_REPORT.md (what Builder claims to have done)
+- Gate output log (stdout/stderr from gate command)
+- Gate exit code (must be 0 for PASS)
+- JSON Schema for your output format
+
+## YOUR OUTPUT
+
+You MUST produce a JSON object matching the provided schema.
+Write it to: TASK_DIR/QA_REPORT.json
+
+### Schema Fields
+
+```json
+{
+  "verdict": "PASS" | "FAIL",
+  "cycle": <number>,
+  "summary": "<brief summary of findings>",
+  "blockers": [
+    {
+      "id": "B001",
+      "description": "<what's wrong>",
+      "file": "<path/to/file.py>",
+      "line": <line_number>,
+      "evidence": "<proof of issue>"
+    }
+  ],
+  "majors": [...],
+  "minors": [...],
+  "spec_compliance": {
+    "endpoints_match": true|false,
+    "schemas_match": true|false,
+    "status_strings_match": true|false,
+    "auth_matches": true|false,
+    "db_mode_matches": true|false,
+    "streaming_matches": true|false,
+    "local_llm_lane_verified": true|false,
+    "mocks_disabled_for_gates": true|false
+  },
+  "next_actions_for_builder": [
+    {
+      "priority": 1,
+      "severity": "BLOCKER" | "MAJOR" | "MINOR",
+      "summary": "<what to do>",
+      "files": ["<file1>", "<file2>"],
+      "how_to_validate": ["<step1>", "<step2>"]
+    }
+  ],
+  "evidence": [
+    "<command output snippet>",
+    "<file content snippet>",
+    "<spec reference>"
+  ]
+}
+```
+
+### Verdict Rules
+
+**PASS** requires ALL of:
+- Gate exit code = 0
+- All spec_compliance fields = true (or N/A for task)
+- Zero BLOCKERS
+- Zero MAJORS
+
+**FAIL** if ANY of:
+- Gate exit code != 0
+- Any spec_compliance field = false
+- Any BLOCKER exists
+- Any MAJOR exists
+
+### Early Exit (Optimization)
+
+If you find a critical BLOCKER that makes further analysis pointless, you MAY
+set `early_exit: true` and return immediately with just that blocker.
+
+Use early exit when:
+- Gate command failed with obvious error (syntax error, missing dependency)
+- Critical file is completely missing
+- Build/compile completely broken
+
+Do NOT use early exit when:
+- There are multiple issues to report
+- The blocker is subtle or needs context
+- You're unsure if it's truly blocking
+
+## SEVERITY DEFINITIONS
+
+| Severity | Criteria | Examples |
+|----------|----------|----------|
+| BLOCKER | Prevents completion, gates fail | Test failures, syntax errors, missing required functionality |
+| MAJOR | Significant issue, spec violation | Wrong return type, missing validation, security issue |
+| MINOR | Small issue, doesn't block | Code style, missing docstring, minor optimization |
+
+## VERIFICATION CHECKLIST
+
+1. **Gate Check**
+   - Did gate command exit with code 0?
+   - Are there any errors in gate_output.log?
+
+2. **Functional Check**
+   - Does the implementation match mission.md?
+   - Are all acceptance criteria in acceptance.md met?
+
+3. **Spec Compliance Check**
+   - Do endpoints match the spec?
+   - Do schemas match the spec?
+   - Do status codes match the spec?
+   - Does auth work as specified?
+
+4. **Code Quality Check**
+   - Are there any obvious bugs?
+   - Are there security issues?
+   - Does it follow patterns in authoritative docs?
+
+5. **Builder Claims Check**
+   - Did Builder actually change the files they claim?
+   - Did the commands they ran actually pass?
+   - Are their notes accurate?
+
+## WORKFLOW
+
+1. Read the gate output and check exit code
+2. Read BUILDER_REPORT.md to understand what was done
+3. Verify against acceptance.md criteria
+4. Cross-reference with authoritative docs
+5. Compile findings with evidence
+6. Assign severity to each issue
+7. Set verdict based on rules above
+8. Write next_actions_for_builder if FAIL
+9. Output the JSON to TASK_DIR/QA_REPORT.json
+
+## REMEMBER
+
+- You are the gatekeeper - do not let bad code pass
+- Always provide evidence for your findings
+- Be specific about file paths and line numbers
+- If unsure, check /home/zaks/bookkeeping/docs/
+- The task loops until you say PASS - be thorough but fair
+
+=== JSON SCHEMA FOR YOUR OUTPUT ===
+Your output MUST conform to this schema:
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "verdict": { "type": "string", "enum": ["PASS", "FAIL"] },
+    "cycle": { "type": "integer", "minimum": 0 },
+    "early_exit": { "type": "boolean", "description": "Set true if stopping analysis early due to critical blocker" },
+    "summary": { "type": "string" },
+    "blockers": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/issue" }
+    },
+    "majors": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/issue" }
+    },
+    "minors": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/issue" }
+    },
+    "spec_compliance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "endpoints_match": { "type": "boolean" },
+        "schemas_match": { "type": "boolean" },
+        "status_strings_match": { "type": "boolean" },
+        "auth_matches": { "type": "boolean" },
+        "db_mode_matches": { "type": "boolean" },
+        "streaming_matches": { "type": "boolean" },
+        "local_llm_lane_verified": { "type": "boolean" },
+        "mocks_disabled_for_gates": { "type": "boolean" }
+      },
+      "required": [
+        "endpoints_match",
+        "schemas_match",
+        "status_strings_match",
+        "auth_matches",
+        "db_mode_matches",
+        "streaming_matches",
+        "local_llm_lane_verified",
+        "mocks_disabled_for_gates"
+      ]
+    },
+    "next_actions_for_builder": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/action" }
+    },
+    "evidence": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "required": [
+    "verdict",
+    "cycle",
+    "early_exit",
+    "summary",
+    "blockers",
+    "majors",
+    "minors",
+    "spec_compliance",
+    "next_actions_for_builder",
+    "evidence"
+  ],
+  "$defs": {
+    "issue": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "severity": { "type": "string", "enum": ["BLOCKER", "MAJOR", "MINOR"] },
+        "title": { "type": "string" },
+        "details": { "type": "string" },
+        "files": { "type": "array", "items": { "type": "string" } },
+        "repro_steps": { "type": "array", "items": { "type": "string" } },
+        "expected": { "type": "string" },
+        "actual": { "type": "string" },
+        "recommended_fix": { "type": "string" },
+        "validation_steps": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": [
+        "severity",
+        "title",
+        "details",
+        "files",
+        "repro_steps",
+        "expected",
+        "actual",
+        "recommended_fix",
+        "validation_steps"
+      ]
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "priority": { "type": "integer", "minimum": 1, "maximum": 50 },
+        "severity": { "type": "string", "enum": ["BLOCKER", "MAJOR", "MINOR"] },
+        "summary": { "type": "string" },
+        "files": { "type": "array", "items": { "type": "string" } },
+        "how_to_validate": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["priority", "severity", "summary", "files", "how_to_validate"]
+    }
+  }
+}
+
+
+=== TASK MISSION ===
+# Mission: Phase 2 (Remaining) + Phase 4 + Phase 5 - Hardening & Integrations
+
+## Objective
+
+Complete the remaining Phase 2 task (UI smoke test), implement Phase 4 (MCP, routing policies, cost controls), and Phase 5 (queue/DLQ, chaos, audit immutability, secrets hygiene, rate limiting) for the ZakOps Agent API per the Ultimate Implementation Roadmap v2.
+
+## Background
+
+- **Repo**: `/home/zaks/zakops-agent-api`
+- **Gate Command**: `./scripts/bring_up_tests.sh`
+- **Artifacts Directory**: `/home/zaks/zakops-agent-api/gate_artifacts/`
+- **Authoritative Docs**: `/home/zaks/bookkeeping/docs/DECISION-LOCK-FILE.md`
+
+**Prerequisites Completed:**
+- Phase 0: Foundations & Alignment ✅
+- Phase 1: Core Infrastructure (Security) ✅
+- Phase 2: MVP Build (partial - UI smoke test pending)
+- Phase 3: Intelligence ✅
+
+## Scope
+
+---
+
+### Phase 2 (Remaining)
+
+#### P2-UI-001: UI Smoke Test
+- Implement automated UI smoke test for ZakOps Next.js frontend
+- UI must use canonical `/agent/*` endpoints
+- UI must support:
+  - invoke
+  - stream
+  - list approvals
+  - approve/reject
+- Implement Playwright smoke flow OR minimal scripted HTTP trace check
+- Output `gate_artifacts/ui_smoke_test.log` with `UI_SMOKE: PASSED`
+
+---
+
+### Phase 4 - Tooling + Integrations
+
+#### P4-MCP-001: MCP Client Conformance
+- Implement MCP client contract:
+  - `initialize`
+  - `tools/list`
+  - `tools/call`
+- Error normalization and tool namespace mapping rules
+- MCP server at `:9100` (if enabled)
+- Output `gate_artifacts/mcp_conformance.json` with conformance results
+- **Note**: MCP is optional; gate should SKIP gracefully if MCP not enabled
+
+#### P4-ROUTE-001: LiteLLM Routing Policies
+- Implement hybrid routing via LiteLLM gateway
+- Enforce blocked-field policy for cloud egress:
+  - BLOCKED: `ssn`, `tax_id`, `bank_account`, `credit_card`
+- Enforce explicit allow conditions:
+  - `context_overflow`, `local_model_error`, `explicit_user_request`, `complexity_threshold`
+- Fallback chain: `local-primary → cloud-claude`
+- Output `gate_artifacts/routing_policy_tests.json` with `ROUTING_POLICY: PASSED`
+- Output `gate_artifacts/policy_config_snapshot.json`
+
+#### P4-COST-001: Cost Accounting
+- Implement daily budget cap: **$50 max**
+- Cost accounting per day and per thread
+- Measure local-handling rate: **≥80% tasks handled locally**
+- Output `gate_artifacts/cost_report.json`
+- Output `gate_artifacts/local_percent_report.json` with `LOCAL_PERCENT: PASSED` (if ≥80%)
+
+---
+
+### Phase 5 - Hardening, Security, Reliability
+
+#### P5-QUEUE-001: Queue + DLQ (Postgres SKIP LOCKED)
+- Implement queue schema with Postgres SKIP LOCKED
+- Worker loop with retry policy per Decision Lock:
+  - Backoff: 30s × 2^attempt
+  - Max attempts: 3
+  - DLQ after max attempts
+- Queue targets:
+  - Depth warn >50, critical >100
+  - P95 claim latency <100ms under load
+- Output `gate_artifacts/queue_worker_smoke.log` with `QUEUE_WORKER_SMOKE: PASSED`
+- Output `gate_artifacts/queue_load_test.json` with P95 latency stats
+
+#### P5-AUDIT-001: Audit Log Immutability
+- Enforce audit_log immutability at DB level
+- UPDATE/DELETE must be denied on audit_log table
+- Gate proves immutability via attempted UPDATE/DELETE (should fail)
+- Output `gate_artifacts/audit_immutability_test.log` with `AUDIT_IMMUTABILITY: PASSED`
+
+#### P5-CHAOS-001: Chaos Hardening
+- kill -9 mid-workflow and resume test
+- Concurrency headroom test N=50 (additive to baseline N=20)
+- Output `gate_artifacts/chaos_kill9.log` with `CHAOS_KILL9: PASSED`
+- Output `gate_artifacts/concurrency_n50.log` with `CONCURRENCY_N50: PASSED`
+
+#### P5-SECRETS-001: Secrets Hygiene
+- No default JWT secret accepted in production exposure mode
+- No enabling mocks in production exposure mode
+- Gate fails closed if unsafe defaults detected
+- Output `gate_artifacts/secrets_hygiene_lint.log` with `SECRETS_HYGIENE: PASSED`
+
+#### P5-RATE-001: Rate Limiting
+- Implement rate limiting on Agent API
+- Implement request size limits
+- Required before external exposure (Cloudflare)
+- Output `gate_artifacts/rate_limit_test.log` with `RATE_LIMIT: PASSED`
+
+---
+
+## Out of Scope
+
+- Phase 6: Evaluation, Red-Team, QA (CI gates, adversarial suites)
+- Phase 7: Deployment, Monitoring, Operations
+- Phase 8: Scaling, Optimization
+
+## Technical Requirements
+
+- All Phase 0, Phase 1, Phase 2, Phase 3 artifacts must remain PASS
+- All baseline invariants (BL-01..BL-14) must remain PASS
+- Single gate entrypoint: `./scripts/bring_up_tests.sh`
+- All artifacts under `gate_artifacts/`
+- No mocks for acceptance runs
+- MCP gates should SKIP if MCP not enabled (not FAIL)
+
+## Constraints from Decision Lock
+
+### Queue (locked)
+- Queue: Postgres SKIP LOCKED
+- Backoff: 30s × 2^attempt
+- Max attempts: 3
+- DLQ required
+- Queue depth warn >50, critical >100
+- P95 claim latency <100ms under load
+
+### LLM Routing (locked)
+- Routing: LiteLLM gateway (deterministic)
+- Fallback chain: local-primary → cloud-claude
+- BLOCKED fields: ssn, tax_id, bank_account, credit_card
+- ALLOWED conditions: context_overflow, local_model_error, explicit_user_request, complexity_threshold
+- Daily budget: $50 max
+- ≥80% tasks handled locally
+- PII redaction before any cloud send
+
+### Security (locked)
+- Default deny
+- No default JWT secret in production
+- No mocks in production exposure mode
+
+## References
+
+- `/home/zaks/bookkeeping/docs/DECISION-LOCK-FILE.md`
+- `/home/zaks/bookkeeping/docs/ZakOps-Scaffold-Master-Plan-v2.md`
+- `/mnt/c/Users/mzsai/Downloads/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md`
+
+=== TASK ACCEPTANCE CRITERIA ===
+# Acceptance Criteria: Phase 2 (Remaining) + Phase 4 + Phase 5
+
+## Definition of Done
+
+The task is complete when ALL of the following are true:
+
+---
+
+## Phase 2 (Remaining)
+
+### P2-UI-001: UI Smoke Test
+- [ ] UI smoke test implemented (Playwright or scripted HTTP trace)
+- [ ] UI uses canonical `/agent/*` endpoints
+- [ ] UI supports: invoke, stream, list approvals, approve/reject
+- [ ] `gate_artifacts/ui_smoke_test.log` exists
+- [ ] `gate_artifacts/ui_smoke_test.log` contains `UI_SMOKE: PASSED`
+
+---
+
+## Phase 4 - Tooling + Integrations
+
+### P4-MCP-001: MCP Client Conformance
+- [ ] MCP client implements: initialize, tools/list, tools/call
+- [ ] Error normalization implemented
+- [ ] Tool namespace mapping rules defined
+- [ ] `gate_artifacts/mcp_conformance.json` exists
+- [ ] MCP conformance PASS (or SKIP if MCP not enabled)
+
+### P4-ROUTE-001: LiteLLM Routing Policies
+- [ ] LiteLLM routing gateway implemented
+- [ ] Blocked-field policy enforced (ssn, tax_id, bank_account, credit_card)
+- [ ] Allow conditions enforced (context_overflow, local_model_error, explicit_user_request, complexity_threshold)
+- [ ] Fallback chain: local-primary → cloud-claude
+- [ ] `gate_artifacts/routing_policy_tests.json` exists
+- [ ] `gate_artifacts/routing_policy_tests.json` contains `ROUTING_POLICY: PASSED`
+- [ ] `gate_artifacts/policy_config_snapshot.json` exists
+
+### P4-COST-001: Cost Accounting
+- [ ] Daily budget cap $50 implemented
+- [ ] Cost accounting per day and per thread
+- [ ] Local-handling rate measured
+- [ ] `gate_artifacts/cost_report.json` exists
+- [ ] `gate_artifacts/local_percent_report.json` exists
+- [ ] Local handling rate **≥80%** recorded
+
+---
+
+## Phase 5 - Hardening, Security, Reliability
+
+### P5-QUEUE-001: Queue + DLQ
+- [ ] Postgres SKIP LOCKED queue schema implemented
+- [ ] Worker loop with retry policy (30s × 2^attempt, max 3)
+- [ ] DLQ implemented for failed jobs
+- [ ] `gate_artifacts/queue_worker_smoke.log` exists
+- [ ] `gate_artifacts/queue_worker_smoke.log` contains `QUEUE_WORKER_SMOKE: PASSED`
+- [ ] `gate_artifacts/queue_load_test.json` exists
+- [ ] P95 claim latency **<100ms** under defined load
+
+### P5-AUDIT-001: Audit Log Immutability
+- [ ] Audit log immutability enforced at DB level
+- [ ] UPDATE denied on audit_log table
+- [ ] DELETE denied on audit_log table
+- [ ] `gate_artifacts/audit_immutability_test.log` exists
+- [ ] `gate_artifacts/audit_immutability_test.log` contains `AUDIT_IMMUTABILITY: PASSED`
+
+### P5-CHAOS-001: Chaos Hardening
+- [ ] kill -9 mid-workflow recovery verified
+- [ ] Concurrency N=50 headroom test passed
+- [ ] `gate_artifacts/chaos_kill9.log` exists
+- [ ] `gate_artifacts/chaos_kill9.log` contains `CHAOS_KILL9: PASSED`
+- [ ] `gate_artifacts/concurrency_n50.log` exists
+- [ ] `gate_artifacts/concurrency_n50.log` contains `CONCURRENCY_N50: PASSED`
+
+### P5-SECRETS-001: Secrets Hygiene
+- [ ] No default JWT secret in production exposure mode
+- [ ] No mocks enabled in production exposure mode
+- [ ] Fail-closed on unsafe defaults
+- [ ] `gate_artifacts/secrets_hygiene_lint.log` exists
+- [ ] `gate_artifacts/secrets_hygiene_lint.log` contains `SECRETS_HYGIENE: PASSED`
+
+### P5-RATE-001: Rate Limiting
+- [ ] Rate limiting implemented on Agent API
+- [ ] Request size limits implemented
+- [ ] `gate_artifacts/rate_limit_test.log` exists
+- [ ] `gate_artifacts/rate_limit_test.log` contains `RATE_LIMIT: PASSED`
+
+---
+
+## Previous Phase Artifacts (Must Not Regress)
+
+### Baseline Invariants (BL-01 to BL-14)
+- [ ] All baseline gates still PASS
+
+### Phase 0 Artifacts
+- [ ] `contract_snapshot.json` still valid
+- [ ] `agent_api_contract.json` still valid
+- [ ] `ports_md_lint.log` contains `PORTS_MD_LINT: PASSED`
+- [ ] `env_no_localhost_lint.log` contains `ENV_NO_LOCALHOST: PASSED`
+- [ ] `vllm_lane_verify.json` contains `status == "PASSED"`
+- [ ] `gate_registry.json` updated with Phase 4 and Phase 5 gates
+- [ ] `gate_registry_lint.log` contains `GATE_REGISTRY_LINT: PASSED`
+
+### Phase 1 Artifacts
+- [ ] `encryption_verify.log` contains `ENCRYPTION_VERIFY: PASSED`
+- [ ] `kill9_encrypted.log` contains `KILL9_ENCRYPTED: PASSED`
+- [ ] `pii_canary_report.json` contains `PII_CANARY: PASSED`
+- [ ] `raw_content_scan.log` contains `RAW_CONTENT_SCAN: PASSED`
+- [ ] `langfuse_selfhost_gate.log` contains `LANGFUSE_SELFHOST: PASSED`
+- [ ] `prod_exposure_fail_closed.log` contains `PROD_EXPOSURE_FAIL_CLOSED: PASSED`
+
+### Phase 2 Artifacts
+- [ ] `deal_api_contract.json` exists
+- [ ] `mocks_disabled_check.log` contains `MOCKS_DISABLED: PASSED`
+- [ ] `deal_api_e2e_transition.json` contains `E2E_TRANSITION: PASSED`
+- [ ] `cloudflare_route_lint.log` contains `CLOUDFLARE_ROUTE_LINT: PASSED`
+
+### Phase 3 Artifacts
+- [ ] `rag_rest_contract.json` exists
+- [ ] `tool_accuracy_eval.json` shows accuracy ≥95%
+- [ ] `retrieval_eval_results.json` shows recall@5 ≥0.80
+- [ ] `no_split_brain_retrieval_scan.log` contains `NO_SPLIT_BRAIN: PASSED`
+
+---
+
+## Gate Command
+
+```bash
+cd /home/zaks/zakops-agent-api && ./scripts/bring_up_tests.sh
+```
+
+This command must exit with code 0 for the task to pass.
+
+---
+
+## Required New Artifacts Summary
+
+| Task ID | Artifact | PASS Marker |
+|---------|----------|-------------|
+| P2-UI-001 | `ui_smoke_test.log` | `UI_SMOKE: PASSED` |
+| P4-MCP-001 | `mcp_conformance.json` | Conformance results (or SKIP) |
+| P4-ROUTE-001 | `routing_policy_tests.json` | `ROUTING_POLICY: PASSED` |
+| P4-ROUTE-001 | `policy_config_snapshot.json` | Config present |
+| P4-COST-001 | `cost_report.json` | Cost data present |
+| P4-COST-001 | `local_percent_report.json` | ≥80% local handling |
+| P5-QUEUE-001 | `queue_worker_smoke.log` | `QUEUE_WORKER_SMOKE: PASSED` |
+| P5-QUEUE-001 | `queue_load_test.json` | P95 <100ms |
+| P5-AUDIT-001 | `audit_immutability_test.log` | `AUDIT_IMMUTABILITY: PASSED` |
+| P5-CHAOS-001 | `chaos_kill9.log` | `CHAOS_KILL9: PASSED` |
+| P5-CHAOS-001 | `concurrency_n50.log` | `CONCURRENCY_N50: PASSED` |
+| P5-SECRETS-001 | `secrets_hygiene_lint.log` | `SECRETS_HYGIENE: PASSED` |
+| P5-RATE-001 | `rate_limit_test.log` | `RATE_LIMIT: PASSED` |
+
+**Total: 13 new artifacts**
+
+---
+
+## Quality Thresholds
+
+| Metric | Threshold | Hard/Soft |
+|--------|-----------|-----------|
+| Local handling rate | ≥80% | HARD |
+| Queue P95 latency | <100ms | HARD |
+| Concurrency N=50 | All pass | HARD |
+| Secrets hygiene | No defaults | HARD |
+| Audit immutability | UPDATE/DELETE denied | HARD |
+
+---
+
+## Verification Steps
+
+1. Run `./scripts/bring_up_tests.sh` - must exit 0
+2. Verify all 13 new artifacts exist with correct PASS markers
+3. Verify UI smoke test passes against canonical endpoints
+4. Verify routing policy tests block PII fields
+5. Verify local handling rate ≥80%
+6. Verify queue load test P95 <100ms
+7. Verify audit immutability (UPDATE/DELETE denied)
+8. Verify chaos tests (kill-9, N=50) pass
+9. Verify secrets hygiene (no defaults in production)
+10. Verify rate limiting works
+11. Verify all previous phase artifacts still PASS
+
+---
+
+## Rollback Plan
+
+### If Queue/DLQ Breaks Baseline:
+1. Revert queue schema changes
+2. Restore DB backup
+3. Re-run baseline gate pack
+
+### If Routing Policy Introduces Risk:
+1. Disable cloud routing (force local-only)
+2. Re-run baseline gates and Phase 2 E2E gates
+
+### If Rate Limiting Causes Issues:
+1. Disable rate limiting middleware
+2. Re-run baseline gates
+3. Implement with conservative defaults
+
+=== CURRENT CYCLE ===
+Cycle: 1
+
+=== BUILDER REPORT ===
+# Builder Report - Cycle 1
+
+## Summary
+Implemented Phase 2 (UI Smoke Test), Phase 4 (MCP Conformance, Routing Policies, Cost Accounting), and Phase 5 (Queue/DLQ, Audit Immutability, Chaos Hardening, Secrets Hygiene, Rate Limiting) gates for the ZakOps Agent API.
+
+## Issues Addressed
+- [BLOCKER] Initial seeded QA report - run verification gates and create BUILDER_REPORT.md
+
+## Changes Made
+
+### New Files Created
+1. `scripts/phase2_4_5_gates.sh` - Main gate script for Phase 2/4/5 tests
+2. `app/core/routing.py` - LLM routing policy module implementing blocked fields and fallback chain
+3. `app/core/cost_tracking.py` - Cost accounting module for tracking local vs cloud usage
+
+### Files Modified
+1. `scripts/bring_up_tests.sh` - Updated to call Phase 2/4/5 gates script
+
+### Gate Artifacts Created
+**Phase 2:**
+- `ui_smoke_test.log` - UI_SMOKE: PASSED (5 tests)
+
+**Phase 4:**
+- `mcp_conformance.json` - SKIPPED (MCP not running, which is acceptable)
+- `routing_policy_tests.json` - ROUTING_POLICY: PASSED
+- `policy_config_snapshot.json` - Policy configuration documented
+- `cost_report.json` - Cost tracking report
+- `local_percent_report.json` - LOCAL_PERCENT: PASSED (>=80%)
+
+**Phase 5:**
+- `queue_worker_smoke.log` - QUEUE_WORKER_SMOKE: PASSED
+- `queue_load_test.json` - P95 latency <100ms
+- `audit_immutability_test.log` - AUDIT_IMMUTABILITY: PASSED
+- `chaos_kill9.log` - CHAOS_KILL9: PASSED
+- `concurrency_n50.log` - CONCURRENCY_N50: PASSED (exactly 1 winner)
+- `secrets_hygiene_lint.log` - SECRETS_HYGIENE: PASSED
+- `rate_limit_test.log` - RATE_LIMIT: PASSED
+
+## Commands Run
+- `./scripts/bring_up_tests.sh` - Full gate verification (PASSED)
+- `bash ./scripts/phase2_4_5_gates.sh` - Phase 2/4/5 gates directly (PASSED)
+
+## Database Changes
+1. Created `task_queue` table with Postgres SKIP LOCKED support
+2. Created `dead_letter_queue` table for failed jobs
+3. Created immutability trigger on `audit_log` table (prevents UPDATE/DELETE)
+
+## Implementation Details
+
+### P2-UI-001: UI Smoke Test
+- HTTP-based smoke test (no Playwright required)
+- Tests canonical `/agent/*` endpoints:
+  - POST /agent/invoke
+  - POST /agent/invoke/stream (SSE)
+  - GET /agent/approvals
+  - POST /agent/approvals/{id}:approve
+  - POST /agent/approvals/{id}:reject
+
+### P4-MCP-001: MCP Client Conformance
+- SKIPPED (MCP server not running)
+- This is acceptable per task requirements - MCP is optional
+
+### P4-ROUTE-001: LiteLLM Routing Policies
+- Implemented `app/core/routing.py` with:
+  - Blocked fields: ssn, tax_id, bank_account, credit_card
+  - Allowed conditions: context_overflow, local_model_error, explicit_user_request, complexity_threshold
+  - Fallback chain: local-primary → cloud-claude
+  - PII detection via regex patterns
+
+### P4-COST-001: Cost Accounting
+- Implemented `app/core/cost_tracking.py` with:
+  - Daily budget cap: $50
+  - Cost tracking per day and per thread
+  - Local handling rate measurement (>=80% target)
+
+### P5-QUEUE-001: Queue + DLQ
+- Postgres SKIP LOCKED queue schema
+- Worker retry policy: 30s × 2^attempt, max 3 attempts
+- DLQ for failed jobs after max attempts
+- P95 claim latency <100ms verified
+
+### P5-AUDIT-001: Audit Log Immutability
+- DB-level immutability triggers on audit_log table
+- UPDATE denied (verified)
+- DELETE denied (verified)
+
+### P5-CHAOS-001: Chaos Hardening
+- Kill-9 mid-workflow recovery: PASSED
+- Concurrency N=50: PASSED (exactly 1 winner)
+
+### P5-SECRETS-001: Secrets Hygiene
+- .env in .gitignore verified
+- No hardcoded secrets in code
+- Production fail-closed verified
+
+### P5-RATE-001: Rate Limiting
+- Rate limiter configured and active
+- Request size limits in place
+
+## Notes for QA
+- All 13 new artifacts created with correct PASS markers
+- All previous phase artifacts still PASS
+- MCP conformance SKIPPED is acceptable (MCP is optional)
+- Gate command `./scripts/bring_up_tests.sh` exits with code 0
+- Queue tables created in database
+- Audit log immutability triggers active
+
+=== BUILDER JSON OUTPUT ===
+{
+  "status": "READY_FOR_QA",
+  "cycle": 1,
+  "summary": "Implemented Phase 2 (UI Smoke Test), Phase 4 (MCP, Routing, Cost), and Phase 5 (Queue/DLQ, Audit, Chaos, Secrets, Rate Limit) gates. All gates pass.",
+  "issues_addressed": [
+    {
+      "severity": "BLOCKER",
+      "original_title": "Run verification gates and create initial BUILDER_REPORT.md",
+      "resolution": "Created phase2_4_5_gates.sh script and supporting modules. Gate command ./scripts/bring_up_tests.sh exits 0.",
+      "files_modified": ["scripts/phase2_4_5_gates.sh", "scripts/bring_up_tests.sh", "app/core/routing.py", "app/core/cost_tracking.py"],
+      "verified": true
+    }
+  ],
+  "changed_files": [
+    {"path": "scripts/phase2_4_5_gates.sh", "action": "created", "lines_changed": 803, "description": "Phase 2/4/5 gate tests script"},
+    {"path": "app/core/routing.py", "action": "created", "lines_changed": 132, "description": "LLM routing policy module"},
+    {"path": "app/core/cost_tracking.py", "action": "created", "lines_changed": 120, "description": "Cost tracking module"},
+    {"path": "scripts/bring_up_tests.sh", "action": "modified", "lines_changed": 16, "description": "Added Phase 2/4/5 gates call"}
+  ],
+  "commands_run": [
+    {"command": "./scripts/bring_up_tests.sh", "exit_code": 0, "success": true, "output_summary": "ALL GATES COMPLETED - Baseline, Phase 0/1/3, Phase 2/4/5 all pass"},
+    {"command": "bash ./scripts/phase2_4_5_gates.sh", "exit_code": 0, "success": true, "output_summary": "Phase 2/4/5 gates completed with all artifacts created"}
+  ],
+  "gate_pre_check": {
+    "ran_gate": true,
+    "gate_passed": true,
+    "gate_exit_code": 0
+  },
+  "blockers_encountered": [],
+  "notes_for_qa": [
+    "All 13 new artifacts created with correct PASS markers",
+    "MCP conformance SKIPPED is acceptable (MCP is optional per requirements)",
+    "Queue tables (task_queue, dead_letter_queue) created in database",
+    "Audit log immutability triggers active - UPDATE/DELETE denied",
+    "Concurrency N=50 test shows exactly 1 winner (correct behavior)",
+    "All previous phase artifacts still PASS",
+    "Routing policy tests verify blocked fields: ssn, tax_id, bank_account, credit_card",
+    "Local handling rate >= 80% verified"
+  ],
+  "confidence": "high",
+  "diff_stats": {
+    "files_changed": 4,
+    "insertions": 1071,
+    "deletions": 0,
+    "total_lines": 1071
+  }
+}
+
+=== GATE OUTPUT LOG ===
+
+[0;34m════════════════════════════════════════[0m
+[0;34mTEST: T0: Build and Start Services[0m
+[0;34m════════════════════════════════════════[0m
+2026-01-24T17:43:04-06:00 [TEST] T0: Build and Start Services
+2026-01-24T17:43:04-06:00 [INFO] Building Docker images...
+[0;32m[INFO][0m Building Docker images...
+time="2026-01-24T17:43:04-06:00" level=warning msg="/home/zaks/zakops-agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+#1 [internal] load local bake definitions
+#1 reading from stdin 595B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 1.27kB done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/python:3.13.2-slim
+#3 DONE 0.3s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 628B done
+#4 DONE 0.0s
+
+#5 [ 1/10] FROM docker.io/library/python:3.13.2-slim@sha256:6b3223eb4d93718828223966ad316909c39813dee3ee9395204940500792b740
+#5 resolve docker.io/library/python:3.13.2-slim@sha256:6b3223eb4d93718828223966ad316909c39813dee3ee9395204940500792b740 0.0s done
+#5 DONE 0.0s
+
+#6 [internal] load build context
+#6 transferring context: 11.41kB done
+#6 DONE 0.0s
+
+#7 [ 2/10] WORKDIR /app
+#7 CACHED
+
+#8 [ 3/10] RUN apt-get update && apt-get install -y     build-essential     libpq-dev     && pip install --upgrade pip     && pip install uv     && rm -rf /var/lib/apt/lists/*
+#8 CACHED
+
+#9 [ 4/10] COPY pyproject.toml .
+#9 CACHED
+
+#10 [ 5/10] RUN uv venv && . .venv/bin/activate && uv pip install -e .
+#10 CACHED
+
+#11 [ 6/10] COPY . .
+#11 DONE 0.1s
+
+#12 [ 7/10] RUN chmod +x /app/scripts/docker-entrypoint.sh
+#12 DONE 0.2s
+
+#13 [ 8/10] RUN useradd -m appuser && chown -R appuser:appuser /app
+#13 DONE 29.1s
+
+#14 [ 9/10] RUN mkdir -p /app/logs
+#14 DONE 0.5s
+
+#15 [10/10] RUN echo "Using development environment"
+#15 0.466 Using development environment
+#15 DONE 0.5s
+
+#16 exporting to image
+#16 exporting layers
+#16 exporting layers 8.4s done
+#16 exporting manifest sha256:9df11f71ffeeb89860cd3c2db3bb4e341413f0d2a7ce3dcbc99622a88c75f99c 0.0s done
+#16 exporting config sha256:144d6cabefa12415c054a34c0958e6dbe0ca4aa6bfe0977190692a25a75059e3 0.0s done
+#16 exporting attestation manifest sha256:c8010fc39c6b7566bbe70883e9665d9172dd71969b198919696268cfce562559
+#16 exporting attestation manifest sha256:c8010fc39c6b7566bbe70883e9665d9172dd71969b198919696268cfce562559 0.0s done
+#16 exporting manifest list sha256:4eff60db854a45d0e3811fe894e3078bff8a30456181b40202b76ad84f5f3a46 0.0s done
+#16 naming to docker.io/library/zakops-agent-api-agent-api:latest done
+#16 unpacking to docker.io/library/zakops-agent-api-agent-api:latest
+#16 unpacking to docker.io/library/zakops-agent-api-agent-api:latest 2.2s done
+#16 DONE 10.9s
+
+#17 resolving provenance for metadata file
+#17 DONE 0.0s
+ zakops-agent-api-agent-api  Built
+2026-01-24T17:43:46-06:00 [INFO] Starting services (db + agent-api)...
+[0;32m[INFO][0m Starting services (db + agent-api)...
+time="2026-01-24T17:43:46-06:00" level=warning msg="/home/zaks/zakops-agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-01-24T17:43:46-06:00" level=warning msg="The \"LANGFUSE_PUBLIC_KEY\" variable is not set. Defaulting to a blank string."
+time="2026-01-24T17:43:46-06:00" level=warning msg="The \"LANGFUSE_SECRET_KEY\" variable is not set. Defaulting to a blank string."
+time="2026-01-24T17:43:46-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+ Container zakops-agent-db  Running
+ Container zakops-agent-api  Recreate
+ Container zakops-agent-api  Recreated
+ Container zakops-agent-db  Waiting
+ Container zakops-agent-db  Healthy
+ Container zakops-agent-api  Starting
+ Container zakops-agent-api  Started
+2026-01-24T17:43:50-06:00 [INFO] Waiting for http://localhost:8095/health...
+[0;32m[INFO][0m Waiting for http://localhost:8095/health...
+....2026-01-24T17:43:58-06:00 [INFO] Service ready!
+[0;32m[INFO][0m Service ready!
+
+[0;34m════════════════════════════════════════[0m
+[0;34mTEST: T0: Health Check[0m
+[0;34m════════════════════════════════════════[0m
+2026-01-24T17:43:58-06:00 [TEST] T0: Health Check
+{
+  "status": "healthy",
+  "version": "1.0.0",
+  "environment": "development",
+  "components": {
+    "api": "healthy",
+    "database": "healthy"
+  },
+  "timestamp": "2026-01-24T23:43:58.212069"
+}
+2026-01-24T17:43:58-06:00 [INFO] Health check PASSED
+[0;32m[INFO][0m Health check PASSED
+
+[0;34m════════════════════════════════════════[0m
+[0;34mTEST: T1: HITL Invoke (transition_deal)[0m
+[0;34m════════════════════════════════════════[0m
+2026-01-24T17:43:58-06:00 [TEST] T1: HITL Invoke (transition_deal)
+{
+  "thread_id": "47d10311-112b-419d-9ffd-ea8680b01965",
+  "status": "awaiting_approval",
+  "content": null,
+  "pending_approval": {
+    "approval_id": "a1739b37-eff7-4ee5-83cc-83c6316f52e5",
+    "tool": "transition_deal",
+    "args": {
+      "deal_id": "DEAL-001",
+      "from_stage": "qualification",
+      "to_stage": "proposal",
+      "reason": "budget approved"
+    },
+    "permission_tier": "CRITICAL",
+    "requested_by": "qa",
+    "requested_at": "2026-01-24T23:44:01.126185Z"
+  },
+  "actions_taken": [],
+  "error": null
+}
+2026-01-24T17:44:01-06:00 [INFO] HITL invoke PASSED - awaiting_approval returned
+[0;32m[INFO][0m HITL invoke PASSED - awaiting_approval returned
+2026-01-24T17:44:01-06:00 [INFO] Approval ID: a1739b37-eff7-4ee5-83cc-83c6316f52e5
+[0;32m[INFO][0m Approval ID: a1739b37-eff7-4ee5-83cc-83c6316f52e5
+2026-01-24T17:44:01-06:00 [INFO] Thread ID: 47d10311-112b-419d-9ffd-ea8680b01965
+[0;32m[INFO][0m Thread ID: 47d10311-112b-419d-9ffd-ea8680b01965
+2026-01-24T17:44:01-06:00 [INFO] Tool: transition_deal
+[0;32m[INFO][0m Tool: transition_deal
+2026-01-24T17:44:01-06:00 [INFO] Tool name check PASSED
+[0;32m[INFO][0m Tool name check PASSED
+
+[0;34m════════════════════════════════════════[0m
+[0;34mTEST: T2: DB Invariants Check[0m
+[0;34m════════════════════════════════════════[0m
+2026-01-24T17:44:01-06:00 [TEST] T2: DB Invariants Check
+2026-01-24T17:44:01-06:00 [INFO] DB invariants written to ./gate_artifacts/db_invariants.sql.out
+[0;32m[INFO][0m DB invariants written to ./gate_artifacts/db_invariants.sql.out
+
+[0;34m════════════════════════════════════════[0m
+[0;34mTEST: T3: Approve Happy Path[0m
+[0;34m════════════════════════════════════════[0m
+2026-01-24T17:44:01-06:00 [TEST] T3: Approve Happy Path
+{
+  "thread_id": "47d10311-112b-419d-9ffd-ea8680b01965",
+  "status": "completed",
+  "content": "",
+  "pending_approval": null,
+  "actions_taken": [
+    {
+      "tool": "transition_deal",
+      "result": {
+        "ok": true
+      }
+    }
+  ],
+  "error": null
+}
+2026-01-24T17:44:01-06:00 [INFO] Approve PASSED (HTTP 200, status=completed per MDv2)
+[0;32m[INFO][0m Approve PASSED (HTTP 200, status=completed per MDv2)
+
+[0;34m════════════════════════════════════════[0m
+[0;34mTEST: T4: Double-Approve Idempotency[0m
+[0;34m════════════════════════════════════════[0m
+2026-01-24T17:44:01-06:00 [TEST] T4: Double-Approve Idempotency
+{
+  "detail": "Approval already resolved (status: approved)"
+}
+2026-01-24T17:44:01-06:00 [INFO] Double-approve correctly rejected (HTTP 409)
+[0;32m[INFO][0m Double-approve correctly rejected (HTTP 409)
+
+[0;34m════════════════════════════════════════[0m
+[0;34mTEST: T6: Kill-9 Crash Recovery[0m
+[0;34m════════════════════════════════════════[0m
+2026-01-24T17:44:01-06:00 [TEST] T6: Kill-9 Crash Recovery
+2026-01-24T17:44:01-06:00 [INFO] Creating new pending approval for crash test...
+[0;32m[INFO][0m Creating new pending approval for crash test...
+2026-01-24T17:44:03-06:00 [INFO] Pending approval created: 946543b4-ffdf-4657-8f96-33103dadde83
+[0;32m[INFO][0m Pending approval created: 946543b4-ffdf-4657-8f96-33103dadde83
+2026-01-24T17:44:03-06:00 [INFO] Killing container with SIGKILL...
+[0;32m[INFO][0m Killing container with SIGKILL...
+2026-01-24T17:44:03-06:00 [INFO] Restarting container...
+[0;32m[INFO][0m Restarting container...
+time="2026-01-24T17:44:03-06:00" level=warning msg="/home/zaks/zakops-agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-01-24T17:44:03-06:00" level=warning msg="The \"LANGFUSE_PUBLIC_KEY\" variable is not set. Defaulting to a blank string."
+time="2026-01-24T17:44:03-06:00" level=warning msg="The \"LANGFUSE_SECRET_KEY\" variable is not set. Defaulting to a blank string."
+time="2026-01-24T17:44:03-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+ Container zakops-agent-db  Running
+ Container zakops-agent-db  Waiting
+ Container zakops-agent-db  Healthy
+ Container zakops-agent-api  Starting
+ Container zakops-agent-api  Started
+2026-01-24T17:44:04-06:00 [INFO] Waiting for http://localhost:8095/health...
+[0;32m[INFO][0m Waiting for http://localhost:8095/health...
+..2026-01-24T17:44:08-06:00 [INFO] Service ready!
+[0;32m[INFO][0m Service ready!
+2026-01-24T17:44:08-06:00 [INFO] Verifying approval survived crash...
+[0;32m[INFO][0m Verifying approval survived crash...
+2026-01-24T17:44:08-06:00 [INFO] Crash recovery PASSED - approval survived
+[0;32m[INFO][0m Crash recovery PASSED - approval survived
+
+[0;34m════════════════════════════════════════[0m
+[0;34mTEST: T5: Concurrent Approvals (N=20)[0m
+[0;34m════════════════════════════════════════[0m
+2026-01-24T17:44:08-06:00 [TEST] T5: Concurrent Approvals (N=20)
+2026-01-24T17:44:10-06:00 [INFO] Concurrent test approval: 2cb48fd6-143d-4f7e-9151-c38707176122
+[0;32m[INFO][0m Concurrent test approval: 2cb48fd6-143d-4f7e-9151-c38707176122
+2026-01-24T17:44:10-06:00 [INFO] Sending 20 parallel approve requests...
+[0;32m[INFO][0m Sending 20 parallel approve requests...
+409
+409
+409
+409
+409
+409
+409
+409
+409
+409
+409
+409
+409
+409
+409
+409
+409
+409
+409
+200
+2026-01-24T17:44:10-06:00 [INFO] Concurrent results: 200=1, 409=19, 400=0
+0
+[0;32m[INFO][0m Concurrent results: 200=1, 409=19, 400=0
+0
+2026-01-24T17:44:10-06:00 [INFO] Concurrent test PASSED - exactly 1 winner
+[0;32m[INFO][0m Concurrent test PASSED - exactly 1 winner
+
+[0;34m════════════════════════════════════════[0m
+[0;34mTEST: T8: Tool Arg Validation (extra=forbid)[0m
+[0;34m════════════════════════════════════════[0m
+2026-01-24T17:44:10-06:00 [TEST] T8: Tool Arg Validation (extra=forbid)
+2026-01-24T17:44:11-06:00 [INFO] Tool arg validation PASSED
+[0;32m[INFO][0m Tool arg validation PASSED
+
+[0;34m════════════════════════════════════════[0m
+[0;34mTEST: T9: Dependency License Report[0m
+[0;34m════════════════════════════════════════[0m
+2026-01-24T17:44:11-06:00 [TEST] T9: Dependency License Report
+2026-01-24T17:44:11-06:00 [INFO] License report generated: 146 packages
+[0;32m[INFO][0m License report generated: 146 packages
+
+[0;34m════════════════════════════════════════[0m
+[0;34mTEST: T9b: Copyleft License Gate[0m
+[0;34m════════════════════════════════════════[0m
+2026-01-24T17:44:11-06:00 [TEST] T9b: Copyleft License Gate
+2026-01-24T17:44:11-06:00 [INFO] Copyleft gate PASSED: no GPL/AGPL/LGPL detected
+[0;32m[INFO][0m Copyleft gate PASSED: no GPL/AGPL/LGPL detected
+
+[0;34m════════════════════════════════════════[0m
+[0;34mTEST: T10: Audit Log Verification[0m
+[0;34m════════════════════════════════════════[0m
+2026-01-24T17:44:11-06:00 [TEST] T10: Audit Log Verification
+2026-01-24T17:44:11-06:00 [INFO] Audit log verification written to ./gate_artifacts/db_invariants.sql.out
+[0;32m[INFO][0m Audit log verification written to ./gate_artifacts/db_invariants.sql.out
+
+[0;34m════════════════════════════════════════[0m
+[0;34mTEST: T11: Mock Safety Check[0m
+[0;34m════════════════════════════════════════[0m
+2026-01-24T17:44:11-06:00 [TEST] T11: Mock Safety Check
+{
+  "APP_ENV": "development",
+  "ALLOW_TOOL_MOCKS": "not_set",
+  "is_production": false,
+  "mocks_enabled": true,
+  "safety_status": "SAFE",
+  "message": "Configuration is safe"
+}
+2026-01-24T17:44:11-06:00 [INFO] Mock safety check PASSED
+[0;32m[INFO][0m Mock safety check PASSED
+
+[0;34m════════════════════════════════════════[0m
+[0;34mTEST: T12: Streaming (SSE) Test[0m
+[0;34m════════════════════════════════════════[0m
+2026-01-24T17:44:11-06:00 [TEST] T12: Streaming (SSE) Test
+2026-01-24T17:44:12-06:00 [INFO] Streaming gate PASSED
+[0;32m[INFO][0m Streaming gate PASSED
+
+[0;34m════════════════════════════════════════[0m
+[0;34mTEST: T13: HITL Scope Test[0m
+[0;34m════════════════════════════════════════[0m
+2026-01-24T17:44:12-06:00 [TEST] T13: HITL Scope Test
+2026-01-24T17:44:13-06:00 [INFO] HITL scope test PASSED
+[0;32m[INFO][0m HITL scope test PASSED
+
+[0;34m════════════════════════════════════════[0m
+[0;34mTEST: T14: Auth Negative Tests (JWT Enforcement)[0m
+[0;34m════════════════════════════════════════[0m
+2026-01-24T17:44:13-06:00 [TEST] T14: Auth Negative Tests (JWT Enforcement)
+2026-01-24T17:44:14-06:00 [INFO] Auth test approval created: b0de67a5-247d-4e2f-a62e-4a8a6d4b2401
+[0;32m[INFO][0m Auth test approval created: b0de67a5-247d-4e2f-a62e-4a8a6d4b2401
+2026-01-24T17:44:15-06:00 [INFO] Generated auth test tokens
+[0;32m[INFO][0m Generated auth test tokens
+2026-01-24T17:44:15-06:00 [INFO] Restarting container with JWT enforcement...
+[0;32m[INFO][0m Restarting container with JWT enforcement...
+time="2026-01-24T17:44:15-06:00" level=warning msg="/home/zaks/zakops-agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+ Container zakops-agent-api  Stopping
+ Container zakops-agent-api  Stopped
+time="2026-01-24T17:44:18-06:00" level=warning msg="/home/zaks/zakops-agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-01-24T17:44:18-06:00" level=warning msg="The \"LANGFUSE_PUBLIC_KEY\" variable is not set. Defaulting to a blank string."
+time="2026-01-24T17:44:18-06:00" level=warning msg="The \"LANGFUSE_SECRET_KEY\" variable is not set. Defaulting to a blank string."
+time="2026-01-24T17:44:18-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+ Container zakops-agent-db  Running
+2026-01-24T17:44:24-06:00 [INFO] Waiting for http://localhost:8095/health...
+[0;32m[INFO][0m Waiting for http://localhost:8095/health...
+2026-01-24T17:44:24-06:00 [INFO] Service ready!
+[0;32m[INFO][0m Service ready!
+2026-01-24T17:44:24-06:00 [INFO] Auth negative tests: 7/7 passed
+[0;32m[INFO][0m Auth negative tests: 7/7 passed
+2026-01-24T17:44:24-06:00 [INFO]   no_token: 401 (expect 401)
+[0;32m[INFO][0m   no_token: 401 (expect 401)
+2026-01-24T17:44:24-06:00 [INFO]   expired: 401 (expect 401)
+[0;32m[INFO][0m   expired: 401 (expect 401)
+2026-01-24T17:44:24-06:00 [INFO]   wrong_iss: 401 (expect 401)
+[0;32m[INFO][0m   wrong_iss: 401 (expect 401)
+2026-01-24T17:44:24-06:00 [INFO]   wrong_aud: 401 (expect 401)
+[0;32m[INFO][0m   wrong_aud: 401 (expect 401)
+2026-01-24T17:44:24-06:00 [INFO]   missing_role_claim: 401 (expect 401 per Decision Lock §7)
+[0;32m[INFO][0m   missing_role_claim: 401 (expect 401 per Decision Lock §7)
+2026-01-24T17:44:24-06:00 [INFO]   insufficient_role: 403 (expect 403 per Decision Lock §7)
+[0;32m[INFO][0m   insufficient_role: 403 (expect 403 per Decision Lock §7)
+2026-01-24T17:44:24-06:00 [INFO]   valid: 200 (expect 200/409)
+[0;32m[INFO][0m   valid: 200 (expect 200/409)
+2026-01-24T17:44:24-06:00 [INFO] Restoring container without JWT enforcement...
+[0;32m[INFO][0m Restoring container without JWT enforcement...
+zakops-agent-api-auth-test
+zakops-agent-api-auth-test
+time="2026-01-24T17:44:28-06:00" level=warning msg="/home/zaks/zakops-agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-01-24T17:44:28-06:00" level=warning msg="The \"LANGFUSE_PUBLIC_KEY\" variable is not set. Defaulting to a blank string."
+time="2026-01-24T17:44:28-06:00" level=warning msg="The \"LANGFUSE_SECRET_KEY\" variable is not set. Defaulting to a blank string."
+time="2026-01-24T17:44:28-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+ Container zakops-agent-db  Running
+ Container zakops-agent-db  Waiting
+ Container zakops-agent-db  Healthy
+ Container zakops-agent-api  Starting
+ Container zakops-agent-api  Started
+2026-01-24T17:44:29-06:00 [INFO] Waiting for http://localhost:8095/health...
+[0;32m[INFO][0m Waiting for http://localhost:8095/health...
+..2026-01-24T17:44:33-06:00 [INFO] Service ready!
+[0;32m[INFO][0m Service ready!
+
+[0;34m════════════════════════════════════════[0m
+[0;34mTEST: SUMMARY[0m
+[0;34m════════════════════════════════════════[0m
+2026-01-24T17:44:33-06:00 [TEST] SUMMARY
+
+Gate Artifacts Pack:
+  -rw-r--r-- 1 root root   189 Jan 24 17:44 ./gate_artifacts/approve.json
+  -rw-r--r-- 1 root root    57 Jan 24 17:44 ./gate_artifacts/approve_again.json
+  -rw-r--r-- 1 root root   781 Jan 24 17:44 ./gate_artifacts/auth_negative_tests.json
+  -rw-r--r-- 1 root root  3417 Jan 24 17:43 ./gate_artifacts/build.log
+  -rw-r--r-- 1 root root  1362 Jan 24 17:44 ./gate_artifacts/checkpoint_kill9_test.log
+  -rw-r--r-- 1 root root   302 Jan 24 17:44 ./gate_artifacts/concurrent_approves.log
+  -rw-r--r-- 1 root root  9148 Jan 24 17:44 ./gate_artifacts/db_invariants.sql.out
+  -rw-r--r-- 1 root root 19724 Jan 24 17:44 ./gate_artifacts/dependency_licenses.json
+  -rw-r--r-- 1 root root   159 Jan 24 17:43 ./gate_artifacts/health.json
+  -rw-r--r-- 1 root root   638 Jan 24 17:44 ./gate_artifacts/hitl_scope_test.log
+  -rw-r--r-- 1 root root   638 Jan 24 17:44 ./gate_artifacts/hitl_scope_test.raw.log
+  -rw-r--r-- 1 root root   429 Jan 24 17:44 ./gate_artifacts/invoke_hitl.json
+  -rw-r--r-- 1 root root   243 Jan 24 17:44 ./gate_artifacts/mock_safety_test.log
+  -rw-r--r-- 1 root root  4523 Jan 24 17:44 ./gate_artifacts/run.log
+  -rw-r--r-- 1 root root   488 Jan 24 17:44 ./gate_artifacts/streaming_test.log
+  -rw-r--r-- 1 root root   560 Jan 24 17:44 ./gate_artifacts/tool_call_validation_test.log
+  -rw-r--r-- 1 root root  1076 Jan 24 17:44 ./gate_artifacts/tool_call_validation_test.raw.log
+
+Required artifacts status:
+  [0;32m[OK][0m health.json (159 bytes)
+  [0;32m[OK][0m invoke_hitl.json (429 bytes)
+  [0;32m[OK][0m approve.json (189 bytes)
+  [0;32m[OK][0m db_invariants.sql.out (9148 bytes)
+  [0;32m[OK][0m checkpoint_kill9_test.log (1362 bytes)
+  [0;32m[OK][0m concurrent_approves.log (302 bytes)
+  [0;32m[OK][0m tool_call_validation_test.log (560 bytes)
+  [0;32m[OK][0m dependency_licenses.json (19724 bytes)
+  [0;32m[OK][0m mock_safety_test.log (243 bytes)
+  [0;32m[OK][0m streaming_test.log (488 bytes)
+  [0;32m[OK][0m hitl_scope_test.log (638 bytes)
+  [0;32m[OK][0m auth_negative_tests.json (781 bytes) - 7/7 tests passed
+  [0;32m[OK][0m run.log (4523 bytes)
+
+2026-01-24T17:44:33-06:00 [INFO] Running hard gate checks...
+[0;32m[INFO][0m Running hard gate checks...
+2026-01-24T17:44:33-06:00 [INFO] Auth negative gate PASSED (7/7)
+[0;32m[INFO][0m Auth negative gate PASSED (7/7)
+2026-01-24T17:44:33-06:00 [INFO] Streaming gate PASSED
+[0;32m[INFO][0m Streaming gate PASSED
+2026-01-24T17:44:33-06:00 [INFO] Copyleft gate PASSED (no GPL/AGPL/LGPL)
+[0;32m[INFO][0m Copyleft gate PASSED (no GPL/AGPL/LGPL)
+2026-01-24T17:44:33-06:00 [INFO] HITL scope gate PASSED
+[0;32m[INFO][0m HITL scope gate PASSED
+2026-01-24T17:44:33-06:00 [INFO] Tool arg validation gate PASSED
+[0;32m[INFO][0m Tool arg validation gate PASSED
+
+2026-01-24T17:44:33-06:00 [INFO] Final health check...
+[0;32m[INFO][0m Final health check...
+2026-01-24T17:44:33-06:00 [INFO] Final health: PASSED
+[0;32m[INFO][0m Final health: PASSED
+
+2026-01-24T17:44:33-06:00 [INFO] ==========================================
+[0;32m[INFO][0m ==========================================
+2026-01-24T17:44:33-06:00 [INFO] BASELINE GATES PASSED - HITL Spike verified!
+[0;32m[INFO][0m BASELINE GATES PASSED - HITL Spike verified!
+2026-01-24T17:44:33-06:00 [INFO] ==========================================
+[0;32m[INFO][0m ==========================================
+2026-01-24T17:44:33-06:00 [INFO] Running Phase 0 + Phase 1 gates...
+[0;32m[INFO][0m Running Phase 0 + Phase 1 gates...
+
+
+[0;34m════════════════════════════════════════[0m
+[0;34mGATE: P0-CONTRACT-001: Contract Snapshot[0m
+[0;34m════════════════════════════════════════[0m
+[0;32m[INFO][0m Contract snapshot saved
+[0;32m[INFO][0m P0-CONTRACT-001: Contract snapshot created
+
+[0;34m════════════════════════════════════════[0m
+[0;34mGATE: P0-PORTS-001: PORTS.md Lint[0m
+[0;34m════════════════════════════════════════[0m
+[0;32m[INFO][0m P0-PORTS-001: PASSED
+
+[0;34m════════════════════════════════════════[0m
+[0;34mGATE: P0-ENV-001: No Localhost in Container[0m
+[0;34m════════════════════════════════════════[0m
+[0;32m[INFO][0m P0-ENV-001: PASSED
+
+[0;34m════════════════════════════════════════[0m
+[0;34mGATE: P0-VLLM-001: vLLM Lane Verify[0m
+[0;34m════════════════════════════════════════[0m
+[0;32m[INFO][0m P0-VLLM-001: PASSED
+
+[0;34m════════════════════════════════════════[0m
+[0;34mGATE: P0-REGISTRY-001: Gate Registry[0m
+[0;34m════════════════════════════════════════[0m
+[0;32m[INFO][0m P0-REGISTRY-001: PASSED
+
+[0;34m════════════════════════════════════════[0m
+[0;34mGATE: P1-ENC-001: At-Rest Encryption Verify[0m
+[0;34m════════════════════════════════════════[0m
+[0;32m[INFO][0m P1-ENC-001: Encryption verification completed
+
+[0;34m════════════════════════════════════════[0m
+[0;34mGATE: P1-KEY-001: Production Fail-Closed[0m
+[0;34m════════════════════════════════════════[0m
+[0;32m[INFO][0m P1-KEY-001: PASSED
+
+[0;34m════════════════════════════════════════[0m
+[0;34mGATE: P1-RAW-001: PII Canary Test[0m
+[0;34m════════════════════════════════════════[0m
+[0;32m[INFO][0m P1-RAW-001: PASSED
+
+[0;34m════════════════════════════════════════[0m
+[0;34mGATE: P1-LANGFUSE-001: Langfuse Self-Host Gate[0m
+[0;34m════════════════════════════════════════[0m
+[0;32m[INFO][0m P1-LANGFUSE-001: SKIPPED
+
+[0;34m════════════════════════════════════════[0m
+[0;34mGATE: P1-RESILIENCE-001: Resilience Config Snapshot[0m
+[0;34m════════════════════════════════════════[0m
+[0;32m[INFO][0m P1-RESILIENCE-001: Config snapshot created
+
+[0;34m════════════════════════════════════════[0m
+[0;34mGATE: P0-BUNDLE-001: Artifact Bundle[0m
+[0;34m════════════════════════════════════════[0m
+[0;32m[INFO][0m P0-BUNDLE-001: Created artifact_bundle.zip (13024 bytes)
+
+[0;34m════════════════════════════════════════[0m
+[0;34mGATE: P1-ENC-002: Kill-9 with Encryption[0m
+[0;34m════════════════════════════════════════[0m
+[0;32m[INFO][0m Kill-9 encrypted recovery verified
+
+[0;34m════════════════════════════════════════[0m
+[0;34mGATE: PHASE 0 + PHASE 1 SUMMARY[0m
+[0;34m════════════════════════════════════════[0m
+
+Phase 0 Artifacts:
+  [0;32m[OK][0m contract_snapshot.json
+  [0;32m[OK][0m agent_api_contract.json
+  [0;32m[OK][0m ports_md_lint.log
+  [0;32m[OK][0m env_no_localhost_lint.log
+  [0;32m[OK][0m vllm_lane_verify.json
+  [0;32m[OK][0m artifact_bundle.zip
+  [0;32m[OK][0m gate_registry.json
+  [0;32m[OK][0m gate_registry_lint.log
+
+Phase 1 Artifacts:
+  [0;32m[OK][0m encryption_verify.log
+  [0;32m[OK][0m kill9_encrypted.log
+  [0;32m[OK][0m prod_exposure_fail_closed.log
+  [0;32m[OK][0m secrets_hygiene_lint.log
+  [0;32m[OK][0m pii_canary_report.json
+  [0;32m[OK][0m raw_content_scan.log
+  [0;32m[OK][0m langfuse_selfhost_gate.log
+  [0;32m[OK][0m resilience_config_snapshot.json
+
+[0;32m[INFO][0m Phase 0 + Phase 1 gates completed
+
+[0;34m════════════════════════════════════════[0m
+[0;34mGATE: PHASE 3: Intelligence / Agent Capabilities[0m
+[0;34m════════════════════════════════════════[0m
+
+[0;34m════════════════════════════════════════[0m
+[0;34mGATE: P3-RAG-PROBE-001: RAG REST Contract[0m
+[0;34m════════════════════════════════════════[0m
+[1;33m[WARN][0m P3-RAG-PROBE-001: Contract artifact missing - creating
+[0;32m[INFO][0m P3-RAG-PROBE-001: Contract created
+
+[0;34m════════════════════════════════════════[0m
+[0;34mGATE: P3-EVAL-001: Tool Accuracy Eval[0m
+[0;34m════════════════════════════════════════[0m
+[0;32m[INFO][0m P3-EVAL-001: Tool accuracy PASSED (0.96 >= 0.95)
+
+[0;34m════════════════════════════════════════[0m
+[0;34mGATE: P3-EVAL-002: Retrieval Eval[0m
+[0;34m════════════════════════════════════════[0m
+[0;32m[INFO][0m P3-EVAL-002: Retrieval recall@5 PASSED (1.0 >= 0.80)
+
+[0;34m════════════════════════════════════════[0m
+[0;34mGATE: P3-NO-SPLITBRAIN-001: No Split-Brain Retrieval[0m
+[0;34m════════════════════════════════════════[0m
+[0;32m[INFO][0m P3-NO-SPLITBRAIN-001: PASSED (no direct pgvector queries)
+
+[0;34m════════════════════════════════════════[0m
+[0;34mGATE: P3-DATASET-001: Eval Dataset Manifest[0m
+[0;34m════════════════════════════════════════[0m
+[0;32m[INFO][0m P3-DATASET-001: Manifest valid (2 datasets, secrets certified)
+
+[0;34m════════════════════════════════════════[0m
+[0;34mGATE: Updating Gate Registry with Phase 3[0m
+[0;34m════════════════════════════════════════[0m
+[0;32m[INFO][0m Gate registry updated with Phase 3 gates
+
+[0;34m════════════════════════════════════════[0m
+[0;34mGATE: PHASE 3 SUMMARY[0m
+[0;34m════════════════════════════════════════[0m
+
+Phase 3 Artifacts:
+  [0;32m[OK][0m rag_rest_contract.json
+  [0;32m[OK][0m tool_accuracy_eval.json
+  [0;32m[OK][0m retrieval_eval_results.json
+  [0;32m[OK][0m no_split_brain_retrieval_scan.log
+  [0;32m[OK][0m eval_dataset_manifest.json
+
+[0;32m[INFO][0m Phase 3 gates completed
+2026-01-24T17:44:40-06:00 [INFO] Phase 0 + Phase 1 gates completed
+[0;32m[INFO][0m Phase 0 + Phase 1 gates completed
+2026-01-24T17:44:40-06:00 [INFO] Running Phase 2/4/5 gates...
+[0;32m[INFO][0m Running Phase 2/4/5 gates...
+
+
+[0;34m════════════════════════════════════════[0m
+[0;34mGATE: P2-UI-001: UI Smoke Test[0m
+[0;34m════════════════════════════════════════[0m
+[0;32m[INFO][0m P2-UI-001: UI Smoke Test PASSED (5 tests)
+
+[0;34m════════════════════════════════════════[0m
+[0;34mGATE: P4-MCP-001: MCP Client Conformance[0m
+[0;34m════════════════════════════════════════[0m
+[0;32m[INFO][0m P4-MCP-001: MCP conformance SKIPPED
+
+[0;34m════════════════════════════════════════[0m
+[0;34mGATE: P4-ROUTE-001: LiteLLM Routing Policies[0m
+[0;34m════════════════════════════════════════[0m
+[0;32m[INFO][0m P4-ROUTE-001: PASSED
+[0;32m[INFO][0m P4-ROUTE-001: Policy config snapshot created
+
+[0;34m════════════════════════════════════════[0m
+[0;34mGATE: P4-COST-001: Cost Accounting[0m
+[0;34m════════════════════════════════════════[0m
+[0;32m[INFO][0m P4-COST-001: Cost report created
+[0;32m[INFO][0m P4-COST-001: Local percent >= 80%
+
+[0;34m════════════════════════════════════════[0m
+[0;34mGATE: P5-QUEUE-001: Queue + DLQ (Postgres SKIP LOCKED)[0m
+[0;34m════════════════════════════════════════[0m
+[0;32m[INFO][0m P5-QUEUE-001: Queue worker smoke PASSED
+[0;32m[INFO][0m P5-QUEUE-001: Queue load test completed
+
+[0;34m════════════════════════════════════════[0m
+[0;34mGATE: P5-AUDIT-001: Audit Log Immutability[0m
+[0;34m════════════════════════════════════════[0m
+[0;32m[INFO][0m P5-AUDIT-001: Audit immutability PASSED
+
+[0;34m════════════════════════════════════════[0m
+[0;34mGATE: P5-CHAOS-001: Chaos Hardening[0m
+[0;34m════════════════════════════════════════[0m
+[0;32m[INFO][0m P5-CHAOS-001: Kill-9 recovery PASSED
+409
+409
+409
+409
+409
+409
+409
+409
+409
+409
+409
+409
+409
+409
+409
+409
+409
+409
+409
+409
+409
+409
+409
+200
+409
+409
+409
+409
+409
+409
+429
+429
+429
+429
+429
+429
+429
+429
+429
+429
+429
+429
+429
+429
+429
+429
+429
+429
+429
+429
+[0;32m[INFO][0m P5-CHAOS-001: Concurrency N=50 PASSED (exactly 1 winner)
+
+[0;34m════════════════════════════════════════[0m
+[0;34mGATE: P5-SECRETS-001: Secrets Hygiene[0m
+[0;34m════════════════════════════════════════[0m
+[0;32m[INFO][0m P5-SECRETS-001: Secrets hygiene PASSED
+
+[0;34m════════════════════════════════════════[0m
+[0;34mGATE: P5-RATE-001: Rate Limiting[0m
+[0;34m════════════════════════════════════════[0m
+[0;32m[INFO][0m P5-RATE-001: Rate limiting PASSED
+
+[0;34m════════════════════════════════════════[0m
+[0;34mGATE: Updating Gate Registry with Phase 2/4/5[0m
+[0;34m════════════════════════════════════════[0m
+[0;32m[INFO][0m Gate registry updated with Phase 2/4/5 gates
+
+[0;34m════════════════════════════════════════[0m
+[0;34mGATE: PHASE 2/4/5 SUMMARY[0m
+[0;34m════════════════════════════════════════[0m
+
+Phase 2 Artifacts:
+  [0;32m[OK][0m ui_smoke_test.log
+
+Phase 4 Artifacts:
+  [0;32m[OK][0m mcp_conformance.json
+  [0;32m[OK][0m routing_policy_tests.json
+  [0;32m[OK][0m policy_config_snapshot.json
+  [0;32m[OK][0m cost_report.json
+  [0;32m[OK][0m local_percent_report.json
+
+Phase 5 Artifacts:
+  [0;32m[OK][0m queue_worker_smoke.log
+  [0;32m[OK][0m queue_load_test.json
+  [0;32m[OK][0m audit_immutability_test.log
+  [0;32m[OK][0m chaos_kill9.log
+  [0;32m[OK][0m concurrency_n50.log
+  [0;32m[OK][0m secrets_hygiene_lint.log
+  [0;32m[OK][0m rate_limit_test.log
+
+[0;32m[INFO][0m Phase 2/4/5 gates completed
+2026-01-24T17:44:56-06:00 [INFO] Phase 2/4/5 gates completed
+[0;32m[INFO][0m Phase 2/4/5 gates completed
+
+2026-01-24T17:44:56-06:00 [INFO] ==========================================
+[0;32m[INFO][0m ==========================================
+2026-01-24T17:44:56-06:00 [INFO] ALL GATES COMPLETED
+[0;32m[INFO][0m ALL GATES COMPLETED
+2026-01-24T17:44:56-06:00 [INFO] ==========================================
+[0;32m[INFO][0m ==========================================
+
+View logs:     docker compose logs agent-api
+Stop services: docker compose down
+Gate pack:     ls ./gate_artifacts/
+
+=== GATE EXIT CODE ===
+0
+
+=== GATE ATTEMPTS (Flaky Policy) ===
+{
+  "attempts": 1,
+  "exit_codes": [
+  0
+],
+  "flake_suspected": false,
+  "final_exit_code": 0,
+  "gate_cmd": "./scripts/bring_up_tests.sh",
+  "retry_max": 0,
+  "retry_mode": "on_fail"
+}
+
+=== DEFINITION OF PASS ===
+PASS requires ALL of:
+  1. Gate exit code = 0
+  2. All spec_compliance fields = true
+  3. Zero BLOCKERS
+  4. Zero MAJORS
+FAIL if ANY condition above is not met.
+
+=== INSTRUCTIONS ===
+1. Analyze the gate output and builder report
+2. Check spec compliance against acceptance criteria
+3. List any blockers, majors, and minors found
+4. Set verdict to PASS only if ALL conditions in DEFINITION OF PASS are met
+5. Provide next_actions_for_builder if verdict is FAIL
+6. Output a JSON object matching the schema to: /home/zaks/bookkeeping/labloop/tasks/phase2_4_5_hardening/QA_REPORT.json
+7. If previous cycles show same issues recurring, flag as potential stuck loop
+8. Note if flake_suspected=true in gate_attempts.json - the gate may be flaky

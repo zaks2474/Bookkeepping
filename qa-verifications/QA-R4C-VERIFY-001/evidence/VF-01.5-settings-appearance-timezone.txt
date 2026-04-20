@@ -1,0 +1,28 @@
+=== VF-01.5 APPEARANCE + TIMEZONE ===
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/settings/page.tsx:8: * Provider/Appearance persist to localStorage. Agent/Notifications/Data/Timezone persist to backend.
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/settings/page.tsx:27:import { SETTINGS_SECTIONS } from '@/lib/settings/preferences-types';
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/settings/page.tsx:33:} from '@/lib/settings/preferences-types';
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/settings/page.tsx:40:    preferences,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/settings/page.tsx:48:  const timezoneSave = useSectionSave(updatePreferences);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/settings/page.tsx:82:    await timezoneSave.save({ timezone: tz });
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/settings/page.tsx:100:          Manage your AI provider, integrations, notifications, and preferences.
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/settings/page.tsx:123:            preferences={{
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/settings/page.tsx:124:              agent_enabled: preferences.agent_enabled,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/settings/page.tsx:125:              auto_approve_level: preferences.auto_approve_level,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/settings/page.tsx:126:              auto_execute_threshold: preferences.auto_execute_threshold,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/settings/page.tsx:127:              max_concurrent_actions: preferences.max_concurrent_actions,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/settings/page.tsx:128:              deal_matching_strictness: preferences.deal_matching_strictness,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/settings/page.tsx:129:              response_style: preferences.response_style,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/settings/page.tsx:136:            preferences={{
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/settings/page.tsx:137:              email_notifications: preferences.email_notifications,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/settings/page.tsx:138:              browser_notifications: preferences.browser_notifications,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/settings/page.tsx:139:              digest_frequency: preferences.digest_frequency,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/settings/page.tsx:140:              approval_alerts: preferences.approval_alerts,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/settings/page.tsx:141:              deal_stage_changes: preferences.deal_stage_changes,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/settings/page.tsx:142:              agent_activity: preferences.agent_activity,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/settings/page.tsx:143:              quiet_hours_enabled: preferences.quiet_hours_enabled,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/settings/page.tsx:144:              quiet_hours_start: preferences.quiet_hours_start,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/settings/page.tsx:145:              quiet_hours_end: preferences.quiet_hours_end,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/settings/page.tsx:152:            retentionDays={preferences.action_retention_days}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/settings/page.tsx:160:            serverTimezone={preferences.timezone}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/settings/page.tsx:162:            timezoneSaveStatus={timezoneSave.saveStatus}

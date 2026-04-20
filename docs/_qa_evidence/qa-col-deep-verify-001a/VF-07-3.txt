@@ -1,0 +1,9 @@
+Output structure (lines 124-132):
+  key: ghost_key (generated via _generate_key)
+  detected_value: detected factual assertion
+  confidence: round(confidence, 2)
+  pattern_type, detected_at, detected_in, status also present
+---
+Note: 'value' field is named 'detected_value' in the ghost flag dict.
+  On promotion to brain fact (confirm_ghost line 186), uses 'value' key.
+VERDICT: PASS (key=yes, value=detected_value, confidence=yes)

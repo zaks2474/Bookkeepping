@@ -1,0 +1,3 @@
+REM-002: agent/invoke requires actor_id
+- Issue: V1.5 and VREG.2 live tests returned 422 because actor_id missing.
+- Fix: Re-run invoke requests with actor_id in payload.

@@ -1,0 +1,2 @@
+ON CONFLICT (version) DO NOTHING;
+ON CONFLICT (deal_id) DO NOTHING;

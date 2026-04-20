@@ -1,0 +1,94 @@
+=== Section 5: Discrepancy Investigations ===
+Date: 2026-02-06T17:40:37-06:00
+
+--- D-1: deal_tools.py .get() count ---
+.get( count: 0
+D-1 PASS: Zero .get() calls
+
+--- D-2: Negative controls executed ---
+NC-0: EXECUTED
+NC-1: EXECUTED
+NC-3: EXECUTED
+NC-4: EXECUTED
+NC-5: EXECUTED
+NC-6: EXECUTED
+
+--- D-3: Split-brain resolution ---
+ActivityEvent class in agent.py: 1
+ActivityEvent refs in dashboard TS: 6
+D-3 PASS: Agent API is canonical source (Pydantic model), dashboard consumes via generated types
+
+--- D-4: SSE JSON Schema ---
+D-4 PASS: agent-events.schema.json EXISTS at /home/zaks/zakops-agent-api/packages/contracts/openapi/agent-events.schema.json
+
+--- D-5: Makefile hardcoded paths ---
+/home/zaks count: 1
+D-5 FAIL: 1 hardcoded path(s) found:
+363:	@docker cp zakops-agent-api:/tmp/rag_models.py $(shell realpath $(MONOREPO_ROOT)/../zakops-backend 2>/dev/null || echo /home/zaks/zakops-backend)/src/schemas/rag_models.py
+NOTE: This is a fallback in a docker cp command; $(shell realpath ...) is tried first.
+SEVERITY: LOW - fallback path, only used if realpath fails
+
+--- D-6: backend_models.py line count ---
+Line count: 594 (claimed ~594)
+D-6 PASS: Within tolerance (594 lines)
+
+--- D-7: agent-api-types.generated.ts line count ---
+Line count: 2229 (claimed ~2,229)
+D-7 PASS: Within tolerance (2229 lines)
+
+--- D-8: agent-api.json metrics ---
+Paths: 28 (claimed ~28)
+Schemas: 22 (claimed ~22)
+D-8 PASS: Exact match
+
+--- D-9: rag-api.json metrics ---
+Paths: 6 (claimed ~6)
+Schemas: 4 (claimed ~4)
+D-9 PASS: Exact match
+
+--- D-10: tool-schemas.json metrics ---
+Tool count: 12 (claimed ~12)
+D-10 PASS: Exact match (12 tools)
+
+--- D-11: Compile-time safety surfaces ---
+Surface 1 (Agent->Backend SDK): BackendClient = YES
+Surface 2 (Agent OpenAPI): agent-api.json = YES
+Surface 3 (Dashboard Agent codegen): agent-api-types.generated.ts = YES
+Surface 4 (Backend RAG contract): rag-api.json = YES
+Surface 5 (DB migrations): migration-assertion.sh = YES
+Surface 6 (MCP contract): MCP server dir = YES
+Surface 7 (CI hardening): spec-freshness-bot.yml = YES
+D-11 RESULT: 7/7 surfaces present
+
+--- D-12: deal_tools.py BackendClient refs ---
+BackendClient refs: 24 (must be > 0)
+D-12 PASS: 24 references found
+
+--- D-13: Migration tracking ---
+Migration check functions: 6
+DB names found: agent,backend,crawlrag
+D-13 PASS: Multi-database migration tracking
+
+--- D-14: MCP server count ---
+Total .py files in mcp_server/: 4
+Server-related .py files:
+/home/zaks/zakops-backend/mcp_server/server.py
+/home/zaks/zakops-backend/mcp_server/archived/server_http.py
+/home/zaks/zakops-backend/mcp_server/archived/server_sse.py
+D-14 PASS: MCP server verified
+
+--- D-15: No-Drift Alignment ---
+Running make sync-types...
+[36m=== Sync Types ===[0m
+cd /home/zaks/zakops-agent-api/apps/dashboard && npx openapi-typescript ../../packages/contracts/openapi/zakops-api.json -o src/lib/api-types.generated.ts
+✨ openapi-typescript 7.10.1
+🚀 ../../packages/contracts/openapi/zakops-api.json → src/lib/api-types.generated.ts [96.7ms]
+[32mTypes regenerated from committed spec[0m
+Generated file drift count: 1
+Total working tree summary:  36 files changed, 7308 insertions(+), 3555 deletions(-)
+D-15 WARN: 1 generated file(s) have drift
+apps/dashboard/src/types/api.ts
+
+=== SUMMARY ===
+PASS: 11 | FAIL: 1 | WARN: 1 | SKIP: 0
+=== End Discrepancy Report ===

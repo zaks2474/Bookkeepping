@@ -1,0 +1,45 @@
+=== VF-02.2 QUARANTINE MODEL STRICTNESS ===
+23:from pydantic import BaseModel, ConfigDict, Field, field_validator
+193:    model_config = ConfigDict(from_attributes=True)
+214:    model_config = ConfigDict(from_attributes=True)
+257:    email_body_snippet: str | None = None
+260:    schema_version: str | None = None
+274:    model_config = ConfigDict(from_attributes=True)
+277:class QuarantineCreate(BaseModel):
+282:      schema_version, correlation_id, email_body_snippet, source_message_id)
+288:    source_message_id: str | None = None
+303:    email_body_snippet: str | None = None
+310:    schema_version: str | None = None
+325:    model_config = ConfigDict(extra="forbid")
+327:    @field_validator("schema_version")
+329:    def validate_schema_version(cls, v: str | None) -> str | None:
+331:            raise ValueError(f"Unknown schema_version '{v}'. Allowed: {sorted(ALLOWED_SCHEMA_VERSIONS)}")
+343:    "email_subject", "sender", "classification", "schema_version",
+344:    "correlation_id", "email_body_snippet",
+375:    model_config = ConfigDict(from_attributes=True)
+1522:            q.email_body_snippet,
+1525:            q.schema_version,
+1590:            q.email_body_snippet,
+1593:            q.schema_version,
+1619:    item: QuarantineCreate,
+1648:    # P1-04: Map source_message_id -> message_id at boundary
+1650:    if item.source_message_id and not item.message_id:
+1651:        message_id = item.source_message_id
+1652:    elif item.source_message_id:
+1653:        message_id = item.source_message_id  # source_message_id takes priority
+1680:        if not item.schema_version:
+1681:            missing.append("schema_version")
+1684:        if not item.email_body_snippet:
+1685:            missing.append("email_body_snippet")
+1696:    # P1-05: Truncate email_body_snippet to 500 chars
+1697:    email_body_snippet = item.email_body_snippet
+1698:    if email_body_snippet and len(email_body_snippet) > 500:
+1699:        email_body_snippet = email_body_snippet[:500]
+1727:               q.email_body_snippet, q.triage_summary, q.source_thread_id,
+1728:               q.schema_version, q.source_type, q.version,
+1752:                 sender_domain, sender_company, body_preview, email_body_snippet,
+1755:                 urgency, source_thread_id, schema_version, tool_version,
+1774:                      email_body_snippet, triage_summary, source_thread_id,
+1775:                      schema_version, source_type, version,
+1786:            email_body_snippet,  # $10
+1793:            item.source_thread_id, item.schema_version, item.tool_version,

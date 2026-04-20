@@ -1,0 +1,8 @@
+=== ST-5 LINK DRAG COEXISTENCE ===
+--- Link is inside Draggable but NOT on drag handle ---
+56:              {...provided.dragHandleProps}
+61:            <Link href={`/deals/${deal.deal_id}`} className="flex-1 min-w-0 hover:opacity-80 transition-opacity">
+--- Confirm drag handle and Link are siblings, not nested ---
+dragHandleProps_at=1711
+Link_at=1911
+link_after_drag=True

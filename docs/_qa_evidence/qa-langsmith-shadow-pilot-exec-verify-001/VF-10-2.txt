@@ -1,0 +1,14 @@
+MISSING: P0-01-quarantine-baseline.txt
+MISSING: P0-02-deals-baseline.txt
+EXISTS: P0-03-cleanup-transaction.txt
+EXISTS: P0-04-artifacts-intact.txt
+MISSING: P1-01-backend-health.txt
+EXISTS: P1-02-auth-state.txt
+MISSING: P1-03-quarantine-endpoint.txt
+MISSING: P1-04-dashboard-status.txt
+EXISTS: P2-01-seed-injection.txt
+EXISTS: P2-02-seed-dedup.txt
+EXISTS: P2-03-seed-isolation.txt
+MISSING: P2-04-correlation-id.txt
+MISSING: P2-05-seed-cleanup.txt
+MISSING_COUNT=7

@@ -1,0 +1,23 @@
+=== TriPass Finding Coverage ===
+F-1: ### F-1: MCP Server Quarantine Endpoint Mismatch (`/review` vs `/process`)
+F-2: ### F-2: No Automated Email Ingestion Pipeline (Missing `email_ingestion` Module)
+F-3: ### F-3: Weak / Missing Quarantine Deduplication at DB Level
+F-4: ### F-4: Agent API Database URL Config Drift
+F-5: ### F-5: Legacy Filesystem `.deal-registry` Still in Active Code Paths (Shadow Truth)
+F-6: ### F-6: Quarantine Approval Bypasses Workflow Engine / FSM / Outbox
+F-7: ### F-7: Dashboard Email Settings Proxy Targets Nonexistent Backend Endpoint
+F-8: ### F-8: Correlation ID Not Propagated End-to-End
+F-9: ### F-9: Idempotency Middleware Schema-Qualification Bug + Silent Bypass
+F-10: ### F-10: Dashboard `bulk-delete` Quarantine Endpoint Not Implemented
+F-11: ### F-11: Missing DB Constraint on Quarantine `status` Column
+F-12: ### F-12: DDL Default Stage `'lead'` Not in Canonical Stage Enum
+F-13: ### F-13: Retention Cleanup References Non-Existent Quarantine Columns
+F-14: ### F-14: Agent Duplicates Transition Matrix (Two Sources of Truth)
+F-15: ### F-15: Mismatched Stage Taxonomy in Agent Contract Docstring
+F-16: ### F-16: Attachment Linkage Gap Post-Promotion
+F-17: ### F-17: OAuth State Stored In-Memory (Scalability Risk)
+---
+VF-01=F-1, VF-02=F-3, VF-03=F-4, VF-04=F-6, VF-05=F-9, VF-06=F-11, VF-07=F-13
+F-2(email)=out-of-scope, F-5(fs)=sweep, F-7(email-settings)=UI, F-8(corr-id)=VF-02.3
+F-10(bulk-delete)=UI, F-12(DDL)=ST-1, F-14(matrix)=ST-2, F-15(docstring)=low-pri
+F-16(attachment)=promotion-flow, F-17(oauth)=low-pri

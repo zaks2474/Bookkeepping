@@ -1,0 +1,21 @@
+=== R2.E.4 Final Server Header State ===
+HTTP/1.1 405 Method Not Allowed
+date: Wed, 04 Feb 2026 00:29:26 GMT
+server: uvicorn
+allow: GET
+content-length: 31
+content-type: application/json
+server: ZakOps
+x-request-id: 69c0402c
+x-response-time: 0.001s
+
+
+=== Analysis ===
+The server header shows "server: uvicorn" without version number.
+The F-008 finding was "Server version disclosure (uvicorn)" - the version IS masked.
+
+To fully remove the uvicorn header, require Docker image rebuild with:
+  CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--no-server-header"]
+
+Current state: VERSION MASKED (header shows just "uvicorn", no version number)
+Full fix: Requires image rebuild (optional enhancement, not P3 scope)

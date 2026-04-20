@@ -1,0 +1,11 @@
+    requires_confirmation: bool = False
+    """Create a delegated task for a deal. Gated by delegate_actions flag."""
+    if not await is_flag_enabled("delegate_actions", pool):
+        raise HTTPException(status_code=503, detail="Delegation is disabled (delegate_actions flag is off)")
+        if not await is_flag_enabled("send_email_enabled", pool):
+                detail="Outbound email is disabled (send_email_enabled flag is off)"
+        body.requires_confirmation = True
+                 assigned_to, requires_confirmation, correlation_id, max_attempts, created_by)
+            body.requires_confirmation,
+    """Operator confirms a task that requires_confirmation (e.g. send_email)."""
+        if not task["requires_confirmation"]:

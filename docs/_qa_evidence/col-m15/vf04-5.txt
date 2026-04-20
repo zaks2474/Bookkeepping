@@ -1,0 +1,115 @@
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/node_registry.py:103:            "confidence": 0.85,
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/replay_service.py:13:  - tool_calls_match: whether tool invocations are identical
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/replay_service.py:179:        tool_calls_match = orig_tools == replay_tools
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/replay_service.py:185:        if similarity >= 0.85:
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/replay_service.py:194:            "tool_calls_match": tool_calls_match,
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/rag_rest.py:146:            threshold: Minimum similarity threshold
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/vectorstores/base.py:299:                `'similarity_score_threshold'`.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/vectorstores/base.py:307:                `'mmr'`, or `'similarity_score_threshold'`.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/vectorstores/base.py:311:        if search_type == "similarity_score_threshold":
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/vectorstores/base.py:320:            "search_type to be 'similarity', 'similarity_score_threshold'"
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/vectorstores/base.py:333:                `'similarity_score_threshold'`.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/vectorstores/base.py:341:                `'mmr'`, or `'similarity_score_threshold'`.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/vectorstores/base.py:345:        if search_type == "similarity_score_threshold":
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/vectorstores/base.py:354:            "search_type to be 'similarity', 'similarity_score_threshold' or 'mmr'."
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/vectorstores/base.py:541:                if similarity >= score_threshold
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/vectorstores/base.py:590:                if similarity >= score_threshold
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/vectorstores/base.py:908:                    `'similarity_score_threshold'`.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/vectorstores/base.py:914:                        for `similarity_score_threshold`
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/vectorstores/base.py:939:            search_type="similarity_score_threshold",
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/vectorstores/base.py:967:        "similarity_score_threshold",
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/vectorstores/base.py:997:        if search_type == "similarity_score_threshold":
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/vectorstores/base.py:1034:        elif self.search_type == "similarity_score_threshold":
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/vectorstores/base.py:1059:        elif self.search_type == "similarity_score_threshold":
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/documents/transformers.py:27:            similarity_threshold: float = 0.95
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/documents/transformers.py:42:                    self.similarity_threshold,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/document_transformers/embeddings_redundant_filter.py:50:    embedded_documents: List[List[float]], similarity_fn: Callable, threshold: float
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/document_transformers/embeddings_redundant_filter.py:54:    redundant = np.where(similarity > threshold)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/document_transformers/embeddings_redundant_filter.py:152:    similarity_threshold: float = 0.95
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/document_transformers/embeddings_redundant_filter.py:169:            embedded_documents, self.similarity_fn, self.similarity_threshold
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/azuresearch.py:1676:                        for similarity_score_threshold
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/azuresearch.py:1700:    "semantic_hybrid", "similarity_score_threshold", "hybrid_score_threshold",
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/azuresearch.py:1707:            for similarity_score_threshold
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/azuresearch.py:1716:        "similarity_score_threshold",
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/azuresearch.py:1750:        elif self.search_type == "similarity_score_threshold":
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/azuresearch.py:1790:        elif self.search_type == "similarity_score_threshold":
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/cassandra.py:1449:                "similarity_score_threshold".
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/cassandra.py:1454:                        for similarity_score_threshold
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/cassandra.py:1487:                search_type="similarity_score_threshold",
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/supabase.py:273:                if similarity >= score_threshold
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/surrealdb.py:250:        where vector::similarity::cosine(embedding, $embedding) >= $score_threshold
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/faiss.py:448:                if cmp(similarity, score_threshold)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/redis/base.py:767:    @deprecated("0.0.1", alternative="similarity_search(distance_threshold=0.1)")
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/redis/base.py:775:        Deprecated: Use similarity_search with distance_threshold instead.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/redis/base.py:1440:    'similarity_distance_threshold',
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/redis/base.py:1441:    'similarity_score_threshold'
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/redis/base.py:1454:        "similarity_distance_threshold",
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/redis/base.py:1455:        "similarity_score_threshold",
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/redis/base.py:1470:        elif self.search_type == "similarity_distance_threshold":
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/redis/base.py:1474:                    + "similarity_distance_threshold retriever"
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/redis/base.py:1478:        elif self.search_type == "similarity_score_threshold":
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/redis/base.py:1501:        elif self.search_type == "similarity_distance_threshold":
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/redis/base.py:1505:                    + "similarity_distance_threshold retriever"
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/redis/base.py:1508:        elif self.search_type == "similarity_score_threshold":
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/scann.py:210:                if cmp(similarity, score_threshold)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/scann.py:563:                if similarity >= score_threshold
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/chat_models/baichuan.py:376:    top_p: float = 0.85
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/chat_models/baichuan.py:584:        top_p = parameters.pop("top_p", 0.85)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/retrievers/asknews.py:41:    similarity_score_threshold: float = 0.5
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/retrievers/asknews.py:76:            similarity_score_threshold=self.similarity_score_threshold,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/retrievers/asknews.py:116:            similarity_score_threshold=self.similarity_score_threshold,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/cache.py:1210:CASSANDRA_SEMANTIC_CACHE_DEFAULT_SCORE_THRESHOLD = 0.85
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/cache.py:1781:ASTRA_DB_SEMANTIC_CACHE_DEFAULT_THRESHOLD = 0.85
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/cache.py:1841:        similarity_threshold: float = ASTRA_DB_SEMANTIC_CACHE_DEFAULT_THRESHOLD,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/cache.py:1874:            similarity_threshold: the minimum similarity for accepting a
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/cache.py:1879:        self.similarity_threshold = similarity_threshold
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/cache.py:1998:        if hit is None or hit["$similarity"] < self.similarity_threshold:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/cache.py:2028:        if hit is None or hit["$similarity"] < self.similarity_threshold:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/utils/math.py:52:    """Row-wise cosine similarity with optional top-k and score threshold filtering.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/graph_vectorstores/base.py:621:        elif search_type == "similarity_score_threshold":
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/graph_vectorstores/base.py:635:                "search_type to be 'similarity', 'similarity_score_threshold', "
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/graph_vectorstores/base.py:644:        elif search_type == "similarity_score_threshold":
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/graph_vectorstores/base.py:658:                "search_type to be 'similarity', 'similarity_score_threshold', "
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/graph_vectorstores/base.py:672:                   ``mmr_traversal``, or ``similarity_score_threshold``.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/graph_vectorstores/base.py:680:                    for similarity_score_threshold.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/graph_vectorstores/base.py:715:                search_type="similarity_score_threshold",
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/graph_vectorstores/base.py:857:    For example, we can set a similarity score threshold and only return documents with
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/graph_vectorstores/base.py:869:        "similarity_score_threshold",
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/mem0/graphs/neptune/neptunegraph.py:344:            WHERE cosine_similarity >= $threshold
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/mem0/graphs/neptune/neptunegraph.py:381:                WHERE cosine_similarity >= $threshold
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/mem0/graphs/neptune/neptunegraph.py:451:            WHERE similarity >= $threshold
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/mem0/memory/kuzu_memory.py:329:                    WHERE similarity >= CAST($threshold, 'DOUBLE')
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/mem0/memory/kuzu_memory.py:662:            WHERE source_similarity >= $threshold
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/mem0/memory/kuzu_memory.py:695:            WHERE destination_similarity >= $threshold
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/mem0/memory/memgraph_memory.py:285:                WHERE n:Entity AND n.user_id = $user_id AND n.agent_id = $agent_id AND n.embedding IS NOT NULL AND similarity >= $threshold
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/mem0/memory/memgraph_memory.py:292:                WHERE n:Entity AND n.user_id = $user_id AND n.agent_id = $agent_id AND n.embedding IS NOT NULL AND similarity >= $threshold
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/mem0/memory/memgraph_memory.py:310:                WHERE n:Entity AND n.user_id = $user_id AND n.embedding IS NOT NULL AND similarity >= $threshold
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/mem0/memory/memgraph_memory.py:317:                WHERE n:Entity AND n.user_id = $user_id AND n.embedding IS NOT NULL AND similarity >= $threshold
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/mem0/memory/memgraph_memory.py:548:                AND similarity >= $threshold
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/mem0/memory/memgraph_memory.py:563:                AND similarity >= $threshold
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/mem0/memory/memgraph_memory.py:587:                AND similarity >= $threshold
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/mem0/memory/memgraph_memory.py:602:                AND similarity >= $threshold
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/mem0/memory/graph_memory.py:289:            WHERE similarity >= $threshold
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/mem0/memory/graph_memory.py:631:            WHERE source_similarity >= $threshold
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/mem0/memory/graph_memory.py:669:            WHERE destination_similarity >= $threshold
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/polynomial/laguerre.py:1569:    (array([0.58578644, 3.41421356]), array([0.85355339, 0.14644661]))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/polynomial/legendre.py:1455:    array([-0.85099543, -0.11407192,  0.51506735]) # may vary
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:2980:    array([[0.77395605, 0.43887844, 0.85859792],
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:2480:        y = np.array([0.0780, 0.3107, 0.2111, 0.0334, 0.8501])
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langfuse/experiment.py:107:            - Numeric (int/float): For quantitative metrics like accuracy (0.85), BLEU (0.42)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langfuse/experiment.py:146:                    value=0.85,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langfuse/experiment.py:441:            #   • accuracy: 0.850
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langfuse/experiment.py:708:            - Single Evaluation dict: {"name": "accuracy", "value": 0.85, "comment": "..."}
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langfuse/_client/client.py:2141:                    value=0.85,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/retrievers/document_compressors/embeddings_filter.py:37:    `similarity_threshold` must be specified."""
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/retrievers/document_compressors/embeddings_filter.py:38:    similarity_threshold: float | None = None
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/retrievers/document_compressors/embeddings_filter.py:50:        if values["k"] is None and values["similarity_threshold"] is None:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/retrievers/document_compressors/embeddings_filter.py:51:            msg = "Must specify one of `k` or `similarity_threshold`."
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/retrievers/document_compressors/embeddings_filter.py:90:        if self.similarity_threshold is not None:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/retrievers/document_compressors/embeddings_filter.py:92:                similarity[included_idxs] > self.similarity_threshold,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/retrievers/document_compressors/embeddings_filter.py:134:        if self.similarity_threshold is not None:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/retrievers/document_compressors/embeddings_filter.py:136:                similarity[included_idxs] > self.similarity_threshold,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/retrievers/multi_vector.py:23:    similarity_score_threshold = "similarity_score_threshold"
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/retrievers/multi_vector.py:78:        elif self.search_type == SearchType.similarity_score_threshold:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/retrievers/multi_vector.py:117:        elif self.search_type == SearchType.similarity_score_threshold:
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_classic/memory/vectorstore_token_buffer_memory.py:85:        search_type="similarity_score_threshold",

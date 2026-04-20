@@ -1,0 +1,12 @@
+=== STEP 2.12: Stub Detection Canary (GPT RT-5) ===
+Canary marker: CANARY_581fc2eb6963
+--- Pick a deal with unique company name ---
+Canary company: 'QA Rerun Test'
+--- Ask agent for this exact company name ---
+{
+    "detail": "Authentication required"
+}
+--- Canary match check ---
+CANARY FAIL: Expected QA Rerun Test but not found in response.
+Response excerpt: {'detail': 'Authentication required'}
+Possible stub/mock/hallucination.

@@ -1,0 +1,45 @@
+=== R0.4 Approval Error Handling BEFORE ===
+--- Approval API error handling ---
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/agent.py:495:                "approval_execution_failed",
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/agent.py:508:            "approval_failed",
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/agent.py:682:        logger.error("list_approvals_failed", error=str(e), exc_info=True)
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/agent.py:722:        logger.error("get_approval_failed", approval_id=approval_id, error=str(e))
+--- Tool execution error handling ---
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:391:                    "tool_execution_failed",
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/duckduckgo_search.py:4:to perform web searches. It returns up to 10 search results and handles errors
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/duckduckgo_search.py:10:duckduckgo_search_tool = DuckDuckGoSearchResults(num_results=10, handle_tool_error=True)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:105:        str: JSON result with ok, error, backend_status, old_stage, new_stage
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:118:        error_msg = f"Invalid target stage '{to_stage}'. Valid stages: {', '.join(sorted(VALID_STAGES))}"
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:120:        return json.dumps({"ok": False, "error": error_msg, "validation_failed": True})
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:122:    try:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:130:                    "error": f"Could not fetch deal {deal_id}: HTTP {get_response.status_code}",
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:151:                    "error": f"Deal {deal_id} is already at stage '{actual_from_stage}'",
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:178:                error_text = response.text
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:179:                logger.error(
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:183:                    error=error_text,
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:187:                    "error": f"Backend rejected transition: HTTP {backend_status} - {error_text}",
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:196:                    "error": f"Could not verify transition: HTTP {verify_response.status_code}",
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:198:                    "verification_failed": True,
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:207:                logger.error(
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:216:                    "error": f"Phantom success: backend returned 200 but stage is still '{after_stage}' (expected '{to_stage_lower}')",
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:231:                # This is a warning, not a failure — updated_at might not change if already recent
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:249:    except httpx.ConnectError:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:260:                "error": f"Deal API unavailable at {DEAL_API_URL}",
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:264:            logger.error(
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:265:                "deal_api_unavailable_fail_closed",
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:272:                "error": f"Deal API unavailable at {DEAL_API_URL} and mocks disabled",
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:275:    except Exception as e:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:276:        logger.error("transition_deal_error", error=str(e))
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:277:        return json.dumps({"ok": False, "error": f"Error transitioning deal: {str(e)}"})
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:292:    try:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:304:    except httpx.ConnectError:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:314:        logger.error(
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:315:            "deal_api_unavailable_fail_closed",
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:322:    except Exception as e:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:323:        logger.error("get_deal_error", error=str(e))
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:340:    try:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:355:    except httpx.ConnectError:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:364:        logger.error(
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:365:            "rag_rest_unavailable_fail_closed",
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:372:    except Exception as e:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:373:        logger.error("search_deals_error", error=str(e))

@@ -1,0 +1,29 @@
+=== R1.2: F-005 RAG DB Connectivity Fix ===
+Date: Tue Feb  3 04:48 UTC 2026
+
+--- Before ---
+curl http://localhost:8052/:
+{
+  "database_connected": false
+}
+
+--- Root Cause ---
+RAG REST API lost connection to rag-db container. This is a runtime
+issue (not code bug) - possibly from container restart or network issue.
+
+--- Fix ---
+docker restart rag-rest-api
+
+--- After ---
+curl http://localhost:8052/:
+{
+  "database_connected": true
+}
+
+--- Verification ---
+search_deals tool now works with RAG backend.
+
+NOTE: This is an operational issue, not a code fix. Consider adding:
+1. Health check endpoint that triggers reconnect
+2. Auto-retry logic on DB connection failure
+3. Monitoring/alerting for database_connected: false

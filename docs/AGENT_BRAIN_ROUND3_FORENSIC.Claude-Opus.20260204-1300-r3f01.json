@@ -1,0 +1,99 @@
+{
+  "agent_identity": {
+    "agent_name": "Claude-Opus-4.5",
+    "run_id": "20260204-1300-r3f01",
+    "date_time": "2026-02-04T13:00:00-06:00",
+    "repo_revision": "559a5d1f5c6d22adfd90fd767191dcd421f8732a"
+  },
+  "executive_summary": {
+    "production_ready": false,
+    "overall_score": 4.5,
+    "target_score": 10,
+    "verdict": "Agent NOT production-ready. Critical gaps in grounding, HITL coverage, and observability.",
+    "single_biggest_risk": "Grounding Failure — Agent can hallucinate deal information without querying the database."
+  },
+  "scorecard": {
+    "grounding": { "current": 3, "target": 8 },
+    "tool_reliability": { "current": 7, "target": 9 },
+    "prompt_quality": { "current": 4, "target": 8 },
+    "memory_rag": { "current": 2, "target": 7 },
+    "hitl_correctness": { "current": 7, "target": 9 },
+    "observability": { "current": 4, "target": 8 },
+    "security": { "current": 6, "target": 9 },
+    "provider_abstraction": { "current": 7, "target": 8 },
+    "stage_aware_reasoning": { "current": 2, "target": 8 },
+    "evals_regression": { "current": 3, "target": 8 }
+  },
+  "top_10_findings": [
+    "G-001: create_deal not in HITL_TOOLS frozenset — executes without approval",
+    "G-002: No grounding enforcement — agent can answer deal questions without tool calls",
+    "G-003: Langfuse tracing not configured in production",
+    "G-004: System prompt lacks M&A domain intelligence (minimal stage context)",
+    "G-005: No tool call budget enforcement (infinite loop risk)",
+    "G-006: No prompt versioning (cannot trace which prompt version was used)",
+    "G-007: Evals have no CI gate (only 10 golden traces, deployment not blocked on failure)",
+    "G-008: No correlation_id propagation across systems",
+    "G-009: Long-term memory disabled (DISABLE_LONG_TERM_MEMORY=true)",
+    "G-010: No deal-scoped memory (cannot recall prior conversations about specific deals)"
+  ],
+  "top_10_recommended_actions": [
+    "R3-0-1: Add create_deal to HITL_TOOLS frozenset in schemas/agent.py",
+    "R3-0-2: Add grounding enforcement to system prompt ('call get_deal before answering deal questions')",
+    "R3-0-3: Configure Langfuse API keys in production .env",
+    "R3-1-1: Rewrite system prompt with M&A domain context and stage transition rules",
+    "R3-2-1: Add tool call budget enforcement (max 10 per turn) in GraphState",
+    "R3-1-2: Add prompt version tracking (version field logged with each request)",
+    "R3-3-1: Add CI gate that blocks deployment on eval failure",
+    "R3-2-2: Add correlation_id header propagation (end-to-end tracing)",
+    "R3-3-2: Expand eval suite to 30+ golden traces (currently only 10)",
+    "R3-4-1: Evaluate and enable long-term memory with deal-scoped retrieval"
+  ],
+  "top_10_contrarian_risks": [
+    "FM-001: Agent hallucinates deal details without calling get_deal (HIGH likelihood, HIGH impact)",
+    "FM-002: create_deal executes without HITL approval (HIGH likelihood, HIGH impact)",
+    "FM-004: LLM gets stuck in tool-calling loop — no tool call budget enforcement",
+    "FM-010: Backend down = agent crash — no circuit breaker pattern implemented",
+    "FM-006: Prompt injection via user message (basic sanitization only)",
+    "FM-014: Long conversation exceeds context window — no token budget management",
+    "FM-023: Eval suite passes but production fails (only 10 golden traces)",
+    "FM-024: New tool added without HITL consideration (manual HITL_TOOLS update)",
+    "FM-019: RAG REST unavailable = search fails hard (no fallback to SQL search)",
+    "FM-011: vLLM returns malformed tool call JSON (no robust parsing)"
+  ],
+  "architecture_summary": {
+    "graph_type": "Single-agent ReAct pattern",
+    "nodes": ["chat", "tool_call", "approval_gate", "execute_approved_tools"],
+    "checkpointing": "PostgreSQL via AsyncPostgresSaver",
+    "tools_count": 6,
+    "tools": ["duckduckgo_search", "search_deals", "get_deal", "transition_deal", "create_deal", "add_note"],
+    "hitl_tools": ["transition_deal"],
+    "hitl_tools_missing": ["create_deal"],
+    "provider": "vLLM (Qwen 2.5-32B-Instruct-AWQ) with OpenAI fallback",
+    "rag_interface": "RAG REST at port 8052"
+  },
+  "gap_summary": {
+    "p0_blocking": 3,
+    "p1_major": 5,
+    "p2_quality": 6,
+    "p3_improvement": 3,
+    "total": 17
+  },
+  "implementation_plan": {
+    "phases": [
+      { "id": "R3-0", "name": "Critical Fixes", "duration": "2 days", "tasks": 3 },
+      { "id": "R3-1", "name": "Prompt Rewrite", "duration": "3 days", "tasks": 4 },
+      { "id": "R3-2", "name": "Observability Hardening", "duration": "3 days", "tasks": 4 },
+      { "id": "R3-3", "name": "Eval Suite Expansion", "duration": "5 days", "tasks": 4 },
+      { "id": "R3-4", "name": "Memory System", "duration": "2 weeks", "tasks": 4 }
+    ]
+  },
+  "files_analyzed": {
+    "graph": "/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py",
+    "tools": "/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py",
+    "schemas": "/home/zaks/zakops-agent-api/apps/agent-api/app/schemas/agent.py",
+    "prompts": "/home/zaks/zakops-agent-api/apps/agent-api/app/core/prompts/system.md",
+    "config": "/home/zaks/zakops-agent-api/apps/agent-api/app/core/config.py",
+    "api": "/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/agent.py"
+  },
+  "report_path": "/home/zaks/bookkeeping/docs/AGENT_BRAIN_ROUND3_FORENSIC.Claude-Opus.20260204-1300-r3f01.md"
+}

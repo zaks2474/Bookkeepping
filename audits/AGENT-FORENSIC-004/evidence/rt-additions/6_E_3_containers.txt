@@ -1,0 +1,13 @@
+=== UPDATED CHECK 6.E.3 — Container Inventory ===
+zakops-backend-postgres-1        postgres:15-alpine                   Up 6 hours (healthy)
+zakops-agent-db                  pgvector/pgvector:pg16               Up 36 hours (healthy)
+rag-db                           pgvector/pgvector:pg17               Up 36 hours
+zakops-postgres-1                postgres:15-alpine                   Up 31 hours (healthy)
+
+ANALYSIS:
+  zakops-agent-db:         Agent API DB (pgvector/pgvector:pg16) - ACTIVE
+  zakops-backend-postgres-1: Backend DB (postgres:15-alpine) - ACTIVE
+  zakops-postgres-1:       POSSIBLY ORPHAN (postgres:15-alpine)
+  rag-db:                  RAG DB (pgvector/pgvector:pg17) - ACTIVE
+
+FINDING P2: zakops-postgres-1 may be orphan - needs investigation

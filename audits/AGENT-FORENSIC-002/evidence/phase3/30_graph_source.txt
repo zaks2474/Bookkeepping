@@ -1,0 +1,1191 @@
+=== STEP 3.1: Graph Source Inspection ===
+--- Graph definition files ---
+Files found:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/duckduckgo_search.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/__init__.py
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/__init__.py
+=== FILE: /home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py ===
+"""This file contains the LangGraph Agent/workflow and interactions with the LLM.
+
+Extended to support HITL (Human-in-the-Loop) workflow with approval gates
+for sensitive tool executions like transition_deal.
+"""
+
+import asyncio
+import json
+import uuid
+from datetime import datetime, timedelta, UTC
+from typing import (
+    Any,
+    AsyncGenerator,
+    Dict,
+    List,
+    Optional,
+)
+
+from asgiref.sync import sync_to_async
+from langchain_core.messages import (
+    AIMessage,
+    BaseMessage,
+    HumanMessage,
+    ToolMessage,
+    convert_to_openai_messages,
+)
+from langfuse.langchain import CallbackHandler
+from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
+from langgraph.graph import (
+    END,
+    StateGraph,
+)
+from langgraph.graph.state import (
+    Command,
+    CompiledStateGraph,
+)
+from langgraph.types import (
+    RunnableConfig,
+    StateSnapshot,
+    interrupt,
+)
+from mem0 import AsyncMemory
+from psycopg_pool import AsyncConnectionPool
+from sqlmodel import Session, select
+
+from app.core.config import (
+    Environment,
+    settings,
+)
+from app.core.langgraph.tools import tools
+from app.core.logging import logger, sanitize_content_for_log
+from app.core.metrics import llm_inference_duration_seconds
+from app.core.prompts import load_system_prompt
+from app.models.approval import Approval, ApprovalStatus, ToolExecution
+from app.schemas import (
+    GraphState,
+    Message,
+)
+from app.schemas.agent import HITL_TOOLS, requires_approval
+from app.schemas.graph import PendingToolCall
+from app.services.database import database_service
+from app.services.llm import llm_service
+from app.utils import (
+    dump_messages,
+    prepare_messages,
+    process_llm_response,
+)
+from app.core.idempotency import tool_idempotency_key
+from app.core.security.output_validation import sanitize_llm_output
+import os
+
+# Approval timeout in seconds (default 1 hour)
+APPROVAL_TIMEOUT = int(getattr(settings, 'HITL_APPROVAL_TIMEOUT_SECONDS', 3600))
+
+# Decision Lock compliance: retrieval must use RAG REST only, not pgvector/mem0 directly
+# Set to "false" to re-enable long-term memory (mem0/pgvector) for non-spike environments
+DISABLE_LONG_TERM_MEMORY = os.getenv("DISABLE_LONG_TERM_MEMORY", "true").lower() == "true"
+
+
+class LangGraphAgent:
+    """Manages the LangGraph Agent/workflow and interactions with the LLM.
+
+    This class handles the creation and management of the LangGraph workflow,
+    including LLM interactions, database connections, response processing,
+    and HITL approval gates.
+    """
+
+    def __init__(self):
+        """Initialize the LangGraph Agent with necessary components."""
+        # Use the LLM service with tools bound
+        self.llm_service = llm_service
+        self.llm_service.bind_tools(tools)
+        self.tools_by_name = {tool.name: tool for tool in tools}
+        self._connection_pool: Optional[AsyncConnectionPool] = None
+        self._graph: Optional[CompiledStateGraph] = None
+        self.memory: Optional[AsyncMemory] = None
+        logger.info(
+            "langgraph_agent_initialized",
+            model=settings.DEFAULT_LLM_MODEL,
+            environment=settings.ENVIRONMENT.value,
+        )
+
+    async def _long_term_memory(self) -> AsyncMemory:
+        """Initialize the long term memory."""
+        if self.memory is None:
+            self.memory = await AsyncMemory.from_config(
+                config_dict={
+                    "vector_store": {
+                        "provider": "pgvector",
+                        "config": {
+                            "collection_name": settings.LONG_TERM_MEMORY_COLLECTION_NAME,
+                            "dbname": settings.POSTGRES_DB,
+                            "user": settings.POSTGRES_USER,
+                            "password": settings.POSTGRES_PASSWORD,
+                            "host": settings.POSTGRES_HOST,
+                            "port": settings.POSTGRES_PORT,
+                        },
+                    },
+                    "llm": {
+                        "provider": "openai",
+                        "config": {"model": settings.LONG_TERM_MEMORY_MODEL},
+                    },
+                    "embedder": {"provider": "openai", "config": {"model": settings.LONG_TERM_MEMORY_EMBEDDER_MODEL}},
+                }
+            )
+        return self.memory
+
+    async def _get_connection_pool(self) -> AsyncConnectionPool:
+        """Get a PostgreSQL connection pool using environment-specific settings.
+
+        Returns:
+            AsyncConnectionPool: A connection pool for PostgreSQL database.
+        """
+        if self._connection_pool is None:
+            try:
+                max_size = settings.POSTGRES_POOL_SIZE
+
+                connection_url = settings.DATABASE_URL
+
+                self._connection_pool = AsyncConnectionPool(
+                    connection_url,
+                    open=False,
+                    max_size=max_size,
+                    kwargs={
+                        "autocommit": True,
+                        "connect_timeout": 5,
+                        "prepare_threshold": None,
+                    },
+                )
+                await self._connection_pool.open()
+                logger.info("connection_pool_created", max_size=max_size, environment=settings.ENVIRONMENT.value)
+            except Exception as e:
+                logger.error("connection_pool_creation_failed", error=str(e), environment=settings.ENVIRONMENT.value)
+                if settings.ENVIRONMENT == Environment.PRODUCTION:
+                    logger.warning("continuing_without_connection_pool", environment=settings.ENVIRONMENT.value)
+                    return None
+                raise e
+        return self._connection_pool
+
+    async def _get_relevant_memory(self, user_id: str, query: str) -> str:
+        """Get the relevant memory for the user and query."""
+        # Decision Lock compliance: RAG REST only, no direct pgvector/mem0
+        if DISABLE_LONG_TERM_MEMORY:
+            logger.debug("long_term_memory_disabled", user_id=user_id)
+            return ""
+        try:
+            memory = await self._long_term_memory()
+            results = await memory.search(user_id=str(user_id), query=query)
+            return "\n".join([f"* {result['memory']}" for result in results["results"]])
+        except Exception as e:
+            logger.error("failed_to_get_relevant_memory", error=str(e), user_id=user_id, query=sanitize_content_for_log(query))
+            return ""
+
+    async def _update_long_term_memory(self, user_id: str, messages: list[dict], metadata: dict = None) -> None:
+        """Update the long term memory."""
+        # Decision Lock compliance: RAG REST only, no direct pgvector/mem0
+        if DISABLE_LONG_TERM_MEMORY:
+            logger.debug("long_term_memory_disabled_skip_update", user_id=user_id)
+            return
+        try:
+            memory = await self._long_term_memory()
+            await memory.add(messages, user_id=str(user_id), metadata=metadata)
+            logger.info("long_term_memory_updated_successfully", user_id=user_id)
+        except Exception as e:
+            logger.exception("failed_to_update_long_term_memory", user_id=user_id, error=str(e))
+
+    async def _chat(self, state: GraphState, config: RunnableConfig) -> Command:
+        """Process the chat state and generate a response.
+
+        Args:
+            state (GraphState): The current state of the conversation.
+            config (RunnableConfig): Runtime configuration.
+
+        Returns:
+            Command: Command object with updated state and next node to execute.
+        """
+        current_llm = self.llm_service.get_llm()
+        model_name = (
+            current_llm.model_name
+            if current_llm and hasattr(current_llm, "model_name")
+            else settings.DEFAULT_LLM_MODEL
+        )
+
+        SYSTEM_PROMPT = load_system_prompt(long_term_memory=state.long_term_memory)
+        messages = prepare_messages(state.messages, current_llm, SYSTEM_PROMPT)
+
+        try:
+            with llm_inference_duration_seconds.labels(model=model_name).time():
+                response_message = await self.llm_service.call(dump_messages(messages))
+
+            response_message = process_llm_response(response_message)
+
+            logger.info(
+                "llm_response_generated",
+                session_id=config["configurable"]["thread_id"],
+                model=model_name,
+                environment=settings.ENVIRONMENT.value,
+            )
+
+            # Check for tool calls that require approval
+            if response_message.tool_calls:
+                hitl_calls = [tc for tc in response_message.tool_calls if requires_approval(tc["name"])]
+                if hitl_calls:
+                    # Store pending tool calls and go to approval gate
+                    pending = [
+                        PendingToolCall(
+                            tool_name=tc["name"],
+                            tool_args=tc["args"],
+                            tool_call_id=tc["id"],
+                        )
+                        for tc in hitl_calls
+                    ]
+                    return Command(
+                        update={
+                            "messages": [response_message],
+                            "pending_tool_calls": pending,
+                            "approval_status": "pending",
+                        },
+                        goto="approval_gate"
+                    )
+                else:
+                    # Regular tool calls, no approval needed
+                    return Command(update={"messages": [response_message]}, goto="tool_call")
+            else:
+                return Command(update={"messages": [response_message]}, goto=END)
+
+        except Exception as e:
+            logger.error(
+                "llm_call_failed_all_models",
+                session_id=config["configurable"]["thread_id"],
+                error=str(e),
+                environment=settings.ENVIRONMENT.value,
+            )
+            raise Exception(f"failed to get llm response after trying all models: {str(e)}")
+
+    async def _tool_call(self, state: GraphState) -> Command:
+        """Process tool calls from the last message.
+
+        Args:
+            state: The current agent state containing messages and tool calls.
+
+        Returns:
+            Command: Command object with updated messages and routing back to chat.
+        """
+        outputs = []
+        for tool_call in state.messages[-1].tool_calls:
+            tool_result = await self.tools_by_name[tool_call["name"]].ainvoke(tool_call["args"])
+            outputs.append(
+                ToolMessage(
+                    content=tool_result,
+                    name=tool_call["name"],
+                    tool_call_id=tool_call["id"],
+                )
+            )
+        return Command(update={"messages": outputs}, goto="chat")
+
+    async def _approval_gate(self, state: GraphState, config: RunnableConfig) -> Command:
+        """Approval gate node - interrupts execution for HITL approval.
+
+        This node is triggered when tool calls require human approval.
+        It uses LangGraph's interrupt() to pause execution.
+
+        Args:
+            state: Current graph state with pending tool calls
+            config: Runtime configuration
+
+        Returns:
+            Command: Either continues to tool_call (approved) or back to chat (rejected)
+        """
+        thread_id = config["configurable"]["thread_id"]
+
+        if state.approval_status == "pending":
+            # Interrupt and wait for approval
+            logger.info(
+                "approval_gate_interrupt",
+                thread_id=thread_id,
+                pending_tools=[tc.tool_name for tc in state.pending_tool_calls],
+            )
+
+            # This will pause execution until resumed
+            approval_result = interrupt({
+                "type": "approval_required",
+                "pending_tool_calls": [tc.model_dump() for tc in state.pending_tool_calls],
+                "thread_id": thread_id,
+            })
+
+            # After resume, check the result
+            if approval_result.get("approved"):
+                return Command(
+                    update={"approval_status": "approved"},
+                    goto="execute_approved_tools"
+                )
+            else:
+                # Rejected - add rejection message and go back to chat
+                rejection_reason = approval_result.get("reason", "Action was rejected by user")
+                rejection_message = AIMessage(
+                    content=f"The requested action was not approved. Reason: {rejection_reason}"
+                )
+                return Command(
+                    update={
+                        "messages": [rejection_message],
+                        "approval_status": "rejected",
+                        "pending_tool_calls": [],
+                    },
+                    goto=END
+                )
+
+        elif state.approval_status == "approved":
+            return Command(goto="execute_approved_tools")
+
+        else:
+            # No pending approval, continue normally
+            return Command(goto="chat")
+
+    async def _execute_approved_tools(self, state: GraphState, config: RunnableConfig) -> Command:
+        """Execute tools that have been approved.
+
+        Implements claim-first idempotency pattern.
+
+        Args:
+            state: Current graph state
+            config: Runtime configuration
+
+        Returns:
+            Command: Updated state with tool results
+        """
+        thread_id = config["configurable"]["thread_id"]
+        outputs = []
+
+        for pending_call in state.pending_tool_calls:
+            # Generate deterministic idempotency key (SHA-256 based, restart-safe)
+            idempotency_key = tool_idempotency_key(thread_id, pending_call.tool_name, pending_call.tool_args)
+
+            try:
+                # Claim-first: record execution attempt before executing
+                execution_id = str(uuid.uuid4())
+                logger.info(
+                    "executing_approved_tool",
+                    tool_name=pending_call.tool_name,
+                    idempotency_key=idempotency_key,
+                    execution_id=execution_id,
+                )
+
+                # Execute the tool
+                tool = self.tools_by_name.get(pending_call.tool_name)
+                if tool:
+                    result = await tool.ainvoke(pending_call.tool_args)
+                    outputs.append(
+                        ToolMessage(
+                            content=result,
+                            name=pending_call.tool_name,
+                            tool_call_id=pending_call.tool_call_id,
+                        )
+                    )
+                    logger.info(
+                        "tool_execution_success",
+                        tool_name=pending_call.tool_name,
+                        execution_id=execution_id,
+                    )
+                else:
+                    outputs.append(
+                        ToolMessage(
+                            content=f"Error: Tool {pending_call.tool_name} not found",
+                            name=pending_call.tool_name,
+                            tool_call_id=pending_call.tool_call_id,
+                        )
+                    )
+
+            except Exception as e:
+                logger.error(
+                    "tool_execution_failed",
+                    tool_name=pending_call.tool_name,
+                    error=str(e),
+                )
+                outputs.append(
+                    ToolMessage(
+                        content=f"Error executing {pending_call.tool_name}: {str(e)}",
+                        name=pending_call.tool_name,
+                        tool_call_id=pending_call.tool_call_id,
+                    )
+                )
+
+        return Command(
+            update={
+                "messages": outputs,
+                "pending_tool_calls": [],
+                "approval_status": None,
+            },
+            goto="chat"
+        )
+
+    async def create_graph(self) -> Optional[CompiledStateGraph]:
+        """Create and configure the LangGraph workflow with HITL support.
+
+        Returns:
+            Optional[CompiledStateGraph]: The configured LangGraph instance or None if init fails
+        """
+        if self._graph is None:
+            try:
+                graph_builder = StateGraph(GraphState)
+
+                # Add nodes
+                graph_builder.add_node("chat", self._chat, ends=["tool_call", "approval_gate", END])
+                graph_builder.add_node("tool_call", self._tool_call, ends=["chat"])
+                graph_builder.add_node("approval_gate", self._approval_gate, ends=["execute_approved_tools", "chat", END])
+                graph_builder.add_node("execute_approved_tools", self._execute_approved_tools, ends=["chat"])
+
+                # Set entry and finish points
+                graph_builder.set_entry_point("chat")
+                graph_builder.set_finish_point("chat")
+
+                # Get connection pool
+                connection_pool = await self._get_connection_pool()
+                if connection_pool:
+                    checkpointer = AsyncPostgresSaver(connection_pool)
+                    await checkpointer.setup()
+                else:
+                    checkpointer = None
+                    if settings.ENVIRONMENT != Environment.PRODUCTION:
+                        raise Exception("Connection pool initialization failed")
+
+                # Compile with interrupt_before for approval gate
+                self._graph = graph_builder.compile(
+                    checkpointer=checkpointer,
+                    interrupt_before=["approval_gate"],  # HITL interrupt point
+                    name=f"{settings.PROJECT_NAME} Agent ({settings.ENVIRONMENT.value})"
+                )
+
+                logger.info(
+                    "graph_created_with_hitl",
+                    graph_name=f"{settings.PROJECT_NAME} Agent",
+                    environment=settings.ENVIRONMENT.value,
+                    has_checkpointer=checkpointer is not None,
+                    interrupt_before=["approval_gate"],
+                )
+
+            except Exception as e:
+                logger.error("graph_creation_failed", error=str(e), environment=settings.ENVIRONMENT.value)
+                if settings.ENVIRONMENT == Environment.PRODUCTION:
+                    logger.warning("continuing_without_graph")
+                    return None
+                raise e
+
+        return self._graph
+
+    async def invoke_with_hitl(
+        self,
+        message: str,
+        thread_id: str,
+        actor_id: str,
+        metadata: Optional[Dict[str, Any]] = None,
+    ) -> Dict[str, Any]:
+        """Invoke the agent with HITL support.
+
+        This method processes a message and may return a pending approval
+        if the agent attempts to use a tool that requires human approval.
+
+        Args:
+            message: The user's message
+            thread_id: Thread ID for conversation continuity
+            actor_id: ID of the actor initiating the request
+            metadata: Optional metadata
+
+        Returns:
+            Dict containing either:
+                - response: The agent's response (if completed)
+                - pending_approval: Approval info (if HITL triggered)
+        """
+        if self._graph is None:
+            self._graph = await self.create_graph()
+
+        config = {
+            "configurable": {"thread_id": thread_id},
+            "callbacks": [CallbackHandler()],
+            "metadata": {
+                "actor_id": actor_id,
+                "thread_id": thread_id,
+                "environment": settings.ENVIRONMENT.value,
+                **(metadata or {}),
+            },
+        }
+
+        relevant_memory = (
+            await self._get_relevant_memory(actor_id, message)
+        ) or "No relevant memory found."
+
+        try:
+            # Invoke the graph
+            result = await self._graph.ainvoke(
+                input={
+                    "messages": [{"role": "user", "content": message}],
+                    "long_term_memory": relevant_memory,
+                    "actor_id": actor_id,
+                    "metadata": metadata or {},
+                },
+                config=config,
+            )
+
+            # Check if we hit an interrupt (pending approval)
+            state: StateSnapshot = await sync_to_async(self._graph.get_state)(config=config)
+
+            if state.next and "approval_gate" in state.next:
+                # HITL interrupt - pending approval
+                pending_calls = result.get("pending_tool_calls", [])
+                if pending_calls:
+                # Create approval record in database
+                    with database_service.get_session_maker() as db:
+                        first_call = pending_calls[0]
+                        tool_name = first_call.tool_name if hasattr(first_call, 'tool_name') else first_call["tool_name"]
+                        tool_args = first_call.tool_args if hasattr(first_call, 'tool_args') else first_call["tool_args"]
+                        approval = Approval(
+                            id=str(uuid.uuid4()),
+                            thread_id=thread_id,
+                            checkpoint_id=state.config.get("configurable", {}).get("checkpoint_id"),
+                            tool_name=tool_name,
+                            tool_args=json.dumps(tool_args),
+                            actor_id=actor_id,
+                            status=ApprovalStatus.PENDING,
+                            idempotency_key=tool_idempotency_key(thread_id, tool_name, tool_args),
+                            expires_at=datetime.now(UTC) + timedelta(seconds=APPROVAL_TIMEOUT),
+                        )
+                        db.add(approval)
+                        db.commit()
+
+                        approval_id = approval.id
+                        approval_tool_name = approval.tool_name
+                        approval_tool_args = json.loads(approval.tool_args)
+                        approval_expires_at = approval.expires_at
+                        approval_created_at = approval.created_at
+
+                    return {
+                        "pending_approval": {
+                            "approval_id": approval_id,
+                            "tool_name": approval_tool_name,
+                            "tool_args": approval_tool_args,
+                            "description": f"Approve execution of {approval_tool_name}?",
+                            "expires_at": approval_expires_at,
+                            "requested_at": approval_created_at,
+                        },
+                        "checkpoint_id": state.config.get("configurable", {}).get("checkpoint_id"),
+                    }
+
+            # Normal completion
+            messages = result.get("messages", [])
+            response_text = ""
+            for msg in reversed(messages):
+                if isinstance(msg, AIMessage) and msg.content:
+                    response_text = str(msg.content)
+                    break
+
+            # Sanitize LLM output before returning (UF-004)
+            if response_text:
+                sanitization_result = sanitize_llm_output(response_text)
+                if sanitization_result.was_modified:
+                    logger.warning(
+                        "llm_output_sanitized",
+                        modifications=sanitization_result.modifications,
+                        thread_id=thread_id,
+                    )
+                response_text = sanitization_result.sanitized
+
+            # Update memory in background
+            asyncio.create_task(
+                self._update_long_term_memory(
+                    actor_id,
+                    convert_to_openai_messages(messages),
+                    config["metadata"]
+                )
+            )
+
+            return {"response": response_text, "metadata": {"thread_id": thread_id}}
+
+        except Exception as e:
+            logger.exception("invoke_with_hitl_failed", error=str(e))
+            raise
+
+    async def resume_after_approval(
+        self,
+        thread_id: str,
+        checkpoint_id: Optional[str],
+        tool_name: str,
+        tool_args: Dict[str, Any],
+        approval_id: str,
+    ) -> Dict[str, Any]:
+        """Resume the agent after approval is granted.
+
+        Args:
+            thread_id: The thread ID to resume
+            checkpoint_id: The checkpoint ID to resume from
+            tool_name: Name of the approved tool
+            tool_args: Arguments for the tool
+            approval_id: ID of the approval record
+
+        Returns:
+            Dict with the agent's response after execution
+        """
+        if self._graph is None:
+            self._graph = await self.create_graph()
+
+        config = {
+            "configurable": {
+                "thread_id": thread_id,
+            },
+            "callbacks": [CallbackHandler()],
+        }
+
+        if checkpoint_id:
+            config["configurable"]["checkpoint_id"] = checkpoint_id
+
+        try:
+            # Resume with approval granted
+            result = await self._graph.ainvoke(
+                input=None,  # Resume from checkpoint
+                config=config,
+                interrupt_resume={"approved": True, "approval_id": approval_id},
+            )
+
+            messages = result.get("messages", [])
+            response_text = ""
+            for msg in reversed(messages):
+                if isinstance(msg, AIMessage) and msg.content:
+                    response_text = str(msg.content)
+                    break
+
+            # Sanitize LLM output (UF-004)
+            if response_text:
+                sanitization_result = sanitize_llm_output(response_text)
+                if sanitization_result.was_modified:
+                    logger.warning("llm_output_sanitized_on_resume", modifications=sanitization_result.modifications)
+                response_text = sanitization_result.sanitized
+
+            logger.info(
+                "resume_after_approval_success",
+                thread_id=thread_id,
+                approval_id=approval_id,
+            )
+
+            return {"response": response_text}
+
+        except Exception as e:
+            logger.error(f"resume_after_approval failed: {str(e)}", exc_info=True)
+            raise
+
+    async def resume_after_rejection(
+        self,
+        thread_id: str,
+        checkpoint_id: Optional[str],
+        tool_name: str,
+        rejection_reason: Optional[str],
+    ) -> Dict[str, Any]:
+        """Resume the agent after rejection.
+
+        Args:
+            thread_id: The thread ID
+            checkpoint_id: The checkpoint ID
+            tool_name: Name of the rejected tool
+            rejection_reason: Reason for rejection
+
+        Returns:
+            Dict with status
+        """
+        if self._graph is None:
+            self._graph = await self.create_graph()
+
+        config = {
+            "configurable": {"thread_id": thread_id},
+            "callbacks": [CallbackHandler()],
+        }
+
+        if checkpoint_id:
+            config["configurable"]["checkpoint_id"] = checkpoint_id
+
+        try:
+            # Resume with rejection
+            await self._graph.ainvoke(
+                input=None,
+                config=config,
+                interrupt_resume={"approved": False, "reason": rejection_reason},
+            )
+
+            logger.info(
+                "resume_after_rejection_success",
+                thread_id=thread_id,
+                tool_name=tool_name,
+            )
+
+            return {"status": "rejected", "reason": rejection_reason}
+
+        except Exception as e:
+            logger.error(f"resume_after_rejection failed: {str(e)}", exc_info=True)
+            raise
+
+    # Original methods preserved for backward compatibility
+
+    async def get_response(
+        self,
+        messages: list[Message],
+        session_id: str,
+        user_id: Optional[str] = None,
+    ) -> list[dict]:
+        """Get a response from the LLM (original method preserved)."""
+        if self._graph is None:
+            self._graph = await self.create_graph()
+        config = {
+            "configurable": {"thread_id": session_id},
+            "callbacks": [CallbackHandler()],
+            "metadata": {
+                "user_id": user_id,
+                "session_id": session_id,
+                "environment": settings.ENVIRONMENT.value,
+                "debug": settings.DEBUG,
+            },
+        }
+        from app.utils import dump_messages
+        relevant_memory = (
+            await self._get_relevant_memory(user_id, messages[-1].content)
+        ) or "No relevant memory found."
+        try:
+            response = await self._graph.ainvoke(
+                input={"messages": dump_messages(messages), "long_term_memory": relevant_memory},
+                config=config,
+            )
+            asyncio.create_task(
+                self._update_long_term_memory(
+                    user_id, convert_to_openai_messages(response["messages"]), config["metadata"]
+                )
+            )
+            return self.__process_messages(response["messages"])
+        except Exception as e:
+            logger.error(f"Error getting response: {str(e)}")
+
+    async def get_stream_response(
+        self, messages: list[Message], session_id: str, user_id: Optional[str] = None
+    ) -> AsyncGenerator[str, None]:
+        """Get a stream response from the LLM (original method preserved)."""
+        config = {
+            "configurable": {"thread_id": session_id},
+            "callbacks": [
+                CallbackHandler(
+                    environment=settings.ENVIRONMENT.value, debug=False, user_id=user_id, session_id=session_id
+                )
+            ],
+            "metadata": {
+                "user_id": user_id,
+                "session_id": session_id,
+                "environment": settings.ENVIRONMENT.value,
+                "debug": settings.DEBUG,
+            },
+        }
+        if self._graph is None:
+            self._graph = await self.create_graph()
+
+        from app.utils import dump_messages
+        relevant_memory = (
+            await self._get_relevant_memory(user_id, messages[-1].content)
+        ) or "No relevant memory found."
+
+        try:
+            async for token, _ in self._graph.astream(
+                {"messages": dump_messages(messages), "long_term_memory": relevant_memory},
+                config,
+                stream_mode="messages",
+            ):
+                try:
+                    # UF-004: Sanitize streaming tokens before yielding
+                    content = token.content
+                    if content:
+                        sanitization_result = sanitize_llm_output(content)
+                        if sanitization_result.was_modified:
+                            logger.warning("llm_stream_output_sanitized", session_id=session_id)
+                        content = sanitization_result.sanitized
+                    yield content
+                except Exception as token_error:
+                    logger.error("Error processing token", error=str(token_error), session_id=session_id)
+                    continue
+
+            state: StateSnapshot = await sync_to_async(self._graph.get_state)(config=config)
+            if state.values and "messages" in state.values:
+                asyncio.create_task(
+                    self._update_long_term_memory(
+                        user_id, convert_to_openai_messages(state.values["messages"]), config["metadata"]
+                    )
+                )
+        except Exception as stream_error:
+            logger.error("Error in stream processing", error=str(stream_error), session_id=session_id)
+            raise stream_error
+
+    async def get_chat_history(self, session_id: str) -> list[Message]:
+        """Get the chat history for a given thread ID."""
+        if self._graph is None:
+            self._graph = await self.create_graph()
+
+        state: StateSnapshot = await sync_to_async(self._graph.get_state)(
+            config={"configurable": {"thread_id": session_id}}
+        )
+        return self.__process_messages(state.values["messages"]) if state.values else []
+
+    def __process_messages(self, messages: list[BaseMessage]) -> list[Message]:
+        openai_style_messages = convert_to_openai_messages(messages)
+        return [
+            Message(role=message["role"], content=str(message["content"]))
+            for message in openai_style_messages
+            if message["role"] in ["assistant", "user"] and message["content"]
+        ]
+
+    async def clear_chat_history(self, session_id: str) -> None:
+        """Clear all chat history for a given thread ID."""
+        try:
+            conn_pool = await self._get_connection_pool()
+            async with conn_pool.connection() as conn:
+                for table in settings.CHECKPOINT_TABLES:
+                    try:
+                        await conn.execute(f"DELETE FROM {table} WHERE thread_id = %s", (session_id,))
+                        logger.info(f"Cleared {table} for session {session_id}")
+                    except Exception as e:
+                        logger.error(f"Error clearing {table}", error=str(e))
+                        raise
+        except Exception as e:
+            logger.error("Failed to clear chat history", error=str(e))
+            raise
+
+=== FILE: /home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/duckduckgo_search.py ===
+"""DuckDuckGo search tool for LangGraph.
+
+This module provides a DuckDuckGo search tool that can be used with LangGraph
+to perform web searches. It returns up to 10 search results and handles errors
+gracefully.
+"""
+
+from langchain_community.tools import DuckDuckGoSearchResults
+
+duckduckgo_search_tool = DuckDuckGoSearchResults(num_results=10, handle_tool_error=True)
+
+=== FILE: /home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py ===
+"""Deal management tools for LangGraph.
+
+This module provides tools for managing deals in ZakOps,
+including transition_deal which requires HITL approval.
+"""
+
+import os
+import json
+from typing import Optional
+
+import httpx
+from langchain_core.tools import tool
+from pydantic import BaseModel, ConfigDict, Field
+
+from app.core.logging import logger
+from app.core.idempotency import tool_idempotency_key
+
+
+# External service URLs (use host.docker.internal for Docker)
+DEAL_API_URL = os.getenv("DEAL_API_URL", "http://host.docker.internal:8091")
+RAG_REST_URL = os.getenv("RAG_REST_URL", "http://host.docker.internal:8052")
+
+# Environment check for mock behavior
+ENVIRONMENT = os.getenv("APP_ENV", "development")
+ALLOW_TOOL_MOCKS = os.getenv("ALLOW_TOOL_MOCKS", "false").lower() == "true"
+
+
+class TransitionDealInput(BaseModel):
+    """Input schema for transition_deal tool.
+
+    Uses extra='forbid' to reject unexpected fields (strict validation).
+    """
+    model_config = ConfigDict(extra="forbid")
+
+    deal_id: str = Field(..., description="The unique identifier of the deal to transition")
+    from_stage: str = Field(..., description="Current stage of the deal")
+    to_stage: str = Field(..., description="Target stage to transition the deal to")
+    reason: Optional[str] = Field(None, description="Reason for the transition")
+
+
+class GetDealInput(BaseModel):
+    """Input schema for get_deal tool."""
+
+    deal_id: str = Field(..., description="The unique identifier of the deal")
+
+
+class SearchDealsInput(BaseModel):
+    """Input schema for search_deals tool."""
+
+    query: str = Field(..., description="Search query for deals")
+    limit: int = Field(default=10, description="Maximum number of results")
+
+
+@tool(args_schema=TransitionDealInput)
+async def transition_deal(
+    deal_id: str,
+    from_stage: str,
+    to_stage: str,
+    reason: Optional[str] = None,
+) -> str:
+    """Transition a deal from one stage to another.
+
+    This is a sensitive operation that requires human approval (HITL).
+    The deal will be moved from the current stage to the target stage.
+
+    Args:
+        deal_id: The unique identifier of the deal
+        from_stage: Current stage of the deal
+        to_stage: Target stage to transition to
+        reason: Optional reason for the transition
+
+    Returns:
+        str: Result of the transition operation
+    """
+    logger.info(
+        "transition_deal_called",
+        deal_id=deal_id,
+        from_stage=from_stage,
+        to_stage=to_stage,
+        reason=reason,
+    )
+
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.post(
+                f"{DEAL_API_URL}/api/deals/{deal_id}/transition",
+                json={
+                    # Backend contract: new_stage (+ optional idempotency_key)
+                    "new_stage": to_stage,
+                    "reason": reason,
+                    "idempotency_key": tool_idempotency_key(
+                        thread_id="agent",
+                        tool_name="transition_deal",
+                        tool_args={
+                            "deal_id": deal_id,
+                            "from_stage": from_stage,
+                            "to_stage": to_stage,
+                            "reason": reason,
+                        },
+                    ),
+                },
+            )
+
+            if response.status_code == 200:
+                result = response.json()
+                logger.info(
+                    "transition_deal_success",
+                    deal_id=deal_id,
+                    new_stage=to_stage,
+                )
+                return f"Successfully transitioned deal {deal_id} from {from_stage} to {to_stage}. {result.get('message', '')}"
+
+            elif response.status_code == 404:
+                return f"Deal {deal_id} not found"
+
+            else:
+                error_msg = response.text
+                logger.error(
+                    "transition_deal_failed",
+                    deal_id=deal_id,
+                    status_code=response.status_code,
+                    error=error_msg,
+                )
+                return f"Failed to transition deal: {error_msg}"
+
+    except httpx.ConnectError:
+        # Only allow mock responses in development with explicit flag
+        if ENVIRONMENT == "development" and ALLOW_TOOL_MOCKS:
+            logger.warning(
+                "deal_api_unavailable_mock_response",
+                deal_id=deal_id,
+                from_stage=from_stage,
+                to_stage=to_stage,
+                environment=ENVIRONMENT,
+            )
+            return f"[MOCK] Successfully transitioned deal {deal_id} from {from_stage} to {to_stage}"
+        else:
+            # Fail closed in production or when mocks disabled
+            logger.error(
+                "deal_api_unavailable_fail_closed",
+                deal_id=deal_id,
+                environment=ENVIRONMENT,
+                allow_mocks=ALLOW_TOOL_MOCKS,
+            )
+            raise httpx.ConnectError(f"Deal API unavailable at {DEAL_API_URL} and mocks disabled")
+
+    except Exception as e:
+        logger.error("transition_deal_error", error=str(e))
+        return f"Error transitioning deal: {str(e)}"
+
+
+@tool(args_schema=GetDealInput)
+async def get_deal(deal_id: str) -> str:
+    """Get details of a specific deal.
+
+    Args:
+        deal_id: The unique identifier of the deal
+
+    Returns:
+        str: Deal details in JSON format
+    """
+    logger.info("get_deal_called", deal_id=deal_id)
+
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.get(f"{DEAL_API_URL}/api/deals/{deal_id}")
+
+            if response.status_code == 200:
+                return response.text
+            elif response.status_code == 404:
+                return f"Deal {deal_id} not found"
+            else:
+                return f"Error getting deal: {response.text}"
+
+    except httpx.ConnectError:
+        if ENVIRONMENT == "development" and ALLOW_TOOL_MOCKS:
+            return json.dumps(
+                {
+                    "deal_id": deal_id,
+                    "stage": "qualification",
+                    "status": "active",
+                    "note": "MOCK: Deal API unavailable",
+                }
+            )
+        logger.error(
+            "deal_api_unavailable_fail_closed",
+            deal_id=deal_id,
+            environment=ENVIRONMENT,
+            allow_mocks=ALLOW_TOOL_MOCKS,
+        )
+        raise httpx.ConnectError(f"Deal API unavailable at {DEAL_API_URL} and mocks disabled")
+
+    except Exception as e:
+        logger.error("get_deal_error", error=str(e))
+        return f"Error getting deal: {str(e)}"
+
+
+@tool(args_schema=SearchDealsInput)
+async def search_deals(query: str, limit: int = 10) -> str:
+    """Search for deals using RAG.
+
+    Args:
+        query: Search query for deals
+        limit: Maximum number of results
+
+    Returns:
+        str: Search results
+    """
+    logger.info("search_deals_called", query=query, limit=limit)
+
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.post(
+                f"{RAG_REST_URL}/rag/query",
+                json={
+                    "query": query,
+                    "top_k": limit,
+                },
+            )
+
+            if response.status_code == 200:
+                return response.text
+            else:
+                return f"Error searching deals: {response.text}"
+
+    except httpx.ConnectError:
+        if ENVIRONMENT == "development" and ALLOW_TOOL_MOCKS:
+            return json.dumps(
+                {
+                    "results": [{"id": "deal-001", "title": "Sample Deal", "stage": "proposal"}],
+                    "total": 1,
+                    "note": "MOCK: RAG REST unavailable",
+                }
+            )
+        logger.error(
+            "rag_rest_unavailable_fail_closed",
+            query=query,
+            environment=ENVIRONMENT,
+            allow_mocks=ALLOW_TOOL_MOCKS,
+        )
+        raise httpx.ConnectError(f"RAG REST unavailable at {RAG_REST_URL} and mocks disabled")
+
+    except Exception as e:
+        logger.error("search_deals_error", error=str(e))
+        return f"Error searching deals: {str(e)}"
+
+=== FILE: /home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/__init__.py ===
+"""LangGraph tools for enhanced language model capabilities.
+
+This package contains custom tools that can be used with LangGraph to extend
+the capabilities of language models. Currently includes tools for web search,
+deal management, and other external integrations.
+"""
+
+from langchain_core.tools.base import BaseTool
+
+from .duckduckgo_search import duckduckgo_search_tool
+from .deal_tools import (
+    transition_deal,
+    get_deal,
+    search_deals,
+)
+
+tools: list[BaseTool] = [
+    duckduckgo_search_tool,
+    transition_deal,
+    get_deal,
+    search_deals,
+]
+
+=== FILE: /home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/__init__.py ===
+
+--- Node definitions ---
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:31:    StateGraph,
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:35:    CompiledStateGraph,
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:88:    def __init__(self):
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:95:        self._graph: Optional[CompiledStateGraph] = None
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:103:    async def _long_term_memory(self) -> AsyncMemory:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:128:    async def _get_connection_pool(self) -> AsyncConnectionPool:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:160:    async def _get_relevant_memory(self, user_id: str, query: str) -> str:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:174:    async def _update_long_term_memory(self, user_id: str, messages: list[dict], metadata: dict = None) -> None:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:187:    async def _chat(self, state: GraphState, config: RunnableConfig) -> Command:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:256:    async def _tool_call(self, state: GraphState) -> Command:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:277:    async def _approval_gate(self, state: GraphState, config: RunnableConfig) -> Command:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:335:    async def _execute_approved_tools(self, state: GraphState, config: RunnableConfig) -> Command:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:412:    async def create_graph(self) -> Optional[CompiledStateGraph]:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:416:            Optional[CompiledStateGraph]: The configured LangGraph instance or None if init fails
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:420:                graph_builder = StateGraph(GraphState)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:423:                graph_builder.add_node("chat", self._chat, ends=["tool_call", "approval_gate", END])
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:424:                graph_builder.add_node("tool_call", self._tool_call, ends=["chat"])
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:425:                graph_builder.add_node("approval_gate", self._approval_gate, ends=["execute_approved_tools", "chat", END])
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:426:                graph_builder.add_node("execute_approved_tools", self._execute_approved_tools, ends=["chat"])
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:466:    async def invoke_with_hitl(
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:597:    async def resume_after_approval(
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:664:    async def resume_after_rejection(
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:715:    async def get_response(
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:752:    async def get_stream_response(
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:808:    async def get_chat_history(self, session_id: str) -> list[Message]:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:818:    def __process_messages(self, messages: list[BaseMessage]) -> list[Message]:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:826:    async def clear_chat_history(self, session_id: str) -> None:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:55:async def transition_deal(
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:153:async def get_deal(deal_id: str) -> str:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:199:async def search_deals(query: str, limit: int = 10) -> str:
+--- Edge/routing definitions ---
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:30:    END,
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:40:    interrupt,
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:245:                return Command(update={"messages": [response_message]}, goto=END)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:278:        """Approval gate node - interrupts execution for HITL approval.
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:281:        It uses LangGraph's interrupt() to pause execution.
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:295:                "approval_gate_interrupt",
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:301:            approval_result = interrupt({
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:325:                    goto=END
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:423:                graph_builder.add_node("chat", self._chat, ends=["tool_call", "approval_gate", END])
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:425:                graph_builder.add_node("approval_gate", self._approval_gate, ends=["execute_approved_tools", "chat", END])
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:442:                # Compile with interrupt_before for approval gate
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:445:                    interrupt_before=["approval_gate"],  # HITL interrupt point
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:454:                    interrupt_before=["approval_gate"],
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:519:            # Check if we hit an interrupt (pending approval)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:523:                # HITL interrupt - pending approval
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:538:                            status=ApprovalStatus.PENDING,
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:635:                interrupt_resume={"approved": True, "approval_id": approval_id},
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:698:                interrupt_resume={"approved": False, "reason": rejection_reason},
+EXPECTED: 4 nodes (chat, tool_call, approval_gate, execute_approved_tools)
+ACTUAL: [fill from grep — count add_node calls]
+DISCREPANCY: [Y/N — if Y, document extra/missing nodes as finding]
+\n--- SUPPLEMENT: add_node count ---
+add_node count: 4
+DISCREPANCY: N

@@ -1,0 +1,45 @@
+73:VALID_TRANSITIONS: dict[str, frozenset[str]] = {
+86:def _is_valid_transition(from_stage: str, to_stage: str) -> tuple[bool, str]:
+95:    if from_lower not in VALID_TRANSITIONS:
+98:    valid_targets = VALID_TRANSITIONS[from_lower]
+233:            is_valid, transition_error = _is_valid_transition(actual_from_stage, to_stage_lower)
+236:                    "transition_deal_invalid_transition",
+        (is_valid, error_message) - error_message includes valid alternatives if invalid
+        return False, f"Unknown current stage '{from_stage}'"
+        return False, f"Stage '{from_stage}' is a terminal state and cannot transition to other stages"
+    return False, f"Invalid transition: {from_stage} → {to_stage}. Valid transitions from {from_stage}: {', '.join(sorted(valid_targets))}"
+VALID_TRANSITIONS: dict[str, frozenset[str]] = {
+    "inbound": frozenset(["screening", "junk", "archived"]),
+    "screening": frozenset(["qualified", "junk", "archived"]),
+    "qualified": frozenset(["loi", "junk", "archived"]),
+    "loi": frozenset(["diligence", "junk", "archived"]),
+    "diligence": frozenset(["closing", "junk", "archived"]),
+    "closing": frozenset(["portfolio", "junk", "archived"]),
+    "portfolio": frozenset(["archived"]),
+    "junk": frozenset(["archived"]),
+    "archived": frozenset(),  # Terminal state, no transitions out
+}
+
+
+def _is_valid_transition(from_stage: str, to_stage: str) -> tuple[bool, str]:
+    """R3 REMEDIATION [P4.2]: Validate stage transition against matrix.
+
+    Returns:
+        (is_valid, error_message) - error_message includes valid alternatives if invalid
+    """
+    from_lower = from_stage.lower().strip()
+    to_lower = to_stage.lower().strip()
+
+    if from_lower not in VALID_TRANSITIONS:
+        return False, f"Unknown current stage '{from_stage}'"
+
+    valid_targets = VALID_TRANSITIONS[from_lower]
+    if to_lower in valid_targets:
+        return True, ""
+
+    if not valid_targets:
+        return False, f"Stage '{from_stage}' is a terminal state and cannot transition to other stages"
+
+    return False, f"Invalid transition: {from_stage} → {to_stage}. Valid transitions from {from_stage}: {', '.join(sorted(valid_targets))}"
+
+

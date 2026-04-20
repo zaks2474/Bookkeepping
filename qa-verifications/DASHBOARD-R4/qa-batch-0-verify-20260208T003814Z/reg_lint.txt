@@ -1,0 +1,29 @@
+
+> zakops-dashboard@1.0.0 lint
+> next lint
+
+
+./src/app/actions/page.tsx
+271:6  Warning: React Hook useEffect has a missing dependency: 'actions'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/deals/[id]/page.tsx
+254:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/deals/page.tsx
+123:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/components/global-search.tsx
+146:6  Warning: React Hook React.useEffect has missing dependencies: 'allActions.length', 'allDeals.length', and 'allQuarantine.length'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+179:6  Warning: React Hook React.useEffect has a missing dependency: 'searchAll'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/components/onboarding/OnboardingWizard.tsx
+166:6  Warning: React Hook useEffect has missing dependencies: 'initialState' and 'updatePersistedState'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/hooks/use-realtime-events.ts
+411:6  Warning: React Hook useEffect has missing dependencies: 'connect' and 'disconnect'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+549:6  Warning: React Hook useEffect has missing dependencies: 'connect' and 'disconnect'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/hooks/use-render-tracking.ts
+40:79  Warning: The ref value 'renderCount.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'renderCount.current' to a variable inside the effect, and use that variable in the cleanup function.  react-hooks/exhaustive-deps
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules

@@ -1,0 +1,94 @@
+=== CHECK 4.8.1: Source code verification - No-Illusions Gate ===
+Timestamp: 2026-02-03T13:18:09-06:00
+
+=== Searching for No-Illusions patterns in tools and langgraph code ===
+Pattern: No.Illusions|re.fetch|verify.*stage|VALID_STAGES|RT-1|RT-2
+
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:6:F-003 REMEDIATION (RT-1, RT-2):
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:7:- transition_deal fetches current stage as ground truth (RT-2)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:9:- After backend call, verifies stage actually changed (No-Illusions Gate RT-1)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:44:# F-003 RT-2: Valid stage enum (must match backend DealStage)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:45:VALID_STAGES = frozenset([
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:56:    NOTE (F-003 RT-2): from_stage is ADVISORY only. The tool fetches
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:92:    F-003 REMEDIATION (RT-1, RT-2):
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:95:    - After backend call, verifies stage actually changed (No-Illusions Gate)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:115:    # F-003 RT-2: Validate to_stage against valid enum BEFORE approval
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:117:    if to_stage_lower not in VALID_STAGES:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:118:        error_msg = f"Invalid target stage '{to_stage}'. Valid stages: {', '.join(sorted(VALID_STAGES))}"
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:125:            # F-003 RT-2: Fetch current deal state as ground truth
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:191:            # F-003 RT-1 No-Illusions Gate: Re-fetch and verify stage actually changed
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:202:            after_stage = verify_data.get("stage", "unknown")
+
+=== Additional search: stage validation in deal_tools.py ===
+7:- transition_deal fetches current stage as ground truth (RT-2)
+8:- Validates to_stage against valid stage enum before approval
+9:- After backend call, verifies stage actually changed (No-Illusions Gate RT-1)
+44:# F-003 RT-2: Valid stage enum (must match backend DealStage)
+56:    NOTE (F-003 RT-2): from_stage is ADVISORY only. The tool fetches
+57:    the actual current stage from the backend as ground truth.
+62:    from_stage: str = Field(..., description="Advisory: current stage (tool will verify)")
+63:    to_stage: str = Field(..., description="Target stage to transition the deal to. Valid: inbound, screening, qualified, loi, diligence, closing, portfolio, junk, archived")
+83:    from_stage: str,
+84:    to_stage: str,
+87:    """Transition a deal from one stage to another.
+90:    The deal will be moved from the current stage to the target stage.
+93:    - Validates to_stage against valid enum BEFORE approval
+94:    - Fetches current stage from backend as ground truth (from_stage is advisory)
+95:    - After backend call, verifies stage actually changed (No-Illusions Gate)
+100:        from_stage: Advisory current stage (tool verifies against backend)
+101:        to_stage: Target stage to transition to
+105:        str: JSON result with ok, error, backend_status, old_stage, new_stage
+110:        from_stage=from_stage,
+111:        to_stage=to_stage,
+115:    # F-003 RT-2: Validate to_stage against valid enum BEFORE approval
+116:    to_stage_lower = to_stage.lower().strip()
+117:    if to_stage_lower not in VALID_STAGES:
+118:        error_msg = f"Invalid target stage '{to_stage}'. Valid stages: {', '.join(sorted(VALID_STAGES))}"
+119:        logger.warning("transition_deal_invalid_stage", deal_id=deal_id, to_stage=to_stage)
+135:            actual_from_stage = deal_data.get("stage", "unknown")
+138:            # Log if LLM's from_stage mismatches actual
+139:            if from_stage.lower() != actual_from_stage.lower():
+141:                    "transition_deal_from_stage_mismatch",
+143:                    llm_from_stage=from_stage,
+144:                    actual_from_stage=actual_from_stage,
+147:            # Check if already at target stage
+148:            if actual_from_stage.lower() == to_stage_lower:
+151:                    "error": f"Deal {deal_id} is already at stage '{actual_from_stage}'",
+152:                    "current_stage": actual_from_stage,
+160:                    "new_stage": to_stage_lower,
+167:                            "from_stage": actual_from_stage,  # Use actual, not LLM's
+168:                            "to_stage": to_stage_lower,
+191:            # F-003 RT-1 No-Illusions Gate: Re-fetch and verify stage actually changed
+202:            after_stage = verify_data.get("stage", "unknown")
+206:            if after_stage.lower() != to_stage_lower:
+210:                    expected_stage=to_stage_lower,
+211:                    actual_stage=after_stage,
+216:                    "error": f"Phantom success: backend returned 200 but stage is still '{after_stage}' (expected '{to_stage_lower}')",
+219:                    "expected_stage": to_stage_lower,
+220:                    "actual_stage": after_stage,
+236:                old_stage=actual_from_stage,
+237:                new_stage=after_stage,
+243:                "old_stage": actual_from_stage,
+244:                "new_stage": after_stage,
+254:                from_stage=from_stage,
+255:                to_stage=to_stage,
+309:                    "stage": "qualification",
+359:                    "results": [{"id": "deal-001", "title": "Sample Deal", "stage": "proposal"}],
+
+=== Search for validation logic in deal tools ===
+8:- Validates to_stage against valid stage enum before approval
+32:# Environment check for mock behavior
+54:    Uses extra='forbid' to reject unexpected fields (strict validation).
+62:    from_stage: str = Field(..., description="Advisory: current stage (tool will verify)")
+93:    - Validates to_stage against valid enum BEFORE approval
+115:    # F-003 RT-2: Validate to_stage against valid enum BEFORE approval
+118:        error_msg = f"Invalid target stage '{to_stage}'. Valid stages: {', '.join(sorted(VALID_STAGES))}"
+119:        logger.warning("transition_deal_invalid_stage", deal_id=deal_id, to_stage=to_stage)
+120:        return json.dumps({"ok": False, "error": error_msg, "validation_failed": True})
+191:            # F-003 RT-1 No-Illusions Gate: Re-fetch and verify stage actually changed
+192:            verify_response = await client.get(f"{DEAL_API_URL}/api/deals/{deal_id}", headers=headers)
+193:            if verify_response.status_code != 200:
+196:                    "error": f"Could not verify transition: HTTP {verify_response.status_code}",
+201:            verify_data = verify_response.json()
+202:            after_stage = verify_data.get("stage", "unknown")
+203:            after_updated_at = verify_data.get("updated_at", "")

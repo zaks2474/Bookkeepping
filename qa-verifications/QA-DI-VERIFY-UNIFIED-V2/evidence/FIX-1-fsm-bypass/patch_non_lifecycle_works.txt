@@ -1,0 +1,24 @@
+=== F1.1b: PATCH works for non-lifecycle fields ===
+Test: PATCH /api/deals/DL-0079 with {"display_name": "Zaks Store test001"}
+HTTP: 200
+{
+    "deal_id": "DL-0079",
+    "canonical_name": "Zaks Store test001",
+    "display_name": "Zaks Store test001",
+    "folder_path": null,
+    "stage": "inbound",
+    "status": "active",
+    "identifiers": {},
+    "company_info": {},
+    "broker": {},
+    "metadata": {
+        "qa_test": true
+    },
+    "created_at": "2026-02-09T14:06:17.700582Z",
+    "updated_at": "2026-02-09T17:03:39.868307Z",
+    "days_since_update": null,
+    "action_count": null,
+    "alias_count": null
+}
+Event recorded:  deal_updated | 2026-02-09 17:03:39.882779+00
+VERDICT: PASS

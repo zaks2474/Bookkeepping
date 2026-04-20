@@ -1,0 +1,17 @@
+=== GT-4: T-4 Drift Detection (inline at lines 473-486) ===
+Implementation: Counts drift/out-of-scope references vs finding count.
+If drift > 30% of findings, gate FAILs.
+  # T-4: Drift detection (checked by counting DRIFT sections)
+  total=$((total + 1))
+  local drift_count=0
+  local finding_count=0
+  if [ -s "$run_dir/FINAL_MASTER.md" ]; then
+    drift_count=$(grep -ci "drift\|out.of.scope" "$run_dir/FINAL_MASTER.md" 2>/dev/null) || drift_count=0
+    finding_count=$(grep -ci "^### F-" "$run_dir/FINAL_MASTER.md" 2>/dev/null) || finding_count=0
+  fi
+  if [ "$finding_count" -gt 0 ] && [ "$drift_count" -gt $(( finding_count * 30 / 100 )) ]; then
+    echo "| T-4: Drift | FAIL | ${drift_count} drift items vs ${finding_count} findings (>30%) |" >> "$gates_file"
+  else
+    echo "| T-4: Drift | PASS | Within threshold |" >> "$gates_file"
+    passed=$((passed + 1))
+  fi

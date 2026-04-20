@@ -1,0 +1,41 @@
+DEDUP RESPONSE:
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"created\":false,\"dedup\":true,\"status_code\":200,\"data\":{\"id\":\"afa47290-6b88-4337-8b27-0856d8c47a7f\",\"message_id\":\"bridge-harden-proof-001\",\"email_subject\":null,\"sender\":\"proof-test@bridge-harden.local\",\"sender_domain\":\"bridge-harden.local\",\"received_at\":null,\"classification\":\"unknown\",\"urgency\":\"NORMAL\",\"confidence\":null,\"company_name\":null,\"broker_name\":null,\"status\":\"pending\",\"created_at\":\"2026-02-14T12:04:04.658990Z\",\"sender_name\":null,\"sender_company\":null,\"is_broker\":null},\"message\":\"Duplicate detected \u2014 item already exists\"}"
+      }
+    ],
+    "structuredContent": {
+      "created": false,
+      "dedup": true,
+      "status_code": 200,
+      "data": {
+        "id": "afa47290-6b88-4337-8b27-0856d8c47a7f",
+        "message_id": "bridge-harden-proof-001",
+        "email_subject": null,
+        "sender": "proof-test@bridge-harden.local",
+        "sender_domain": "bridge-harden.local",
+        "received_at": null,
+        "classification": "unknown",
+        "urgency": "NORMAL",
+        "confidence": null,
+        "company_name": null,
+        "broker_name": null,
+        "status": "pending",
+        "created_at": "2026-02-14T12:04:04.658990Z",
+        "sender_name": null,
+        "sender_company": null,
+        "is_broker": null
+      },
+      "message": "Duplicate detected \u2014 item already exists"
+    },
+    "isError": false
+  }
+}
+
+status_code=200, created=False, dedup=True
+VERDICT: PASS — Dedup detected correctly

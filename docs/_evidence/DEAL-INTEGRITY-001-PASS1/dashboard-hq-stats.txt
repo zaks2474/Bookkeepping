@@ -1,0 +1,8 @@
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/dashboard/AgentActivityWidget.tsx:181:              <span>{data.stats.dealsAnalyzed} deals analyzed</span>
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/operator-hq/PipelineOverview.tsx:69:  const dealsByStage: Record<DealStage, number> = stats?.deals_by_stage ?? {} as Record<DealStage, number>;
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/operator-hq/PipelineOverview.tsx:70:  const totalDeals = stats?.total_active_deals ?? 0;
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/operator-hq/QuickStats.tsx:120:      label: 'Active Deals',
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/operator-hq/QuickStats.tsx:121:      value: stats?.total_active_deals ?? 0,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/pipeline/route.ts:5: * Returns the deal pipeline summary with stage counts and metrics.
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/layout/AgentStatusIndicator.tsx:277:            <p className="text-lg font-semibold">{data.stats.dealsAnalyzed}</p>
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:304:            value={data.stats.dealsAnalyzed}

@@ -1,0 +1,22 @@
+=== R2.A.3 BYPASS RESISTANCE TESTS ===
+--- BYPASS TEST 1: TRUNCATE attempt ---
+TRUNCATE TABLE
+--- BYPASS TEST 2: DISABLE TRIGGER attempt ---
+ALTER TABLE
+--- BYPASS TEST 3: DROP TRIGGER attempt ---
+DROP TRIGGER
+
+
+--- BYPASS RESISTANCE SUMMARY ---
+TRUNCATE: FAIL - agent user can truncate (needs privilege revocation)
+DISABLE TRIGGER: FAIL - agent user can disable (table owner)
+DROP TRIGGER: FAIL - agent user can drop (table owner)
+
+NOTE: These bypasses require DDL privileges. In production, recommend:
+1. REVOKE TRUNCATE ON audit_log FROM agent;
+2. Transfer table ownership to a superuser-only role
+3. Application user should only have INSERT, SELECT
+
+TRIGGER RECREATED after DROP test.
+For this remediation scope: DELETE trigger provides defense-in-depth against
+accidental deletes in application code. Full hardening is a separate task.

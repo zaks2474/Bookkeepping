@@ -1,0 +1,161 @@
+    alias: str = Query(..., description="Alias value to search for"),
+    alias_type: str = Query("gmail_message_id", description="Type of alias"),
+    pool: asyncpg.Pool = Depends(get_db)
+):
+    """Look up a deal by its alias (e.g., gmail_message_id).
+
+    Returns the deal if found, or 404 if no mapping exists.
+    This endpoint is used by executors to check for existing email->deal mappings.
+    """
+    query = """
+        SELECT d.deal_id, d.canonical_name, d.display_name, d.folder_path, d.stage
+        FROM zakops.deals d
+        JOIN zakops.deal_aliases a ON d.deal_id = a.deal_id
+        WHERE a.alias = $1 AND a.alias_type = $2 AND d.deleted = FALSE
+    """
+    async with pool.acquire() as conn:
+        row = await conn.fetchrow(query, alias, alias_type)
+
+    if not row:
+        raise HTTPException(status_code=404, detail=f"No deal found for alias {alias} (type={alias_type})")
+
+    return dict(row)
+
+
+@app.get("/api/deals/{deal_id}", response_model=DealResponse)
+async def get_deal(deal_id: str, pool: asyncpg.Pool = Depends(get_db)):
+    """Get a single deal by ID."""
+    query = """
+        SELECT
+            d.*,
+            EXTRACT(DAY FROM NOW() - d.updated_at) AS days_since_update,
+            (SELECT COUNT(*) FROM zakops.actions a WHERE a.deal_id = d.deal_id) AS action_count,
+            (SELECT COUNT(*) FROM zakops.deal_aliases a WHERE a.deal_id = d.deal_id) AS alias_count
+        FROM zakops.deals d
+        WHERE d.deal_id = $1 AND d.deleted = FALSE
+    """
+    async with pool.acquire() as conn:
+        row = await conn.fetchrow(query, deal_id)
+
+    if not row:
+        raise HTTPException(status_code=404, detail=f"Deal {deal_id} not found")
+
+    return record_to_dict(row)
+
+
+@app.post("/api/deals", response_model=DealResponse)
+async def create_deal(deal: DealCreate, pool: asyncpg.Pool = Depends(get_db)):
+    """Create a new deal."""
+    async with pool.acquire() as conn:
+        # Generate new deal ID
+        deal_id = await conn.fetchval("SELECT zakops.next_deal_id()")
+
+        # Insert deal
+        query = """
+            INSERT INTO zakops.deals (
+                deal_id, canonical_name, display_name, folder_path,
+                stage, status, identifiers, company_info, broker, metadata
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+            RETURNING *
+        """
+        row = await conn.fetchrow(
+            query,
+            deal_id,
+            deal.canonical_name,
+            deal.display_name,
+            deal.folder_path,
+            deal.stage,
+            deal.status,
+            json.dumps(deal.identifiers or {}),
+            json.dumps(deal.company_info or {}),
+            json.dumps(deal.broker or {}),
+            json.dumps(deal.metadata or {})
+        )
+
+        # Record event
+        await conn.execute(
+            """
+            SELECT zakops.record_deal_event(
+                $1, 'deal_created', 'api', 'ui_user', $2::jsonb
+            )
+            """,
+            deal_id,
+            json.dumps({"canonical_name": deal.canonical_name})
+        )
+
+        # R2-4: Write to outbox for reliable side-effects (folder scaffolding, RAG indexing)
+        if is_outbox_enabled():
+            outbox = OutboxWriter()
+            await outbox.write(
+                correlation_id=uuid.UUID(deal_id.replace('DL-', '00000000-0000-0000-0000-').zfill(36)) if deal_id.startswith('DL-') else uuid.uuid4(),
+                event_type="deal.created",
+                event_data={
+                    "deal_id": deal_id,
+                    "canonical_name": deal.canonical_name,
+                    "stage": deal.stage,
+                    "source": "api"
+                },
+                aggregate_type="deal",
+                aggregate_id=deal_id
+            )
+
+    return record_to_dict(row)
+
+
+@app.patch("/api/deals/{deal_id}", response_model=DealResponse)
+async def update_deal(
+    deal_id: str,
+    update: DealUpdate,
+    pool: asyncpg.Pool = Depends(get_db)
+):
+    """Update an existing deal."""
+    # Build dynamic update query
+    updates = []
+    params = [deal_id]
+    param_idx = 2
+
+    update_dict = update.model_dump(exclude_unset=True)
+
+    for field, value in update_dict.items():
+        if value is not None:
+            if field in ['identifiers', 'company_info', 'broker', 'metadata']:
+                updates.append(f"{field} = ${param_idx}::jsonb")
+                params.append(json.dumps(value))
+            else:
+                updates.append(f"{field} = ${param_idx}")
+                params.append(value)
+            param_idx += 1
+
+    if not updates:
+        raise HTTPException(status_code=400, detail="No fields to update")
+
+    query = f"""
+        UPDATE zakops.deals
+        SET {', '.join(updates)}
+        WHERE deal_id = $1 AND deleted = FALSE
+        RETURNING *
+    """
+
+    async with pool.acquire() as conn:
+        # Get previous state
+        prev = await conn.fetchrow(
+            "SELECT * FROM zakops.deals WHERE deal_id = $1",
+            deal_id
+        )
+        if not prev:
+            raise HTTPException(status_code=404, detail=f"Deal {deal_id} not found")
+
+        # Update
+        row = await conn.fetchrow(query, *params)
+
+        # Record event
+        await conn.execute(
+            """
+            SELECT zakops.record_deal_event(
+                $1, 'deal_updated', 'api', 'ui_user', $2::jsonb, $3::jsonb, $4::jsonb
+            )
+            """,
+            deal_id,
+            json.dumps({"fields_updated": list(update_dict.keys())}),
+            json.dumps(dict(prev)),
+            json.dumps(dict(row))

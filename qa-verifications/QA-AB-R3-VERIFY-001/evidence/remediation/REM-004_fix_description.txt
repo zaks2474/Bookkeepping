@@ -1,0 +1,3 @@
+REM-004: Apply decision_ledger migration
+- Issue: decision_ledger table missing in agent DB.
+- Fix: Ensure uuid-ossp extension; run migrations/002_decision_ledger.sql against zakops_agent DB.

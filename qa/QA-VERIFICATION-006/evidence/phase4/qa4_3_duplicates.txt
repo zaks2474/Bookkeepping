@@ -1,0 +1,14 @@
+=== QA-4.3: T3.4 Duplicate Detection ===
+--- TEST 1: Unique constraint on deals ---
+ indexname | indexdef 
+-----------+----------
+(0 rows)
+
+
+--- TEST 2: Live duplicate test ---
+Creating first deal: QA006-DUP-TEST-1770191588
+{"deal_id":"DL-0051","canonical_name":"QA006-DUP-TEST-1770191588","display_name":null,"folder_path":null,"stage":"inbound","status":"active","identifiers":{},"company_info":{},"broker":{},"metadata":{},"created_at":"2026-02-04T07:53:08.049791Z","updated_at":"2026-02-04T07:53:08.049791Z","days_since_update":null,"action_count":null,"alias_count":null}
+HTTP: 200
+Creating duplicate: QA006-DUP-TEST-1770191588
+{"deal_id":"DL-0052","canonical_name":"QA006-DUP-TEST-1770191588","display_name":null,"folder_path":null,"stage":"inbound","status":"active","identifiers":{},"company_info":{},"broker":{},"metadata":{},"created_at":"2026-02-04T07:53:08.077460Z","updated_at":"2026-02-04T07:53:08.077460Z","days_since_update":null,"action_count":null,"alias_count":null}
+HTTP: 200

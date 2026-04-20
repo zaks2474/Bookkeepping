@@ -1,0 +1,2 @@
+    SET message_count = message_count + 1,
+        last_active = NOW()

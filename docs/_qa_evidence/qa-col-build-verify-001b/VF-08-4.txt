@@ -1,0 +1,14 @@
+35:    is_protected: bool = False
+52:        has_legal_hold: bool = False,
+53:        has_compliance_flag: bool = False,
+61:            has_legal_hold: Whether thread has an active legal hold
+62:            has_compliance_flag: Whether thread is flagged for permanent retention
+69:        if has_compliance_flag:
+71:        elif has_legal_hold:
+79:        is_protected = tier in ("legal_hold", "compliance")
+96:        if is_protected:
+106:            is_protected=is_protected,
+118:                     thread_id, scope_type, has_legal_hold, has_compliance_flag, created_at
+128:                has_legal_hold=t.get("has_legal_hold", False),
+129:                has_compliance_flag=t.get("has_compliance_flag", False),
+132:            if result.is_expired and not result.is_protected:

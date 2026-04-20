@@ -1,0 +1,2 @@
+SELECT create_monthly_partitions('turn_snapshots', 3);
+SELECT create_monthly_partitions('cost_ledger', 3);

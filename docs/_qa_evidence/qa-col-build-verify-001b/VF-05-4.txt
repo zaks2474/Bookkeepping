@@ -1,0 +1,1 @@
+198:export function useSmartPaste(dealId?: string | null, onAddToBrain?: (entity: ExtractedEntity) => Promise<void>) {

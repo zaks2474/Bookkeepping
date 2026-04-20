@@ -1,0 +1,147 @@
+{
+  "model_id": "Claude OPUS 4.5",
+  "timestamp_utc": "2026-01-24T04:30:00Z",
+  "version": "1.0.0",
+  "source_docs": [
+    "/home/zaks/bookkeeping/docs/hitl_spike/QA_REPORT.md",
+    "/home/zaks/bookkeeping/docs/ZakOps-Scaffold-Master-Plan-v2.md",
+    "/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v2.md",
+    "/home/zaks/bookkeeping/docs/DECISION-LOCK-FILE.md"
+  ],
+  "baseline": {
+    "hitl_spike_verdict": "PASS",
+    "hitl_spike_date": "2026-01-23",
+    "gates_passed": 14,
+    "open_issues": [
+      {"id": "QA-M1", "severity": "MAJOR", "description": "Plaintext persistence risk in checkpoint blobs"}
+    ]
+  },
+  "hard_constraints": [
+    {"category": "port", "key": "vLLM", "value": 8000},
+    {"category": "port", "key": "RAG_REST", "value": 8052},
+    {"category": "port", "key": "Deal_API", "value": 8090},
+    {"category": "port", "key": "Agent_API", "value": 8095},
+    {"category": "port", "key": "MCP", "value": 9100},
+    {"category": "port", "key": "Langfuse", "value": 3001},
+    {"category": "port", "key": "PostgreSQL", "value": 5432},
+    {"category": "model", "key": "primary", "value": "Qwen2.5-32B-Instruct-AWQ"},
+    {"category": "model", "key": "upgrade_trigger", "value": ">=5% accuracy improvement"},
+    {"category": "orchestration", "key": "framework", "value": "LangGraph"},
+    {"category": "orchestration", "key": "checkpointing", "value": "PostgresSaver"},
+    {"category": "orchestration", "key": "hitl_pattern", "value": "interrupt_before=[approval_gate]"},
+    {"category": "queue", "key": "system", "value": "Postgres SKIP LOCKED"},
+    {"category": "queue", "key": "migration_trigger", "value": "P95 claim >500ms"},
+    {"category": "tracing", "key": "system", "value": "Langfuse self-hosted"},
+    {"category": "tracing", "key": "constraint", "value": "NEVER log raw content"},
+    {"category": "auth", "key": "phase1", "value": "RBAC"},
+    {"category": "auth", "key": "jwt_claims", "value": "sub,role,exp,iss,aud"},
+    {"category": "auth", "key": "jwt_issuer", "value": "zakops-auth"},
+    {"category": "auth", "key": "jwt_audience", "value": "zakops-agent"}
+  ],
+  "phases": [
+    {
+      "name": "Phase 1: Production Integration",
+      "duration": "1 week",
+      "objective": "Wire to Deal API, deploy Langfuse, resolve PII risk, 24h stability",
+      "scope_in": ["Deal API integration", "Langfuse deployment", "PII canary gate", "24h health monitor"],
+      "scope_out": ["RAG integration", "Queue worker", "LiteLLM routing"],
+      "dod": [
+        "Agent invokes Deal API for all deal tools",
+        "Langfuse trace visible for workflow",
+        "PII canary gate passes",
+        "24h health monitor 100% uptime"
+      ],
+      "gates": [
+        {"id": "P1-G1", "name": "Deal API Integration", "cmd": "pytest tests/integration/test_deal_api.py"},
+        {"id": "P1-G2", "name": "HITL E2E", "cmd": "pytest tests/e2e/test_hitl_transition.py"},
+        {"id": "P1-G3", "name": "Langfuse Health", "cmd": "curl -f http://localhost:3001/api/public/health"},
+        {"id": "P1-G4", "name": "PII Canary", "cmd": "./scripts/pii_canary_gate.sh"},
+        {"id": "P1-G5", "name": "24h Health", "cmd": "./scripts/health_monitor.sh --duration 24h"}
+      ]
+    },
+    {
+      "name": "Phase 2: Production Hardening",
+      "duration": "2 weeks",
+      "objective": "Tool validation, RBAC, queue, chaos tests, 95% accuracy",
+      "scope_in": ["Tool registry", "RBAC middleware", "Queue worker", "Chaos tests", "Tool eval"],
+      "scope_out": ["RAG retrieval", "LiteLLM routing", "ABAC"],
+      "dod": [
+        "Tool registry rejects invalid params",
+        "RBAC blocks VIEWER from approve",
+        "Queue P95 claim <100ms",
+        "Chaos test passes",
+        "Tool accuracy >=95%",
+        "72h health monitor passes"
+      ],
+      "gates": [
+        {"id": "P2-G1", "name": "Tool Validation", "cmd": "pytest tests/tools/test_validation.py"},
+        {"id": "P2-G2", "name": "RBAC Enforcement", "cmd": "pytest tests/auth/test_rbac.py"},
+        {"id": "P2-G3", "name": "Queue Load", "cmd": "python tests/load/queue_load_test.py --tasks 1000"},
+        {"id": "P2-G4", "name": "Chaos Test", "cmd": "./tests/chaos/run_chaos.sh"},
+        {"id": "P2-G5", "name": "Tool Accuracy", "cmd": "python evals/run_tool_accuracy.py"}
+      ]
+    },
+    {
+      "name": "Phase 3: Advanced Features",
+      "duration": "3-4 weeks",
+      "objective": "RAG, LiteLLM routing, cost tracking, full lifecycle",
+      "scope_in": ["RAG REST integration", "LiteLLM gateway", "Cost tracking", "Full lifecycle demo"],
+      "scope_out": ["Qdrant migration", "Model upgrade", "Fine-tuning"],
+      "dod": [
+        "RAG recall@5 >= 0.80",
+        ">=80% tasks handled locally",
+        "Cost tracking dashboard operational",
+        "Full lifecycle demo passes"
+      ],
+      "gates": [
+        {"id": "P3-G1", "name": "RAG Retrieval", "cmd": "python evals/run_retrieval_eval.py"},
+        {"id": "P3-G2", "name": "Local Handling", "cmd": "python evals/check_local_rate.py"},
+        {"id": "P3-G3", "name": "Cost Tracking", "cmd": "curl http://localhost:8095/agent/metrics/cost"},
+        {"id": "P3-G4", "name": "Full Lifecycle", "cmd": "python demos/full_lifecycle.py"}
+      ]
+    }
+  ],
+  "non_negotiable_gates": [
+    {"id": "NG-01", "name": "Kill-9 Recovery", "cmd": "./tests/chaos/kill9_test.sh"},
+    {"id": "NG-02", "name": "Concurrent Idempotency N=50", "cmd": "./tests/chaos/concurrent_approve.sh 50"},
+    {"id": "NG-03", "name": "Auth Negative 7/7", "cmd": "pytest tests/auth/test_negative.py"},
+    {"id": "NG-04", "name": "No Copyleft Deps", "cmd": "./scripts/license_scan.sh"},
+    {"id": "NG-05", "name": "HITL Scope", "cmd": "pytest tests/hitl/test_scope.py"},
+    {"id": "NG-06", "name": "Tool Validation", "cmd": "pytest tests/tools/test_validation.py"},
+    {"id": "NG-07", "name": "PII Canary", "cmd": "./scripts/pii_canary_gate.sh"},
+    {"id": "NG-08", "name": "No Raw Content", "cmd": "./scripts/raw_content_scan.sh"}
+  ],
+  "top_risks": [
+    {"id": "R-01", "title": "Deal API schema mismatch", "probability": "Low", "impact": "High", "mitigation": "Contract tests before integration"},
+    {"id": "R-02", "title": "PII canary false negatives", "probability": "Medium", "impact": "High", "mitigation": "Conservative patterns; manual audit backup"},
+    {"id": "R-03", "title": "vLLM throughput unknown", "probability": "Medium", "impact": "Medium", "mitigation": "Benchmark before load testing"},
+    {"id": "R-04", "title": "Langfuse Docker issues", "probability": "Medium", "impact": "Low", "mitigation": "Cloud fallback; graceful degradation"}
+  ],
+  "top_failure_modes": [
+    {"id": "FM-01", "title": "Plaintext PII in checkpoints", "mitigation": "Hash/encrypt tool args before storage"},
+    {"id": "FM-02", "title": "Tool accuracy <95%", "mitigation": "Prompt engineering; cloud escalation"},
+    {"id": "FM-03", "title": "vLLM OOM under load", "mitigation": "Reduce batch/context; graceful error"},
+    {"id": "FM-04", "title": "Kill-9 state loss", "mitigation": "PostgresSaver checkpoint before interrupt"},
+    {"id": "FM-05", "title": "Concurrent double-execution", "mitigation": "Claim-first idempotency with DB locks"},
+    {"id": "FM-06", "title": "Deal API unavailable", "mitigation": "Retry with backoff; circuit breaker"},
+    {"id": "FM-07", "title": "Langfuse down", "mitigation": "Graceful degradation; buffer locally"},
+    {"id": "FM-08", "title": "Queue backlog", "mitigation": "Scale workers; alert operator"},
+    {"id": "FM-09", "title": "Auth bypass", "mitigation": "Default-deny; audit all attempts"},
+    {"id": "FM-10", "title": "Raw content in traces", "mitigation": "safe_logger wrapper; hash+length only"}
+  ],
+  "open_questions": [
+    {"id": "OQ-01", "question": "Actual vLLM tok/s on workstation?", "test": "vllm bench --model Qwen2.5-32B-AWQ"},
+    {"id": "OQ-02", "question": "Deal API requires same JWT?", "test": "Check Deal API auth config"},
+    {"id": "OQ-03", "question": "RAG REST /search schema?", "test": "curl http://localhost:8052/openapi.json"},
+    {"id": "OQ-04", "question": "Qwen3-32B fits in 32GB VRAM?", "test": "Test model load with nvidia-smi"}
+  ],
+  "p0_tasks": [
+    "API-001: Wire transition_deal to Deal API",
+    "API-002: Wire list_deals to Deal API",
+    "API-003: Wire get_deal to Deal API",
+    "HITL-001: PII canary gate",
+    "OBS-001: Langfuse self-hosted",
+    "SEC-001: Enable JWT enforcement",
+    "OPS-001: 24h health monitor"
+  ]
+}

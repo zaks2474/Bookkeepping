@@ -1,0 +1,32 @@
+=== Gate V9.3 ===
+1,41c1,41
+< # ZakOps — Claude Code Persistent Memory
+< 
+< ## CRITICAL: Read Before Every Action
+< 
+< ### WSL Session Hazards (WILL break your work if forgotten)
+< 1. **CRLF:** Every file written via Write tool gets Windows line endings. ALWAYS run `sed -i 's/\r$//'` after writing any .sh file. Symptom: `bash\r: not found` (exit 127).
+< 2. **Root ownership:** Claude runs as root. Every file created is root-owned. Run `sudo chown zaks:zaks <file>` after creating files in `/home/zaks/`. Symptom: EACCES when user runs make targets.
+< 3. **Dual tool paths:** Monorepo tools at `/home/zaks/zakops-agent-api/tools/infra/` vs external tools at `/home/zaks/tools/infra/`. Makefile expects monorepo-relative paths. NEVER write scripts to the external path when Makefile references them.
+< 4. **`grep -c` exit code:** Returns exit 1 when count is 0. Use `VAR=$(grep -c ... 2>/dev/null) || VAR=0` — NOT `$(grep -c ... || echo 0)` (captures both outputs).
+< 
+< ### Project Map
+< | Repository | Path | Stack | Port |
+< |-----------|------|-------|------|
+< | Monorepo | `/home/zaks/zakops-agent-api` | Agent API + Dashboard + contracts | 8095/3003 |
+< | Backend | `/home/zaks/zakops-backend` | FastAPI | 8091 |
+< | RAG/LLM | `/home/zaks/Zaks-llm` | RAG service, vLLM | 8052 |
+< | Bookkeeping | `/home/zaks/bookkeeping` | Docs, changes, reports | — |
+< 
+< ### Databases
+< | Database | Schema | User | Migrations |
+< |----------|--------|------|-----------|
+< | zakops | zakops (NOT public!) | zakops (NOT dealengine!) | Alembic |
+< | zakops_agent | public | agent | SQL |
+< | crawlrag | public | (env) | SQL |
+< 
+< ### Essential Make Targets (monorepo)
+< ```
+< make sync-types              # Backend OpenAPI → Dashboard TS types
+< make sync-agent-types        # Agent OpenAPI → Dashboard TS types
+CONTENT_MATCH=false

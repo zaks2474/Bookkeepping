@@ -1,0 +1,6 @@
+=== CHECK 4.2.5: Approve a rejected approval (invalid transition) ===
+Approval ID: 4d05f27e-9caf-4be8-8375-5b70ea8c568d
+Timestamp: 2026-02-03T13:08:55-06:00
+
+{"detail":"Approval already resolved (status: rejected)"}
+HTTP_CODE: 409

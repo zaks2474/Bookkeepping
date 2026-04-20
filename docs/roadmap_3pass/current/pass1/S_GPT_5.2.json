@@ -1,0 +1,145 @@
+{
+  "model_id": "GPT 5.2",
+  "timestamp_utc": "2026-01-24T03:15:26Z",
+  "hard_constraints": [
+    "Ports: Agent API :8095, Deal API :8090, vLLM :8000, RAG REST :8052, MCP :9100, Langfuse :3001",
+    "Model: Qwen2.5-32B-Instruct-AWQ via vLLM (OpenAI-compatible) with --tool-call-parser hermes; max context 32768",
+    "Orchestration: LangGraph with PostgresSaver checkpointing; HITL via interrupt_before=['approval_gate']; must pass kill -9 recovery",
+    "Tools: Hybrid MCP + Direct; required Direct tools: list_deals, get_deal, transition_deal, check_health",
+    "Permissions: READ/WRITE/CRITICAL with approval required for CRITICAL tools",
+    "Idempotency: claim-first (INSERT before execute) for WRITE/CRITICAL; strict Pydantic validation on tool args",
+    "Storage: Postgres + pgvector; audit_log immutable; checkpoints TTL 30 days; DLQ required",
+    "Queue: Postgres SKIP LOCKED; backoff 30s*2^attempt; max_attempts=3; P95 claim latency <100ms under load; Redis migration trigger P95>500ms under 1000 tasks",
+    "Observability: Langfuse (self-hosted) + OpenTelemetry; never log raw prompts/responses (hash+length only); retention 30 days",
+    "Security: JWT primary (HS256) + X-API-Key fallback; required claims sub/role/exp/iss/aud; iss=zakops-auth aud=zakops-agent; default deny",
+    "Routing: LiteLLM deterministic; cloud fallback local->cloud-claude; blocked fields ssn/tax_id/bank_account/credit_card; daily budget $50; >=80% tasks local",
+    "Retrieval: single retrieval path; RAG REST is the exclusive retrieval frontend; no direct pgvector queries from Agent API"
+  ],
+  "phases": [
+    {
+      "name": "Phase 0 — Preserve Baseline + Prevent Regression",
+      "dod": [
+        "./scripts/bring_up_tests.sh passes (exit 0)",
+        "All baseline gate_artifacts are produced with PASS markers"
+      ],
+      "gates": [
+        "cd /home/zaks/zakops-agent-api && ./scripts/bring_up_tests.sh"
+      ]
+    },
+    {
+      "name": "Phase 1 — MVP Surface Completion",
+      "dod": [
+        "PORTS.md exists and is enforced by gates",
+        "Direct tools list_deals/get_deal/check_health are implemented with strict schemas and audited",
+        "Self-hosted Langfuse health at :3001 passes and trace is created",
+        "24h soak passes with recorded PASS markers"
+      ],
+      "gates": [
+        "cd /home/zaks/zakops-agent-api && ./scripts/bring_up_tests.sh",
+        "cd /home/zaks/zakops-agent-api && ./scripts/mvp_direct_tools_smoke.sh",
+        "cd /home/zaks/zakops-agent-api && ./scripts/langfuse_selfhost_gate.sh",
+        "cd /home/zaks/zakops-agent-api && ./scripts/soak_24h.sh"
+      ]
+    },
+    {
+      "name": "Phase 2 — Production Hardening",
+      "dod": [
+        "Postgres queue + worker + DLQ pass smoke and load tests",
+        "API key fallback works; keys are stored hashed only",
+        "audit_log immutability is enforced at DB level",
+        "PII canary not present in logs/traces/DB",
+        "72h soak passes"
+      ],
+      "gates": [
+        "cd /home/zaks/zakops-agent-api && ./scripts/bring_up_tests.sh",
+        "cd /home/zaks/zakops-agent-api && ./scripts/queue_worker_smoke.sh",
+        "cd /home/zaks/zakops-agent-api && ./scripts/queue_load_test.sh",
+        "cd /home/zaks/zakops-agent-api && ./scripts/auth_api_key_tests.sh",
+        "cd /home/zaks/zakops-agent-api && ./scripts/audit_immutability_test.sh",
+        "cd /home/zaks/zakops-agent-api && ./scripts/pii_canary_gate.sh",
+        "cd /home/zaks/zakops-agent-api && ./scripts/soak_72h.sh"
+      ]
+    },
+    {
+      "name": "Phase 3 — Retrieval Integration + Evals",
+      "dod": [
+        "RAG REST contract test passes",
+        "recall@5 >= 0.8 on eval set"
+      ],
+      "gates": [
+        "cd /home/zaks/zakops-agent-api && ./scripts/retrieval_contract_test.sh",
+        "cd /home/zaks/zakops-agent-api && ./evals/retrieval_eval.py"
+      ]
+    },
+    {
+      "name": "Phase 4 — Hybrid Routing + Egress/Budget Controls",
+      "dod": [
+        "Blocked fields prevent cloud escalation",
+        "Budget cap enforced",
+        ">=80% tasks handled locally on measured test set"
+      ],
+      "gates": [
+        "cd /home/zaks/zakops-agent-api && ./scripts/routing_policy_tests.sh",
+        "cd /home/zaks/zakops-agent-api && ./scripts/cost_budget_gate.sh"
+      ]
+    },
+    {
+      "name": "Phase 5 — ABAC + Advanced Policy",
+      "dod": [
+        "ABAC policy tests pass and approval decisions are audited"
+      ],
+      "gates": [
+        "cd /home/zaks/zakops-agent-api && ./scripts/abac_policy_tests.sh"
+      ]
+    }
+  ],
+  "top_risks": [
+    {
+      "id": "R-01",
+      "title": "Plaintext persistence of confidential content (checkpoints/tool args/results)",
+      "mitigation": "Implement PII canary gates across logs/traces/DB; store hashes/summaries; define production fail-closed mode if raw content detected"
+    },
+    {
+      "id": "R-02",
+      "title": "Idempotency regressions causing duplicate side effects",
+      "mitigation": "Deterministic sha256 idempotency keys + claim-first inserts; keep concurrency exactly-once gate as non-negotiable"
+    },
+    {
+      "id": "R-03",
+      "title": "Crash recovery regressions",
+      "mitigation": "Run kill -9 recovery gate on every phase; reject changes that break checkpoint resume"
+    },
+    {
+      "id": "R-04",
+      "title": "Langfuse not self-hosted / missing traceability",
+      "mitigation": "Provision self-hosted Langfuse on :3001 and gate health + trace creation before declaring MVP complete"
+    },
+    {
+      "id": "R-05",
+      "title": "Cloud egress leakage under hybrid routing",
+      "mitigation": "Blocked-field enforcement with fail-closed behavior; policy tests; require explicit allow conditions"
+    }
+  ],
+  "open_questions": [
+    {
+      "id": "OQ-01",
+      "question": "What are the canonical Deal API endpoints/schemas for list_deals/get_deal/transition_deal?",
+      "test": "Implement and run a contract probe that records HTTP paths, status codes, and minimal response schema into gate_artifacts"
+    },
+    {
+      "id": "OQ-02",
+      "question": "What is the exact RAG REST contract (health + query endpoints + response schema)?",
+      "test": "Implement and run retrieval_contract_test.sh to probe endpoints and store a contract artifact"
+    },
+    {
+      "id": "OQ-03",
+      "question": "Where will zakops_agent DB live in workstation mode: host Postgres :5432 or internal compose Postgres?",
+      "test": "Document selected mode and prove connectivity from inside the Agent container using psql; store output artifact"
+    },
+    {
+      "id": "OQ-04",
+      "question": "What at-rest representation (scrub/encrypt) preserves LangGraph crash recovery while meeting no-raw-content requirements?",
+      "test": "Prototype the approach and re-run bring_up_tests.sh kill-9 + concurrency gates; accept only if recovery is 100%"
+    }
+  ]
+}

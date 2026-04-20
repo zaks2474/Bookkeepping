@@ -1,0 +1,25 @@
+=== VF-02.4 RUN SURFACE11 ===
+[36m=== Surface 11 Validation ===[0m
+=== SURFACE 11: ENV REGISTRY CONTRACT ===
+
+--- Check 1: Source Artifact ---
+  PASS: ENV-CROSSREF.md exists (104 lines)
+
+--- Check 2: Cross-Service Variable Discovery ---
+  Cross-service variables: 7 found, 0 not in .env.example
+  PASS: Cross-service variable coverage acceptable
+
+--- Check 3: Service Env File Presence ---
+  PASS: Backend .env.example exists (169 lines)
+  PASS: Agent-API .env.example exists (64 lines)
+  PASS: Dashboard .env.example exists (55 lines)
+
+--- Check 4: Secret Variable Coverage ---
+  PASS: Secret variables annotated in registry (4 entries marked **secret**)
+
+--- Check 5: Forbidden Port 8090 ---
+  PASS: No port 8090 references in .env.example files
+
+================================
+PASS: SURFACE 11 ENV REGISTRY CONTRACT (0 warning(s))
+[32mSurface 11 validation passed[0m

@@ -1,0 +1,15 @@
+237:    email_subject: str | None
+258:    email_subject: str | None = None
+272:    source_type: str | None = None  # manual, email_sync, langsmith_shadow, langsmith_production
+1406:            q.subject AS email_subject,
+1459:            q.subject AS email_subject,
+1503:    # P4-07: source_type from body takes priority, then header, then default
+1504:    source_type = item.source_type or request.headers.get("X-Source-Type") or "email"
+1528:                """SELECT q.id, q.message_id, q.subject AS email_subject,
+1548:                 correlation_id, source_type)
+1551:            RETURNING id::text, message_id, subject AS email_subject, sender,
+1561:            item_id, item.message_id, item.email_subject, item.sender,
+1564:            correlation_id, source_type,
+1571:                """SELECT q.id, q.message_id, q.subject AS email_subject,
+1768:                        'email_sender': sender,
+1769:                        'email_subject': subject,

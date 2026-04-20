@@ -1,0 +1,47 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.0.2, pluggy-1.6.0 -- /home/zaks/bookkeeping/labloop_scenarios/mathlib_e2e/.venv/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/zaks/bookkeeping/labloop_scenarios/mathlib_e2e
+configfile: pyproject.toml
+testpaths: tests
+collecting ... collected 37 items
+
+tests/test_core.py::TestAdd::test_add[1-2-3] PASSED                      [  2%]
+tests/test_core.py::TestAdd::test_add[0-0-0] PASSED                      [  5%]
+tests/test_core.py::TestAdd::test_add[-1-1-0] PASSED                     [  8%]
+tests/test_core.py::TestAdd::test_add[2.5-3.5-6.0] PASSED                [ 10%]
+tests/test_core.py::TestSubtract::test_subtract[5-3-2] PASSED            [ 13%]
+tests/test_core.py::TestSubtract::test_subtract[0-0-0] PASSED            [ 16%]
+tests/test_core.py::TestSubtract::test_subtract[-1--1-0] PASSED          [ 18%]
+tests/test_core.py::TestSubtract::test_subtract[10.5-0.5-10.0] PASSED    [ 21%]
+tests/test_core.py::TestMultiply::test_multiply[2-3-6] PASSED            [ 24%]
+tests/test_core.py::TestMultiply::test_multiply[0-100-0] PASSED          [ 27%]
+tests/test_core.py::TestMultiply::test_multiply[-2-3--6] PASSED          [ 29%]
+tests/test_core.py::TestMultiply::test_multiply[2.5-4-10.0] PASSED       [ 32%]
+tests/test_core.py::TestDivide::test_divide[5-2-2.5] PASSED              [ 35%]
+tests/test_core.py::TestDivide::test_divide[10-4-2.5] PASSED             [ 37%]
+tests/test_core.py::TestDivide::test_divide[-3-2--1.5] PASSED            [ 40%]
+tests/test_core.py::TestDivide::test_divide[7-2-3.5] PASSED              [ 43%]
+tests/test_core.py::TestDivide::test_divide_by_zero PASSED               [ 45%]
+tests/test_core.py::TestGcd::test_gcd_exists PASSED                      [ 48%]
+tests/test_core.py::TestGcd::test_gcd[12-8-4] PASSED                     [ 51%]
+tests/test_core.py::TestGcd::test_gcd[17-13-1] PASSED                    [ 54%]
+tests/test_core.py::TestGcd::test_gcd[100-25-25] PASSED                  [ 56%]
+tests/test_core.py::TestGcd::test_gcd[-12-8-4] PASSED                    [ 59%]
+tests/test_core.py::TestGcd::test_gcd[12--8-4] PASSED                    [ 62%]
+tests/test_core.py::TestGcd::test_gcd[-12--8-4] PASSED                   [ 64%]
+tests/test_core.py::TestGcd::test_gcd[0-5-5] PASSED                      [ 67%]
+tests/test_core.py::TestGcd::test_gcd[5-0-5] PASSED                      [ 70%]
+tests/test_core.py::TestGcd::test_gcd_zero_zero PASSED                   [ 72%]
+tests/test_core.py::TestLcm::test_lcm_exists PASSED                      [ 75%]
+tests/test_core.py::TestLcm::test_lcm[4-6-12] PASSED                     [ 78%]
+tests/test_core.py::TestLcm::test_lcm[3-5-15] PASSED                     [ 81%]
+tests/test_core.py::TestLcm::test_lcm[12-8-24] PASSED                    [ 83%]
+tests/test_core.py::TestLcm::test_lcm[-4-6-12] PASSED                    [ 86%]
+tests/test_core.py::TestLcm::test_lcm[4--6-12] PASSED                    [ 89%]
+tests/test_core.py::TestLcm::test_lcm[-4--6-12] PASSED                   [ 91%]
+tests/test_core.py::TestLcm::test_lcm[0-5-0] PASSED                      [ 94%]
+tests/test_core.py::TestLcm::test_lcm[5-0-0] PASSED                      [ 97%]
+tests/test_core.py::TestLcm::test_lcm_zero_zero PASSED                   [100%]
+
+============================== 37 passed in 0.02s ==============================

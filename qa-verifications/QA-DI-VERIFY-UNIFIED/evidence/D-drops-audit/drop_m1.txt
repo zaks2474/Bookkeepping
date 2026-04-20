@@ -1,0 +1,28 @@
+===============================================================
+DROP-M1: Operator Decision Rationale in ADRs
+===============================================================
+
+ADR Files Found:
+1. /home/zaks/bookkeeping/qa-verifications/DEAL-INTEGRITY-UNIFIED/layer-2/evidence/migration/ADR-001-deal-lifecycle-fsm.md
+2. /home/zaks/bookkeeping/qa-verifications/DEAL-INTEGRITY-UNIFIED/layer-6/ADR-002-canonical-database.md
+3. /home/zaks/bookkeeping/qa-verifications/DEAL-INTEGRITY-UNIFIED/layer-6/ADR-003-stage-configuration-authority.md
+
+Verification evidence files:
+4. /home/zaks/bookkeeping/qa-verifications/QA-DI-VERIFY-UNIFIED/evidence/V-L2-data-model-integrity/V-L2.1-ADR-001.md
+5. /home/zaks/bookkeeping/qa-verifications/QA-DI-VERIFY-UNIFIED/evidence/V-L6-governance-evolution/adr001_search.txt
+6. /home/zaks/bookkeeping/qa-verifications/QA-DI-VERIFY-UNIFIED/evidence/V-L6-governance-evolution/adr002_search.txt
+7. /home/zaks/bookkeeping/qa-verifications/QA-DI-VERIFY-UNIFIED/evidence/V-L6-governance-evolution/adr003_search.txt
+
+Decision Rationale Keywords Found:
+- ADR-001: "Three options were considered" — Option A, Option B, Option C documented
+  - "Option A with full FSM infrastructure. Rationale:"
+  - "Future migration to Option C requires changing only transition_deal_state()"
+- ADR-002: Referenced in layer-6 completion report
+- ADR-003: Referenced in layer-6 completion report
+- final-verification.md: "Q7 | Lifecycle model (Option A with FSM) | SATISFIED"
+  "Q10 | Governance model | SATISFIED — 3 ADRs, runbook, innovation roadmap"
+
+VERDICT: PASS
+- 3 ADRs exist with explicit alternatives-considered sections
+- Decision rationale documented with Option A/B/C format
+- ADR-001 fully documents alternatives, chosen option, and migration path

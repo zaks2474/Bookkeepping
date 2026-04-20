@@ -1,0 +1,5 @@
+8:437-    R4 REMEDIATION: This tool queries the backend API directly (same data source
+40:469-        headers = _get_backend_headers()
+49:478-                f"{DEAL_API_URL}/api/deals",
+RAG references in list_deals: 0
+Backend references in list_deals: 11

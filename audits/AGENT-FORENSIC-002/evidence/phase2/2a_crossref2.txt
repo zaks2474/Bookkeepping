@@ -1,0 +1,34 @@
+=== STEP 2.10: Second Deal Cross-Ref ===
+--- Backend ground truth for DEAL_ID_2=DL-0036 ---
+{
+    "deal_id": "DL-0036",
+    "canonical_name": "QA Regression Test",
+    "display_name": "QA Regression",
+    "folder_path": null,
+    "stage": "inbound",
+    "status": "active",
+    "identifiers": {},
+    "company_info": {},
+    "broker": {},
+    "metadata": {},
+    "created_at": "2026-02-02T19:26:43.779105Z",
+    "updated_at": "2026-02-02T19:26:43.779105Z",
+    "days_since_update": 0.0,
+    "action_count": 0,
+    "alias_count": 0
+}
+--- Agent query ---
+{
+    "detail": "Authentication required"
+}
+--- Structured cross-reference ---
+  stage: MISMATCH (expected=?)
+  company_name: MISMATCH (expected=?)
+  deal_id: MISMATCH (expected=?)
+  canonical_name: MISMATCH (expected=?)
+  display_name: MISMATCH (expected=?)
+\n--- SUPPLEMENT: Structured cross-reference (using env values) ---
+  stage: MISMATCH (expected=inbound)
+  canonical_name: MISMATCH (expected=QA Regression Test)
+  display_name: MISMATCH (expected=QA Regression)
+  deal_id: MISMATCH (expected=DL-0036)

@@ -1,0 +1,13 @@
+=== Backend model comment ===
+272:    source_type: str | None = None  # manual, email_sync, langsmith_shadow, langsmith_live
+277:VALID_SOURCE_TYPES = {"email", "email_sync", "langsmith_shadow", "langsmith_live", "manual"}
+=== VALID_SOURCE_TYPES ===
+277:VALID_SOURCE_TYPES = {"email", "email_sync", "langsmith_shadow", "langsmith_live", "manual"}
+1534:    if source_type not in VALID_SOURCE_TYPES:
+1540:                "valid_values": sorted(VALID_SOURCE_TYPES),
+=== Injection Contract ===
+49:| **400 Bad Request** | Invalid payload or unrecognized `source_type` (must be one of: `email`, `email_sync`, `langsmith_shadow`, `langsmith_live`, `manual`) |
+79:| `langsmith_live` | LangSmith live-mode items |
+=== Dashboard dropdown ===
+327:            <option value='langsmith_live'>LangSmith live</option>
+LOCATIONS_WITH_CANONICAL=3

@@ -1,0 +1,2 @@
+107:        await _queue_rag_index(deal_id)
+155:async def _queue_rag_index(deal_id: str):

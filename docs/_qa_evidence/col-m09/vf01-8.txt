@@ -1,0 +1,2 @@
+apps/agent-api/scripts/migrate_chat_data.py:72:    cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='user'")
+apps/agent-api/scripts/migrate_chat_data.py:126:    cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='session'")

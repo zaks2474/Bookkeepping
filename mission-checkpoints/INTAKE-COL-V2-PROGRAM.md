@@ -1,0 +1,21 @@
+Program: ZAKOPS-INTAKE-COL-V2-001
+SM-1 STATUS: COMPLETE (17 findings, 18/18 verification PASS)
+SM-2 STATUS: COMPLETE (19/19 services, 2 gaps fixed, compliance foundation built)
+SM-3 STATUS: COMPLETE (11 items verified, 2 gaps fixed: HyDE C5 + RankedChunk C7)
+SM-4 STATUS: COMPLETE (3 gaps fixed: MorningBriefing C18, AnomalyBadge C19, SentimentCoach C22)
+PROGRAM STATUS: ALL 4 SUB-MISSIONS COMPLETE
+Validation state: tsc PASS, validate-local PASS, all gates green
+Open decision trees: None
+SM-4 files modified:
+  Phase 1 (C18 + C19):
+  - apps/dashboard/src/components/dashboard/MorningBriefingCard.tsx (NEW: morning briefing card)
+  - apps/dashboard/src/components/dashboard/AnomalyBadge.tsx (NEW: per-deal anomaly badge)
+  - apps/dashboard/src/components/dashboard/index.ts (exports)
+  - apps/dashboard/src/app/dashboard/page.tsx (wired MorningBriefingCard + AnomalyBadge)
+  Phase 2 (C22):
+  - apps/agent-api/app/api/v1/chatbot.py (GET /sentiment/{deal_id} endpoint)
+  - apps/dashboard/src/lib/api.ts (SentimentTrend interface + getSentimentTrend())
+  - apps/dashboard/src/components/deal-workspace/SentimentCoachPanel.tsx (NEW: sentiment UI)
+  - apps/dashboard/src/components/deal-workspace/DealWorkspace.tsx (wired SentimentCoachPanel in Analysis tab)
+  Phase 3 (Compliance): All 3 items already DONE (RetentionPolicy, GDPR, purge API)
+  Phase 4: validate-local PASS, all gates green

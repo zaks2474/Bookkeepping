@@ -1,0 +1,102 @@
+     1	import { NextRequest, NextResponse } from 'next/server';
+     2	import { backendFetch } from '@/lib/backend-fetch';
+     3	
+     4	/**
+     5	 * GET /api/actions/quarantine
+     6	 *
+     7	 * Returns quarantine queue items (actions with REVIEW_EMAIL type pending approval).
+     8	 * This maps to the email triage quarantine queue.
+     9	 */
+    10	export async function GET(request: NextRequest) {
+    11	  try {
+    12	    const { searchParams } = new URL(request.url);
+    13	    const limit = searchParams.get('limit');
+    14	    const offset = searchParams.get('offset');
+    15	    const sourceType = searchParams.get('source_type');
+    16	
+    17	    // First try the backend's quarantine endpoint
+    18	    let queryString = '';
+    19	    if (limit || offset || sourceType) {
+    20	      const params = new URLSearchParams();
+    21	      if (limit) params.set('limit', limit);
+    22	      if (offset) params.set('offset', offset);
+    23	      if (sourceType) params.set('source_type', sourceType);
+    24	      queryString = '?' + params.toString();
+    25	    }
+    26	
+    27	    const response = await backendFetch(`/api/quarantine${queryString}`);
+    28	
+    29	    if (response.ok) {
+    30	      const data = await response.json();
+    31	      const items = Array.isArray(data) ? data : (data.items || []);
+    32	
+    33	      // Transform to quarantine item format expected by frontend
+    34	      const quarantineItems = items.map((item: any) => ({
+    35	        id: item.id || item.quarantine_id || item.action_id,
+    36	        quarantine_id: item.quarantine_id || item.id,
+    37	        action_id: item.action_id,
+    38	        email_subject: item.email_subject || item.subject,
+    39	        subject: item.subject || item.email_subject,
+    40	        sender: item.sender || item.from,
+    41	        from: item.from || item.sender,
+    42	        received_at: item.received_at || item.timestamp || item.created_at,
+    43	        timestamp: item.timestamp || item.received_at || item.created_at,
+    44	        quarantine_reason: item.quarantine_reason || item.reason,
+    45	        reason: item.reason || item.quarantine_reason,
+    46	        status: item.status || 'pending',
+    47	        classification: item.classification,
+    48	        urgency: item.urgency,
+    49	        company: item.company,
+    50	        source_type: item.source_type,
+    51	      }));
+    52	
+    53	      return NextResponse.json(quarantineItems);
+    54	    }
+    55	
+    56	    // Fallback: try to get from actions with EMAIL_TRIAGE type
+    57	    const actionsResponse = await backendFetch('/api/actions?status=PENDING_APPROVAL');
+    58	
+    59	    if (actionsResponse.ok) {
+    60	      const actions = await actionsResponse.json();
+    61	      const actionsList = Array.isArray(actions) ? actions : (actions.actions || []);
+    62	
+    63	      // Filter for email triage review actions
+    64	      const emailActions = actionsList.filter((a: any) =>
+    65	        a.action_type?.includes('EMAIL') || a.action_type?.includes('REVIEW')
+    66	      );
+    67	
+    68	      // Transform to quarantine format
+    69	      const quarantineItems = emailActions.map((action: any) => ({
+    70	        id: action.action_id,
+    71	        quarantine_id: action.action_id,
+    72	        action_id: action.action_id,
+    73	        email_subject: action.inputs?.subject || action.title,
+    74	        subject: action.inputs?.subject || action.title,
+    75	        sender: action.inputs?.from || action.inputs?.sender,
+    76	        from: action.inputs?.from || action.inputs?.sender,
+    77	        received_at: action.created_at,
+    78	        timestamp: action.created_at,
+    79	        quarantine_reason: action.summary || 'Requires review',
+    80	        reason: action.summary || 'Requires review',
+    81	        status: action.status === 'PENDING_APPROVAL' ? 'pending' : action.status,
+    82	        classification: action.inputs?.classification,
+    83	        urgency: action.inputs?.urgency,
+    84	      }));
+    85	
+    86	      return NextResponse.json(quarantineItems);
+    87	    }
+    88	
+    89	    // Both endpoints failed
+    90	    console.warn('[actions/quarantine] Backend degraded: both /api/quarantine and /api/actions returned non-OK');
+    91	    return NextResponse.json(
+    92	      { error: 'backend_unavailable', message: 'Both quarantine and actions endpoints failed' },
+    93	      { status: 502 }
+    94	    );
+    95	  } catch (error) {
+    96	    console.warn('[actions/quarantine] Backend unavailable (degraded):', error instanceof Error ? error.message : error);
+    97	    return NextResponse.json(
+    98	      { error: 'backend_unavailable', message: error instanceof Error ? error.message : 'Unknown error' },
+    99	      { status: 502 }
+   100	    );
+   101	  }
+   102	}

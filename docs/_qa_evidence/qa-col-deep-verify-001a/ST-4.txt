@@ -1,0 +1,43 @@
+create_monthly_partitions function:
+-- QA gate anchor: create_monthly_partitions(p_table TEXT, p_months_ahead INTEGER DEFAULT 3)
+CREATE OR REPLACE FUNCTION create_monthly_partitions(
+    p_table TEXT,
+    p_months_ahead INTEGER DEFAULT 3
+) RETURNS VOID AS $$
+DECLARE
+    v_start DATE;
+    v_end DATE;
+    v_partition TEXT;
+    v_i INTEGER;
+BEGIN
+    FOR v_i IN 0..p_months_ahead LOOP
+        v_start := DATE_TRUNC('month', CURRENT_DATE + (v_i || ' months')::INTERVAL);
+        v_end := v_start + '1 month'::INTERVAL;
+        v_partition := p_table || '_' || TO_CHAR(v_start, 'YYYY_MM');
+
+        IF NOT EXISTS (
+            SELECT 1 FROM pg_class WHERE relname = v_partition
+        ) THEN
+            EXECUTE format(
+                'CREATE TABLE IF NOT EXISTS %I PARTITION OF %I FOR VALUES FROM (%L) TO (%L)',
+                v_partition, p_table, v_start, v_end
+            );
+        END IF;
+    END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create initial partitions (current month + 3 months ahead)
+SELECT create_monthly_partitions('turn_snapshots', 3);
+---
+IF NOT EXISTS / idempotency check:
+17:CREATE TABLE IF NOT EXISTS user_identity_map (
+30:CREATE TABLE IF NOT EXISTS chat_threads (
+57:CREATE INDEX IF NOT EXISTS idx_threads_user ON chat_threads(user_id);
+58:CREATE INDEX IF NOT EXISTS idx_threads_deal ON chat_threads(deal_id) WHERE deal_id IS NOT NULL;
+59:CREATE INDEX IF NOT EXISTS idx_threads_active ON chat_threads(user_id, last_active DESC) WHERE deleted = FALSE;
+60:CREATE INDEX IF NOT EXISTS idx_threads_deleted ON chat_threads(deleted_at) WHERE deleted = TRUE;
+63:CREATE TABLE IF NOT EXISTS chat_messages (
+82:CREATE INDEX IF NOT EXISTS idx_messages_thread ON chat_messages(thread_id, turn_number);
+83:CREATE INDEX IF NOT EXISTS idx_messages_user ON chat_messages(user_id);
+86:CREATE TABLE IF NOT EXISTS thread_ownership (

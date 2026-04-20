@@ -1,0 +1,63 @@
+============================================================
+R3 REMEDIATION [P2.4]: Prompt Tool List Validation
+============================================================
+Loading environment: Environment.DEVELOPMENT
+Loaded environment from /home/zaks/zakops-agent-api/apps/agent-api/.env.development
+[2m2026-02-05T19:01:38.166213Z[0m [[32m[1minfo     [0m] [1mlogging_initialized           [0m [[0m[1m[34mapp.core.logging[0m][0m [36mdebug[0m=[35mTrue[0m [36menvironment[0m=[35mdevelopment[0m [36mfilename[0m=[35mlogging.py[0m [36mfunc_name[0m=[35m<module>[0m [36mlineno[0m=[35m300[0m [36mlog_format[0m=[35mconsole[0m [36mlog_level[0m=[35mDEBUG[0m [36mmodule[0m=[35mlogging[0m [36mpathname[0m=[35m/home/zaks/zakops-agent-api/apps/agent-api/app/core/logging.py[0m
+Traceback (most recent call last):
+  File "/tmp/qa_ab_r4_venv/lib/python3.12/site-packages/pydantic/networks.py", line 965, in import_email_validator
+    import email_validator
+ModuleNotFoundError: No module named 'email_validator'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/zaks/zakops-agent-api/apps/agent-api/scripts/validate_prompt_tools.py", line 128, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/zaks/zakops-agent-api/apps/agent-api/scripts/validate_prompt_tools.py", line 104, in main
+    tools = get_tool_list_from_registry()
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zaks/zakops-agent-api/apps/agent-api/app/core/prompts/__init__.py", line 98, in get_tool_list_from_registry
+    from app.schemas.agent import HITL_TOOLS
+  File "/home/zaks/zakops-agent-api/apps/agent-api/app/schemas/__init__.py", line 3, in <module>
+    from app.schemas.auth import Token
+  File "/home/zaks/zakops-agent-api/apps/agent-api/app/schemas/auth.py", line 43, in <module>
+    class UserCreate(BaseModel):
+  File "/tmp/qa_ab_r4_venv/lib/python3.12/site-packages/pydantic/_internal/_model_construction.py", line 255, in __new__
+    complete_model_class(
+  File "/tmp/qa_ab_r4_venv/lib/python3.12/site-packages/pydantic/_internal/_model_construction.py", line 648, in complete_model_class
+    schema = gen_schema.generate_schema(cls)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/qa_ab_r4_venv/lib/python3.12/site-packages/pydantic/_internal/_generate_schema.py", line 729, in generate_schema
+    schema = self._generate_schema_inner(obj)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/qa_ab_r4_venv/lib/python3.12/site-packages/pydantic/_internal/_generate_schema.py", line 1023, in _generate_schema_inner
+    return self._model_schema(obj)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/qa_ab_r4_venv/lib/python3.12/site-packages/pydantic/_internal/_generate_schema.py", line 856, in _model_schema
+    {k: self._generate_md_field_schema(k, v, decorators) for k, v in fields.items()},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/qa_ab_r4_venv/lib/python3.12/site-packages/pydantic/_internal/_generate_schema.py", line 1228, in _generate_md_field_schema
+    schema, metadata = self._common_field_schema(name, field_info, decorators)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/qa_ab_r4_venv/lib/python3.12/site-packages/pydantic/_internal/_generate_schema.py", line 1282, in _common_field_schema
+    schema = self._apply_annotations(
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/qa_ab_r4_venv/lib/python3.12/site-packages/pydantic/_internal/_generate_schema.py", line 2227, in _apply_annotations
+    schema = get_inner_schema(source_type)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/qa_ab_r4_venv/lib/python3.12/site-packages/pydantic/_internal/_schema_generation_shared.py", line 83, in __call__
+    schema = self._handler(source_type)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/qa_ab_r4_venv/lib/python3.12/site-packages/pydantic/_internal/_generate_schema.py", line 2203, in inner_handler
+    schema = self._generate_schema_from_get_schema_method(obj, source_type)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/qa_ab_r4_venv/lib/python3.12/site-packages/pydantic/_internal/_generate_schema.py", line 919, in _generate_schema_from_get_schema_method
+    schema = get_schema(
+             ^^^^^^^^^^^
+  File "/tmp/qa_ab_r4_venv/lib/python3.12/site-packages/pydantic/networks.py", line 1005, in __get_pydantic_core_schema__
+    import_email_validator()
+  File "/tmp/qa_ab_r4_venv/lib/python3.12/site-packages/pydantic/networks.py", line 967, in import_email_validator
+    raise ImportError("email-validator is not installed, run `pip install 'pydantic[email]'`") from e
+ImportError: email-validator is not installed, run `pip install 'pydantic[email]'`

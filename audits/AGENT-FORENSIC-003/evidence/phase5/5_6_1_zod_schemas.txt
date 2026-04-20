@@ -1,0 +1,33 @@
+=== CHECK 5.6.1: Agent-related Zod Schemas ===
+Timestamp: 2026-02-03T13:22:09-06:00
+
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:72:export const DealSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:73:  deal_id: z.string(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:74:  canonical_name: z.string().nullable(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:75:  display_name: z.string().optional().nullable(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:76:  stage: z.string(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:77:  status: z.string(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:78:  broker: z.preprocess(coerceBrokerToString, z.string().nullable().optional()),
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:79:  priority: z.string().nullable().optional(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:80:  updated_at: z.string().nullable().optional(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:81:  created_at: z.string().nullable().optional(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:83:  folder_path: z.string().optional().nullable(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:89:export const DealDetailSchema = z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:90:  deal_id: z.string(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:91:  canonical_name: z.string().nullable(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:92:  display_name: z.string().nullable().optional(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:93:  folder_path: z.string().nullable().optional(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:94:  stage: z.string(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:95:  status: z.string(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:96:  broker: z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:97:    name: z.string().nullable(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:98:    email: z.string().nullable(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:99:    company: z.string().nullable(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:100:    phone: z.string().nullable(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:102:  company_info: z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:103:    sector: z.string().nullable().optional(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:106:  metadata: z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:107:    priority: z.string().nullable().optional(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:112:    nda_status: z.string().nullable().optional(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:115:  state_machine: z.object({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:116:    current_stage: z.string(),

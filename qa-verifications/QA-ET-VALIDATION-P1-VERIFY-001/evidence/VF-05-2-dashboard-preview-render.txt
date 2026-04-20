@@ -1,0 +1,39 @@
+=== VF-05.2 DASHBOARD PREVIEW RENDER ===
+56:  getQuarantinePreview,
+128:  const [preview, setPreview] = useState<QuarantinePreview | null>(null);
+129:  const [previewLoading, setPreviewLoading] = useState(false);
+130:  const [previewError, setPreviewError] = useState<string | null>(null);
+208:  // ── Selected item & preview ───────────────────────────────────────────────
+234:      const data = await getQuarantinePreview(itemId);
+236:      if (!data) setPreviewError('Preview not found');
+239:      setPreviewError(err instanceof Error ? err.message : 'Failed to load preview');
+770:                    ? (selectedItem.display_subject || selectedItem.email_subject || selectedItem.subject || 'Email preview')
+788:                  <Button variant='outline' size='sm' onClick={() => setEscalateDialogOpen(true)} disabled={!preview || working}>
+791:                  <Button variant='destructive' size='sm' onClick={() => setRejectDialogOpen(true)} disabled={!preview || working}>
+794:                  <Button size='sm' onClick={() => { setApproveDialogOpen(true); setCorrections({}); setApproveNotes(''); }} disabled={!preview || working}>
+813:            ) : previewLoading ? (
+819:            ) : previewError ? (
+822:                <p className='text-sm'>{previewError}</p>
+828:            ) : !preview ? (
+831:                <p>No preview available</p>
+837:                  {selectedItem?.triage_summary && (
+839:                      {selectedItem.triage_summary}
+846:                    {preview.summary?.length ? (
+848:                        {preview.summary.map((s, idx) => <li key={idx}>{s}</li>)}
+860:                      { label: 'Company', value: selectedItem?.company_name || (preview.extracted_fields as Record<string, unknown>)?.company_guess },
+861:                      { label: 'Broker', value: selectedItem?.broker_name || (preview.extracted_fields as Record<string, unknown>)?.broker_email },
+862:                      { label: 'Asking price', value: (preview.extracted_fields as Record<string, unknown>)?.asking_price },
+863:                      { label: 'Thread', value: preview.thread_id || selectedItem?.source_thread_id },
+897:                    {renderLinkGroups(preview)}
+905:                    {renderAttachments(preview)}
+920:                        ? ((preview.email as Record<string, unknown>)?.body as string || selectedItem?.email_body_snippet || '\u2014')
+921:                        : (selectedItem?.email_body_snippet || (preview.email as Record<string, unknown>)?.body_snippet as string || '\u2014')}
+989:          {selectedItem && preview && (
+998:                  const original = String((preview.extracted_fields as Record<string, unknown>)?.[key] ?? '');
+1037:                {preview.summary?.length ? (
+1041:                      {preview.summary.slice(0, 3).map((s, i) => <li key={i}>{s}</li>)}
+1170:function renderLinkGroups(preview: QuarantinePreview) {
+1171:  const groups = (preview.links as Record<string, unknown>)?.groups as Record<string, Array<Record<string, unknown>>> | undefined;
+1172:  const stats = (preview.links as Record<string, unknown>)?.stats as { total_raw?: number; unique_count?: number; duplicates_removed?: number } | undefined;
+1241:function renderAttachments(preview: QuarantinePreview) {
+1242:  const att = (preview.attachments as Record<string, unknown>)?.items as Array<Record<string, unknown>> | undefined;

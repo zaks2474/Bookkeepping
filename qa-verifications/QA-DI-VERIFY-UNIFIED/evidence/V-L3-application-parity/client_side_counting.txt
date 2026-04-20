@@ -1,0 +1,133 @@
+=== V-L3.3: Client-Side Counting Search ===
+Date: 2026-02-09T04:54:12Z
+
+--- Search for .filter.*stage patterns ---
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:332:    const counts: Record<string, number> = { all: actions.length };
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:525:    if (selectedIds.size === filteredActions.length) {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:678:          {capabilities.length > 0 && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:1010:              ) : filteredActions.length === 0 ? (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:1033:                      checked={selectedIds.size === filteredActions.length && filteredActions.length > 0}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:1036:                    <span>Select All ({filteredActions.length})</span>
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:1259:                }).length} action(s) will be {showClearConfirm?.operation === 'archive' ? 'archived' : 'deleted'}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:255:          if (backendSession && backendSession.messages.length > 0) {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:286:      if (stored && stored.messages.length > 0) {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:312:    if (isInitialized && messages.length > 0) {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:523:          if (warnings.length > 0) {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:788:          {messages.length > 0 && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:790:              {messages.length} messages
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:901:            {messages.length === 0 ? (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1016:              messageCount={messages.length}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1070:        {message.citations && message.citations.length > 0 && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1074:              {message.citations.length} citation(s)
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1109:        {message.proposals && message.proposals.length > 0 && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1386:                {i < phases.length - 1 && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1410:      {history.length > 1 && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1414:            {history.length} steps
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:1649:      {progressHistory.length > 0 && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:374:              ) : filteredEvents.length === 0 ? (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:430:          ) : filteredRuns.length === 0 ? (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:122:    if (items.length === 0) {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:239:    if (deleteTargetIds.length === 0) {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:247:      if (deleteTargetIds.length === 1) {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:266:        deleteTargetIds.length === 1
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:268:          : `Removed ${deleteTargetIds.length} items from quarantine`
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:317:              {items.length > 0 && (() => {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:321:                }).length;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:322:                const allVisibleSelected = items.length > 0 && selectedVisible === items.length;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:323:                const someVisibleSelected = selectedVisible > 0 && selectedVisible < items.length;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:356:              {loading ? 'Loading…' : `${items.length} item${items.length === 1 ? '' : 's'} pending approval`}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:387:            ) : items.length === 0 ? (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:557:                    {preview.summary?.length ? (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:612:                      const hasAny = groups && Object.values(groups).some(v => Array.isArray(v) && v.length > 0);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:641:                            if (!Array.isArray(links) || links.length === 0) return null;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:653:                                    {links.length}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:685:                                    {links.length > 12 && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:687:                                        + {links.length - 12} more…
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:707:                      if (!att || att.length === 0) return <p className='text-sm text-muted-foreground'>No attachments</p>;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/quarantine/page.tsx:759:              {deleteTargetIds.length === 1 ? 'Delete quarantine item?' : `Delete ${deleteTargetIds.length} quarantine items?`}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:65:    pending_actions: pendingActions.length,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:66:    quarantine_pending: quarantineItems.length,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:434:                Actions {actions.length > 0 ? `(${actions.length})` : ''}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:441:                Materials {materials?.correspondence?.length ? `(${materials.correspondence.length})` : ''}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:444:              <TabsTrigger value='events'>Events ({events.length})</TabsTrigger>
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:575:                  {actions.length === 0 ? (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:601:                  {actions.length > 0 && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:640:                    if (pipelineActions.length === 0) {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:653:                    const completedCount = pipelineActions.filter(a => a.status === 'completed').length;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:654:                    const pendingCount = pipelineActions.filter(a => a.status === 'ready' || a.status === 'pending_approval').length;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:655:                    const failedCount = pipelineActions.filter(a => a.status === 'failed').length;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:686:                              const hasOutputs = Object.keys(outputs).length > 0;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:726:                                                  displayValue = value.length > 100 ? value.slice(0, 100) + '...' : value;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:728:                                                  displayValue = `[${value.length} items]`;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:730:                                                  displayValue = JSON.stringify(value).slice(0, 100) + (JSON.stringify(value).length > 100 ? '...' : '');
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:793:                        const primaryCount = aggLinks?.summary?.primary_count || (Array.isArray(aggLinks?.primary_links) ? aggLinks.primary_links.length : 0);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:794:                        const trackingCount = aggLinks?.summary?.tracking_count || (Array.isArray(aggLinks?.tracking_links) ? aggLinks.tracking_links.length : 0);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:800:                              Bundles: <strong>{corr.length}</strong>
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:808:                            {pending.length > 0 && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:811:                                {pending.length} pending-auth
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:814:                            {attachments.length > 0 && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:816:                                Attachments: <strong>{attachments.length}</strong>
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:826:                      {Array.isArray(materials.pending_auth) && materials.pending_auth.length > 0 && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:856:                            {materials.pending_auth.length > 25 && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:857:                              <div className='text-xs text-muted-foreground'>+ {materials.pending_auth.length - 25} more…</div>
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:874:                          const totalLinks = primaryLinks.length + trackingLinks.length + socialLinks.length + unsubscribeLinks.length;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:885:                                  {primaryLinks.length} primary
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:887:                                {trackingLinks.length > 0 && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:889:                                    {trackingLinks.length} tracking (hidden)
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:892:                                {socialLinks.length > 0 && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:894:                                    {socialLinks.length} social
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:897:                                {unsubscribeLinks.length > 0 && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:899:                                    {unsubscribeLinks.length} unsubscribe
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:910:                              {primaryLinks.length > 0 && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:913:                                    Primary Links ({primaryLinks.length})
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:935:                                    {primaryLinks.length > 15 && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:936:                                      <div className='text-xs text-muted-foreground'>+ {primaryLinks.length - 15} more…</div>
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:943:                              {trackingLinks.length > 0 && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:947:                                    Show {trackingLinks.length} tracking links
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:956:                                      {trackingLinks.length > 20 && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:957:                                        <div className='text-xs text-muted-foreground'>+ {trackingLinks.length - 20} more…</div>
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:965:                              {socialLinks.length > 0 && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:969:                                    Show {socialLinks.length} social links
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:991:                              {unsubscribeLinks.length > 0 && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:995:                                    Show {unsubscribeLinks.length} unsubscribe links
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:1018:                        {Array.isArray(materials.correspondence) && materials.correspondence.length > 0 ? (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:1033:                                        {Array.isArray(b.attachments) && b.attachments.length > 0 && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:1035:                                            {b.attachments.length} attachment{b.attachments.length === 1 ? '' : 's'}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:1038:                                        {Array.isArray((b.links as any)?.all) && (b.links as any).all.length > 0 && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:1040:                                            {(b.links as any).all.length} link{(b.links as any).all.length === 1 ? '' : 's'}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:1053:                                  {Array.isArray(b.attachments) && b.attachments.length > 0 && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:1076:                                  {Array.isArray((b.links as any)?.all) && (b.links as any).all.length > 0 && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:1092:                                        {(b.links as any).all.length > 12 && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:1094:                                            + {(b.links as any).all.length - 12} more…
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:1123:                                      {linkType.replace(/_/g, ' ')} ({(links as MaterialLink[]).length})
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:1138:                                      {(links as MaterialLink[]).length > 8 && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:1139:                                        <div className='text-xs text-muted-foreground'>+ {(links as MaterialLink[]).length - 8} more…</div>
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:1193:                    {events.length} event{events.length !== 1 ? 's' : ''} recorded
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:1197:                  {events.length === 0 ? (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:1248:              {allowedTransitions.length === 0 ? (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:1281:              {actions.length === 0 ? (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:1312:                    {actions.length > 5 && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/[id]/page.tsx:1314:                        +{actions.length - 5} more
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx:216:    if (deleteTargetIds.length === 0) {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx:230:      if (deleteTargetIds.length === 1) {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx:244:        deleteTargetIds.length === 1
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx:246:          : `Deleted (archived) ${deleteTargetIds.length} deals`
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx:395:              {sortedDeals.length} Deal{sortedDeals.length !== 1 ? 's' : ''}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx:427:          ) : sortedDeals.length === 0 ? (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx:440:                        const selectedVisible = sortedDeals.filter(d => selectedDealIds.has(d.deal_id)).length;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx:441:                        const allVisibleSelected = sortedDeals.length > 0 && selectedVisible === sortedDeals.length;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx:442:                        const someVisibleSelected = selectedVisible > 0 && selectedVisible < sortedDeals.length;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx:607:              {deleteTargetIds.length === 1 ? 'Delete deal?' : `Delete ${deleteTargetIds.length} deals?`}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/page.tsx:125:    ? deals.filter(d => d.stage === selectedStage)
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/page.tsx:129:  const pendingApprovals = dueActions.filter(a => a.status === 'pending_approval');
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/page.tsx:130:  const scheduledActions = dueActions.filter(a => a.status === 'queued' || a.status === 'ready');
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/page.tsx:160:            className={pendingApprovals.length > 0 ? 'border-amber-500' : ''}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/page.tsx:163:            {pendingApprovals.length > 0 && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/page.tsx:165:                {pendingApprovals.length}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/page.tsx:209:                    {deals.length} active deals across {STAGE_ORDER.filter(s => stageCounts[s] > 0).length} stages
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/page.tsx:268:                    {filteredDeals.length} deal{filteredDeals.length !== 1 ? 's' : ''}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/page.tsx:288:                ) : filteredDeals.length === 0 ? (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/page.tsx:325:                    {filteredDeals.length > 10 && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/page.tsx:327:                        +{filteredDeals.length - 10} more deals
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/page.tsx:389:          {alerts.length > 0 && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/page.tsx:395:                  <Badge variant='destructive'>{alerts.length}</Badge>

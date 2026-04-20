@@ -1,0 +1,10 @@
+272:    source_type: str | None = None  # manual, email_sync, langsmith_shadow, langsmith_production
+1381:    source_type: str | None = Query(None, description="Filter by source_type (e.g. email, langsmith_shadow)"),
+1401:    if source_type:
+1402:        conditions.append(f"q.source_type = ${param_idx}")
+1403:        params.append(source_type)
+1513:    # P4-07: source_type from body takes priority, then header, then default
+1514:    source_type = item.source_type or request.headers.get("X-Source-Type") or "email"
+1559:                 correlation_id, source_type)
+1575:            correlation_id, source_type,
+1784:                        'source_type': item.get('source_type', 'email'),

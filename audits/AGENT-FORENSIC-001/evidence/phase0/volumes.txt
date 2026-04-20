@@ -1,0 +1,18 @@
+[
+    {
+        "Type": "bind",
+        "Source": "/home/zaks/zakops-agent-api/apps/agent-api/app",
+        "Destination": "/app/app",
+        "Mode": "rw",
+        "RW": true,
+        "Propagation": "rprivate"
+    },
+    {
+        "Type": "bind",
+        "Source": "/home/zaks/zakops-agent-api/apps/agent-api/logs",
+        "Destination": "/app/logs",
+        "Mode": "rw",
+        "RW": true,
+        "Propagation": "rprivate"
+    }
+]

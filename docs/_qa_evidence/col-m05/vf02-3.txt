@@ -1,0 +1,5 @@
+            "ghost_facts", "stage_notes", "entities",
+                       "open_items", "ghost_facts", "stage_notes",
+            from .ghost_knowledge_detector import ghost_knowledge_detector
+            ghost_flags = await ghost_knowledge_detector.detect(
+                brain = await ghost_knowledge_detector.store_ghosts(deal_id, ghost_flags)

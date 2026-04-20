@@ -1,0 +1,206 @@
+================================================================================
+RT-1: TRANSITION FUNCTION REALITY
+================================================================================
+Searched for: "def transition_deal_state|def change_deal_state|def deal_state_transition"
+Result: No exact matches for those function names.
+
+However, the actual transition functions exist under different names:
+- src/core/deals/workflow.py:105: async def transition_stage() — MAIN transition logic
+- src/api/orchestration/routers/workflow.py:65: async def transition_deal_stage() — API router
+- src/core/agent/deal_tools.py:237: async def transition_deal_tool() — Agent tool
+- src/core/agent/actions.py:288: async def _execute_transition_stage() — Action executor
+- src/core/agent/deal_api_client.py:401: async def transition_deal() — API client
+
+The transition_stage() method in workflow.py contains REAL SQL logic:
+- Idempotency check via deal_events table with idempotency_key
+- Stage validation using DealStage enum and STAGE_TRANSITIONS mapping
+- UPDATE zakops.deals SET stage = $2, updated_at = $3 WHERE deal_id = $1
+- INSERT into zakops.deal_transitions ledger for audit
+- Outbox write for side-effects (folder triggers, RAG, notifications)
+- Event recording with full payload
+
+VERDICT: PASS — Real SQL transition logic, not stubs.
+
+================================================================================
+RT-2: CHECK CONSTRAINT REALITY
+================================================================================
+Two CHECK constraints found on zakops.deals:
+
+1. Stage enum constraint:
+   CHECK (((stage)::text = ANY ((ARRAY['inbound', 'screening', 'qualified', 'loi',
+   'diligence', 'closing', 'portfolio', 'junk', 'archived'])::text[])))
+
+2. Lifecycle FSM constraint:
+   CHECK (
+     ((status='active' AND stage NOT IN ('archived','junk') AND deleted=false) OR
+      (status='archived' AND stage IN ('archived','junk') AND deleted=false) OR
+      (status='deleted' AND deleted=true))
+   )
+
+VERDICT: PASS — Both constraints are real and enforce state invariants.
+
+================================================================================
+RT-3: TRIGGER REALITY
+================================================================================
+Two triggers found on zakops.deals:
+
+1. deals_updated_at — BEFORE UPDATE, EXECUTE FUNCTION update_timestamp()
+2. enforce_deal_lifecycle_trigger — BEFORE INSERT OR UPDATE, EXECUTE FUNCTION enforce_deal_lifecycle()
+
+The enforce_deal_lifecycle() function:
+- Auto-corrects status to 'archived' when stage is 'archived'/'junk' and status is 'active'
+- Auto-corrects status to 'deleted' when deleted=true
+- Raises EXCEPTION if status='active' and stage IN ('archived','junk') (after auto-correct)
+
+VERDICT: PASS — Triggers are real and functional.
+
+================================================================================
+RT-5: STAGE CONFIG REALITY
+================================================================================
+No dedicated "canonical stage config" file found in dashboard/src/config/.
+
+Stage definitions come from:
+- Generated types (api-types.generated.ts): Stage enum literals inline:
+  "inbound" | "screening" | "qualified" | "loi" | "diligence" | "closing" | "portfolio" | "junk" | "archived"
+- Multiple files reference stage (41 files found with "stage" references)
+- PIPELINE_STAGES constant used in hq/page.tsx
+- Stage enum from generated types used in DealBoard, PipelineOverview, etc.
+
+The canonical source is the OpenAPI spec → generated types, not a separate config file.
+Files importing stage info: 41 files reference "stage" in TS/TSX.
+
+VERDICT: PASS (with note) — Stage config is derived from generated OpenAPI types, not a separate canonical config. This is consistent with the codegen-first architecture.
+
+================================================================================
+RT-7: ERROR BOUNDARY REALITY
+================================================================================
+ErrorBoundary component exists at:
+  /home/zaks/zakops-agent-api/apps/dashboard/src/components/ErrorBoundary.tsx
+
+Full implementation:
+- Class component extending React.Component
+- getDerivedStateFromError, componentDidCatch
+- handleReset for recovery
+- Renders fallback prop or default error UI with retry button
+
+Next.js error.tsx files (framework-level error boundaries):
+- src/app/quarantine/error.tsx
+- src/app/hq/error.tsx
+- src/app/deals/error.tsx
+- src/app/dashboard/error.tsx
+
+Note: The ErrorBoundary component is exported but NOT imported by any other file.
+The app uses Next.js error.tsx files as the primary error boundary mechanism.
+
+VERDICT: PASS — ErrorBoundary exists as a real component (not stub), and 4 error.tsx files provide Next.js-level error boundaries for key routes.
+
+================================================================================
+RT-8: allSettled RESULT HANDLING
+================================================================================
+Promise.allSettled used in 4 files:
+
+1. src/app/actions/page.tsx:185 — 2 promises
+2. src/app/hq/page.tsx:29 — 4 promises (getPipeline, getKineticActions, getQuarantineQueue, getAgentActivity)
+3. src/app/deals/[id]/page.tsx:125 — 5 promises
+4. src/app/dashboard/page.tsx:67 — 5+ promises
+
+Result handling pattern (hq/page.tsx example):
+  if (results[0].status === 'fulfilled') setPipelineData(results[0].value);
+  else console.error('Failed to load pipeline:', results[0].reason);
+  if (results[1].status === 'fulfilled') setPendingActions(results[1].value);
+  else console.error('Failed to load actions:', results[1].reason);
+  ... (each result checked individually)
+
+VERDICT: PASS — Results are properly checked with status === 'fulfilled' guards and error logging for rejected promises.
+
+================================================================================
+RT-9: DSN GATE REALITY
+================================================================================
+Found in /home/zaks/zakops-backend/src/api/orchestration/main.py:
+
+Lines 343-390:
+  CANONICAL_DB_NAME = "zakops"
+  CANONICAL_DB_USER = "zakops"
+
+  In lifespan():
+    # LAYER 1 — Startup DSN verification gate
+    async with db_pool.acquire() as conn:
+        db_info = await conn.fetchrow(
+            "SELECT current_database() AS dbname, current_user AS dbuser, "
+            "inet_server_addr() AS host, inet_server_port() AS port"
+        )
+        actual_db = db_info["dbname"]
+        actual_user = db_info["dbuser"]
+        print(f"DSN gate check: db={actual_db}, user={actual_user}")
+        if actual_db != CANONICAL_DB_NAME:
+            await db_pool.close()
+            raise RuntimeError(
+                f"STARTUP GATE FAILURE: Connected to database '{actual_db}' "
+                f"but canonical database is '{CANONICAL_DB_NAME}'. "
+                f"Refusing to start. Fix DATABASE_URL to point to the canonical DB."
+            )
+        # Store DB identity for health endpoint
+        app.state.db_identity = { ... }
+    print(f"DSN gate PASSED: {app.state.db_identity}")
+
+VERDICT: PASS — Real startup gate that validates DB name at boot and refuses to start if wrong.
+
+================================================================================
+RT-10: HEALTH ENDPOINT DB IDENTITY
+================================================================================
+Found in /home/zaks/zakops-backend/src/api/shared/routers/health.py:
+
+GET /health returns:
+  {
+    "status": "healthy",
+    "database": db_identity or {"error": "not initialized"},
+    ...
+  }
+
+Where db_identity is set during startup (see RT-9):
+  app.state.db_identity = {
+    "dbname": actual_db,
+    "user": actual_user,
+    "host": str(db_info["host"]) if db_info["host"] else "unix-socket",
+    "port": int(db_info["port"]) if db_info["port"] else 5432,
+  }
+
+VERDICT: PASS — Health endpoint reports actual DB identity including dbname, user, host, port.
+
+================================================================================
+RT-16: sync-all-types REALITY
+================================================================================
+Found in Makefile line 353:
+
+  sync-all-types: sync-types sync-backend-models sync-agent-types sync-rag-models
+
+This chains 4 codegen targets:
+- sync-types: Backend OpenAPI → TypeScript (api-types.generated.ts)
+- sync-backend-models: Backend OpenAPI → Python models
+- sync-agent-types: Agent OpenAPI → TypeScript (agent-api-types.generated.ts)
+- sync-rag-models: RAG OpenAPI → Python models
+
+VERDICT: PASS — Real composite target that regenerates all 4 type surfaces.
+
+================================================================================
+RT-17: CONTRACT SYNC RECENT COMMIT
+================================================================================
+File: apps/dashboard/src/lib/api-types.generated.ts
+- File EXISTS on disk (5502 lines, 158295 bytes)
+- File is .gitignored — no git history expected
+- File is regenerated by `make sync-types` from committed OpenAPI spec
+
+This is by design: generated files should NOT be committed.
+The committed source-of-truth is packages/contracts/openapi/zakops-api.json.
+
+VERDICT: PASS — File is correctly .gitignored and regenerated from committed spec.
+
+================================================================================
+RT-19: COLUMN NAMES
+================================================================================
+14 columns in zakops.deals:
+  deal_id, canonical_name, display_name, folder_path, stage, status,
+  identifiers, company_info, broker, metadata, deleted, created_at,
+  updated_at, audit_trail
+
+VERDICT: PASS — Columns match expected schema.

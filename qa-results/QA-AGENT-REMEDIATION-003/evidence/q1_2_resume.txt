@@ -1,0 +1,12 @@
+=== Q1.2: Resume API Pattern ===
+--- Search for OLD pattern (interrupt_resume) ---
+
+
+--- Search for NEW pattern (Command(resume=...)) ---
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:631:            # Resume with approval granted using Command(resume=...)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:634:                Command(resume={"approved": True, "approval_id": approval_id}),
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:715:            # Resume with rejection using Command(resume=...)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:717:                Command(resume={"approved": False, "reason": rejection_reason}),
+
+Old pattern (interrupt_resume): 0 (must be 0)
+New pattern (Command(resume=)): 4 (must be >0)

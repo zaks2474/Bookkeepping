@@ -1,0 +1,18 @@
+=== XC-3 MANIFEST VS FILESYSTEM ===
+-rw-r--r-- 1 zaks zaks 208786 Feb 10 07:07 /home/zaks/zakops-agent-api/packages/contracts/openapi/zakops-api.json
+-rw-r--r-- 1 zaks zaks 73612 Feb  6 14:38 /home/zaks/zakops-agent-api/packages/contracts/openapi/agent-api.json
+-rw-r--r-- 1 zaks zaks 7053 Feb  6 14:42 /home/zaks/zakops-agent-api/packages/contracts/openapi/rag-api.json
+-rw-r--r-- 1 zaks zaks 8528 Feb  6 14:51 /home/zaks/zakops-agent-api/packages/contracts/mcp/tool-schemas.json
+-rw-r--r-- 1 zaks zaks 3895 Feb  6 17:35 /home/zaks/zakops-agent-api/packages/contracts/openapi/agent-events.schema.json
+1019:## Contract Surfaces (9 Total — Hybrid Guardrail)
+1020:- S1 Backend → Dashboard: present (208786 bytes)
+1021:- S2 Backend → Agent SDK: present (208786 bytes)
+1022:- S3 Agent OpenAPI: present (73612 bytes)
+1023:- S4 Agent → Dashboard: present (73612 bytes)
+1024:- S5 RAG → Backend SDK: present (7053 bytes)
+1025:- S6 MCP Tools: present (8528 bytes)
+1026:- S7 SSE Events: present (3895 bytes)
+1031:- Dashboard Backend Types: present (6316 lines)
+1032:- Dashboard Agent Types: present (2229 lines)
+1033:- Agent Backend SDK: present (827 lines)
+1034:- Backend RAG SDK: present (32 lines)

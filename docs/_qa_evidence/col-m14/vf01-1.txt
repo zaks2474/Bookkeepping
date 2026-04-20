@@ -1,0 +1,7 @@
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/brain_extraction.py:5:Extracts facts, risks, decisions, ghost knowledge from conversation turns.
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/brain_extraction.py:34:        contradictions, ghost_knowledge, entities, should_update_summary
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/brain_extraction.py:49:        "ghost_knowledge": [],
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/brain_extraction.py:178:            result["ghost_knowledge"].append({
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/brain_extraction.py:193:            result["ghost_knowledge"].append({
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/brain_extraction.py:268:            ghost=len(extraction.get("ghost_knowledge", [])),
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/brain_extraction.py:309:        for key in ["new_facts", "new_risks", "new_decisions", "ghost_knowledge"]

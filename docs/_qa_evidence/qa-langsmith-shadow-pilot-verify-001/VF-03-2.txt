@@ -1,0 +1,3 @@
+429:    # Warn loudly if ZAKOPS_API_KEY is not set (injection paths will 503 at runtime)
+434:            "STARTUP WARNING: ZAKOPS_API_KEY is not set — "
+435:            "injection paths (/api/quarantine) will return 503 (fail-closed). "

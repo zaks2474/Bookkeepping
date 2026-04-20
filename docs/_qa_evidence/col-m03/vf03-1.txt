@@ -1,0 +1,27 @@
+53:        chat_request: The chat request containing messages.
+66:            message_count=len(chat_request.messages),
+69:        result = await agent.get_response(chat_request.messages, session.id, user_id=session.user_id)
+73:        return ChatResponse(messages=result)
+90:        chat_request: The chat request containing messages.
+103:            message_count=len(chat_request.messages),
+119:                        chat_request.messages, session.id, user_id=session.user_id
+151:@router.get("/messages", response_model=ChatResponse)
+152:@limiter.limit(settings.RATE_LIMIT_ENDPOINTS["messages"][0])
+153:async def get_session_messages(
+157:    """Get all messages for a session.
+164:        ChatResponse: All messages in the session.
+167:        HTTPException: If there's an error retrieving the messages.
+170:        messages = await agent.get_chat_history(session.id)
+171:        return ChatResponse(messages=messages)
+173:        logger.error("get_messages_failed", session_id=session.id, error=str(e), exc_info=True)
+177:@router.delete("/messages")
+178:@limiter.limit(settings.RATE_LIMIT_ENDPOINTS["messages"][0])
+183:    """Clear all messages for a session.
+285:@router.get("/threads/{thread_id}/messages")
+286:async def get_thread_messages(
+293:    """Get messages for a specific thread with cursor pagination.
+295:    COL-DESIGN-SPEC-V2 Section 3.5: GET /api/v1/chatbot/threads/{id}/messages
+300:        messages, has_more = await chat_repository.get_messages(
+306:            "messages": [m.to_dict() for m in messages],
+312:        logger.error("get_thread_messages_failed", thread_id=thread_id, error=str(e), exc_info=True)
+313:        raise HTTPException(status_code=500, detail="Failed to get messages")

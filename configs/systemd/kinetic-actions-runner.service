@@ -1,0 +1,37 @@
+[Unit]
+Description=Kinetic Actions Runner (ZakOps Deal Lifecycle)
+After=network.target
+Documentation=file:///home/zaks/bookkeeping/docs/ACTIONS-E2E-IMPLEMENTATION-PLAN.md
+
+[Service]
+Type=simple
+User=zaks
+Group=zaks
+WorkingDirectory=/home/zaks/scripts
+Environment=PYTHONPATH=/home/zaks/scripts:/home/zaks/Zaks-llm/src
+Environment=DATAROOM_ROOT=/home/zaks/DataRoom
+Environment=ZAKOPS_STATE_DB=/home/zaks/DataRoom/.deal-registry/ingest_state.db
+Environment=ZAKOPS_ACTION_PROCESSING_TTL_SECONDS=600
+Environment=ZAKOPS_TOOL_GATEWAY_ENABLED=true
+Environment=ZAKOPS_TOOL_ALLOWLIST=gmail__send_email,gmail__get_or_create_label,gmail__modify_email,gmail__search_emails,gmail__read_email,gmail__download_attachment
+Environment=GMAIL_MCP_CREDENTIALS_PATH=/home/zaks/.gmail-mcp/credentials.json
+Environment="GMAIL_MCP_COMMAND=npx -y @gongrzhe/server-gmail-autoauth-mcp"
+
+ExecStart=/usr/bin/python3 /home/zaks/scripts/actions_runner.py \
+    --runner-name=kinetic_actions \
+    --lease-seconds=30 \
+    --poll-seconds=2.0 \
+    --action-lock-seconds=300
+
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=kinetic-actions-runner
+
+# Security hardening (relaxed for DataRoom access)
+NoNewPrivileges=true
+ProtectSystem=false
+
+[Install]
+WantedBy=multi-user.target

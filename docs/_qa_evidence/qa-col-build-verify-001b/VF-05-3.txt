@@ -1,0 +1,3 @@
+45:const COMMON_PHRASES = new Set([
+83:  // Proper nouns (multi-word capitalized, min 2 words, filter common phrases)
+86:    if (!seen.has(val) && !COMMON_PHRASES.has(val) && val.length >= 4) {

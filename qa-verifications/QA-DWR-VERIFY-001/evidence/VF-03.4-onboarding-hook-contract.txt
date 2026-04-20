@@ -1,0 +1,37 @@
+=== VF-03.4 ONBOARDING STATE HOOK CONTRACT ===
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/useOnboardingState.ts:18:  resetOnboarding,
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/useOnboardingState.ts:19:  migrateFromLocalStorage,
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/useOnboardingState.ts:97:  setCurrentStep: (step: number) => void;
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/useOnboardingState.ts:99:  reset: () => void;
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/useOnboardingState.ts:102:  markComplete: () => void;
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/useOnboardingState.ts:119:    migrateFromLocalStorage().then((didMigrate) => {
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/useOnboardingState.ts:147:  const resetMutation = useMutation({
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/useOnboardingState.ts:148:    mutationFn: resetOnboarding,
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/useOnboardingState.ts:157:  const displayStep = hasResumed ? (viewStep ?? status.current_step) : viewStep;
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/useOnboardingState.ts:173:  // Legacy-compatible setCurrentStep
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/useOnboardingState.ts:174:  const setCurrentStep = useCallback(
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/useOnboardingState.ts:177:      if (step > displayStep) {
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/useOnboardingState.ts:180:        patchMutation.mutate({ current_step: step });
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/useOnboardingState.ts:183:    [displayStep, patchMutation],
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/useOnboardingState.ts:189:    setViewStep(status.current_step);
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/useOnboardingState.ts:190:  }, [status.current_step]);
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/useOnboardingState.ts:210:  // Legacy-compatible reset — truly resets backend + local state
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/useOnboardingState.ts:211:  const reset = useCallback(() => {
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/useOnboardingState.ts:214:    resetMutation.mutate();
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/useOnboardingState.ts:215:  }, [resetMutation]);
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/useOnboardingState.ts:217:  // Legacy-compatible markComplete
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/useOnboardingState.ts:218:  const markComplete = useCallback(() => {
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/useOnboardingState.ts:223:    currentStep: displayStep,
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/useOnboardingState.ts:224:    backendStep: status.current_step,
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/useOnboardingState.ts:227:    setCurrentStep,
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/useOnboardingState.ts:229:    reset,
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/useOnboardingState.ts:231:    markComplete,
+/home/zaks/zakops-agent-api/apps/dashboard/src/hooks/useOnboardingState.ts:236:    isPending: patchMutation.isPending || resetMutation.isPending,
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/onboarding/onboarding-api.ts:22:  current_step: number;
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/onboarding/onboarding-api.ts:33:  current_step?: number;
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/onboarding/onboarding-api.ts:45:  current_step: 0,
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/onboarding/onboarding-api.ts:82:export async function resetOnboarding(): Promise<OnboardingStatus> {
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/onboarding/onboarding-api.ts:83:  const res = await fetch('/api/onboarding/reset', {
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/onboarding/onboarding-api.ts:87:    throw new Error(`Failed to reset onboarding: ${res.status}`);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/onboarding/onboarding-api.ts:98:export async function migrateFromLocalStorage(): Promise<boolean> {
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/onboarding/onboarding-api.ts:123:      patch.current_step = Math.min(progress.currentStep ?? 0, 3);

@@ -1,0 +1,8 @@
+transport=sse
+transport_switch=Change transport='sse' to 'streamable-http' in create_app() for /mcp
+=== Health check uses DEAL_API_URL variable ===
+47:DEAL_API_URL = os.getenv("ZAKOPS_DEAL_API_URL", "http://localhost:8091")
+364:            resp = client.get(f"{DEAL_API_URL}/api/deals")
+406:            resp = client.get(f"{DEAL_API_URL}/api/deals/{deal_id}")
+643:                f"{DEAL_API_URL}/api/actions/quarantine",
+716:                f"{DEAL_API_URL}/api/quarantine",

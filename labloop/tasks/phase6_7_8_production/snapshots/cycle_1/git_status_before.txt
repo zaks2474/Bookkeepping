@@ -1,0 +1,10 @@
+ M scripts/bring_up_tests.sh
+ M scripts/phase0_phase1_gates.sh
+?? app/core/cost_tracking.py
+?? app/core/routing.py
+?? app/services/rag_rest.py
+?? evals/datasets/
+?? evals/retrieval_eval.py
+?? evals/tool_accuracy_eval.py
+?? scripts/no_split_brain_scan.sh
+?? scripts/phase2_4_5_gates.sh

@@ -1,0 +1,30 @@
+=== V-L3.11: Pipeline Summary from API ===
+Date: 2026-02-09T04:54:27Z
+
+[
+    {
+        "stage": "inbound",
+        "count": 21,
+        "avg_days_in_stage": 2.5
+    },
+    {
+        "stage": "screening",
+        "count": 7,
+        "avg_days_in_stage": 3.9
+    },
+    {
+        "stage": "qualified",
+        "count": 1,
+        "avg_days_in_stage": 0.0
+    },
+    {
+        "stage": "loi",
+        "count": 1,
+        "avg_days_in_stage": 0.0
+    },
+    {
+        "stage": "diligence",
+        "count": 1,
+        "avg_days_in_stage": 5.0
+    }
+]

@@ -1,0 +1,20 @@
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/brain_extraction.py:64:            "confidence": 0.7,
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/brain_extraction.py:77:            "confidence": 0.7,
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/drift_detection.py:103:def compute_decay_confidence(fact: dict, now: Optional[datetime] = None) -> float:
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/drift_detection.py:137:        decayed = base_confidence * math.exp(-decay_rate * days_since)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/httpcore/__init__.py:134:__version__ = "1.0.7"
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/messages/content.py:66:            "openai_metadata": {"model": "gpt-4", "temperature": 0.7},
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/embeddings/fake.py:38:        [-0.700234640213188, -0.581266257710429, -1.1328482266445354]
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/embeddings/fake.py:93:        [-0.700234640213188, -0.581266257710429, -1.1328482266445354]
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/zstandard/backend_cffi.py:2826:       0 means default (0.75), 1.0 when all samples are used for both training
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langgraph/graph/state.py:169:        # {'x': [0.5, 0.75]}
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langsmith/_expect.py:47:            expect.score(0.7, key="similarity").to_be_greater_than(0.7)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langsmith/_expect.py:402:            >>> expect.score(0.8, key="similarity").to_be_greater_than(0.7)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/opensearch_vector_search.py:787:        keyword_weight: float = 0.7,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/opensearch_vector_search.py:879:                                "parameters": {"weights": [0.7, 0.3]}
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/singlestoredb.py:597:                    vector_weight=0.7)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/singlestoredb.py:720:                    vector_weight=0.7)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/chat_models/writer.py:78:    temperature: float = 0.7
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/chat_models/perplexity.py:98:                Sampling temperature to use. Default is 0.7
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/chat_models/perplexity.py:121:                    temperature=0.7,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/chat_models/perplexity.py:173:    temperature: float = 0.7

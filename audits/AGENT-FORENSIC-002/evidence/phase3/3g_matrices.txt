@@ -1,0 +1,31 @@
+=== Phase 3 — LangGraph Path Verification ===
+Date: Tue Feb  3 02:15:35 UTC 2026
+Auditor: forensic-auditor
+
+Phase 3 steps complete
+
+Steps executed:
+  3.1  - Graph Source Inspection
+  3.2  - Path A: Chat -> END
+  3.3  - Path B: Chat -> tool_call -> Chat
+  3.4  - Path C: HITL Interrupt
+  3.5  - Path D: Approve -> Execute
+  3.6  - Path E: Reject -> END
+  3.7  - Idempotency: Double-Approve
+  3.8  - Non-Existent Approval
+  3.9  - Checkpoint Durability
+  3.10 - Approval Field Completeness
+  3.11 - Audit Log Coverage
+  3.12 - Final DB State
+  3.13 - Rejection SQL Proof
+  3.14 - Restart-Resume HITL
+  3.15 - Concurrent Double-Approve Race
+  3.16 - Approval Ownership Isolation
+
+Key forensic findings:
+  1. Two separate postgres containers exist (zakops-postgres-1 on port 5432, zakops-backend-postgres-1 internal)
+     Backend API uses zakops-postgres-1, not zakops-backend-postgres-1
+  2. Approve endpoint requires {actor_id} in body (422 without it)
+  3. transition_deal tool returned ok:true even when from_stage was wrong (proposal vs qualified)
+     and target stage 'due_diligence' is not in valid stage constraint (should be 'diligence')
+     Result: deal stage unchanged despite apparent success

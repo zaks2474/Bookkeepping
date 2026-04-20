@@ -1,0 +1,14 @@
+=== CHECK 4.7.1a: Create approval for Thread A ===
+Timestamp: 2026-02-03T13:16:38-06:00
+Thread A: forensic-003-multi-a-1770146198
+Deal ID: DL-CHAOS
+Target Stage: Qualification
+Idempotency Key: 1b85c0d05d52916d981357b67b5f86521f643920526300235b40201a20869123
+
+=== Inserting approval via direct DB (simulating agent invoke) ===
+                  id                  |            thread_id            | status  |                         idempotency_key                          
+--------------------------------------+---------------------------------+---------+------------------------------------------------------------------
+ 3d52c78e-780f-4d30-b30d-871ad8d29671 | forensic-003-multi-a-1770146198 | pending | 1b85c0d05d52916d981357b67b5f86521f643920526300235b40201a20869123
+(1 row)
+
+INSERT 0 1

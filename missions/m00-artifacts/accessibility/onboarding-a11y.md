@@ -1,0 +1,109 @@
+- generic [active] [ref=e1]:
+  - region "Notifications alt+T"
+  - main [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - button "Toggle Sidebar" [ref=e6]:
+          - img
+          - generic [ref=e7]: Toggle Sidebar
+        - navigation "breadcrumb" [ref=e8]:
+          - list [ref=e9]:
+            - link "Onboarding" [disabled] [ref=e10]
+      - generic [ref=e11]:
+        - button [ref=e28]:
+          - img
+        - button [ref=e12]:
+          - generic [ref=e14]:
+            - img
+        - button "Toggle theme" [ref=e15]:
+          - img
+          - generic [ref=e16]: Toggle theme
+    - generic [ref=e17]:
+      - generic [ref=e18]:
+        - heading "Welcome to ZakOps" [level=1] [ref=e19]
+        - paragraph [ref=e20]: Complete the setup to get started with your deal workflow
+      - generic [ref=e22]:
+        - generic [ref=e30]:
+          - generic [ref=e31]:
+            - button [ref=e244] [cursor=pointer]:
+              - img [ref=e34]
+            - button [disabled] [ref=e245]:
+              - img [ref=e38]
+            - button [disabled] [ref=e246]:
+              - img [ref=e43]
+            - button [disabled] [ref=e247]:
+              - img [ref=e48]
+            - button [disabled] [ref=e248]:
+              - img [ref=e54]
+            - button [disabled] [ref=e249]:
+              - img [ref=e59]
+          - progressbar [ref=e64]
+        - alert [ref=e66]:
+          - generic:
+            - generic [ref=e67]:
+              - img [ref=e68]
+              - generic [ref=e71]:
+                - text: "Welcome back! You were on step 4 of 6:"
+                - strong [ref=e72]: Meet Your Agent
+            - generic [ref=e73]:
+              - button "Resume" [ref=e74]
+              - button "Start Fresh" [ref=e75]
+              - button [ref=e76]:
+                - img
+        - generic [ref=e77]:
+          - generic [ref=e78]:
+            - generic [ref=e79]:
+              - img [ref=e80]
+              - text: Welcome
+            - generic [ref=e82]: Get started with ZakOps
+          - generic [ref=e84]:
+            - generic [ref=e85]:
+              - img [ref=e87]
+              - heading "Welcome to ZakOps" [level=2] [ref=e91]
+              - paragraph [ref=e92]: Your AI-powered deal lifecycle operating system. Let's get you set up in just a few minutes.
+            - generic [ref=e93]:
+              - button "Smart Email Triage Automatically sort and prioritize deal emails" [ref=e94] [cursor=pointer]:
+                - generic [ref=e95]:
+                  - img [ref=e96]
+                  - img [ref=e99]
+                - heading "Smart Email Triage" [level=3] [ref=e101]
+                - paragraph [ref=e102]: Automatically sort and prioritize deal emails
+              - button "AI-Powered Agent Get intelligent assistance for deal analysis" [ref=e103] [cursor=pointer]:
+                - generic [ref=e104]:
+                  - img [ref=e105]
+                  - img [ref=e109]
+                - heading "AI-Powered Agent" [level=3] [ref=e111]
+                - paragraph [ref=e112]: Get intelligent assistance for deal analysis
+              - button "Human-in-the-Loop You stay in control with approval workflows" [ref=e113] [cursor=pointer]:
+                - generic [ref=e114]:
+                  - img [ref=e115]
+                  - img [ref=e118]
+                - heading "Human-in-the-Loop" [level=3] [ref=e120]
+                - paragraph [ref=e121]: You stay in control with approval workflows
+              - button "Deal Pipeline Track deals from inbound to close" [ref=e122] [cursor=pointer]:
+                - generic [ref=e123]:
+                  - img [ref=e124]
+                  - img [ref=e130]
+                - heading "Deal Pipeline" [level=3] [ref=e132]
+                - paragraph [ref=e133]: Track deals from inbound to close
+            - paragraph [ref=e134]: Click any feature to learn more
+            - generic [ref=e135]:
+              - heading "What we'll set up:" [level=3] [ref=e136]
+              - list [ref=e137]:
+                - listitem [ref=e138]:
+                  - generic [ref=e139]: "1"
+                  - text: Connect your deal email inbox
+                - listitem [ref=e140]:
+                  - generic [ref=e141]: "2"
+                  - text: Meet your AI agent
+                - listitem [ref=e142]:
+                  - generic [ref=e143]: "3"
+                  - text: Set up notifications
+          - generic [ref=e145]:
+            - button "Skip Setup" [ref=e146]
+            - button "Continue" [ref=e147]:
+              - text: Continue
+              - img
+  - button "Open Next.js Dev Tools" [ref=e153] [cursor=pointer]:
+    - img [ref=e154]
+  - alert [ref=e157]

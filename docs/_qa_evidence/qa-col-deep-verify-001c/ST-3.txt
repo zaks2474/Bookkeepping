@@ -1,0 +1,8 @@
+=== Surface 9 use client check ===
+zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealBrain.tsx: 'use client';
+zakops-agent-api/apps/dashboard/src/components/dashboard/MorningBriefingCard.tsx: 'use client';
+zakops-agent-api/apps/dashboard/src/components/dashboard/AnomalyBadge.tsx: 'use client';
+zakops-agent-api/apps/dashboard/src/components/chat/CitationIndicator.tsx: 'use client';
+zakops-agent-api/apps/dashboard/src/components/chat/SmartPaste.tsx: 'use client';
+zakops-agent-api/apps/dashboard/src/components/chat/GhostKnowledgeToast.tsx: 'use client';
+Components not found are SKIP(not-implemented)

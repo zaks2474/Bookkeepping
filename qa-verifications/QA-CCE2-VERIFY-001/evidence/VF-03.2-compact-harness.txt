@@ -1,0 +1,13 @@
+=== VF-03.2 COMPACT HARNESS ===
+-rwxr-xr-x 1 zaks zaks 2381 Feb 11 13:02 /home/zaks/bookkeeping/scripts/tests/test-compact-recovery-json.sh
+=== test-compact-recovery-json ===
+STEP 1: Script executed (exit 0)
+STEP 2: Valid JSON
+STEP 3: hookSpecificOutput present
+STEP 4: hookEventName=SessionStart
+STEP 5: additionalContext non-empty (len=4427)
+STEP 6: All key path markers present
+STEP 7: Recent Changes marker present
+STEP 8: qualityAssertions present
+STEP 9: qualityAssertions.all_pass=true
+=== ALL CHECKS PASS ===

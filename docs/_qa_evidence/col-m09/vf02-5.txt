@@ -1,0 +1,11 @@
+apps/agent-api/app/core/langgraph/graph.py:415:                asyncio.create_task(cost_repository.record_cost(
+apps/agent-api/app/services/cost_repository.py:4:Replaces in-memory cost trackers with PostgreSQL cost_ledger table.
+apps/agent-api/app/services/cost_repository.py:22:    """Persistent cost ledger backed by PostgreSQL cost_ledger table."""
+apps/agent-api/app/services/cost_repository.py:29:    async def record_cost(
+apps/agent-api/app/services/cost_repository.py:49:                    INSERT INTO cost_ledger
+apps/agent-api/app/services/cost_repository.py:97:                text(f"SELECT COALESCE(SUM(cost_usd), 0) FROM cost_ledger {where}"),
+apps/agent-api/app/services/cost_repository.py:107:                    SELECT COALESCE(SUM(cost_usd), 0) FROM cost_ledger
+apps/agent-api/app/services/cost_repository.py:121:                    FROM cost_ledger
+apps/agent-api/app/services/chat_repository.py:227:                text("DELETE FROM cost_ledger WHERE thread_id = :thread_id"),
+apps/agent-api/app/services/chat_repository.py:446:    async def record_cost(
+apps/agent-api/app/services/chat_repository.py:465:                    INSERT INTO cost_ledger

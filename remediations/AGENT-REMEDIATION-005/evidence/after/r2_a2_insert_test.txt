@@ -1,0 +1,9 @@
+=== INSERT with valid event_type ===
+INSERT 0 1
+
+=== Verify row inserted ===
+                  id                  |    event_type    |          thread_id           
+--------------------------------------+------------------+------------------------------
+ abe34e93-395a-4dbe-a0f5-2251e45a2fc9 | approval_created | remediation-005-trigger-test
+(1 row)
+

@@ -1,0 +1,14 @@
+/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/e2e/integration.test.tsx:319:      const createDealTool = getToolDefinition('create_deal');
+/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/e2e/integration.test.tsx:320:      expect(createDealTool).toBeDefined();
+/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/e2e/integration.test.tsx:321:      expect(createDealTool?.riskLevel).toBe('medium');
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:134:  const [createDealId, setCreateDealId] = useState('');
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:444:  const handleCreateAction = async () => {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:445:    if (!createCapability || !createDealId.trim()) return;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:457:        deal_id: createDealId.trim(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:1179:                value={createDealId}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:1211:              onClick={handleCreateAction}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:1212:              disabled={!createCapability || !createDealId.trim() || creating}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/new/page.tsx:18:import { createDeal } from '@/lib/api';
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/new/page.tsx:43:      const result = await createDeal({
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:457:export async function createDeal(params: {
+/home/zaks/zakops-agent-api/apps/dashboard/src/types/api/generated.ts:290:  // POST /api/deals

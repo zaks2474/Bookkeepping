@@ -1,0 +1,33 @@
+QA-ACA-VERIFY-001 — Remediation Evidence
+==========================================
+Date: 2026-02-15
+Applied by: QA verifier (in-session)
+
+R-1: Gemini table case statement fix (MAJOR)
+----------------------------------------------
+File: tools/infra/sync-agent-configs.sh lines 125-129
+Action: Corrected generate_gemini_table() cases 3-7
+
+Before (broken):
+  3) boundary="OpenAPI -> TS Types"; artifacts="agent-api-types.generated.ts"; validation="make sync-agent-types"
+  4) boundary="OpenAPI -> Py Models"; artifacts="rag_models.py"; validation="make sync-rag-models"
+  5) boundary="TS Contracts"; artifacts="execution-contracts.ts"; validation="make validate-local"
+  6) boundary="Event definitions"; artifacts="SSE contracts"; validation="make validate-local"
+  7) boundary="Tool definitions"; artifacts="MCP contracts"; validation="make validate-local"
+
+After (fixed):
+  3) boundary="Agent API Spec"; artifacts="agent-api.json"; validation="make update-agent-spec"
+  4) boundary="OpenAPI -> TS Types"; artifacts="agent-api-types.generated.ts"; validation="make sync-agent-types"
+  5) boundary="OpenAPI -> Py Models"; artifacts="rag_models.py"; validation="make sync-rag-models"
+  6) boundary="Tool definitions"; artifacts="tool-schemas.json"; validation="make validate-local"
+  7) boundary="Event definitions"; artifacts="agent-events.schema.json"; validation="make validate-local"
+
+Post-fix: Re-ran `bash tools/infra/sync-agent-configs.sh` — exit 0, 3 files synced.
+Verified GEMINI.md S3-S7 rows now match canonical source (contract-surfaces.md).
+
+R-2: Script ownership fix (MINOR)
+-----------------------------------
+File: tools/infra/sync-agent-configs.sh
+Action: sudo chown zaks:zaks
+Before: root:root
+After: zaks:zaks (verified with stat -c '%U:%G')

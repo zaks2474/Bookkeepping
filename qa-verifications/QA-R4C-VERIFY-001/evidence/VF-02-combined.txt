@@ -1,0 +1,29 @@
+=== VF-02.1 ONBOARDING FILE INVENTORY ===
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/onboarding/error.tsx
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/onboarding/page.tsx
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/onboarding/layout.tsx
+
+=== VF-02.2 ONBOARDING ENDPOINT WIRING ===
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/onboarding/reset/route.ts:5: * POST /api/onboarding/reset
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/onboarding/reset/route.ts:6: * Proxies to backend POST /api/onboarding/reset
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/onboarding/reset/route.ts:10:    const response = await backendFetch('/api/onboarding/reset', {
+
+=== VF-02.3 ONBOARDING STORAGE POLICY ===
+CLEAN - no localStorage
+
+=== VF-02.4 ONBOARDING RESUME STATUS ===
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/onboarding/error.tsx:3:import { useEffect } from 'react';
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/onboarding/error.tsx:14:  useEffect(() => {
+
+=== VF-02.5 ONBOARDING REDIRECT + RESET ===
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/onboarding/page.tsx:11:    router.push('/dashboard');
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/onboarding/page.tsx:16:    router.push('/dashboard');
+
+=== VF-02.6 ONBOARDING SKIP POLICY ===
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/onboarding/page.tsx:14:  const handleSkip = () => {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/onboarding/page.tsx:15:    // Backend persistence handled by useOnboardingState (skipped=true via PATCH)
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/onboarding/page.tsx:29:          onSkip={handleSkip}
+
+=== VF-02.7 ONBOARDING SURFACE 9 ===
+CLEAN - no forbidden Promise.all
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/onboarding/error.tsx:15:    console.error('onboarding page error:', error);

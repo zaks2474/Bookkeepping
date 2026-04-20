@@ -1,0 +1,56 @@
+=== search_deals IMPLEMENTATION ===
+async def search_deals(query: str, limit: int = 10) -> str:
+    """Search for deals by name or attributes.
+
+    R4 REMEDIATION: Now queries backend API directly (not RAG).
+    RAG is for knowledge base documents only, not deal records.
+
+    Use this for finding specific deals by name or attribute:
+    - "Find the Acme Corp deal"
+    - "Search for deals from broker John"
+
+    For counting deals or viewing your full pipeline, use list_deals instead.
+
+    Args:
+        query: Search query (matches deal name, broker, etc.)
+        limit: Maximum number of results
+
+    Returns:
+        str: Search results with deal details
+    """
+    logger.info("search_deals_called", query=query, limit=limit)
+
+    try:
+        headers = _get_backend_headers()
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            # Query backend API directly - same source as dashboard
+            response = await client.get(
+                f"{DEAL_API_URL}/api/deals",
+                headers=headers,
+            )
+
+            if response.status_code == 200:
+                all_deals = response.json()
+
+                # Handle both list and dict responses
+                if isinstance(all_deals, dict):
+                    all_deals = all_deals.get("deals", all_deals.get("results", []))
+
+                # Filter deals matching the query (case-insensitive)
+                query_lower = query.lower()
+                matching_deals = []
+                for deal in all_deals:
+                    # Search in multiple fields
+                    searchable = " ".join([
+                        str(deal.get("canonical_name", "") or ""),
+                        str(deal.get("display_name", "") or ""),
+                        str(deal.get("deal_id", "") or ""),
+                        str(deal.get("broker", {}).get("name", "") if isinstance(deal.get("broker"), dict) else deal.get("broker", "") or ""),
+                        str(deal.get("stage", "") or ""),
+                    ]).lower()
+
+    
+
+RAG query references: 0
+Backend API references: 4
+✓ search_deals appears to use backend for deal queries

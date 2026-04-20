@@ -1,0 +1,6 @@
+CHANGES_ENTRIES=2
+3:## 2026-02-14 — LANGSMITH-BRIDGE-HARDEN-001: MCP Bridge Hardening
+5:- **What:** Fixed all 4 ZakOps-side failure modes in the MCP bridge so any remaining LangSmith integration failure is provably LangSmith-side.
+6:- **Why:** January LangSmith attempt failed due to overlapping port drift, missing auth, missing injection tool, and transport uncertainty. This mission eliminates all ZakOps-side issues.
+17:- **Evidence:** 17 files in `/home/zaks/bookkeeping/docs/_qa_evidence/langsmith-bridge-harden-001/`
+18:- **Completion report:** `/home/zaks/bookkeeping/docs/MISSION-LANGSMITH-BRIDGE-HARDEN-001.COMPLETION.md`

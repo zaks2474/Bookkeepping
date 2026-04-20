@@ -1,0 +1,17 @@
+=== Dashboard quarantine calls ===
+798:  return apiFetch('/api/quarantine/' + itemId + '/process', {
+859: * Approve a quarantine item via POST /api/quarantine/{id}/process.
+873:    }>(`/api/quarantine/${encodeURIComponent(itemId)}/process`, {
+891: * Reject a quarantine item via POST /api/quarantine/{id}/process.
+902:    }>(`/api/quarantine/${encodeURIComponent(params.itemId)}/process`, {
+927:  return apiFetch(`/api/quarantine/${encodeURIComponent(quarantineId)}/delete`, {
+943:  return apiFetch(`/api/quarantine/bulk-delete`, {
+=== Backend quarantine routes ===
+1050:@app.get("/api/actions/quarantine", response_model=list[QuarantineResponse])
+1377:@app.get("/api/quarantine", response_model=list[QuarantineResponse])
+1440:@app.get("/api/quarantine/health")
+1452:@app.get("/api/quarantine/{item_id}", response_model=QuarantineResponse)
+1486:@app.post("/api/quarantine", response_model=QuarantineResponse, status_code=201)
+1588:@app.post("/api/quarantine/{item_id}/delete")
+1630:@app.post("/api/quarantine/bulk-delete")
+1682:@app.post("/api/quarantine/{item_id}/process")

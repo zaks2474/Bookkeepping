@@ -1,0 +1,32 @@
+=== agentFetch Helper Verification ===
+
+File: apps/dashboard/src/lib/agent-fetch.ts (59 lines)
+
+1. agentFetch(path, options) — line 30-51 ✓
+   - Normalizes path (adds leading /)
+   - Uses AGENT_BASE_URL + normalizedPath
+   - Merges Content-Type + optional service token
+   - Caller headers win (spread order)
+
+2. getAgentBaseUrl() — line 56-58 ✓
+
+3. AGENT_BASE_URL fallback chain — line 11-16 ✓
+   AGENT_LOCAL_URL > AGENT_API_URL > NEXT_PUBLIC_AGENT_API_URL > localhost:8095
+   Trailing slash stripped ✓
+
+4. SERVICE_TOKEN — line 18-21 ✓
+   AGENT_SERVICE_TOKEN > DASHBOARD_SERVICE_TOKEN > empty string
+
+=== Migration — 8 route handlers confirmed ===
+1. agent/activity/route.ts — agentFetch at lines 12, 57
+2. agent/sentiment/[dealId]/route.ts (NEW) — agentFetch at lines 9, 17
+3. chat/complete/route.ts — agentFetch at lines 2, 19
+4. chat/route.ts — agentFetch + getAgentBaseUrl at lines 3, 359
+5. chat/threads/route.ts — agentFetch at lines 9, 18, 40
+6. chat/threads/[id]/messages/route.ts — agentFetch at lines 9, 22
+7. chat/threads/[id]/route.ts — agentFetch at lines 9, 22, 47
+8. chat/execute-proposal/route.ts — agentFetch at lines 2, 22
+
+Direct AGENT_API_URL/AGENT_LOCAL_URL usage in src/app/api/: 0 matches ✓
+
+VERDICT: PASS

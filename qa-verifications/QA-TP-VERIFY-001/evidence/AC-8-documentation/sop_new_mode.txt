@@ -1,0 +1,6 @@
+=== A8.3 ===
+135:## How to Add a New Pipeline Mode
+139:3. To add a new mode (e.g., `security`):
+141:   - If you need mode-specific prompt instructions, edit the templates to add conditional sections based on `{{MODE}}`
+142:   - Add the new mode name to the `case` validation in `tripass.sh` (search for `forensic|design|implement`)
+143:4. If the new mode has a recommended plugin, document it in the "Prerequisites by Mode" section above

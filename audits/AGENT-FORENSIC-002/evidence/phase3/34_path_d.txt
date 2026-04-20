@@ -1,0 +1,110 @@
+=== STEP 3.5: Path D — Approval + Execution ===
+--- Get approval ID from Path C ---
+{
+    "detail": "Authentication required"
+}
+Approval ID: 
+--- Pre-approval tool_executions count ---
+Pre-approval tool_executions: 3
+--- APPROVE ---
+{
+    "detail": "Not Found"
+}
+{
+    "detail": "Method Not Allowed"
+}
+--- PROOF 1: Deal stage changed via API ---
+Stage before:  -> Stage after approve: inbound
+--- PROOF 2: Deal stage changed via direct SQL ---
+ deal_id | stage 
+---------+-------
+(0 rows)
+
+--- PROOF 3: tool_executions row created ---
+time="2026-02-02T20:59:41-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-02T20:59:41-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+                  id                  |             approval_id              |    tool_name    |                                           tool_args                                           | success | result | error_message |          executed_at          
+--------------------------------------+--------------------------------------+-----------------+-----------------------------------------------------------------------------------------------+---------+--------+---------------+-------------------------------
+ 85039890-93e7-4150-98a8-cf521b26395e | 1d17d04c-e2c1-4b03-ac81-96f6dcbd06d4 | transition_deal | {"deal_id": "DL-0020", "from_stage": "initial_contact", "to_stage": "negotiation"}            | t       |        |               | 2026-02-03 02:15:07.137599+00
+ 86ff1d69-143a-4aa6-9baf-a4b3be0e3443 | ea82a675-2efc-4b7e-9d1b-5739df66a8ae | transition_deal | {"deal_id": "DL-0037", "from_stage": "unknown", "to_stage": "due_diligence", "reason": null}  | t       |        |               | 2026-02-03 02:14:50.430556+00
+ 2766bd77-87ad-4d88-a7e4-b75134ddac20 | 4b466371-a1f1-45d0-aff0-53da812af541 | transition_deal | {"deal_id": "DL-0020", "from_stage": "proposal", "to_stage": "due_diligence", "reason": null} | t       |        |               | 2026-02-03 02:12:38.006095+00
+(3 rows)
+
+Post-approval tool_executions: 3 (was 3)
+--- PROOF 4: Approval status changed ---
+time="2026-02-02T20:59:41-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-02T20:59:41-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+ERROR:  column "updated_at" does not exist
+LINE 2:     SELECT id, status, updated_at FROM approvals WHERE id = ...
+                               ^
+HINT:  Perhaps you meant to reference the column "approvals.created_at".
+--- PROOF 5: Thread state shows completed ---
+{
+    "detail": "Authentication required"
+}
+--- PROOF 6: audit_log has full lifecycle ---
+time="2026-02-02T20:59:42-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-02T20:59:42-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+        event_type        |                                                                         payload                                                                         |          created_at           
+--------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------------
+ approval_claimed         | {"tool_name": "transition_deal", "idempotency_key": "f002-path-c-001:transition_deal:9b4e0d13ea8218569ae15607ec43706433585eae3788b7c5a51e737690576c8d"} | 2026-02-03 02:12:37.999731+00
+ tool_execution_started   | {"tool_name": "transition_deal", "idempotency_key": "f002-path-c-001:transition_deal:9b4e0d13ea8218569ae15607ec43706433585eae3788b7c5a51e737690576c8d"} | 2026-02-03 02:12:38.013004+00
+ tool_execution_completed | {"success": true}                                                                                                                                       | 2026-02-03 02:12:38.022425+00
+ approval_approved        | {"resolved_by": "forensic-auditor"}                                                                                                                     | 2026-02-03 02:12:38.02249+00
+(4 rows)
+
+MANDATORY GATE G3.5 CHECKLIST:
+  1. Deal stage changed via API? [Y/N]
+  2. Deal stage changed via direct SQL? [Y/N]
+  3. tool_executions count increased? [Y/N]
+  4. tool_execution row has success=true? [Y/N]
+  5. Approval status = approved? [Y/N]
+  6. Graph resumed and completed? [Y/N]
+  7. audit_log has approval + execution events? [Y/N]
+ALL 7 must be YES. This is a MANDATORY gate.
+\n--- SUPPLEMENT: approvals table columns + status ---
+time="2026-02-02T20:59:48-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-02T20:59:48-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+                                     Table "public.approvals"
+      Column      |           Type           | Collation | Nullable |           Default            
+------------------+--------------------------+-----------+----------+------------------------------
+ id               | character varying(36)    |           | not null | uuid_generate_v4()::text
+ thread_id        | character varying(255)   |           | not null | 
+ checkpoint_id    | character varying(255)   |           |          | 
+ tool_name        | character varying(255)   |           | not null | 
+ tool_args        | text                     |           | not null | 
+ actor_id         | character varying(255)   |           | not null | 
+ status           | character varying(20)    |           | not null | 'pending'::character varying
+ idempotency_key  | character varying(255)   |           | not null | 
+ claimed_at       | timestamp with time zone |           |          | 
+ resolved_at      | timestamp with time zone |           |          | 
+ resolved_by      | character varying(255)   |           |          | 
+ rejection_reason | text                     |           |          | 
+ expires_at       | timestamp with time zone |           |          | 
+ created_at       | timestamp with time zone |           |          | now()
+Indexes:
+    "approvals_pkey" PRIMARY KEY, btree (id)
+    "approvals_idempotency_key_key" UNIQUE CONSTRAINT, btree (idempotency_key)
+    "idx_approvals_actor_id" btree (actor_id)
+    "idx_approvals_claimed_stale" btree (claimed_at) WHERE status::text = 'claimed'::text
+    "idx_approvals_expires_at" btree (expires_at) WHERE status::text = 'pending'::text
+    "idx_approvals_idempotency_key" btree (idempotency_key)
+    "idx_approvals_status" btree (status)
+    "idx_approvals_thread_id" btree (thread_id)
+    "idx_approvals_tool_name" btree (tool_name)
+Check constraints:
+    "approvals_status_check" CHECK (status::text = ANY (ARRAY['pending'::character varying, 'claimed'::character varying, 'approved'::character varying, 'rejected'::character varying, 'expired'::character varying]::text[]))
+Referenced by:
+    TABLE "tool_executions" CONSTRAINT "tool_executions_approval_id_fkey" FOREIGN KEY (approval_id) REFERENCES approvals(id) ON DELETE SET NULL
+
+time="2026-02-02T20:59:49-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-02T20:59:49-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+                  id                  |  status  |          created_at           
+--------------------------------------+----------+-------------------------------
+ 1d17d04c-e2c1-4b03-ac81-96f6dcbd06d4 | approved | 2026-02-03 02:15:06.996583+00
+ ea82a675-2efc-4b7e-9d1b-5739df66a8ae | approved | 2026-02-03 02:14:41.05817+00
+ 8ee0aa7a-7139-4efe-a7ba-7c0946488b4f | rejected | 2026-02-03 02:13:12.609845+00
+ 4b466371-a1f1-45d0-aff0-53da812af541 | approved | 2026-02-03 02:09:07.931737+00
+ 0a8b039c-6e53-4f1c-a731-b0243fb8c6b4 | pending  | 2026-02-03 02:08:31.385664+00
+(5 rows)
+

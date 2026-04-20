@@ -1,0 +1,55 @@
+=== V-L6.4: Runbook Search ===
+Date: 2026-02-09T04:56:32Z
+
+--- Runbook files in bookkeeping ---
+/home/zaks/bookkeeping/qa-verifications/DEAL-INTEGRITY-UNIFIED/layer-6/RUNBOOK-add-deal-stage.md
+/home/zaks/bookkeeping/qa-verifications/QA-DI-VERIFY-UNIFIED/evidence/V-L6-governance-evolution/runbook_search.txt
+/home/zaks/bookkeeping/docs/qa_verify_001/QA-VERIFY-001_RUNBOOK.md
+/home/zaks/bookkeeping/docs/RUNBOOKS.md
+/home/zaks/bookkeeping/docs/RUNBOOK_EMAIL_TRIAGE_CUTOVER.md
+/home/zaks/bookkeeping/docs/RUNBOOK_TEMPORAL_CUTOVER.md
+
+--- Runbook files in monorepo ---
+/home/zaks/zakops-agent-api/tools/quality/runbook_lint.py
+/home/zaks/zakops-agent-api/tools/gates/phase9_runbooks_gate.sh
+/home/zaks/zakops-agent-api/artifacts/gate_artifacts/runbook_lint.log
+/home/zaks/zakops-agent-api/artifacts/ops/runbook_lint.json
+/home/zaks/zakops-agent-api/ops/runbooks/RUNBOOK_INDEX.md
+/home/zaks/zakops-agent-api/docs/troubleshooting/RUNBOOKS.md
+
+--- Runbook files in backend ---
+/home/zaks/zakops-backend/docs/lab-runbook.md
+/home/zaks/zakops-backend/docs/deployment-runbook.md
+/home/zaks/zakops-backend/docs/qa-runbook.md
+
+--- Runbook references ---
+/home/zaks/bookkeeping/docs/KINETIC-ACTION-ENGINE-IMPLEMENTATION-PLAN.md:363:## 13) R9 — Documentation + Runbook
+/home/zaks/bookkeeping/docs/KINETIC-ACTION-ENGINE-IMPLEMENTATION-PLAN.md:368:- `docs/ACTIONS-RUNBOOK.md`
+/home/zaks/bookkeeping/docs/CLAUDE_VERIFICATION_EMAIL_TRIAGE_E2E.md:282:Per `/home/zaks/bookkeeping/docs/RUNBOOK_EMAIL_TRIAGE_CUTOVER.md`:
+/home/zaks/bookkeeping/docs/ACTIONS-RELIABILITY-COMMS-CONTROLLER-PROMPT2-PLAN.md:271:  - document exact env vars in a runbook section
+/home/zaks/bookkeeping/docs/EMAIL-TRIAGE-AGENT-LOCALIZATION-PLAN.md:120:2) Write runbook for safe cutover + rollback:
+/home/zaks/bookkeeping/docs/EMAIL-TRIAGE-AGENT-LOCALIZATION-PLAN.md:121:   - `bookkeeping/docs/RUNBOOK_EMAIL_TRIAGE_CUTOVER.md`
+/home/zaks/bookkeeping/docs/CLAUDE_POST_CODEX_VERIFICATION.md:278:3. **Clean build runbook**: If the vendor-chunks error recurs, document the clean rebuild steps in RUNBOOKS.md.
+/home/zaks/bookkeeping/docs/EMAIL-INGESTION-UPGRADE-PLAN.md:441:## Key Commands (Runbook)
+/home/zaks/bookkeeping/docs/EMAIL-INGESTION-UPGRADE-PLAN.md:524:## Tests + Runbook Are Release Gates
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_EVAL_V3.PASS2.Codex.20260204-0310-5abffd.json:130:      "mitigation": "Short-lived service JWTs, rotation runbook, least-privilege scopes.",
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_EVAL_V3.PASS2.Codex.20260204-0310-5abffd.json:393:      "details": "Require user_id for writes, short-lived service JWTs, rotation runbook, explicit 401/403 behavior."
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_EVAL_V3.PASS2.Codex.20260204-0310-5abffd.json:423:      "details": "Add a one-page runbook per phase with exact files, commands, expected outputs, and rollback steps."
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:834:**Mission requires:** ADR-001/002/003, runbook, innovation roadmap, change protocol.
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:860:# V-L6.4: THE RUNBOOK TEST — "How to Add a New Deal Stage"
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:861:find "$MONOREPO" "$EVIDENCE_ROOT" -name "*runbook*" -o -name "*how*to*add*stage*" 2>/dev/null \
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:862:  | tee "$L6_DIR/runbook_search.txt"
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:863:RUNBOOK=$(head -1 "$L6_DIR/runbook_search.txt" 2>/dev/null)
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:864:test -n "$RUNBOOK" && grep -c "step\|Step\|1\.\|2\.\|3\." "$RUNBOOK" 2>/dev/null \
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:865:  | tee "$L6_DIR/runbook_steps.txt"
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:890:| V-L6.4 | **RUNBOOK TEST:** Add-a-stage runbook exists and is testable | file present, verifiable steps | runbook_search.txt | **REMEDIATE IF MISSING** |
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:1093:# RT-14: Runbook is testable (has concrete commands/paths, not vague instructions)
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:1094:echo "--- RT-14: Runbook testability ---" >> "$RT_DIR/rt_checks.txt"
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:1095:RUNBOOK=$(find "$MONOREPO" "$EVIDENCE_ROOT" -name "*runbook*" 2>/dev/null | head -1)
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:1096:test -n "$RUNBOOK" && grep -c "make \|npm \|curl \|psql \|\.ts\|\.py\|\.json" "$RUNBOOK" 2>/dev/null \
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:1162:| RT-14 | Runbook has concrete commands | make/npm/curl refs found | |
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:1586:[ ] Governance with ADRs and runbooks
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:58:7) Harden reliability (queue/DLQ, chaos, audit immutability), formal QA/red-team, and then production ops/runbooks.
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:391:  - `/home/zaks/zakops-agent-api/docs/runbooks/KEY_ROTATION.md` (manual until Vault)
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:881:  - Audit immutability DB constraints + runbook for audit review
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:1031:## Phase 7 — Deployment, Monitoring, Operations (backups, rollbacks, runbooks, incident response)

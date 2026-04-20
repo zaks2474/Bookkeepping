@@ -1,0 +1,7 @@
+PORT_8090_IN_BRIDGE_DIR=6
+/home/zaks/scripts/agent_bridge/.env.example:12:ZAKOPS_DEAL_API_URL=http://localhost:8090
+/home/zaks/scripts/agent_bridge/.env:5:ZAKOPS_DEAL_API_URL=http://localhost:8090
+/home/zaks/scripts/agent_bridge/README.md:20:(:8090)(:8052)
+/home/zaks/scripts/agent_bridge/mcp_server.py.rest_backup:10:- Bridge proxies to: Deal Lifecycle API (:8090), RAG API (:8052), DataRoom filesystem
+/home/zaks/scripts/agent_bridge/mcp_server.py.rest_backup:46:DEAL_API_URL = os.getenv("ZAKOPS_DEAL_API_URL", "http://localhost:8090")
+/home/zaks/scripts/agent_bridge/config.py:26:    DEAL_API_URL: str = os.getenv("ZAKOPS_DEAL_API_URL", "http://localhost:8090")

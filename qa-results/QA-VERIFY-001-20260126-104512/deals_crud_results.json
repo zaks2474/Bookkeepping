@@ -1,0 +1,356 @@
+{
+  "summary": {
+    "passed": 5,
+    "total": 6
+  },
+  "test_suite": "Backend Deals",
+  "tests": [
+    {
+      "details": {
+        "db": {
+          "count_after": 4,
+          "count_before": 3,
+          "deal_id_from_db": "DL-0006",
+          "side_effect_without_success": false
+        },
+        "request": {
+          "elapsed_ms": 114,
+          "method": "POST",
+          "ok": true,
+          "request_json": {
+            "canonical_name": "QA-VERIFY-001 Deal 1769445921",
+            "stage": "inbound",
+            "status": "active"
+          },
+          "response_headers": {
+            "content-length": "378",
+            "content-type": "application/json",
+            "date": "Mon, 26 Jan 2026 16:45:21 GMT",
+            "referrer-policy": "strict-origin-when-cross-origin",
+            "server": "uvicorn",
+            "x-content-type-options": "nosniff",
+            "x-frame-options": "DENY",
+            "x-trace-id": "620b195c38094b8691f769bc74d3c5de",
+            "x-xss-protection": "1; mode=block"
+          },
+          "response_json": {
+            "action_count": null,
+            "alias_count": null,
+            "broker": {},
+            "canonical_name": "QA-VERIFY-001 Deal 1769445921",
+            "company_info": {},
+            "created_at": "2026-01-26T16:45:22.059375Z",
+            "days_since_update": null,
+            "deal_id": "DL-0006",
+            "display_name": null,
+            "email_thread_ids": [],
+            "folder_path": null,
+            "identifiers": {},
+            "metadata": {},
+            "stage": "inbound",
+            "status": "active",
+            "updated_at": "2026-01-26T16:45:22.059375Z"
+          },
+          "response_text": "{\"deal_id\":\"DL-0006\",\"canonical_name\":\"QA-VERIFY-001 Deal 1769445921\",\"display_name\":null,\"folder_path\":null,\"stage\":\"inbound\",\"status\":\"active\",\"identifiers\":{},\"company_info\":{},\"broker\":{},\"metadata\":{},\"email_thread_ids\":[],\"created_at\":\"2026-01-26T16:45:22.059375Z\",\"updated_at\":\"2026-01-26T16:45:22.059375Z\",\"days_since_update\":null,\"action_count\":null,\"alias_count\":null}",
+          "status_code": 200,
+          "url": "http://localhost:8091/api/deals"
+        }
+      },
+      "id": "1.1.1",
+      "name": "Create deal (API + DB double-verify)",
+      "passed": true,
+      "timestamp_utc": "2026-01-26T16:45:22.346221+00:00"
+    },
+    {
+      "details": {
+        "db_row_json_text": "{\"deal_id\" : \"DL-0006\", \"canonical_name\" : \"QA-VERIFY-001 Deal 1769445921\", \"stage\" : \"inbound\", \"status\" : \"active\"}",
+        "request": {
+          "elapsed_ms": 4,
+          "method": "GET",
+          "ok": true,
+          "request_json": null,
+          "response_headers": {
+            "content-length": "371",
+            "content-type": "application/json",
+            "date": "Mon, 26 Jan 2026 16:45:21 GMT",
+            "referrer-policy": "strict-origin-when-cross-origin",
+            "server": "uvicorn",
+            "x-content-type-options": "nosniff",
+            "x-frame-options": "DENY",
+            "x-trace-id": "edef4251047d4a22aee89c4873d69919",
+            "x-xss-protection": "1; mode=block"
+          },
+          "response_json": {
+            "action_count": 0,
+            "alias_count": 0,
+            "broker": {},
+            "canonical_name": "QA-VERIFY-001 Deal 1769445921",
+            "company_info": {},
+            "created_at": "2026-01-26T16:45:22.059375Z",
+            "days_since_update": 0.0,
+            "deal_id": "DL-0006",
+            "display_name": null,
+            "email_thread_ids": [],
+            "folder_path": null,
+            "identifiers": {},
+            "metadata": {},
+            "stage": "inbound",
+            "status": "active",
+            "updated_at": "2026-01-26T16:45:22.059375Z"
+          },
+          "response_text": "{\"deal_id\":\"DL-0006\",\"canonical_name\":\"QA-VERIFY-001 Deal 1769445921\",\"display_name\":null,\"folder_path\":null,\"stage\":\"inbound\",\"status\":\"active\",\"identifiers\":{},\"company_info\":{},\"broker\":{},\"metadata\":{},\"email_thread_ids\":[],\"created_at\":\"2026-01-26T16:45:22.059375Z\",\"updated_at\":\"2026-01-26T16:45:22.059375Z\",\"days_since_update\":0.0,\"action_count\":0,\"alias_count\":0}",
+          "status_code": 200,
+          "url": "http://localhost:8091/api/deals/DL-0006"
+        }
+      },
+      "id": "1.1.2",
+      "name": "Read deal by id (API + DB)",
+      "passed": true,
+      "timestamp_utc": "2026-01-26T16:45:22.401696+00:00"
+    },
+    {
+      "details": {
+        "request": {
+          "elapsed_ms": 3,
+          "method": "GET",
+          "ok": true,
+          "request_json": null,
+          "response_headers": {
+            "content-length": "1479",
+            "content-type": "application/json",
+            "date": "Mon, 26 Jan 2026 16:45:21 GMT",
+            "referrer-policy": "strict-origin-when-cross-origin",
+            "server": "uvicorn",
+            "x-content-type-options": "nosniff",
+            "x-frame-options": "DENY",
+            "x-trace-id": "65096c367ca74da6a5893bb6f4708710",
+            "x-xss-protection": "1; mode=block"
+          },
+          "response_json": [
+            {
+              "action_count": 0,
+              "alias_count": 0,
+              "broker": {},
+              "canonical_name": "QA-VERIFY-001 Deal 1769445921",
+              "company_info": {},
+              "created_at": "2026-01-26T16:45:22.059375Z",
+              "days_since_update": 0.0,
+              "deal_id": "DL-0006",
+              "display_name": null,
+              "email_thread_ids": [],
+              "folder_path": null,
+              "identifiers": {},
+              "metadata": {},
+              "stage": "inbound",
+              "status": "active",
+              "updated_at": "2026-01-26T16:45:22.059375Z"
+            },
+            {
+              "action_count": 0,
+              "alias_count": 0,
+              "broker": {},
+              "canonical_name": "QA Verify Probe",
+              "company_info": {},
+              "created_at": "2026-01-26T16:07:49.437043Z",
+              "days_since_update": 0.0,
+              "deal_id": "DL-0003",
+              "display_name": null,
+              "email_thread_ids": [],
+              "folder_path": null,
+              "identifiers": {},
+              "metadata": {},
+              "stage": "inbound",
+              "status": "active",
+              "updated_at": "2026-01-26T16:07:49.437043Z"
+            },
+            {
+              "action_count": 0,
+              "alias_count": 0,
+              "broker": {},
+              "canonical_name": "QA Test Company 1769443214",
+              "company_info": {},
+              "created_at": "2026-01-26T16:00:14.183580Z",
+              "days_since_update": 0.0,
+              "deal_id": "DL-0002",
+              "display_name": "QA Test Company 1769443214",
+              "email_thread_ids": [],
+              "folder_path": null,
+              "identifiers": {},
+              "metadata": {},
+              "stage": "lead",
+              "status": "active",
+              "updated_at": "2026-01-26T16:00:14.183580Z"
+            },
+            {
+              "action_count": 0,
+              "alias_count": 0,
+              "broker": {},
+              "canonical_name": "QA Test Company",
+              "company_info": {},
+              "created_at": "2026-01-26T15:59:12.052210Z",
+              "days_since_update": 0.0,
+              "deal_id": "DL-0001",
+              "display_name": null,
+              "email_thread_ids": [],
+              "folder_path": null,
+              "identifiers": {},
+              "metadata": {},
+              "stage": "inbound",
+              "status": "active",
+              "updated_at": "2026-01-26T15:59:12.052210Z"
+            }
+          ],
+          "response_text": "[{\"deal_id\":\"DL-0006\",\"canonical_name\":\"QA-VERIFY-001 Deal 1769445921\",\"display_name\":null,\"folder_path\":null,\"stage\":\"inbound\",\"status\":\"active\",\"identifiers\":{},\"company_info\":{},\"broker\":{},\"metadata\":{},\"email_thread_ids\":[],\"created_at\":\"2026-01-26T16:45:22.059375Z\",\"updated_at\":\"2026-01-26T16:45:22.059375Z\",\"days_since_update\":0.0,\"action_count\":0,\"alias_count\":0},{\"deal_id\":\"DL-0003\",\"canonical_name\":\"QA Verify Probe\",\"display_name\":null,\"folder_path\":null,\"stage\":\"inbound\",\"status\":\"active\",\"identifiers\":{},\"company_info\":{},\"broker\":{},\"metadata\":{},\"email_thread_ids\":[],\"created_at\":\"2026-01-26T16:07:49.437043Z\",\"updated_at\":\"2026-01-26T16:07:49.437043Z\",\"days_since_update\":0.0,\"action_count\":0,\"alias_count\":0},{\"deal_id\":\"DL-0002\",\"canonical_name\":\"QA Test Company 1769443214\",\"display_name\":\"QA Test Company 1769443214\",\"folder_path\":null,\"stage\":\"lead\",\"status\":\"active\",\"identifiers\":{},\"company_info\":{},\"broker\":{},\"metadata\":{},\"email_thread_ids\":[],\"created_at\":\"2026-01-26T16:00:14.183580Z\",\"updated_at\":\"2026-01-26T16:00:14.183580Z\",\"days_since_update\":0.0,\"action_count\":0,\"alias_count\":0},{\"deal_id\":\"DL-0001\",\"canonical_name\":\"QA Test Company\",\"display_name\":null,\"folder_path\":null,\"stage\":\"inbound\",\"status\":\"active\",\"identifiers\":{},\"company_info\":{},\"broker\":{},\"metadata\":{},\"email_thread_ids\":[],\"created_at\":\"2026-01-26T15:59:12.052210Z\",\"updated_at\":\"2026-01-26T15:59:12.052210Z\",\"days_since_update\":0.0,\"action_count\":0,\"alias_count\":0}]",
+          "status_code": 200,
+          "url": "http://localhost:8091/api/deals"
+        }
+      },
+      "id": "1.1.3",
+      "name": "List deals (API)",
+      "passed": true,
+      "timestamp_utc": "2026-01-26T16:45:22.405087+00:00"
+    },
+    {
+      "details": {
+        "db_display_name": "QA-VERIFY-001 Deal 1769445921 (updated)",
+        "request": {
+          "elapsed_ms": 9,
+          "method": "PATCH",
+          "ok": true,
+          "request_json": {
+            "display_name": "QA-VERIFY-001 Deal 1769445921 (updated)"
+          },
+          "response_headers": {
+            "content-length": "181",
+            "content-type": "application/json",
+            "date": "Mon, 26 Jan 2026 16:45:21 GMT",
+            "server": "uvicorn"
+          },
+          "response_json": {
+            "error": {
+              "code": "INTERNAL_ERROR",
+              "details": null,
+              "message": "An internal error occurred",
+              "timestamp": "2026-01-26T16:45:22.412697Z",
+              "trace_id": "0f594f1e-7713-46dd-a94c-481eb9a1b9ad"
+            }
+          },
+          "response_text": "{\"error\":{\"code\":\"INTERNAL_ERROR\",\"message\":\"An internal error occurred\",\"details\":null,\"trace_id\":\"0f594f1e-7713-46dd-a94c-481eb9a1b9ad\",\"timestamp\":\"2026-01-26T16:45:22.412697Z\"}}",
+          "status_code": 500,
+          "url": "http://localhost:8091/api/deals/DL-0006"
+        }
+      },
+      "id": "1.1.4",
+      "name": "Update deal (PATCH) + verify DB display_name",
+      "passed": false,
+      "timestamp_utc": "2026-01-26T16:45:22.477626+00:00"
+    },
+    {
+      "details": {
+        "attempted_new_stage": "initial_review",
+        "db_stage": "initial_review",
+        "transition_request": {
+          "elapsed_ms": 83,
+          "method": "POST",
+          "ok": true,
+          "request_json": {
+            "idempotency_key": "qa-verify-DL-0006-1769445922",
+            "new_stage": "initial_review",
+            "reason": "QA-VERIFY-001 stage transition"
+          },
+          "response_headers": {
+            "content-length": "157",
+            "content-type": "application/json",
+            "date": "Mon, 26 Jan 2026 16:45:22 GMT",
+            "referrer-policy": "strict-origin-when-cross-origin",
+            "server": "uvicorn",
+            "x-content-type-options": "nosniff",
+            "x-frame-options": "DENY",
+            "x-trace-id": "ea30c8b3c3c8414db749e909faac904e",
+            "x-xss-protection": "1; mode=block"
+          },
+          "response_json": {
+            "deal_id": "DL-0006",
+            "from_stage": "inbound",
+            "idempotent_hit": false,
+            "success": true,
+            "timestamp": "2026-01-26T16:45:22.551719+00:00",
+            "to_stage": "initial_review"
+          },
+          "response_text": "{\"deal_id\":\"DL-0006\",\"from_stage\":\"inbound\",\"to_stage\":\"initial_review\",\"success\":true,\"timestamp\":\"2026-01-26T16:45:22.551719+00:00\",\"idempotent_hit\":false}",
+          "status_code": 200,
+          "url": "http://localhost:8091/api/deals/DL-0006/transition"
+        },
+        "valid_transitions_request": {
+          "elapsed_ms": 2,
+          "method": "GET",
+          "ok": true,
+          "request_json": null,
+          "response_headers": {
+            "content-length": "106",
+            "content-type": "application/json",
+            "date": "Mon, 26 Jan 2026 16:45:22 GMT",
+            "referrer-policy": "strict-origin-when-cross-origin",
+            "server": "uvicorn",
+            "x-content-type-options": "nosniff",
+            "x-frame-options": "DENY",
+            "x-trace-id": "4ca158f2595a4d4ab3d5ec12240ea7f1",
+            "x-xss-protection": "1; mode=block"
+          },
+          "response_json": {
+            "current_stage": null,
+            "deal_id": "DL-0006",
+            "valid_transitions": [
+              "initial_review",
+              "closed_lost",
+              "archived"
+            ]
+          },
+          "response_text": "{\"deal_id\":\"DL-0006\",\"current_stage\":null,\"valid_transitions\":[\"initial_review\",\"closed_lost\",\"archived\"]}",
+          "status_code": 200,
+          "url": "http://localhost:8091/api/deals/DL-0006/valid-transitions"
+        }
+      },
+      "id": "1.1.5",
+      "name": "Transition deal stage (API + DB)",
+      "passed": true,
+      "timestamp_utc": "2026-01-26T16:45:22.627314+00:00"
+    },
+    {
+      "details": {
+        "cleanup": {
+          "db_delete": "ok"
+        },
+        "db_row_count": "0",
+        "get_after": {
+          "elapsed_ms": 3,
+          "method": "GET",
+          "ok": true,
+          "request_json": null,
+          "response_headers": {
+            "content-length": "35",
+            "content-type": "application/json",
+            "date": "Mon, 26 Jan 2026 16:45:22 GMT",
+            "referrer-policy": "strict-origin-when-cross-origin",
+            "server": "uvicorn",
+            "x-content-type-options": "nosniff",
+            "x-frame-options": "DENY",
+            "x-trace-id": "2dea5769fb544f098a0818636f3b5871",
+            "x-xss-protection": "1; mode=block"
+          },
+          "response_json": {
+            "detail": "Deal DL-0006 not found"
+          },
+          "response_text": "{\"detail\":\"Deal DL-0006 not found\"}",
+          "status_code": 404,
+          "url": "http://localhost:8091/api/deals/DL-0006"
+        }
+      },
+      "id": "1.1.6",
+      "name": "Cleanup test deal (DB delete) + verify DB state",
+      "passed": true,
+      "timestamp_utc": "2026-01-26T16:45:22.750447+00:00"
+    }
+  ],
+  "timestamp_utc": "2026-01-26T16:45:22.750465+00:00"
+}

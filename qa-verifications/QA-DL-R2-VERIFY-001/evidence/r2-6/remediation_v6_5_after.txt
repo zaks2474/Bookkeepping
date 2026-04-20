@@ -1,0 +1,3 @@
+/home/zaks/zakops-backend/src/core/events/handlers.py:59:async def dispatch_event(event_type: str, event_data: dict[str, Any]):
+/home/zaks/zakops-backend/src/core/outbox/processor.py:19:from ..events.handlers import dispatch_event
+/home/zaks/zakops-backend/src/core/outbox/processor.py:173:                await dispatch_event(entry["event_type"], event_data)

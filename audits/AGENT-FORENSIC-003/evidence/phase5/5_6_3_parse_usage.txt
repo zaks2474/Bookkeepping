@@ -1,0 +1,23 @@
+=== CHECK 5.6.3: Parse Usage (safeParse vs parse) ===
+Timestamp: 2026-02-03T13:22:11-06:00
+
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:168:    const data = JSON.parse(raw) as StoredSession;
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:409:  const parsed = DealsResponseSchema.safeParse(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:464:    const parsed = DealDetailSchema.safeParse(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:516:  const parsed = EventsResponseSchema.safeParse(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:616:  const parsed = ActionsResponseSchema.safeParse(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:634:  const parsed = ActionsResponseSchema.safeParse(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:652:  const parsed = QuarantineResponseSchema.safeParse(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:671:    const parsed = QuarantineHealthSchema.safeParse(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:717:  const parsed = QuarantineResponseSchema.safeParse(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:736:    const parsed = QuarantinePreviewSchema.safeParse(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:845:    const parsed = DealMaterialsSchema.safeParse(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:862:  const parsed = AlertsResponseSchema.safeParse(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:881:    const parsed = ClassificationMetricsSchema.safeParse(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:901:    const parsed = CheckpointsResponseSchema.safeParse(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:924:    const parsed = PipelineResponseSchema.safeParse(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1181:            const parsedData = JSON.parse(currentData);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1537:    const parsed = KineticActionsResponseSchema.safeParse(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1581:    const parsed = KineticActionSchema.safeParse(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1695:    const parsed = CapabilitiesResponseSchema.safeParse(data);
+/home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts:1719:    const parsed = ActionMetricsSchema.safeParse(data);

@@ -1,0 +1,37 @@
+=== QA-0: Artifact Existence Check ===
+--- Checking Builder Deliverables ---
+REMEDIATION_DIR exists: /home/zaks/bookkeeping/remediations/AGENT-REMEDIATION-002
+total 20
+drwxr-xr-x 4 root root 4096 Feb  2 22:54 .
+drwxr-xr-x 4 root root 4096 Feb  2 22:29 ..
+-rw-r--r-- 1 root root 2534 Feb  2 22:54 SUMMARY.md
+drwxr-xr-x 7 root root 4096 Feb  2 22:29 evidence
+drwxr-xr-x 2 root root 4096 Feb  2 22:29 matrices
+-rw-r--r-- 1 root root    0 Feb  2 22:29 scratchpad.md
+
+--- AGENT-REMEDIATION-001 (prior) exists for reference ---
+total 36
+drwxr-xr-x  5 root root 4096 Feb  2 18:28 .
+drwxr-xr-x  4 root root 4096 Feb  2 22:29 ..
+-rw-r--r--  1 root root  157 Feb  2 17:27 AGENT_REMEDIATION_001_V2_CHANGELOG.md
+-rw-r--r--  1 root root 9056 Feb  2 18:28 AGENT_REMEDIATION_001_V2_REPORT.md
+drwxr-xr-x  2 root root 4096 Feb  2 17:28 changes
+drwxr-xr-x 10 root root 4096 Feb  2 17:27 evidence
+drwxr-xr-x  2 root root 4096 Feb  2 18:12 matrices
+
+--- AGENT-REMEDIATION-002 Matrices ---
+total 8
+drwxr-xr-x 2 root root 4096 Feb  2 22:29 .
+drwxr-xr-x 4 root root 4096 Feb  2 22:54 ..
+
+--- Required Matrices Check (8 required) ---
+FAIL: finding_to_fix_matrix.md — MISSING
+FAIL: auth_regression_matrix.md — MISSING
+FAIL: approval_lifecycle_matrix.md — MISSING
+FAIL: graph_path_matrix.md — MISSING
+FAIL: audit_trail_completeness_matrix.md — MISSING
+FAIL: correlation_trace_matrix.md — MISSING
+FAIL: stage_transition_matrix.md — MISSING
+FAIL: no_illusions_matrix.md — MISSING
+
+QA-0 VERDICT: FAIL — 8 matrices missing

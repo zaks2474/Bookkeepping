@@ -1,0 +1,49 @@
+=== STEP 0.4: Agent API Environment ===
+ALLOWED_ORIGINS=http://localhost:8095,http://host.docker.internal:8095,http://localhost:3000
+ALLOW_TOOL_MOCKS=false
+API_V1_STR=/api/v1
+APP_ENV=development
+DASHBOARD_SERVICE_TOKEN=k-bG****kWpo
+DATABASE_URL=postgresql://agent:agen****_123@db:5432/zakops_agent
+DEAL_API_URL=http://host.docker.internal:8091
+DEBUG=true
+DEFAULT_LLM_MODEL=Qwen/Qwen2.5-32B-Instruct-AWQ
+DEFAULT_LLM_TEMPERATURE=0.2
+GPG_KEY=7169****6305
+HITL_APPROVAL_TIMEOUT_SECONDS=3600
+HITL_MAX_PENDING_APPROVALS=100
+HOME=/home/appuser
+HOSTNAME=1bbe6c37d624
+JWT_ACCESS_TOKEN_EXPIRE_DAYS=****
+JWT_ALGORITHM=HS256
+JWT_SECRET_KEY=zako****prod
+LANGFUSE_HOST=https://cloud.langfuse.com
+LANGFUSE_PUBLIC_KEY=****
+LANGFUSE_SECRET_KEY=****
+LOG_FORMAT=console
+LOG_LEVEL=DEBUG
+MAX_TOKENS=****
+MCP_URL=http://host.docker.internal:9100
+OPENAI_API_KEY=****
+OTEL_SDK_DISABLED=true
+PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+PIP_DEFAULT_TIMEOUT=100
+PIP_DISABLE_PIP_VERSION_CHECK=on
+PIP_NO_CACHE_DIR=1
+POSTGRES_HOST=db
+POSTGRES_PORT=5432
+PROJECT_NAME=ZakOps Agent API
+PYTHONFAULTHANDLER=1
+PYTHONHASHSEED=random
+PYTHONUNBUFFERED=1
+PYTHON_SHA256=d984bcc57cd67caab26f7def42e523b1c015bbc5dc07836cf4f0b63fa159eb56
+PYTHON_VERSION=3.13.2
+RAG_REST_URL=http://host.docker.internal:8052
+RATE_LIMIT_AGENT=50 per minute
+RATE_LIMIT_CHAT=100 per minute
+RATE_LIMIT_DEFAULT=1000 per day,200 per hour
+VERSION=1.0.0
+VLLM_BASE_URL=http://host.docker.internal:8000/v1
+--- RED FLAG SCAN ---
+GOOD: No 8090
+GOOD: No food_order_db

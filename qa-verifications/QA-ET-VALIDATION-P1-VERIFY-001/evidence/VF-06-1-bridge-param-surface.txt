@@ -1,0 +1,105 @@
+=== VF-06.1 BRIDGE PARAM SURFACE ===
+106:            if hasattr(record, "correlation_id"):
+107:                log_entry["correlation_id"] = record.correlation_id
+128:def log_tool_call(tool_name: str, params: dict, correlation_id: str = None):
+130:    correlation_id = correlation_id or str(uuid.uuid4())[:8]
+140:    record.correlation_id = correlation_id
+145:def log_error(error: str, details: Optional[dict] = None, correlation_id: str = None):
+147:    correlation_id = correlation_id or str(uuid.uuid4())[:8]
+157:    record.correlation_id = correlation_id
+435:    Get complete deal state including deal_profile.json, classified_links.json, and triage_summary.json.
+480:        # Load triage_summary.json from first bundle if exists
+492:                                triage_path = Path(quarantine_dir) / "triage_summary.json"
+495:                                        deal["triage_summary_source"] = json.load(f)
+698:def zakops_inject_quarantine(
+700:    source_message_id: str,
+701:    email_subject: str,
+704:    schema_version: str,
+705:    correlation_id: str,
+706:    email_body_snippet: str,
+708:    sender_name: Optional[str] = None,
+709:    sender_domain: Optional[str] = None,
+710:    sender_company: Optional[str] = None,
+711:    received_at: Optional[str] = None,
+712:    triage_summary: Optional[str] = None,
+714:    company_name: Optional[str] = None,
+715:    broker_name: Optional[str] = None,
+716:    urgency: Optional[str] = None,
+717:    confidence: Optional[float] = None,
+718:    extraction_evidence: Optional[dict] = None,
+719:    field_confidences: Optional[dict] = None,
+721:    source_thread_id: Optional[str] = None,
+722:    tool_version: Optional[str] = None,
+723:    prompt_version: Optional[str] = None,
+724:    langsmith_run_id: Optional[str] = None,
+725:    langsmith_trace_url: Optional[str] = None,
+727:    attachments: Optional[list] = None,
+740:        source_message_id: Unique identifier for deduplication (mapped to message_id)
+741:        email_subject: Email subject line (required — displayed in quarantine list)
+744:        schema_version: Schema version string (must be "1.0.0")
+745:        correlation_id: Tracking ID for end-to-end tracing
+746:        email_body_snippet: First 500 chars of email body (eliminates preview dependency)
+747:        sender_name: Display name of sender
+748:        sender_domain: Domain extracted from sender email
+749:        sender_company: Company name of sender
+750:        received_at: ISO 8601 timestamp when email was received
+751:        triage_summary: AI-generated triage summary for operator review
+752:        company_name: Target company name if identified
+753:        broker_name: Broker name if identified
+754:        urgency: Urgency level: HIGH, MEDIUM, LOW
+755:        confidence: Classification confidence score (0.0-1.0)
+756:        extraction_evidence: Per-field extraction evidence dict
+757:        field_confidences: Per-field confidence scores dict
+758:        source_thread_id: Email thread ID for dedup and auto-routing
+759:        tool_version: Version of the injection tool
+760:        prompt_version: Version of the system prompt used
+761:        langsmith_run_id: LangSmith run ID for traceability
+762:        langsmith_trace_url: LangSmith trace URL
+763:        attachments: List of attachment metadata dicts
+768:    log_tool_call("zakops_inject_quarantine", {
+769:        "source_message_id": source_message_id,
+771:        "correlation_id": correlation_id,
+772:        "schema_version": schema_version,
+777:    if not source_message_id:
+778:        errors.append("source_message_id is required")
+779:    if not email_subject:
+780:        errors.append("email_subject is required")
+785:    if not schema_version:
+786:        errors.append("schema_version is required")
+787:    if schema_version and schema_version not in ("1.0.0",):
+788:        errors.append(f"Unknown schema_version '{schema_version}'. Allowed: ['1.0.0']")
+789:    if not correlation_id:
+790:        errors.append("correlation_id is required")
+791:    if not email_body_snippet:
+792:        errors.append("email_body_snippet is required")
+804:    # P1-06: Build full payload with source_message_id mapped to message_id
+806:        "source_message_id": source_message_id,
+807:        "message_id": source_message_id,
+808:        "email_subject": email_subject,
+811:        "schema_version": schema_version,
+812:        "correlation_id": correlation_id,
+813:        "email_body_snippet": email_body_snippet,
+818:        "sender_name": sender_name,
+819:        "sender_domain": sender_domain,
+820:        "sender_company": sender_company,
+821:        "received_at": received_at,
+822:        "triage_summary": triage_summary,
+823:        "company_name": company_name,
+824:        "broker_name": broker_name,
+825:        "urgency": urgency,
+826:        "confidence": confidence,
+827:        "extraction_evidence": extraction_evidence,
+828:        "field_confidences": field_confidences,
+829:        "source_thread_id": source_thread_id,
+830:        "tool_version": tool_version,
+831:        "prompt_version": prompt_version,
+832:        "langsmith_run_id": langsmith_run_id,
+833:        "langsmith_trace_url": langsmith_trace_url,
+834:        "attachments": attachments,
+841:    if correlation_id:
+842:        headers["X-Correlation-ID"] = correlation_id
+852:            cid = correlation_id
+859:                    "correlation_id": cid,
+868:                    "correlation_id": cid,
+877:                    "correlation_id": cid,
+883:        log_error(f"Failed to inject quarantine item: {e}", {"source_message_id": source_message_id})

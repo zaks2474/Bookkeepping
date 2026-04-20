@@ -1,0 +1,1 @@
+    deal_id               VARCHAR(20) PRIMARY KEY REFERENCES zakops.deals(deal_id),

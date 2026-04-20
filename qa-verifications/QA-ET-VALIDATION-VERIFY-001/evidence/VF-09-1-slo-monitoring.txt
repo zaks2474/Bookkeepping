@@ -1,0 +1,721 @@
+=== VF-09.1 SLO + MONITORING ARTIFACTS ===
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:331:   - Include rollback strategy (restore DB backup; disable encryption wrapper only if data loss risk is controlled).
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:397:- DB backup capability before applying crypto/backfill migrations.
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:440:- Precondition: DB backup taken and recorded.
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:446:  - Restore DB backup
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:894:- DB migrations require backup + rollback plan.
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:930:- Pre-migration DB backup.
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:932:- Migration scripts must support rollback or restore procedure.
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:1031:## Phase 7 — Deployment, Monitoring, Operations (backups, rollbacks, runbooks, incident response)
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:1052:- Make production exposure safe and operable with runbooks, backups, monitoring, and release gates.
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:1062:  - backup/restore
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:1072:  - alert thresholds
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:1076:- Backup/restore drill (must be executed and logged).
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:1087:  - `gate_artifacts/backup_restore_drill.log`
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:1088:  - `gate_artifacts/monitoring_smoke.log`
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:1093:  - backup/restore
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:1097:  - dashboards + alert thresholds documented and exported (format TBD; must be reproducible)
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:1100:- Infra access to monitoring stack and the host where services run.
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:1101:- Ability to perform and log a DB backup + restore drill (non-destructive environment).
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:1105:  - Mitigation: runbook lint gate + quarterly restore drill + incident postmortem updates.
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:1106:- Risk: backup/restore drill is treated as optional.
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:1107:  - Mitigation: Stop‑Ship if `backup_restore_drill.log` is missing or fails.
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:1121:- `gate_artifacts/backup_restore_drill.log` contains `BACKUP_RESTORE: PASSED`
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:1125:- `gate_artifacts/monitoring_smoke.log` contains `MONITORING_SMOKE: PASSED`
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:1138:- `gate_artifacts/backup_restore_drill.log`
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:1140:- `gate_artifacts/monitoring_smoke.log`
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:1161:- Migration trigger monitoring:
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:1175:  - quarterly restore drill
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:1191:- Stable monitoring/metrics from Phase 7 (otherwise benchmarks cannot be trusted).
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:1266:| P7-BACKUP-001 | 7 | Infra | backups | restore drill PASS | (canonical) | `backup_restore_drill.log` |
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:1267:| P7-MONITORING-001 | 7 | Infra | monitoring | monitoring smoke checks PASS | (canonical) | `monitoring_smoke.log` |
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:1320:   - Rollback: disable the tool execution path until fixed; restore from DB backup if side effects occurred
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:1330:   - Rollback: restore pre-migration DB backup; rotate keys if exposure suspected
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:1350:   - Rollback: pause workers; drain DLQ with operator approval; restore DB backup if needed
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:1352:10) **Backup/restore procedures fail when needed**
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:1353:    - Detection: `backup_restore_drill.log`
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:1354:    - Mitigation: scheduled restore drills; versioned runbooks (`runbook_lint.log`)
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:1372:5) Phase 7 PASS (runbooks + backup/restore drill)
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:1390:- `runbook_lint.log`, `backup_restore_drill.log`, `monitoring_smoke.log`, `release_readiness_check.json`
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:1402:- Infra (ops/runbooks/backup)
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:1571:- `backup_restore_drill.log` → drill
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v2.md:1575:- `monitoring_smoke.log` → monitoring
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_PHASES_3_5.md:32:| **5** | k6 thresholds + vLLM docs + cost tracking | Thresholds from SLOs, docs exist |
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_PHASES_3_5.md:700:## PHASE 5: PERFORMANCE (SLO-BOUND)
+/home/zaks/bookkeeping/docs/V5PP-EXECUTION-REPORT.md:25:| 11 | Migration safety | PASS | Backup at ~/claude-backup-20260206/ |
+/home/zaks/bookkeeping/docs/SURFACE-REMEDIATION-002-COMPLETION.md:111:- `agent-api/docker-compose.yml`: `GF_SECURITY_ADMIN_PASSWORD=admin` (Grafana dev tool, monitoring profile)
+/home/zaks/bookkeeping/docs/SURFACE-REMEDIATION-002-COMPLETION.md:129:- `/api/alerts/route.ts`
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v1.md:152:| **Availability** | Uptime | 99.9% during business hours | Health check monitoring | [B][S2] |
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v1.md:522:| Checkpoint write fails | Exception on save | Retry 3x with backoff; alert if persistent |
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v1.md:637:| Model corruption | Health check fails | Reload model; alert operator |
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v1.md:640:- **Metrics**: tokens/sec, TTFT_p50/p95, requests/sec, error_rate, cache_hit_rate, cloud_fallback_rate
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v1.md:831:- **Metrics**: tool_call_count (by tool), tool_latency_p95, validation_failure_rate, cache_hit_rate
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v1.md:993:| Embedding service down | Health check fails | Degrade to keyword search; alert |
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v1.md:995:| Slow retrieval (>250ms) | Latency monitoring | Increase IVFFlat lists; consider Qdrant |
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v1.md:999:- **Metrics**: retrieval_latency_p95, recall_at_k (offline eval), reranker_uplift
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v1.md:1149:| Checkpoint bloat | Storage monitoring | TTL on old checkpoints (default: 30 days) |
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v1.md:1150:| Queue backlog | Depth >100 | Scale workers; alert operator |
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v1.md:1168:Provide complete visibility into agent operations for debugging, monitoring, and compliance. Evidence Note: [B][C][S2][S3].
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v1.md:1172:- Aggregate metrics for dashboards and alerting
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v1.md:1924:# Daily backup script
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v1.md:1927:pg_dump -h localhost -U zakops zakops | gzip > /backups/zakops_${DATE}.sql.gz
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v1.md:1929:# Verify backup
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v1.md:1930:gunzip -c /backups/zakops_${DATE}.sql.gz | head -100
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v1.md:1933:find /backups -name "zakops_*.sql.gz" -mtime +30 -delete
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v1.md:2091:| 10 | Disaster recovery plan sparse | Document backup/restore procedures | Low |
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_PHASES_6_8.md:31:| **6** | OTEL conventions + SLO alerts + canary + dashboards | Conventions defined, alerts generated |
+/home/zaks/bookkeeping/docs/QA-MASTER-PROGRAM-VERIFY-001A.md:604:Add /health to MCP server for monitoring.
+/home/zaks/bookkeeping/docs/QA-MASTER-PROGRAM-VERIFY-001B.md:152:grep -n "anomaly\|severity\|warning\|alert\|critical" /home/zaks/zakops-agent-api/apps/dashboard/src/components/dashboard/AnomalyBadge.tsx 2>&1 | tee /home/zaks/bookkeeping/docs/_qa_evidence/qa-master-program-verify-001b/VF-02-3.txt
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:349:curl -sf -X POST http://localhost:8091/api/deals/1/restore 2>/dev/null | jq . \
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:350:  | tee "$L2_DIR/restore_response.txt"
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:353:  | tee "$L2_DIR/restore_db_verify.txt"
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:477:| V-L2.3 | Restore: COMPLETE reversal | status='active', stage reset | restore_*.txt | **REMEDIATE IF PARTIAL** |
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:755:grep -rn "transition\|archive\|restore\|invalid.*state\|concurrent.*archive" \
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:769:# V-L5.5: E2E flow tests (create → archive → restore)
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:808:# V-L5.12: Count invariant monitoring exists
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:809:grep -rn "invariant.*monitor\|count.*check\|invariant_holds\|deal.*count.*alert" \
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:811:  | tee "$L5_DIR/invariant_monitoring.txt"
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:821:| V-L5.5 | E2E flow tests (DI-ISSUE-007) | create→archive→restore flow | e2e_flow_tests.txt | |
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:828:| V-L5.12 | Count invariant monitoring (Q2) | mechanism found | invariant_monitoring.txt | **REMEDIATE IF MISSING** |
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:1184:  4. Revert via trap/restore — restore EXACT original state
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:1280:  cp "$HQ_PAGE" /tmp/qa-nc4-backup.tsx
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:1289:  cp /tmp/qa-nc4-backup.tsx "$HQ_PAGE"
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED.md:1585:[ ] Observability with alerts and invariant monitors
+/home/zaks/bookkeeping/docs/QA-CCE2-VERIFY-001.md:617:### ENH-4: Hook contract drift alert in stop diagnostics
+/home/zaks/bookkeeping/docs/MISSION-PROMPT-QUICKSTART.md:84:- Email alerts: STARTED, PASS, STUCK, MAX_CYCLES
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED-V2.md:120:- `POST /api/deals/{deal_id}/restore` (restore)
+/home/zaks/bookkeeping/docs/QA-DI-VERIFY-REMEDIATION-UNIFIED-V2.md:186:grep -n "def archive_deal\|def mark_deal_deleted\|def restore_deal" \
+/home/zaks/bookkeeping/docs/LEGACY_DECOMMISSION_REPORT_20260126.md:196:If something goes wrong, restore from archives:
+/home/zaks/bookkeeping/docs/QA-CCE-VERIFY-001.md:154:**If PF-5 fails:** continue verification, but classify bookkeeping checks as `PARTIAL` until read access is restored.
+/home/zaks/bookkeeping/docs/INFRA_STRATEGY_IMPLEMENTATION_READY.md:329:**Action:** Freeze migration, restore deleted V4 scripts from git (`git checkout HEAD~N -- tools/infra/schema-diff.sh`), run both codegen and V4 schema-diff in parallel until stabilized.
+/home/zaks/bookkeeping/docs/INFRA_STRATEGY_IMPLEMENTATION_READY.md:369:| hey-api | ~4,000 | Feb 2026 | Yes (plugin) | Clean | v0.x — pin version | Acceptable backup |
+/home/zaks/bookkeeping/docs/PASS2_MASTER_SELECTION.md:466:| **R-03**: AsyncPostgresSaver pool conflicts with app pool | Connection starvation | Low | Use separate connection pool for checkpointer; monitor connections |
+/home/zaks/bookkeeping/docs/MISSION-LANGSMITH-SHADOW-PILOT-READY-001.md:249:- **ELSE** → Warning + state flag (recommended). The health endpoint can include `api_key_configured: true/false` for monitoring.
+/home/zaks/bookkeeping/docs/DATABASE_FORENSICS_20260126.md:64:└── backups/                    ← Registry backups
+/home/zaks/bookkeeping/docs/DASHBOARD_ROUND4_FORENSIC.Codex.20260205-1723-r4d1.md:137:- Better ideas: (1) Add “Archive completed after N days” scheduled job with UI toggle. (2) Add multi-stage trash with restore.
+/home/zaks/bookkeeping/docs/DASHBOARD_ROUND4_FORENSIC.Codex.20260205-1723-r4d1.md:188:L-13 (P2) Action status casing mismatch breaks due actions and alerts
+/home/zaks/bookkeeping/docs/DASHBOARD_ROUND4_FORENSIC.Codex.20260205-1723-r4d1.md:189:- Evidence: deferred-actions due filter uses uppercase statuses `PENDING_APPROVAL, READY, QUEUED` (`apps/dashboard/src/app/api/deferred-actions/due/route.ts:28-32`); alerts route filters `FAILED` and `PENDING_APPROVAL` (`apps/dashboard/src/app/api/alerts/route.ts:58-71`). Backend action statuses are typically lowercase in DB and UI.
+/home/zaks/bookkeeping/docs/DASHBOARD_ROUND4_FORENSIC.Codex.20260205-1723-r4d1.md:194:- Verification: due actions and alerts counts match `/api/actions` real status values.
+/home/zaks/bookkeeping/docs/DASHBOARD_ROUND4_FORENSIC.Codex.20260205-1723-r4d1.md:332:- L-08: (1) Real agent health check with latency and model metadata. (2) Provider connection history and alerts.
+/home/zaks/bookkeeping/docs/DASHBOARD-WORLDCLASS-REMEDIATION-001-COMPLETION.md:66:| `src/app/chat/page.tsx` | History rail integration, session archive/restore, history toggle button |
+/home/zaks/bookkeeping/docs/INFRA_DECISION_RND_INNOV_PASS2.Opus.20260206-0445-a7c3.md:51:3. safeParse failure alerting in production (not just compile-time checks)
+/home/zaks/bookkeeping/docs/HYBRID-GUARDRAIL-EXEC-002_CONTRARIAN_MASTER.md:122:| N-06 | Legacy import check needed for agent types in CI | ESLint alone not sufficient — need grep-based backup |
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v2.md:167:| **Availability** | Uptime | 99.9% during business hours | Health check monitoring | [B][S2] |
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v2.md:789:| Checkpoint write fails | Exception on save | Retry 3x with backoff; alert if persistent |
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v2.md:955:| Model corruption | Health check fails | Reload model; alert operator |
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v2.md:958:- **Metrics**: tokens/sec, TTFT_p50/p95, requests/sec, error_rate, cache_hit_rate, cloud_fallback_rate
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v2.md:1230:- **Metrics**: tool_call_count (by tool), tool_latency_p95, validation_failure_rate, cache_hit_rate
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v2.md:1474:| Embedding service down | Health check fails | Degrade to keyword search; alert |
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v2.md:1476:| Slow retrieval (>250ms) | Latency monitoring | Increase IVFFlat lists; consider Qdrant |
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v2.md:1480:- **Metrics**: retrieval_latency_p95, recall_at_k (offline eval), reranker_uplift
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v2.md:1682:| Checkpoint bloat | Storage monitoring | TTL on old checkpoints (default: 30 days) |
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v2.md:1683:| Queue backlog | Depth >100 | Scale workers; alert operator |
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v2.md:1701:Provide complete visibility into agent operations for debugging, monitoring, and compliance. Evidence Note: [B][C][S2][S3].
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v2.md:1705:- Aggregate metrics for dashboards and alerting
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v2.md:2747:# backup/daily_backup.sh
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v2.md:2748:# Container-aware backup script
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v2.md:2751:BACKUP_DIR="/backups"
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v2.md:2762:# Verify backup is valid
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v2.md:2770:# Test restore to temporary database (optional, run weekly)
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v2.md:2771:if [ "$1" == "--verify-restore" ]; then
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v2.md:2772:    docker exec zakops-postgres psql -U zakops -c "CREATE DATABASE zakops_restore_test"
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v2.md:2774:        docker exec -i zakops-postgres psql -U zakops zakops_restore_test
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v2.md:2778:        "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='public'" zakops_restore_test)
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v2.md:2780:    docker exec zakops-postgres psql -U zakops -c "DROP DATABASE zakops_restore_test"
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Master-Document-v2.md:2975:| 25 | Backup/recovery unsafe | Container-aware backup with verification §10.4 |
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_PHASES_9_10.md:33:-- Core tables to preserve during chaos/restore
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_PHASES_9_10.md:80:| Restore drill completes | `artifacts/restore/restore_drill_*.json` |
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_PHASES_9_10.md:165:tools/ops/backup_restore/
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_PHASES_9_10.md:166:├── backup.sh              # pg_dump + checksums + manifest
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_PHASES_9_10.md:167:├── restore.sh             # Restore to empty container
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_PHASES_9_10.md:169:└── restore_drill_runner.py
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_PHASES_9_10.md:172:└── compose.restore.yml    # Isolated restore environment
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_PHASES_9_10.md:174:ops/runbooks/restore-drills/
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_PHASES_9_10.md:185:**Gate**: `tools/gates/phase9_restore_drill_gate.sh`
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_PHASES_9_10.md:186:- Runs full drill: backup → empty env → restore → verify
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_PHASES_9_10.md:187:- Writes `artifacts/restore/restore_drill_*.json`
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_PHASES_9_10.md:330:restore-drill: ; python3 tools/ops/backup_restore/restore_drill_runner.py
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_PHASES_9_10.md:352:git commit -m "feat(phase9): blue/green, game days, restore drill, runbook validation"
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_PHASES_9_10.md:370:- [ ] `restore_drill_runner.py` completes
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_PHASES_9_10.md:390:- [ ] `artifacts/restore/restore_drill_*.json`
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_ROUND2_CONTRARIAN_PLAN_FINAL.md:281:**ZK-ISSUE-0022 (Archive/restore)**:
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_ROUND2_CONTRARIAN_PLAN_FINAL.md:282:1. Add `POST /api/deals/{id}/archive` and `POST /api/deals/{id}/restore`
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_ROUND2_CONTRARIAN_PLAN_FINAL.md:284:3. Test: archive deal, verify hidden; restore, verify visible
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_ROUND2_CONTRARIAN_PLAN_FINAL.md:535:| ZK-ISSUE-0022 | P3 | Archive/restore missing | R2-3 | backend | Add /archive and /restore endpoints | Archive/restore works | Endpoints exist |
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_ROUND2_CONTRARIAN_PLAN_FINAL.md:667:3. Add POST /api/deals/{id}/restore endpoint
+/home/zaks/bookkeeping/docs/ZakOps-V7PP-Claude-Code-Infrastructure-Reference-Version-2.md:641:**Resolution:** The -mnt-c-Users-mzsai/memory directory is now a symlink pointing to -home-zaks/memory. Both launch paths resolve to the same physical directory. memory-sync.sh targets the canonical -home-zaks path. A backup of the pre-symlink state is preserved at -mnt-c-Users-mzsai/memory.bak.20260209/.
+/home/zaks/bookkeeping/docs/ZakOps-V7PP-Claude-Code-Infrastructure-Reference-Version-2.md:1002:1. **Auto-pruning:** Calls `prune-allows.py --quiet` to remove redundant root-level allow entries. Creates backup before modification.
+/home/zaks/bookkeeping/docs/ZakOps-V7PP-Claude-Code-Infrastructure-Reference-Version-2.md:1159:Under `dangerouslySkipPermissions: true`, the entire allow array is dead weight. The pruner correctly finds 0 redundant entries (root has `Bash(make:*)` universal wildcard, not specific `make sync-*` patterns). A backup exists at `/root/.claude/settings.json.bak.20260209`.
+/home/zaks/bookkeeping/docs/ZakOps-V7PP-Claude-Code-Infrastructure-Reference-Version-2.md:1213:| Allow backup | /root/.claude/settings.json.bak.20260209 |
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3.Codex.20260204-021313-1158.md:16:  Pros: Eliminates split-brain, Single audit trail, Simpler ops/backup
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3.Codex.20260204-021313-1158.md:228:4. Add archive/restore endpoints in orchestration API (ZK-ISSUE-0022).
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3.Codex.20260204-021313-1158.md:233:- Gate (must-pass checks): Approving quarantine creates a deal; stage transitions validated; archive/restore works.
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3.Codex.20260204-021313-1158.md:237:- Archive/restore toggles deleted flag
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3.Codex.20260204-021313-1158.md:241:- Archive/restore curl tests
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3.Codex.20260204-021313-1158.md:255:- Risks + rollback: Operational load from ingestion and indexing; mitigate with throttling and monitoring.
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3.Codex.20260204-021313-1158.md:331:| ZK-ISSUE-0022 | Phase 3 | Add archive/restore endpoints | /archive and /restore endpoints work | Archive/restore supported |
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3.Codex.20260204-021313-1158.md:389:| ZK-ISSUE-0022 | P3 | S | backend | Phase 3 | Archive/restore endpoints work | Archive supported |
+/home/zaks/bookkeeping/docs/V6PP-SETUP-GUIDE.md:759:cp ~/claude-backup-$(date +%Y%m%d)/* ~/.claude/
+/home/zaks/bookkeeping/docs/V6PP-SETUP-GUIDE.md:765:cp ~/claude-backup-$(date +%Y%m%d)/settings.json ~/.claude/
+/home/zaks/bookkeeping/docs/V6PP-SETUP-GUIDE.md:788:cp ~/claude-backup-$(date +%Y%m%d)/settings.json ~/.claude/settings.json
+/home/zaks/bookkeeping/docs/DASHBOARD-WORLDCLASS-REMEDIATION-001-BASELINE.md:11:| F-05 | Quarantine ghost input | `reproduced` | Screenshot 9: "jyh" in Operator field. Code: `quarantine/page.tsx:96-113` — `operatorName` persisted to localStorage on every keystroke (line 107-108), restored on mount (line 98-99). The ghost value is a previously-saved partial input that reappears on page revisit. |
+/home/zaks/bookkeeping/docs/QA-R4C-VERIFY-001.md:539:  rg -n 'deferred-actions|alerts|status|toLowerCase|enum' /home/zaks/zakops-agent-api/apps/dashboard/src /home/zaks/zakops-backend/src --glob '*.ts' --glob '*.tsx' --glob '*.py'
+/home/zaks/bookkeeping/docs/QA-R4C-VERIFY-001.md:540:} | tee /home/zaks/bookkeeping/qa-verifications/QA-R4C-VERIFY-001/evidence/VF-04.6-alert-enum-drift.txt
+/home/zaks/bookkeeping/docs/DEAL-LIFECYCLE-AGENTS-PLAN.ARCHIVED-20251227.md:175:  - stage + summary + next actions + alerts
+/home/zaks/bookkeeping/docs/DEAL-LIFECYCLE-AGENTS-PLAN.ARCHIVED-20251227.md:246:  - pipeline + alerts
+/home/zaks/bookkeeping/docs/DEAL-LIFECYCLE-AGENTS-PLAN.ARCHIVED-20251227.md:248:  - stage funnel, stuck-deal alerts, due actions, quarantine inbox, agent activity log
+/home/zaks/bookkeeping/docs/QA-DWR-VERIFY-001.md:417:  rg -n 'sessionId|restoreSession|getChatSession|Session:|New Chat|loadSession|saveSession' /home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:2:## Integrating SLO-Driven Development, Security Frameworks, and Operational Resilience
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:7:**Changes from v1:** Added Phase 0 (SLOs), OWASP framework anchoring, trust UX, game days, data governance
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:15:| Phase 0: SLOs + Risk Model | GPT review | Defines "done" before starting |
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:22:| k6 thresholds as hard gates | GPT review | Performance tied to SLOs |
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:33:│  Day 1-3   PHASE 0: DEFINITION OF "PRODUCTION" + SLOs + RISK MODEL          │
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:38:│            GATE: SLO document signed off, risk register created             │
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:72:│  Week 5-6  PHASE 5: PERFORMANCE (SLO-BOUND)                                 │
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:73:│            • k6 thresholds as hard pass/fail tied to SLOs                   │
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:80:│  Week 6-7  PHASE 6: OBSERVABILITY (OTEL + SLO ALERTS)                       │
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:82:│            • SLO-based alerts (not resource-based)                          │
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:83:│            • Synthetic monitoring (canary transactions)                     │
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:86:│            GATE: All SLOs have alerts, canary running                       │
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:89:│            • Retention + deletion + backup restore policies                 │
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:106:│            • Restore drill: backup to empty env                             │
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:109:│            GATE: Game day passed, restore drill completed                   │
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:123:# PHASE 0: DEFINITION OF "PRODUCTION" + SLOs + RISK MODEL
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:130:## 0.1 Service Level Objectives (SLOs)
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:143:### 0.1.2 SLO Targets
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:154:    latency_p95:
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:170:    latency_p95:
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:181:    approval_latency_p95:
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:193:- Monthly error budget = 100% - SLO target
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:202:| 25-50% | YELLOW | Review recent changes, increase monitoring |
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:251:| R10 | Backup restore fails when needed | Resilience | Low | Critical | Monthly restore drills | Platform | Open |
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:266:├── [ ] docs/slos/SLO_DEFINITIONS.md
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:278:| SLOs defined for all critical services | Document review |
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:619:        malicious_tool_output = "<script>alert('xss')</script>"
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1106:# PHASE 5: PERFORMANCE (SLO-BOUND)
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1110:- k6 thresholds as hard gates tied to SLOs
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1116:## 5.1 k6 Thresholds Tied to SLOs
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1131:  // HARD THRESHOLDS - TIED TO SLOs
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1133:    // API SLO: 99.5% availability
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1136:    // API SLO: P95 < 500ms
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1139:    // API SLO: P99 < 2000ms
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1142:    // Agent SLO: 99.0% availability
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1145:    // Agent SLO: P95 < 5000ms
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1267:    ttft_p95_ms: 450
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1270:    e2e_p95_ms: 3500
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1278:# PHASE 6: OBSERVABILITY (OTEL + SLO ALERTS)
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1283:- SLO-based alerts (not resource-based)
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1284:- Synthetic monitoring
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1341:## 6.2 SLO-Based Alerts
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1346:# ops/observability/prometheus/alerts/slo_alerts.yml
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1349:  - name: slo_alerts
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1351:      # API Availability SLO: 99.5%
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1352:      - alert: APIAvailabilitySLOBreach
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1364:          summary: "API availability below 99.5% SLO"
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1368:      # API Latency SLO: P95 < 500ms
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1369:      - alert: APILatencySLOBreach
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1379:          summary: "API P95 latency above 500ms SLO"
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1382:      # Agent Availability SLO: 99.0%
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1383:      - alert: AgentAvailabilitySLOBreach
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1395:          summary: "Agent availability below 99.0% SLO"
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1398:      - alert: ErrorBudgetNearlyExhausted
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1414:These alerts are resource-based, not SLO-based:
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1417:   Why bad: High CPU is fine if SLOs are met
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1427:✅ SLO breach (availability, latency)
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1484:        await send_alert(f"Canary failure: {results}")
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1550:    - Remove from backups (after retention)
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1720:- [ ] Identify backup to restore (date, size)
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1721:- [ ] Prepare empty restore environment
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1725:- [ ] Stop services in restore env
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1726:- [ ] Download backup from storage
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1727:- [ ] Verify backup integrity (checksum)
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1762:| 0 | SLOs defined | 100% services |
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1773:| 5 | k6 SLO thresholds | All pass |
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1775:| 6 | SLO alerts | All configured |
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1788:| SLO Compliance (API) | ≥99.5% |
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1789:| SLO Compliance (Agent) | ≥99.0% |
+/home/zaks/bookkeeping/docs/ZAKOPS_PRODUCTION_READINESS_ROADMAP_v2.md:1804:| 2.0 | 2026-01-25 | Added Phase 0 (SLOs), OWASP frameworks, golden traces, trust UX, game days, data governance |
+/home/zaks/bookkeeping/docs/DEAL-INTEGRITY-001.METAQA.CloudCode.20260208T165921Z.md:189:- Mission 2 gates test archive/restore but not new deal creation across services
+/home/zaks/bookkeeping/docs/CHAT-FRONT-DOOR-PLAN.md:289:- Case file: Priority sections first (status, next_actions, alerts)
+/home/zaks/bookkeeping/docs/CHAT-FRONT-DOOR-PLAN.md:462:      "alerts": 0
+/home/zaks/bookkeeping/docs/CHAT-FRONT-DOOR-PLAN.md:484:    "get_deal_status",         # Returns: stage, alerts, next_actions
+/home/zaks/bookkeeping/docs/CHAT-FRONT-DOOR-PLAN.md:957:### 8.1 Service Level Objectives (SLOs)
+/home/zaks/bookkeeping/docs/CHAT-FRONT-DOOR-PLAN.md:960:SLO = {
+/home/zaks/bookkeeping/docs/CHAT-FRONT-DOOR-PLAN.md:963:        "p95": 3.0,
+/home/zaks/bookkeeping/docs/CHAT-FRONT-DOOR-PLAN.md:968:        "p95": 5.0,
+/home/zaks/bookkeeping/docs/CHAT-FRONT-DOOR-PLAN.md:973:        "p95": 1.0,
+/home/zaks/bookkeeping/docs/CHAT-FRONT-DOOR-PLAN.md:1399:    # All should complete within SLO
+/home/zaks/bookkeeping/docs/CHAT-FRONT-DOOR-PLAN.md:1401:        assert result["duration"] < 5.0  # p99 SLO
+/home/zaks/bookkeeping/docs/CHAT-FRONT-DOOR-PLAN.md:1563:- Cost creep → Hard caps + daily cost alerts (Phase 5)
+/home/zaks/bookkeeping/docs/V6PP-to-V7PP-Patch-SELF-HEAL-001.md:130:1. **Auto-pruning:** Calls `prune-allows.py --quiet` to remove redundant root-level allow entries. Creates backup before modification.
+/home/zaks/bookkeeping/docs/V6PP-to-V7PP-Patch-SELF-HEAL-001.md:287:Under `dangerouslySkipPermissions: true`, the entire allow array is dead weight. The pruner correctly finds 0 redundant entries (root has `Bash(make:*)` universal wildcard, not specific `make sync-*` patterns). A backup exists at `/root/.claude/settings.json.bak.20260209`.
+/home/zaks/bookkeeping/docs/V6PP-to-V7PP-Patch-SELF-HEAL-001.md:341:| Allow backup | /root/.claude/settings.json.bak.20260209 |
+/home/zaks/bookkeeping/docs/RESEARCH_DELETION_CONTROLS.md:15:- **Recommendation**: Use the existing `mark_deal_deleted()` helper to flag a deal as deleted, remove its thread/email mappings (to prevent future email auto-routing), and keep the record for audit. Provide a complementary `restore_deal()` API to re-enable the deal and re-register its known thread IDs for future mapping. The default `/api/deals` list should omit deleted records (handled by `DealRegistry.list_deals(include_deleted=False)`).
+/home/zaks/bookkeeping/docs/RESEARCH_DELETION_CONTROLS.md:27:1. **Deals**: Soft delete via `deleted` flag + `deleted_at` timestamp in the registry + new archive/restore endpoints. Default API listing excludes deleted deals; the restore path re-registers thread mappings.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:183:| 3 | Auth appears restored in app layer but edge layer remains open | MEDIUM | External injection risk | Dual-layer verification in Phase 7 Gate G7-01/G7-02 |
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:206:- P0-06: Remove bridge auth bypass and restore Bearer enforcement for `/mcp`, `/sse`, `/messages` paths.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:226:- G0-05: Kill switch OFF restores normal write behavior.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:399:- G4-07: Undo approval archives deal and restores quarantine item to pending.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:535:**Purpose:** Declare production readiness through SLOs, monitoring, load/DR validation, and shadow burn-in data integrity.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:543:- P8-01: Define and publish SLOs (injection latency, UI load, approve-to-deal, uptime).
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:544:- P8-02: Configure monitoring/alerting cadence and kill-switch alerts.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:546:- P8-04: Execute backup and restore drills across all three databases.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:548:- P8-06: Run 7-day shadow burn-in and collect precision/recall dataset.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:555:- G8-01: SLOs are defined and documented.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:556:- G8-02: Monitoring and alerts are configured.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:557:- G8-03: Load test is completed and SLOs are met under load.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:558:- G8-04: Backup and restore tests are completed.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:559:- G8-05: Seven-day shadow burn-in dataset is clean and measurable.
+/home/zaks/bookkeeping/docs/MISSION-PROMPT-STANDARD.md:129:  const [deals, stats, alerts] = await Promise.all([
+/home/zaks/bookkeeping/docs/MISSION-PROMPT-STANDARD.md:135:  const [dealsResult, statsResult, alertsResult] = await Promise.allSettled([
+/home/zaks/bookkeeping/docs/MISSION-PROMPT-STANDARD.md:140:  const alerts = alertsResult.status === 'fulfilled' ? alertsResult.value : [];
+/home/zaks/bookkeeping/docs/MISSION-PROMPT-STANDARD.md:141:  // Page renders deals and stats even if alerts fails
+/home/zaks/bookkeeping/docs/MISSION-PROMPT-STANDARD.md:618:| Human involvement | Full control | Monitor only (email alerts) | Full control | Monitor only |
+/home/zaks/bookkeeping/docs/QA-S10-14-VERIFY-001.md:339:  rg -n 'p95|p99|latency|bundle|payload|threshold|budget|strict|advisory' /home/zaks/bookkeeping/docs/PERFORMANCE-BUDGET.md
+/home/zaks/bookkeeping/docs/ACTION-ENGINE-WORLD-CLASS-UPGRADE-SUMMARY.md:88:**Problem:** No way to monitor queue health, success rates, or performance in production.
+/home/zaks/bookkeeping/docs/MISSION-INFRA-AWARENESS-V5PP-CLAUDE-CODE-RESET.FINAL.md:208:# Git restore
+/home/zaks/bookkeeping/docs/MISSION-INFRA-AWARENESS-V5PP-CLAUDE-CODE-RESET.FINAL.md:1320:mkdir -p ~/claude-backup-$(date +%Y%m%d)
+/home/zaks/bookkeeping/docs/MISSION-INFRA-AWARENESS-V5PP-CLAUDE-CODE-RESET.FINAL.md:1321:cp -r ~/.claude/settings.json ~/claude-backup-$(date +%Y%m%d)/ 2>/dev/null
+/home/zaks/bookkeeping/docs/MISSION-INFRA-AWARENESS-V5PP-CLAUDE-CODE-RESET.FINAL.md:1322:cp -r ~/.claude/hooks/ ~/claude-backup-$(date +%Y%m%d)/ 2>/dev/null
+/home/zaks/bookkeeping/docs/MISSION-INFRA-AWARENESS-V5PP-CLAUDE-CODE-RESET.FINAL.md:1323:cp -r $MONOREPO_ROOT/.claude/ ~/claude-backup-$(date +%Y%m%d)/repo-claude/ 2>/dev/null
+/home/zaks/bookkeeping/docs/MISSION-INFRA-AWARENESS-V5PP-CLAUDE-CODE-RESET.FINAL.md:1338:cp -r ~/claude-backup-$(date +%Y%m%d)/* ~/.claude/
+/home/zaks/bookkeeping/docs/MISSION-INFRA-AWARENESS-V5PP-CLAUDE-CODE-RESET.FINAL.md:1339:cp -r ~/claude-backup-$(date +%Y%m%d)/repo-claude/* $MONOREPO_ROOT/.claude/
+/home/zaks/bookkeeping/docs/MISSION-INFRA-AWARENESS-V5PP-CLAUDE-CODE-RESET.FINAL.md:1342:cp ~/claude-backup-$(date +%Y%m%d)/settings.json ~/.claude/
+/home/zaks/bookkeeping/docs/MISSION-INFRA-AWARENESS-V5PP-CLAUDE-CODE-RESET.FINAL.md:1362:2. Create backup (Fix 11 Phase A)
+/home/zaks/bookkeeping/docs/MISSION-INFRA-AWARENESS-V5PP-CLAUDE-CODE-RESET.FINAL.md:1416:| 11 | Migration safety | [PASS/FAIL] | backup created |
+/home/zaks/bookkeeping/docs/MISSION-INFRA-AWARENESS-V5PP-CLAUDE-CODE-RESET.FINAL.md:1446:7. HOOKS MUST NOT SLOW ITERATION. pre-edit < 1s, stop < 60s.
+/home/zaks/bookkeeping/docs/PHASE-0-CURRENT-STATE-REPORT.md:96:- `POST /api/deals/{deal_id}/restore` - Unarchive
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_HONEST_ASSESSMENT.Claude-Opus-4-5.20260204-0030-839ce03a.md:133:    JUNK = "junk"             # Rejected (can restore)
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_ROUND2_EVAL.PASS2.Codex.20260204-1728-102efc.md:80:11) Archive/restore endpoints missing
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_ROUND2_EVAL.PASS2.Codex.20260204-1728-102efc.md:83:- Detection signal: 404 on /archive or /restore.
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_ROUND2_EVAL.PASS2.Codex.20260204-1728-102efc.md:113:- Rollback: restore env vars; isolate legacy code.
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_ROUND2_EVAL.PASS2.Codex.20260204-1728-102efc.md:147:- Mitigation: enforce outbox worker in deployment + monitoring.
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_ROUND2_EVAL.PASS2.Codex.20260204-1728-102efc.md:251:- Verification: add explicit acceptance tests per issue (approve→deal, folder scaffold, notes endpoint, archive/restore, retention policy, executors wired, scheduler).
+/home/zaks/bookkeeping/docs/AGENT_BRAIN_ROUND3_FORENSIC.Codex.20260204-1903-1b4aee.md:389:- Logging checks: correlation_id present in agent logs + backend deal_events; p95 latency target <= 3s for tool-free responses.
+/home/zaks/bookkeeping/docs/MISSION-DASHBOARD-R4-CONTINUE-001.md:248:| DL-041 | /api/alerts and /api/deferred-actions/due status enum drift | P2 |
+/home/zaks/bookkeeping/docs/MISSION-DASHBOARD-R4-CONTINUE-001.md:254:**REC-022 (Filter persistence):** Persist active filters in URL search params. On back navigation, restore filters from URL. Use `useSearchParams` in Next.js App Router.
+/home/zaks/bookkeeping/docs/MISSION-DASHBOARD-R4-CONTINUE-001.md:269:- No status enum mismatches on /api/alerts
+/home/zaks/bookkeeping/docs/MISSION-DASHBOARD-R4-CONTINUE-001.md:370:Pagination, filters, and keyboard navigation work. SSE reconnects. Buttons are debounced. No enum drift on alert endpoints.
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3_FINAL.md:294:- Secrets scan + alerting on long-lived tokens
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3_FINAL.md:391:6. **Rollback:** If issues within 24h, restore JSON/SQLite writes, investigate
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3_FINAL.md:406:**Rollback:** Re-enable JSON writes; restore from backup if data issues.
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3_FINAL.md:426:| T2.7 | Add `/api/deals/{id}/restore` endpoint | Backend | S | Same |
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3_FINAL.md:441:- [ ] Archive/restore endpoints work
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3_FINAL.md:447:- Archive/restore curl tests
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3_FINAL.md:551:**Objective:** Add user authentication, retention policy, monitoring.
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3_FINAL.md:566:| T5.8 | Add performance monitoring (response times) | Infra | M | Metrics service |
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3_FINAL.md:567:| T5.9 | Add error alerting (Slack/email on 500s) | Infra | M | Alert rules |
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3_FINAL.md:704:| ZK-ISSUE-0022 | Archive/restore missing | P3 | 2 | T2.6-T2.7 | Endpoints work (200) | [ ] |
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3_FINAL.md:782:└─ T2.7: Add /restore endpoint [Backend]
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3_FINAL.md:849:├─ T5.8: Add performance monitoring [Infra]
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3_FINAL.md:850:├─ T5.9: Add error alerting [Infra]
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_HONEST_ASSESSMENT.Codex.20260204-003640-02b34c.md:88:- Deletion/archive behavior: PARTIALLY IMPLEMENTED. DB has `deleted` flag but orchestration API lacks archive/restore endpoints; legacy API has archive/restore against JSON registry. (refs: `db/init/001_base_tables.sql:zakops.deals`, `src/api/deal_lifecycle/main.py:archive_deal`, `src/api/deal_lifecycle/main.py:restore_deal`)
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_ROUND2_EVAL.PASS1.Claude-Opus.20260204-1835-p1r2.md:38:| ZK-ISSUE-0022 | P3 | Archive/restore missing | - | - | - | **MISSING IN ROUND-2** |
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_ROUND2_EVAL.PASS1.Claude-Opus.20260204-1835-p1r2.md:58:9. **ZK-ISSUE-0022** (P3): Archive/restore endpoints missing
+/home/zaks/bookkeeping/docs/KINETIC-ACTION-ENGINE-GAP-ANALYSIS.md:1047:- Real-time queue monitoring
+/home/zaks/bookkeeping/docs/KINETIC-ACTION-ENGINE-GAP-ANALYSIS.md:1546:4. **Observability Metrics** - Production monitoring
+/home/zaks/bookkeeping/docs/DEAL-INTEGRITY-001.PASS1.CloudCode.20260208T160103Z.md:86:Every deal state change is an immutable event in a `deal_events` table. Current state is a materialized view or computed column derived from the latest event. Archive = `event_type='archived'` event. Restore = `event_type='restored'` event. Delete = `event_type='deleted'` event.
+/home/zaks/bookkeeping/docs/DEAL-INTEGRITY-001.PASS1.CloudCode.20260208T160103Z.md:220:2. All endpoints (archive, restore, delete, undelete) call this function instead of writing raw UPDATE queries
+/home/zaks/bookkeeping/docs/DEAL-INTEGRITY-001.PASS1.CloudCode.20260208T160103Z.md:364:After any deal mutation (create, archive, restore), publish an event (via Redis pub/sub or pg_notify) that triggers cache invalidation on all connected dashboards. Every surface always shows the latest state.
+/home/zaks/bookkeeping/docs/TEST-COVERAGE-GAPS.md:56:| /api/deals/{deal_id}/restore | POST |
+/home/zaks/bookkeeping/docs/TEST-COVERAGE-GAPS.md:211:**Note:** `POST /api/deals/{id}/restore?target_stage=inbound` is tested but `archived -> inbound` is not represented in `STAGE_TRANSITIONS`. The restore endpoint uses a separate code path from `transition_deal_state()`.
+/home/zaks/bookkeeping/docs/DASHBOARD_ROUND4_MASTER_DEDUPED.Claude-Opus.20260205-1855-p3.md:140:| `alerts-dueactions-drift-contract` | DL-041 | `/api/alerts` and `/api/deferred-actions/due` may have status enum drift | Codex PASS1 | Alerts | Filter | Contract Drift | API routes |
+/home/zaks/bookkeeping/docs/DASHBOARD_ROUND4_MASTER_DEDUPED.Claude-Opus.20260205-1855-p3.md:273:**Purpose:** Configure email inbox monitoring for deal enrichment
+/home/zaks/bookkeeping/docs/DASHBOARD_ROUND4_MASTER_DEDUPED.Claude-Opus.20260205-1855-p3.md:343:| Export All Data | Button | Download full backup |
+/home/zaks/bookkeeping/docs/DASHBOARD_ROUND4_MASTER_DEDUPED.Claude-Opus.20260205-1855-p3.md:908:| 1 | Add 3 dropped items (DL-039 to DL-041): file upload, /me endpoint, alerts drift | APPLIED |
+/home/zaks/bookkeeping/docs/PHASE2-QUARANTINE-UX-DESIGN-SPEC.md:247:**Problem:** Quarantine uses `AlertDialog` for delete confirmation. Deals uses the same `AlertDialog` with similar but slightly different copy. Actions uses `Dialog` for clear-completed confirmation. The existing `AlertModal` in `components/modal/alert-modal.tsx` is a fourth pattern with hardcoded text. Four patterns for "are you sure?"
+/home/zaks/bookkeeping/docs/PHASE2-QUARANTINE-UX-DESIGN-SPEC.md:585:| 5 | Agent Activity | `/agent/activity` | Agent event history and monitoring |
+/home/zaks/bookkeeping/docs/PHASE2-QUARANTINE-UX-DESIGN-SPEC.md:854:- Dialog: `role="alertdialog"` (managed by Radix AlertDialog)
+/home/zaks/bookkeeping/docs/PHASE2-QUARANTINE-UX-DESIGN-SPEC.md:1068:| ConfirmDialog | `ui/alert-dialog.tsx` |
+/home/zaks/bookkeeping/docs/MISSION-DASHBOARD-ROUND4-EXEC-001.md:150:| DL-041 | `/api/alerts` and `/api/deferred-actions/due` may have status enum drift | P2 | `/api/alerts` and `/api/deferred-actions/due` may have status enum drift | Implement matching recommendation(s) for subsystem/action: Alerts / Filter (see Recommendations Registry). | Gate 0 Preflight; API key wiring for write operations (REC-005) where applicable; backend endpoint must exist. | Gate 1 endpoint proof for Alerts Filter; Gate 2 No-Dead-UI; relevant E2E test(s). | 01-endpoint-proofs.md; 03-e2e-results.txt; 04-no-dead-ui-results.txt |
+/home/zaks/bookkeeping/docs/MISSION-DASHBOARD-ROUND4-EXEC-001.md:492:| `alerts-dueactions-drift-contract` | DL-041 | `/api/alerts` and `/api/deferred-actions/due` may have status enum drift | Codex PASS1 | Alerts | Filter | Contract Drift | API routes |
+/home/zaks/bookkeeping/docs/MISSION-DASHBOARD-ROUND4-EXEC-001.md:625:**Purpose:** Configure email inbox monitoring for deal enrichment
+/home/zaks/bookkeeping/docs/MISSION-DASHBOARD-ROUND4-EXEC-001.md:695:| Export All Data | Button | Download full backup |
+/home/zaks/bookkeeping/docs/MISSION-DASHBOARD-ROUND4-EXEC-001.md:1260:| 1 | Add 3 dropped items (DL-039 to DL-041): file upload, /me endpoint, alerts drift | APPLIED |
+/home/zaks/bookkeeping/docs/CODEX_QUARANTINE_REJECT_FIX_REPORT.md:17:| kinetic-actions-runner | Active (20h uptime) | Processing actions correctly |
+/home/zaks/bookkeeping/docs/CODEX_QUARANTINE_REJECT_FIX_REPORT.md:99:Added a unified diagnostics endpoint for system health monitoring:
+/home/zaks/bookkeeping/docs/QA-ET-VALIDATION-VERIFY-001.md:531:### VF-09.1: SLO and Monitoring Artifacts
+/home/zaks/bookkeeping/docs/QA-ET-VALIDATION-VERIFY-001.md:534:  echo "=== VF-09.1 SLO + MONITORING ARTIFACTS ==="
+/home/zaks/bookkeeping/docs/QA-ET-VALIDATION-VERIFY-001.md:535:  rg -n 'SLO|p95|uptime|monitor|alert|shadow burn-in|backup|restore' \
+/home/zaks/bookkeeping/docs/QA-ET-VALIDATION-VERIFY-001.md:538:} | tee "$EVIDENCE_DIR/VF-09-1-slo-monitoring.txt"
+/home/zaks/bookkeeping/docs/QA-ET-VALIDATION-VERIFY-001.md:540:**PASS if:** explicit artifacts exist for SLO, monitoring, and burn-in.
+/home/zaks/bookkeeping/docs/QA-ET-VALIDATION-VERIFY-001.md:724:### ENH-10: Add operational readiness score exporter for P8 SLO/report consistency
+/home/zaks/bookkeeping/docs/ZAKOPS_SYSTEM_FIX_REPORT.md:220:4. **Monitoring**: Add alerting for actions stuck > 5 minutes
+/home/zaks/bookkeeping/docs/MASTER-PROGRAM-INTAKE-COL-V2-001.md:701:- **Downstream consumers:** turn_snapshots table, brain facts, drift alerts
+/home/zaks/bookkeeping/docs/VALIDATION_ROADMAP_EXEC_PLAN.20260214-1837-vr21exec.md:126:**Objective:** Establish environment model, feature flags, verify existing primitives, add kill switch, restore real auth on bridge.
+/home/zaks/bookkeeping/docs/VALIDATION_ROADMAP_EXEC_PLAN.20260214-1837-vr21exec.md:666:- Dead-lettered tasks surface as alert
+/home/zaks/bookkeeping/docs/VALIDATION_ROADMAP_EXEC_PLAN.20260214-1837-vr21exec.md:702:- This adds edge-level protection independent of application auth (Layer 2 was restored in P0-T6)
+/home/zaks/bookkeeping/docs/VALIDATION_ROADMAP_EXEC_PLAN.20260214-1837-vr21exec.md:707:- Confirm Layer 1 (CF Access) + Layer 2 (Bearer auth, restored in P0-T6) are both enforced
+/home/zaks/bookkeeping/docs/VALIDATION_ROADMAP_EXEC_PLAN.20260214-1837-vr21exec.md:709:- **This is a verification task, not a code change** — Bearer auth was already restored in Phase 0
+/home/zaks/bookkeeping/docs/VALIDATION_ROADMAP_EXEC_PLAN.20260214-1837-vr21exec.md:754:**Objective:** SLOs, monitoring, load test, DR, shadow measurement readiness.
+/home/zaks/bookkeeping/docs/VALIDATION_ROADMAP_EXEC_PLAN.20260214-1837-vr21exec.md:762:**P8-T1: Define SLOs** — injection <30s p95, UI load <2s p95, approve→deal <3s p95, 99.5% uptime
+/home/zaks/bookkeeping/docs/VALIDATION_ROADMAP_EXEC_PLAN.20260214-1837-vr21exec.md:763:**P8-T2: Monitoring & Alerting** — health checks every 60s, queue depth alerts, kill switch activation alert
+/home/zaks/bookkeeping/docs/VALIDATION_ROADMAP_EXEC_PLAN.20260214-1837-vr21exec.md:765:**P8-T4: Backup & Restore Test** — all 3 databases backed up, restore to staging verified
+/home/zaks/bookkeeping/docs/VALIDATION_ROADMAP_EXEC_PLAN.20260214-1837-vr21exec.md:772:□ G8-01: SLOs defined and documented
+/home/zaks/bookkeeping/docs/VALIDATION_ROADMAP_EXEC_PLAN.20260214-1837-vr21exec.md:773:□ G8-02: Monitoring and alerts configured
+/home/zaks/bookkeeping/docs/VALIDATION_ROADMAP_EXEC_PLAN.20260214-1837-vr21exec.md:774:□ G8-03: Load test completed — SLOs met under load
+/home/zaks/bookkeeping/docs/VALIDATION_ROADMAP_EXEC_PLAN.20260214-1837-vr21exec.md:775:□ G8-04: Backup + restore test completed
+/home/zaks/bookkeeping/docs/VALIDATION_ROADMAP_EXEC_PLAN.20260214-1837-vr21exec.md:776:□ G8-05: 7-day shadow burn-in with clean dataset
+/home/zaks/bookkeeping/docs/VALIDATION_ROADMAP_EXEC_PLAN.20260214-1837-vr21exec.md:812:| Undo approval | P4 | P4-T4 | G4-07 | Admin reverts → deal archived, item restored |
+/home/zaks/bookkeeping/docs/VALIDATION_ROADMAP_EXEC_PLAN.20260214-1837-vr21exec.md:819:| SLOs + monitoring | P8 | P8-T1,P8-T2 | G8-01,G8-02 | Defined + alerting active |
+/home/zaks/bookkeeping/docs/VALIDATION_ROADMAP_EXEC_PLAN.20260214-1837-vr21exec.md:820:| Load test | P8 | P8-T3 | G8-03 | SLOs met under load |
+/home/zaks/bookkeeping/docs/VALIDATION_ROADMAP_EXEC_PLAN.20260214-1837-vr21exec.md:831:| D1 | **Security perimeter approach** | **C) Both layers** — Bearer auth restored in P0-T6 (code, immediate), CF Access added in P7-T1 (infra, later) | Defense in depth. Layer 2 (Bearer) is zero-cost to restore now. Layer 1 (CF Access) adds edge protection but is infra work — deferred to Phase 7. |
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3_FINAL_META_QA.Claude-Opus-4-5.20260204-2052-7f8c3d.md:79:| ZK-ISSUE-0022 | Archive/restore missing | P3 | 2 | T2.6-T2.7 | Endpoints work (200) | ✓ |
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3_FINAL_META_QA.Claude-Opus-4-5.20260204-2052-7f8c3d.md:184:| 1 | **Phase 1 Migration Failure** — Data migration corrupts or loses deals | Validation counts don't match; canary test fails | Dry-run first (T1.3); JSON backup before cutover | Restore JSON writes; reinstate deal_registry.json |
+/home/zaks/bookkeeping/docs/AGENT_BRAIN_ROUND3_FORENSIC.md:142:10. **VERIFY** RAG freshness monitor.
+/home/zaks/bookkeeping/docs/DEAL-INTEGRITY-001.PASS1.Codex.20260208-1015-c1xh.md:62:1) **DB Identity Tagging:** Add a `db_instance_id` row in a meta table and include it in every API response header. UI can show and alert if identities mismatch. *Tradeoff:* small schema addition, but huge ops clarity.
+/home/zaks/bookkeeping/docs/MISSION-INFRA-TRUTH-REPAIR-001.md:311:1. Restore edited `.claude` files from immediate backups created before edit.
+/home/zaks/bookkeeping/docs/MISSION-INFRA-TRUTH-REPAIR-001.md:366:1. Revert validator and Makefile edits from phase-specific backup.
+/home/zaks/bookkeeping/docs/MISSION-INFRA-TRUTH-REPAIR-001.md:424:1. Restore Makefile and generator script from phase backups.
+/home/zaks/bookkeeping/docs/MISSION-INFRA-TRUTH-REPAIR-001.md:473:1. Restore hook and registry files from backups.
+/home/zaks/bookkeeping/docs/MISSION-INFRA-TRUTH-REPAIR-001.md:524:1. Restore mission-phase edits from backups if final regression discovered.
+/home/zaks/bookkeeping/docs/MISSION-INFRA-TRUTH-REPAIR-001.md:599:2. Do not modify application feature code unless required to restore validation truth wiring.
+/home/zaks/bookkeeping/docs/ACTIONS-ENGINE-IMPLEMENTATION-PLAN-v1.2.md:90:- 🆕 **Metrics Dashboard** - Real-time monitoring UI
+/home/zaks/bookkeeping/docs/ACTIONS-ENGINE-IMPLEMENTATION-PLAN-v1.2.md:1589:Provide real-time metrics for production monitoring.
+/home/zaks/bookkeeping/docs/ACTIONS-ENGINE-IMPLEMENTATION-PLAN-v1.2.md:2503:Real-time monitoring of action execution metrics.
+/home/zaks/bookkeeping/docs/ACTIONS-ENGINE-IMPLEMENTATION-PLAN-v1.2.md:2561:            Real-time monitoring • Updated {new Date(metrics.timestamp).toLocaleString()}
+/home/zaks/bookkeeping/docs/RUNBOOKS.md:118:1) `/home/zaks/scripts/backup_dataroom.sh`
+/home/zaks/bookkeeping/docs/RUNBOOKS.md:119:2) List backups: `ls -la /home/zaks/backups/dataroom/`
+/home/zaks/bookkeeping/docs/RUNBOOKS.md:154:2) Shows broker emails, keywords, attachment types monitored
+/home/zaks/bookkeeping/docs/MISSION-DASHBOARD-WORLDCLASS-REMEDIATION-001.md:23:Fix all dashboard issues reported in the latest operator validation round, using the report text and screenshot bundle as source of truth. The objective is to remove functional failures, restore deterministic flows, and raise UI quality to a world-class, consistent baseline.
+/home/zaks/bookkeeping/docs/EMAIL_TRIAGE_GO_LIVE_REPORT.md:157:### 1) Disable legacy ingestion (backup + minimal edit)
+/home/zaks/bookkeeping/docs/EMAIL_TRIAGE_GO_LIVE_REPORT.md:207:2) Restore legacy cron file from backup and re-enable the `email_ingestion && make ingest` lines:
+/home/zaks/bookkeeping/docs/CODEX_WORLD_CLASS_ORCHESTRATION_PLAN_ADDENDUM.md:547:# If quarantine backlog > 20, alert operator
+/home/zaks/bookkeeping/docs/CODEX_WORLD_CLASS_ORCHESTRATION_PLAN_ADDENDUM.md:593:# 1. Send test email to monitored inbox
+/home/zaks/bookkeeping/docs/CODEX_WORLD_CLASS_ORCHESTRATION_PLAN_ADDENDUM.md:609:# If fails, restore from backup or reinitialize
+/home/zaks/bookkeeping/docs/CODEX_WORLD_CLASS_ORCHESTRATION_PLAN_ADDENDUM.md:820:**Objective**: Unified Gmail MCP across all components with health monitoring.
+/home/zaks/bookkeeping/docs/CODEX_WORLD_CLASS_ORCHESTRATION_PLAN_ADDENDUM.md:888:- [x] Add `/api/deals/{deal_id}/archive`, `/api/deals/{deal_id}/restore`, and `/api/deals/bulk-archive`
+/home/zaks/bookkeeping/docs/CODEX_WORLD_CLASS_ORCHESTRATION_PLAN_ADDENDUM.md:906:# Can restore archived
+/home/zaks/bookkeeping/docs/CODEX_WORLD_CLASS_ORCHESTRATION_PLAN_ADDENDUM.md:907:curl -sf -X POST http://localhost:8090/api/deals/TEST-DEAL/restore
+/home/zaks/bookkeeping/docs/CODEX_WORLD_CLASS_ORCHESTRATION_PLAN_ADDENDUM.md:908:# Output: {"restored": true}
+/home/zaks/bookkeeping/docs/CODEX_WORLD_CLASS_ORCHESTRATION_PLAN_ADDENDUM.md:926:- [x] Add alerting rules (`bookkeeping/docs/ALERTING_RULES.md`)
+/home/zaks/bookkeeping/docs/CODEX_WORLD_CLASS_ORCHESTRATION_PLAN_ADDENDUM.md:940:# Contains alert definition
+/home/zaks/bookkeeping/docs/CODEX_WORLD_CLASS_ORCHESTRATION_PLAN_ADDENDUM.md:957:5. **Backup strategy**: rely on existing DataRoom backups + ensure `ingest_state.db` (WAL) is included; add explicit runbook steps in P6.
+/home/zaks/bookkeeping/docs/CODEX_WORLD_CLASS_ORCHESTRATION_PLAN_ADDENDUM.md:976:| **Data loss** | SQLite corruption | Low | Daily backup, WAL mode |
+/home/zaks/bookkeeping/docs/QA-SR-VERIFY-001.md:320:grep -ni "baseline\|benchmark\|performance.*target\|SLO\|SLA" \
+/home/zaks/bookkeeping/docs/DEAL_QUARANTINE_DELETE_PLAN.md:10:  - `POST /api/deals/{deal_id}/restore`
+/home/zaks/bookkeeping/docs/DEAL_QUARANTINE_DELETE_PLAN.md:55:    - Deals: `archiveDeal`, `bulkArchiveDeals` (+ optional restore later).
+/home/zaks/bookkeeping/docs/ZakOps-V7PP-Codex-CLI-Infrastructure-Reference-Version-2.md:408:These messages should be monitored for drift but are not pass/fail criteria for MCP connectivity.
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3_FINAL_META_QA.Codex.20260204-0334-6c0282.md:52:1) Migration validation gaps (ID mapping errors). Detection: migration report mismatch; Mitigation: id_map + sampled diffs; Rollback: restore JSON/SQLite writes + rerun.
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3_FINAL_META_QA.Codex.20260204-0334-6c0282.md:53:2) Legacy writers still active after cutover. Detection: file hash changes/CI guard; Mitigation: read-only permissions + rg guard; Rollback: disable new writers, restore from backup.
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3_FINAL_META_QA.Codex.20260204-0334-6c0282.md:56:5) Contract drift between UI/API. Detection: 404/422 spike; Mitigation: OpenAPI-generated clients; Rollback: restore compatibility endpoints.
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3_FINAL_META_QA.Codex.20260204-0334-6c0282.md:61:10) Legacy deletion breaks hidden dependency. Detection: runtime errors referencing removed modules; Mitigation: staged deprecation + monitoring; Rollback: restore from git.
+/home/zaks/bookkeeping/docs/DASHBOARD_ROUND4_MASTER_DEDUPED.Codex.20260205-1845-p3r4.md:165:R4-014 Action status casing mismatch breaks alerts/due actions
+/home/zaks/bookkeeping/docs/DASHBOARD_ROUND4_MASTER_DEDUPED.Codex.20260205-1845-p3r4.md:167:- Symptom: due actions and alerts show incorrect counts
+/home/zaks/bookkeeping/docs/DASHBOARD_ROUND4_MASTER_DEDUPED.Codex.20260205-1845-p3r4.md:169:- Routes/endpoints: /api/deferred-actions/due, /api/alerts
+/home/zaks/bookkeeping/docs/DASHBOARD_ROUND4_MASTER_DEDUPED.Codex.20260205-1845-p3r4.md:512:R4-046 Error tracking and performance monitoring missing
+/home/zaks/bookkeeping/docs/DASHBOARD_ROUND4_MASTER_DEDUPED.Codex.20260205-1845-p3r4.md:588:- Add error tracking and performance monitoring (Sentry/Web Vitals).
+/home/zaks/bookkeeping/docs/DASHBOARD_ROUND4_MASTER_DEDUPED.Codex.20260205-1845-p3r4.md:606:   - Email/webhook alerts for quarantine, stage transitions, action failures.
+/home/zaks/bookkeeping/docs/MISSION-DEAL-INTEGRITY-UNIFIED.md:123:| Q2 | **Production observability** — Post-deployment monitoring must exist. Health endpoints reporting DB identity. Alerts on count invariant violations. Structured logging on every state transition. | Layer 5: Scope, Exit Gate |
+/home/zaks/bookkeeping/docs/MISSION-DEAL-INTEGRITY-UNIFIED.md:129:| Q8 | **Concurrency safety** — Race conditions on simultaneous archive/restore operations must be addressed. Row-level locking or optimistic concurrency must be implemented. | Layer 2: Scope |
+/home/zaks/bookkeeping/docs/MISSION-DEAL-INTEGRITY-UNIFIED.md:190:│   │   └── monitoring-setup/
+/home/zaks/bookkeeping/docs/MISSION-DEAL-INTEGRITY-UNIFIED.md:215:1. **Kill the rogue database. Permanently.** The legacy `zakops-postgres` container on port 5435 must be stopped, removed, and its volumes destroyed. No dump. No backup. No preservation. This container is the root cause of split-brain data divergence and it must never exist again. Any service that depended on it will be fixed to use the canonical DB — the rogue container is not a fallback for anything.
+/home/zaks/bookkeeping/docs/MISSION-DEAL-INTEGRITY-UNIFIED.md:311:3. **Fix the restore endpoint.** When restoring an archived deal:
+/home/zaks/bookkeeping/docs/MISSION-DEAL-INTEGRITY-UNIFIED.md:316:4. **Create the centralized transition function.** All state changes to deals — archive, restore, delete, undelete, and any future transitions — must go through a single function (`transition_deal_state` or equivalent). This function:
+/home/zaks/bookkeeping/docs/MISSION-DEAL-INTEGRITY-UNIFIED.md:343:10. **Address concurrency (Constraint Q8).** The archive and restore operations must be safe under concurrent access. Either:
+/home/zaks/bookkeeping/docs/MISSION-DEAL-INTEGRITY-UNIFIED.md:365:| GATE L2-3 | The restore endpoint performs a COMPLETE state reversal — `status='active'` and stage reset via the transition function | Capture: restore the archived test deal, then query the DB row showing `status='active'` and stage correctly reset |
+/home/zaks/bookkeeping/docs/MISSION-DEAL-INTEGRITY-UNIFIED.md:366:| GATE L2-4 | `transition_deal_state()` function exists and ALL state-changing code paths use it — no raw UPDATE queries for status/stage/deleted anywhere | Code search evidence showing: (a) the function exists, (b) archive endpoint calls it, (c) restore endpoint calls it, (d) zero raw UPDATE queries for state fields outside the function |
+/home/zaks/bookkeeping/docs/MISSION-DEAL-INTEGRITY-UNIFIED.md:374:| GATE L2-12 | Concurrency is addressed — simultaneous archive/restore on the same deal cannot produce inconsistent state (Constraint Q8) | Description of concurrency mechanism; test showing two concurrent operations resolve correctly |
+/home/zaks/bookkeeping/docs/MISSION-DEAL-INTEGRITY-UNIFIED.md:387:1. **Code rollback:** Revert the archive/restore endpoint changes and the transition function. This returns the backend to its pre-mission behavior.
+/home/zaks/bookkeeping/docs/MISSION-DEAL-INTEGRITY-UNIFIED.md:388:2. **Data rollback:** Reverse the backfill using the documented reversal steps (Gate L2-8). This restores the data to its pre-mission state.
+/home/zaks/bookkeeping/docs/MISSION-DEAL-INTEGRITY-UNIFIED.md:507:Layer 2 must be COMPLETE. The data model must be finalized, the backfill must be done, and the archive/restore endpoints must be working correctly.
+/home/zaks/bookkeeping/docs/MISSION-DEAL-INTEGRITY-UNIFIED.md:534:2. Contract sync is regenerative — running `make sync-all-types` after revert restores previous types
+/home/zaks/bookkeeping/docs/MISSION-DEAL-INTEGRITY-UNIFIED.md:602:   - `/dashboard` — pipeline funnel, action strip, alerts section
+/home/zaks/bookkeeping/docs/MISSION-DEAL-INTEGRITY-UNIFIED.md:652:Create the safety net that prevents the next DEAL-INTEGRITY incident. Codify every invariant from Layers 1-4 as automated tests. Establish production monitoring that detects drift in real time. Capture performance baselines. Make regression invisible no more.
+/home/zaks/bookkeeping/docs/MISSION-DEAL-INTEGRITY-UNIFIED.md:667:   - Concurrent archive + restore resolves consistently
+/home/zaks/bookkeeping/docs/MISSION-DEAL-INTEGRITY-UNIFIED.md:726:15. **Document performance baselines** in the evidence directory. These become the reference for future performance monitoring.
+/home/zaks/bookkeeping/docs/MISSION-DEAL-INTEGRITY-UNIFIED.md:738:18. **Count invariant monitoring:** Implement a mechanism (health check, scheduled job, or monitoring endpoint) that periodically verifies `sum(stage_counts) == total_active_deals` and alerts if the invariant is violated. The implementation can be as simple as a health check endpoint that returns `invariant_holds: true/false`.
+/home/zaks/bookkeeping/docs/MISSION-DEAL-INTEGRITY-UNIFIED.md:743:- Grafana/Prometheus setup (unless the team already has it — in that case, add alerts)
+/home/zaks/bookkeeping/docs/MISSION-DEAL-INTEGRITY-UNIFIED.md:758:| GATE L5-5 | All E2E flow tests pass (create → verify → archive → verify → restore → verify) | Test execution output |
+/home/zaks/bookkeeping/docs/MISSION-DEAL-INTEGRITY-UNIFIED.md:765:| GATE L5-12 | Count invariant monitoring is implemented and returns a correct result | Monitoring endpoint or health check response showing `invariant_holds: true` |
+/home/zaks/bookkeeping/docs/MISSION-DEAL-INTEGRITY-UNIFIED.md:773:**Rollback:** Tests and monitoring are additive — they can be removed without affecting platform functionality. However, removing them removes the safety net. Rollback is not recommended.
+/home/zaks/bookkeeping/docs/MISSION-DEAL-INTEGRITY-UNIFIED.md:992:- [ ] Observability with alerts and invariant monitors — drift is detected in real time
+/home/zaks/bookkeeping/docs/RUNBOOK_EMAIL_TRIAGE_CUTOVER.md:74:- Keep a timestamped backup copy under `bookkeeping/configs/cron/` before editing.
+/home/zaks/bookkeeping/docs/RUNBOOK_EMAIL_TRIAGE_CUTOVER.md:91:- Re-enable legacy cron entries from the backup under `bookkeeping/configs/cron/`
+/home/zaks/bookkeeping/docs/MISSION-COL-V2-BUILD-001.md:283:- **Downstream consumers:** turn_snapshots table, brain facts, drift alerts
+/home/zaks/bookkeeping/docs/DASHBOARD_ROUND4_EVAL_PASS1.Claude-Opus.20260205-1745-eval1.md:87:| M-34 | **Performance monitoring** (Web Vitals, API latency histograms) not proposed |
+/home/zaks/bookkeeping/docs/DASHBOARD_ROUND4_EVAL_PASS1.Claude-Opus.20260205-1745-eval1.md:102:| M-39 | **Resume onboarding**: If user leaves mid-flow, how is progress restored? |
+/home/zaks/bookkeeping/docs/DASHBOARD_ROUND4_EVAL_PASS1.Claude-Opus.20260205-1745-eval1.md:164:- `POST /api/alerts/dismiss` (dismiss alert)
+/home/zaks/bookkeeping/docs/EMAIL_TRIAGE_P0_E2E_FIX_VERIFICATION_REPORT.md:73:- triage logic does not treat transaction alerts as deals
+/home/zaks/bookkeeping/docs/ZakOps-Master-Implementation-Roadmap-combine.md:275:- [ ] 24h continuous health monitoring passes
+/home/zaks/bookkeeping/docs/ZakOps-Master-Implementation-Roadmap-combine.md:282:- [ ] 72h continuous health monitoring passes
+/home/zaks/bookkeeping/docs/ZakOps-Master-Implementation-Roadmap-combine.md:327:| OpenWebUI | :3000 | ✅ Running | 8+ days uptime |
+/home/zaks/bookkeeping/docs/ZakOps-Master-Implementation-Roadmap-combine.md:416:- 24h health monitoring
+/home/zaks/bookkeeping/docs/ZakOps-Master-Implementation-Roadmap-combine.md:432:| D1.4 | Health monitor | `scripts/health_monitor.sh` | Builder |
+/home/zaks/bookkeeping/docs/ZakOps-Master-Implementation-Roadmap-combine.md:485:./scripts/health_monitor.sh --duration 24h --interval 300
+/home/zaks/bookkeeping/docs/ZakOps-Master-Implementation-Roadmap-combine.md:486:# Assert: 100% uptime, 0 crashes
+/home/zaks/bookkeeping/docs/ZakOps-Master-Implementation-Roadmap-combine.md:496:- [ ] 24h health monitor shows 100% uptime
+/home/zaks/bookkeeping/docs/ZakOps-Master-Implementation-Roadmap-combine.md:578:- [ ] 72h health monitor shows 100% uptime
+/home/zaks/bookkeeping/docs/ZakOps-Master-Implementation-Roadmap-combine.md:702:| **P0** | OPS-001 | 24h health monitor | Builder | `scripts/health_monitor.sh` | Runs continuously | 24h uptime |
+/home/zaks/bookkeeping/docs/ZakOps-Master-Implementation-Roadmap-combine.md:705:| **P2** | OPS-004 | Checkpoint backup | Builder | `scripts/backup_checkpoints.sh` | 30 day retention | Restore test |
+/home/zaks/bookkeeping/docs/ZakOps-Master-Implementation-Roadmap-combine.md:877:| R-01 | **Plaintext checkpoint persistence** | Data breach | Medium | PII canary | Hash/encrypt args | Accept for MVP with monitoring |
+/home/zaks/bookkeeping/docs/ZakOps-Master-Implementation-Roadmap-combine.md:882:| R-06 | Queue backlog | Latency | Low | Depth monitoring | Scale workers | Alert operator |
+/home/zaks/bookkeeping/docs/ZakOps-Master-Implementation-Roadmap-combine.md:994:| 7 | No alerting system configured | Low | Add PagerDuty/Slack in Phase 2 |
+/home/zaks/bookkeeping/docs/WORLD-CLASS-ORCHESTRATION-PLAN.md:64:| Reactive (runs when triggered) | **Proactive** (schedules follow-ups, alerts on stalls) |
+/home/zaks/bookkeeping/docs/WORLD-CLASS-ORCHESTRATION-PLAN.md:272:    optional: [check_stall, auto_advance, alert_if_stuck]
+/home/zaks/bookkeeping/docs/WORLD-CLASS-ORCHESTRATION-PLAN.md:276:    optional: [checklist_focus, alert_threshold_pct]
+/home/zaks/bookkeeping/docs/WORLD-CLASS-ORCHESTRATION-PLAN.md:292:    optional: [days_before_alert]
+/home/zaks/bookkeeping/docs/WORLD-CLASS-ORCHESTRATION-PLAN.md:315:    stall_alert_days: 14
+/home/zaks/bookkeeping/docs/WORLD-CLASS-ORCHESTRATION-PLAN.md:325:    stall_alert_days: 21
+/home/zaks/bookkeeping/docs/WORLD-CLASS-ORCHESTRATION-PLAN.md:332:    stall_alert_days: 30
+/home/zaks/bookkeeping/docs/WORLD-CLASS-ORCHESTRATION-PLAN.md:343:    stall_alert_days: 45
+/home/zaks/bookkeeping/docs/WORLD-CLASS-ORCHESTRATION-PLAN.md:353:    stall_alert_days: 60
+/home/zaks/bookkeeping/docs/WORLD-CLASS-ORCHESTRATION-PLAN.md:361:    stall_alert_days: 30
+/home/zaks/bookkeeping/docs/WORLD-CLASS-ORCHESTRATION-PLAN.md:417:  default_stall_alert_days: 30
+/home/zaks/bookkeeping/docs/WORLD-CLASS-ORCHESTRATION-PLAN.md:856:3. Run health checks (and alert)
+/home/zaks/bookkeeping/docs/WORLD-CLASS-ORCHESTRATION-PLAN.md:867:# Health check + alerts - every 30 minutes
+/home/zaks/bookkeeping/docs/WORLD-CLASS-ORCHESTRATION-PLAN.md:950:- A `backup_and_rotate.py` job (dry-run capable) plus a documented restore procedure.
+/home/zaks/bookkeeping/docs/WORLD-CLASS-ORCHESTRATION-PLAN.md:986:GET  /api/alerts                     # Stuck deals, due actions, expiring items
+/home/zaks/bookkeeping/docs/WORLD-CLASS-ORCHESTRATION-PLAN.md:1001:- **Stuck deal alerts**: Deals exceeding 2x typical stage duration
+/home/zaks/bookkeeping/docs/WORLD-CLASS-ORCHESTRATION-PLAN.md:1106:- Dashboard shows pipeline, alerts, due actions, quarantine
+/home/zaks/bookkeeping/docs/WORLD-CLASS-ORCHESTRATION-PLAN.md:1165:| Retention/backup | Rotation + archive + restore procedure | Ops job + runbooks |
+/home/zaks/bookkeeping/docs/ZakOps-MA-Copilot-Validation-Roadmap-v2.1.md:49:- Observability (correlation_id end-to-end, monitoring, alerting)
+/home/zaks/bookkeeping/docs/ZakOps-MA-Copilot-Validation-Roadmap-v2.1.md:596:- Your job is to monitor Gmail, classify incoming emails, extract structured deal information, and inject qualified items into ZakOps' quarantine for human review
+/home/zaks/bookkeeping/docs/ZakOps-MA-Copilot-Validation-Roadmap-v2.1.md:980:**Objective:** Prove the system is production-ready through SLOs, load testing, disaster recovery, and shadow-mode measurement readiness.
+/home/zaks/bookkeeping/docs/ZakOps-MA-Copilot-Validation-Roadmap-v2.1.md:984:| SLO | Target | Measurement |
+/home/zaks/bookkeeping/docs/ZakOps-MA-Copilot-Validation-Roadmap-v2.1.md:986:| Injection latency | < 30s (p95) | `received_at` vs `created_at` delta |
+/home/zaks/bookkeeping/docs/ZakOps-MA-Copilot-Validation-Roadmap-v2.1.md:987:| Quarantine UI load | < 2s (p95) | Frontend performance |
+/home/zaks/bookkeeping/docs/ZakOps-MA-Copilot-Validation-Roadmap-v2.1.md:988:| Approve → deal latency | < 3s (p95) | `approved_at` vs deal `created_at` delta |
+/home/zaks/bookkeeping/docs/ZakOps-MA-Copilot-Validation-Roadmap-v2.1.md:989:| Auto-route latency | < 30s (p95) | `received_at` vs timeline event delta |
+/home/zaks/bookkeeping/docs/ZakOps-MA-Copilot-Validation-Roadmap-v2.1.md:990:| Availability | 99.5% uptime | Health check monitoring |
+/home/zaks/bookkeeping/docs/ZakOps-MA-Copilot-Validation-Roadmap-v2.1.md:997:- Queue depth alerts: pending items > threshold for > duration
+/home/zaks/bookkeeping/docs/ZakOps-MA-Copilot-Validation-Roadmap-v2.1.md:998:- Kill switch activation alert
+/home/zaks/bookkeeping/docs/ZakOps-MA-Copilot-Validation-Roadmap-v2.1.md:999:- Error rate threshold alerts
+/home/zaks/bookkeeping/docs/ZakOps-MA-Copilot-Validation-Roadmap-v2.1.md:1000:- Dead-letter queue depth alert
+/home/zaks/bookkeeping/docs/ZakOps-MA-Copilot-Validation-Roadmap-v2.1.md:1012:Verify: no dropped emails, SLOs met under load, dedup holds under concurrency, optimistic locking holds, DB stable.
+/home/zaks/bookkeeping/docs/ZakOps-MA-Copilot-Validation-Roadmap-v2.1.md:1017:- Restore test: full restore to staging, system operational
+/home/zaks/bookkeeping/docs/ZakOps-MA-Copilot-Validation-Roadmap-v2.1.md:1037:□ SLOs defined and documented
+/home/zaks/bookkeeping/docs/ZakOps-MA-Copilot-Validation-Roadmap-v2.1.md:1038:□ Monitoring and alerts configured and tested
+/home/zaks/bookkeeping/docs/ZakOps-MA-Copilot-Validation-Roadmap-v2.1.md:1039:□ Load test completed — all SLOs met under load
+/home/zaks/bookkeeping/docs/ZakOps-MA-Copilot-Validation-Roadmap-v2.1.md:1044:□ Restore test completed: full restore, system operational
+/home/zaks/bookkeeping/docs/ZakOps-MA-Copilot-Validation-Roadmap-v2.1.md:1046:□ 7-day shadow burn-in completed with SLOs met
+/home/zaks/bookkeeping/docs/ZakOps-MA-Copilot-Validation-Roadmap-v2.1.md:1067:| **8. Operational Excellence** | SLOs, monitoring, load test, DR, shadow measurement, production gate | All prior | 3–5 days |
+/home/zaks/bookkeeping/docs/ZakOps-MA-Copilot-Validation-Roadmap-v2.1.md:1127:- G0-09, G0-11 (auth restored) — security prerequisite
+/home/zaks/bookkeeping/docs/DASHBOARD_ROUND4_EVAL_PASS1.Codex.20260205-1840-p1r4.md:14:3) **Dashboard `/api/alerts` + `/api/deferred-actions/due` contract drift** — no report checks these endpoints; they can silently fail if status enums or field names mismatch. NEEDS VERIFICATION: trace `apps/dashboard/src/app/api/alerts/route.ts` and `/api/deferred-actions/due/route.ts` vs backend fields.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:183:| 3 | Auth appears restored in app layer but edge layer remains open | MEDIUM | External injection risk | Dual-layer verification in Phase 7 Gate G7-01/G7-02 |
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:206:- P0-06: Remove bridge auth bypass and restore Bearer enforcement for `/mcp`, `/sse`, `/messages` paths.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:226:- G0-05: Kill switch OFF restores normal write behavior.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:399:- G4-07: Undo approval archives deal and restores quarantine item to pending.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:535:**Purpose:** Declare production readiness through SLOs, monitoring, load/DR validation, and shadow burn-in data integrity.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:543:- P8-01: Define and publish SLOs (injection latency, UI load, approve-to-deal, uptime).
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:544:- P8-02: Configure monitoring/alerting cadence and kill-switch alerts.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:546:- P8-04: Execute backup and restore drills across all three databases.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:548:- P8-06: Run 7-day shadow burn-in and collect precision/recall dataset.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:555:- G8-01: SLOs are defined and documented.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:556:- G8-02: Monitoring and alerts are configured.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:557:- G8-03: Load test is completed and SLOs are met under load.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:558:- G8-04: Backup and restore tests are completed.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:559:- G8-05: Seven-day shadow burn-in dataset is clean and measurable.
+/home/zaks/bookkeeping/docs/MISSION-COL-V2-BUILD-001A.md:235:- **Downstream consumers:** turn_snapshots table, brain facts, drift alerts, specialist context
+/home/zaks/bookkeeping/docs/CLAUDE_CODE_RESET_V5PP_PASS2.Claude.20260207-1500-opus46-v5pp2.md:74:4 agents already exist in `/home/zaks/Zaks-llm/.claude/agents/` (zakops-prime, agent-config-consultant, log-monitor, research-gemini). No one referenced these. New agents should complement, not duplicate.
+/home/zaks/bookkeeping/docs/CLAUDE_CODE_RESET_V5PP_PASS2.Claude.20260207-1500-opus46-v5pp2.md:265:4 agents exist at `/home/zaks/Zaks-llm/.claude/agents/`: zakops-prime, agent-config-consultant, log-monitor, research-gemini. No Pass 1 agent referenced these. New agents must not duplicate them.
+/home/zaks/bookkeeping/docs/CLAUDE_CODE_RESET_V5PP_PASS2.Claude.20260207-1500-opus46-v5pp2.md:284:If new deny rules or hooks break the developer workflow, there's no documented rollback. Need: snapshot current `~/.claude/` before changes, provide `make restore-claude-config` target.
+/home/zaks/bookkeeping/docs/CLAUDE_CODE_RESET_V5PP_PASS2.Claude.20260207-1500-opus46-v5pp2.md:464:1. Snapshot current config: `cp -r ~/.claude/ ~/.claude.backup.$(date +%Y%m%d)`
+/home/zaks/bookkeeping/docs/CLAUDE_CODE_RESET_V5PP_PASS2.Claude.20260207-1500-opus46-v5pp2.md:465:2. Verify backup: `diff -r ~/.claude/ ~/.claude.backup.*/`
+/home/zaks/bookkeeping/docs/CLAUDE_CODE_RESET_V5PP_PASS2.Claude.20260207-1500-opus46-v5pp2.md:468:5. If anything breaks: `rm -rf ~/.claude/ && mv ~/.claude.backup.*/ ~/.claude/`
+/home/zaks/bookkeeping/docs/CONSENSUS_DECISION_TABLETOP_SIM.md:147:| 3 | `validate-agent-config.sh` → `validate_prompt_tools.py` | Secondary validation of prompt/tool consistency. | **YES** (backup) |
+/home/zaks/bookkeeping/docs/AGENT_BRAIN_ROUND3_PLAN_FINAL_META_QA.Claude-Opus.20260204-2115-mqfinal.md:177:**Fallback behavior and monitoring:**
+/home/zaks/bookkeeping/docs/DEAL-INTEGRITY-001.PASS2.CloudCode.20260208T162638Z.md:67:4. Modify `POST /api/deals/{deal_id}/restore` to atomically reset `status = 'active'` when restoring
+/home/zaks/bookkeeping/docs/DEAL-INTEGRITY-001.PASS2.CloudCode.20260208T162638Z.md:171:| 3 | **DB Identity Tagging** | Codex | `db_instance_id` in meta table, included in every API response header. UI alerts on mismatch. | Excellent ops visibility. Small schema addition. |
+/home/zaks/bookkeeping/docs/DEAL-INTEGRITY-001.PASS2.CloudCode.20260208T162638Z.md:424:| 1 | **DB Identity Tagging** | Codex | `db_instance_id` row in meta table, echoed in API response headers. UI alerts on mismatch. | Huge ops clarity. Small schema addition. |
+/home/zaks/bookkeeping/docs/ZAKOPS-AGENT-ARCHITECTURE-RESEARCH.md:472:- Usage tracking and alerts
+/home/zaks/bookkeeping/docs/ZAKOPS-AGENT-ARCHITECTURE-RESEARCH.md:570:│     └─▶ Automatic alerts on error patterns              │
+/home/zaks/bookkeeping/docs/ZAKOPS-AGENT-ARCHITECTURE-RESEARCH.md:591:| Dashboard uptime | > 99.9% | Health checks |
+/home/zaks/bookkeeping/docs/ZAKOPS-AGENT-ARCHITECTURE-RESEARCH.md:673:| DB failure | Connection error | Wait for recovery, alert |
+/home/zaks/bookkeeping/docs/ZAKOPS-AGENT-ARCHITECTURE-RESEARCH.md:674:| Agent crash | Process monitor | Restart from checkpoint |
+/home/zaks/bookkeeping/docs/ZAKOPS-AGENT-ARCHITECTURE-RESEARCH.md:680:| System uptime | > 99.9% | Health checks |
+/home/zaks/bookkeeping/docs/ZAKOPS-AGENT-ARCHITECTURE-RESEARCH.md:683:| Queue processing | < 5 min latency | Queue depth monitoring |
+/home/zaks/bookkeeping/docs/ZAKOPS-AGENT-ARCHITECTURE-RESEARCH.md:904:- [ ] Health monitoring
+/home/zaks/bookkeeping/docs/ZAKOPS-AGENT-ARCHITECTURE-RESEARCH.md:955:| VRAM constraints | Low | Medium | Use Q4 quantization, monitor usage |
+/home/zaks/bookkeeping/docs/ZAKOPS-AGENT-ARCHITECTURE-RESEARCH.md:987:| Cost overruns | Medium | Medium | Budget limits, monitoring |
+/home/zaks/bookkeeping/docs/QA-COL-DEEP-VERIFY-001A.md:822:  grep -n "class.*Event\|event_type\|EVENT_TYPE\|message_chunk\|message_complete\|thread_updated\|brain_updated\|injection_alert\|budget_warning\|cost_update\|ghost_knowledge\|momentum_update\|tool_execution\|approval_required\|error\|summary_generated\|legal_hold" "$SSE_FILE" 2>/dev/null | head -30
+/home/zaks/bookkeeping/docs/QA-COL-DEEP-VERIFY-001A.md:1066:METHODS="create_thread get_thread list_threads update_thread soft_delete_thread hard_delete_thread restore_thread add_message get_messages get_thread_for_llm validate_deal_reference enqueue_brain_extraction"
+/home/zaks/bookkeeping/docs/QA-COL-DEEP-VERIFY-001A.md:1122:SPEC_EVENTS="message_chunk message_complete thread_updated brain_updated summary_generated injection_alert legal_hold_set budget_warning cost_update ghost_knowledge momentum_update tool_execution approval_required error"
+/home/zaks/bookkeeping/docs/TRIPASS-COL-DESIGN-REVIEW.md:139:| SLOs | `docs/slos/` | `slo_config.yaml` |
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3_FINAL_META_QA.Codex.20260204-0347-bb74c8.md:51:1) Migration validation gaps (ID mapping errors). Detection: migration report mismatch; Mitigation: id_map + sampled diffs; Rollback: restore JSON/SQLite writes + rerun.
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3_FINAL_META_QA.Codex.20260204-0347-bb74c8.md:52:2) Legacy writers still active post-cutover. Detection: file hash changes/CI guard; Mitigation: read-only permissions + rg guard; Rollback: disable writers + restore backups.
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3_FINAL_META_QA.Codex.20260204-0347-bb74c8.md:55:5) Contract drift (UI/API). Detection: 404/422 spike; Mitigation: OpenAPI-generated clients; Rollback: restore compatibility endpoints.
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3_FINAL_META_QA.Codex.20260204-0347-bb74c8.md:60:10) Legacy deletion breaks hidden dependency. Detection: runtime errors referencing removed modules; Mitigation: staged deprecation + monitoring; Rollback: restore from git.
+/home/zaks/bookkeeping/docs/CONSENSUS_DECISION_WORKSPACE.md:633:2.  **Forensic Trigger:** Triggered automatically upon CI failure or P0 production alert.
+/home/zaks/bookkeeping/docs/CONSENSUS_DECISION_WORKSPACE.md:659:1.  **Context Saturation:** Architect loses track of state. *Detection:* Token usage alerts. *Mitigation:* Forensic agent handles deep dives.
+/home/zaks/bookkeeping/docs/CONSENSUS_DECISION_WORKSPACE.md:668:10. **Cost:** Gemini/Opus token costs spike. *Detection:* Daily budget alerts.
+/home/zaks/bookkeeping/docs/CONSENSUS_DECISION_WORKSPACE.md:1004:| **DV-7** | Stop hook bypassed (Ctrl+C) | Advisory | Pre-push backup |
+/home/zaks/bookkeeping/docs/CONSENSUS_DECISION_WORKSPACE.md:1049:+ Add pre-push hook backup
+/home/zaks/bookkeeping/docs/CONSENSUS_DECISION_WORKSPACE.md:1102:| **MG-4** | Pre-push hook backup | Ctrl+C bypass | Push blocked if validate fails |
+/home/zaks/bookkeeping/docs/ONBOARDING.md:403:# Full rollback from backup
+/home/zaks/bookkeeping/docs/ONBOARDING.md:404:cp ~/claude-backup-$(date +%Y%m%d)/* ~/.claude/
+/home/zaks/bookkeeping/docs/ONBOARDING.md:407:cp ~/claude-backup-$(date +%Y%m%d)/settings.json ~/.claude/
+/home/zaks/bookkeeping/docs/DASHBOARD_ROUND4_MASTER_DEDUPED_PATCHED.md:140:| `alerts-dueactions-drift-contract` | DL-041 | `/api/alerts` and `/api/deferred-actions/due` may have status enum drift | Codex PASS1 | Alerts | Filter | Contract Drift | API routes |
+/home/zaks/bookkeeping/docs/DASHBOARD_ROUND4_MASTER_DEDUPED_PATCHED.md:273:**Purpose:** Configure email inbox monitoring for deal enrichment
+/home/zaks/bookkeeping/docs/DASHBOARD_ROUND4_MASTER_DEDUPED_PATCHED.md:343:| Export All Data | Button | Download full backup |
+/home/zaks/bookkeeping/docs/DASHBOARD_ROUND4_MASTER_DEDUPED_PATCHED.md:908:| 1 | Add 3 dropped items (DL-039 to DL-041): file upload, /me endpoint, alerts drift | APPLIED |
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_EVAL_V3.PASS1.Claude-Opus-4-5.20260204-0304-24645315.md:69:| ZK-ISSUE-0022 | P3 | Archive/restore missing | Phase 2 | Phase 2 | Phase 3 | YES |
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_EVAL_V3.PASS1.Claude-Opus-4-5.20260204-0304-24645315.md:233:| Backup strategy | No plan addresses database backup procedures | Add to Phase 5 hardening |
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_EVAL_V3.PASS1.Claude-Opus-4-5.20260204-0304-24645315.md:264:| 8 | Add backup strategy to Phase 5 | Not covered by any plan |
+/home/zaks/bookkeeping/docs/AGENT_BRAIN_ROUND3_REMEDIATION_MISSION.md:964:- **won**: Plan integration, monitor earnout milestones
+/home/zaks/bookkeeping/docs/AGENT_BRAIN_ROUND3_REMEDIATION_MISSION.md:1241:| Environment variable changes | Restore `.env` backup | HIGH |
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_HONEST_ASSESSMENT_V2.md:784:The orchestration API lacks archive/restore endpoints. The DB has `deleted` flag but API has no endpoints to use it. Legacy API has these endpoints but is not running.
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_HONEST_ASSESSMENT_V2.md:794:| Codex | 20260204-003640-02b34c | "DB has `deleted` flag but orchestration API lacks archive/restore endpoints; legacy API has archive/restore against JSON registry." |
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_HONEST_ASSESSMENT_V2.md:797:1. Add `POST /api/deals/{id}/archive` and `/restore` to orchestration API
+/home/zaks/bookkeeping/docs/QA-COL-DEEP-VERIFY-001B.md:1044:Cost repository (VF-06) has predictive fields in the deal_budgets table but no alert/notification mechanism when projected spend exceeds monthly limit.
+/home/zaks/bookkeeping/docs/SERVICE-CATALOG.md:51:  - **SharePoint Sync**: Cloud backup to ZakOpsDataRoom site
+/home/zaks/bookkeeping/docs/SERVICE-CATALOG.md:59:  - `backup_dataroom.sh` - Daily backup script
+/home/zaks/bookkeeping/docs/SERVICE-CATALOG.md:64:    - OpenWebUI DB backups: `20 */2 * * * /home/zaks/bookkeeping/scripts/openwebui_sync.sh ...`
+/home/zaks/bookkeeping/docs/SERVICE-CATALOG.md:70:    - DataRoom backup: daily 03:00
+/home/zaks/bookkeeping/docs/SERVICE-CATALOG.md:79:- Purpose: Automated email sync for acquisition deal flow - monitors Gmail for broker emails and keywords, downloads documents, organizes in DataRoom
+/home/zaks/bookkeeping/docs/SERVICE-CATALOG.md:83:  - Broker email monitoring (22 contacts from BROKER-TRACKER.csv)
+/home/zaks/bookkeeping/docs/COL-DESIGN-INNOVATION-MASTER.md:81:**What**: Inject invisible unique strings into sensitive RAG chunks. If they appear in LLM output without authorization, block the response and alert security. Proactive defense against data exfiltration via prompt injection.
+/home/zaks/bookkeeping/docs/COL-DESIGN-INNOVATION-MASTER.md:102:| QW-8 | Predictive Budgeting | Gemini | "Budget exceeded in 4 days" alerts |
+/home/zaks/bookkeeping/docs/COL-DESIGN-INNOVATION-MASTER.md:314:Learn the natural cadence of each deal, alert on deviations. A complex deal that normally moves slowly shouldn't trigger the same alerts as a fast deal.
+/home/zaks/bookkeeping/docs/COL-DESIGN-INNOVATION-MASTER.md:333:Inject invisible unique strings into sensitive RAG chunks. Block and alert if they appear in unauthorized LLM output.
+/home/zaks/bookkeeping/docs/COL-DESIGN-INNOVATION-MASTER.md:492:**GAP-L2: SSE Event Types Not Cataloged** — Missing event types: thread_updated, brain_updated, summary_generated, injection_alert, legal_hold_set. Fix: add SSE Event Catalog section. (Claude-Forensic GAP-016)
+/home/zaks/bookkeeping/docs/ALERTING_RULES.md:3:These are recommended alert rules for ZakOps in a single-operator local lab. Tune thresholds to your volume.
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_EVAL_V3.PASS2.Codex.20260204-0310-5abffd.md:8:- 1) JSON->Postgres migration mis-maps IDs or drops fields, leaving hidden split-brain. Applies to: Claude Phase 1 (Tasks 1.4-1.7), Gemini Phase 1 (migrate_json_to_postgres), Codex Phase 1 (Data Truth Unification). Detection: dry-run migration with row counts + sampled field-by-field diff + id mapping table; compare DL-XXXX vs DEAL-YYYY coverage. Mitigation: deterministic id_map table, read-only freeze during cutover, rollback script that restores JSON/SQLite writes.
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_EVAL_V3.PASS2.Codex.20260204-0310-5abffd.md:9:- 2) Legacy writers continue after cutover (deal_registry.json or SQLite actions still mutated), so UI and agent drift. Applies to: Claude Phase 1 (1.1-1.7) and Phase 6 (6.1-6.6), Gemini Phase 1 and Phase 5, Codex Phase 1 and Phase 6. Detection: file write audit + rg/CI guard + runtime log alerts on legacy writes. Mitigation: make legacy files read-only, remove write codepaths, add CI guardrails to block reintroduction.
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_EVAL_V3.PASS2.Codex.20260204-0310-5abffd.md:13:- 6) API contract drift continues (endpoint paths/payloads differ), causing 404/422 and silent drops. Applies to: Claude Phase 2 (Tasks 2.7-2.9), Gemini Phase 2/3, Codex Phase 2 (OpenAPI client). Detection: CI contract tests + runtime 404/422 rate monitoring. Mitigation: OpenAPI as source of truth, generated clients, compatibility aliases with deprecation window.
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_EVAL_V3.PASS2.Codex.20260204-0310-5abffd.md:15:- 8) Dashboard token injection becomes a single point of failure or leakage. Applies to: Claude Phase 5 (Tasks 5.1-5.3), Gemini D4, Codex Phase 0. Detection: secrets scan + alerting on long-lived tokens; audit for requests missing service token. Mitigation: short-lived service JWTs, rotation runbook, least-privilege scopes.
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_EVAL_V3.PASS2.Codex.20260204-0310-5abffd.md:26:- 19) Legacy decommission deletes files before runtime dependencies removed; production errors. Applies to: Claude Phase 6 (Tasks 6.1-6.6), Gemini Phase 5, Codex Phase 6. Detection: runtime errors referencing missing legacy modules; canary failures. Mitigation: staged deprecation with compatibility shims + monitoring window, then delete.
+/home/zaks/bookkeeping/docs/DASHBOARD_ROUND4_META_QA.Claude-Opus.20260205-1910-meta.md:62:| Codex PASS1 | Item 3 | `/api/alerts` + `/api/deferred-actions/due` contract drift | **DROPPED** - Not mapped |
+/home/zaks/bookkeeping/docs/DASHBOARD_ROUND4_META_QA.Claude-Opus.20260205-1910-meta.md:249:| `alerts-dueactions-drift-contract` | DL-041 | `/api/alerts` and `/api/deferred-actions/due` may have status enum drift | Codex PASS1 | Alerts | Filter | Contract Drift | API routes |
+/home/zaks/bookkeeping/docs/ZAKOPS-AGENT-ULTIMATE-DESIGN.md:118:| **Availability** | Uptime | 99.9% during business hours | Health check monitoring |
+/home/zaks/bookkeeping/docs/ZAKOPS-AGENT-ULTIMATE-DESIGN.md:361:| Model corruption | Health check fails | Reload model; alert operator |
+/home/zaks/bookkeeping/docs/ZAKOPS-AGENT-ULTIMATE-DESIGN.md:365:- **Metrics**: tokens/sec, TTFT_p50/p95, requests/sec, error_rate, cache_hit_rate
+/home/zaks/bookkeeping/docs/ZAKOPS-AGENT-ULTIMATE-DESIGN.md:551:| Checkpoint write fails | Exception on save | Retry 3x with backoff; alert if persistent |
+/home/zaks/bookkeeping/docs/ZAKOPS-AGENT-ULTIMATE-DESIGN.md:736:- **Metrics**: tool_call_count (by tool), tool_latency_p95, validation_failure_rate, cache_hit_rate
+/home/zaks/bookkeeping/docs/ZAKOPS-AGENT-ULTIMATE-DESIGN.md:883:| Embedding service down | Health check fails | Degrade to keyword search; alert |
+/home/zaks/bookkeeping/docs/ZAKOPS-AGENT-ULTIMATE-DESIGN.md:885:| Slow retrieval (>250ms) | Latency monitoring | Increase IVFFlat lists; consider Qdrant |
+/home/zaks/bookkeeping/docs/ZAKOPS-AGENT-ULTIMATE-DESIGN.md:890:- **Metrics**: retrieval_latency_p95, recall_at_k (offline eval), reranker_uplift
+/home/zaks/bookkeeping/docs/ZAKOPS-AGENT-ULTIMATE-DESIGN.md:1052:Provide complete visibility into agent operations for debugging, monitoring, and compliance.
+/home/zaks/bookkeeping/docs/ZAKOPS-AGENT-ULTIMATE-DESIGN.md:1056:- Aggregate metrics for dashboards and alerting
+/home/zaks/bookkeeping/docs/ZAKOPS-AGENT-ULTIMATE-DESIGN.md:1847:| 10 | No disaster recovery plan | Document backup/restore procedures |
+/home/zaks/bookkeeping/docs/QA_DEAL_LIFECYCLE_REMEDIATION_PLAN_V3_FINAL.md:1074:  "http://localhost:8091/api/deals/$DEAL_ID/restore" \                                
+/home/zaks/bookkeeping/docs/QA_DEAL_LIFECYCLE_REMEDIATION_PLAN_V3_FINAL.md:1080:  **IF FAIL → REMEDIATE:** Add archive/restore routes to the orchestration API.       
+/home/zaks/bookkeeping/docs/QA_DEAL_LIFECYCLE_REMEDIATION_PLAN_V3_FINAL.md:1099:  | Archive/restore work | T2.6-T2.7 | ZK-0022 | [FILL] | qa3_4_archive.txt |         
+/home/zaks/bookkeeping/docs/QA_DEAL_LIFECYCLE_REMEDIATION_PLAN_V3_FINAL.md:1837:  | ZK-ISSUE-0022 | Archive/restore missing | P3 | 2 | QA-3.4 | [FILL] | phase3/      
+/home/zaks/bookkeeping/docs/QA_DEAL_LIFECYCLE_REMEDIATION_PLAN_V3_FINAL.md:1913:  | QA-3 | Phase 2 | Quarantine→deal, capabilities/metrics, archive/restore | YES     
+/home/zaks/bookkeeping/docs/SERVICE-TOPOLOGY.md:24:| **Health Response** | Structured JSON: `{status, database, outbox, version, uptime}` |
+/home/zaks/bookkeeping/docs/QA-LANGSMITH-INTAKE-HARDEN-VERIFY-001.md:643:Log rate limit hits with client_ip, endpoint, and timestamp for security monitoring.
+/home/zaks/bookkeeping/docs/PREBUILT-AGENT-SCAFFOLD-RESEARCH-v1.md:214:Production-focused FastAPI template with LangGraph, PostgreSQL/pgvector, Langfuse observability, Prometheus/Grafana monitoring, JWT auth, and mem0 for long-term memory. Strong ops focus with rate limiting, structured logging, and metrics dashboards.
+/home/zaks/bookkeeping/docs/DEAL-INTEGRITY-001_MASTER.20260208T164604Z.md:102:4. Modify `POST /api/deals/{deal_id}/restore` to atomically reset `status = 'active'` when restoring
+/home/zaks/bookkeeping/docs/DEAL-INTEGRITY-001_MASTER.20260208T164604Z.md:535:| 2 | **Deprecation Header Pattern** | CC3 | Deprecated endpoints return `Deprecation: true` header + 200 with empty body instead of 500. Clients and monitoring can detect gracefully. | Clean degradation. Standard HTTP pattern (RFC 8594). |
+/home/zaks/bookkeeping/docs/DEAL-INTEGRITY-001_MASTER.20260208T164604Z.md:605:1. Dump data from `zakops-postgres` (port 5435): `docker exec zakops-postgres pg_dump -U dealengine zakops > /home/zaks/bookkeeping/backups/rogue-db-5435-dump.sql`
+/home/zaks/bookkeeping/docs/DEAL-INTEGRITY-001_MASTER.20260208T164604Z.md:620:**Risks/Rollback:** If any service depended on 5435, it will fail at startup. Rollback: `docker start zakops-postgres` (if not removed) or restore from dump.
+/home/zaks/bookkeeping/docs/DEAL-INTEGRITY-001_MASTER.20260208T164604Z.md:630:2. Modify restore endpoint to set `status='active'` when restoring
+/home/zaks/bookkeeping/docs/DEAL-INTEGRITY-001_MASTER.20260208T164604Z.md:642:**Evidence required:** Before/after API responses, DB query results, archive/restore test transcript
+/home/zaks/bookkeeping/docs/HITL-SPIKE-QA-REVIEW-REPORT.md:299:- Risk: diverges from “separate DB `zakops_agent` on existing Postgres instance”; can hide prod issues (roles, backups, HA, constraints).
+/home/zaks/bookkeeping/docs/AUTOMATED-JOB-APPLICATION-WORKFLOW.md:620:  instant_alerts: true  # For high-fit jobs
+/home/zaks/bookkeeping/docs/AUTOMATED-JOB-APPLICATION-WORKFLOW.md:862:alerts:
+/home/zaks/bookkeeping/docs/AUTOMATED-JOB-APPLICATION-WORKFLOW.md:949:- [ ] Set up monitoring and alerts
+/home/zaks/bookkeeping/docs/AUTOMATED-JOB-APPLICATION-WORKFLOW.md:957:- [ ] Create backup strategy for applications.db
+/home/zaks/bookkeeping/docs/ZAKOPS-EMAIL-DATAROOM-INGESTION-CHAT-RELIABILITY-IMPLEMENTATION-PLAN.md:290:- page load restores from backend session endpoint; localStorage is only a fallback cache
+/home/zaks/bookkeeping/docs/ZAKOPS-EMAIL-DATAROOM-INGESTION-CHAT-RELIABILITY-IMPLEMENTATION-PLAN.md:333:2) Frontend: streaming batching + restore history + debug panel
+/home/zaks/bookkeeping/docs/ClaudeCode_Setup_ZakOps_V5PP_Guide.md:288:| **Emergency** | Manual rollback | When something goes wrong | Restore from backup, disable hooks |
+/home/zaks/bookkeeping/docs/ClaudeCode_Setup_ZakOps_V5PP_Guide.md:317:# Restore from daily backup
+/home/zaks/bookkeeping/docs/ClaudeCode_Setup_ZakOps_V5PP_Guide.md:318:cp ~/claude-backup-$(date +%Y%m%d)/* ~/.claude/
+/home/zaks/bookkeeping/docs/ClaudeCode_Setup_ZakOps_V5PP_Guide.md:325:cp ~/claude-backup-$(date +%Y%m%d)/settings.json ~/.claude/
+/home/zaks/bookkeeping/docs/ClaudeCode_Setup_ZakOps_V5PP_Guide.md:350:- Backups are created before major changes: `~/claude-backup-YYYYMMDD/`
+/home/zaks/bookkeeping/docs/ZakOps-Scaffold-Master-Plan-v2.md:864:| **R-03**: AsyncPostgresSaver pool conflicts | Connection starvation | Low | Separate connection pool for checkpointer; monitor connections |
+/home/zaks/bookkeeping/docs/DEAL-INTEGRITY-001_MASTER.md:102:4. Modify `POST /api/deals/{deal_id}/restore` to atomically reset `status = 'active'` when restoring
+/home/zaks/bookkeeping/docs/DEAL-INTEGRITY-001_MASTER.md:535:| 2 | **Deprecation Header Pattern** | CC3 | Deprecated endpoints return `Deprecation: true` header + 200 with empty body instead of 500. Clients and monitoring can detect gracefully. | Clean degradation. Standard HTTP pattern (RFC 8594). |
+/home/zaks/bookkeeping/docs/DEAL-INTEGRITY-001_MASTER.md:605:1. Dump data from `zakops-postgres` (port 5435): `docker exec zakops-postgres pg_dump -U dealengine zakops > /home/zaks/bookkeeping/backups/rogue-db-5435-dump.sql`
+/home/zaks/bookkeeping/docs/DEAL-INTEGRITY-001_MASTER.md:620:**Risks/Rollback:** If any service depended on 5435, it will fail at startup. Rollback: `docker start zakops-postgres` (if not removed) or restore from dump.
+/home/zaks/bookkeeping/docs/DEAL-INTEGRITY-001_MASTER.md:630:2. Modify restore endpoint to set `status='active'` when restoring
+/home/zaks/bookkeeping/docs/DEAL-INTEGRITY-001_MASTER.md:642:**Evidence required:** Before/after API responses, DB query results, archive/restore test transcript
+/home/zaks/bookkeeping/docs/MISSION-HYBRID-GUARDRAIL-EXEC-002_FINAL_DIFF.opus46.20260206-2330-cp3.md:123:| N-06 | Legacy import check needed for agent-api types in CI | CI workflow analysis | Pass 2 had ESLint but not the grep-based CI backup check |
+/home/zaks/bookkeeping/docs/CodexCLI_Setup_ZakOps_V5PP_Guide_V2.md:247:# restore prior known-good copy if required
+/home/zaks/bookkeeping/docs/CodexCLI_Setup_ZakOps_V5PP_Guide_V2.md:310:- Use least-privilege and restore ownership where elevation occurs.
+/home/zaks/bookkeeping/docs/PROMPT-PACK-V1-IMPLEMENTATION-PLAN.md:846:- Evidence retrieval latency p95 < 3 seconds
+/home/zaks/bookkeeping/docs/PROMPT-PACK-V1-IMPLEMENTATION-PLAN.md:1042:- RAG query latency p95 < 2 seconds
+/home/zaks/bookkeeping/docs/PROMPT-PACK-V1-IMPLEMENTATION-PLAN.md:1848:- Session duration p50: 5 minutes, p95: 2 hours
+/home/zaks/bookkeeping/docs/PROMPT-PACK-V1-IMPLEMENTATION-PLAN.md:1849:- Message count per session: median 4, p95: 15
+/home/zaks/bookkeeping/docs/PROMPT-PACK-V1-IMPLEMENTATION-PLAN.md:1920:   - Latency under load (p95 < 5s)
+/home/zaks/bookkeeping/docs/PROMPT-PACK-V1-IMPLEMENTATION-PLAN.md:1939:- [ ] Load test achieves 1000 req/min with p95 < 5s
+/home/zaks/bookkeeping/docs/PROMPT-PACK-V1-IMPLEMENTATION-PLAN.md:2072:Create `monitoring/grafana_dashboard.json` with panels for:
+/home/zaks/bookkeeping/docs/PROMPT-PACK-V1-IMPLEMENTATION-PLAN.md:2074:- Response latency (p50/p95/p99)
+/home/zaks/bookkeeping/docs/PROMPT-PACK-V1-IMPLEMENTATION-PLAN.md:2086:- [ ] Alerts configured (error rate > 5%, latency p95 > 10s)
+/home/zaks/bookkeeping/docs/PROMPT-PACK-V1-IMPLEMENTATION-PLAN.md:2168:- [ ] Evidence retrieval p95 < 3s
+/home/zaks/bookkeeping/docs/PROMPT-PACK-V1-IMPLEMENTATION-PLAN.md:2169:- [ ] RAG query p95 < 2s
+/home/zaks/bookkeeping/docs/PROMPT-PACK-V1-IMPLEMENTATION-PLAN.md:2171:- [ ] Session duration p50: 5 min, p95: 2 hours
+/home/zaks/bookkeeping/docs/PROMPT-PACK-V1-IMPLEMENTATION-PLAN.md:2177:- [ ] Load test: 1000 req/min @ p95 < 5s
+/home/zaks/bookkeeping/docs/PROMPT-PACK-V1-IMPLEMENTATION-PLAN.md:2200:| Proposal approval latency | MEDIUM | UI notifications + mobile alerts |
+/home/zaks/bookkeeping/docs/PROMPT-PACK-V1-IMPLEMENTATION-PLAN.md:2343:└── monitoring/
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.md:222:- 24h health monitoring soak
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.md:278:# Assert: 100% uptime, 0 crashes, artifacts recorded
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.md:357:# Assert: 100% uptime, 0 crashes
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.md:517:| OPS-003 | P1 | Builder | `scripts/gates/soak_24h.sh` | 24h uptime | Soak pass |
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.md:518:| OPS-004 | P2 | Builder | `scripts/gates/soak_72h.sh` | 72h uptime | Soak pass |
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.md:613:| Encryption keys | On change | Indefinite | Secure backup |
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.md:619:3. If DB schema changed: restore from backup
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.md:635:| FM-08 | Queue backlog | Latency | Depth monitoring | Scale workers; alert at >50 |
+/home/zaks/bookkeeping/docs/LANGSMITH-SHADOW-PILOT-DECISION.md:60:| Backend uptime during pilot | [ No outages / Brief outage on ____ / Extended outage ] |
+/home/zaks/bookkeeping/docs/LANGSMITH-SHADOW-PILOT-DECISION.md:104:5. Continue monitoring precision for 2 more weeks at live volume
+/home/zaks/bookkeeping/docs/COL-DESIGN-SPEC-V1.md:155:| `zakops_agent` PostgreSQL as canonical store | Already has checkpoints, ledger, approvals; only store with ACID + indexes + backup | `config.py:210` — 3 checkpoint tables already here |
+/home/zaks/bookkeeping/docs/COL-DESIGN-SPEC-V1.md:368:    async def restore_thread(self, thread_id: str, user_id: int) -> ChatThread
+/home/zaks/bookkeeping/docs/COL-DESIGN-SPEC-V1.md:1061:| High severity | Log + sanitize + toast + increment session tracker | Log + exclude chunk + flag for admin | Skip source + alert |
+/home/zaks/bookkeeping/docs/COL-DESIGN-SPEC-V1.md:1062:| 3+ attempts in session | Downgrade to deterministic-only (no LLM) + alert admin | N/A | N/A |
+/home/zaks/bookkeeping/docs/COL-DESIGN-SPEC-V1.md:1596:    alert_threshold     NUMERIC(3,2) DEFAULT 0.80,
+/home/zaks/bookkeeping/docs/COL-DESIGN-SPEC-V1.md:1641:        if current_spend >= budget.monthly_limit_usd * budget.alert_threshold:
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3.Claude-Opus-4-5.20260204-0212-b214408d.md:412:- Rollback: Keep JSON as read-only backup; re-enable if issues
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3.Claude-Opus-4-5.20260204-0212-b214408d.md:445:- ZK-ISSUE-0022 (Archive/restore missing)
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3.Claude-Opus-4-5.20260204-0212-b214408d.md:456:| 2.6 | Add `/api/deals/{id}/restore` endpoint | Backend | S |
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3.Claude-Opus-4-5.20260204-0212-b214408d.md:473:- [ ] Archive/restore endpoints work
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3.Claude-Opus-4-5.20260204-0212-b214408d.md:590:**Objective:** Add authentication, improve reliability, add monitoring.
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3.Claude-Opus-4-5.20260204-0212-b214408d.md:606:| 5.7 | Add performance monitoring (response times) | Infra | M |
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3.Claude-Opus-4-5.20260204-0212-b214408d.md:607:| 5.8 | Add error alerting (Slack/email on 500s) | Infra | M |
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3.Claude-Opus-4-5.20260204-0212-b214408d.md:712:| ZK-ISSUE-0022 | Archive/restore missing | P3 | 2 | 2.5-2.6 | Endpoints work | [ ] |
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3.Claude-Opus-4-5.20260204-0212-b214408d.md:892:| P3 | ZK-ISSUE-0022 | Archive/restore missing | S | Backend | Phase 1 | 2 |
+/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3.Claude-Opus-4-5.20260204-0212-b214408d.md:905:- **Phase 5:** Harden (auth, retention, monitoring)
+/home/zaks/bookkeeping/docs/INFRA_DECISION_RND_INNOV_META_QA.Opus.20260206-0530-b9e1.md:81:- **60-day pivot trigger:** More than 3 schemas still on manual Zod with no codegen path, OR tsc --noEmit failures per week >5 due to OpenAPI inaccuracy. **Action:** Freeze migration, restore deleted V4 scripts from git (`git checkout HEAD~N -- tools/infra/schema-diff.sh`), run both codegen and V4 schema-diff in parallel until stabilized.
+/home/zaks/bookkeeping/docs/ZAKOPS_ARCHITECTURE_DESIGN.md:257:| Agent | `/agent` | Agent activity monitoring |
+/home/zaks/bookkeeping/docs/CLAUDE_CODE_RESET_V5PP_PASS2_REVIEW_LEDGER.md:239:2. **Existing agents in Zaks-llm**: 4 agents at /home/zaks/Zaks-llm/.claude/agents/ (zakops-prime, agent-config-consultant, log-monitor, research-gemini). No Pass 1 agent referenced these.
+/home/zaks/bookkeeping/docs/CLAUDE_CODE_RESET_V5PP_PASS2_REVIEW_LEDGER.md:240:3. **Migration path**: No proposal describes HOW to get from current state to proposed state. Need backup, incremental implementation, rollback procedure.
+/home/zaks/bookkeeping/docs/CLAUDE_CODE_RESET_V5PP_PASS2_REVIEW_LEDGER.md:288:NEW:     Migration safety (backup, incremental, rollback)
+/home/zaks/bookkeeping/docs/QA-Audit.md:202:- **Where:** §10.3 defines alerts like “tool hallucination rate >2%” and “workflow failure rate >5%” without defining windows and counting rules.
+/home/zaks/bookkeeping/docs/QA-Audit.md:203:- **Why it’s a problem:** Alerting will be noisy or blind; SLOs can’t be enforced.
+/home/zaks/bookkeeping/docs/QA-Audit.md:205:  - For each alert, add:
+/home/zaks/bookkeeping/docs/QA-Audit.md:207:- **Test that proves the fix:** Alert unit tests that feed synthetic metrics and assert alert triggers only under defined conditions.
+/home/zaks/bookkeeping/docs/QA-Audit.md:216:- **Test that proves the fix:** A load test suite that uses the documented workload model and validates p95 latencies and backlog bounds.
+/home/zaks/bookkeeping/docs/QA-Audit.md:235:- **Where:** §10.4 uses `pg_dump -h localhost` and `find ... -delete` without container context or restore drill.
+/home/zaks/bookkeeping/docs/QA-Audit.md:236:- **Why it’s a problem:** Backups may silently fail; retention deletion can remove last good backup; no restore verification.
+/home/zaks/bookkeeping/docs/QA-Audit.md:238:  - Replace with container-aware backup:
+/home/zaks/bookkeeping/docs/QA-Audit.md:239:    - run pg_dump against the correct Postgres service hostname; require restore verification into a scratch DB weekly.
+/home/zaks/bookkeeping/docs/QA-Audit.md:241:- **Test that proves the fix:** Automated restore test that restores last backup into a fresh DB and runs integrity queries.
+/home/zaks/bookkeeping/docs/PASS1_ISSUE_LEDGER.md:340:- DEV=5 — Docker compose described as “compose ready” with DB/monitoring. ([T1], [T2])
+/home/zaks/bookkeeping/docs/CODEX-HANDOFF-ET-VALIDATION-001.md:31:| P8 | Operational Excellence Gate | 6 | 7 | No (SLOs, monitoring) |
+/home/zaks/bookkeeping/docs/CODEX-HANDOFF-ET-VALIDATION-001.md:103:- **S14:** Phase 8 (performance budget, SLOs)
+/home/zaks/bookkeeping/docs/CODEX-HANDOFF-ET-VALIDATION-001.md:151:- Phase 8 SLOs: injection <30s p95, UI load <2s p95, approve→deal <3s p95, 99.5% uptime
+/home/zaks/bookkeeping/docs/CODEX-HANDOFF-ET-VALIDATION-001.md:153:- Health checks every 60s; queue depth alerts; kill switch activation alert
+/home/zaks/bookkeeping/docs/SHAREPOINT-SYNC-GUIDE.md:12:- Cloud backup and disaster recovery
+/home/zaks/bookkeeping/docs/repo_hygiene_step2_verification_20260129_224223Z.md:23:- `*.bak_*` (timestamped backups)
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v1.md:484:- DB backups:
+/home/zaks/bookkeeping/docs/ZakOps-Ultimate-Implementation-Roadmap-combine.v1.md:486:  - restore procedure documented and tested once per phase boundary
+/home/zaks/bookkeeping/docs/QA-LANGSMITH-SHADOW-PILOT-VERIFY-001.md:587:**PASS if:** "Canonical Truth" section exists (this section was accidentally deleted during a prior QA run and restored).
+/home/zaks/bookkeeping/docs/QA-LANGSMITH-SHADOW-PILOT-VERIFY-001.md:757:Since `app.state.api_key_configured` is set at startup, the `/health` endpoint could expose this (without revealing the key) so monitoring can detect misconfigured deployments.
+/home/zaks/bookkeeping/docs/CLAUDE_CODE_RESET_UPGRADES.PASS1.opus46.20260207-0100-p1.md:42:| G-1 | **No contract-specific subagents** | 4 agents exist in `Zaks-llm/.claude/agents/` (zakops-prime, agent-config-consultant, log-monitor, research-gemini) but NONE are infrastructure/contract-aware. Main project scope (`/home/zaks/.claude/agents/`) is EMPTY. No agent knows about 7 contract surfaces, codegen pipelines, or drift detection. V5 doesn't propose any. | `ls /home/zaks/.claude/agents/` → empty; Zaks-llm has 4 agents (583 lines) but domain-specific (deals, config, logs, research) |
+/home/zaks/bookkeeping/docs/CLAUDE_CODE_RESET_UPGRADES.PASS1.opus46.20260207-0100-p1.md:393:| Custom agents | 0 | **4** (in Zaks-llm) | zakops-prime (172L), agent-config-consultant (258L), log-monitor (88L), research-gemini (65L) — but NONE are contract/infra-aware |
+/home/zaks/bookkeeping/docs/QA-COL-ORCHESTRATOR-PROMPT.md:498:{ grep "monthly_limit_usd.*NUMERIC(10,2).*DEFAULT 10.00" "$MIGRATION" | head -1; grep "alert_threshold.*NUMERIC(3,2).*DEFAULT 0.80" "$MIGRATION" | head -1; grep "hard_cap.*BOOLEAN.*DEFAULT FALSE" "$MIGRATION" | head -1; } | tee /home/zaks/bookkeeping/docs/_qa_evidence/col-m01/vf10-4.txt
+/home/zaks/bookkeeping/docs/QA-COL-ORCHESTRATOR-PROMPT.md:702:**Methods expected:** 12 (create_thread, get_thread, list_threads, update_thread, soft_delete_thread, hard_delete_thread, restore_thread, add_message, get_messages, get_thread_for_llm, validate_deal_reference, enqueue_brain_extraction)
+/home/zaks/bookkeeping/docs/QA-COL-ORCHESTRATOR-PROMPT.md:781:### VF-02.7: restore_thread(thread_id, user_id) -> ChatThread
+/home/zaks/bookkeeping/docs/QA-COL-ORCHESTRATOR-PROMPT.md:783:grep -n "async def restore_thread" "$REPO_FILE" | tee /home/zaks/bookkeeping/docs/_qa_evidence/col-m02/vf02-7.txt
+/home/zaks/bookkeeping/docs/QA-COL-ORCHESTRATOR-PROMPT.md:1129:for EVENT in message_chunk message_complete thread_updated brain_updated summary_generated injection_alert legal_hold_set budget_warning cost_update ghost_knowledge momentum_update tool_execution approval_required error; do grep -rq "$EVENT" /home/zaks/zakops-agent-api/apps/agent-api/app/ --include="*.py" && echo "FOUND: $EVENT"; done 2>/dev/null | tee /home/zaks/bookkeeping/docs/_qa_evidence/col-m03/vf07-2.txt
+/home/zaks/bookkeeping/docs/QA-COL-ORCHESTRATOR-PROMPT.md:2311:- **ENH-2**: Add dead-letter alerting for failed outbox entries after 3 retries
+/home/zaks/bookkeeping/docs/QA-COL-ORCHESTRATOR-PROMPT.md:2921:grep -rn "hard_cap\|alert_threshold\|budget_warning\|SSE.*budget" /home/zaks/zakops-agent-api/apps/agent-api/app/ --include="*.py" | head -5 | tee /home/zaks/bookkeeping/docs/_qa_evidence/col-m11/vf02-2.txt
+/home/zaks/bookkeeping/docs/QA-COL-ORCHESTRATOR-PROMPT.md:3362:# VF-04.5: Two alert types — "decision_velocity" and "session_length" (spec exact values)
+/home/zaks/bookkeeping/docs/QA-COL-ORCHESTRATOR-PROMPT.md:3388:# VF-06.4: Alert via alert_service.send("risk_cascade", ...)
+/home/zaks/bookkeeping/docs/QA-COL-ORCHESTRATOR-PROMPT.md:3389:grep -rn 'alert_service.*risk_cascade\|send.*risk_cascade' /home/zaks/zakops-agent-api/apps/agent-api/ --include="*.py" 2>&1 | tee /tmp/col-qa/m14/vf-06-4.txt
+/home/zaks/bookkeeping/docs/QA-COL-ORCHESTRATOR-PROMPT.md:3984:Verify ambient intelligence features — morning briefing, command palette, anomaly alerts, ambient sidebar, smart paste, and sentiment coach — against COL-DESIGN-SPEC-V2 §21.1–§21.6. Check class names, trigger conditions, thresholds, entity types, and UI layout specifications.
+/home/zaks/bookkeeping/docs/COL-DESIGN-SPEC-V2.md:181:| `zakops_agent` PostgreSQL as canonical store | Already has checkpoints, ledger, approvals; only store with ACID + indexes + backup | `config.py:210` — 3 checkpoint tables already here |
+/home/zaks/bookkeeping/docs/COL-DESIGN-SPEC-V2.md:465:    alert_threshold     NUMERIC(3,2) DEFAULT 0.80,
+/home/zaks/bookkeeping/docs/COL-DESIGN-SPEC-V2.md:698:    async def restore_thread(self, thread_id: str, user_id: str) -> ChatThread
+/home/zaks/bookkeeping/docs/COL-DESIGN-SPEC-V2.md:816:| `injection_alert` | `{severity, patterns_found}` | Backend/Agent | Injection detected |
+/home/zaks/bookkeeping/docs/COL-DESIGN-SPEC-V2.md:1577:**Concept**: Inject invisible unique strings into sensitive RAG chunks. If they appear in LLM output, the response is accessing data it shouldn't have — block and alert.
+/home/zaks/bookkeeping/docs/COL-DESIGN-SPEC-V2.md:1633:| High severity | Log + sanitize + toast + tracker | Log + exclude + flag admin | Skip + alert |
+/home/zaks/bookkeeping/docs/COL-DESIGN-SPEC-V2.md:1634:| Canary leaked | **BLOCK response** + alert admin + log | N/A | N/A |
+/home/zaks/bookkeeping/docs/COL-DESIGN-SPEC-V2.md:1982:| **[V2.1] cross_db_outbox (failed)** | **30 days** | Manual review; dead letter alert after 3 retries | **Daily check** | Admin alert endpoint | `status='failed' AND retry_count >= max_retries` |
+/home/zaks/bookkeeping/docs/COL-DESIGN-SPEC-V2.md:2343:| **P3** | S21: Ambient Intelligence | 2 weeks | Morning briefing, command palette, anomaly alerts |
+/home/zaks/bookkeeping/docs/COL-DESIGN-SPEC-V2.md:2415:| R15 | [V2] Outbox worker fails, brain extraction backlog grows | Low | High | Dead letter queue after 3 retries; admin alert; manual reprocess endpoint |
+/home/zaks/bookkeeping/docs/COL-DESIGN-SPEC-V2.md:2769:        await alert_service.send("risk_cascade", {
+/home/zaks/bookkeeping/docs/COL-DESIGN-SPEC-V2.md:2827:   - Budget alert: 2 deals projected to exceed monthly budget this week"
+/home/zaks/bookkeeping/docs/COL-DESIGN-SPEC-V2.md:2876:Learn the natural cadence of each deal, alert on deviations:
+/home/zaks/bookkeeping/docs/COL-DESIGN-SPEC-V2.md:3049:| H-3 | Anomaly-Driven Alerts | Learn deal cadence, alert on deviations | 2 | Requires baseline cadence data. |
+/home/zaks/bookkeeping/docs/MISSION-LANGSMITH-SHADOW-PILOT-001.md:312:  - How to query the database for raw counts (backup verification)

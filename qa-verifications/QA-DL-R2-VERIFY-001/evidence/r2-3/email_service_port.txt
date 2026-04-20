@@ -1,0 +1,2 @@
+Environment=EMAIL_TRIAGE_ACTIONS_BASE_URL=http://localhost:8091
+ExecStart=/usr/bin/python3 -m email_triage_agent.run_once

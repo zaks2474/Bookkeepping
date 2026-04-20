@@ -1,0 +1,22 @@
+133:    limit: int = Field(default=10, description="Maximum number of results")
+150:    limit: int = Field(
+433:    limit: int = 50,
+451:        limit: Maximum number of deals to return (default: 50)
+456:    logger.info("list_deals_called", stage=stage, status=status, limit=limit)
+490:                # Apply limit
+491:                if limit and len(deals) > limit:
+492:                    deals = deals[:limit]
+553:async def _search_deals_fallback(query: str, limit: int) -> str:
+564:                params={"q": query, "limit": limit},
+592:async def search_deals(query: str, limit: int = 10) -> str:
+606:        limit: Maximum number of results
+611:    logger.info("search_deals_called", query=query, limit=limit)
+645:                # Apply limit
+646:                if limit and len(matching_deals) > limit:
+647:                    matching_deals = matching_deals[:limit]
+948:    "portfolio": 365,  # Active portfolio company, no time limit
+949:    "junk": 365,       # Archived, no time limit
+950:    "archived": 365,   # Archived, no time limit
+
+=== PAGINATION CHECK ===
+Verify list_deals has reasonable limit to prevent 10k deals to model

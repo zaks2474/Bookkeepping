@@ -1,0 +1,203 @@
+{
+  "base_url": "http://localhost:8095",
+  "mutation_allowed": false,
+  "name": "agent",
+  "results": [
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/register",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/session",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/auth/session/{session_id}/name",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/auth/session/{session_id}",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/auth/sessions",
+      "reachable": true,
+      "response_preview": "{\"detail\":\"Not authenticated\"}",
+      "status_code": 401,
+      "trace_id": null,
+      "url": "http://localhost:8095/api/v1/auth/sessions"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/chatbot/chat",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/chatbot/chat/stream",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/chatbot/messages",
+      "reachable": true,
+      "response_preview": "{\"detail\":\"Not authenticated\"}",
+      "status_code": 401,
+      "trace_id": null,
+      "url": "http://localhost:8095/api/v1/chatbot/messages"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/chatbot/messages",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/agent/invoke",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/agent/approvals/{approval_id}:approve",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/agent/approvals/{approval_id}:reject",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/approvals",
+      "reachable": true,
+      "response_preview": "{\"approvals\":[],\"total\":0}",
+      "status_code": 200,
+      "trace_id": null,
+      "url": "http://localhost:8095/api/v1/agent/approvals"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/approvals/{approval_id}",
+      "reachable": true,
+      "response_preview": "{\"detail\":\"Approval not found\"}",
+      "status_code": 404,
+      "trace_id": null,
+      "url": "http://localhost:8095/api/v1/agent/approvals/{approval_id}"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/threads/{thread_id}/state",
+      "reachable": true,
+      "response_preview": "{\"thread_id\":\"{thread_id}\",\"status\":\"completed\",\"pending_approval\":null}",
+      "status_code": 200,
+      "trace_id": null,
+      "url": "http://localhost:8095/api/v1/agent/threads/{thread_id}/state"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/agent/invoke/stream",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/health",
+      "reachable": true,
+      "response_preview": "{\"status\":\"healthy\",\"version\":\"1.0.0\"}",
+      "status_code": 200,
+      "trace_id": null,
+      "url": "http://localhost:8095/api/v1/health"
+    },
+    {
+      "method": "POST",
+      "path": "/agent/invoke",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "POST",
+      "path": "/agent/approvals/{approval_id}:approve",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "POST",
+      "path": "/agent/approvals/{approval_id}:reject",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "GET",
+      "path": "/agent/approvals",
+      "reachable": true,
+      "response_preview": "{\"approvals\":[],\"total\":0}",
+      "status_code": 200,
+      "trace_id": null,
+      "url": "http://localhost:8095/agent/approvals"
+    },
+    {
+      "method": "GET",
+      "path": "/agent/approvals/{approval_id}",
+      "reachable": true,
+      "response_preview": "{\"detail\":\"Approval not found\"}",
+      "status_code": 404,
+      "trace_id": null,
+      "url": "http://localhost:8095/agent/approvals/{approval_id}"
+    },
+    {
+      "method": "GET",
+      "path": "/agent/threads/{thread_id}/state",
+      "reachable": true,
+      "response_preview": "{\"thread_id\":\"{thread_id}\",\"status\":\"completed\",\"pending_approval\":null}",
+      "status_code": 200,
+      "trace_id": null,
+      "url": "http://localhost:8095/agent/threads/{thread_id}/state"
+    },
+    {
+      "method": "POST",
+      "path": "/agent/invoke/stream",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "GET",
+      "path": "/",
+      "reachable": true,
+      "response_preview": "{\"name\":\"ZakOps Agent API\",\"version\":\"1.0.0\",\"status\":\"healthy\",\"environment\":\"development\",\"swagger_url\":\"/docs\",\"redoc_url\":\"/redoc\"}",
+      "status_code": 200,
+      "trace_id": null,
+      "url": "http://localhost:8095/"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "reachable": true,
+      "response_preview": "{\"status\":\"healthy\",\"version\":\"1.0.0\",\"environment\":\"development\",\"components\":{\"api\":\"healthy\",\"database\":\"healthy\"},\"timestamp\":\"2026-01-26T16:45:23.289289\"}",
+      "status_code": 200,
+      "trace_id": null,
+      "url": "http://localhost:8095/health"
+    }
+  ],
+  "timestamp_utc": "2026-01-26T16:45:23.289745+00:00"
+}

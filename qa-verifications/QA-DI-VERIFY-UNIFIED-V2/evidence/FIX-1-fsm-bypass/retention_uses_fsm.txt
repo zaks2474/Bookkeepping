@@ -1,0 +1,10 @@
+=== F1.2: Retention uses audited soft-delete ===
+340:                # Per-deal audited soft-delete with audit_trail + deal_events (ADR-001)
+356:                                audit_trail = audit_trail || jsonb_build_array(
+370:                        INSERT INTO zakops.deal_events (deal_id, event_type, event_source, actor, payload)
+---
+Raw bypass check:
+Raw bulk UPDATE lines: 0
+0
+Audit trail references: 2
+VERDICT: PASS — uses audited soft-delete

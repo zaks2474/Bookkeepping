@@ -1,0 +1,8 @@
+context_pack.py:34:    "DATABASE_URL",
+context_pack.py:226:        conn = await asyncpg.connect(BACKEND_DB_URL)
+actions_runner.py:59:    "DATABASE_URL",
+actions_runner.py:72:        conn = await asyncpg.connect(BACKEND_DB_URL)
+chat_evidence_builder.py:39:    "DATABASE_URL",
+chat_evidence_builder.py:435:            conn = await asyncpg.connect(BACKEND_DB_URL)
+All three files: BACKEND_DB_URL = os.getenv("DATABASE_URL", ...)
+VERDICT: Uses env var (DATABASE_URL via os.getenv), not hardcoded. PASS.

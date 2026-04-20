@@ -1,0 +1,20 @@
+=== REM-001: Fix DB Default Stage ===
+Issue: DB default stage is 'lead' instead of 'inbound'
+--- BEFORE ---
+      column_default       
+---------------------------
+ 'lead'::character varying
+(1 row)
+
+
+--- APPLYING FIX ---
+ALTER TABLE
+
+--- AFTER ---
+        column_default        
+------------------------------
+ 'inbound'::character varying
+(1 row)
+
+
+=== REM-001 VERDICT: REMEDIATED ===

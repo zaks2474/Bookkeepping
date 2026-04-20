@@ -1,0 +1,12 @@
+[Unit]
+Description=ZakOps Email Triage (hourly)
+
+[Timer]
+OnCalendar=hourly
+Persistent=true
+RandomizedDelaySec=5m
+Unit=zakops-email-triage.service
+
+[Install]
+WantedBy=timers.target
+

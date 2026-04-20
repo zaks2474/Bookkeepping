@@ -1,0 +1,185 @@
+{
+  "summary": {
+    "passed": 3,
+    "total": 3
+  },
+  "test_suite": "RAG API",
+  "tests": [
+    {
+      "details": {
+        "request": {
+          "elapsed_ms": 1,
+          "method": "GET",
+          "ok": true,
+          "request_json": null,
+          "response_headers": {
+            "content-length": "85",
+            "content-type": "application/json",
+            "date": "Mon, 26 Jan 2026 16:45:28 GMT",
+            "server": "uvicorn"
+          },
+          "response_json": {
+            "embedding_dim": 1024,
+            "embedding_model": "bge-m3",
+            "total_chunks": 226,
+            "unique_urls": 12
+          },
+          "response_text": "{\"total_chunks\":226,\"unique_urls\":12,\"embedding_model\":\"bge-m3\",\"embedding_dim\":1024}",
+          "status_code": 200,
+          "url": "http://localhost:8052/rag/stats"
+        }
+      },
+      "id": "3.1.1",
+      "name": "RAG stats",
+      "passed": true,
+      "timestamp_utc": "2026-01-26T16:45:29.680719+00:00"
+    },
+    {
+      "details": {
+        "request": {
+          "elapsed_ms": 100,
+          "method": "POST",
+          "ok": true,
+          "request_json": {
+            "query": "deal pipeline",
+            "top_k": 5
+          },
+          "response_headers": {
+            "content-length": "20857",
+            "content-type": "application/json",
+            "date": "Mon, 26 Jan 2026 16:45:28 GMT",
+            "server": "uvicorn"
+          },
+          "response_json": {
+            "count": 5,
+            "query": "deal pipeline",
+            "results": [
+              {
+                "chunk_number": 1,
+                "content": "d_fields:\n      - approved_by\n      - reason\n    notification: dashboard\n\n  CLOSING:\n    description: Entering closing stage\n    required_fields:\n      - approved_by\n      - reason\n    notification: dashboard\n\n  EXIT_PLANNING:\n    description: Entering exit planning\n    required_fields:\n      - approved_by\n      - reason\n    notification: both\n\n  CLOSED_WON:\n    description: Marking deal as successfully exited\n    required_fields:\n      - approved_by\n      - exit_price\n      - exit_date\n    notification: both\n\n# ===== DOCUMENT TRIGGERS =====\n\ndocument_triggers:\n  CIM:\n    actions:\n      - advance_to_screening: true\n      - run_analysis: true\n    classification_confidence: 0.85\n\n  TEASER:\n    actions:\n      - schedule_preliminary_review: true\n    classification_confidence: 0.80\n\n  LOI:\n    actions:\n      - alert_operator: true\n      - extract_terms: true\n    classification_confidence: 0.90\n\n  FINANCIALS:\n    actions:\n      - run_underwriter_analysis: true\n    classification_confidence: 0.85\n\n  NDA:\n    actions:\n      - track_nda_status: true\n    classification_confidence: 0.90\n\n# ===== FEATURE FLAGS =====\n\nfeature_flags:\n  # Master switch for lifecycle automation\n  DFP_LIFECYCLE_ENABLED: true\n\n  # Post-ingest event emitter\n  DFP_MANIFEST_PROCESSOR_ENABLED: true\n\n  # Policy auto-scheduling of actions\n  DFP_AUTO_SCHEDULE_ENABLED: true\n\n  # Allow stage recommendations (not auto-transitions)\n  DFP_AUTO_STAGE_SUGGESTIONS_ENABLED: true\n\n  # Deferred action execution (supports dry-run)\n  DFP_ACTION_EXECUTION_ENABLED: true\n  DFP_ACTION_DRY_RUN: false\n\n  # Cloud LLM provider (Gemini)\n  DFP_CLOUD_LLM_ENABLED: true\n\n  # Email deduplication\n  DFP_EMAIL_DEDUPE_ENABLED: true\n\n  # Quarantine system\n  DFP_QUARANTINE_ENABLED: true\n",
+                "metadata": {
+                  "doc_type": "Document",
+                  "extension": ".yaml",
+                  "filename": "stage_policies.yaml",
+                  "modified": "2025-12-27T00:03:43.307320",
+                  "path": ".deal-registry.DECOMMISSIONED_20260125/policy/stage_policies.yaml",
+                  "section": ".deal-registry.DECOMMISSIONED_20260125",
+                  "source": "dataroom.local"
+                },
+                "similarity": 0.4714551270008087,
+                "url": "https://dataroom.local/DataRoom/.deal-registry.DECOMMISSIONED_20260125/policy/stage_policies.yaml"
+              },
+              {
+                "chunk_number": 0,
+                "content": "{\n  \"schema_version\": \"1.0\",\n  \"updated_at\": \"2026-01-26T06:00:02Z\",\n  \"actions\": {}\n}\n",
+                "metadata": {
+                  "doc_type": "Document",
+                  "extension": ".json",
+                  "filename": "deferred_actions.json",
+                  "modified": "2026-01-26T00:00:02.722310",
+                  "path": ".deal-registry/deferred_actions.json",
+                  "section": ".deal-registry",
+                  "source": "dataroom.local"
+                },
+                "similarity": 0.43496793508529663,
+                "url": "https://dataroom.local/DataRoom/.deal-registry/deferred_actions.json"
+              },
+              {
+                "chunk_number": 48,
+                "content": "4dc5-8842-f5147daf7aa2\",\n            \"name\": \"eccsfinstmtssept25 (1).pdf\",\n            \"status\": \"uploaded\",\n            \"size\": 3346109,\n            \"error\": \"\",\n            \"itemId\": \"83a5994d-54e9-4c29-8c0e-1f748b60326c\"\n          },\n          \"document\": [],\n          \"metadata\": [],\n          \"distances\": []\n        },\n        {\n          \"source\": {\n            \"type\": \"file\",\n            \"file\": {\n              \"id\": \"b9c1e339-3c5c-48f7-aefd-36f23304d638\",\n              \"user_id\": \"73ea8360-0e66-4730-bb12-4a33ca9c4ca5\",\n              \"hash\": null,\n              \"filename\": \"ECCSfinstmtsdec24.pdf\",\n              \"data\": {\n                \"status\": \"failed\",\n                \"error\": \"The content provided is empty. Please ensure that there is text or data present before proceeding.\"\n              },\n              \"meta\": {\n                \"name\": \"ECCSfinstmtsdec24.pdf\",\n                \"content_type\": \"application/pdf\",\n                \"size\": 3320143,\n                \"data\": {}\n              },\n              \"created_at\": 1766102359,\n              \"updated_at\": 1766102359,\n              \"status\": true,\n              \"path\": \"/app/backend/data/uploads/b9c1e339-3c5c-48f7-aefd-36f23304d638_ECCSfinstmtsdec24.pdf\",\n              \"access_control\": null,\n              \"error\": \"The content provided is empty. Please ensure that there is text or data present before proceeding.\"\n            },\n            \"id\": \"b9c1e339-3c5c-48f7-aefd-36f23304d638\",\n            \"url\": \"/api/v1/files/b9c1e339-3c5c-48f7-aefd-36f23304d638\",\n            \"name\": \"ECCSfinstmtsdec24.pdf\",\n            \"status\": \"uploaded\",\n            \"size\": 3320143,\n            \"error\": \"\",\n            \"itemId\": \"28805431-149a-4fdd-a46e-e46eb64f19b2\"\n          },\n          \"document\": [],\n          \"metadata\": [],\n          \"distances\": []\n        },\n        {\n          \"source\": {\n            \"type\": \"file\",\n            \"file\": {\n              \"id\": \"b622ec93-e463-40ee-bb5e-668e0ea1cdd7\",\n              \"user_id\": \"73ea8360-0e66-4730-bb12-4a33ca9c4ca5\",\n              \"hash\": \"8b6fa01313ce51afc09e610f819250da501778ad363cba4f9e312a6ec823d42a\",\n              \"filename\": \"eccsfinstmtssept25 (1).pdf\",\n              \"path\": \"/app/backend/data/uploads/b622ec93-e463-40ee-bb5e-668e0ea1cdd7_eccsfinstmtssept25 (1).pdf\",\n              \"data\": {\n                \"status\": \"failed\",\n                \"content\": \"        \",\n                \"error\": \"The content provided is empty. Please ensure that there is text or data present before proceeding.\"\n              },\n              \"meta\": {\n                \"name\": \"eccsfinstmtssept25 (1).pdf\",\n                \"content_type\": \"application/pdf\",\n                \"size\": 3346109,\n                \"data\": {}\n              },\n              \"access_control\": null,\n              \"created_at\": 1766105492,\n              \"updated_at\": 1766105492\n            },\n            \"id\": \"b622ec93-e463-40ee-bb5e-668e0ea1cdd7\",\n            \"url\": \"/api/v1/files/b622ec93-e463-40ee-bb5e-668e0ea1cdd7\",\n            \"name\": \"eccsfinstmtssept25 (1).pdf\",\n            \"status\": \"uploaded\",\n            \"size\": 3346109,\n            \"error\": \"\",\n            \"itemId\": \"25442b94-c8fb-417d-8941-f1408483224c\",\n            \"context\": \"full\"\n          },\n          \"document\": [\n            \"        \"\n          ],\n          \"metadata\": [\n            {\n              \"file_id\": \"b622ec93-e463-40ee-bb5e-668e0ea1cdd7\",\n              \"name\": \"eccsfinstmtssept25 (1).pdf\"\n            }\n          ]\n        },\n        {\n          \"source\": {\n            \"type\": \"file\",\n            \"file\": {\n              \"id\": \"45573846-c425-41dd-9de0-ef2f5b0b2bbf\",\n              \"user_id\": \"73ea8360-0e66-4730-bb12-4a33ca9c4ca5\",\n              \"hash\": null,\n              \"filename\": \"Pasted_Text_1766357482347.txt\",\n              \"data\": {\n                \"status\": \"completed\"\n              },\n              \"meta\": {\n                \"name\": \"Pasted_Text_1766357482347.txt\",\n                \"content_type\": \"text/plain\",\n                \"size\": 35316,\n                \"data\": {}\n              },\n              \"created_at\": 1766357481,\n              \"updated_at\": 1766357481,\n              \"status\": true,\n              \"path\": \"/app/backend/data/uploads/45573846-c425-41dd-9de0-ef2f5b0b2bbf_Pasted_Text_1766357482347.txt\",\n              \"access_control\": null\n            },\n            \"id\": \"45573846-c425-41dd-9de0-ef2f5b0b2bbf\",\n            \"url\": \"/api/v1/files/45573846-c425-41dd-9de0-ef2f5b0b2bbf\",\n            \"name\": \"Pasted_Text_1766357482347.txt\",\n            \"status\": \"uploaded\",\n            \"size\": 35316,\n            \"error\": \"\",\n            \"itemId\": \"09ee26e6-93f5-49cd-8e1a-a3fb6205f287\",\n            \"context\": \"full\"\n          },\n          \"document\": [\n            \"Let's analyze your deal together. I'll help you identify red flags and green lights to make confident decisions.\\n05:56 PM\\nSO\\n\\ud83d\\udcc4\\n\\neccsfinstmtssept25.pdf\\n\\n3.2 MB\\n\\ud83d\\udcc4\\n\\neccsfinstmtssept25 (1).pdf",
+                "metadata": {
+                  "doc_type": "CIM",
+                  "extension": ".json",
+                  "filename": "i-have-received-this-cim-from-the-broker-eric-and-would-like-to-follow-up-and-tell-him-what-im-inter.json",
+                  "modified": "2026-01-26T02:25:59.030653",
+                  "path": "06-KNOWLEDGE-BASE/AI-Sessions/OpenWebUI/2026-01-26/i-have-received-this-cim-from-the-broker-eric-and-would-like-to-follow-up-and-tell-him-what-im-inter.json",
+                  "section": "06-KNOWLEDGE-BASE",
+                  "section_name": "Knowledge Base",
+                  "source": "dataroom.local"
+                },
+                "similarity": 0.4261491894721985,
+                "url": "https://dataroom.local/DataRoom/06-KNOWLEDGE-BASE/AI-Sessions/OpenWebUI/2026-01-26/i-have-received-this-cim-from-the-broker-eric-and-would-like-to-follow-up-and-tell-him-what-im-inter.json"
+              },
+              {
+                "chunk_number": 5,
+                "content": "e rich data\\n- The filesystem is your source of truth, but reads/writes aren't synchronized\\n\\n**Solution:** One **Master Orchestrator Agent** that coordinates specialized sub-agents, all sharing state and following deterministic workflows.\\n\\n---\\n\\n## Architecture: The Deal Lifecycle Engine\\n\\n### Master Agent: `deal_lifecycle_orchestrator`\\n\\nThis is your **single entry point** that routes to sub-agents based on intent.\\n\\n```\\n\\u250c\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2510\\n\\u2502                  DEAL LIFECYCLE ORCHESTRATOR                     \\u2502\\n\\u2502  (Routes requests, maintains state, enforces approval gates)     \\u2502\\n\\u2514\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2518\\n                              \\u2502\\n        \\u250c\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u253c\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2510\\n        \\u25bc                     \\u25bc                     \\u25bc\\n\\u250c\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2510    \\u250c\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2510    \\u250c\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2510\\n\\u2502  TRIAGE       \\u2502    \\u2502  DEAL OPS     \\u2502    \\u2502  INTELLIGENCE \\u2502\\n\\u2502  CLUSTER      \\u2502    \\u2502  CLUSTER      \\u2502    \\u2502  CLUSTER      \\u2502\\n\\u2514\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2518    \\u2514\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2518    \\u2514\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2518\\n        \\u2502                     \\u2502                     \\u2502\\n   \\u250c\\u2500\\u2500\\u2500\\u2500\\u2534\\u2500\\u2500\\u2500\\u2500\\u2510          \\u250c\\u2500\\u2500\\u2500\\u2500\\u2534\\u2500\\u2500\\u2500\\u2500\\u2510          \\u250c\\u2500\\u2500\\u2500\\u2500\\u2534\\u2500\\u2500\\u2500\\u2500\\u2510\\n   \\u25bc         \\u25bc          \\u25bc         \\u25bc          \\u25bc         \\u25bc\\n\\u250c\\u2500\\u2500\\u2500\\u2500\\u2500\\u2510  \\u250c\\u2500\\u2500\\u2500\\u2500\\u2500\\u2510    \\u250c\\u2500\\u2500\\u2500\\u2500\\u2500\\u2510  \\u250c\\u2500\\u2500\\u2500\\u2500\\u2500\\u2510    \\u250c\\u2500\\u2500\\u2500\\u2500\\u2500\\u2510  \\u250c\\u2500\\u2500\\u2500\\u2500\\u2500\\u2510\\n\\u2502Email\\u2502  \\u2502Quar-\\u2502    \\u2502Deal \\u2502  \\u2502Pipe-\\u2502    \\u2502RAG  \\u2502  \\u2502Res- \\u2502\\n\\u2502Class\\u2502  \\u2502antine\\u2502   \\u2502CRUD \\u2502  \\u2502line \\u2502    \\u2502Query\\u2502  \\u2502earch\\u2502\\n\\u2514\\u2500\\u2500\\u2500\\u2500\\u2500\\u2518  \\u2514\\u2500\\u2500\\u2500\\u2500\\u2500\\u2518    \\u2514\\u2500\\u2500\\u2500\\u2500\\u2500\\u2518  \\u2514\\u2500\\u2500\\u2500\\u2500\\u2500\\u2518    \\u2514\\u2500\\u2500\\u2500\\u2500\\u2500\\u2518  \\u2514\\u2500\\u2500\\u2500\\u2500\\u2500\\u2518\\n```\\n\\n---\\n\\n## Sub-Agent Definitions\\n\\n### 1. TRIAGE CLUSTER\\n\\n#### `email_classifier` (You already have this [3])\\n**Role:** Classify incoming emails, extract entities, apply labels\\n**Tools:** Gmail tools, entity extraction\\n**Output:** Classification + entities + proposed actions\\n\\n#### `quarantine_manager`\\n**Role:** Manage the quarantine queue, present approvals, track decisions\\n**Tools:** Filesystem read/write, approval state management\\n**Key Behavior:**\\n```\\n- List quarantined items with rich previews\\n- Present approve/reject interface\\n- On APPROVE: trigger deal creation flow\\n- On REJECT: archive with reason, update broker patterns\\n```\\n\\n#### `attachment_processor`\\n**Role:** Safe attachment handling, virus scanning simulation, file typing\\n**Tools:** `download_attachment`, filesystem operations\\n**Safety Rules:** Only process whitelisted types, always quarantine first [3]\\n\\n---\\n\\n### 2. DEAL OPS CLUSTER\\n\\n#### `deal_creator`\\n**Role:** Create new deals from approved quarantine items\\n**Tools:** Filesystem (create folder structure), registry updates\\n**Workflow:**\\n```python\\n1. Create deal folder: /DataRoom/00-PIPELINE/Inbound/{deal_slug}\\n2. Initialize deal_profile.json with extracted entities\\n3. ",
+                "metadata": {
+                  "doc_type": "Document",
+                  "extension": ".json",
+                  "filename": "langgraph-migration-strategy.json",
+                  "modified": "2026-01-26T02:25:59.022778",
+                  "path": "06-KNOWLEDGE-BASE/AI-Sessions/OpenWebUI/2026-01-26/langgraph-migration-strategy.json",
+                  "section": "06-KNOWLEDGE-BASE",
+                  "section_name": "Knowledge Base",
+                  "source": "dataroom.local"
+                },
+                "similarity": 0.4245635912082446,
+                "url": "https://dataroom.local/DataRoom/06-KNOWLEDGE-BASE/AI-Sessions/OpenWebUI/2026-01-26/langgraph-migration-strategy.json"
+              },
+              {
+                "chunk_number": 69,
+                "content": "n05:58 PM\\nSO\\n\\ud83d\\udcc4\\n\\nECCSfinstmtsdec24.pdf\\n\\n3.2 MB\\ni have this deal help me with the evaluation\\n06:59 PM\\nAI\\n## \\ud83d\\udcca FINANCIAL SUMMARY (Elite Customer Centered Solutions of NM LLC, 2024)\\n\\n| Metric             | 12 Months Ended Dec 31, 2024 | Comment/Trend                        |\\n|--------------------|------------------------------|------------------------------------|\\n| Revenue            | $1,287,834.89                | Full year revenue                  |\\n| Cost of Goods Sold  | $583,432.09                  | 45.3% of revenue                   |\\n| Gross Profit       | $704,402.80 (Calculated)      | 54.7% gross margin                 |\\n| Operating Expenses | $1,343,452.20                | 104.3% of revenue (includes subcontractors) |\\n| Operating Income   | -$55,617.31                  | Operating loss of 4.3%             |\\n| Net Income         | -$55,617.31                  | Net loss of 4.3%                   |\\n| Cash (Bank)        | $36,447.18 (checking + bank) | Current asset                      |\\n| Notes Payable      | $96,388.00                   | Current liabilities                |\\n| Customer Concentration | Not disclosed              | Unknown                          |\\n| Owner Dependency   | Not disclosed                | Unknown                          |\\n| Asking Price       | Not disclosed                | Unknown                          |\\n\\n---\\n\\n### \\u2705 TOP STRENGTHS:\\n\\n- **Revenue Scale:** $1.29M annual sales indicate a small business with market traction.\\n- **Gross Margin:** 54.7% is a solid margin for an IT consulting/service business.\\n- **Cash Position:** ~$36.4K cash available shows some liquidity.\\n\\n---\\n\\n### \\u26a0\\ufe0f KEY CONCERNS:\\n\\n- **Operating Expenses exceed Revenue:** 104.3% of revenue spent on operating costs causing a net loss (-$55.6K). This is a major profitability red flag.\\n- **Negative Net Income:** Loss of 4.3% despite reasonable gross margin indicates cost control issues.\\n- **Liabilities > Assets:** Balance sheet shows total liabilities ($99,177) exceed assets ($38,447), negative equity of -$60,730.\\n- **Lack of Disclosed Customer Concentration:** No info on customer diversity or top client dependency.\\n- **No Owner Workload or Transition Info:** Critical to assess owner dependency risk.\\n- **No Asking Price or Valuation Provided:** Cannot evaluate deal multiples or financing feasibility.\\n\\n---\\n\\n### \\ud83d\\udcb0 VALUATION ASSESSMENT:\\n\\n- **Revenue:** $1.29M (small business range)\\n- **Profitability:** Negative net income, no EBITDA info provided but likely negative\\n- **Typical SDE multiples:** 2-3x for such small consulting firms, but negative earnings make valuation challenging\\n- **Without positive cash flow or normalized earnings, valuation likely near zero or requires significant restructuring**\\n\\n---\\n\\n### \\ud83c\\udfaf NEXT STEPS:\\n\\n- **Request Seller to provide:**\\n  - Owner compensation and hours worked weekly\\n  - Customer concentration details (% revenue from top clients)\\n  - SDE or EBITDA with addbacks clearly itemized\\n  - Asking price and deal structure (cash, seller note, financing)\\n  - Details on systems/processes and transition plan\\n- **Analyze operating expenses line items for cost cutting potential and normalization**\\n- **Investigate reasons for operating loss despite strong gross margin**\\n- **Confirm if any intangible assets or contracts exist that add value**\\n\\n---\\n\\n### \\u2753 I NEED TO KNOW:\\n\\n- What is the asking price and proposed deal structure?\\n- How dependent is the business on the owner (hours, client relationships)?\\n- What is the breakdown of revenue by client or contracts?\\n- Are there any addbacks or adjustments to EBITDA/SDE possible?\\n- Are financials CPA-prepared or internal compilations only?\\n\\n---\\n\\n\\ud83d\\udea6 **VERDICT: RED LIGHT - 12/100**\\n\\nThis deal shows a loss-making business with negative equity and no clear valuation or owner dependency data. The operating expense structure is unsustainable relative to revenue. Without significant cost control or operational improvements, this is not a viable acquisition target as presented.\\n\\n---\\n\\n\\ud83d\\udccb **Deal Coach Guidance**: This evaluation is based on DealMaker Wealth Society frameworks and Red Light Green Light methodology. This is strategic guidance, not legal or financial advice. Always consult your attorney for contracts, CPA for tax matters, and lenders for financing before proceeding.\\n\\n---\\n\\nIf you want, I can help draft a broker email to request missing critical info or coach you on how to proceed with negotiation or walk away. What would you like next?\\n07:00 PM\\nSO\\n\\ud83d\\udcc4\\n\\neccsfinstmtssept25 (1).pdf\\n\\n3.2 MB\\nhere's the second doc\\n07:03 PM\\nAI\\n## \\ud83d\\udcca FINANCIAL SUMMARY (Elite Customer Centered Solutions of NM LLC, 9 months ended September 30, 2025)\\n\\n| Metric             | 9 Months Ended Sep 30, 2025  | Comment/Trend                         |\\n|--------------------|----",
+                "metadata": {
+                  "doc_type": "CIM",
+                  "extension": ".json",
+                  "filename": "i-have-received-this-cim-from-the-broker-eric-and-would-like-to-follow-up-and-tell-him-what-im-inter.json",
+                  "modified": "2026-01-26T02:25:59.030653",
+                  "path": "06-KNOWLEDGE-BASE/AI-Sessions/OpenWebUI/2026-01-26/i-have-received-this-cim-from-the-broker-eric-and-would-like-to-follow-up-and-tell-him-what-im-inter.json",
+                  "section": "06-KNOWLEDGE-BASE",
+                  "section_name": "Knowledge Base",
+                  "source": "dataroom.local"
+                },
+                "similarity": 0.4113811973148943,
+                "url": "https://dataroom.local/DataRoom/06-KNOWLEDGE-BASE/AI-Sessions/OpenWebUI/2026-01-26/i-have-received-this-cim-from-the-broker-eric-and-would-like-to-follow-up-and-tell-him-what-im-inter.json"
+              }
+            ]
+          },
+          "response_text": "{\"query\":\"deal pipeline\",\"results\":[{\"url\":\"https://dataroom.local/DataRoom/.deal-registry.DECOMMISSIONED_20260125/policy/stage_policies.yaml\",\"chunk_number\":1,\"content\":\"d_fields:\\n      - approved_by\\n      - reason\\n    notification: dashboard\\n\\n  CLOSING:\\n    description: Entering closing stage\\n    required_fields:\\n      - approved_by\\n      - reason\\n    notification: dashboard\\n\\n  EXIT_PLANNING:\\n    description: Entering exit planning\\n    required_fields:\\n      - approved_by\\n      - reason\\n    notification: both\\n\\n  CLOSED_WON:\\n    description: Marking deal as successfully exited\\n    required_fields:\\n      - approved_by\\n      - exit_price\\n      - exit_date\\n    notification: both\\n\\n# ===== DOCUMENT TRIGGERS =====\\n\\ndocument_triggers:\\n  CIM:\\n    actions:\\n      - advance_to_screening: true\\n      - run_analysis: true\\n    classification_confidence: 0.85\\n\\n  TEASER:\\n    actions:\\n      - schedule_preliminary_review: true\\n    classification_confidence: 0.80\\n\\n  LOI:\\n    actions:\\n      - alert_operator: true\\n      - extract_terms: true\\n    classification_confidence: 0.90\\n\\n  FINANCIALS:\\n    actions:\\n      - run_underwriter_analysis: true\\n    classification_confidence: 0.85\\n\\n  NDA:\\n    actions:\\n      - track_nda_status: true\\n    classification_confidence: 0.90\\n\\n# ===== FEATURE FLAGS =====\\n\\nfeature_flags:\\n  # Master switch for lifecycle automation\\n  DFP_LIFECYCLE_ENABLED: true\\n\\n  # Post-ingest event emitter\\n  DFP_MANIFEST_PROCESSOR_ENABLED: true\\n\\n  # Policy auto-scheduling of actions\\n  DFP_AUTO_SCHEDULE_ENABLED: true\\n\\n  # Allow stage recommendations (not auto-transitions)\\n  DFP_AUTO_STAGE_SUGGESTIONS_ENABLED: true\\n\\n  # Deferred action execution (supports dry-run)\\n  DFP_ACTION_EXECUTION_ENABLED: true\\n  DFP_ACTION_DRY_RUN: false\\n\\n  # Cloud LLM provider (Gemini)\\n  DFP_CLOUD_LLM_ENABLED: true\\n\\n  # Email deduplication\\n  DFP_EMAIL_DEDUPE_ENABLED: true\\n\\n  # Quarantine system\\n  DFP_QUARANTINE_ENABLED: true\\n\",\"metadata\":{\"path\":\".deal-registry.DECOMMISSIONED_20260125/policy/stage_policies.yaml\",\"source\":\"dataroom.local\",\"section\":\".deal-registry.DECOMMISSIONED_20260125\",\"doc_type\":\"Document\",\"filename\":\"stage_policies.yaml\",\"modified\":\"2025-12-27T00:03:43.307320\",\"extension\":\".yaml\"},\"similarity\":0.4714551270008087},{\"url\":\"https://dataroom.local/DataRoom/.deal-registry/deferred_actions.json\",\"chunk_number\":0,\"content\":\"{\\n  \\\"schema_version\\\": \\\"1.0\\\",\\n  \\\"updated_at\\\": \\\"2026-01-26T06:00:02Z\\\",\\n  \\\"actions\\\": {}\\n}\\n\",\"metadata\":{\"path\":\".deal-registry/deferred_actions.json\",\"source\":\"dataroom.local\",\"section\":\".deal-registry\",\"doc_type\":\"Document\",\"filename\":\"deferred_actions.json\",\"modified\":\"2026-01-26T00:00:02.722310\",\"extension\":\".json\"},\"similarity\":0.43496793508529663},{\"url\":\"https://dataroom.local/DataRoom/06-KNOWLEDGE-BASE/AI-Sessions/OpenWebUI/2026-01-26/i-have-received-this-cim-from-the-broker-eric-and-would-like-to-follow-up-and-tell-him-what-im-inter.json\",\"chunk_number\":48,\"content\":\"4dc5-8842-f5147daf7aa2\\\",\\n            \\\"name\\\": \\\"eccsfinstmtssept25 (1).pdf\\\",\\n            \\\"status\\\": \\\"uploaded\\\",\\n            \\\"size\\\": 3346109,\\n            \\\"error\\\": \\\"\\\",\\n            \\\"itemId\\\": \\\"83a5994d-54e9-4c29-8c0e-1f748b60326c\\\"\\n          },\\n          \\\"document\\\": [],\\n          \\\"metadata\\\": [],\\n          \\\"distances\\\": []\\n        },\\n        {\\n          \\\"source\\\": {\\n            \\\"type\\\": \\\"file\\\",\\n            \\\"file\\\": {\\n              \\\"id\\\": \\\"b9c1e339-3c5c-48f7-aefd-36f23304d638\\\",\\n              \\\"user_id\\\": \\\"73ea8360-0e66-4730-bb12-4a33ca9c4ca5\\\",\\n              \\\"hash\\\": null,\\n              \\\"filename\\\": \\\"ECCSfinstmtsdec24.pdf\\\",\\n              \\\"data\\\": {\\n                \\\"status\\\": \\\"failed\\\",\\n                \\\"error\\\": \\\"The content provided is empty. Please ensure that there is text or data present before proceeding.\\\"\\n              },\\n              \\\"meta\\\": {\\n                \\\"name\\\": \\\"ECCSfinstmtsdec24.pdf\\\",\\n           \n\u2026(truncated, 20857 bytes total)\u2026",
+          "status_code": 200,
+          "url": "http://localhost:8052/rag/query"
+        }
+      },
+      "id": "3.1.2",
+      "name": "RAG query (basic)",
+      "passed": true,
+      "timestamp_utc": "2026-01-26T16:45:29.781216+00:00"
+    },
+    {
+      "details": {
+        "request": {
+          "elapsed_ms": 1,
+          "method": "POST",
+          "ok": true,
+          "request_json": {},
+          "response_headers": {
+            "content-length": "88",
+            "content-type": "application/json",
+            "date": "Mon, 26 Jan 2026 16:45:29 GMT",
+            "server": "uvicorn"
+          },
+          "response_json": {
+            "detail": [
+              {
+                "input": {},
+                "loc": [
+                  "body",
+                  "query"
+                ],
+                "msg": "Field required",
+                "type": "missing"
+              }
+            ]
+          },
+          "response_text": "{\"detail\":[{\"type\":\"missing\",\"loc\":[\"body\",\"query\"],\"msg\":\"Field required\",\"input\":{}}]}",
+          "status_code": 422,
+          "url": "http://localhost:8052/rag/query"
+        }
+      },
+      "id": "3.1.3",
+      "name": "RAG query (invalid request should 400/422)",
+      "passed": true,
+      "timestamp_utc": "2026-01-26T16:45:29.783046+00:00"
+    }
+  ],
+  "timestamp_utc": "2026-01-26T16:45:29.783053+00:00"
+}

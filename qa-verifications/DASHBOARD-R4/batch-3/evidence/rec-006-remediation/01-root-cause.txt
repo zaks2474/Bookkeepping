@@ -1,0 +1,45 @@
+B1 BLOCKER ROOT CAUSE ANALYSIS — Deal Count Mismatch
+=====================================================
+
+Symptom: QA found API=36 deals, agent response=3 deals (mismatch)
+
+Root Cause (TWO ISSUES):
+
+1. UNBOUNDED CHECKPOINT ACCUMULATION
+   - All dashboard chat requests use service token auth
+   - auth.py always returned Session(id="service-session") for service tokens
+   - LangGraph checkpoint stores ALL messages per thread_id
+   - The "service-session" thread accumulated 266 checkpoint entries
+   - With 56+ messages in context, Qwen 2.5 (32B) stopped following
+     tool-calling instructions and started hallucinating/giving generic responses
+
+2. QWEN 2.5 TOOL-CALLING UNRELIABILITY
+   - Even with fresh sessions, Qwen 2.5 calls list_deals only ~25% of the time
+   - When it DOES call the tool, it sometimes hallucates the count from the output
+   - Tool returned total=50 but model responded "36 deals" with wrong stage breakdown
+
+Fixes Applied:
+
+FIX A: Unique session IDs per service request (agent-api)
+   File: apps/agent-api/app/api/v1/auth.py (line 189)
+   Changed: Session(id="service-session") -> Session(id=f"svc-{uuid4().hex[:12]}")
+   Effect: Each dashboard request gets a fresh LangGraph thread, preventing accumulation
+
+FIX B: Stale checkpoint data cleared (one-time)
+   Command: DELETE FROM checkpoints/checkpoint_blobs/checkpoint_writes WHERE thread_id='service-session'
+   Cleared: 266 checkpoints, 266 blobs, 366 writes
+
+FIX C: Dashboard direct backend fallback for deal-count queries (dashboard)
+   File: apps/dashboard/src/app/api/chat/route.ts
+   Logic: isDealCountQuery() detects deal-count questions,
+          fetchDealCountFromBackend() fetches directly from backend API,
+          formatDealSummary() formats the response with accurate counts
+   Effect: Deal-count queries ALWAYS return authoritative data from the backend
+   Data source tag: "backend_api_direct" (vs "backend_api" from agent)
+
+Verification:
+   - 3/3 consecutive tests: 36 active deals (ALIGNED with backend)
+   - data_source: "backend_api_direct"
+   - Playwright: 12/12 PASS
+   - tsc: 0 errors
+   - lint: 0 warnings

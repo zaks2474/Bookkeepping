@@ -1,0 +1,15 @@
+=== CHECK 4.4.2: Chain-of-Custody for Approved Lifecycle ===
+Timestamp: 2026-02-03T13:09:53-06:00
+Thread ID: forensic-003-lifecycle-1770145664
+Command: SELECT event_type, payload::text, created_at FROM audit_log WHERE thread_id = 'forensic-003-lifecycle-1770145664' ORDER BY created_at ASC;
+
+time="2026-02-03T13:09:53-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-03T13:09:53-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+        event_type        |                                                         payload                                                         |          created_at           
+--------------------------+-------------------------------------------------------------------------------------------------------------------------+-------------------------------
+ approval_claimed         | {"tool_name": "transition_deal", "idempotency_key": "2d4a1916e3e069cacc2aed81fe911503bb95a3487ab82958afdabaf4239f8be9"} | 2026-02-03 19:08:22.675481+00
+ tool_execution_started   | {"tool_name": "transition_deal", "idempotency_key": "2d4a1916e3e069cacc2aed81fe911503bb95a3487ab82958afdabaf4239f8be9"} | 2026-02-03 19:08:22.689033+00
+ tool_execution_completed | {"success": true, "tool_executed": true}                                                                                | 2026-02-03 19:08:24.119407+00
+ approval_approved        | {"resolved_by": "forensic-audit-user"}                                                                                  | 2026-02-03 19:08:24.119474+00
+(4 rows)
+

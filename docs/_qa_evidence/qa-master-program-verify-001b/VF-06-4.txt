@@ -1,0 +1,15 @@
+                                       Table "public.legal_hold_locks"
+   Column    |           Type           | Collation | Nullable |                   Default                    
+-------------+--------------------------+-----------+----------+----------------------------------------------
+ id          | integer                  |           | not null | nextval('legal_hold_locks_id_seq'::regclass)
+ thread_id   | text                     |           | not null | 
+ hold_type   | character varying(50)    |           | not null | 
+ hold_reason | text                     |           |          | 
+ set_by      | character varying(255)   |           | not null | 
+ set_at      | timestamp with time zone |           | not null | now()
+ released_at | timestamp with time zone |           |          | 
+Indexes:
+    "legal_hold_locks_pkey" PRIMARY KEY, btree (id)
+    "idx_legal_hold_locks_active" btree (thread_id) WHERE released_at IS NULL
+    "idx_legal_hold_locks_thread" btree (thread_id)
+

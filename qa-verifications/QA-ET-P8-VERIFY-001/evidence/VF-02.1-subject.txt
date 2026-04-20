@@ -1,0 +1,2 @@
+    # P1-03: display_subject = COALESCE(email_subject, subject) for transitional rendering
+                      COALESCE(email_subject, subject) AS display_subject,

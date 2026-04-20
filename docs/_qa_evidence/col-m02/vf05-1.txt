@@ -1,0 +1,4 @@
+    async def get_thread(self, thread_id: str, user_id: str) -> ChatThread:
+    async def soft_delete_thread(self, thread_id: str, user_id: str) -> None:
+    async def hard_delete_thread(self, thread_id: str, user_id: str) -> None:
+    async def restore_thread(self, thread_id: str, user_id: str) -> ChatThread:

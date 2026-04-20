@@ -1,0 +1,27 @@
+=== STEP 0.1: Service Census ===
+NAMES                            PORTS                                         STATUS
+zakops-backend-backend-1         0.0.0.0:8091->8091/tcp, [::]:8091->8091/tcp   Up 6 hours (healthy)
+zakops-backend-postgres-1                                                      Up 6 hours (healthy)
+zakops-backend-redis-1                                                         Up 6 hours (healthy)
+zakops-backend-langfuse-1                                                      Restarting (1) 48 seconds ago
+zakops-backend-outbox-worker-1   8091/tcp                                      Up 7 hours (healthy)
+zakops-agent-api                 0.0.0.0:8095->8000/tcp, [::]:8095->8000/tcp   Up 9 hours (healthy)
+zakops-agent-db                  5432/tcp                                      Up 11 hours (healthy)
+openwebui                        0.0.0.0:3000->8080/tcp, [::]:3000->8080/tcp   Up 11 hours (healthy)
+vllm-qwen                        0.0.0.0:8000->8000/tcp, [::]:8000->8000/tcp   Up 11 hours
+rag-rest-api                     0.0.0.0:8052->8080/tcp, [::]:8052->8080/tcp   Up 11 hours
+rag-db                           0.0.0.0:5434->5432/tcp, [::]:5434->5432/tcp   Up 11 hours
+zakops-postgres-1                0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp   Up 6 hours (healthy)
+zakops-redis-1                   0.0.0.0:6379->6379/tcp, [::]:6379->6379/tcp   Up 11 hours (healthy)
+LISTEN 0      4096          0.0.0.0:5432       0.0.0.0:*                                        
+LISTEN 0      4096          0.0.0.0:8052       0.0.0.0:*                                        
+LISTEN 0      4096          0.0.0.0:8000       0.0.0.0:*                                        
+LISTEN 0      4096          0.0.0.0:8091       0.0.0.0:*                                        
+LISTEN 0      4096          0.0.0.0:8095       0.0.0.0:*                                        
+LISTEN 0      2048          0.0.0.0:9100       0.0.0.0:*                                        
+LISTEN 0      4096             [::]:5432          [::]:*                                        
+LISTEN 0      4096             [::]:8052          [::]:*                                        
+LISTEN 0      4096             [::]:8000          [::]:*                                        
+LISTEN 0      4096             [::]:8091          [::]:*                                        
+LISTEN 0      4096             [::]:8095          [::]:*                                        
+GOOD: Nothing on 8090

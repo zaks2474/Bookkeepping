@@ -1,0 +1,6 @@
+19:CITATION_HIGH_THRESHOLD = float(os.getenv("CITATION_HIGH_THRESHOLD", "0.5"))   # score >= this → "strong"
+20:CITATION_LOW_THRESHOLD = float(os.getenv("CITATION_LOW_THRESHOLD", "0.3"))     # score >= this → "weak"; below → also "weak" (no source = "orphan")
+21:CITATION_QUALITY_FLOOR = float(os.getenv("CITATION_QUALITY_FLOOR", "0.5"))     # quality_score must be >= this for audit to pass
+100:        if score >= CITATION_HIGH_THRESHOLD:
+103:        elif score >= CITATION_LOW_THRESHOLD:
+119:    result.passed = result.orphan == 0 and result.quality_score >= CITATION_QUALITY_FLOOR

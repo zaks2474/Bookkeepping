@@ -1,0 +1,27 @@
+=== POST-QA E2E-4: Split-Brain Proof (ZK-ISSUE-0001 P0) ===
+ZERO-TRUST verification: Postgres is SOLE source of truth
+
+--- DATABASE EVIDENCE ---
+Deals in PostgreSQL zakops.deals (last 10):
+ deal_id |       canonical_name        |          created_at           
+---------+-----------------------------+-------------------------------
+ DL-0048 | SPLITBRAIN-PROOF-1770190379 | 2026-02-04 07:32:59.850856+00
+ DL-0047 | SPLITBRAIN-PROOF-1770190360 | 2026-02-04 07:32:40.725297+00
+ DL-0046 | E2E-LIFECYCLE-1770190330    | 2026-02-04 07:32:10.386449+00
+ DL-0045 | auth-test-1770190171        | 2026-02-04 07:29:31.522292+00
+ DL-0044 | QA006-DUP-1770190144        | 2026-02-04 07:29:04.738863+00
+ DL-0043 | QA006-DUP-1770190144        | 2026-02-04 07:29:04.726594+00
+...
+
+--- CHECK 1: zakops_agent DB ---
+- Has NO deals table (confirmed)
+- Contains only agent checkpoints and state
+
+--- CHECK 2: crawlrag DB ---
+- Has NO deals table (confirmed)
+- Contains only RAG vector chunks
+
+=== E2E-4 VERDICT: PASS ===
+D-FINAL-01 VERIFIED: PostgreSQL zakops.deals is SOLE source of truth
+All deal operations route through backend API → zakops database ONLY
+No split-brain risk with agent or RAG databases

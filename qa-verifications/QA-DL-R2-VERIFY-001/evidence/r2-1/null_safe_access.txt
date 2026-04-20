@@ -1,0 +1,17 @@
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealTimeline.tsx:40:  isLoading?: boolean;
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealTimeline.tsx:41:  className?: string;
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealTimeline.tsx:226:    const details = event.details ?? {};
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealTimeline.tsx:235:            <strong>{fromStage ? DEAL_STAGE_LABELS[fromStage] : 'unknown'}</strong> to{' '}
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealTimeline.tsx:236:            <strong>{toStage ? DEAL_STAGE_LABELS[toStage] : 'unknown'}</strong>
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealTimeline.tsx:237:            {details.reason ? <span className="text-muted-foreground"> - {String(details.reason)}</span> : null}
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealTimeline.tsx:245:            {details.size ? <span className="text-muted-foreground"> ({formatFileSize(Number(details.size))})</span> : null}
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealTimeline.tsx:253:            {event.event_type === 'email_received' ? 'Received' : 'Sent'}{' '}
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealTimeline.tsx:255:            {details.from ? (
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealTimeline.tsx:282:            {details.description ? `: ${String(details.description)}` : null}
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deal-workspace/DealTimeline.tsx:311:            {event.source === 'agent' ? (
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/operator-hq/ActivityFeed.tsx:34:  isLoading?: boolean;
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/operator-hq/ActivityFeed.tsx:35:  maxHeight?: string;
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/operator-hq/ActivityFeed.tsx:36:  className?: string;
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/operator-hq/ActivityFeed.tsx:111:      label: isToday(new Date(date)) ? 'Today' : format(new Date(date), 'MMMM d'),
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/operator-hq/ActivityFeed.tsx:156:    const details = event.details ?? {};
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/operator-hq/ActivityFeed.tsx:207:                {event.source === 'agent' ? (

@@ -1,0 +1,137 @@
+================================================================================
+AGENT-FORENSIC-004 - Phase 6 Check 6.5: Rate Limiting Check
+================================================================================
+Date: 2026-02-03
+Auditor: Claude Opus 4.5 (Automated)
+Status: PASS
+================================================================================
+
+1. RATE LIMITING IMPLEMENTATION
+-------------------------------
+Source Files:
+- /home/zaks/zakops-agent-api/apps/agent-api/app/core/limiter.py
+- /home/zaks/zakops-agent-api/apps/agent-api/app/core/middleware/rate_limiter.py
+
+1.1 Core Limiter (limiter.py):
+```python
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+from app.core.config import settings
+
+limiter = Limiter(key_func=get_remote_address, default_limits=settings.RATE_LIMIT_DEFAULT)
+```
+
+1.2 Advanced Rate Limiter (middleware/rate_limiter.py):
+```python
+limiter = Limiter(
+    key_func=get_client_identifier,
+    default_limits=["100 per minute"],
+    storage_uri=os.getenv("RATE_LIMIT_STORAGE", "memory://"),
+    strategy="fixed-window",
+)
+```
+
+Features:
+- Fixed-window strategy
+- Memory-based storage (configurable via RATE_LIMIT_STORAGE)
+- Client identification by IP + Auth token hash
+
+2. CLIENT IDENTIFICATION
+------------------------
+From rate_limiter.py (Lines 19-42):
+```python
+def get_client_identifier(request: Request) -> str:
+    ip = get_remote_address(request)
+    auth_header = request.headers.get("Authorization", "")
+
+    if auth_header.startswith("Bearer "):
+        token_hash = hash(auth_header[7:]) % 10**8
+        return f"{ip}:auth:{token_hash}"
+
+    return ip
+```
+
+Benefits:
+- Unauthenticated users rate-limited by IP
+- Authenticated users get separate rate limit buckets
+- Prevents authenticated users from being blocked by anonymous traffic
+
+3. RATE LIMIT TIERS
+-------------------
+Decorator shortcuts provided (Lines 54-77):
+- rate_limit_high_frequency(): 100/min (high-frequency reads)
+- rate_limit_standard(): 60/min (standard endpoints)
+- rate_limit_write_operations(): 30/min (write operations)
+- rate_limit_sensitive(): 10/min (sensitive operations)
+- rate_limit_admin(): 20/min (admin operations)
+
+4. ENDPOINT-SPECIFIC LIMITS
+---------------------------
+From config.py (Lines 210-226):
+```python
+default_endpoints = {
+    "chat": ["30 per minute"],
+    "chat_stream": ["20 per minute"],
+    "messages": ["50 per minute"],
+    "register": ["10 per hour"],
+    "login": ["20 per minute"],
+    "root": ["10 per minute"],
+    "health": ["20 per minute"],
+}
+```
+
+5. LIVE TESTING
+---------------
+Test: Rapid burst of 110 parallel requests to /health
+
+Command:
+for i in {1..110}; do curl -s http://localhost:8095/health > /dev/null & done; wait
+curl -s -w "%{http_code}" http://localhost:8095/health -o /dev/null
+
+Result: 429 (Too Many Requests)
+
+Analysis:
+- /health endpoint has "20 per minute" limit
+- After 110 rapid requests, rate limit triggered
+- Returns HTTP 429 status code
+- Rate limiting is ACTIVE and FUNCTIONAL
+
+6. RATE LIMIT ERROR RESPONSE
+-----------------------------
+From rate_limiter.py (Lines 104-115):
+```json
+{
+    "error": "rate_limit_exceeded",
+    "detail": "Too many requests. Please slow down.",
+    "retry_after": 60
+}
+```
+
+Headers included:
+- Retry-After: Seconds to wait
+- X-RateLimit-Limit: The limit that was exceeded
+
+7. ENVIRONMENT-SPECIFIC DEFAULTS
+--------------------------------
+From config.py (Lines 252-274):
+- DEVELOPMENT: 1000/day, 200/hour
+- STAGING: 500/day, 100/hour
+- PRODUCTION: 200/day, 50/hour
+- TEST: 1000/day, 1000/hour (relaxed)
+
+8. SLOWAPI INTEGRATION
+----------------------
+From main.py (Lines 82-84):
+```python
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+```
+
+Rate limiting is properly registered as FastAPI middleware.
+
+RESULT: PASS
+- Rate limiting: IMPLEMENTED with slowapi
+- Multiple tiers: CONFIGURED (sensitive, standard, admin, etc.)
+- Client identification: IP + Auth token hash
+- Live test: CONFIRMED working (429 returned after burst)
+- Error response: Proper 429 with Retry-After header

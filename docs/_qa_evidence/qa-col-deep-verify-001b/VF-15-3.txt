@@ -1,0 +1,2 @@
+103:def compute_decay_confidence(fact: dict, now: Optional[datetime] = None) -> float:
+137:        decayed = base_confidence * math.exp(-decay_rate * days_since)

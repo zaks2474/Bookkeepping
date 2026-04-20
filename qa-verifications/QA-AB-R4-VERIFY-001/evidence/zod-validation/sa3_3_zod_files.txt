@@ -1,0 +1,4661 @@
+=== ZOD FILE: /home/zaks/zakops-agent-api/apps/dashboard/src/lib/api-schemas.ts ===
+/**
+ * ZakOps Orchestration API Zod Schemas
+ * Runtime validation for API data
+ */
+
+import { z } from 'zod';
+
+// =============================================================================
+// ENUMS
+// =============================================================================
+
+export const DealStageSchema = z.enum([
+  'inbound',
+  'screening',
+  'qualified',
+  'loi',
+  'diligence',
+  'closing',
+  'portfolio',
+  'junk',
+  'archived',
+]);
+
+export const DealStatusSchema = z.enum(['active', 'junk', 'merged', 'archived']);
+
+export const PrioritySchema = z.enum(['HIGH', 'MEDIUM', 'LOW', 'NORMAL']);
+
+export const NdaStatusSchema = z.enum(['none', 'requested', 'signed', 'expired']);
+
+// R2-1.3 FIX: Aligned with backend lowercase status values
+export const ActionStatusSchema = z.enum([
+  'pending',
+  'pending_approval',
+  'queued',
+  'ready',
+  'running',
+  'completed',
+  'failed',
+  'cancelled',
+  'rejected',
+]);
+
+export const RiskLevelSchema = z.enum(['low', 'medium', 'high']);
+
+export const ActionSourceSchema = z.enum(['chat', 'ui', 'system', 'agent', 'api']);
+
+export const QuarantineClassificationSchema = z.enum(['DEAL_SIGNAL', 'UNCERTAIN', 'JUNK', 'unknown']);
+
+export const QuarantineStatusSchema = z.enum(['pending', 'approved', 'rejected', 'expired']);
+
+export const SenderTypeSchema = z.enum(['broker', 'seller', 'advisor', 'platform', 'unknown']);
+
+// =============================================================================
+// NESTED SCHEMAS
+// =============================================================================
+
+export const DealIdentifiersSchema = z.object({
+  listing_ids: z.array(z.string()).optional().default([]),
+  broker_reference_ids: z.array(z.string()).optional().default([]),
+  bizbuysell_id: z.string().nullable().optional(),
+  axial_id: z.string().nullable().optional(),
+  internal_codes: z.array(z.string()).optional().default([]),
+}).passthrough();
+
+export const CompanyInfoSchema = z.object({
+  company_name: z.string().nullable().optional(),
+  legal_entity: z.string().nullable().optional(),
+  dba_names: z.array(z.string()).optional().default([]),
+  location: z.string().nullable().optional(),
+  sector: z.string().nullable().optional(),
+  franchise_system: z.string().nullable().optional(),
+}).passthrough();
+
+export const BrokerInfoSchema = z.object({
+  broker_id: z.string().nullable().optional(),
+  name: z.string().nullable().optional(),
+  email: z.string().nullable().optional(),
+  phone: z.string().nullable().optional(),
+  company: z.string().nullable().optional(),
+  quality_rating: PrioritySchema.optional(),
+  sectors: z.array(z.string()).optional().default([]),
+  domain: z.string().nullable().optional(),
+}).passthrough();
+
+export const DealMetadataSchema = z.object({
+  priority: PrioritySchema.optional(),
+  asking_price: z.number().nullable().optional(),
+  ebitda: z.number().nullable().optional(),
+  revenue: z.number().nullable().optional(),
+  employees: z.number().nullable().optional(),
+  nda_status: NdaStatusSchema.optional(),
+  cim_received: z.boolean().optional(),
+  junk_reason: z.string().nullable().optional(),
+}).passthrough();
+
+// FIX: Changed to .nullable().optional() to handle backend null values
+export const AuditEntrySchema = z.object({
+  action: z.string(),
+  by: z.string(),
+  at: z.string(),
+  notes: z.string().nullable().optional(),
+  reason: z.string().nullable().optional(),
+}).passthrough();
+
+// FIX: Changed to .nullable().optional() to handle backend null values
+export const ArtifactSchema = z.object({
+  type: z.string(),
+  path: z.string(),
+  size: z.number().nullable().optional(),
+  created_at: z.string(),
+}).passthrough();
+
+export const QuarantineLinkSchema = z.object({
+  url: z.string(),
+  type: z.string(),
+  vendor_hint: z.string().nullable(),
+  auth_required: z.boolean(),
+  source_email_id: z.string(),
+  source_timestamp: z.string(),
+});
+
+// =============================================================================
+// MAIN ENTITY SCHEMAS
+// =============================================================================
+
+export const DealSchema = z.object({
+  deal_id: z.string(),
+  canonical_name: z.string(),
+  display_name: z.string().nullable().optional(),
+  folder_path: z.string().nullable().optional(),
+  stage: DealStageSchema,
+  status: DealStatusSchema,
+  identifiers: DealIdentifiersSchema.or(z.record(z.unknown())).optional(),
+  company_info: CompanyInfoSchema.or(z.record(z.unknown())).optional(),
+  broker: BrokerInfoSchema.or(z.record(z.unknown())).optional(),
+  metadata: DealMetadataSchema.or(z.record(z.unknown())).optional(),
+  email_thread_ids: z.array(z.string()).optional().default([]),
+  created_at: z.string(),
+  updated_at: z.string(),
+  days_since_update: z.number().nullable().optional(),
+  action_count: z.number().nullable().optional(),
+  alias_count: z.number().nullable().optional(),
+});
+
+export const DealCreateSchema = z.object({
+  canonical_name: z.string().min(1),
+  display_name: z.string().optional(),
+  folder_path: z.string().optional(),
+  stage: DealStageSchema.optional(),
+  status: DealStatusSchema.optional(),
+  identifiers: DealIdentifiersSchema.partial().optional(),
+  company_info: CompanyInfoSchema.partial().optional(),
+  broker: BrokerInfoSchema.partial().optional(),
+  metadata: DealMetadataSchema.partial().optional(),
+});
+
+export const DealUpdateSchema = z.object({
+  canonical_name: z.string().min(1).optional(),
+  display_name: z.string().optional(),
+  folder_path: z.string().optional(),
+  stage: DealStageSchema.optional(),
+  status: DealStatusSchema.optional(),
+  identifiers: DealIdentifiersSchema.partial().optional(),
+  company_info: CompanyInfoSchema.partial().optional(),
+  broker: BrokerInfoSchema.partial().optional(),
+  metadata: DealMetadataSchema.partial().optional(),
+});
+
+// FIX: Changed to .nullable().optional() to handle backend null values
+export const DealEventSchema = z.object({
+  id: z.string(),
+  deal_id: z.string().nullable().optional(),
+  event_type: z.string(),
+  source: z.string().nullable().optional(),
+  actor: z.string().nullable().optional(),
+  details: z.record(z.unknown()).nullable().optional(),
+  created_at: z.string(),
+}).passthrough();
+
+// FIX: Changed to .nullable().optional() to handle backend null values
+export const DealAliasSchema = z.object({
+  id: z.string(),
+  deal_id: z.string().nullable().optional(),
+  alias: z.string(),
+  alias_type: z.string(),
+  created_at: z.string(),
+}).passthrough();
+
+// R2-1.6 FIX: Aligned with backend ActionResponse - phantom fields made optional
+// Backend fields: action_id, deal_id, capability_id, action_type, title, summary,
+//                 status, created_at, updated_at, risk_level, requires_human_review,
+//                 inputs, outputs, deal_name, deal_stage
+export const ActionSchema = z.object({
+  // Required fields (exist in backend)
+  action_id: z.string(),
+  capability_id: z.string(),
+  action_type: z.string(),
+  title: z.string(),
+  status: ActionStatusSchema,
+  created_at: z.string(),
+  updated_at: z.string(),
+  risk_level: RiskLevelSchema,
+  requires_human_review: z.boolean(),
+  inputs: z.record(z.unknown()),
+  outputs: z.record(z.unknown()),
+  // Optional fields (exist in backend but may be null)
+  deal_id: z.string().nullable().optional(),
+  summary: z.string().nullable().optional(),
+  deal_name: z.string().nullable().optional(),
+  deal_stage: DealStageSchema.nullable().optional(),
+  // Phantom fields (NOT in backend - kept for future compatibility, all optional)
+  started_at: z.string().nullable().optional(),
+  completed_at: z.string().nullable().optional(),
+  scheduled_for: z.string().nullable().optional(),
+  duration_seconds: z.number().nullable().optional(),
+  created_by: z.string().nullable().optional(),
+  source: ActionSourceSchema.nullable().optional(),
+  idempotency_key: z.string().nullable().optional(),
+  retry_count: z.number().nullable().optional(),
+  max_retries: z.number().nullable().optional(),
+  next_retry_at: z.string().nullable().optional(),
+  parent_action_id: z.string().nullable().optional(),
+  root_action_id: z.string().nullable().optional(),
+  chain_depth: z.number().nullable().optional(),
+  audit_trail: z.array(AuditEntrySchema).nullable().optional(),
+  artifacts: z.array(ArtifactSchema).nullable().optional(),
+  error_message: z.string().nullable().optional(),
+}).passthrough();
+
+export const ActionApproveSchema = z.object({
+  approved_by: z.string().optional(),
+  notes: z.string().optional(),
+});
+
+export const ActionRejectSchema = z.object({
+  rejected_by: z.string().optional(),
+  reason: z.string().min(1),
+});
+
+export const QuarantineItemSchema = z.object({
+  id: z.string(),
+  action_id: z.string().nullable().optional(),
+  message_id: z.string().nullable().optional(),
+  thread_id: z.string().nullable().optional(),
+  email_subject: z.string().nullable().optional(),
+  sender: z.string().nullable().optional(),
+  sender_domain: z.string().nullable().optional(),
+  received_at: z.string().nullable().optional(),
+  classification: QuarantineClassificationSchema.optional(),
+  urgency: PrioritySchema.optional(),
+  confidence: z.number().nullable().optional(),
+  company_name: z.string().nullable().optional(),
+  broker_name: z.string().nullable().optional(),
+  links: z.array(QuarantineLinkSchema).optional(),
+  quarantine_dir: z.string().nullable().optional(),
+  email_content_path: z.string().nullable().optional(),
+  triage_summary_path: z.string().nullable().optional(),
+  status: QuarantineStatusSchema.optional(),
+  processed_at: z.string().nullable().optional(),
+  processed_by: z.string().nullable().optional(),
+  processing_result: z.string().nullable().optional(),
+  created_deal_id: z.string().nullable().optional(),
+  created_at: z.string().optional(),
+  updated_at: z.string().optional(),
+  sender_name: z.string().nullable().optional(),
+  sender_company: z.string().nullable().optional(),
+  is_broker: z.boolean().nullable().optional(),
+}).passthrough();
+
+export const QuarantineProcessSchema = z.object({
+  action: z.enum(['approve', 'reject']),
+  processed_by: z.string().optional(),
+  deal_id: z.string().optional(),
+  notes: z.string().optional(),
+});
+
+export const SenderProfileSchema = z.object({
+  id: z.number(),
+  email: z.string(),
+  domain: z.string(),
+  name: z.string().nullable(),
+  company: z.string().nullable(),
+  role: z.string().nullable(),
+  sender_type: SenderTypeSchema,
+  quality_rating: PrioritySchema,
+  is_broker: z.boolean(),
+  total_emails: z.number(),
+  deal_emails: z.number(),
+  last_email_at: z.string().nullable(),
+  associated_deal_ids: z.array(z.string()),
+  created_at: z.string(),
+  updated_at: z.string(),
+});
+
+export const PipelineStageSummarySchema = z.object({
+  stage: DealStageSchema,
+  count: z.number(),
+  avg_days_in_stage: z.number().nullable(),
+});
+
+export const PipelineStatsSchema = z.object({
+  total_active_deals: z.number(),
+  pending_actions: z.number(),
+  quarantine_pending: z.number(),
+  recent_events_24h: z.number(),
+  deals_by_stage: z.record(DealStageSchema, z.number()),
+});
+
+// =============================================================================
+// TYPE EXPORTS
+// =============================================================================
+
+export type DealStage = z.infer<typeof DealStageSchema>;
+export type DealStatus = z.infer<typeof DealStatusSchema>;
+export type Priority = z.infer<typeof PrioritySchema>;
+export type NdaStatus = z.infer<typeof NdaStatusSchema>;
+export type ActionStatus = z.infer<typeof ActionStatusSchema>;
+export type RiskLevel = z.infer<typeof RiskLevelSchema>;
+export type ActionSource = z.infer<typeof ActionSourceSchema>;
+export type QuarantineClassification = z.infer<typeof QuarantineClassificationSchema>;
+export type QuarantineStatus = z.infer<typeof QuarantineStatusSchema>;
+export type SenderType = z.infer<typeof SenderTypeSchema>;
+export type Deal = z.infer<typeof DealSchema>;
+export type DealCreate = z.infer<typeof DealCreateSchema>;
+export type DealUpdate = z.infer<typeof DealUpdateSchema>;
+export type DealEvent = z.infer<typeof DealEventSchema>;
+export type DealAlias = z.infer<typeof DealAliasSchema>;
+export type Action = z.infer<typeof ActionSchema>;
+export type ActionApprove = z.infer<typeof ActionApproveSchema>;
+export type ActionReject = z.infer<typeof ActionRejectSchema>;
+export type QuarantineItem = z.infer<typeof QuarantineItemSchema>;
+export type QuarantineProcess = z.infer<typeof QuarantineProcessSchema>;
+export type SenderProfile = z.infer<typeof SenderProfileSchema>;
+export type PipelineStageSummary = z.infer<typeof PipelineStageSummarySchema>;
+export type PipelineStats = z.infer<typeof PipelineStatsSchema>;
+
+// =============================================================================
+// EXECUTION CONTRACT SCHEMAS (Phase 1)
+// =============================================================================
+
+export const ToolRiskLevelSchema = z.enum(['low', 'medium', 'high', 'critical']);
+
+export const AgentRunEventTypeSchema = z.enum([
+  'run_created',
+  'run_started',
+  'run_completed',
+  'run_failed',
+  'run_cancelled',
+]);
+
+export const AgentToolEventTypeSchema = z.enum([
+  'tool_call_started',
+  'tool_call_completed',
+  'tool_call_failed',
+  'tool_approval_required',
+  'tool_approval_granted',
+  'tool_approval_denied',
+]);
+
+export const AgentStreamEventTypeSchema = z.enum([
+  'stream_start',
+  'stream_token',
+  'stream_end',
+  'stream_error',
+]);
+
+export const AgentEventTypeSchema = z.union([
+  AgentRunEventTypeSchema,
+  AgentToolEventTypeSchema,
+  AgentStreamEventTypeSchema,
+]);
+
+export const ThreadStatusSchema = z.enum(['active', 'archived']);
+
+export const RunStatusSchema = z.enum(['pending', 'running', 'completed', 'failed', 'cancelled']);
+
+export const AgentEventBaseSchema = z.object({
+  event_id: z.string(),
+  event_type: AgentEventTypeSchema,
+  thread_id: z.string(),
+  run_id: z.string(),
+  timestamp: z.string(),
+});
+
+export const AgentRunEventSchema = AgentEventBaseSchema.extend({
+  event_type: AgentRunEventTypeSchema,
+  data: z.object({
+    assistant_id: z.string(),
+    status: RunStatusSchema,
+    error: z.string().optional(),
+    duration_ms: z.number().optional(),
+  }),
+});
+
+export const AgentToolCallEventSchema = AgentEventBaseSchema.extend({
+  event_type: AgentToolEventTypeSchema,
+  data: z.object({
+    tool_call_id: z.string(),
+    tool_name: z.string(),
+    tool_input: z.record(z.unknown()),
+    tool_output: z.unknown().optional(),
+    risk_level: ToolRiskLevelSchema,
+    requires_approval: z.boolean(),
+    approved_by: z.string().optional(),
+    error: z.string().optional(),
+    duration_ms: z.number().optional(),
+  }),
+});
+
+export const AgentStreamEventSchema = AgentEventBaseSchema.extend({
+  event_type: AgentStreamEventTypeSchema,
+  data: z.object({
+    token: z.string().optional(),
+    content: z.string().optional(),
+    error: z.string().optional(),
+  }),
+});
+
+export const AgentEventSchema = z.union([
+  AgentRunEventSchema,
+  AgentToolCallEventSchema,
+  AgentStreamEventSchema,
+]);
+
+export const ToolCallStatusSchema = z.enum([
+  'pending',
+  'approved',
+  'rejected',
+  'completed',
+  'failed',
+]);
+
+export const AgentToolCallSchema = z.object({
+  tool_call_id: z.string(),
+  run_id: z.string(),
+  tool_name: z.string(),
+  tool_input: z.record(z.unknown()),
+  tool_output: z.unknown().nullable(),
+  status: ToolCallStatusSchema,
+  requires_approval: z.boolean(),
+  approved_by: z.string().nullable(),
+  approved_at: z.string().nullable(),
+  started_at: z.string().nullable(),
+  completed_at: z.string().nullable(),
+  error: z.string().nullable(),
+  created_at: z.string(),
+});
+
+export const AgentThreadSchema = z.object({
+  thread_id: z.string(),
+  deal_id: z.string().nullable(),
+  assistant_id: z.string(),
+  status: ThreadStatusSchema,
+  metadata: z.record(z.unknown()),
+  created_at: z.string(),
+  updated_at: z.string(),
+});
+
+export const AgentRunSchema = z.object({
+  run_id: z.string(),
+  thread_id: z.string(),
+  assistant_id: z.string(),
+  status: RunStatusSchema,
+  started_at: z.string().nullable(),
+  completed_at: z.string().nullable(),
+  error: z.string().nullable(),
+  tool_calls: z.array(AgentToolCallSchema),
+  metadata: z.record(z.unknown()),
+  created_at: z.string(),
+  updated_at: z.string(),
+});
+
+export const ToolManifestEntrySchema = z.object({
+  tool_id: z.string(),
+  name: z.string(),
+  description: z.string(),
+  risk_level: ToolRiskLevelSchema,
+  requires_approval: z.boolean(),
+  allowed_deal_stages: z.array(DealStageSchema).optional(),
+  rate_limit: z
+    .object({
+      max_calls: z.number(),
+      window_seconds: z.number(),
+    })
+    .optional(),
+});
+
+// Type exports for execution contracts
+export type ToolRiskLevel = z.infer<typeof ToolRiskLevelSchema>;
+export type AgentRunEventType = z.infer<typeof AgentRunEventTypeSchema>;
+export type AgentToolEventType = z.infer<typeof AgentToolEventTypeSchema>;
+export type AgentStreamEventType = z.infer<typeof AgentStreamEventTypeSchema>;
+export type AgentEventType = z.infer<typeof AgentEventTypeSchema>;
+export type ThreadStatus = z.infer<typeof ThreadStatusSchema>;
+export type RunStatus = z.infer<typeof RunStatusSchema>;
+export type AgentEvent = z.infer<typeof AgentEventSchema>;
+export type AgentToolCall = z.infer<typeof AgentToolCallSchema>;
+export type AgentThread = z.infer<typeof AgentThreadSchema>;
+export type AgentRun = z.infer<typeof AgentRunSchema>;
+export type ToolManifestEntry = z.infer<typeof ToolManifestEntrySchema>;
+
+=== ZOD FILE: /home/zaks/zakops-agent-api/apps/dashboard/src/components/forms/demo-form.tsx ===
+'use client';
+
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
+import { FormInput } from './form-input';
+import { FormTextarea } from './form-textarea';
+import { FormSelect, type FormOption } from './form-select';
+import {
+  FormCheckboxGroup,
+  type CheckboxGroupOption
+} from './form-checkbox-group';
+import { FormRadioGroup, type RadioGroupOption } from './form-radio-group';
+import { FormSwitch } from './form-switch';
+import { FormSlider } from './form-slider';
+import { FormDatePicker } from './form-date-picker';
+import { FormCheckbox } from './form-checkbox';
+import { FormFileUpload, type FileUploadConfig } from './form-file-upload';
+
+// Demo form schema
+const demoFormSchema = z.object({
+  // Basic inputs
+  name: z.string().min(2, 'Name must be at least 2 characters'),
+  email: z.string().email('Invalid email address'),
+  age: z.number().min(18, 'Must be at least 18 years old'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+
+  // Textarea
+  bio: z.string().min(10, 'Bio must be at least 10 characters'),
+
+  // Select
+  country: z.string().min(1, 'Please select a country'),
+
+  // Checkbox group
+  interests: z.array(z.string()).min(1, 'Select at least one interest'),
+
+  // Radio group
+  gender: z.string().min(1, 'Please select gender'),
+
+  // Switch
+  newsletter: z.boolean(),
+
+  // Slider
+  rating: z.number().min(0).max(10),
+
+  // Date picker
+  birthDate: z.date().optional(),
+
+  // Single checkbox
+  terms: z.boolean().refine((val) => val === true, 'You must accept the terms'),
+
+  // File upload
+  avatar: z.array(z.any()).optional()
+});
+
+type DemoFormData = z.infer<typeof demoFormSchema>;
+
+// Demo options
+const countryOptions: FormOption[] = [
+  { value: 'us', label: 'United States' },
+  { value: 'ca', label: 'Canada' },
+  { value: 'uk', label: 'United Kingdom' },
+  { value: 'au', label: 'Australia' },
+  { value: 'de', label: 'Germany' },
+  { value: 'fr', label: 'France' }
+];
+
+const interestOptions: CheckboxGroupOption[] = [
+  { value: 'technology', label: 'Technology' },
+  { value: 'sports', label: 'Sports' },
+  { value: 'music', label: 'Music' },
+  { value: 'travel', label: 'Travel' },
+  { value: 'cooking', label: 'Cooking' },
+  { value: 'reading', label: 'Reading' }
+];
+
+const genderOptions: RadioGroupOption[] = [
+  { value: 'male', label: 'Male' },
+  { value: 'female', label: 'Female' },
+  { value: 'other', label: 'Other' },
+  { value: 'prefer-not-to-say', label: 'Prefer not to say' }
+];
+
+const fileUploadConfig: FileUploadConfig = {
+  maxSize: 5000000, // 5MB
+  acceptedTypes: ['image/jpeg', 'image/png', 'image/webp'],
+  multiple: false,
+  maxFiles: 1
+};
+
+export default function DemoForm() {
+  const form = useForm<DemoFormData>({
+    resolver: zodResolver(demoFormSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+      age: 18,
+      password: '',
+      bio: '',
+      country: '',
+      interests: [],
+      gender: '',
+      newsletter: false,
+      rating: 5,
+      birthDate: undefined,
+      terms: false,
+      avatar: []
+    }
+  });
+
+  const onSubmit = (data: DemoFormData) => {
+    console.log('Form submitted:', data);
+    alert('Form submitted successfully! Check console for data.');
+  };
+
+  return (
+    <div className='mx-auto max-w-2xl space-y-6 p-6'>
+      <Card>
+        <CardHeader>
+          <CardTitle className='text-2xl font-bold'>
+            Reusable Form Components Demo
+          </CardTitle>
+          <p className='text-muted-foreground'>
+            See how these components reduce boilerplate from 15+ lines to just
+            5-8 lines per field
+          </p>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
+            {/* Basic Inputs */}
+            <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+              <FormInput
+                control={form.control}
+                name='name'
+                label='Full Name'
+                placeholder='Enter your full name'
+                required
+              />
+
+              <FormInput
+                control={form.control}
+                name='email'
+                type='email'
+                label='Email Address'
+                placeholder='Enter your email'
+                required
+              />
+
+              <FormInput
+                control={form.control}
+                name='age'
+                type='number'
+                label='Age'
+                min={18}
+                max={100}
+                required
+              />
+
+              <FormInput
+                control={form.control}
+                name='password'
+                type='password'
+                label='Password'
+                placeholder='Enter your password'
+                required
+              />
+            </div>
+
+            {/* Textarea */}
+            <FormTextarea
+              control={form.control}
+              name='bio'
+              label='Bio'
+              placeholder='Tell us about yourself...'
+              description='A brief description about yourself'
+              config={{
+                maxLength: 500,
+                showCharCount: true,
+                rows: 4
+              }}
+              required
+            />
+
+            {/* Select */}
+            <FormSelect
+              control={form.control}
+              name='country'
+              label='Country'
+              placeholder='Select your country'
+              options={countryOptions}
+              required
+            />
+
+            {/* Checkbox Group */}
+            <FormCheckboxGroup
+              control={form.control}
+              name='interests'
+              label='Interests'
+              description='Select all that apply'
+              options={interestOptions}
+              columns={3}
+              showBadges={true}
+              required
+            />
+
+            {/* Radio Group */}
+            <FormRadioGroup
+              control={form.control}
+              name='gender'
+              label='Gender'
+              options={genderOptions}
+              orientation='horizontal'
+              required
+            />
+
+            {/* Switch */}
+            <FormSwitch
+              control={form.control}
+              name='newsletter'
+              label='Subscribe to Newsletter'
+              description='Receive updates about new features and products'
+            />
+
+            {/* Slider */}
+            <FormSlider
+              control={form.control}
+              name='rating'
+              label='Overall Rating'
+              description='Rate your experience (0-10)'
+              config={{
+                min: 0,
+                max: 10,
+                step: 0.5,
+                formatValue: (value) => `${value}/10`
+              }}
+              showValue={true}
+            />
+
+            {/* Date Picker */}
+            <FormDatePicker
+              control={form.control}
+              name='birthDate'
+              label='Birth Date'
+              description='Your date of birth (optional)'
+              config={{
+                maxDate: new Date(),
+                placeholder: 'Select your birth date'
+              }}
+            />
+
+            {/* Single Checkbox */}
+            <FormCheckbox
+              control={form.control}
+              name='terms'
+              checkboxLabel='I agree to the Terms and Conditions'
+              description='Please read and accept our terms'
+              required
+            />
+
+            {/* File Upload */}
+            <FormFileUpload
+              control={form.control}
+              name='avatar'
+              label='Profile Picture'
+              description='Upload a profile picture (optional)'
+              config={fileUploadConfig}
+            />
+
+            {/* Submit Button */}
+            <div className='flex gap-4 pt-4'>
+              <Button type='submit' className='flex-1'>
+                Submit Form
+              </Button>
+              <Button
+                type='button'
+                variant='outline'
+                onClick={() => form.reset()}
+                className='flex-1'
+              >
+                Reset
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+
+      {/* Form Data Preview */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Form Data Preview</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <pre className='bg-muted overflow-auto rounded-lg p-4 text-sm'>
+            {JSON.stringify(form.watch(), null, 2)}
+          </pre>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+=== ZOD FILE: /home/zaks/zakops-agent-api/apps/dashboard/src/lib/schemas/approval.ts ===
+/**
+ * Zod Schemas for Approval Types
+ *
+ * F003-P3-002 Remediation: Type-safe validation for approval API responses.
+ * Use safeParse at API boundaries to catch schema mismatches early.
+ */
+
+import { z } from 'zod';
+
+// Approval status enum matching Agent API
+export const ApprovalStatusSchema = z.enum([
+  'pending',
+  'claimed',
+  'approved',
+  'rejected',
+  'expired',
+]);
+
+export type ApprovalStatus = z.infer<typeof ApprovalStatusSchema>;
+
+// Tool arguments (generic object)
+export const ToolArgsSchema = z.record(z.unknown());
+
+// Single pending approval from /agent/approvals
+export const PendingApprovalSchema = z.object({
+  approval_id: z.string().uuid(),
+  tool: z.string(),
+  args: ToolArgsSchema,
+  permission_tier: z.string(),
+  requested_by: z.string(),
+  requested_at: z.string(), // ISO date string
+});
+
+export type PendingApproval = z.infer<typeof PendingApprovalSchema>;
+
+// Approval list response from GET /agent/approvals
+export const ApprovalListResponseSchema = z.object({
+  approvals: z.array(PendingApprovalSchema),
+  total: z.number(),
+});
+
+export type ApprovalListResponse = z.infer<typeof ApprovalListResponseSchema>;
+
+// Action taken in response (from approve endpoint)
+export const ActionTakenSchema = z.object({
+  tool: z.string(),
+  result: z.record(z.unknown()),
+});
+
+export type ActionTaken = z.infer<typeof ActionTakenSchema>;
+
+// Approve/Reject response
+export const ApprovalActionResponseSchema = z.object({
+  thread_id: z.string(),
+  status: z.string(),
+  content: z.string().nullable(),
+  pending_approval: PendingApprovalSchema.nullable(),
+  actions_taken: z.array(ActionTakenSchema),
+  error: z.string().nullable(),
+});
+
+export type ApprovalActionResponse = z.infer<typeof ApprovalActionResponseSchema>;
+
+// Thread state response from GET /agent/threads/{id}/state
+export const ThreadStateResponseSchema = z.object({
+  thread_id: z.string(),
+  status: z.string(),
+  pending_approval: PendingApprovalSchema.nullable().optional(),
+});
+
+export type ThreadStateResponse = z.infer<typeof ThreadStateResponseSchema>;
+
+/**
+ * Safely parse approval list response.
+ * Returns parsed data or null on validation failure.
+ */
+export function parseApprovalList(data: unknown): ApprovalListResponse | null {
+  const result = ApprovalListResponseSchema.safeParse(data);
+  if (!result.success) {
+    console.warn('[approval-schema] Validation failed:', result.error.issues.slice(0, 3));
+    return null;
+  }
+  return result.data;
+}
+
+/**
+ * Safely parse approval action response.
+ * Returns parsed data or null on validation failure.
+ */
+export function parseApprovalAction(data: unknown): ApprovalActionResponse | null {
+  const result = ApprovalActionResponseSchema.safeParse(data);
+  if (!result.success) {
+    console.warn('[approval-schema] Action validation failed:', result.error.issues.slice(0, 3));
+    return null;
+  }
+  return result.data;
+}
+
+=== ZOD FILE: /home/zaks/zakops-agent-api/apps/dashboard/src/lib/parsers.ts ===
+import { createParser } from 'nuqs/server';
+import { z } from 'zod';
+
+import { dataTableConfig } from '@/config/data-table';
+
+import type {
+  ExtendedColumnFilter,
+  ExtendedColumnSort
+} from '@/types/data-table';
+
+const sortingItemSchema = z.object({
+  id: z.string(),
+  desc: z.boolean()
+});
+
+export const getSortingStateParser = <TData>(
+  columnIds?: string[] | Set<string>
+) => {
+  const validKeys = columnIds
+    ? columnIds instanceof Set
+      ? columnIds
+      : new Set(columnIds)
+    : null;
+
+  return createParser({
+    parse: (value) => {
+      try {
+        const parsed = JSON.parse(value);
+        const result = z.array(sortingItemSchema).safeParse(parsed);
+
+        if (!result.success) return null;
+
+        if (validKeys && result.data.some((item) => !validKeys.has(item.id))) {
+          return null;
+        }
+
+        return result.data as ExtendedColumnSort<TData>[];
+      } catch {
+        return null;
+      }
+    },
+    serialize: (value) => JSON.stringify(value),
+    eq: (a, b) =>
+      a.length === b.length &&
+      a.every(
+        (item, index) =>
+          item.id === b[index]?.id && item.desc === b[index]?.desc
+      )
+  });
+};
+
+const filterItemSchema = z.object({
+  id: z.string(),
+  value: z.union([z.string(), z.array(z.string())]),
+  variant: z.enum(dataTableConfig.filterVariants),
+  operator: z.enum(dataTableConfig.operators),
+  filterId: z.string()
+});
+
+export type FilterItemSchema = z.infer<typeof filterItemSchema>;
+
+export const getFiltersStateParser = <TData>(
+  columnIds?: string[] | Set<string>
+) => {
+  const validKeys = columnIds
+    ? columnIds instanceof Set
+      ? columnIds
+      : new Set(columnIds)
+    : null;
+
+  return createParser({
+    parse: (value) => {
+      try {
+        const parsed = JSON.parse(value);
+        const result = z.array(filterItemSchema).safeParse(parsed);
+
+        if (!result.success) return null;
+
+        if (validKeys && result.data.some((item) => !validKeys.has(item.id))) {
+          return null;
+        }
+
+        return result.data as ExtendedColumnFilter<TData>[];
+      } catch {
+        return null;
+      }
+    },
+    serialize: (value) => JSON.stringify(value),
+    eq: (a, b) =>
+      a.length === b.length &&
+      a.every(
+        (filter, index) =>
+          filter.id === b[index]?.id &&
+          filter.value === b[index]?.value &&
+          filter.variant === b[index]?.variant &&
+          filter.operator === b[index]?.operator
+      )
+  });
+};
+
+=== ZOD FILE: /home/zaks/zakops-agent-api/apps/dashboard/src/lib/api.ts ===
+/**
+ * ZakOps API Client
+ *
+ * Centralized API client with Zod validation and response normalization.
+ * All API calls MUST go through this module - no direct fetch in components.
+ *
+ * The frontend uses Next.js rewrites to proxy /api/* to the backend,
+ * so we always call relative paths.
+ */
+
+import { z } from 'zod';
+
+// ============================================================================
+// Zod Schemas - Define expected response shapes
+// ============================================================================
+
+/**
+ * Coerce a value to number, handling strings with currency symbols, commas, etc.
+ * Returns null/undefined if the value cannot be parsed.
+ * Logs warnings (not errors) for type coercions to aid debugging without alarming.
+ */
+function coerceToNumber(val: unknown): number | null | undefined {
+  if (val === null) return null;
+  if (val === undefined) return undefined;
+  if (typeof val === 'number') return isNaN(val) ? null : val;
+  if (typeof val === 'string') {
+    // Remove currency symbols, commas, whitespace
+    const cleaned = val.replace(/[$,\s]/g, '').trim();
+    if (cleaned === '' || cleaned === '-' || cleaned.toLowerCase() === 'tbd') {
+      // Expected non-numeric values - don't log
+      return null;
+    }
+    const num = parseFloat(cleaned);
+    if (isNaN(num)) {
+      // Unexpected string that couldn't be parsed - log as debug info
+      if (process.env.NODE_ENV === 'development') {
+        console.debug(`[API] Coerced non-numeric string to null: "${val}"`);
+      }
+      return null;
+    }
+    return num;
+  }
+  return null;
+}
+
+// Schema for numeric fields that might arrive as strings
+const coercedNumber = z.preprocess(coerceToNumber, z.number().nullable().optional());
+
+/**
+ * Coerce broker field to string. Backend may return:
+ * - string: broker name directly
+ * - object: { name?: string, email?: string, ... }
+ * - null/undefined
+ * We extract the name for display purposes.
+ */
+function coerceBrokerToString(val: unknown): string | null {
+  if (val === null || val === undefined) return null;
+  if (typeof val === 'string') return val || null;
+  if (typeof val === 'object' && val !== null) {
+    const obj = val as Record<string, unknown>;
+    // Extract name from broker object
+    if (typeof obj.name === 'string' && obj.name) {
+      return obj.name;
+    }
+    // Empty object {} returns null
+    return null;
+  }
+  return null;
+}
+
+// Deal schema
+export const DealSchema = z.object({
+  deal_id: z.string(),
+  canonical_name: z.string().nullable(),
+  display_name: z.string().optional().nullable(),
+  stage: z.string(),
+  status: z.string(),
+  broker: z.preprocess(coerceBrokerToString, z.string().nullable().optional()),
+  priority: z.string().nullable().optional(),
+  updated_at: z.string().nullable().optional(),
+  created_at: z.string().nullable().optional(),
+  days_since_update: z.preprocess(coerceToNumber, z.number().optional()),
+  folder_path: z.string().optional().nullable(),
+}).passthrough();
+
+export type Deal = z.infer<typeof DealSchema>;
+
+// Deal detail schema (expanded)
+// REMEDIATION-V3 [ZK-ISSUE-0018]: Added .passthrough() to avoid silent field drops
+export const DealDetailSchema = z.object({
+  deal_id: z.string(),
+  canonical_name: z.string().nullable(),
+  display_name: z.string().nullable().optional(),
+  folder_path: z.string().nullable().optional(),
+  stage: z.string(),
+  status: z.string(),
+  broker: z.object({
+    name: z.string().nullable(),
+    email: z.string().nullable(),
+    company: z.string().nullable(),
+    phone: z.string().nullable(),
+  }).passthrough().nullable().optional(),
+  company_info: z.object({
+    sector: z.string().nullable().optional(),
+    location: z.any().nullable().optional(),
+  }).passthrough().nullable().optional(),
+  metadata: z.object({
+    priority: z.string().nullable().optional(),
+    asking_price: coercedNumber,
+    ebitda: coercedNumber,
+    revenue: coercedNumber,
+    multiple: coercedNumber,
+    nda_status: z.string().nullable().optional(),
+    cim_received: z.boolean().nullable().optional(),
+  }).passthrough().nullable().optional(),
+  state_machine: z.object({
+    current_stage: z.string(),
+    is_terminal: z.boolean(),
+    allowed_transitions: z.array(z.string()),
+    advisory_context: z.string().nullable().optional(),
+  }).passthrough().nullable().optional(),
+  case_file: z.any().nullable().optional(),
+  event_count: z.number().optional(),
+  pending_actions: z.number().optional(),
+  created_at: z.string().nullable().optional(),
+  updated_at: z.string().nullable().optional(),
+}).passthrough();
+
+export type DealDetail = z.infer<typeof DealDetailSchema>;
+
+// Deferred action schema
+// REMEDIATION-V3 [ZK-ISSUE-0018]: Added .passthrough() to avoid silent field drops
+// FIX: Changed to .nullable().optional() to handle backend null values
+export const ActionSchema = z.object({
+  action_id: z.string(),
+  deal_id: z.string().nullable().optional(),
+  action_type: z.string(),
+  scheduled_for: z.string().nullable().optional(),
+  status: z.string(),
+  priority: z.string().nullable().optional(),
+  is_due: z.boolean().nullable().optional(),
+  data: z.any().nullable().optional(),
+}).passthrough();
+
+export type Action = z.infer<typeof ActionSchema>;
+
+// Event schema — matches backend deal_events response
+// REMEDIATION-V3 [ZK-ISSUE-0018]: Added .passthrough() to avoid silent field drops
+// FIX: Changed to .nullable().optional() to handle backend null values
+export const EventSchema = z.object({
+  id: z.string(),
+  deal_id: z.string().nullable().optional(),
+  event_type: z.string(),
+  source: z.string().nullable().optional(),
+  actor: z.string().nullable().optional(),
+  details: z.record(z.unknown()).nullable().optional(),
+  created_at: z.string(),
+}).passthrough();
+
+export type DealEvent = z.infer<typeof EventSchema>;
+
+// Quarantine item schema
+// REMEDIATION-V3 [ZK-ISSUE-0018]: Added .passthrough() to avoid silent field drops
+// FIX: Changed all .optional() to .nullable().optional() to handle backend null values
+export const QuarantineItemSchema = z.object({
+  id: z.string().nullable().optional(),
+  quarantine_id: z.string().nullable().optional(),
+  action_id: z.string().nullable().optional(),
+  email_subject: z.string().nullable().optional(),
+  subject: z.string().nullable().optional(),
+  sender: z.string().nullable().optional(),
+  from: z.string().nullable().optional(),
+  received_at: z.string().nullable().optional(),
+  timestamp: z.string().nullable().optional(),
+  quarantine_reason: z.string().nullable().optional(),
+  reason: z.string().nullable().optional(),
+  status: z.string().nullable().optional(),
+  classification: z.string().nullable().optional(),
+  urgency: z.string().nullable().optional(),
+  company: z.string().nullable().optional(),
+  links: z.array(z.record(z.unknown())).nullable().optional(),
+  attachments: z.array(z.record(z.unknown())).nullable().optional(),
+  quarantine_dir: z.string().nullable().optional(),
+  capability_id: z.string().nullable().optional(),
+}).passthrough();
+
+export type QuarantineItem = z.infer<typeof QuarantineItemSchema>;
+
+// Quarantine health schema
+// REMEDIATION-V3 [ZK-ISSUE-0018]: Added .passthrough() to avoid silent field drops
+export const QuarantineHealthSchema = z.object({
+  status: z.string(),
+  pending_items: z.number(),
+  oldest_pending_days: z.number().optional(),
+}).passthrough();
+
+export type QuarantineHealth = z.infer<typeof QuarantineHealthSchema>;
+
+// Quarantine preview schema (right-side panel)
+// FIX: Changed all .optional() to .nullable().optional() to handle backend null values
+export const QuarantinePreviewSchema = z.object({
+  action_id: z.string().nullable().optional(),
+  status: z.string().nullable().optional(),
+  created_at: z.string().nullable().optional(),
+  deal_id: z.string().nullable().optional(),
+  message_id: z.string().nullable().optional(),
+  thread_id: z.string().nullable().optional(),
+  from: z.string().nullable().optional(),
+  to: z.string().nullable().optional(),
+  received_at: z.string().nullable().optional(),
+  subject: z.string().nullable().optional(),
+  summary: z.array(z.string()).nullable().optional().default([]),
+  extracted_fields: z.record(z.unknown()).nullable().optional(),
+  attachments: z.record(z.unknown()).nullable().optional(),
+  links: z.record(z.unknown()).nullable().optional(),
+  email: z.record(z.unknown()).nullable().optional(),
+  quarantine_dir: z.string().nullable().optional(),
+  thread_resolution: z
+    .object({
+      thread_to_deal: z.string().nullable().optional(),
+      thread_to_non_deal: z.string().nullable().optional(),
+    })
+    .nullable().optional(),
+}).passthrough();
+
+export type QuarantinePreview = z.infer<typeof QuarantinePreviewSchema>;
+
+// Deal materials (filesystem-backed correspondence bundles)
+// FIX: deal_path can be null for deals without folder_path
+export const DealMaterialsSchema = z.object({
+  deal_id: z.string(),
+  deal_path: z.string().nullable().optional(),
+  correspondence: z.array(z.record(z.unknown())).nullable().optional().default([]),
+  aggregate_links: z.record(z.unknown()).nullable().optional(),
+  pending_auth: z.array(z.record(z.unknown())).nullable().optional().default([]),
+}).passthrough();
+
+export type DealMaterials = z.infer<typeof DealMaterialsSchema>;
+
+// Alert schema
+// FIX: Changed to .nullable().optional() to handle backend null values
+export const AlertSchema = z.object({
+  type: z.string(),
+  severity: z.string(),
+  message: z.string(),
+  deal_id: z.string().nullable().optional(),
+  count: z.number().nullable().optional(),
+  actions: z.array(z.string()).nullable().optional(),
+}).passthrough();
+
+export type Alert = z.infer<typeof AlertSchema>;
+
+// Classification metrics schema
+export const ClassificationMetricsSchema = z.object({
+  decisions_24h: z.number().nullable().optional(),
+  local_24h: z.number().nullable().optional(),
+  cloud_24h: z.number().nullable().optional(),
+  heuristic_24h: z.number().nullable().optional(),
+  quarantine_rate: z.number().optional(),
+});
+
+export type ClassificationMetrics = z.infer<typeof ClassificationMetricsSchema>;
+
+// Checkpoint schema
+export const CheckpointSchema = z.object({
+  id: z.string(),
+  operation_type: z.string(),
+  status: z.string(),
+  progress: z.number().optional(),
+});
+
+export type Checkpoint = z.infer<typeof CheckpointSchema>;
+
+// Pipeline stage schema
+export const PipelineStageSchema = z.object({
+  count: z.number(),
+  deals: z.array(z.object({
+    deal_id: z.string(),
+    canonical_name: z.string().nullable(),
+    days_in_stage: z.number(),
+  })),
+  avg_age: z.number(),
+});
+
+export type PipelineStage = z.infer<typeof PipelineStageSchema>;
+
+// ============================================================================
+// API Response Wrappers - Handle both wrapped and unwrapped responses
+// ============================================================================
+
+// Generic wrapper for paginated/counted responses
+const DealsResponseSchema = z.object({
+  count: z.number().optional(),
+  deals: z.array(DealSchema),
+}).or(z.array(DealSchema));
+
+const ActionsResponseSchema = z.object({
+  count: z.number().optional(),
+  actions: z.array(ActionSchema),
+}).or(z.array(ActionSchema));
+
+const EventsResponseSchema = z.object({
+  deal_id: z.string().optional(),
+  count: z.number().optional(),
+  events: z.array(EventSchema),
+}).or(z.array(EventSchema));
+
+const QuarantineResponseSchema = z.object({
+  count: z.number().optional(),
+  items: z.array(QuarantineItemSchema),
+}).or(z.array(QuarantineItemSchema));
+
+const AlertsResponseSchema = z.object({
+  alert_count: z.number().optional(),
+  alerts: z.array(AlertSchema),
+}).or(z.array(AlertSchema));
+
+const CheckpointsResponseSchema = z.array(CheckpointSchema);
+
+const PipelineResponseSchema = z.object({
+  total_active: z.number(),
+  stages: z.record(PipelineStageSchema),
+});
+
+// ============================================================================
+// API Error Handling
+// ============================================================================
+
+export class ApiError extends Error {
+  constructor(
+    message: string,
+    public status: number,
+    public endpoint: string
+  ) {
+    super(message);
+    this.name = 'ApiError';
+  }
+
+  /** User-friendly error message */
+  get userMessage(): string {
+    if (this.status === 0) {
+      return `Network error connecting to API. Check if the backend is running.`;
+    }
+    if (this.status === 404) {
+      return `Resource not found: ${this.endpoint}`;
+    }
+    if (this.status >= 500) {
+      return `Server error (${this.status}). The API is having problems.`;
+    }
+    if (this.status === 401 || this.status === 403) {
+      return `Access denied (${this.status}). You may not have permission.`;
+    }
+    return `API error ${this.status}: ${this.message}`;
+  }
+}
+
+// ============================================================================
+// Core Fetch Function
+// ============================================================================
+
+async function apiFetch<T>(
+  endpoint: string,
+  options: RequestInit = {}
+): Promise<T> {
+  const url = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+
+  // R2-2.3: Add Idempotency-Key header for write operations
+  const headers: HeadersInit = {
+    'Content-Type': 'application/json',
+    ...options.headers,
+  };
+
+  // Auto-generate idempotency key for write methods
+  const method = options.method?.toUpperCase() || 'GET';
+  if (['POST', 'PUT', 'PATCH'].includes(method)) {
+    // Only add if not already provided
+    const existingHeaders = options.headers as Record<string, string> | undefined;
+    if (!existingHeaders?.['Idempotency-Key'] && !existingHeaders?.['idempotency-key']) {
+      (headers as Record<string, string>)['Idempotency-Key'] = crypto.randomUUID();
+    }
+  }
+
+  try {
+    const response = await fetch(url, {
+      ...options,
+      headers,
+      cache: 'no-store',
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.text();
+      throw new ApiError(
+        `API request failed: ${errorBody}`,
+        response.status,
+        endpoint
+      );
+    }
+
+    return response.json();
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw new ApiError(
+      `Network error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      0,
+      endpoint
+    );
+  }
+}
+
+// ============================================================================
+// Normalized API Functions - Always return arrays where expected
+// ============================================================================
+
+/**
+ * Fetch all deals - ALWAYS returns an array
+ */
+export async function getDeals(params?: {
+  stage?: string;
+  status?: string;
+  broker?: string;
+}): Promise<Deal[]> {
+  const searchParams = new URLSearchParams();
+  if (params?.stage) searchParams.set('stage', params.stage);
+  if (params?.status) searchParams.set('status', params.status);
+  if (params?.broker) searchParams.set('broker', params.broker);
+
+  const query = searchParams.toString();
+  const endpoint = `/api/deals${query ? `?${query}` : ''}`;
+
+  const data = await apiFetch<unknown>(endpoint);
+  const parsed = DealsResponseSchema.safeParse(data);
+
+  if (!parsed.success) {
+    console.error('Invalid deals response:', parsed.error);
+    return [];
+  }
+
+  // Normalize: extract array from wrapper or return as-is
+  if (Array.isArray(parsed.data)) {
+    return parsed.data;
+  }
+  return parsed.data.deals;
+}
+
+/**
+ * Soft-delete (archive) a deal.
+ * This is a UI-level delete only (keeps registry/events/materials intact).
+ */
+export async function archiveDeal(
+  dealId: string,
+  params?: { operator?: string; reason?: string }
+): Promise<{ archived: boolean; deal_id: string }> {
+  return apiFetch(`/api/deals/${encodeURIComponent(dealId)}/archive`, {
+    method: 'POST',
+    body: JSON.stringify({
+      operator: params?.operator || 'operator',
+      reason: params?.reason,
+    }),
+  });
+}
+
+/**
+ * Soft-delete (archive) multiple deals.
+ */
+export async function bulkArchiveDeals(
+  dealIds: string[],
+  params?: { operator?: string; reason?: string }
+): Promise<{ archived: string[]; skipped: string[] }> {
+  return apiFetch(`/api/deals/bulk-archive`, {
+    method: 'POST',
+    body: JSON.stringify({
+      deal_ids: dealIds,
+      operator: params?.operator || 'operator',
+      reason: params?.reason,
+    }),
+  });
+}
+
+/**
+ * Fetch single deal detail
+ * Returns partial data on validation errors (degrades gracefully)
+ */
+export async function getDeal(dealId: string): Promise<DealDetail | null> {
+  try {
+    const data = await apiFetch<unknown>(`/api/deals/${dealId}`);
+    const parsed = DealDetailSchema.safeParse(data);
+
+    if (!parsed.success) {
+      // Log validation issues as debug info (not errors - this is expected behavior)
+      if (process.env.NODE_ENV === 'development') {
+        console.debug('[API] Deal schema validation notes:', parsed.error.issues.map(i => `${i.path.join('.')}: ${i.message}`).join(', '));
+      }
+
+      // Try to return partial data - the API returned something, just not perfectly shaped
+      // Use a more permissive schema as fallback
+      const rawData = data as Record<string, unknown>;
+      if (rawData && typeof rawData === 'object' && rawData.deal_id) {
+        console.debug('[API] Returning partially validated deal data for:', rawData.deal_id);
+        return {
+          deal_id: String(rawData.deal_id),
+          canonical_name: rawData.canonical_name ? String(rawData.canonical_name) : null,
+          display_name: rawData.display_name ? String(rawData.display_name) : null,
+          folder_path: rawData.folder_path ? String(rawData.folder_path) : null,
+          stage: String(rawData.stage || 'unknown'),
+          status: String(rawData.status || 'unknown'),
+          broker: rawData.broker as DealDetail['broker'] || null,
+          company_info: rawData.company_info as DealDetail['company_info'] || null,
+          metadata: rawData.metadata as DealDetail['metadata'] || null,
+          state_machine: rawData.state_machine as DealDetail['state_machine'] || null,
+          case_file: rawData.case_file || null,
+          event_count: typeof rawData.event_count === 'number' ? rawData.event_count : undefined,
+          pending_actions: typeof rawData.pending_actions === 'number' ? rawData.pending_actions : undefined,
+          created_at: rawData.created_at ? String(rawData.created_at) : null,
+          updated_at: rawData.updated_at ? String(rawData.updated_at) : null,
+        };
+      }
+      return null;
+    }
+
+    return parsed.data;
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) {
+      return null;
+    }
+    throw error;
+  }
+}
+
+/**
+ * Fetch deal events - ALWAYS returns an array
+ */
+export async function getDealEvents(
+  dealId: string,
+  limit?: number
+): Promise<DealEvent[]> {
+  const query = limit ? `?limit=${limit}` : '';
+  const data = await apiFetch<unknown>(`/api/deals/${dealId}/events${query}`);
+  const parsed = EventsResponseSchema.safeParse(data);
+
+  if (!parsed.success) {
+    console.error('Invalid events response:', parsed.error);
+    return [];
+  }
+
+  if (Array.isArray(parsed.data)) {
+    return parsed.data;
+  }
+  return parsed.data.events;
+}
+
+/**
+ * Fetch deal case file
+ */
+export async function getDealCaseFile(dealId: string): Promise<unknown | null> {
+  try {
+    return await apiFetch<unknown>(`/api/deals/${dealId}/case-file`);
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) {
+      return null;
+    }
+    throw error;
+  }
+}
+
+// ============================================================================
+// Enrichment Types and Functions
+// ============================================================================
+
+export interface MaterialLink {
+  url: string;
+  normalized_url: string;
+  link_type: string;
+  label?: string;
+  source_email_id?: string;
+  source_timestamp?: string;
+  requires_auth: boolean;
+  vendor_hint?: string;
+  status: string;
+  context_text?: string;
+  classification_confidence: number;
+}
+
+export interface DealEnrichment {
+  deal_id: string;
+  display_name?: string;
+  target_company_name?: string;
+  broker?: {
+    name?: string;
+    email?: string;
+    company?: string;
+    phone?: string;
+    domain?: string;
+  };
+  last_email_at?: string;
+  enrichment_confidence?: number;
+  enriched_at?: string;
+  materials: {
+    total: number;
+    by_type: Record<string, MaterialLink[]>;
+    auth_required_count: number;
+  };
+  aliases: Array<{
+    alias: string;
+    alias_type: string;
+    confidence: number;
+  }>;
+}
+
+/**
+ * Fetch deal enrichment data (materials, resolved names, etc.)
+ */
+export async function getDealEnrichment(dealId: string): Promise<DealEnrichment | null> {
+  try {
+    return await apiFetch<DealEnrichment>(`/api/deals/${dealId}/enrichment`);
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) {
+      return null;
+    }
+    throw error;
+  }
+}
+
+/**
+ * Fetch all deferred actions - ALWAYS returns an array
+ */
+export async function getActions(params?: {
+  deal_id?: string;
+  status?: string;
+}): Promise<Action[]> {
+  const searchParams = new URLSearchParams();
+  if (params?.deal_id) searchParams.set('deal_id', params.deal_id);
+  if (params?.status) searchParams.set('status', params.status);
+
+  const query = searchParams.toString();
+  const endpoint = `/api/deferred-actions${query ? `?${query}` : ''}`;
+
+  const data = await apiFetch<unknown>(endpoint);
+  const parsed = ActionsResponseSchema.safeParse(data);
+
+  if (!parsed.success) {
+    console.error('Invalid actions response:', parsed.error);
+    return [];
+  }
+
+  if (Array.isArray(parsed.data)) {
+    return parsed.data;
+  }
+  return parsed.data.actions;
+}
+
+/**
+ * Fetch due actions - ALWAYS returns an array
+ */
+export async function getDueActions(): Promise<Action[]> {
+  const data = await apiFetch<unknown>('/api/deferred-actions/due');
+  const parsed = ActionsResponseSchema.safeParse(data);
+
+  if (!parsed.success) {
+    console.error('Invalid due actions response:', parsed.error);
+    return [];
+  }
+
+  if (Array.isArray(parsed.data)) {
+    return parsed.data;
+  }
+  return parsed.data.actions;
+}
+
+/**
+ * Fetch quarantine items - ALWAYS returns an array
+ */
+export async function getQuarantineItems(): Promise<QuarantineItem[]> {
+  const data = await apiFetch<unknown>('/api/quarantine');
+  const parsed = QuarantineResponseSchema.safeParse(data);
+
+  if (!parsed.success) {
+    console.error('Invalid quarantine response:', parsed.error);
+    return [];
+  }
+
+  if (Array.isArray(parsed.data)) {
+    return parsed.data;
+  }
+  return parsed.data.items;
+}
+
+/**
+ * Fetch quarantine health status
+ */
+export async function getQuarantineHealth(): Promise<QuarantineHealth | null> {
+  try {
+    const data = await apiFetch<unknown>('/api/quarantine/health');
+    const parsed = QuarantineHealthSchema.safeParse(data);
+
+    if (!parsed.success) {
+      console.error('Invalid quarantine health response:', parsed.error);
+      return null;
+    }
+
+    return parsed.data;
+  } catch (error) {
+    console.error('Failed to fetch quarantine health:', error);
+    return null;
+  }
+}
+
+/**
+ * Resolve quarantine item
+ */
+export async function resolveQuarantineItem(
+  itemId: string,
+  resolution: 'link_to_deal' | 'create_new_deal' | 'discard',
+  dealId?: string
+): Promise<{ success: boolean; deal_id?: string }> {
+  // Map frontend resolution actions to backend action values
+  const actionMap: Record<string, string> = {
+    'link_to_deal': 'approve',
+    'create_new_deal': 'approve',
+    'discard': 'reject',
+  };
+  return apiFetch('/api/quarantine/' + itemId + '/process', {
+    method: 'POST',
+    body: JSON.stringify({
+      action: actionMap[resolution],
+      deal_id: dealId,
+      processed_by: 'operator',
+    }),
+  });
+}
+
+/**
+ * Canonical quarantine queue (EMAIL_TRIAGE.REVIEW_EMAIL actions pending approval)
+ */
+export async function getQuarantineQueue(params?: {
+  limit?: number;
+  offset?: number;
+}): Promise<QuarantineItem[]> {
+  const searchParams = new URLSearchParams();
+  if (params?.limit != null) searchParams.set('limit', String(params.limit));
+  if (params?.offset != null) searchParams.set('offset', String(params.offset));
+  const query = searchParams.toString();
+  const endpoint = `/api/actions/quarantine${query ? `?${query}` : ''}`;
+
+  const data = await apiFetch<unknown>(endpoint);
+  const parsed = QuarantineResponseSchema.safeParse(data);
+
+  if (!parsed.success) {
+    console.error('Invalid quarantine queue response:', parsed.error);
+    return [];
+  }
+
+  if (Array.isArray(parsed.data)) {
+    return parsed.data;
+  }
+  return parsed.data.items;
+}
+
+/**
+ * Local-only quarantine preview payload (right-side panel)
+ */
+export async function getQuarantinePreview(actionId: string): Promise<QuarantinePreview | null> {
+  try {
+    const data = await apiFetch<unknown>(`/api/actions/quarantine/${actionId}/preview`);
+    const parsed = QuarantinePreviewSchema.safeParse(data);
+    if (!parsed.success) {
+      console.error('Invalid quarantine preview response:', parsed.error);
+      return null;
+    }
+    return parsed.data;
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) return null;
+    throw error;
+  }
+}
+
+/**
+ * Approve + execute a quarantine (review email) action.
+ */
+export async function approveQuarantineItem(
+  actionId: string,
+  approvedBy: string
+): Promise<{ success: boolean; error?: string }> {
+  const approved = await approveKineticAction(actionId, approvedBy);
+  if (!approved.success) {
+    return { success: false, error: approved.error || 'Failed to approve quarantine item' };
+  }
+  const ran = await runKineticAction(actionId);
+  if (!ran.success && ran.reason !== 'already_processing' && ran.reason !== 'already_completed') {
+    return { success: false, error: ran.error || 'Failed to run quarantine item' };
+  }
+  return { success: true };
+}
+
+/**
+ * Reject a quarantine item using the atomic backend endpoint.
+ * This creates the reject action, executes it, and cancels the original - all in one call.
+ */
+export async function rejectQuarantineItem(params: {
+  originalActionId: string;
+  messageId: string;
+  threadId?: string;
+  reason?: string;
+  rejectedBy: string;
+}): Promise<{ success: boolean; reject_action_id?: string; error?: string }> {
+  try {
+    const response = await apiFetch<{
+      ok: boolean;
+      reject_action_id?: string;
+      reject_status?: string;
+      original_action_id?: string;
+      already_resolved?: boolean;
+      detail?: string;
+    }>(`/api/actions/quarantine/${params.originalActionId}/reject`, {
+      method: 'POST',
+      body: JSON.stringify({
+        operator: params.rejectedBy,
+        reason: params.reason,
+      }),
+    });
+
+    if (response.ok) {
+      return { success: true, reject_action_id: response.reject_action_id };
+    }
+    return { success: false, error: response.detail || 'Reject failed' };
+  } catch (error) {
+    if (error instanceof ApiError) {
+      return { success: false, error: error.message };
+    }
+    return { success: false, error: error instanceof Error ? error.message : 'Reject failed' };
+  }
+}
+
+/**
+ * Delete (hide) a quarantine item from the decision queue.
+ * This does NOT approve/reject, does NOT cancel the action, and does NOT touch Gmail.
+ */
+export async function deleteQuarantineItem(
+  quarantineId: string,
+  params?: { deletedBy?: string; reason?: string }
+): Promise<{ hidden: boolean; quarantine_id: string }> {
+  return apiFetch(`/api/quarantine/${encodeURIComponent(quarantineId)}/delete`, {
+    method: 'POST',
+    body: JSON.stringify({
+      deleted_by: params?.deletedBy || 'operator',
+      reason: params?.reason,
+    }),
+  });
+}
+
+/**
+ * Bulk delete (hide) quarantine items from the decision queue.
+ */
+export async function bulkDeleteQuarantineItems(
+  actionIds: string[],
+  params?: { deletedBy?: string; reason?: string }
+): Promise<{ hidden: string[]; missing: string[]; already_hidden: string[] }> {
+  return apiFetch(`/api/quarantine/bulk-delete`, {
+    method: 'POST',
+    body: JSON.stringify({
+      action_ids: actionIds,
+      deleted_by: params?.deletedBy || 'operator',
+      reason: params?.reason,
+    }),
+  });
+}
+
+/**
+ * Filesystem-backed deal materials view (correspondence bundles + links)
+ */
+export async function getDealMaterials(dealId: string): Promise<DealMaterials | null> {
+  try {
+    const data = await apiFetch<unknown>(`/api/deals/${dealId}/materials`);
+    const parsed = DealMaterialsSchema.safeParse(data);
+    if (!parsed.success) {
+      console.error('Invalid deal materials response:', parsed.error);
+      return null;
+    }
+    return parsed.data;
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) return null;
+    throw error;
+  }
+}
+
+/**
+ * Fetch alerts - ALWAYS returns an array
+ */
+export async function getAlerts(): Promise<Alert[]> {
+  const data = await apiFetch<unknown>('/api/alerts');
+  const parsed = AlertsResponseSchema.safeParse(data);
+
+  if (!parsed.success) {
+    console.error('Invalid alerts response:', parsed.error);
+    return [];
+  }
+
+  if (Array.isArray(parsed.data)) {
+    return parsed.data;
+  }
+  return parsed.data.alerts;
+}
+
+/**
+ * Fetch classification metrics
+ */
+export async function getClassificationMetrics(): Promise<ClassificationMetrics | null> {
+  try {
+    const data = await apiFetch<unknown>('/api/metrics/classification');
+    const parsed = ClassificationMetricsSchema.safeParse(data);
+
+    if (!parsed.success) {
+      console.error('Invalid classification metrics response:', parsed.error);
+      return null;
+    }
+
+    return parsed.data;
+  } catch (error) {
+    console.error('Failed to fetch classification metrics:', error);
+    return null;
+  }
+}
+
+/**
+ * Fetch checkpoints - ALWAYS returns an array
+ */
+export async function getCheckpoints(): Promise<Checkpoint[]> {
+  try {
+    const data = await apiFetch<unknown>('/api/checkpoints');
+    const parsed = CheckpointsResponseSchema.safeParse(data);
+
+    if (!parsed.success) {
+      console.error('Invalid checkpoints response:', parsed.error);
+      return [];
+    }
+
+    return parsed.data;
+  } catch (error) {
+    console.error('Failed to fetch checkpoints:', error);
+    return [];
+  }
+}
+
+/**
+ * Fetch pipeline summary
+ */
+export async function getPipeline(): Promise<{
+  total_active: number;
+  stages: Record<string, PipelineStage>;
+} | null> {
+  try {
+    const data = await apiFetch<unknown>('/api/pipeline');
+    const parsed = PipelineResponseSchema.safeParse(data);
+
+    if (!parsed.success) {
+      console.error('Invalid pipeline response:', parsed.error);
+      return null;
+    }
+
+    return parsed.data;
+  } catch (error) {
+    console.error('Failed to fetch pipeline:', error);
+    return null;
+  }
+}
+
+/**
+ * Transition deal to new stage
+ */
+export async function transitionDeal(
+  dealId: string,
+  toStage: string,
+  reason: string,
+  approvedBy: string
+): Promise<{ success: boolean; message?: string }> {
+  const params = new URLSearchParams();
+  if (approvedBy) params.set('transitioned_by', approvedBy);
+  const qs = params.toString();
+
+  return apiFetch(`/api/deals/${dealId}/transition${qs ? `?${qs}` : ''}`, {
+    method: 'POST',
+    body: JSON.stringify({
+      new_stage: toStage,
+      reason,
+    }),
+  });
+}
+
+/**
+ * Add note to deal
+ */
+export async function addDealNote(
+  dealId: string,
+  content: string,
+  category?: string
+): Promise<{ success: boolean; event_id?: string }> {
+  return apiFetch(`/api/deals/${dealId}/notes`, {
+    method: 'POST',
+    body: JSON.stringify({
+      content,
+      category: category || 'general',
+    }),
+  });
+}
+
+// ============================================================================
+// Chat API
+// ============================================================================
+
+export interface ChatScope {
+  type: 'global' | 'deal' | 'document';
+  deal_id?: string;
+  doc?: {
+    url?: string;
+    title?: string;
+  };
+}
+
+export interface ChatCitation {
+  id: string;
+  source: string;
+  url?: string;
+  snippet: string;
+  chunk?: number;
+  similarity?: number;
+  event_id?: string;
+  event_type?: string;
+  timestamp?: string;
+}
+
+export interface ChatProposal {
+  proposal_id: string;
+  type: ChatProposalType;
+  deal_id?: string;
+  params?: Record<string, unknown>;
+  reason?: string;
+  status: 'pending_approval' | 'executed' | 'rejected' | 'failed';
+  result?: unknown;
+  error?: string;
+  rejected_by?: string;
+  rejected_at?: string;
+  reject_reason?: string;
+}
+
+export const CHAT_PROPOSAL_TYPES = [
+  'add_note',
+  'draft_email',
+  'create_task',
+  'stage_transition',
+  'request_docs',
+] as const;
+
+export type ChatProposalType = (typeof CHAT_PROPOSAL_TYPES)[number];
+
+export function normalizeChatProposalType(type: string | null | undefined): ChatProposalType | null {
+  const raw = (type || '').trim().toLowerCase();
+  if (!raw) return null;
+
+  const normalized = raw.replace(/[\s-]+/g, '_');
+  const aliasMap: Record<string, ChatProposalType> = {
+    schedule_action: 'create_task',
+    schedule_task: 'create_task',
+    scheduleaction: 'create_task',
+  };
+
+  const aliased = aliasMap[normalized] || (normalized as ChatProposalType);
+  return CHAT_PROPOSAL_TYPES.includes(aliased) ? aliased : null;
+}
+
+export interface ChatEvidenceSummary {
+  sources_queried: string[];
+  rag: {
+    query: string;
+    results_found: number;
+    top_similarity: number;
+  };
+  events: {
+    window: string;
+    count: number;
+    types: string[];
+  };
+  case_file: {
+    loaded: boolean;
+    sections_used: string[];
+  };
+  registry: {
+    loaded: boolean;
+    stage: string | null;
+  };
+  actions: {
+    count: number;
+  };
+  total_evidence_size: number;
+}
+
+export interface ChatResponse {
+  content: string;
+  citations: ChatCitation[];
+  proposals: ChatProposal[];
+  evidence_summary: ChatEvidenceSummary | null;
+  model_used: string;
+  latency_ms: number;
+  warnings: string[];
+}
+
+export interface ChatStreamEvent {
+  type: 'token' | 'evidence' | 'done' | 'error' | 'progress';
+  data: {
+    token?: string;
+    citations?: ChatCitation[];
+    proposals?: ChatProposal[];
+    model_used?: string;
+    latency_ms?: number;
+    session_id?: string;
+    message?: string;
+  } | ChatEvidenceSummary;
+}
+
+/**
+ * Send a chat message (non-streaming)
+ */
+export async function sendChatMessage(
+  query: string,
+  scope: ChatScope,
+  sessionId?: string,
+  options?: Record<string, unknown>
+): Promise<ChatResponse> {
+  return apiFetch('/api/chat/complete', {
+    method: 'POST',
+    body: JSON.stringify({
+      query,
+      scope,
+      session_id: sessionId,
+      options,
+    }),
+  });
+}
+
+/**
+ * Send a chat message with SSE streaming
+ * Returns an async generator that yields events
+ */
+export async function* streamChatMessage(
+  query: string,
+  scope: ChatScope,
+  sessionId?: string,
+  options?: Record<string, unknown>
+): AsyncGenerator<ChatStreamEvent, void, unknown> {
+  const response = await fetch('/api/chat', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      query,
+      scope,
+      session_id: sessionId,
+      options,
+    }),
+  });
+
+  if (!response.ok) {
+    // Try to get response body for better error message
+    let errorBody = '';
+    try {
+      errorBody = await response.text();
+      if (errorBody.length > 200) {
+        errorBody = errorBody.slice(0, 200) + '...';
+      }
+    } catch {
+      errorBody = response.statusText;
+    }
+    throw new ApiError(
+      `Chat request failed: ${errorBody}`,
+      response.status,
+      '/api/chat'
+    );
+  }
+
+  const reader = response.body?.getReader();
+  if (!reader) {
+    throw new Error('Response body is not readable');
+  }
+
+  const decoder = new TextDecoder();
+  let buffer = '';
+
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+
+      // Parse SSE events from buffer
+      const lines = buffer.split('\n');
+      buffer = lines.pop() || ''; // Keep incomplete line in buffer
+
+      let currentEvent = '';
+      let currentData = '';
+
+      for (const line of lines) {
+        if (line.startsWith('event: ')) {
+          currentEvent = line.slice(7).trim();
+        } else if (line.startsWith('data: ')) {
+          currentData = line.slice(6);
+        } else if (line === '' && currentEvent && currentData) {
+          // End of event, yield it
+          try {
+            const parsedData = JSON.parse(currentData);
+            yield {
+              type: currentEvent as ChatStreamEvent['type'],
+              data: parsedData,
+            };
+          } catch {
+            console.debug('[Chat] Failed to parse SSE data:', currentData);
+          }
+          currentEvent = '';
+          currentData = '';
+        }
+      }
+    }
+  } finally {
+    reader.releaseLock();
+  }
+}
+
+/**
+ * Execute a chat proposal (requires approval)
+ */
+export async function executeChatProposal(
+  proposalId: string,
+  sessionId: string,
+  approvedBy: string,
+  action: 'approve' | 'reject' = 'approve',
+  rejectReason?: string
+): Promise<{
+  success: boolean;
+  result?: unknown;
+  proposal?: ChatProposal;
+  proposal_type?: string;
+  error?: string;
+  reason?: string;
+  current_status?: string;
+}> {
+  return apiFetch('/api/chat/execute-proposal', {
+    method: 'POST',
+    body: JSON.stringify({
+      proposal_id: proposalId,
+      session_id: sessionId,
+      approved_by: approvedBy,
+      action,
+      reject_reason: rejectReason,
+    }),
+  });
+}
+
+/**
+ * Get chat session history (with full message data from SQLite backend)
+ */
+export async function getChatSession(sessionId: string): Promise<{
+  session_id: string;
+  scope: ChatScope;
+  created_at: string;
+  last_activity: string;
+  messages: Array<{
+    role: string;
+    content: string;
+    timestamp: string;
+    citations?: ChatCitation[];
+    proposals?: ChatProposal[];
+    timings?: Record<string, unknown>;
+    warnings?: string[];
+    provider_used?: string;
+    cache_hit?: boolean;
+  }>;
+} | null> {
+  try {
+    return await apiFetch(`/api/chat/session/${sessionId}`);
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) {
+      return null;
+    }
+    throw error;
+  }
+}
+
+// ============================================================================
+// Kinetic Actions API (Action Engine v1.2)
+// ============================================================================
+
+/**
+ * Kinetic Action statuses (state machine)
+ * R2-1.3 FIX: Aligned with backend lowercase status values
+ */
+export const KINETIC_ACTION_STATUSES = [
+  'pending',
+  'pending_approval',
+  'queued',
+  'ready',
+  'running',
+  'completed',
+  'failed',
+  'cancelled',
+  'rejected',
+] as const;
+
+export type KineticActionStatus = (typeof KINETIC_ACTION_STATUSES)[number];
+
+/**
+ * Schema property for dynamic form generation
+ */
+export interface SchemaProperty {
+  type: string;
+  description?: string;
+  required?: boolean;
+  enum?: string[];
+  default?: unknown;
+  format?: string;
+  items?: SchemaProperty;
+  properties?: Record<string, SchemaProperty>;
+  minLength?: number;
+  maxLength?: number;
+  minimum?: number;
+  maximum?: number;
+}
+
+/**
+ * Input schema for capabilities (JSON Schema-like)
+ */
+export interface InputSchema {
+  type: string;
+  properties: Record<string, SchemaProperty>;
+  required?: string[];
+}
+
+/**
+ * Output artifact definition
+ */
+export interface OutputArtifact {
+  type: string;
+  description: string;
+  mime_type: string;
+}
+
+/**
+ * Capability manifest from backend
+ */
+export interface Capability {
+  capability_id: string;
+  version: string;
+  title: string;
+  description: string;
+  action_type: string;
+  input_schema: InputSchema;
+  output_artifacts: OutputArtifact[];
+  risk_level: 'low' | 'medium' | 'high';
+  requires_approval: boolean;
+  cloud_required?: boolean;
+  llm_allowed?: boolean;
+  constraints?: string[];
+  examples?: Array<{
+    description: string;
+    inputs: Record<string, unknown>;
+  }>;
+  tags: string[];
+}
+
+/**
+ * Artifact attached to a completed action
+ */
+export interface KineticArtifact {
+  artifact_id: string;
+  filename: string;
+  mime_type: string;
+  size_bytes: number;
+  created_at: string;
+  download_url: string;
+}
+
+/**
+ * Kinetic Action (from Action Engine v1.2)
+ */
+export interface KineticAction {
+  action_id: string;
+  deal_id: string;
+  action_type: string;
+  capability_id?: string;
+  title: string;
+  summary?: string;
+  status: KineticActionStatus;
+  inputs: Record<string, unknown>;
+  outputs?: Record<string, unknown>;
+  artifacts: KineticArtifact[];
+  error?: {
+    message: string;
+    code?: string;
+    category?: string;
+    retryable?: boolean;
+    details?: string;
+  };
+  created_at: string;
+  updated_at: string;
+  approved_at?: string;
+  approved_by?: string;
+  started_at?: string;
+  completed_at?: string;
+  retry_count: number;
+  max_retries: number;
+  created_by?: string;
+  progress?: number;
+  progress_message?: string;
+}
+
+/**
+ * Action metrics from /api/actions/metrics
+ * Aligned with backend response structure (SCHEMA-ALIGN-001)
+ */
+export interface ActionMetrics {
+  total_actions: number;
+  pending_approval: number;
+  completed_today: number;
+  failed_today: number;
+  avg_approval_time_seconds?: number | null;
+  avg_execution_time_seconds?: number | null;
+  by_capability?: Record<string, unknown>;
+  version?: string;
+}
+
+// Zod schemas for Kinetic Actions API
+const KineticArtifactSchema = z.object({
+  artifact_id: z.string(),
+  filename: z.string(),
+  mime_type: z.string(),
+  size_bytes: z.number(),
+  created_at: z.string(),
+  download_url: z.string(),
+});
+
+// KineticActionSchema: Hardened to handle null values from backend
+// Uses .nullish() (null | undefined) for optional fields to handle legacy data
+const KineticActionSchema = z.object({
+  action_id: z.string(),
+  // deal_id: Backend should send "GLOBAL" for non-deal actions, but handle null gracefully
+  deal_id: z.string().nullish().transform(v => v || 'GLOBAL'),
+  action_type: z.string(),
+  // capability_id: May be null for legacy actions
+  capability_id: z.string().nullish().transform(v => v ?? undefined),
+  title: z.string(),
+  summary: z.string().nullish().transform(v => v ?? undefined),
+  status: z.enum(KINETIC_ACTION_STATUSES),
+  // inputs: Some legacy rows may store null; coerce to {} (Zod .default does not apply to null)
+  inputs: z.record(z.unknown()).nullish().transform(v => v ?? {}),
+  outputs: z.record(z.unknown()).nullish().transform(v => v ?? undefined),
+  artifacts: z.array(KineticArtifactSchema).nullish().transform(v => v ?? []),
+  // error: May be null when no error, or object when failed
+  error: z.object({
+    message: z.string(),
+    code: z.string().nullish().transform(v => v ?? undefined),
+    category: z.string().nullish().transform(v => v ?? undefined),
+    retryable: z.boolean().nullish().transform(v => v ?? undefined),
+    details: z.string().nullish().transform(v => v ?? undefined),
+  }).nullish().transform(v => v ?? undefined),
+  created_at: z.string(),
+  updated_at: z.string(),
+  approved_at: z.string().nullish().transform(v => v ?? undefined),
+  approved_by: z.string().nullish().transform(v => v ?? undefined),
+  started_at: z.string().nullish().transform(v => v ?? undefined),
+  completed_at: z.string().nullish().transform(v => v ?? undefined),
+  retry_count: z.number().nullish().transform(v => v ?? 0),
+  max_retries: z.number().nullish().transform(v => v ?? 3),
+  created_by: z.string().nullish().transform(v => v ?? undefined),
+  progress: z.number().nullish().transform(v => v ?? undefined),
+  progress_message: z.string().nullish().transform(v => v ?? undefined),
+});
+
+const KineticActionsResponseSchema = z.object({
+  count: z.number().optional(),
+  actions: z.array(KineticActionSchema),
+}).or(z.array(KineticActionSchema));
+
+const CapabilitySchema = z.object({
+  capability_id: z.string(),
+  version: z.string(),
+  title: z.string(),
+  description: z.string(),
+  action_type: z.string(),
+  input_schema: z.object({
+    type: z.string(),
+    properties: z.record(z.unknown()),
+    required: z.array(z.string()).optional(),
+  }),
+  output_artifacts: z.array(z.object({
+    type: z.string(),
+    description: z.string(),
+    mime_type: z.string(),
+  })),
+  risk_level: z.enum(['low', 'medium', 'high']),
+  requires_approval: z.boolean(),
+  cloud_required: z.boolean().optional(),
+  llm_allowed: z.boolean().optional(),
+  constraints: z.array(z.string()).optional(),
+  examples: z.array(z.object({
+    description: z.string(),
+    inputs: z.record(z.unknown()),
+  })).optional(),
+  tags: z.array(z.string()),
+});
+
+const CapabilitiesResponseSchema = z.object({
+  capabilities: z.array(CapabilitySchema),
+  count: z.number(),
+});
+
+// ActionMetricsSchema: Aligned with backend /api/actions/metrics response
+// Backend returns: {total_actions, pending_approval, completed_today, failed_today, ...}
+const ActionMetricsSchema = z.object({
+  total_actions: z.number(),
+  pending_approval: z.number(),
+  completed_today: z.number(),
+  failed_today: z.number(),
+  avg_approval_time_seconds: z.number().nullable().optional(),
+  avg_execution_time_seconds: z.number().nullable().optional(),
+  by_capability: z.record(z.unknown()).optional(),
+  version: z.string().optional(),
+}).passthrough();
+
+/**
+ * Check if Kinetic Actions API is available (mock mode detection)
+ */
+let _kineticApiAvailable: boolean | null = null;
+
+async function isKineticApiAvailable(): Promise<boolean> {
+  if (_kineticApiAvailable !== null) return _kineticApiAvailable;
+
+  try {
+    const response = await fetch('/api/actions/capabilities');
+    _kineticApiAvailable = response.ok;
+  } catch {
+    _kineticApiAvailable = false;
+  }
+  return _kineticApiAvailable;
+}
+
+/**
+ * Fetch all Kinetic Actions - ALWAYS returns an array
+ * Falls back to legacy deferred-actions endpoint if Kinetic API unavailable
+ */
+export async function getKineticActions(params?: {
+  deal_id?: string;
+  status?: KineticActionStatus;
+  type?: string;
+  limit?: number;
+  offset?: number;
+}): Promise<KineticAction[]> {
+  const searchParams = new URLSearchParams();
+  if (params?.deal_id) searchParams.set('deal_id', params.deal_id);
+  if (params?.status) searchParams.set('status', params.status);
+  if (params?.type) searchParams.set('type', params.type);
+  if (params?.limit) searchParams.set('limit', String(params.limit));
+  if (params?.offset) searchParams.set('offset', String(params.offset));
+
+  const query = searchParams.toString();
+
+  // Try Kinetic API first
+  if (await isKineticApiAvailable()) {
+    const endpoint = `/api/actions${query ? `?${query}` : ''}`;
+    const data = await apiFetch<unknown>(endpoint);
+    const parsed = KineticActionsResponseSchema.safeParse(data);
+
+    if (!parsed.success) {
+      console.error('Invalid Kinetic actions response:', parsed.error);
+      return [];
+    }
+
+    if (Array.isArray(parsed.data)) {
+      return parsed.data;
+    }
+    return parsed.data.actions;
+  }
+
+  // Fallback: convert legacy actions to Kinetic format
+  // R2-1.3 FIX: Use lowercase status values
+  const legacyActions = await getActions({
+    deal_id: params?.deal_id,
+    status: params?.status === 'completed' ? 'completed' : params?.status === 'pending_approval' ? 'pending' : undefined,
+  });
+
+  return legacyActions.map(a => ({
+    action_id: a.action_id,
+    deal_id: a.deal_id ?? '',
+    action_type: a.action_type,
+    title: a.action_type,
+    status: (a.status === 'completed' ? 'completed' : 'pending') as KineticActionStatus,
+    inputs: a.data || {},
+    artifacts: [],
+    created_at: a.scheduled_for ?? new Date().toISOString(),
+    updated_at: a.scheduled_for ?? new Date().toISOString(),
+    retry_count: 0,
+    max_retries: 3,
+  }));
+}
+
+/**
+ * Fetch single Kinetic Action
+ */
+export async function getKineticAction(actionId: string): Promise<KineticAction | null> {
+  if (!await isKineticApiAvailable()) {
+    return null;
+  }
+
+  try {
+    const data = await apiFetch<unknown>(`/api/actions/${actionId}`);
+    const parsed = KineticActionSchema.safeParse(data);
+
+    if (!parsed.success) {
+      console.error('Invalid Kinetic action response:', parsed.error);
+      return null;
+    }
+
+    return parsed.data;
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) {
+      return null;
+    }
+    throw error;
+  }
+}
+
+/**
+ * Create a new Kinetic Action
+ */
+export async function createKineticAction(params: {
+  deal_id?: string;
+  action_type: string;
+  capability_id?: string;
+  title: string;
+  summary?: string;
+  inputs: Record<string, unknown>;
+  created_by?: string;
+  source?: 'chat' | 'ui' | 'system';
+  risk_level?: 'low' | 'medium' | 'high';
+  requires_human_review?: boolean;
+  idempotency_key?: string;
+}): Promise<{ success: boolean; action_id?: string; action?: KineticAction; error?: string }> {
+  if (!await isKineticApiAvailable()) {
+    return { success: false, error: 'Kinetic Actions API not available' };
+  }
+
+  return apiFetch('/api/actions', {
+    method: 'POST',
+    body: JSON.stringify(params),
+  });
+}
+
+/**
+ * Approve a Kinetic Action (PENDING_APPROVAL → READY)
+ */
+export async function approveKineticAction(
+  actionId: string,
+  approvedBy: string
+): Promise<{ success: boolean; action?: KineticAction; error?: string }> {
+  return apiFetch(`/api/actions/${actionId}/approve`, {
+    method: 'POST',
+    body: JSON.stringify({ approved_by: approvedBy }),
+  });
+}
+
+/**
+ * Run/Execute a Kinetic Action (READY → PROCESSING)
+ */
+export async function runKineticAction(
+  actionId: string
+): Promise<{ success: boolean; action?: KineticAction; error?: string; reason?: string }> {
+  return apiFetch(`/api/actions/${actionId}/execute`, {
+    method: 'POST',
+  });
+}
+
+/**
+ * Cancel a Kinetic Action
+ */
+export async function cancelKineticAction(
+  actionId: string,
+  reason?: string
+): Promise<{ success: boolean; action?: KineticAction; error?: string }> {
+  return apiFetch(`/api/actions/${actionId}/cancel`, {
+    method: 'POST',
+    body: JSON.stringify({ reason }),
+  });
+}
+
+/**
+ * Retry a failed Kinetic Action
+ */
+export async function retryKineticAction(
+  actionId: string
+): Promise<{ success: boolean; action?: KineticAction; error?: string }> {
+  return apiFetch(`/api/actions/${actionId}/retry`, {
+    method: 'POST',
+  });
+}
+
+/**
+ * Update Kinetic Action inputs (only when PENDING_APPROVAL)
+ */
+export async function updateKineticActionInputs(
+  actionId: string,
+  inputs: Record<string, unknown>
+): Promise<{ success: boolean; action?: KineticAction; error?: string }> {
+  return apiFetch(`/api/actions/${actionId}/update`, {
+    method: 'POST',
+    body: JSON.stringify({ inputs }),
+  });
+}
+
+/**
+ * Fetch action capabilities (for schema-driven forms)
+ */
+export async function getCapabilities(): Promise<Capability[]> {
+  if (!await isKineticApiAvailable()) {
+    // Return mock capabilities for development
+    return getMockCapabilities();
+  }
+
+  try {
+    const data = await apiFetch<unknown>('/api/actions/capabilities');
+    const parsed = CapabilitiesResponseSchema.safeParse(data);
+
+    if (!parsed.success) {
+      console.error('Invalid capabilities response:', parsed.error);
+      return getMockCapabilities();
+    }
+
+    return parsed.data.capabilities as Capability[];
+  } catch (error) {
+    console.error('Failed to fetch capabilities:', error);
+    return getMockCapabilities();
+  }
+}
+
+/**
+ * Fetch action metrics
+ */
+export async function getActionMetrics(): Promise<ActionMetrics | null> {
+  if (!await isKineticApiAvailable()) {
+    return null;
+  }
+
+  try {
+    const data = await apiFetch<unknown>('/api/actions/metrics');
+    const parsed = ActionMetricsSchema.safeParse(data);
+
+    if (!parsed.success) {
+      console.error('Invalid metrics response:', parsed.error);
+      return null;
+    }
+
+    return parsed.data as ActionMetrics;
+  } catch (error) {
+    console.error('Failed to fetch action metrics:', error);
+    return null;
+  }
+}
+
+/**
+ * Download action artifact
+ */
+export function getArtifactDownloadUrl(actionId: string, artifactId: string): string {
+  return `/api/actions/${actionId}/artifact/${artifactId}`;
+}
+
+// ============================================================================
+// Action Archive/Delete APIs
+// ============================================================================
+
+/**
+ * Archive a single action (soft delete)
+ */
+export async function archiveKineticAction(
+  actionId: string
+): Promise<{ success: boolean; action_id?: string; error?: string }> {
+  return apiFetch(`/api/actions/${actionId}/archive`, {
+    method: 'POST',
+  });
+}
+
+/**
+ * Delete a single action (hard delete)
+ */
+export async function deleteKineticAction(
+  actionId: string
+): Promise<{ success: boolean; action_id?: string; error?: string }> {
+  return apiFetch(`/api/actions/${actionId}`, {
+    method: 'DELETE',
+  });
+}
+
+/**
+ * Bulk archive multiple actions
+ */
+export async function bulkArchiveKineticActions(
+  actionIds: string[]
+): Promise<{ success: boolean; archived_count?: number; error?: string }> {
+  return apiFetch('/api/actions/bulk/archive', {
+    method: 'POST',
+    body: JSON.stringify({ action_ids: actionIds }),
+  });
+}
+
+/**
+ * Bulk delete multiple actions
+ */
+export async function bulkDeleteKineticActions(
+  actionIds: string[]
+): Promise<{ success: boolean; deleted_count?: number; error?: string }> {
+  return apiFetch('/api/actions/bulk/delete', {
+    method: 'POST',
+    body: JSON.stringify({ action_ids: actionIds }),
+  });
+}
+
+/**
+ * Clear completed actions by age
+ */
+export async function clearCompletedActions(
+  operation: 'archive' | 'delete',
+  age: 'all' | '7d' | '30d'
+): Promise<{ success: boolean; affected_count?: number; error?: string }> {
+  return apiFetch('/api/actions/clear-completed', {
+    method: 'POST',
+    body: JSON.stringify({ operation, age }),
+  });
+}
+
+/**
+ * Get count of completed actions (for confirmation dialog)
+ */
+export async function getCompletedActionsCount(
+  age: 'all' | '7d' | '30d'
+): Promise<{ count: number }> {
+  return apiFetch(`/api/actions/completed-count?age=${age}`);
+}
+
+// ============================================================================
+// Agent Activity API
+// ============================================================================
+
+// Zod schemas for Agent Activity
+// FIX: Changed all .optional() to .nullable().optional() to handle backend null values
+const AgentActivityEventSchema = z.object({
+  id: z.string(),
+  type: z.string(),
+  label: z.string(),
+  timestamp: z.string(),
+  dealId: z.string().nullable().optional(),
+  dealName: z.string().nullable().optional(),
+  metadata: z.record(z.unknown()).nullable().optional(),
+}).passthrough();
+
+const AgentActivityStatsSchema = z.object({
+  toolsCalledToday: z.number(),
+  approvalsProcessed: z.number(),
+  dealsAnalyzed: z.number(),
+  runsCompleted24h: z.number(),
+}).passthrough();
+
+const AgentLastActivitySchema = z.object({
+  label: z.string(),
+  timestamp: z.string(),
+  dealId: z.string().nullable().optional(),
+  threadId: z.string().nullable().optional(),
+  runId: z.string().nullable().optional(),
+}).passthrough();
+
+const AgentCurrentRunSchema = z.object({
+  runId: z.string(),
+  threadId: z.string(),
+  status: z.enum(['running', 'waiting_approval']),
+  progressLabel: z.string(),
+  startedAt: z.string(),
+  dealId: z.string().nullable().optional(),
+  dealName: z.string().nullable().optional(),
+}).passthrough();
+
+const AgentRecentRunSchema = z.object({
+  runId: z.string(),
+  threadId: z.string(),
+  status: z.enum(['completed', 'failed', 'cancelled']),
+  summary: z.string(),
+  startedAt: z.string(),
+  completedAt: z.string(),
+  dealId: z.string().nullable().optional(),
+  dealName: z.string().nullable().optional(),
+  toolsCalled: z.number(),
+  approvalsRequested: z.number(),
+}).passthrough();
+
+const AgentActivityResponseSchema = z.object({
+  status: z.enum(['idle', 'working', 'waiting_approval']),
+  lastActivity: AgentLastActivitySchema.nullable(),
+  recent: z.array(AgentActivityEventSchema),
+  stats: AgentActivityStatsSchema,
+  currentRun: AgentCurrentRunSchema.optional(),
+  recentRuns: z.array(AgentRecentRunSchema),
+});
+
+export type AgentActivityResponse = z.infer<typeof AgentActivityResponseSchema>;
+
+/**
+ * Fetch agent activity data
+ * Returns null on failure (graceful degradation)
+ */
+export async function getAgentActivity(limit?: number): Promise<AgentActivityResponse | null> {
+  try {
+    const query = limit ? `?limit=${limit}` : '';
+    const data = await apiFetch<unknown>(`/api/agent/activity${query}`);
+    const parsed = AgentActivityResponseSchema.safeParse(data);
+
+    if (!parsed.success) {
+      console.error('Invalid agent activity response:', parsed.error);
+      return null;
+    }
+
+    return parsed.data;
+  } catch (error) {
+    console.error('Failed to fetch agent activity:', error);
+    return null;
+  }
+}
+
+/**
+ * Mock capabilities for development when backend not available
+ */
+function getMockCapabilities(): Capability[] {
+  return [
+    {
+      capability_id: 'COMMUNICATION.DRAFT_EMAIL.v1',
+      version: '1.0',
+      title: 'Draft Email',
+      description: 'Generate professional email draft for acquisition workflow communications',
+      action_type: 'COMMUNICATION.DRAFT_EMAIL',
+      input_schema: {
+        type: 'object',
+        properties: {
+          recipient: { type: 'string', description: 'Recipient email address', required: true },
+          subject: { type: 'string', description: 'Email subject line', required: true },
+          context: { type: 'string', description: 'Context and purpose of email', required: true },
+          tone: { type: 'string', description: 'Email tone', enum: ['professional', 'friendly', 'formal'], default: 'professional' },
+        },
+      },
+      output_artifacts: [{ type: 'docx', description: 'Email draft', mime_type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' }],
+      risk_level: 'medium',
+      requires_approval: true,
+      constraints: ['Never send email automatically', 'Draft only; manual review required'],
+      tags: ['communication', 'email', 'draft'],
+    },
+    {
+      capability_id: 'DOCUMENT.GENERATE.v1',
+      version: '1.0',
+      title: 'Generate Document',
+      description: 'Generate professional documents like summaries, teasers, or reports',
+      action_type: 'DOCUMENT.GENERATE',
+      input_schema: {
+        type: 'object',
+        properties: {
+          document_type: { type: 'string', description: 'Type of document', enum: ['summary', 'teaser', 'report', 'memo'], required: true },
+          title: { type: 'string', description: 'Document title', required: true },
+          context: { type: 'string', description: 'Content context and requirements', required: true },
+          format: { type: 'string', description: 'Output format', enum: ['docx', 'pdf'], default: 'docx' },
+        },
+      },
+      output_artifacts: [{ type: 'docx', description: 'Generated document', mime_type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' }],
+      risk_level: 'low',
+      requires_approval: true,
+      tags: ['document', 'generate', 'report'],
+    },
+    {
+      capability_id: 'ANALYSIS.BUILD_MODEL.v1',
+      version: '1.0',
+      title: 'Build Valuation Model',
+      description: 'Build financial valuation model with KPIs and projections',
+      action_type: 'ANALYSIS.BUILD_MODEL',
+      input_schema: {
+        type: 'object',
+        properties: {
+          model_type: { type: 'string', description: 'Type of model', enum: ['dcf', 'comps', 'lbo', 'custom'], required: true },
+          assumptions: { type: 'string', description: 'Key assumptions and parameters' },
+          include_sensitivity: { type: 'boolean', description: 'Include sensitivity analysis', default: true },
+        },
+      },
+      output_artifacts: [{ type: 'xlsx', description: 'Financial model', mime_type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }],
+      risk_level: 'medium',
+      requires_approval: true,
+      tags: ['analysis', 'valuation', 'financial'],
+    },
+  ];
+}
+
+=== ZOD FILE: /home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx ===
+'use client';
+
+import { useEffect, useState, useRef, useCallback } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible';
+import {
+  IconAlertTriangle,
+  IconBrain,
+  IconChevronDown,
+  IconDatabase,
+  IconLink,
+  IconLoader2,
+  IconMessage,
+  IconRefresh,
+  IconSend,
+  IconWorld,
+  IconFolder,
+  IconFile,
+  IconCheck,
+  IconX,
+  IconBug,
+} from '@tabler/icons-react';
+import {
+  getDeals,
+  streamChatMessage,
+  executeChatProposal,
+  getChatSession,
+  type Deal,
+  type ChatScope,
+  type ChatCitation,
+  type ChatProposal,
+  type ChatEvidenceSummary,
+  normalizeChatProposalType,
+} from '@/lib/api';
+import { ProviderSelector, getSelectedProvider, type ProviderType } from '@/components/chat/ProviderSelector';
+import { z } from 'zod';
+import { loadFromStorage, saveToStorage, removeFromStorage } from '@/lib/storage-utils';
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Types
+// ═══════════════════════════════════════════════════════════════════════════
+
+interface ChatMessage {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp: Date;
+  citations?: ChatCitation[];
+  proposals?: ChatProposal[];
+  evidenceSummary?: ChatEvidenceSummary;
+  isStreaming?: boolean;
+  error?: string;
+  warnings?: string[];
+  timings?: TimingData;
+}
+
+interface TimingData {
+  request_id: string;
+  total_ms: number;
+  evidence_ms: number;
+  llm_ms: number;
+  deterministic_ms: number;
+  cache_hit: boolean;
+  cache_source?: string;
+  provider_used: string;
+  provider_fallback: boolean;
+  provider_reason?: string;
+  degraded: boolean;
+  evidence_breakdown: Record<string, number>;
+}
+
+interface ProgressStep {
+  step: string;
+  substep?: string;
+  message: string;
+  phase?: number;
+  total_phases?: number;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// localStorage Persistence (RT-STORE-1 Compliant)
+// F003-P1-002 Remediation: Using loadFromStorage with Zod validation + quarantine
+// ═══════════════════════════════════════════════════════════════════════════
+
+const STORAGE_KEY = 'zakops-chat-session';
+const STORAGE_VERSION = 1;
+
+// Zod schema for stored session (RT-STORE-1 requirement)
+const StoredMessageSchema = z.object({
+  id: z.string(),
+  role: z.enum(['user', 'assistant']),
+  content: z.string(),
+  timestamp: z.string(),
+  citations: z.array(z.any()).optional(),
+  proposals: z.array(z.any()).optional(),
+  evidenceSummary: z.any().optional(),
+  timings: z.any().optional(),
+  warnings: z.array(z.string()).optional(),
+});
+
+const StoredSessionSchema = z.object({
+  version: z.number(),
+  sessionId: z.string().nullable(),
+  scopeType: z.enum(['global', 'deal', 'document']),
+  selectedDealId: z.string(),
+  messages: z.array(StoredMessageSchema),
+  lastTimings: z.any().nullable(),
+  savedAt: z.string(),
+});
+
+type StoredSession = z.infer<typeof StoredSessionSchema>;
+
+// Async save using requestIdleCallback to avoid blocking UI
+function saveSession(
+  sessionId: string | null,
+  scopeType: 'global' | 'deal' | 'document',
+  selectedDealId: string,
+  messages: ChatMessage[],
+  lastTimings: TimingData | null
+) {
+  const doSave = () => {
+    const data: StoredSession = {
+      version: STORAGE_VERSION,
+      sessionId,
+      scopeType,
+      selectedDealId,
+      messages: messages.map(m => ({
+        id: m.id,
+        role: m.role,
+        content: m.content,
+        timestamp: m.timestamp.toISOString(),
+        citations: m.citations,
+        proposals: m.proposals,
+        evidenceSummary: m.evidenceSummary,
+        timings: m.timings,
+        warnings: m.warnings,
+      })),
+      lastTimings,
+      savedAt: new Date().toISOString(),
+    };
+    saveToStorage(STORAGE_KEY, data);
+  };
+
+  // Use requestIdleCallback if available for non-blocking save
+  if (typeof requestIdleCallback !== 'undefined') {
+    requestIdleCallback(doSave, { timeout: 1000 });
+  } else {
+    // Fallback: use setTimeout to avoid blocking
+    setTimeout(doSave, 0);
+  }
+}
+
+// RT-STORE-1: Load with Zod validation and quarantine on failure
+function loadSession(): StoredSession | null {
+  const fallback = null;
+  const result = loadFromStorage(STORAGE_KEY, StoredSessionSchema, {
+    version: STORAGE_VERSION,
+    fallback,
+  });
+  return result;
+}
+
+function clearStoredSession() {
+  removeFromStorage(STORAGE_KEY);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Main Component
+// ═══════════════════════════════════════════════════════════════════════════
+
+export default function ChatPage() {
+  const searchParams = useSearchParams();
+  const initialDealId = searchParams.get('deal_id');
+
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  // Scope state
+  const [scopeType, setScopeType] = useState<'global' | 'deal' | 'document'>(
+    initialDealId ? 'deal' : 'global'
+  );
+  const [selectedDealId, setSelectedDealId] = useState<string>(initialDealId || '');
+  const [deals, setDeals] = useState<Deal[]>([]);
+  const [loadingDeals, setLoadingDeals] = useState(true);
+
+  // Evidence panel
+  const [showEvidence, setShowEvidence] = useState(false);
+  const [currentEvidence, setCurrentEvidence] = useState<ChatEvidenceSummary | null>(null);
+
+  // Progress and debug state
+  const [progressStep, setProgressStep] = useState<ProgressStep | null>(null);
+  const [progressHistory, setProgressHistory] = useState<ProgressStep[]>([]);
+  const [showDebug, setShowDebug] = useState(false);
+  const [lastTimings, setLastTimings] = useState<TimingData | null>(null);
+
+  // Provider selection
+  const [selectedProvider, setSelectedProvider] = useState<ProviderType>('local');
+
+  // Refs for token batching
+  const tokenBufferRef = useRef<string>('');
+  const flushTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const currentMessageIdRef = useRef<string | null>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
+
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Load saved provider preference
+  // ─────────────────────────────────────────────────────────────────────────
+  useEffect(() => {
+    setSelectedProvider(getSelectedProvider());
+  }, []);
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Session Restoration (backend-first, then localStorage fallback)
+  // ─────────────────────────────────────────────────────────────────────────
+  useEffect(() => {
+    // Skip if we have a deal_id in URL (fresh start with deal)
+    if (initialDealId) {
+      setIsInitialized(true);
+      return;
+    }
+
+    const restoreSession = async () => {
+      // First, try localStorage to get sessionId
+      const stored = loadSession();
+      const storedSessionId = stored?.sessionId;
+
+      // If we have a sessionId, try loading from backend (SQLite-backed)
+      if (storedSessionId) {
+        try {
+          const backendSession = await getChatSession(storedSessionId);
+          if (backendSession && backendSession.messages.length > 0) {
+            // Restore from backend (more reliable, survives server restarts)
+            setSessionId(backendSession.session_id);
+            setScopeType(backendSession.scope?.type || 'global');
+            setSelectedDealId(backendSession.scope?.deal_id || '');
+            setMessages(backendSession.messages.map((m, i) => ({
+              id: `restored-${i}-${Date.now()}`,
+              role: m.role as 'user' | 'assistant',
+              content: m.content,
+              timestamp: new Date(m.timestamp),
+              citations: m.citations || [],
+              proposals: (m.proposals || [])
+                .map((p) => {
+                  const normalizedType = normalizeChatProposalType(p.type);
+                  return normalizedType ? { ...p, type: normalizedType } : null;
+                })
+                .filter((p): p is ChatProposal => p !== null),
+              timings: m.timings as TimingData | undefined,
+              warnings: m.warnings || [],
+            })));
+
+            console.log('Session restored from backend:', storedSessionId);
+            setIsInitialized(true);
+            return;
+          }
+        } catch (err) {
+          console.log('Backend session not found, falling back to localStorage:', err);
+        }
+      }
+
+      // Fallback: restore from localStorage
+      if (stored && stored.messages.length > 0) {
+        setSessionId(stored.sessionId);
+        setScopeType(stored.scopeType);
+        setSelectedDealId(stored.selectedDealId);
+        setMessages(stored.messages.map(m => ({
+          ...m,
+          timestamp: new Date(m.timestamp),
+        })));
+        setLastTimings(stored.lastTimings);
+
+        // Find latest evidence summary
+        const lastAssistant = [...stored.messages].reverse().find(m => m.role === 'assistant');
+        if (lastAssistant?.evidenceSummary) {
+          setCurrentEvidence(lastAssistant.evidenceSummary);
+        }
+        console.log('Session restored from localStorage');
+      }
+
+      setIsInitialized(true);
+    };
+
+    restoreSession();
+  }, [initialDealId]);
+
+  // Save session whenever messages change
+  useEffect(() => {
+    if (isInitialized && messages.length > 0) {
+      saveSession(sessionId, scopeType, selectedDealId, messages, lastTimings);
+    }
+  }, [messages, sessionId, scopeType, selectedDealId, lastTimings, isInitialized]);
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Load deals for scope selector
+  // ─────────────────────────────────────────────────────────────────────────
+  useEffect(() => {
+    const loadDeals = async () => {
+      try {
+        const dealList = await getDeals({ status: 'active' });
+        setDeals(dealList);
+      } catch (err) {
+        console.error('Failed to load deals:', err);
+      } finally {
+        setLoadingDeals(false);
+      }
+    };
+    loadDeals();
+  }, []);
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Auto-scroll to bottom (only if user is near bottom)
+  // ─────────────────────────────────────────────────────────────────────────
+  const scrollViewportRef = useRef<HTMLDivElement | null>(null);
+  const isNearBottomRef = useRef(true);
+
+  const updateIsNearBottom = useCallback(() => {
+    const container = scrollViewportRef.current;
+    if (!container) return;
+    const threshold = 100; // pixels from bottom
+    const isNearBottom =
+      container.scrollHeight - container.scrollTop - container.clientHeight < threshold;
+    isNearBottomRef.current = isNearBottom;
+  }, []);
+
+  const handleScroll = useCallback(() => {
+    updateIsNearBottom();
+  }, [updateIsNearBottom]);
+
+  // Auto-scroll only when near bottom
+  useEffect(() => {
+    if (isNearBottomRef.current) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'auto', block: 'end' });
+    }
+  }, [messages]);
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Cleanup on unmount
+  // ─────────────────────────────────────────────────────────────────────────
+  useEffect(() => {
+    return () => {
+      if (flushTimeoutRef.current) {
+        clearTimeout(flushTimeoutRef.current);
+      }
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, []);
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Build current scope
+  // ─────────────────────────────────────────────────────────────────────────
+  const getScope = useCallback((): ChatScope => {
+    if (scopeType === 'deal' && selectedDealId) {
+      return { type: 'deal', deal_id: selectedDealId };
+    }
+    return { type: scopeType };
+  }, [scopeType, selectedDealId]);
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Token Batching - Flush buffered tokens to UI
+  // ─────────────────────────────────────────────────────────────────────────
+  const flushTokenBuffer = useCallback(() => {
+    if (tokenBufferRef.current && currentMessageIdRef.current) {
+      const bufferedContent = tokenBufferRef.current;
+      const messageId = currentMessageIdRef.current;
+
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === messageId
+            ? { ...m, content: m.content + bufferedContent }
+            : m
+        )
+      );
+      tokenBufferRef.current = '';
+    }
+    flushTimeoutRef.current = null;
+  }, []);
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Send message with batched streaming
+  // ─────────────────────────────────────────────────────────────────────────
+  const sendMessage = async () => {
+    if (!input.trim() || isLoading) return;
+
+    // Abort any previous request
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    abortControllerRef.current = new AbortController();
+
+    const userMessage: ChatMessage = {
+      id: `user-${Date.now()}`,
+      role: 'user',
+      content: input.trim(),
+      timestamp: new Date(),
+    };
+
+    const assistantMessageId = `assistant-${Date.now()}`;
+    currentMessageIdRef.current = assistantMessageId;
+
+    const assistantMessage: ChatMessage = {
+      id: assistantMessageId,
+      role: 'assistant',
+      content: '',
+      timestamp: new Date(),
+      isStreaming: true,
+    };
+
+    setMessages((prev) => [...prev, userMessage, assistantMessage]);
+    setInput('');
+    setIsLoading(true);
+    setError(null);
+    setProgressStep(null);
+    setProgressHistory([]);
+    tokenBufferRef.current = '';
+
+    try {
+      const scope = getScope();
+      let citations: ChatCitation[] = [];
+      let proposals: ChatProposal[] = [];
+      let evidenceSummary: ChatEvidenceSummary | undefined = undefined;
+      let newSessionId: string | undefined;
+      let timings: TimingData | undefined;
+      let warnings: string[] = [];
+      let finalTextFromDone: string | undefined;  // Capture final_text from done event
+
+      for await (const event of streamChatMessage(
+        userMessage.content,
+        scope,
+        sessionId || undefined,
+        { provider: selectedProvider }
+      )) {
+        // Check if aborted
+        if (abortControllerRef.current?.signal.aborted) break;
+
+        if (event.type === 'token') {
+          const tokenData = event.data as { token?: string };
+          if (tokenData.token) {
+            // Buffer tokens instead of immediate setState
+            tokenBufferRef.current += tokenData.token;
+
+            // Schedule flush if not already scheduled (100ms batching for 30-60fps)
+            if (!flushTimeoutRef.current) {
+              flushTimeoutRef.current = setTimeout(flushTokenBuffer, 100);
+            }
+          }
+        } else if (event.type === 'progress') {
+          const progressData = event.data as ProgressStep;
+          setProgressStep(progressData);
+          setProgressHistory(prev => [...prev, progressData]);
+        } else if (event.type === 'evidence') {
+          evidenceSummary = event.data as ChatEvidenceSummary;
+          setCurrentEvidence(evidenceSummary);
+        } else if (event.type === 'done') {
+          // Flush any remaining tokens
+          if (flushTimeoutRef.current) {
+            clearTimeout(flushTimeoutRef.current);
+            flushTimeoutRef.current = null;
+          }
+          flushTokenBuffer();
+
+          const doneData = event.data as {
+            citations?: ChatCitation[];
+            proposals?: ChatProposal[];
+            session_id?: string;
+            warnings?: string[];
+            timings?: TimingData;
+            evidence_summary?: ChatEvidenceSummary;
+            final_text?: string;  // Backend includes final text for deterministic reliability
+          };
+          citations = doneData.citations || [];
+          proposals = (doneData.proposals || [])
+            .map((p) => {
+              const normalizedType = normalizeChatProposalType(p.type);
+              return normalizedType ? { ...p, type: normalizedType } : null;
+            })
+            .filter((p): p is ChatProposal => p !== null);
+          newSessionId = doneData.session_id;
+          timings = doneData.timings;
+          warnings = doneData.warnings || [];
+
+          // Capture final_text from done event (more reliable than token buffering)
+          finalTextFromDone = doneData.final_text;
+
+          if (doneData.evidence_summary) {
+            evidenceSummary = doneData.evidence_summary;
+            setCurrentEvidence(evidenceSummary);
+          }
+
+          if (timings) {
+            setLastTimings(timings);
+          }
+
+          // Show warnings if any
+          if (warnings.length > 0) {
+            setError(`Warnings: ${warnings.join(', ')}`);
+          }
+
+          setProgressStep(null);
+        } else if (event.type === 'error') {
+          const errorData = event.data as { message?: string };
+          throw new Error(errorData.message || 'Stream error');
+        }
+      }
+
+      // Ensure final flush
+      if (flushTimeoutRef.current) {
+        clearTimeout(flushTimeoutRef.current);
+        flushTokenBuffer();
+      }
+
+      // Get final content - prefer final_text from done event (most reliable),
+      // fall back to token buffer accumulation, then to message state
+      const finalContent = (() => {
+        // Primary: Use final_text from done event (backend provides this for reliability)
+        if (finalTextFromDone) {
+          return finalTextFromDone;
+        }
+        // Fallback: Use accumulated tokens from buffer + any flushed to state
+        const msg = messages.find(m => m.id === assistantMessageId);
+        return (msg?.content || '') + tokenBufferRef.current;
+      })();
+
+      // Update final message
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === assistantMessageId
+            ? {
+                ...m,
+                content: finalContent || 'No response received.',
+                isStreaming: false,
+                citations,
+                proposals,
+                evidenceSummary,
+                timings,
+                warnings,
+              }
+            : m
+        )
+      );
+
+      if (newSessionId) {
+        setSessionId(newSessionId);
+      }
+    } catch (err) {
+      // Flush any remaining tokens before error
+      if (flushTimeoutRef.current) {
+        clearTimeout(flushTimeoutRef.current);
+        flushTokenBuffer();
+      }
+
+      let errorMsg = 'Failed to get response';
+      let detailedError = '';
+
+      if (err && typeof err === 'object' && 'status' in err && 'endpoint' in err) {
+        const apiErr = err as { status: number; endpoint: string; message: string };
+        errorMsg = `HTTP ${apiErr.status} at ${apiErr.endpoint}`;
+        detailedError = apiErr.message;
+      } else if (err instanceof Error) {
+        errorMsg = err.message;
+      }
+
+      const fullError = detailedError ? `${errorMsg}\n${detailedError}` : errorMsg;
+
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === assistantMessageId
+            ? {
+                ...m,
+                content: 'Error: ' + errorMsg,
+                isStreaming: false,
+                error: fullError,
+              }
+            : m
+        )
+      );
+      setError(fullError);
+    } finally {
+      setIsLoading(false);
+      currentMessageIdRef.current = null;
+      tokenBufferRef.current = '';
+      inputRef.current?.focus();
+    }
+  };
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Execute proposal
+  // ─────────────────────────────────────────────────────────────────────────
+  const [executingProposalId, setExecutingProposalId] = useState<string | null>(null);
+  const [lastProposalExecution, setLastProposalExecution] = useState<{
+    proposalId: string;
+    type: ChatProposal['type'];
+    action: 'approve' | 'reject';
+    success: boolean;
+    provider?: string;
+    model?: string;
+    forcedReason?: string;
+    error?: string;
+    reason?: string;
+    at: string;
+  } | null>(null);
+
+  const handleExecuteProposal = async (
+    proposal: ChatProposal,
+    messageId: string,
+    action: 'approve' | 'reject' = 'approve'
+  ) => {
+    if (!sessionId) {
+      setError('No session ID - please refresh and try again');
+      return;
+    }
+
+    // Set loading state
+    setExecutingProposalId(proposal.proposal_id);
+
+    try {
+      const result = await executeChatProposal(
+        proposal.proposal_id,
+        sessionId,
+        'operator',
+        action
+      );
+
+      if (result.success) {
+        const r = (result.result as any) || {};
+        const provider = typeof r.provider === 'string' ? r.provider : undefined;
+        const model = typeof r.model === 'string' ? r.model : undefined;
+        const forcedReason = typeof r.forced_reason === 'string' ? r.forced_reason : undefined;
+        setLastProposalExecution({
+          proposalId: proposal.proposal_id,
+          type: proposal.type,
+          action,
+          success: true,
+          provider,
+          model,
+          forcedReason,
+          at: new Date().toISOString(),
+        });
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === messageId
+              ? {
+                  ...m,
+                  proposals: m.proposals?.map((p) =>
+                    p.proposal_id === proposal.proposal_id
+                      ? (result.proposal ?? {
+                          ...p,
+                          status: action === 'reject' ? 'rejected' : 'executed',
+                          result: result.result,
+                        })
+                      : p
+                  ),
+                }
+              : m
+          )
+        );
+      } else {
+        // Show detailed error and update proposal status to failed
+        const errorMsg = result.reason
+          ? `${result.error} (${result.reason})`
+          : result.error || 'Failed to execute proposal';
+        setError(errorMsg);
+        setLastProposalExecution({
+          proposalId: proposal.proposal_id,
+          type: proposal.type,
+          action,
+          success: false,
+          error: result.error || errorMsg,
+          reason: result.reason,
+          at: new Date().toISOString(),
+        });
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === messageId
+              ? {
+                  ...m,
+                  proposals: m.proposals?.map((p) =>
+                    p.proposal_id === proposal.proposal_id
+                      ? { ...p, status: 'failed' as const, error: result.error || errorMsg }
+                      : p
+                  ),
+                }
+              : m
+          )
+        );
+      }
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : 'Execution failed';
+      setError(errorMsg);
+      setLastProposalExecution({
+        proposalId: proposal.proposal_id,
+        type: proposal.type,
+        action,
+        success: false,
+        error: errorMsg,
+        at: new Date().toISOString(),
+      });
+      // Update proposal status to failed
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === messageId
+            ? {
+                ...m,
+                proposals: m.proposals?.map((p) =>
+                  p.proposal_id === proposal.proposal_id
+                    ? { ...p, status: 'failed' as const, error: errorMsg }
+                    : p
+                ),
+              }
+            : m
+        )
+      );
+    } finally {
+      setExecutingProposalId(null);
+    }
+  };
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Handle enter key
+  // ─────────────────────────────────────────────────────────────────────────
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  };
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // New chat
+  // ─────────────────────────────────────────────────────────────────────────
+  const handleNewChat = () => {
+    // Abort any in-progress request
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    setMessages([]);
+    setSessionId(null);
+    setCurrentEvidence(null);
+    setError(null);
+    setProgressStep(null);
+    setProgressHistory([]);
+    setLastTimings(null);
+    clearStoredSession();
+  };
+
+  return (
+    <div className='flex flex-1 flex-col min-h-0'>
+      {/* Header */}
+      <div className='flex items-center justify-between p-4 border-b'>
+        <div className='flex items-center gap-2'>
+          <IconMessage className='h-6 w-6' />
+          <h1 className='text-xl font-semibold'>Chat</h1>
+          {sessionId && (
+            <Badge variant='outline' className='ml-2'>
+              Session: {sessionId}
+            </Badge>
+          )}
+          {messages.length > 0 && (
+            <Badge variant='secondary' className='ml-1'>
+              {messages.length} messages
+            </Badge>
+          )}
+        </div>
+
+        <div className='flex items-center gap-2'>
+          {/* Provider selector */}
+          <ProviderSelector
+            onSelect={setSelectedProvider}
+            className='w-[180px]'
+          />
+
+          {/* Scope selector */}
+          <div className='flex items-center gap-2'>
+            <Select
+              value={scopeType}
+              onValueChange={(v) => setScopeType(v as 'global' | 'deal' | 'document')}
+            >
+              <SelectTrigger className='w-[130px]'>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value='global'>
+                  <div className='flex items-center gap-2'>
+                    <IconWorld className='h-4 w-4' />
+                    Global
+                  </div>
+                </SelectItem>
+                <SelectItem value='deal'>
+                  <div className='flex items-center gap-2'>
+                    <IconFolder className='h-4 w-4' />
+                    Deal
+                  </div>
+                </SelectItem>
+                <SelectItem value='document'>
+                  <div className='flex items-center gap-2'>
+                    <IconFile className='h-4 w-4' />
+                    Document
+                  </div>
+                </SelectItem>
+              </SelectContent>
+            </Select>
+
+            {scopeType === 'deal' && (
+              <Select
+                value={selectedDealId || '_none'}
+                onValueChange={(v) => setSelectedDealId(v === '_none' ? '' : v)}
+                disabled={loadingDeals}
+              >
+                <SelectTrigger className='w-[200px]'>
+                  <SelectValue placeholder='Select deal...' />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value='_none'>Select deal...</SelectItem>
+                  {deals.map((deal) => (
+                    <SelectItem key={deal.deal_id} value={deal.deal_id}>
+                      {deal.canonical_name || deal.deal_id}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          </div>
+
+          <Button variant='outline' size='sm' onClick={handleNewChat}>
+            <IconRefresh className='h-4 w-4 mr-1' />
+            New Chat
+          </Button>
+
+          <Button
+            variant='outline'
+            size='sm'
+            onClick={() => setShowEvidence(!showEvidence)}
+          >
+            <IconDatabase className='h-4 w-4 mr-1' />
+            Evidence
+          </Button>
+
+          <Button
+            variant={showDebug ? 'default' : 'outline'}
+            size='sm'
+            data-testid='chat-debug-toggle'
+            onClick={() => setShowDebug(!showDebug)}
+          >
+            <IconBug className='h-4 w-4 mr-1' />
+            Debug
+          </Button>
+        </div>
+      </div>
+
+      {/* Progress indicator - always visible during loading */}
+      {(progressStep || isLoading) && (
+        <div className='px-4 py-2 bg-muted/50 border-b'>
+          <ProgressIndicator
+            step={progressStep}
+            history={progressHistory}
+            isLoading={isLoading}
+          />
+        </div>
+      )}
+
+      {/* Main content */}
+      <div className='flex flex-1 overflow-hidden min-h-0'>
+        {/* Messages area */}
+        <div className='flex flex-1 flex-col min-h-0'>
+          <div
+            ref={scrollViewportRef}
+            onScroll={handleScroll}
+            data-testid='chat-scroll'
+            className='flex-1 min-h-0 overflow-y-auto p-4'
+          >
+            {messages.length === 0 ? (
+              <div className='flex flex-col items-center justify-center h-full text-muted-foreground'>
+                <IconBrain className='h-16 w-16 mb-4 opacity-30' />
+                <h2 className='text-lg font-medium mb-2'>ZakOps Assistant</h2>
+                <p className='text-sm text-center max-w-md'>
+                  Ask questions about your deals, get AI-powered insights,
+                  and receive actionable suggestions grounded in your data.
+                </p>
+                <div className='flex flex-wrap gap-2 mt-4'>
+                  <Badge variant='secondary'>RAG-powered</Badge>
+                  <Badge variant='secondary'>Grounded responses</Badge>
+                  <Badge variant='secondary'>Action proposals</Badge>
+                </div>
+                <p className='text-xs text-muted-foreground mt-4'>
+                  Your chat history is saved to both server and browser, persisting across refreshes and restarts.
+                </p>
+              </div>
+            ) : (
+              <div className='space-y-4 max-w-3xl mx-auto'>
+                {messages.map((message) => (
+                  <MessageBubble
+                    key={message.id}
+                    message={message}
+                    onExecuteProposal={(p, action) => handleExecuteProposal(p, message.id, action)}
+                    executingProposalId={executingProposalId}
+                  />
+                ))}
+                <div ref={messagesEndRef} />
+              </div>
+            )}
+          </div>
+
+          {/* Error display */}
+          {error && (
+            <div className='px-4 pb-2'>
+              <div className='bg-destructive/10 text-destructive rounded-md p-3'>
+                <div className='flex items-start gap-2'>
+                  <IconAlertTriangle className='h-4 w-4 mt-0.5 flex-shrink-0' />
+                  <div className='flex-1 min-w-0'>
+                    <pre className='text-sm whitespace-pre-wrap break-words font-sans'>
+                      {error}
+                    </pre>
+                  </div>
+                  <Button
+                    variant='ghost'
+                    size='sm'
+                    onClick={() => setError(null)}
+                    className='flex-shrink-0'
+                  >
+                    Dismiss
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Input area */}
+          <div className='p-4 border-t'>
+            <div className='flex gap-2 max-w-3xl mx-auto'>
+              <Input
+                ref={inputRef}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                data-testid='chat-input'
+                placeholder={
+                  scopeType === 'deal' && selectedDealId
+                    ? `Ask about ${deals.find((d) => d.deal_id === selectedDealId)?.canonical_name || selectedDealId}...`
+                    : 'Ask a question...'
+                }
+                disabled={isLoading}
+                className='flex-1'
+              />
+              <Button data-testid='chat-send' onClick={sendMessage} disabled={isLoading || !input.trim()}>
+                {isLoading ? (
+                  <IconLoader2 className='h-4 w-4 animate-spin' />
+                ) : (
+                  <IconSend className='h-4 w-4' />
+                )}
+              </Button>
+            </div>
+            <p className='text-xs text-muted-foreground text-center mt-2'>
+              Responses are grounded in deal data. Proposals require approval.
+            </p>
+          </div>
+        </div>
+
+        {/* Evidence panel */}
+        {showEvidence && (
+          <div className='w-80 border-l overflow-auto p-4'>
+            <h3 className='font-semibold mb-3 flex items-center gap-2'>
+              <IconDatabase className='h-4 w-4' />
+              Evidence Summary
+            </h3>
+            {currentEvidence ? (
+              <EvidencePanel evidence={currentEvidence} />
+            ) : (
+              <p className='text-sm text-muted-foreground'>
+                Evidence will appear here after you send a message.
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Debug panel - always visible when toggled */}
+        {showDebug && (
+          <div data-testid='chat-debug-panel' className='w-80 border-l overflow-auto p-4 bg-muted/30'>
+            <h3 className='font-semibold mb-3 flex items-center gap-2'>
+              <IconBug className='h-4 w-4' />
+              Debug Info
+            </h3>
+            <DebugPanel
+              timing={lastTimings}
+              progressHistory={progressHistory}
+              sessionId={sessionId}
+              messageCount={messages.length}
+              lastProposalExecution={lastProposalExecution}
+            />
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Message bubble component
+// ═══════════════════════════════════════════════════════════════════════════
+
+function MessageBubble({
+  message,
+  onExecuteProposal,
+  executingProposalId,
+}: {
+  message: ChatMessage;
+  onExecuteProposal: (p: ChatProposal, action?: 'approve' | 'reject') => void;
+  executingProposalId?: string | null;
+}) {
+  const isUser = message.role === 'user';
+
+  return (
+    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
+      <div
+        className={`max-w-[85%] rounded-lg p-3 ${
+          isUser
+            ? 'bg-primary text-primary-foreground'
+            : message.error
+              ? 'bg-destructive/10 border border-destructive/20'
+              : 'bg-muted'
+        }`}
+      >
+        <div className='whitespace-pre-wrap text-sm'>{message.content}</div>
+
+        {message.isStreaming && (
+          <div className='flex items-center gap-2 mt-2 text-xs text-muted-foreground'>
+            <IconLoader2 className='h-3 w-3 animate-spin' />
+            <span>Generating...</span>
+          </div>
+        )}
+
+        {/* Citations */}
+        {message.citations && message.citations.length > 0 && (
+          <Collapsible className='mt-3'>
+            <CollapsibleTrigger className='flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground'>
+              <IconLink className='h-3 w-3' />
+              {message.citations.length} citation(s)
+              <IconChevronDown className='h-3 w-3' />
+            </CollapsibleTrigger>
+            <CollapsibleContent className='mt-2 space-y-2'>
+              {message.citations.map((cite) => (
+                <div
+                  key={cite.id}
+                  className='text-xs bg-background/50 rounded p-2 border'
+                >
+                  <div className='flex items-center gap-1 font-medium'>
+                    <Badge variant='outline' className='text-[10px]'>
+                      {cite.source}
+                    </Badge>
+                    <span>{cite.id}</span>
+                  </div>
+                  <p className='mt-1 text-muted-foreground line-clamp-2'>
+                    {cite.snippet}
+                  </p>
+                  {cite.url && (
+                    <a
+                      href={cite.url}
+                      className='text-primary hover:underline mt-1 block truncate'
+                      target='_blank'
+                      rel='noopener noreferrer'
+                    >
+                      {cite.url}
+                    </a>
+                  )}
+                </div>
+              ))}
+            </CollapsibleContent>
+          </Collapsible>
+        )}
+
+        {/* Proposals */}
+        {message.proposals && message.proposals.length > 0 && (
+          <div className='mt-3 space-y-2'>
+            <p className='text-xs font-medium text-muted-foreground'>
+              Proposed Actions:
+            </p>
+            {message.proposals.map((proposal) => (
+              <div
+                key={proposal.proposal_id}
+                data-testid={`proposal-${proposal.proposal_id}`}
+                className='bg-background rounded p-2 border text-xs'
+              >
+                <div className='flex items-center justify-between'>
+                  <div className='flex items-center gap-2'>
+                    <Badge variant='secondary'>{proposal.type}</Badge>
+                    {proposal.deal_id && (
+                      <span className='text-muted-foreground'>
+                        {proposal.deal_id}
+                      </span>
+                    )}
+                  </div>
+                  <Badge
+                    variant={
+                      proposal.status === 'executed'
+                        ? 'default'
+                        : proposal.status === 'failed'
+                          ? 'destructive'
+                          : 'outline'
+                    }
+                  >
+                    {proposal.status}
+                  </Badge>
+                </div>
+                {proposal.reason && (
+                  <p className='mt-1 text-muted-foreground'>{proposal.reason}</p>
+                )}
+
+                {proposal.status === 'executed' && proposal.result != null && (
+                  <div className='mt-2 text-xs'>
+                    {proposal.type === 'draft_email' ? (
+                      <div className='rounded border bg-muted/30 p-2'>
+                        {(() => {
+                          const r: any = proposal.result;
+                          const draft: any = r?.email_draft ?? r;
+                          const subject = r?.subject ?? draft?.subject;
+                          const body = draft?.body;
+                          const provider = r?.provider ?? draft?.provider;
+                          const model = r?.model ?? draft?.model;
+
+                          return (
+                            <>
+                              {subject && (
+                                <div className='font-medium mb-1'>
+                                  Subject: <span className='font-normal'>{subject}</span>
+                                </div>
+                              )}
+                              {body && (
+                                <pre className='whitespace-pre-wrap break-words font-sans text-[11px]'>
+                                  {body}
+                                </pre>
+                              )}
+                              {(provider || model) && (
+                                <div className='mt-2 text-[10px] text-muted-foreground'>
+                                  {provider ? `provider=${provider}` : null}
+                                  {provider && model ? ' • ' : null}
+                                  {model ? `model=${model}` : null}
+                                </div>
+                              )}
+                            </>
+                          );
+                        })()}
+                      </div>
+                    ) : proposal.type === 'create_task' ? (
+                      <div className='text-muted-foreground'>
+                        Task created: {(proposal.result as any).action_id || 'ok'}
+                      </div>
+                    ) : proposal.type === 'add_note' ? (
+                      <div className='text-muted-foreground'>
+                        Note saved: {(proposal.result as any).event_id || 'ok'}
+                      </div>
+                    ) : proposal.type === 'stage_transition' ? (
+                      <div className='text-muted-foreground'>
+                        Stage transition: {(proposal.result as any).from_stage} → {(proposal.result as any).to_stage}
+                      </div>
+                    ) : null}
+                  </div>
+                )}
+
+                {(proposal.status === 'pending_approval' || proposal.status === 'failed') && (
+                  <div className='flex gap-2 mt-2'>
+                    <Button
+                      size='sm'
+                      variant='default'
+                      className='h-6 text-xs'
+                      data-testid={`proposal-approve-${proposal.proposal_id}`}
+                      disabled={executingProposalId === proposal.proposal_id}
+                      onClick={() => onExecuteProposal(proposal, 'approve')}
+                    >
+                      {executingProposalId === proposal.proposal_id ? (
+                        <IconLoader2 className='h-3 w-3 mr-1 animate-spin' />
+                      ) : (
+                        <IconCheck className='h-3 w-3 mr-1' />
+                      )}
+                      {executingProposalId === proposal.proposal_id
+                        ? 'Executing...'
+                        : proposal.status === 'failed'
+                          ? 'Retry'
+                          : 'Approve'}
+                    </Button>
+                    <Button
+                      size='sm'
+                      variant='outline'
+                      className='h-6 text-xs'
+                      data-testid={`proposal-reject-${proposal.proposal_id}`}
+                      disabled={executingProposalId === proposal.proposal_id}
+                      onClick={() => onExecuteProposal(proposal, 'reject')}
+                    >
+                      <IconX className='h-3 w-3 mr-1' />
+                      Reject
+                    </Button>
+                  </div>
+                )}
+                {proposal.status === 'rejected' && (
+                  <p className='mt-1 text-xs text-muted-foreground italic'>Rejected by user</p>
+                )}
+                {proposal.status === 'failed' && (
+                  <p className='mt-1 text-xs text-destructive'>
+                    Failed: {(proposal as any).error || 'Unknown error'}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Timing info (compact) */}
+        {message.timings && !message.isStreaming && (
+          <div className='text-[10px] text-muted-foreground mt-2 flex items-center gap-2'>
+            <span>{message.timings.provider_used}</span>
+            <span>•</span>
+            <span>{message.timings.total_ms}ms</span>
+            {message.timings.cache_hit && (
+              <>
+                <span>•</span>
+                <Badge variant='outline' className='text-[8px] py-0'>cached</Badge>
+              </>
+            )}
+          </div>
+        )}
+
+        <div className='text-[10px] text-muted-foreground mt-1'>
+          {message.timestamp.toLocaleTimeString()}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Evidence panel component
+// ═══════════════════════════════════════════════════════════════════════════
+
+function EvidencePanel({ evidence }: { evidence: ChatEvidenceSummary }) {
+  return (
+    <div className='space-y-4 text-sm'>
+      {/* Sources queried */}
+      <div>
+        <p className='text-xs font-medium text-muted-foreground mb-1'>
+          Sources Queried
+        </p>
+        <div className='flex flex-wrap gap-1'>
+          {evidence.sources_queried.map((source) => (
+            <Badge key={source} variant='secondary' className='text-xs'>
+              {source}
+            </Badge>
+          ))}
+        </div>
+      </div>
+
+      {/* RAG */}
+      <Card className='p-3'>
+        <p className='font-medium text-xs'>RAG Search</p>
+        <div className='mt-1 space-y-1 text-xs text-muted-foreground'>
+          <p>Query: {evidence.rag.query.slice(0, 50)}...</p>
+          <p>Results: {evidence.rag.results_found}</p>
+          <p>Top similarity: {(evidence.rag.top_similarity * 100).toFixed(1)}%</p>
+        </div>
+      </Card>
+
+      {/* Events */}
+      {evidence.events.count > 0 && (
+        <Card className='p-3'>
+          <p className='font-medium text-xs'>Events</p>
+          <div className='mt-1 space-y-1 text-xs text-muted-foreground'>
+            <p>Window: {evidence.events.window}</p>
+            <p>Count: {evidence.events.count}</p>
+            <p>Types: {evidence.events.types.join(', ')}</p>
+          </div>
+        </Card>
+      )}
+
+      {/* Case File */}
+      {evidence.case_file.loaded && (
+        <Card className='p-3'>
+          <p className='font-medium text-xs'>Case File</p>
+          <div className='mt-1 text-xs text-muted-foreground'>
+            <p>Sections: {evidence.case_file.sections_used.join(', ')}</p>
+          </div>
+        </Card>
+      )}
+
+      {/* Registry */}
+      {evidence.registry.loaded && (
+        <Card className='p-3'>
+          <p className='font-medium text-xs'>Registry</p>
+          <div className='mt-1 text-xs text-muted-foreground'>
+            <p>Stage: {evidence.registry.stage || 'Unknown'}</p>
+          </div>
+        </Card>
+      )}
+
+      {/* Actions */}
+      {evidence.actions.count > 0 && (
+        <Card className='p-3'>
+          <p className='font-medium text-xs'>Pending Actions</p>
+          <div className='mt-1 text-xs text-muted-foreground'>
+            <p>Count: {evidence.actions.count}</p>
+          </div>
+        </Card>
+      )}
+
+      {/* Total size */}
+      <p className='text-xs text-muted-foreground'>
+        Total evidence: {(evidence.total_evidence_size / 1000).toFixed(1)}KB
+      </p>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Progress indicator component
+// ═══════════════════════════════════════════════════════════════════════════
+
+function ProgressIndicator({
+  step,
+  history,
+  isLoading
+}: {
+  step: ProgressStep | null;
+  history: ProgressStep[];
+  isLoading: boolean;
+}) {
+  const phases = ['routing', 'evidence', 'llm', 'complete'];
+  const currentPhase = step?.phase || 0;
+  const currentStep = step?.step || '';
+
+  return (
+    <div className='space-y-2'>
+      {/* Phase dots */}
+      <div className='flex items-center gap-3'>
+        <div className='flex items-center gap-1.5'>
+          {phases.map((phase, i) => {
+            const phaseNum = i + 1;
+            const isComplete = currentPhase > phaseNum;
+            const isCurrent = currentPhase === phaseNum || currentStep === phase;
+
+            return (
+              <div key={phase} className='flex items-center gap-1'>
+                <div
+                  className={`w-2.5 h-2.5 rounded-full transition-all ${
+                    isComplete
+                      ? 'bg-primary'
+                      : isCurrent
+                        ? 'bg-primary animate-pulse ring-2 ring-primary/30'
+                        : 'bg-muted-foreground/30'
+                  }`}
+                  title={phase}
+                />
+                {i < phases.length - 1 && (
+                  <div className={`w-4 h-0.5 ${isComplete ? 'bg-primary' : 'bg-muted-foreground/30'}`} />
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {step && (
+          <div className='flex items-center gap-2 text-sm'>
+            <IconLoader2 className='h-4 w-4 animate-spin text-primary' />
+            <span className='text-muted-foreground'>{step.message}</span>
+          </div>
+        )}
+
+        {!step && isLoading && (
+          <div className='flex items-center gap-2 text-sm'>
+            <IconLoader2 className='h-4 w-4 animate-spin text-primary' />
+            <span className='text-muted-foreground'>Processing...</span>
+          </div>
+        )}
+      </div>
+
+      {/* Progress history (collapsed by default) */}
+      {history.length > 1 && (
+        <Collapsible>
+          <CollapsibleTrigger className='text-[10px] text-muted-foreground hover:text-foreground flex items-center gap-1'>
+            <IconChevronDown className='h-3 w-3' />
+            {history.length} steps
+          </CollapsibleTrigger>
+          <CollapsibleContent className='mt-1'>
+            <div className='text-[10px] text-muted-foreground space-y-0.5 pl-2 border-l'>
+              {history.map((h, i) => (
+                <div key={i} className='flex items-center gap-1'>
+                  <IconCheck className='h-3 w-3 text-primary' />
+                  <span>{h.substep || h.step}: {h.message}</span>
+                </div>
+              ))}
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
+      )}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Debug panel component
+// ═══════════════════════════════════════════════════════════════════════════
+
+function DebugPanel({
+  timing,
+  progressHistory,
+  sessionId,
+  messageCount,
+  lastProposalExecution,
+}: {
+  timing: TimingData | null;
+  progressHistory: ProgressStep[];
+  sessionId: string | null;
+  messageCount: number;
+  lastProposalExecution: {
+    proposalId: string;
+    type: ChatProposal['type'];
+    action: 'approve' | 'reject';
+    success: boolean;
+    provider?: string;
+    model?: string;
+    forcedReason?: string;
+    error?: string;
+    reason?: string;
+    at: string;
+  } | null;
+}) {
+  return (
+    <div className='space-y-4 text-sm'>
+      {/* Session info */}
+      <Card className='p-3'>
+        <p className='font-medium text-xs mb-2'>Session</p>
+        <div className='space-y-1 text-xs'>
+          <div className='flex justify-between'>
+            <span className='text-muted-foreground'>ID:</span>
+            <span className='font-mono'>{sessionId || 'none'}</span>
+          </div>
+          <div className='flex justify-between'>
+            <span className='text-muted-foreground'>Messages:</span>
+            <span>{messageCount}</span>
+          </div>
+          <div className='flex justify-between'>
+            <span className='text-muted-foreground'>Persistence:</span>
+            <div className='flex gap-1'>
+              <Badge variant='outline' className='text-[10px]'>SQLite</Badge>
+              <Badge variant='secondary' className='text-[10px]'>+localStorage</Badge>
+            </div>
+          </div>
+        </div>
+      </Card>
+
+      {lastProposalExecution && (
+        <Card className='p-3'>
+          <p className='font-medium text-xs mb-2'>Last Proposal</p>
+          <div className='space-y-1 text-xs'>
+            <div className='flex justify-between'>
+              <span className='text-muted-foreground'>Action:</span>
+              <Badge variant='outline'>{lastProposalExecution.action}</Badge>
+            </div>
+            <div className='flex justify-between'>
+              <span className='text-muted-foreground'>Type:</span>
+              <Badge variant='secondary'>{lastProposalExecution.type}</Badge>
+            </div>
+            <div className='flex justify-between'>
+              <span className='text-muted-foreground'>Status:</span>
+              <Badge variant={lastProposalExecution.success ? 'default' : 'destructive'}>
+                {lastProposalExecution.success ? 'success' : 'failed'}
+              </Badge>
+            </div>
+            {lastProposalExecution.provider && (
+              <div className='flex justify-between'>
+                <span className='text-muted-foreground'>Provider:</span>
+                <span className='font-mono'>{lastProposalExecution.provider}</span>
+              </div>
+            )}
+            {lastProposalExecution.model && (
+              <div className='flex justify-between'>
+                <span className='text-muted-foreground'>Model:</span>
+                <span className='font-mono'>{lastProposalExecution.model}</span>
+              </div>
+            )}
+            {lastProposalExecution.forcedReason && (
+              <p className='text-muted-foreground mt-1 text-[10px]'>
+                forced_reason={lastProposalExecution.forcedReason}
+              </p>
+            )}
+            {!lastProposalExecution.success && lastProposalExecution.error && (
+              <p className='text-destructive mt-1 text-[10px] break-words'>
+                {lastProposalExecution.reason
+                  ? `${lastProposalExecution.error} (${lastProposalExecution.reason})`
+                  : lastProposalExecution.error}
+              </p>
+            )}
+          </div>
+        </Card>
+      )}
+
+      {timing ? (
+        <>
+          {/* Provider info */}
+          <Card className='p-3'>
+            <p className='font-medium text-xs mb-2'>Provider</p>
+            <div className='space-y-1 text-xs'>
+              <div className='flex justify-between'>
+                <span className='text-muted-foreground'>Used:</span>
+                <Badge variant='secondary'>{timing.provider_used}</Badge>
+              </div>
+              {timing.provider_fallback && (
+                <div className='flex justify-between'>
+                  <span className='text-muted-foreground'>Fallback:</span>
+                  <Badge variant='destructive'>Yes</Badge>
+                </div>
+              )}
+              {timing.provider_reason && (
+                <p className='text-muted-foreground mt-1 text-[10px]'>
+                  {timing.provider_reason}
+                </p>
+              )}
+            </div>
+          </Card>
+
+          {/* Timing breakdown */}
+          <Card className='p-3'>
+            <p className='font-medium text-xs mb-2'>Timing</p>
+            <div className='space-y-1 text-xs'>
+              <div className='flex justify-between'>
+                <span className='text-muted-foreground'>Total:</span>
+                <span className='font-mono font-semibold'>{timing.total_ms}ms</span>
+              </div>
+              <div className='flex justify-between'>
+                <span className='text-muted-foreground'>Evidence:</span>
+                <span className='font-mono'>
+                  {timing.evidence_ms}ms
+                  {timing.cache_hit && (
+                    <Badge variant='outline' className='ml-1 text-[10px]'>
+                      cached
+                    </Badge>
+                  )}
+                </span>
+              </div>
+              <div className='flex justify-between'>
+                <span className='text-muted-foreground'>LLM:</span>
+                <span className='font-mono'>{timing.llm_ms}ms</span>
+              </div>
+              {timing.deterministic_ms > 0 && (
+                <div className='flex justify-between'>
+                  <span className='text-muted-foreground'>Deterministic:</span>
+                  <span className='font-mono'>{timing.deterministic_ms}ms</span>
+                </div>
+              )}
+            </div>
+
+            {/* Timing bar visualization */}
+            {timing.total_ms > 0 && (
+              <div className='mt-2'>
+                <div className='h-2 w-full bg-muted rounded-full overflow-hidden flex'>
+                  <div
+                    className='bg-blue-500 h-full'
+                    style={{ width: `${(timing.evidence_ms / timing.total_ms) * 100}%` }}
+                    title={`Evidence: ${timing.evidence_ms}ms`}
+                  />
+                  <div
+                    className='bg-green-500 h-full'
+                    style={{ width: `${(timing.llm_ms / timing.total_ms) * 100}%` }}
+                    title={`LLM: ${timing.llm_ms}ms`}
+                  />
+                </div>
+                <div className='flex justify-between text-[10px] mt-0.5'>
+                  <span className='text-blue-500'>Evidence</span>
+                  <span className='text-green-500'>LLM</span>
+                </div>
+              </div>
+            )}
+          </Card>
+
+          {/* Cache info */}
+          <Card className='p-3'>
+            <p className='font-medium text-xs mb-2'>Cache</p>
+            <div className='space-y-1 text-xs'>
+              <div className='flex justify-between'>
+                <span className='text-muted-foreground'>Hit:</span>
+                <span className={timing.cache_hit ? 'text-green-500' : ''}>
+                  {timing.cache_hit ? 'Yes ✓' : 'No'}
+                </span>
+              </div>
+              {timing.cache_source && (
+                <div className='flex justify-between'>
+                  <span className='text-muted-foreground'>Source:</span>
+                  <span>{timing.cache_source}</span>
+                </div>
+              )}
+            </div>
+          </Card>
+
+          {/* Status */}
+          {timing.degraded && (
+            <Card className='p-3 border-destructive'>
+              <p className='font-medium text-xs text-destructive'>Degraded Mode</p>
+              <p className='text-xs text-muted-foreground mt-1'>
+                Service operating in degraded mode.
+              </p>
+            </Card>
+          )}
+
+          {/* Request ID */}
+          <p className='text-[10px] text-muted-foreground'>
+            Request ID: {timing.request_id}
+          </p>
+        </>
+      ) : (
+        <p className='text-sm text-muted-foreground'>
+          Send a message to see timing data.
+        </p>
+      )}
+
+      {/* Progress history */}
+      {progressHistory.length > 0 && (
+        <Card className='p-3'>
+          <p className='font-medium text-xs mb-2'>Progress History</p>
+          <div className='text-[10px] space-y-0.5 max-h-32 overflow-auto'>
+            {progressHistory.map((step, i) => (
+              <div key={i} className='flex items-center gap-1'>
+                <span className='text-muted-foreground'>{i + 1}.</span>
+                <span className='font-medium'>{step.substep || step.step}:</span>
+                <span className='text-muted-foreground'>{step.message}</span>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
+    </div>
+  );
+}
+

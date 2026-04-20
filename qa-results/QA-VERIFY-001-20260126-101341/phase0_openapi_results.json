@@ -1,0 +1,23 @@
+{
+  "summary": {
+    "passed": 1,
+    "total": 1
+  },
+  "test_suite": "Phase 0 \u2014 Contract Snapshots",
+  "tests": [
+    {
+      "details": {
+        "artifacts": [
+          "openapi_backend.json",
+          "openapi_agent.json",
+          "openapi_rag.json"
+        ]
+      },
+      "id": "0.4",
+      "name": "OpenAPI snapshots captured",
+      "passed": true,
+      "timestamp_utc": "2026-01-26T16:13:41.851447+00:00"
+    }
+  ],
+  "timestamp_utc": "2026-01-26T16:13:41.851460+00:00"
+}

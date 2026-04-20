@@ -1,0 +1,11 @@
+=== XC-3 MANIFEST VS ARTIFACTS ===
+-rw-r--r-- 1 zaks zaks 4902 Feb  9 23:14 /home/zaks/bookkeeping/docs/SERVICE-TOPOLOGY.md
+-rw-r--r-- 1 zaks zaks 5007 Feb  9 23:14 /home/zaks/bookkeeping/docs/ENV-CROSSREF.md
+-rw-r--r-- 1 zaks zaks 5142 Feb  9 23:16 /home/zaks/bookkeeping/docs/ERROR-SHAPES.md
+-rw-r--r-- 1 zaks zaks 9837 Feb  9 23:17 /home/zaks/bookkeeping/docs/TEST-COVERAGE-GAPS.md
+-rw-r--r-- 1 zaks zaks 3001 Feb 10 11:50 /home/zaks/bookkeeping/docs/PERFORMANCE-BUDGET.md
+1029:- S10 Dependency Health: PASS (topology validated)
+1030:- S11 Env Registry: PASS (cross-service aligned)
+1031:- S12 Error Taxonomy: PASS (shapes anchored)
+1032:- S13 Test Coverage: PASS (artifacts present)
+1033:- S14 Performance Budget: PASS (within budget)

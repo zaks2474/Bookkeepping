@@ -1,0 +1,7 @@
+ db/migrations/024_correlation_id.sql            |   30 +
+ src/actions/executors/deal_create_from_email.py |  262 +-
+ src/api/deal_lifecycle/__init__.py              |    0
+ src/api/deal_lifecycle/main.py                  | 3869 -----------------------
+ src/api/orchestration/main.py                   |  209 ++
+ src/api/orchestration/routers/actions.py        |   88 +
+ 6 files changed, 490 insertions(+), 3968 deletions(-)

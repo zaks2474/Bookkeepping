@@ -1,0 +1,37 @@
+R4 REMEDIATION - REGRESSION TEST RESULTS
+=========================================
+Date: 2026-02-05
+
+1. get_deal TEST: ✅ PASS
+-------------------------
+Request: "Show me details for deal DL-0006"
+Response: Deal DL-0006 (R2-4 Outbox Test Deal) in screening stage
+Status: Working correctly after from_legacy fix
+
+2. search_deals TEST: ✅ PASS
+-----------------------------
+Request: "Find the deal named CrashTestCorp"
+Response: Found DL-0013 (CrashTestCorp) in inbound stage
+Status: Now queries backend API directly (not RAG)
+
+3. list_deals TEST: ✅ PASS
+---------------------------
+Request: "How many deals do I have in my pipeline? Break it down by stage."
+Response: 10 deals total - 8 inbound, 1 screening, 1 archived
+Status: Matches backend API exactly
+
+4. CI Validation: ✅ PASS
+-------------------------
+Prompt tool list matches known tools (8 tools)
+
+BUG FOUND AND FIXED DURING REGRESSION:
+--------------------------------------
+Issue: ToolResult.from_legacy() was treating valid deal data as errors
+       when the "ok" field was missing from the JSON response.
+
+Fix: Updated from_legacy() to handle three cases:
+     1. Legacy format with "ok" field
+     2. Error responses with "error" field only
+     3. Direct data (deal objects, lists) - treat as success
+
+File: app/core/langgraph/tools/schemas.py

@@ -1,0 +1,23 @@
+   157 /home/zaks/tools/validation/rag-routing-proof.sh
+    65 /home/zaks/tools/infra/scan-evidence-secrets.sh
+    57 /home/zaks/tools/infra/db-assertion.sh
+   156 /home/zaks/tools/infra/generate-manifest.sh
+    56 /home/zaks/tools/infra/migration-assertion.sh
+    13 /home/zaks/tools/infra/redact.sh
+    79 /home/zaks/tools/infra/generate-preflight.sh
+   205 /home/zaks/tools/infra/validate-enforcement.sh
+    72 /home/zaks/tools/infra/manifest-age-gate.sh
+   107 /home/zaks/tools/infra/discover-topology.sh
+   296 /home/zaks/zakops-agent-api/tools/validation/phase8_double_verify.sh
+   295 /home/zaks/zakops-agent-api/tools/validation/phase2_tools.sh
+   187 /home/zaks/zakops-agent-api/tools/validation/master_gate.sh
+   285 /home/zaks/zakops-agent-api/tools/validation/phase5_intelligence.sh
+   298 /home/zaks/zakops-agent-api/tools/validation/phase6_graphs.sh
+   152 /home/zaks/zakops-agent-api/tools/validation/phase1_integration.sh
+   162 /home/zaks/zakops-agent-api/tools/validation/phase0_service_health.sh
+   335 /home/zaks/zakops-agent-api/tools/validation/phase7_adversarial.sh
+   247 /home/zaks/zakops-agent-api/tools/validation/phase4_dashboard_sync.sh
+   262 /home/zaks/zakops-agent-api/tools/validation/phase3_hitl.sh
+  3486 total
+GRAND TOTAL: 3486 lines (target: <1,000)
+FAIL: Total exceeds 1,000 line target

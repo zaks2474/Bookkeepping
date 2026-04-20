@@ -1,0 +1,115 @@
+=== VF-03.2 RULE FRONTMATTER VALIDATOR COVERAGE ===
+#!/usr/bin/env bash
+# validate-rule-frontmatter.sh — CI-HARDENING-001 Phase 2
+# Validates .claude/rules/*.md frontmatter schema and required path coverage
+# for dashboard governance rules.
+# CI-safe: repo-local only, no external dependencies.
+# Exit 0 = PASS, Exit 1 = violations found.
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+RULES_DIR="$REPO_ROOT/.claude/rules"
+
+VIOLATIONS=0
+
+echo "=== Rule Frontmatter Validation ==="
+echo ""
+
+# Governance rules that MUST have path-scoped frontmatter targeting dashboard
+GOVERNANCE_RULES=(
+  "design-system.md"
+  "accessibility.md"
+  "component-patterns.md"
+)
+
+DASHBOARD_PATH_PATTERN="apps/dashboard"
+
+for rule in "${GOVERNANCE_RULES[@]}"; do
+  RULE_FILE="$RULES_DIR/$rule"
+  echo "Checking: $rule"
+
+  if [ ! -f "$RULE_FILE" ]; then
+    echo "  FAIL: File not found: $RULE_FILE"
+    VIOLATIONS=$((VIOLATIONS + 1))
+    continue
+  fi
+
+  # Check frontmatter delimiters exist (--- ... ---)
+  FIRST_LINE=$(head -1 "$RULE_FILE")
+  if [ "$FIRST_LINE" != "---" ]; then
+    echo "  FAIL: Missing frontmatter opening delimiter (---)"
+    VIOLATIONS=$((VIOLATIONS + 1))
+    continue
+  fi
+
+  # Find closing delimiter
+  CLOSE_LINE=$(tail -n +2 "$RULE_FILE" | grep -n "^---$" | head -1 | cut -d: -f1)
+  if [ -z "$CLOSE_LINE" ]; then
+    echo "  FAIL: Missing frontmatter closing delimiter (---)"
+    VIOLATIONS=$((VIOLATIONS + 1))
+    continue
+  fi
+
+  # Check paths: key exists
+  if ! head -n "$((CLOSE_LINE + 1))" "$RULE_FILE" | grep -q "^paths:" 2>/dev/null; then
+    echo "  FAIL: Frontmatter missing 'paths:' key"
+    VIOLATIONS=$((VIOLATIONS + 1))
+    continue
+  fi
+
+  # Check dashboard path coverage
+  FRONTMATTER=$(head -n "$((CLOSE_LINE + 1))" "$RULE_FILE")
+  if echo "$FRONTMATTER" | grep -q "$DASHBOARD_PATH_PATTERN" 2>/dev/null; then
+    echo "  PASS: Valid frontmatter with dashboard path coverage"
+  else
+    echo "  FAIL: Frontmatter paths do not cover $DASHBOARD_PATH_PATTERN"
+    VIOLATIONS=$((VIOLATIONS + 1))
+  fi
+done
+
+# Also validate that ALL rule files at least have valid frontmatter structure
+echo ""
+echo "--- General frontmatter structure check ---"
+for rule_file in "$RULES_DIR"/*.md; do
+  BASENAME=$(basename "$rule_file")
+  FIRST_LINE=$(head -1 "$rule_file" 2>/dev/null || echo "")
+  if [ "$FIRST_LINE" = "---" ]; then
+    CLOSE=$(tail -n +2 "$rule_file" | grep -c "^---$" 2>/dev/null) || CLOSE=0
+    if [ "$CLOSE" -ge 1 ]; then
+      echo "  OK: $BASENAME has valid frontmatter structure"
+    else
+      echo "  WARN: $BASENAME has opening --- but no closing ---"
+    fi
+  else
+    echo "  INFO: $BASENAME has no frontmatter (non-scoped rule)"
+  fi
+done
+
+echo ""
+if [ "$VIOLATIONS" -eq 0 ]; then
+  echo "Rule Frontmatter Validation: PASS"
+  exit 0
+else
+  echo "Rule Frontmatter Validation: FAIL ($VIOLATIONS violations)"
+  exit 1
+fi
+2:# validate-rule-frontmatter.sh — CI-HARDENING-001 Phase 2
+3:# Validates .claude/rules/*.md frontmatter schema and required path coverage
+18:# Governance rules that MUST have path-scoped frontmatter targeting dashboard
+20:  "design-system.md"
+21:  "accessibility.md"
+22:  "component-patterns.md"
+37:  # Check frontmatter delimiters exist (--- ... ---)
+39:  if [ "$FIRST_LINE" != "---" ]; then
+40:    echo "  FAIL: Missing frontmatter opening delimiter (---)"
+46:  CLOSE_LINE=$(tail -n +2 "$RULE_FILE" | grep -n "^---$" | head -1 | cut -d: -f1)
+48:    echo "  FAIL: Missing frontmatter closing delimiter (---)"
+63:    echo "  PASS: Valid frontmatter with dashboard path coverage"
+70:# Also validate that ALL rule files at least have valid frontmatter structure
+72:echo "--- General frontmatter structure check ---"
+76:  if [ "$FIRST_LINE" = "---" ]; then
+77:    CLOSE=$(tail -n +2 "$rule_file" | grep -c "^---$" 2>/dev/null) || CLOSE=0
+79:      echo "  OK: $BASENAME has valid frontmatter structure"
+81:      echo "  WARN: $BASENAME has opening --- but no closing ---"
+84:    echo "  INFO: $BASENAME has no frontmatter (non-scoped rule)"

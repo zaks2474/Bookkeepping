@@ -1,0 +1,5 @@
+user_id parameter: True (line 96: async def get_thread(self, thread_id: str, user_id: str))
+Ownership/authorization check: True
+  Line 100-103: JOIN thread_ownership o ON o.thread_id = t.id WHERE t.id = :thread_id AND o.user_id = :user_id
+  Line 112-113: PermissionError raised if thread exists but user not authorized
+VERDICT: PASS

@@ -1,0 +1,10 @@
+=== Retention tier logic check ===
+File: /home/zaks/zakops-agent-api/apps/agent-api/app/services/retention_policy.py
+evaluate() method demonstrates correct tier hierarchy:
+  1. compliance (has_compliance_flag) → None days (forever) [PROTECTED]
+  2. legal_hold (has_legal_hold) → 365 days [PROTECTED]
+  3. deal_scoped (scope_type=="deal") → 90 days
+  4. default (fallback) → 30 days
+get_expired_threads() returns only expired AND non-protected threads.
+Also: backend cleanup.py has operational retention (outbox 30d, quarantine 90d, junk 90d)
+RESULT: PASS — evaluate() demonstrates correct tier hierarchy

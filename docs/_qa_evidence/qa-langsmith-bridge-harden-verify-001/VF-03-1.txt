@@ -1,0 +1,17 @@
+=== Parameter list ===
+def zakops_inject_quarantine(
+    message_id: str,
+    sender: str,
+    subject: str,
+    body_text: str,
+    correlation_id: Optional[str] = None,
+    classification: Optional[str] = None,
+    company_name: Optional[str] = None,
+    urgency: Optional[str] = None,
+) -> dict:
+    """
+=== source_type in payload ===
+669:    This tool creates a quarantine item tagged with source_type='langsmith_shadow',
+699:        "source_type": "langsmith_shadow",
+SOURCE_TYPE_IN_PARAMS=1
+LANGSMITH_SHADOW_IN_BODY=2

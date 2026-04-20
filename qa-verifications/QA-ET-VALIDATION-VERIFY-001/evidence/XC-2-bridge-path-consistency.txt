@@ -1,0 +1,8 @@
+=== XC-2 BRIDGE PATH CONSISTENCY ===
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:16:- Bridge entry point is `/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py`.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:17:- Do not reference legacy bridge code path `/home/zaks/scripts/agent_bridge/mcp_server.py` for implementation work.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:84:- Canonical code file: `/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py`
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:133:- **Bridge path authority**: implementation references must use `/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py`; legacy bridge file path is not valid for edits.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:203:- P0-03: Replace hardcoded bridge source type with runtime `shadow_mode` resolution in `/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py`.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:663:| `/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py` | Bridge auth, source type wiring, expanded tool schema, routing response, delegation tools |
+/home/zaks/bookkeeping/mission-checkpoints/MISSION-ET-VALIDATION-001.md:86:| `/home/zaks/zakops-agent-api/apps/agent-api/mcp_bridge/server.py` | Auth bypass removed, flag-driven source_type, correlation_id in responses |

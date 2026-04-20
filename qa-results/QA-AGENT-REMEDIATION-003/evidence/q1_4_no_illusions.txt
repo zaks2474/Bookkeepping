@@ -1,0 +1,42 @@
+=== Q1.4: No-Illusions Gate (RT-1, RT-2) ===
+
+LOCATION: /home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py
+
+RT-2: STAGE VALIDATION (line 115-120)
+-------------------------------------
+    to_stage_lower = to_stage.lower().strip()
+    if to_stage_lower not in VALID_STAGES:
+        error_msg = f"Invalid target stage '{to_stage}'. Valid stages: {', '.join(sorted(VALID_STAGES))}"
+        return json.dumps({"ok": False, "error": error_msg, "validation_failed": True})
+
+RT-2: VALID_STAGES (line 45-48)
+-------------------------------
+    VALID_STAGES = frozenset([
+        "inbound", "screening", "qualified", "loi",
+        "diligence", "closing", "portfolio", "junk", "archived"
+    ])
+
+RT-2: BACKEND AUTH HEADERS (line 37-42)
+---------------------------------------
+    def _get_backend_headers() -> dict:
+        headers = {"Content-Type": "application/json"}
+        if ZAKOPS_API_KEY:
+            headers["X-API-Key"] = ZAKOPS_API_KEY
+        return headers
+
+RT-1: NO-ILLUSIONS GATE (line 191-221)
+--------------------------------------
+NI-1: Stage verification (line 206-221):
+    if after_stage.lower() != to_stage_lower:
+        return json.dumps({
+            "ok": False,
+            "error": f"Phantom success: backend returned 200 but stage is still '{after_stage}'",
+            "phantom_success": True,
+        })
+
+NI-2: updated_at change check (line 224-231) - warning only
+
+VERDICT: PASS
+- RT-1 No-Illusions Gate implemented with explicit phantom_success detection
+- RT-2 Valid stage enum enforced with VALID_STAGES frozenset
+- RT-2 Backend auth headers include X-API-Key

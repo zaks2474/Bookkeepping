@@ -1,0 +1,58 @@
+=== CHECK 1.2: YAML Frontmatter ===
+PASS contract-guardian.md has valid frontmatter (closes at line 24)
+name: Contract Guardian
+description: Read-only validator for all 8 contract surfaces. Runs gates, reports drift, cannot modify source code.
+model: sonnet
+tools:
+  - Read
+  - Grep
+  - Glob
+  - Bash(make:*)
+  - Bash(npx:*)
+  - Bash(bash:*)
+  - Bash(rg:*)
+  - Bash(psql:*)
+  - Bash(cat:*)
+  - Bash(wc:*)
+  - Bash(diff:*)
+  - Bash(stat:*)
+  - Bash(curl:*)
+disallowedTools:
+  - Edit
+  - Write
+  - WebFetch
+  - WebSearch
+PASS arch-reviewer.md has valid frontmatter (closes at line 15)
+name: Architecture Reviewer
+description: Read-only architecture and security reviewer. Analyzes proposed changes for risks, missed edge cases, and cross-surface impact.
+model: opus
+tools:
+  - Read
+  - Grep
+  - Glob
+disallowedTools:
+  - Edit
+  - Write
+  - Bash
+  - WebFetch
+  - WebSearch
+PASS test-engineer.md has valid frontmatter (closes at line 20)
+name: Test Engineer
+description: Writes tests and validates golden payloads. Can only write to test directories. Cannot modify production code.
+model: sonnet
+tools:
+  - Read
+  - Grep
+  - Glob
+  - Write
+  - Bash(npx:*)
+  - Bash(pytest:*)
+  - Bash(python3:*)
+  - Bash(make:*)
+  - Bash(node:*)
+  - Bash(cat:*)
+disallowedTools:
+  - Edit
+  - WebFetch
+  - WebSearch
+CHECK 1.2: PASS

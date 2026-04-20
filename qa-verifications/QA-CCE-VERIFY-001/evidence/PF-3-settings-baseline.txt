@@ -1,0 +1,7 @@
+top_level_keys= ['additionalDirectories', 'alwaysThinkingEnabled', 'env', 'hooks', 'mcpServers', 'permissions']
+hook_events= ['PostToolUse', 'PreCompact', 'PreToolUse', 'SessionStart', 'Stop', 'TaskCompleted']
+alwaysThinkingEnabled= True
+ENABLE_TOOL_SEARCH= auto:5
+SessionStart_entries= 2
+PreCompact_entries= 1
+TaskCompleted_entries= 1

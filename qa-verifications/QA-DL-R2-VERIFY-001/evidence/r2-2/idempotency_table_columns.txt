@@ -1,0 +1,15 @@
+      column_name      
+-----------------------
+ id
+ idempotency_key
+ request_hash
+ endpoint
+ method
+ response_status
+ response_body
+ created_at
+ expires_at
+ is_processing
+ processing_started_at
+(11 rows)
+

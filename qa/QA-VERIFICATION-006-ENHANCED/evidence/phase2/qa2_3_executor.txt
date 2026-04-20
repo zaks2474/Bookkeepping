@@ -1,0 +1,53 @@
+=== QA-2.3: T1.4+T1.5 Executor + sys.path ===
+--- TEST 1: No sys.path hacks in production code ---
+/home/zaks/zakops-backend/src/actions/tests/test_e2e_actions.py:17:sys.path.insert(0, "/home/zaks/scripts")
+/home/zaks/zakops-backend/src/actions/codex/plan_spec.py:331:    sys.path.insert(0, "/home/zaks/scripts")
+/home/zaks/zakops-backend/src/actions/executors/diligence_request_docs.py:106:        sys.path.insert(0, "/home/zaks/scripts")
+
+--- TEST 2: Executor uses backend API ---
+12:import httpx
+164:            with httpx.Client(base_url=BACKEND_API_URL, headers=headers, timeout=BACKEND_TIMEOUT) as client:
+168:                        "/api/deals/by-alias",
+179:                except httpx.RequestError as e:
+195:                        resp = client.get(f"/api/deals/{deal_id}")
+210:                    except httpx.RequestError as e:
+244:                    resp = client.post("/api/deals", json=deal_payload)
+284:                    client.patch(f"/api/deals/{deal_id}", json={"folder_path": deal_folder_path})
+289:                            f"/api/deals/{deal_id}/aliases",
+294:                                f"/api/deals/{deal_id}/aliases",
+
+--- TEST 3: No direct JSON/SQLite writes in executors ---
+/home/zaks/zakops-backend/src/actions/executors/communication_draft_email.py:210:            json.dumps(
+/home/zaks/zakops-backend/src/actions/executors/deal_enrich_materials.py:43:    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+/home/zaks/zakops-backend/src/actions/executors/deal_backfill_sender_history.py:7:import sqlite3
+/home/zaks/zakops-backend/src/actions/executors/deal_backfill_sender_history.py:139:            f.write(json.dumps(record, ensure_ascii=False) + "\n")
+/home/zaks/zakops-backend/src/actions/executors/deal_backfill_sender_history.py:403:    body = json.dumps(payload).encode("utf-8")
+/home/zaks/zakops-backend/src/actions/executors/deal_backfill_sender_history.py:528:def _ensure_sqlite(path: Path) -> sqlite3.Connection:
+/home/zaks/zakops-backend/src/actions/executors/deal_backfill_sender_history.py:530:    conn = sqlite3.connect(str(path))
+/home/zaks/zakops-backend/src/actions/executors/deal_backfill_sender_history.py:531:    conn.row_factory = sqlite3.Row
+/home/zaks/zakops-backend/src/actions/executors/deal_backfill_sender_history.py:568:def _scan_already_completed(conn: sqlite3.Connection, scan_key: str) -> bool:
+/home/zaks/zakops-backend/src/actions/executors/deal_backfill_sender_history.py:573:def _mark_scan_started(conn: sqlite3.Connection, *, scan_key: str, deal_id: str, sender_email: str, lookback_days: int, max_messages: int, mode: str) -> None:
+/home/zaks/zakops-backend/src/actions/executors/deal_backfill_sender_history.py:588:def _mark_scan_completed(conn: sqlite3.Connection, *, scan_key: str, status: str, error: str = "") -> None:
+/home/zaks/zakops-backend/src/actions/executors/deal_backfill_sender_history.py:597:def _record_processed(conn: sqlite3.Connection, *, scan_key: str, deal_id: str, message_id: str, thread_id: str, decision: str, confidence: float) -> None:
+/home/zaks/zakops-backend/src/actions/executors/deal_backfill_sender_history.py:613:def _already_processed(conn: sqlite3.Connection, message_id: str) -> bool:
+/home/zaks/zakops-backend/src/actions/executors/deal_backfill_sender_history.py:626:        conn = sqlite3.connect(str(path))
+/home/zaks/zakops-backend/src/actions/executors/deal_backfill_sender_history.py:627:        conn.row_factory = sqlite3.Row
+/home/zaks/zakops-backend/src/actions/executors/deal_backfill_sender_history.py:1033:                    json.dumps(
+/home/zaks/zakops-backend/src/actions/executors/deal_backfill_sender_history.py:1249:            json_path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+/home/zaks/zakops-backend/src/actions/executors/deal_backfill_sender_history.py:1281:            v1_path.write_text(json.dumps(report_v1, ensure_ascii=False, indent=2), encoding="utf-8")
+/home/zaks/zakops-backend/src/actions/executors/deal_backfill_sender_history.py:1296:                corr_path.write_text(json.dumps(report_v1, ensure_ascii=False, indent=2), encoding="utf-8")
+/home/zaks/zakops-backend/src/actions/executors/email_triage_review_email.py:499:                from deal_registry import DealMatcher, EmailContent
+/home/zaks/zakops-backend/src/actions/executors/email_triage_review_email.py:568:                from deal_registry import BrokerInfo as DealBrokerInfo
+/home/zaks/zakops-backend/src/actions/executors/email_triage_review_email.py:660:                profile_path.write_text(json.dumps(profile_data, indent=2), encoding="utf-8")
+/home/zaks/zakops-backend/src/actions/executors/email_triage_review_email.py:673:                from deal_registry import DealRegistry
+/home/zaks/zakops-backend/src/actions/executors/email_triage_review_email.py:674:                registry_path = os.getenv("DEAL_REGISTRY_PATH", "/home/zaks/DataRoom/.deal-registry/deal_registry.json")
+/home/zaks/zakops-backend/src/actions/executors/rag_reindex_deal.py:87:    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+/home/zaks/zakops-backend/src/actions/executors/rag_reindex_deal.py:281:        report_json.write_text(json.dumps(report_payload, ensure_ascii=False, indent=2), encoding="utf-8")
+/home/zaks/zakops-backend/src/actions/executors/deal_create_from_email.py:91:    path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+/home/zaks/zakops-backend/src/actions/executors/deal_extract_email_artifacts.py:220:        entities_path.write_text(json.dumps(entities_payload, ensure_ascii=False, indent=2), encoding="utf-8")
+/home/zaks/zakops-backend/src/actions/executors/deal_extract_email_artifacts.py:221:        doc_types_path.write_text(json.dumps(doc_types_payload, ensure_ascii=False, indent=2), encoding="utf-8")
+/home/zaks/zakops-backend/src/actions/executors/deal_append_email_materials.py:110:    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+/home/zaks/zakops-backend/src/actions/executors/deal_dedupe_and_place_materials.py:109:    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+/home/zaks/zakops-backend/src/actions/executors/communication_send_email.py:271:            json.dumps({"tool": tool_name, "output": result.output or {}}, indent=2, sort_keys=True),
+
+=== QA-2.3 VERDICT: FAIL - sys.path hacks found ===

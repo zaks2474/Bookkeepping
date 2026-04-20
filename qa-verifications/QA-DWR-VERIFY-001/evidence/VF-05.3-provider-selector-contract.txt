@@ -1,0 +1,17 @@
+=== VF-05.3 PROVIDER SELECTOR UX CONTRACT ===
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/chat/ProviderSelector.tsx:8:import { getSettings, type ProviderSettings } from '@/lib/settings/provider-settings';
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/chat/ProviderSelector.tsx:14:  local: 'Local vLLM (Qwen)',
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/chat/ProviderSelector.tsx:15:  openai: 'OpenAI',
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/chat/ProviderSelector.tsx:16:  anthropic: 'Anthropic Claude',
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/chat/ProviderSelector.tsx:20:interface ProviderSelectorProps {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/chat/ProviderSelector.tsx:25:export function ProviderSelector({ onSelect, className }: ProviderSelectorProps) {
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/chat/ProviderSelector.tsx:26:  const [settings, setSettings] = useState<ProviderSettings | null>(null);
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/chat/ProviderSelector.tsx:27:  const [status, setStatus] = useState<'idle' | 'checking' | 'connected' | 'error'>('idle');
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/chat/ProviderSelector.tsx:29:  // Load settings on mount
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/chat/ProviderSelector.tsx:42:          setStatus(data.status === 'available' ? 'connected' : 'error');
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/chat/ProviderSelector.tsx:57:  const activeProvider = settings?.activeProvider || 'local';
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/chat/ProviderSelector.tsx:67:          status === 'connected' ? 'bg-green-500' :
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/chat/ProviderSelector.tsx:77:        <Link href="/settings">
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/chat/ProviderSelector.tsx:86: * Get the currently selected provider from settings
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:52:import { ProviderSelector, getSelectedProvider, type ProviderType } from '@/components/chat/ProviderSelector';
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:852:          <ProviderSelector

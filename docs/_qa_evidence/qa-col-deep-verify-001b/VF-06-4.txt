@@ -1,0 +1,2 @@
+115:    async def get_avg_daily_cost(self, deal_id: str, days: int = 7) -> float:
+116:        """Get average daily cost over last N days for a deal."""

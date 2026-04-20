@@ -1,0 +1,3 @@
+143:    # B3-09: Pre-filter low-signal turns to reduce token consumption
+148:        # Skip short acknowledgments and empty messages
+151:        # Skip repeated filler phrases

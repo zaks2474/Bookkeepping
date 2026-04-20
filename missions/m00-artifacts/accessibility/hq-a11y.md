@@ -1,0 +1,195 @@
+- generic [active] [ref=e1]:
+  - region "Notifications alt+T"
+  - main [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - button "Toggle Sidebar" [ref=e6]:
+          - img
+          - generic [ref=e7]: Toggle Sidebar
+        - navigation "breadcrumb" [ref=e8]:
+          - list [ref=e9]:
+            - link "Operator HQ" [disabled] [ref=e10]
+      - generic [ref=e11]:
+        - button [ref=e266]:
+          - img
+        - button [ref=e12]:
+          - generic [ref=e14]:
+            - img
+        - button "Toggle theme" [ref=e15]:
+          - img
+          - generic [ref=e16]: Toggle theme
+    - generic [ref=e17]:
+      - generic [ref=e18]:
+        - generic [ref=e19]:
+          - heading "Operator HQ" [level=1] [ref=e20]:
+            - img [ref=e21]
+            - text: Operator HQ
+          - paragraph [ref=e23]: Your command center for deal operations
+        - button "Refresh" [ref=e268]:
+          - img
+          - text: Refresh
+      - generic [ref=e25]:
+        - button "Active Deals 9 5%" [ref=e269] [cursor=pointer]:
+          - generic [ref=e28]:
+            - generic [ref=e29]:
+              - img [ref=e31]
+              - generic [ref=e35]:
+                - paragraph [ref=e36]: Active Deals
+                - paragraph [ref=e270]: "9"
+            - generic [ref=e38]:
+              - generic [ref=e39]:
+                - img [ref=e40]
+                - text: 5%
+              - img [ref=e43]
+        - button "Pending Approvals 0" [ref=e271] [cursor=pointer]:
+          - generic [ref=e47]:
+            - generic [ref=e48]:
+              - img [ref=e50]
+              - generic [ref=e53]:
+                - paragraph [ref=e54]: Pending Approvals
+                - paragraph [ref=e272]: "0"
+            - img [ref=e57]
+        - button "Quarantine 0" [ref=e273] [cursor=pointer]:
+          - generic [ref=e61]:
+            - generic [ref=e62]:
+              - img [ref=e64]
+              - generic [ref=e67]:
+                - paragraph [ref=e68]: Quarantine
+                - paragraph [ref=e274]: "0"
+            - img [ref=e71]
+        - button "Events (24h) 0" [ref=e275] [cursor=pointer]:
+          - generic [ref=e75]:
+            - generic [ref=e76]:
+              - img [ref=e78]
+              - generic [ref=e80]:
+                - paragraph [ref=e81]: Events (24h)
+                - paragraph [ref=e276]: "0"
+            - img [ref=e84]
+      - generic [ref=e87]:
+        - tablist [ref=e88]:
+          - tab "Pipeline" [selected] [ref=e89]:
+            - img
+            - text: Pipeline
+          - tab "Approvals" [ref=e90]:
+            - img
+            - text: Approvals
+          - tab "Activity" [ref=e91]:
+            - img
+            - text: Activity
+        - tabpanel "Pipeline" [ref=e92]:
+          - generic [ref=e93]:
+            - generic [ref=e94]:
+              - link "Inbound 6" [ref=e277] [cursor=pointer]:
+                - /url: /deals?stage=inbound
+                - generic [ref=e96]:
+                  - generic [ref=e99]: Inbound
+                  - generic [ref=e100]:
+                    - generic:
+                      - paragraph: "6"
+              - link "Screening 2" [ref=e281] [cursor=pointer]:
+                - /url: /deals?stage=screening
+                - generic [ref=e103]:
+                  - generic [ref=e106]: Screening
+                  - generic [ref=e107]:
+                    - generic:
+                      - paragraph: "2"
+              - link "Qualified 0" [ref=e285] [cursor=pointer]:
+                - /url: /deals?stage=qualified
+                - generic [ref=e110]:
+                  - generic [ref=e113]: Qualified
+                  - generic [ref=e114]:
+                    - generic:
+                      - paragraph: "0"
+              - link "LOI 0" [ref=e288] [cursor=pointer]:
+                - /url: /deals?stage=loi
+                - generic [ref=e117]:
+                  - generic [ref=e120]: LOI
+                  - generic [ref=e121]:
+                    - generic:
+                      - paragraph: "0"
+              - link "Diligence 0" [ref=e291] [cursor=pointer]:
+                - /url: /deals?stage=diligence
+                - generic [ref=e124]:
+                  - generic [ref=e127]: Diligence
+                  - generic [ref=e128]:
+                    - generic:
+                      - paragraph: "0"
+              - link "Closing 1" [ref=e294] [cursor=pointer]:
+                - /url: /deals?stage=closing
+                - generic [ref=e131]:
+                  - generic [ref=e134]: Closing
+                  - generic [ref=e135]:
+                    - generic:
+                      - paragraph: "1"
+              - link "Portfolio 0" [ref=e298] [cursor=pointer]:
+                - /url: /deals?stage=portfolio
+                - generic [ref=e138]:
+                  - generic [ref=e141]: Portfolio
+                  - generic [ref=e142]:
+                    - generic:
+                      - paragraph: "0"
+            - generic [ref=e144]:
+              - generic [ref=e145]:
+                - generic [ref=e146]: Pipeline Flow
+                - generic [ref=e147]: Deal distribution across pipeline stages
+              - generic [ref=e148]:
+                - generic [ref=e149]:
+                  - generic [ref=e150]:
+                    - generic:
+                      - generic:
+                        - paragraph: Inbound
+                        - paragraph: 6 deals
+                  - generic [ref=e152]:
+                    - generic:
+                      - generic:
+                        - paragraph: Screening
+                        - paragraph: 2 deals
+                  - generic [ref=e154]:
+                    - generic:
+                      - generic:
+                        - paragraph: Qualified
+                        - paragraph: 0 deals
+                  - generic [ref=e156]:
+                    - generic:
+                      - generic:
+                        - paragraph: LOI
+                        - paragraph: 0 deals
+                  - generic [ref=e158]:
+                    - generic:
+                      - generic:
+                        - paragraph: Diligence
+                        - paragraph: 0 deals
+                  - generic [ref=e160]:
+                    - generic:
+                      - generic:
+                        - paragraph: Closing
+                        - paragraph: 1 deals
+                  - generic [ref=e162]:
+                    - generic:
+                      - generic:
+                        - paragraph: Portfolio
+                        - paragraph: 0 deals
+                - generic [ref=e164]:
+                  - generic [ref=e167]: Inbound
+                  - generic [ref=e170]: Screening
+                  - generic [ref=e173]: Qualified
+                  - generic [ref=e176]: LOI
+                  - generic [ref=e179]: Diligence
+                  - generic [ref=e182]: Closing
+                  - generic [ref=e185]: Portfolio
+            - generic [ref=e186]:
+              - link "View All Deals" [ref=e187] [cursor=pointer]:
+                - /url: /deals
+                - button "View All Deals" [ref=e188]:
+                  - img
+                  - text: View All Deals
+                  - img
+              - link "Review Quarantine 0" [ref=e189] [cursor=pointer]:
+                - /url: /quarantine
+                - button "Review Quarantine 0" [ref=e190]:
+                  - text: Review Quarantine
+                  - generic [ref=e191]: "0"
+                  - img
+  - button "Open Next.js Dev Tools" [ref=e306] [cursor=pointer]:
+    - img [ref=e307]
+  - alert [ref=e310]

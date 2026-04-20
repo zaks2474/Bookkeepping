@@ -1,0 +1,5 @@
+=== VF-01.1 SETTINGS SECTION COVERAGE ===
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/settings/page.tsx:6: * 6 sections: Provider, Email, Agent, Notifications, Data & Privacy, Appearance.
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/settings/page.tsx:8: * Provider/Appearance persist to localStorage. Agent/Notifications/Data/Timezone persist to backend.
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/settings/page.tsx:20:import { AppearanceSection } from '@/components/settings/AppearanceSection';
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/settings/page.tsx:159:          <AppearanceSection

@@ -1,0 +1,139 @@
+=== VF-02.3 REQUIRED FIELD RULES ===
+240:    # P1-03: display_subject = COALESCE(email_subject, subject) for transitional rendering
+242:    email_subject: str | None = None
+243:    sender: str | None = None
+244:    sender_name: str | None = None
+245:    sender_domain: str | None = None
+246:    sender_company: str | None = None
+248:    classification: str = "unknown"
+264:    langsmith_run_id: str | None = None
+265:    langsmith_trace_url: str | None = None
+268:    correlation_id: str | None = None
+281:    - langsmith_* sources: strict required fields (email_subject, sender, classification,
+282:      schema_version, correlation_id, email_body_snippet, source_message_id)
+283:    - email_sync/manual/email: legacy validation (only message_id required)
+285:    # Dedup key — always required
+288:    source_message_id: str | None = None
+289:    # Display fields (email_subject is canonical; subject is backward-compat alias for email_sync)
+290:    email_subject: str | None = None
+291:    subject: str | None = None  # P1-02: legacy email_sync backward compat — mapped to email_subject
+292:    sender: str | None = None
+293:    sender_name: str | None = None
+294:    sender_domain: str | None = None
+295:    sender_company: str | None = None
+297:    classification: str = "unknown"
+315:    langsmith_run_id: str | None = None
+316:    langsmith_trace_url: str | None = None
+317:    correlation_id: str | None = None
+322:    # Source classification
+323:    source_type: str | None = None  # manual, email_sync, langsmith_shadow, langsmith_live
+330:        """Map legacy 'subject' to 'email_subject' for backward compat with email_sync."""
+331:        if self.subject and not self.email_subject:
+332:            self.email_subject = self.subject
+344:VALID_SOURCE_TYPES = {"email", "email_sync", "langsmith_shadow", "langsmith_live", "manual"}
+351:    "email_subject", "sender", "classification", "schema_version",
+352:    "correlation_id", "email_body_snippet",
+805:                correlation_id=uuid.UUID(deal_id.replace('DL-', '00000000-0000-0000-0000-').zfill(36)) if deal_id.startswith('DL-') else uuid.uuid4(),
+1174:    classification: str | None = Query(None, description="Filter by classification"),
+1182:        classification=classification,
+1386:        raise HTTPException(status_code=400, detail="action_ids array is required")
+1501:    classification: str | None = Query(None, description="Filter by classification"),
+1502:    source_type: str | None = Query(None, description="Filter by source_type (e.g. email_sync, langsmith_shadow)"),
+1522:    if classification:
+1523:        conditions.append(f"COALESCE(q.raw_content->>'classification', 'unknown') = ${param_idx}")
+1524:        params.append(classification)
+1579:            COALESCE(q.email_subject, q.subject) AS display_subject,
+1580:            q.email_subject,
+1581:            q.sender,
+1582:            COALESCE(q.sender_name, sp.name) AS sender_name,
+1583:            COALESCE(q.sender_domain, sp.domain, NULLIF(split_part(q.sender, '@', 2), '')) AS sender_domain,
+1584:            COALESCE(q.sender_company, sp.metadata->>'company') AS sender_company,
+1586:            COALESCE(q.raw_content->>'classification', 'unknown') AS classification,
+1600:            q.langsmith_run_id,
+1601:            q.langsmith_trace_url,
+1604:            q.correlation_id,
+1609:        LEFT JOIN zakops.sender_profiles sp ON q.sender = sp.email
+1640:            COALESCE(q.email_subject, q.subject) AS display_subject,
+1641:            q.email_subject,
+1642:            q.sender,
+1643:            COALESCE(q.sender_name, sp.name) AS sender_name,
+1644:            COALESCE(q.sender_domain, sp.domain, NULLIF(split_part(q.sender, '@', 2), '')) AS sender_domain,
+1645:            COALESCE(q.sender_company, sp.metadata->>'company') AS sender_company,
+1647:            COALESCE(q.raw_content->>'classification', 'unknown') AS classification,
+1661:            q.langsmith_run_id,
+1662:            q.langsmith_trace_url,
+1665:            q.correlation_id,
+1670:        LEFT JOIN zakops.sender_profiles sp ON q.sender = sp.email
+1694:    P1-04: Source-aware validation enforces strict required fields for langsmith_* sources
+1713:    # P1-04: Map source_message_id -> message_id at boundary
+1715:    if item.source_message_id and not item.message_id:
+1716:        message_id = item.source_message_id
+1717:    elif item.source_message_id:
+1718:        message_id = item.source_message_id  # source_message_id takes priority
+1721:    correlation_id = item.correlation_id or request.headers.get("X-Correlation-ID") or request.headers.get("x-correlation-id")
+1736:    # P1-04: Source-aware required field validation for langsmith_* sources
+1737:    if source_type.startswith("langsmith_"):
+1739:        if not item.email_subject:
+1740:            missing.append("email_subject")
+1741:        if not item.sender:
+1742:            missing.append("sender")
+1743:        if not item.classification or item.classification == "unknown":
+1744:            missing.append("classification")
+1747:        if not correlation_id:
+1748:            missing.append("correlation_id")
+1755:                    "error": "missing_required_fields",
+1769:            "classification": item.classification,
+1784:               COALESCE(q.email_subject, q.subject) AS display_subject,
+1785:               q.email_subject, q.sender, q.sender_name, q.sender_domain,
+1786:               q.sender_company, q.received_at,
+1787:               COALESCE(q.raw_content->>'classification', 'unknown') AS classification,
+1794:               q.langsmith_run_id, q.langsmith_trace_url, q.tool_version,
+1795:               q.prompt_version, q.correlation_id,
+1816:                (id, message_id, subject, email_subject, sender, sender_name,
+1817:                 sender_domain, sender_company, body_preview, email_body_snippet,
+1819:                 status, correlation_id, source_type, company_name, broker_name,
+1821:                 prompt_version, langsmith_run_id, langsmith_trace_url,
+1832:                      COALESCE(email_subject, subject) AS display_subject,
+1833:                      email_subject, sender, sender_name, sender_domain,
+1834:                      sender_company, received_at,
+1835:                      COALESCE(raw_content->>'classification', 'unknown') AS classification,
+1841:                      langsmith_run_id, langsmith_trace_url, tool_version,
+1842:                      prompt_version, correlation_id,
+1846:            item.subject or item.email_subject,  # $3: subject (legacy column, preserves original)
+1847:            item.email_subject,  # $4: email_subject (canonical column, coalesced from subject)
+1848:            item.sender, item.sender_name,
+1849:            item.sender_domain, item.sender_company,
+1853:            item.classification,  # $14: reason
+1855:            correlation_id, source_type,
+1859:            item.prompt_version, item.langsmith_run_id, item.langsmith_trace_url,
+1984:            detail="Reject reason is required for bulk reject."
+1999:                    "SELECT id, status, version, subject, email_subject, sender, raw_content "
+2019:                    subject = item.get('email_subject') or item.get('subject') or ''
+2020:                    sender = item.get('sender') or ''
+2021:                    canonical_name = subject[:100] if subject else f"Deal from {sender}"[:100]
+2090:            detail="Reject reason is required. Provide 'reason' or 'notes' field."
+2161:                # Build canonical name from subject or sender
+2163:                sender = item.get('sender') or ''
+2164:                canonical_name = subject[:100] if subject else f"Deal from {sender}"[:100]
+2172:                if sender:
+2173:                    broker_info['email'] = sender
+2205:                        'email_sender': sender,
+2206:                        'email_subject': subject,
+2208:                        'correlation_id': str(item.get('correlation_id') or ''),
+2226:                        correlation_id, reason
+2231:                    str(item.get('correlation_id') or ''),
+2252:                # Forward original correlation_id from quarantine item (not gen_random_uuid())
+2253:                outbox_correlation = item.get('correlation_id') or str(uuid.uuid4())
+2257:                        (correlation_id, aggregate_type, aggregate_id, event_type, event_data)
+2472:@app.get("/api/senders")
+2473:async def list_senders(
+2474:    classification: str | None = Query(None),
+2478:    """List sender profiles."""
+2483:    if classification is not None:
+2484:        conditions.append(f"classification = ${param_idx}")
+2485:        params.append(classification)
+2492:        FROM zakops.sender_profiles
+2505:@app.get("/api/senders/{email}")
+2506:async def get_sender(email: str, pool: asyncpg.Pool = Depends(get_db)):
+2507:    """Get a sender profile by email."""
+2510:            "SELECT * FROM zakops.sender_profiles WHERE email = $1",

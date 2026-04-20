@@ -1,0 +1,6 @@
+COMPONENTS=['bridge', 'deal_api', 'rag_api', 'dataroom']
+COUNT=4
+  bridge: healthy
+  deal_api: healthy
+  rag_api: healthy
+  dataroom: healthy

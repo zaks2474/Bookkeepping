@@ -1,0 +1,5 @@
+=== VF-03.4 VIEWPORT RELATIVE HEIGHT ===
+--- Checking max-h-[500px] is removed ---
+fixed_500px_count=0
+--- Checking viewport-relative height ---
+288:              <ScrollArea className='h-full min-h-[200px] max-h-[60vh]'>

@@ -1,0 +1,8 @@
+28:        event_type: Event type pattern (e.g., "deal.created", "deal.*")
+39:    Get all handlers matching an event type.
+41:    Supports exact matches and wildcard patterns.
+45:    # Exact match
+49:    # Wildcard match (e.g., "deal.*" matches "deal.created")
+52:        wildcard = f"{parts[0]}.*"
+53:        if wildcard in _handlers:
+54:            handlers.extend(_handlers[wildcard])

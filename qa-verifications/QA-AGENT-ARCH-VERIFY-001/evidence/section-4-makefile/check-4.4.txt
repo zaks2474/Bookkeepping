@@ -1,0 +1,9 @@
+=== CHECK 4.4: validate-fast Execution ===
+[36m=== Fast Validation (Offline) ===[0m
+cd /home/zaks/zakops-agent-api/apps/dashboard && npx tsc --noEmit
+make[1]: Entering directory '/home/zaks/zakops-agent-api'
+Redocly ignores: 57 (ceiling: 57)
+make[1]: Leaving directory '/home/zaks/zakops-agent-api'
+[32mFast validations passed[0m
+Exit: 0
+CHECK 4.4: PASS

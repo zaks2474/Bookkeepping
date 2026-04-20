@@ -1,0 +1,44 @@
+apps/agent-api/app/core/langgraph/graph.py:71:    prepare_messages,
+apps/agent-api/app/core/langgraph/graph.py:388:        messages = prepare_messages(state.messages, current_llm, SYSTEM_PROMPT)
+apps/agent-api/app/core/langgraph/graph.py:437:                    post_trim_messages=[{"role": getattr(m, 'type', 'unknown'), "content": getattr(m, 'content', '')} for m in messages[-10:]],
+apps/agent-api/app/utils/graph.py:10:from langchain_core.messages import trim_messages as _trim_messages
+apps/agent-api/app/utils/graph.py:119:def prepare_messages(messages: list[Message], llm: BaseChatModel, system_prompt: str) -> list[Message]:
+apps/agent-api/app/utils/graph.py:131:        trimmed_messages = _trim_messages(
+apps/agent-api/app/utils/graph.py:146:        trimmed_messages = _trim_messages(
+apps/agent-api/app/utils/graph.py:163:            # Skip trimming and return all messages
+apps/agent-api/app/utils/graph.py:164:            trimmed_messages = messages
+apps/agent-api/app/utils/graph.py:168:    return [Message(role="system", content=system_prompt)] + _to_schema_messages(trimmed_messages)
+apps/agent-api/app/utils/__init__.py:5:    prepare_messages,
+apps/agent-api/app/utils/__init__.py:9:__all__ = ["dump_messages", "prepare_messages", "process_llm_response"]
+apps/agent-api/app/services/chat_repository.py:419:        """Get recent messages formatted for LLM context window."""
+apps/agent-api/app/services/replay_service.py:127:            post_trim = self._parse_json(snapshot.get("post_trim_messages"))
+apps/agent-api/app/services/counterfactual_service.py:94:        # Override user message in the post_trim_messages
+apps/agent-api/app/services/counterfactual_service.py:96:            messages = self._parse_json(snapshot.get("post_trim_messages"))
+apps/agent-api/app/services/counterfactual_service.py:102:            snapshot["post_trim_messages"] = json.dumps(messages)
+apps/agent-api/app/services/counterfactual_service.py:139:            post_trim = self._parse_json(snapshot.get("post_trim_messages"))
+apps/agent-api/app/services/snapshot_writer.py:8:  - INPUT: rendered system prompt, evidence context, post-trim messages,
+apps/agent-api/app/services/snapshot_writer.py:39:    post_trim_messages: list[dict] = field(default_factory=list)
+apps/agent-api/app/services/snapshot_writer.py:115:                        post_trim_messages, rolling_summary, injection_scan_result,
+apps/agent-api/app/services/snapshot_writer.py:152:                    json.dumps(snapshot.post_trim_messages),
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/messages/utils.py:692:def trim_messages(
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/messages/utils.py:708:    `trim_messages` can be used to reduce the size of a chat history to a specified
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/messages/utils.py:729:        The examples below show how to configure `trim_messages` to achieve a behavior
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/messages/utils.py:734:        max_tokens: Max token count of trimmed messages.
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/messages/utils.py:743:                This is recommended for using `trim_messages` on the hot path, where
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/messages/utils.py:800:            trim_messages,
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/messages/utils.py:819:        trim_messages(
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/messages/utils.py:849:            trim_messages(
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/messages/utils.py:936:        trim_messages(
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/messages/__init__.py:69:        trim_messages,
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/messages/__init__.py:129:    "trim_messages",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain_core/messages/__init__.py:186:    "trim_messages": "utils",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain/messages/__init__.py:43:    trim_messages,
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain/messages/__init__.py:77:    "trim_messages",
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain/agents/middleware/summarization.py:15:from langchain_core.messages.utils import count_tokens_approximately, trim_messages
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain/agents/middleware/summarization.py:226:        trimmed_messages = self._trim_messages_for_summary(messages_to_summarize)
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain/agents/middleware/summarization.py:227:        if not trimmed_messages:
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain/agents/middleware/summarization.py:231:            response = self.model.invoke(self.summary_prompt.format(messages=trimmed_messages))
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain/agents/middleware/summarization.py:236:    def _trim_messages_for_summary(self, messages: list[AnyMessage]) -> list[AnyMessage]:
+apps/agent-api/.venv/lib/python3.13/site-packages/langchain/agents/middleware/summarization.py:239:            return trim_messages(
+apps/agent-api/.venv/lib/python3.13/site-packages/mem0/proxy/main.py:103:        prepared_messages = self._prepare_messages(messages)
+apps/agent-api/.venv/lib/python3.13/site-packages/mem0/proxy/main.py:147:    def _prepare_messages(self, messages: List[dict]) -> List[dict]:

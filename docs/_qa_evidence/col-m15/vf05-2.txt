@@ -1,0 +1,20 @@
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/chatbot.py:500:    modified_inputs: dict = {}
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/chatbot.py:535:        body.thread_id, body.turn_number, body.modified_inputs,
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/counterfactual_service.py:9:  Body: { thread_id, turn_number, modified_inputs }
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/counterfactual_service.py:27:        modified_inputs: dict[str, Any],
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/counterfactual_service.py:34:            modified_inputs: Dict with optional keys:
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/counterfactual_service.py:51:        self._apply_modifications(modified_snapshot, modified_inputs)
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/counterfactual_service.py:63:            modified_inputs=modified_inputs,
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/counterfactual_service.py:70:            modifications=list(modified_inputs.keys()),
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/counterfactual_service.py:77:            "modifications_applied": list(modified_inputs.keys()),
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/counterfactual_service.py:90:        self, snapshot: dict, modified_inputs: dict[str, Any]
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/counterfactual_service.py:95:        if "user_message" in modified_inputs:
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/counterfactual_service.py:100:                    messages[i]["content"] = modified_inputs["user_message"]
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/counterfactual_service.py:105:        if "facts_override" in modified_inputs:
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/counterfactual_service.py:107:            facts_str = json.dumps(modified_inputs["facts_override"], indent=2)
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/counterfactual_service.py:113:        if "stage_override" in modified_inputs:
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/counterfactual_service.py:115:            new_stage = modified_inputs["stage_override"]
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/counterfactual_service.py:174:        modified_inputs: dict[str, Any],
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/counterfactual_service.py:196:        if "user_message" in modified_inputs:
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/counterfactual_service.py:198:        if "facts_override" in modified_inputs:
+/home/zaks/zakops-agent-api/apps/agent-api/app/services/counterfactual_service.py:200:        if "stage_override" in modified_inputs:

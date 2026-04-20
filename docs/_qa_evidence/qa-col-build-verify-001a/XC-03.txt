@@ -1,0 +1,25 @@
+--- reflexion ---
+}
+
+
+# Singleton
+reflexion_service = ReflexionService()
+--- fatigue_sentinel ---
+        self._sessions.pop(session_id, None)
+
+
+# Singleton
+fatigue_sentinel = DecisionFatigueSentinel()
+--- spaced_repetition ---
+        return review_candidates[:MAX_REVIEW_FACTS]
+
+
+# Singleton
+spaced_repetition_service = SpacedRepetitionService()
+--- sentiment_coach ---
+        self._scores.pop(deal_id, None)
+
+
+# Singleton
+sentiment_coach = SentimentCoach()
+

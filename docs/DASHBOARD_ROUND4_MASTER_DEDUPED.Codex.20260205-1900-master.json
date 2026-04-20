@@ -1,0 +1,22 @@
+{
+  "agent_identity": {
+    "agent_name": "Codex",
+    "run_id": "20260205-1900-master",
+    "date_time": "2026-02-05T19:00:00Z"
+  },
+  "stats": {
+    "issues_total": 17,
+    "issues_deduped": 13,
+    "recommendations_deduped": 11,
+    "redesign_specs": 2
+  },
+  "top_priorities": [
+    "R4-001: Inject Auth Headers (P0)",
+    "R4-002: Fix Deals Routing (P0)",
+    "R4-003: Ground Chat Truth (P0)",
+    "R4-005: Align Actions Proxy (P0)",
+    "R4-006: Fix Quarantine Delete (P0)",
+    "R4-007: Implement Email Settings (P1)",
+    "R4-004: Persist Onboarding (P1)"
+  ]
+}

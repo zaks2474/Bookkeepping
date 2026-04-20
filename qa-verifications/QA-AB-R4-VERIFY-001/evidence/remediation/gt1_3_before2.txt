@@ -1,0 +1,127 @@
+============================================================
+Golden Trace Runner
+============================================================
+Mode: Local (real agent)
+Traces directory: /home/zaks/zakops-agent-api/apps/agent-api/evals/golden_traces
+Agent URL: http://localhost:8095
+
+❌ FAIL GT-001: Basic deal query
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+❌ FAIL GT-002: Deal transition requiring approval
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+❌ FAIL GT-003: List deals query
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+❌ FAIL GT-004: Deal value query
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+❌ FAIL GT-005: Invalid deal ID handling
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+❌ FAIL GT-006: Ambiguous request
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+❌ FAIL GT-007: Create deal request
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+❌ FAIL GT-008: Stage transition to closed_won
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+❌ FAIL GT-009: Search deals by filter
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+❌ FAIL GT-010: No tool needed - general question
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+❌ FAIL GT-011: Grounding - deal stage query
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+❌ FAIL GT-012: HITL - create deal requires approval
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+❌ FAIL GT-013: HITL - transition deal with grounding
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+❌ FAIL GT-014: Grounding - deal value query
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+❌ FAIL GT-015: Stage transition - qualified to loi
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+❌ FAIL GT-016: Invalid transition - skip stages
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+❌ FAIL GT-017: Grounding - non-existent deal
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+❌ FAIL GT-018: Search deals with filter
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+❌ FAIL GT-019: Grounding - general deal info request
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+❌ FAIL GT-020: Add note to deal
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+❌ FAIL GT-021: M&A terminology question
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+❌ FAIL GT-022: Stage transition - loi to due_diligence
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+❌ FAIL GT-023: Mark deal as closed lost
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+❌ FAIL GT-024: Web search for industry information
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+❌ FAIL GT-025: Multiple deal query
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+❌ FAIL GT-026: Grounding - deal contacts query
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+❌ FAIL GT-027: ZakOps platform question
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+❌ FAIL GT-028: Create deal request
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+❌ FAIL GT-029: Transition to closed won
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+❌ FAIL GT-030: Deal history query
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+❌ FAIL GT-031: Invalid backward transition
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+❌ FAIL GT-032: Count all deals in pipeline
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+❌ FAIL GT-033: List deals by stage
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+❌ FAIL GT-034: Pipeline breakdown by stage
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+
+------------------------------------------------------------
+Total: 34
+Passed: 0
+Failed: 34
+Pass Rate: 0.0%
+------------------------------------------------------------
+❌ Golden Trace Evaluation FAILED
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'
+       ERROR: API call failed: Client error '401 Unauthorized' for url 'http://localhost:8095/api/v1/agent/invoke'

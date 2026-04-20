@@ -1,0 +1,41 @@
+=== STEP R0.1: Parse P0 Findings ===
+Timestamp: 2026-02-02T23:28:40Z
+
+--- UF-001: Auth enforcement state ---
+(empty means not set, defaults to false in code)
+
+--- UF-001: BEFORE no-auth test ---
+HTTP 200
+
+--- UF-001: BEFORE no-auth approvals ---
+HTTP 200
+
+--- UF-003: BEFORE no-auth thread state ---
+HTTP 200
+
+--- UF-005: BEFORE /docs exposed ---
+/docs → HTTP 200
+/redoc → HTTP 200
+/openapi.json → HTTP 404
+/metrics → HTTP 200
+
+--- UF-008: BEFORE token comparison code ---
+184:        if x_service_token == settings.DASHBOARD_SERVICE_TOKEN:
+
+--- UF-007: BEFORE str(e) in error responses ---
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/agent.py:205:        raise HTTPException(status_code=500, detail=str(e))
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/agent.py:486:        raise HTTPException(status_code=500, detail=str(e))
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/agent.py:595:        raise HTTPException(status_code=500, detail=str(e))
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/agent.py:645:        raise HTTPException(status_code=500, detail=str(e))
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/agent.py:682:        raise HTTPException(status_code=500, detail=str(e))
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/agent.py:748:        raise HTTPException(status_code=500, detail=str(e))
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/chatbot.py:70:        raise HTTPException(status_code=500, detail=str(e))
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/chatbot.py:142:        raise HTTPException(status_code=500, detail=str(e))
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/chatbot.py:168:        raise HTTPException(status_code=500, detail=str(e))
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/chatbot.py:191:        raise HTTPException(status_code=500, detail=str(e))
+
+--- UF-010: BEFORE CORS config ---
+    allow_origins=settings.ALLOWED_ORIGINS,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],

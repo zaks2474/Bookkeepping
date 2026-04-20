@@ -1,0 +1,9 @@
+=== CHECK 4.0.4: Backend DB reachable ===
+Command: docker compose exec postgres psql ... -c 'SELECT COUNT(*) FROM zakops.deals;'
+ count 
+-------
+     4
+(1 row)
+
+
+Timestamp: 2026-02-03T13:07:28-06:00

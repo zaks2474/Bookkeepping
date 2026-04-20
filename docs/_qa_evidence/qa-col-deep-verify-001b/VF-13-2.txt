@@ -1,0 +1,15 @@
+4:Decomposes complex queries into ordered steps, executes each step
+31:    Flow: plan steps → execute each → synthesize results.
+46:            Dict with plan, step_results, synthesized_response, steps_executed
+55:                "steps_executed": 0,
+66:        for i, step in enumerate(steps):
+68:                logger.warning("plan_execute_step_limit", max_steps=MAX_STEPS)
+71:                result = await self._execute_step(step, context, step_results)
+82:                    "plan_execute_step_failed",
+99:            steps_executed=len(step_results),
+104:            "plan": [{"description": s.description, "type": s.step_type} for s in steps],
+107:            "steps_executed": len(step_results),
+113:        Uses keyword heuristics for step planning. In production,
+130:        elif any(kw in lower for kw in ("plan", "strategy", "roadmap", "steps")):
+146:    async def _execute_step(
+185:        for result in step_results:

@@ -1,0 +1,40 @@
+=== STEP 3.6: Path E — Rejection ===
+Deal stage before reject test: inbound
+--- Trigger new HITL ---
+{
+    "detail": "Authentication required"
+}
+Reject approval ID: 
+--- REJECT ---
+{
+    "detail": "Not Found"
+}
+{
+    "detail": "Method Not Allowed"
+}
+--- Deal stage UNCHANGED (API) ---
+Before: inbound | After reject: inbound
+CORRECT: No side effects
+--- Deal stage UNCHANGED (direct SQL) ---
+ deal_id | stage 
+---------+-------
+(0 rows)
+
+--- Approval record shows rejected ---
+time="2026-02-02T21:00:12-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-02T21:00:12-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+                  id                  |  status  | rejection_reason 
+--------------------------------------+----------+------------------
+ 8ee0aa7a-7139-4efe-a7ba-7c0946488b4f | rejected | Forensic test
+(1 row)
+
+--- NO tool_executions created for rejected approval ---
+time="2026-02-02T21:00:12-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-02T21:00:12-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+ count 
+-------
+     0
+(1 row)
+
+
+AUDIT NOTE: Agent API returned "Authentication required" for this step; path behavior is UNVERIFIED.

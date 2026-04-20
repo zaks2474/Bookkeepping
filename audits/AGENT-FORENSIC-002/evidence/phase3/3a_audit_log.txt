@@ -1,0 +1,31 @@
+=== STEP 3.11: Audit Log Coverage ===
+time="2026-02-02T21:01:15-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-02T21:01:15-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+        event_type        | count 
+--------------------------+-------
+ approval_approved        |     3
+ approval_claimed         |     3
+ approval_rejected        |     1
+ tool_execution_completed |     3
+ tool_execution_started   |     3
+(5 rows)
+
+--- Full lifecycle for Path C/D ---
+time="2026-02-02T21:01:15-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-02T21:01:15-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+        event_type        |                                                                         payload                                                                         |          created_at           
+--------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------------
+ approval_claimed         | {"tool_name": "transition_deal", "idempotency_key": "f002-path-c-001:transition_deal:9b4e0d13ea8218569ae15607ec43706433585eae3788b7c5a51e737690576c8d"} | 2026-02-03 02:12:37.999731+00
+ tool_execution_started   | {"tool_name": "transition_deal", "idempotency_key": "f002-path-c-001:transition_deal:9b4e0d13ea8218569ae15607ec43706433585eae3788b7c5a51e737690576c8d"} | 2026-02-03 02:12:38.013004+00
+ tool_execution_completed | {"success": true}                                                                                                                                       | 2026-02-03 02:12:38.022425+00
+ approval_approved        | {"resolved_by": "forensic-auditor"}                                                                                                                     | 2026-02-03 02:12:38.02249+00
+(4 rows)
+
+--- Full lifecycle for Path E ---
+time="2026-02-02T21:01:15-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-02T21:01:15-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+ event_type | payload | created_at 
+------------+---------+------------
+(0 rows)
+
+EXPECTED: >=5 of 9 event types. Observed: [fill count]

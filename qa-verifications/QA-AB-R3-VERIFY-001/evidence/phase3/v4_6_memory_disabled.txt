@@ -1,0 +1,21 @@
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:88:DISABLE_LONG_TERM_MEMORY = os.getenv("DISABLE_LONG_TERM_MEMORY", "true").lower() == "true"
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:114:    async def _long_term_memory(self) -> AsyncMemory:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:243:        if DISABLE_LONG_TERM_MEMORY:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:244:            logger.debug("long_term_memory_disabled", user_id=user_id)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:256:            memory = await self._long_term_memory()
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:263:    async def _update_long_term_memory(self, user_id: str, messages: list[dict], metadata: dict = None) -> None:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:269:        if DISABLE_LONG_TERM_MEMORY:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:270:            logger.debug("long_term_memory_disabled_skip_update", user_id=user_id)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:282:            memory = await self._long_term_memory()
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:284:            logger.info("long_term_memory_updated_successfully", user_id=user_id)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:286:            logger.exception("failed_to_update_long_term_memory", user_id=user_id, error=str(e))
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:300:        if DISABLE_LONG_TERM_MEMORY:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:301:            logger.info("forget_user_memory_skipped_disabled", user_id=user_id)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:313:            memory = await self._long_term_memory()
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:347:        SYSTEM_PROMPT = load_system_prompt(long_term_memory=state.long_term_memory)
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:843:                    "long_term_memory": relevant_memory,
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:915:                self._update_long_term_memory(
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:1091:                input={"messages": dump_messages(messages), "long_term_memory": relevant_memory},
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:1095:                self._update_long_term_memory(
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:1129:                {"messages": dump_messages(messages), "long_term_memory": relevant_memory},
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:1149:                    self._update_long_term_memory(

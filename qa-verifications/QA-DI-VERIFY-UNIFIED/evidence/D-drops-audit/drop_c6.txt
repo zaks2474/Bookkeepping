@@ -1,0 +1,5 @@
+=== DROP-C6: PG-007 (/actions Promise.all, no archived indicator) ===
+VERDICT: ADDRESSED
+Evidence: V-L4.5 confirms actions/page.tsx uses Promise.allSettled
+with individual result checking. Polling errors do not stop polling.
+The PG-007 gap has been resolved.

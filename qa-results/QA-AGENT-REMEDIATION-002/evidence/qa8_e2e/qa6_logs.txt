@@ -1,0 +1,7 @@
+=== QA-6: Log Redaction ===
+--- Checking for token leakage ---
+SERVICE_TOKEN occurrences in last 100 log lines: 0
+0
+PASS: SERVICE_TOKEN not found in logs
+JWT_SECRET_KEY occurrences in last 100 log lines: 0
+0

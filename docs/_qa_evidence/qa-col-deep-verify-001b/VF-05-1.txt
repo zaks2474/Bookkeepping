@@ -1,0 +1,5 @@
+19:_POST_CONDITIONS: dict[str, Callable] = {}
+29:    _POST_CONDITIONS[tool_name] = check_fn
+34:    return tool_name in _POST_CONDITIONS
+52:    if tool_name not in _POST_CONDITIONS:
+55:    check_fn = _POST_CONDITIONS[tool_name]

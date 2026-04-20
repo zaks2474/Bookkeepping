@@ -1,0 +1,60 @@
+{
+  "model_id": "Gemini 3.0",
+  "timestamp_utc": "2026-01-23T12:00:00Z",
+  "hard_constraints": [
+    "Agent API Port: 8095",
+    "Model: Qwen2.5-32B-Instruct-AWQ",
+    "DB: PostgreSQL (pgvector)",
+    "Queue: PostgreSQL SKIP LOCKED",
+    "Observability: Langfuse (Self-Hosted)",
+    "Tools: Hybrid MCP + Direct",
+    "Auth: RBAC (JWT + API Key)",
+    "Privacy: No raw content logging"
+  ],
+  "phases": [
+    {
+      "name": "Phase 1: Production Hardening",
+      "dod": [
+        "P0 Security risk closed",
+        "RBAC active",
+        "Tool Gateway active"
+      ],
+      "gates": [
+        "run_pii_canary.sh",
+        "run_auth_negative_tests.sh",
+        "run_gateway_choke_point_test.sh"
+      ]
+    },
+    {
+      "name": "Phase 2: Agentics & Integration",
+      "dod": [
+        "Full Plan-and-Execute Graph",
+        "Task Queue Worker Active",
+        "RAG Integrated"
+      ],
+      "gates": [
+        "run_e2e_deal_transition.sh",
+        "run_queue_soak_test.sh"
+      ]
+    }
+  ],
+  "top_risks": [
+    {
+      "id": "R-01",
+      "title": "Plaintext Data Leak",
+      "mitigation": "SEC-01 Encryption + PII Canary"
+    },
+    {
+      "id": "R-02",
+      "title": "Tool Hallucination",
+      "mitigation": "Pydantic Validation in Gateway"
+    }
+  ],
+  "open_questions": [
+    {
+      "id": "OQ-01",
+      "question": "Performance impact of checkpoint encryption?",
+      "test": "Benchmark save time (Target <50ms)"
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+=== Q1.1: Hardcoded Success Scan ===
+Hardcoded ok:True patterns found: 1
+/home/zaks/zakops-agent-api/apps/agent-api/app/api/v1/agent.py:358:                    actions_taken=[ActionTaken(tool=tool_name, result={"ok": True, "cached": True})],
+--- Investigating line 358 context ---
+                    "tool_already_executed",
+                    approval_id=approval_id,
+                    execution_id=existing.id,
+                )
+                # Mark approval as approved and return cached result
+                approval = db.get(Approval, approval_id)
+                approval.status = ApprovalStatus.APPROVED
+                approval.resolved_at = datetime.now(UTC)
+                approval.resolved_by = actor_id
+                db.add(approval)
+                db.commit()
+
+                # Return MDv2-compliant response
+                return AgentInvokeResponse(
+                    thread_id=thread_id,
+                    status="completed",
+                    content=existing.result,
+                    pending_approval=None,
+                    actions_taken=[ActionTaken(tool=tool_name, result={"ok": True, "cached": True})],
+                    error=None,
+                )
+
+            # Create execution record BEFORE executing (claim-first)
+            execution = ToolExecution(
+                id=str(uuid.uuid4()),
+                approval_id=approval_id,
+                idempotency_key=idempotency_key,
+                tool_name=tool_name,
+                tool_args=tool_args_json,
+                success=False,  # Will update after execution
+                executed_at=datetime.now(UTC),
+            )
+            db.add(execution)
+            db.commit()
+            execution_id = execution.id
+
+            # Write audit log for tool execution started
+            _write_audit_log(
+                db=db,
+                event_type=AuditEventType.TOOL_EXECUTION_STARTED,
+                actor_id=actor_id,
+
+ANALYSIS: Line 358 is in idempotency guard - returns cached result for already-executed approvals
+This is ACCEPTABLE if execution.success was verified during original execution
+
+--- Checking main success path (line 400+) ---
+192:                actions_taken=[],
+203:            actions_taken=[ActionTaken(tool=a["tool"], result=a.get("result", {})) for a in actions],
+358:                    actions_taken=[ActionTaken(tool=tool_name, result={"ok": True, "cached": True})],
+464:                actions_taken=[ActionTaken(tool=tool_name, result=tool_result or {"ok": actual_success})],
+618:                actions_taken=[],  # No actions taken since rejected

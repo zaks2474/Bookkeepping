@@ -1,0 +1,46 @@
+{
+  "overall": {
+    "failed": 4,
+    "pass_rate": 0.7333333333333333,
+    "passed": 11,
+    "total": 15
+  },
+  "suites": [
+    {
+      "passed": 3,
+      "suite": "Phase 0 \u2014 Environment Setup",
+      "total": 3
+    },
+    {
+      "passed": 1,
+      "suite": "Phase 0 \u2014 Contract Snapshots",
+      "total": 1
+    },
+    {
+      "passed": 1,
+      "suite": "Phase 1 \u2014 Backend API",
+      "total": 4
+    },
+    {
+      "passed": 2,
+      "suite": "Phase 2 \u2014 Agent API",
+      "total": 3
+    },
+    {
+      "passed": 2,
+      "suite": "Phase 3 \u2014 RAG API",
+      "total": 2
+    },
+    {
+      "passed": 1,
+      "suite": "Phase 4 \u2014 E2E Workflows",
+      "total": 1
+    },
+    {
+      "passed": 1,
+      "suite": "Phase 5 \u2014 UI Routes",
+      "total": 1
+    }
+  ],
+  "timestamp_utc": "2026-01-26T16:45:30.243771+00:00"
+}

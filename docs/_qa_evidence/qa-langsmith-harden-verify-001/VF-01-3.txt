@@ -1,0 +1,16 @@
+218:def _get_deal_from_db(deal_id: str) -> dict[str, Any] | None:
+219-    """Get a deal from PostgreSQL zakops.deals (canonical source of truth).
+220-
+221-    Replaces the legacy JSON registry read to eliminate split-brain.
+222-    Returns a flat dict compatible with the old registry format.
+223-    """
+224-
+225-    async def _query() -> dict[str, Any] | None:
+226-        conn = await asyncpg.connect(BACKEND_DB_URL)
+227-        try:
+228-            row = await conn.fetchrow(
+229-                "SELECT deal_id, canonical_name, display_name, stage, status, "
+230-                "broker, metadata, company_info, identifiers, folder_path "
+231-                "FROM zakops.deals WHERE deal_id = $1 AND deleted = FALSE",
+232-                deal_id,
+233-            )

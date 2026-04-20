@@ -1,0 +1,8 @@
+68:# R3 REMEDIATION [P4.2]: Stage transition matrix - only valid transitions allowed
+70:VALID_TRANSITIONS: dict[str, frozenset[str]] = {
+83:def _is_valid_transition(from_stage: str, to_stage: str) -> tuple[bool, str]:
+84:    """R3 REMEDIATION [P4.2]: Validate stage transition against matrix.
+92:    if from_lower not in VALID_TRANSITIONS:
+95:    valid_targets = VALID_TRANSITIONS[from_lower]
+229:            # R3 REMEDIATION [P4.2]: Validate transition against matrix BEFORE sending to backend
+230:            is_valid, transition_error = _is_valid_transition(actual_from_stage, to_stage_lower)

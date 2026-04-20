@@ -1,0 +1,30 @@
+=== DC-2: Gate System Integration ===
+--- DC-2.1: TriPass gates as new group (not replacement) ---
+297:gate_t1_append_only() {
+299:  log "Gate T-1: Append-Only Integrity"
+303:gate_t2_completeness() {
+306:  log "Gate T-2: Output Completeness"
+352:gate_t3_structural() {
+354:  log "Gate T-3: Structural Validity"
+385:gate_t6_memory_sync() {
+388:  log "Gate T-6: Memory Sync"
+443:  t1_result=$(gate_t1_append_only "$run_dir" 2>&1) || true
+454:  t2_result=$(gate_t2_completeness "$run_dir" "$skip_pass4" 2>&1) || true
+Existing gates A-H untouched — checking validate-local includes them:
+6
+
+--- DC-2.2: Gate results in compatible format ---
+# TriPass Gate Results — TP-20260209-211737
+## Generated: 2026-02-09T21:17:56Z
+
+| Gate | Result | Details |
+|------|--------|---------|
+| T-1: Append-Only | PASS | Integrity verified |
+| T-2: Completeness | PASS | All outputs present |
+| T-3: Structural | PASS | Valid structure |
+| T-4: Drift | PASS | Within threshold |
+| T-5: No-Drop | SKIP | Pass 4 not run |
+| T-6: Memory Sync | PASS | Pointers updated |
+
+## Summary: 5/5 gates passed
+

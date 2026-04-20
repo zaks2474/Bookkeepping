@@ -1,0 +1,27 @@
+=== PHASE 7: CI HARDENING ===
+
+V-P7.1: "|| true" in CI
+  Result: Found 2 instances (lines 202, 211) — both in grep pipelines
+          for import-guard violations. grep returns exit 1 when no match,
+          so "|| true" is correct here (prevents false CI failure).
+  Verdict: PASS (safe usage — grep exit-code suppression)
+
+V-P7.2: continue-on-error in CI
+  Result: NONE FOUND
+  Verdict: PASS
+
+V-P7.4: export_openapi in spec-freshness-bot (must be >= 2)
+  Result: 1
+  Verdict: FAIL — only 1 reference, expected >= 2
+
+V-P7.5: agent/sync steps in CI (should be > 0)
+  Result: 1
+  Verdict: PASS (at least 1 reference)
+
+V-P7.6: EXEC-002 in debt-ledger (should be > 0)
+  Result: 0
+  Verdict: FAIL — no EXEC-002 entries in debt-ledger
+
+V-P7.8: sync-all in Makefile (should be > 0)
+  Result: 2
+  Verdict: PASS

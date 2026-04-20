@@ -1,0 +1,16 @@
+apps/agent-api/app/core/langgraph/graph.py:523:                "tool_call_budget_exceeded",
+apps/agent-api/app/core/langgraph/graph.py:532:                        f"Tool call budget exceeded ({new_count}/{MAX_TOOL_CALLS_PER_TURN}). "
+apps/agent-api/app/core/langgraph/graph.py:534:                        metadata={"budget_exceeded": True, "count": new_count, "max": MAX_TOOL_CALLS_PER_TURN}
+apps/agent-api/app/core/cost_tracking.py:107:        """Check if daily budget is exceeded.
+apps/agent-api/app/core/cost_tracking.py:110:            True if under budget, False if exceeded
+apps/agent-api/app/services/cost_repository.py:5:Provides per-deal budget enforcement (hard cap + soft threshold).
+apps/agent-api/app/services/cost_repository.py:159:        hard_cap: bool = False,
+apps/agent-api/app/services/cost_repository.py:165:                    INSERT INTO deal_budgets (deal_id, monthly_limit_usd, alert_threshold, hard_cap)
+apps/agent-api/app/services/cost_repository.py:166:                    VALUES (:deal_id, :monthly_limit_usd, :alert_threshold, :hard_cap)
+apps/agent-api/app/services/cost_repository.py:170:                        hard_cap = EXCLUDED.hard_cap,
+apps/agent-api/app/services/cost_repository.py:177:                    "hard_cap": hard_cap,
+apps/agent-api/app/services/cost_repository.py:210:        if budget["hard_cap"] and monthly_spend >= monthly_limit:
+apps/agent-api/app/services/cost_repository.py:212:                "budget_hard_cap_exceeded",
+apps/agent-api/app/services/cost_repository.py:219:                "reason": "hard_cap_exceeded",
+apps/agent-api/app/schemas/sse_events.py:80:    event_type: str = "budget_warning"
+apps/agent-api/app/schemas/sse_events.py:140:    "budget_warning": BudgetWarningEvent,

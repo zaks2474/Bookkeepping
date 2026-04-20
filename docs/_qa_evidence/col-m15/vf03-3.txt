@@ -1,0 +1,10 @@
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/passlib/utils/pbkdf2.py:4:maybe rename to "kdf" since it's getting more key derivation functions added.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/passlib/utils/pbkdf2.py:120:    """pkcs#5 password-based key derivation v1.5
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/passlib/utils/pbkdf2.py:150:    """pkcs#5 password-based key derivation v2.0
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/passlib/crypto/digest.py:709:    """pkcs#5 password-based key derivation v1.5
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/passlib/crypto/digest.py:774:    """pkcs#5 password-based key derivation v2.0 using HMAC + arbitrary digest.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/passlib/crypto/scrypt/__init__.py:108:    """run SCrypt key derivation function using specified parameters.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/cryptography/hazmat/primitives/kdf/hkdf.py:15:class HKDF(KeyDerivationFunction):
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/cryptography/hazmat/primitives/kdf/hkdf.py:33:        self._hkdf_expand = HKDFExpand(self._algorithm, length, info)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/cryptography/hazmat/primitives/kdf/hkdf.py:42:        return self._hkdf_expand.derive(self._extract(key_material))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/cryptography/hazmat/primitives/kdf/hkdf.py:49:class HKDFExpand(KeyDerivationFunction):

@@ -1,0 +1,56 @@
+=== XC-1 GATE TO TASK COVERAGE ===
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:182:| 2 | UI fixes rely on new columns but migration order is wrong | MEDIUM | Detail/list regressions and empty fields | Phase 0 migration-number safety check + Phase 1 gate G1-01/G1-02 |
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:252:- P1-01: Add migration 033 schema expansion and rollback SQL for new quarantine columns (`email_body_snippet`, `triage_summary`, `source_thread_id`, `schema_version`, `confidence`, `received_at`, etc.).
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:253:- P1-02: Update QuarantineCreate validation with `extra='forbid'`, source-aware required fields, and known `schema_version` allowlist.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:254:- P1-03: Update QuarantineResponse to include expanded fields and computed subject display via `COALESCE(email_subject, subject)`.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:255:- P1-04: Update POST ingestion mapping (`source_message_id -> message_id`) and write all expanded columns.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:256:- P1-05: Remove preview filesystem dependency by returning inline snippet/full-body metadata from API.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:257:- P1-06: Expand bridge tool contract to full schema and local fail-fast validation.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:258:- P1-07: Execute golden payload test proving inject -> DB -> UI continuity.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:266:- G1-01: All new DB columns exist (`\\d zakops.quarantine_items` verification).
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:267:- G1-02: `version` column exists with `DEFAULT 1`.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:268:- G1-03: Bridge tool exposes expanded schema (20+ parameters).
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:269:- G1-04: `source_message_id` maps to `message_id` at ingestion boundary.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:270:- G1-05: Tool rejects missing required fields and names them in error output.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:271:- G1-06: Tool rejects extra/unknown keys (strict validation).
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:272:- G1-07: Tool rejects unknown `schema_version` with 400.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:273:- G1-08: `email_body_snippet` always populated; preview missing state eliminated.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:274:- G1-09: Golden flow verified: inject -> DB -> list -> detail.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:275:- G1-10: Five complete-data test items render correctly in UI.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:276:- G1-11: `source_type` uses canonical constants only.
+/home/zaks/bookkeeping/docs/MISSION-ET-VALIDATION-001.md:277:- G1-12: Dedup still holds under expanded schema.
+/home/zaks/bookkeeping/docs/QA-ET-VALIDATION-P1-VERIFY-001.md:12:This QA mission validates and remediates only Phase 1 of `ET-VALIDATION-001` (`P1-01` through `P1-07`). Standing guardrails from `CLAUDE.md`, memory, hooks, path-scoped rules, and contract surfaces remain active and are referenced, not repeated.
+/home/zaks/bookkeeping/docs/QA-ET-VALIDATION-P1-VERIFY-001.md:22:- `P1-01`: Database schema expansion migration + rollback
+/home/zaks/bookkeeping/docs/QA-ET-VALIDATION-P1-VERIFY-001.md:23:- `P1-02`: QuarantineCreate strict model + schema_version enforcement
+/home/zaks/bookkeeping/docs/QA-ET-VALIDATION-P1-VERIFY-001.md:24:- `P1-03`: QuarantineResponse expansion + `COALESCE(email_subject, subject)`
+/home/zaks/bookkeeping/docs/QA-ET-VALIDATION-P1-VERIFY-001.md:25:- `P1-04`: Quarantine POST boundary mapping + required-field enforcement
+/home/zaks/bookkeeping/docs/QA-ET-VALIDATION-P1-VERIFY-001.md:26:- `P1-05`: Preview-not-found elimination via inline storage
+/home/zaks/bookkeeping/docs/QA-ET-VALIDATION-P1-VERIFY-001.md:27:- `P1-06`: Bridge tool schema expansion + source-aware compatibility
+/home/zaks/bookkeeping/docs/QA-ET-VALIDATION-P1-VERIFY-001.md:28:- `P1-07`: Golden payload test
+/home/zaks/bookkeeping/docs/QA-ET-VALIDATION-P1-VERIFY-001.md:31:- `G1-01` through `G1-12`
+/home/zaks/bookkeeping/docs/QA-ET-VALIDATION-P1-VERIFY-001.md:39:3. Final phase scorecard for `P1-01`..`P1-07` and `G1-01`..`G1-12`.
+/home/zaks/bookkeeping/docs/QA-ET-VALIDATION-P1-VERIFY-001.md:62:### WRONG: Passing G1-08 by checking only code comments
+/home/zaks/bookkeeping/docs/QA-ET-VALIDATION-P1-VERIFY-001.md:67:### RIGHT: Passing G1-08 with runtime-backed evidence
+/home/zaks/bookkeeping/docs/QA-ET-VALIDATION-P1-VERIFY-001.md:107:  rg -n '^## Phase 1|P1-01|P1-02|P1-03|P1-04|P1-05|P1-06|P1-07|G1-01|G1-12' \
+/home/zaks/bookkeeping/docs/QA-ET-VALIDATION-P1-VERIFY-001.md:182:## Verification Family 01 — P1-01 Schema Migration and Rollback
+/home/zaks/bookkeeping/docs/QA-ET-VALIDATION-P1-VERIFY-001.md:215:**Gate VF-01:** Supports `G1-01`, `G1-02`.
+/home/zaks/bookkeeping/docs/QA-ET-VALIDATION-P1-VERIFY-001.md:219:## Verification Family 02 — P1-02 QuarantineCreate Strict Validation
+/home/zaks/bookkeeping/docs/QA-ET-VALIDATION-P1-VERIFY-001.md:251:**Gate VF-02:** Supports `G1-05`, `G1-06`, `G1-07`.
+/home/zaks/bookkeeping/docs/QA-ET-VALIDATION-P1-VERIFY-001.md:255:## Verification Family 03 — P1-03 QuarantineResponse Expansion and Subject Coalescing
+/home/zaks/bookkeeping/docs/QA-ET-VALIDATION-P1-VERIFY-001.md:277:**Gate VF-03:** Supports `G1-04`, `G1-10`.
+/home/zaks/bookkeeping/docs/QA-ET-VALIDATION-P1-VERIFY-001.md:281:## Verification Family 04 — P1-04 POST Endpoint Boundary Mapping
+/home/zaks/bookkeeping/docs/QA-ET-VALIDATION-P1-VERIFY-001.md:314:**Gate VF-04:** Supports `G1-04`, `G1-12`.
+/home/zaks/bookkeeping/docs/QA-ET-VALIDATION-P1-VERIFY-001.md:318:## Verification Family 05 — P1-05 Preview Fix (Inline Storage)
+/home/zaks/bookkeeping/docs/QA-ET-VALIDATION-P1-VERIFY-001.md:349:**Gate VF-05:** Supports `G1-08`, `G1-09`.
+/home/zaks/bookkeeping/docs/QA-ET-VALIDATION-P1-VERIFY-001.md:353:## Verification Family 06 — P1-06 Bridge Tool Expanded Contract
+/home/zaks/bookkeeping/docs/QA-ET-VALIDATION-P1-VERIFY-001.md:386:**Gate VF-06:** Supports `G1-03`, `G1-05`, `G1-06`, `G1-07`, `G1-11`.
+/home/zaks/bookkeeping/docs/QA-ET-VALIDATION-P1-VERIFY-001.md:390:## Verification Family 07 — P1-07 Golden Payload End-to-End
+/home/zaks/bookkeeping/docs/QA-ET-VALIDATION-P1-VERIFY-001.md:430:**Gate VF-07:** Supports `G1-09`, `G1-10`, `G1-12`.
+/home/zaks/bookkeeping/docs/QA-ET-VALIDATION-P1-VERIFY-001.md:440:  rg -n 'P1-01|P1-02|P1-03|P1-04|P1-05|P1-06|P1-07|G1-01|G1-02|G1-03|G1-04|G1-05|G1-06|G1-07|G1-08|G1-09|G1-10|G1-11|G1-12' \
+/home/zaks/bookkeeping/docs/QA-ET-VALIDATION-P1-VERIFY-001.md:586:  VF-01 (P1-01 Migration): __ / 3 checks PASS
+/home/zaks/bookkeeping/docs/QA-ET-VALIDATION-P1-VERIFY-001.md:587:  VF-02 (P1-02 Strict Model): __ / 3 checks PASS
+/home/zaks/bookkeeping/docs/QA-ET-VALIDATION-P1-VERIFY-001.md:588:  VF-03 (P1-03 Response/Coalesce): __ / 2 checks PASS
+/home/zaks/bookkeeping/docs/QA-ET-VALIDATION-P1-VERIFY-001.md:589:  VF-04 (P1-04 POST Mapping): __ / 3 checks PASS
+/home/zaks/bookkeeping/docs/QA-ET-VALIDATION-P1-VERIFY-001.md:590:  VF-05 (P1-05 Preview Inline): __ / 3 checks PASS
+/home/zaks/bookkeeping/docs/QA-ET-VALIDATION-P1-VERIFY-001.md:591:  VF-06 (P1-06 Bridge Contract): __ / 3 checks PASS
+/home/zaks/bookkeeping/docs/QA-ET-VALIDATION-P1-VERIFY-001.md:592:  VF-07 (P1-07 Golden Payload): __ / 4 checks PASS

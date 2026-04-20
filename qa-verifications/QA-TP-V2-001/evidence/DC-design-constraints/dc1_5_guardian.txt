@@ -1,0 +1,9 @@
+=== DC-1.5: Contract-guardian optionally invocable ===
+Mission spec says: "should be invocable as an optional post-pipeline validator"
+Status: No explicit contract-guardian reference in tripass.sh
+However: Contract-guardian is already available via V5PP infrastructure
+  - /contract-guardian command
+  - make validate-full (runs contract-guardian as part of full gate sweep)
+  - Can be invoked on any TriPass output after pipeline completes
+VERDICT: PASS — "should" language; capability exists via existing V5PP infrastructure
+Note: Enhancement opportunity to add --validate flag to tripass.sh

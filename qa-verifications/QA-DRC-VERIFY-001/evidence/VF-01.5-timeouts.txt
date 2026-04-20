@@ -1,0 +1,15 @@
+=== 60s timeout (bulk operations) ===
+src/app/api/quarantine/bulk-process/route.ts:19:      timeoutMs: 60000,
+src/app/api/quarantine/bulk-delete/route.ts:19:      timeoutMs: 60000,
+
+=== 30s timeout (action mutations + undo) ===
+src/app/api/quarantine/[id]/undo-approve/route.ts:23:      timeoutMs: 30000,
+src/app/api/actions/[id]/approve/route.ts:23:      timeoutMs: 30000,
+src/app/api/actions/[id]/cancel/route.ts:23:      timeoutMs: 30000,
+src/app/api/actions/[id]/retry/route.ts:23:      timeoutMs: 30000,
+src/app/api/actions/[id]/update/route.ts:24:      timeoutMs: 30000,
+
+=== No explicit timeout (GET routes) ===
+src/app/api/quarantine/[id]/route.ts: 0 matches
+src/app/api/actions/capabilities/route.ts: 0 matches
+src/app/api/actions/metrics/route.ts: 0 matches

@@ -1,0 +1,493 @@
+{
+  "agent_identity": {
+    "agent_name": "Codex",
+    "run_id": "20260204-0310-5abffd",
+    "date_time": "2026-02-04T03:10:54Z",
+    "repo_revision": "unknown"
+  },
+  "sources": {
+    "v3_index": "/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3.md",
+    "v3_plans": [
+      "/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3.Claude-Opus-4-5.20260204-0212-b214408d.md",
+      "/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3.Gemini-CLI.20260204-0221-gemini.md",
+      "/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_PLAN_V3.Codex.20260204-021313-1158.md"
+    ],
+    "v2_issues": "/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_HONEST_ASSESSMENT_V2.md",
+    "pass1": "/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_REMEDIATION_EVAL_V3.PASS1.Claude-Opus-4-5.20260204-0304-24645315.md"
+  },
+  "top_20_failures": [
+    {
+      "id": 1,
+      "failure": "JSON->Postgres migration mis-maps IDs or drops fields, leaving hidden split-brain.",
+      "applies_to": [
+        "Claude Phase 1 Tasks 1.4-1.7",
+        "Gemini Phase 1 migrate_json_to_postgres",
+        "Codex Phase 1 Data Truth Unification"
+      ],
+      "detection": "Dry-run migration with row counts, sampled field-by-field diff, and id mapping table; compare DL-XXXX vs DEAL-YYYY coverage.",
+      "mitigation": "Deterministic id_map table, read-only freeze during cutover, rollback script restoring JSON/SQLite writes.",
+      "checklist_tags": [
+        "split_brain",
+        "migration"
+      ]
+    },
+    {
+      "id": 2,
+      "failure": "Legacy writers continue after cutover (deal_registry.json or SQLite actions still mutated), so UI and agent drift.",
+      "applies_to": [
+        "Claude Phase 1 Tasks 1.1-1.7 and Phase 6 Tasks 6.1-6.6",
+        "Gemini Phase 1 and Phase 5",
+        "Codex Phase 1 and Phase 6"
+      ],
+      "detection": "File write audit + rg/CI guard + runtime log alerts on legacy writes.",
+      "mitigation": "Make legacy files read-only, remove write codepaths, add CI guardrails to block reintroduction.",
+      "checklist_tags": [
+        "split_brain",
+        "legacy"
+      ]
+    },
+    {
+      "id": 3,
+      "failure": "Quarantine approve is non-atomic; approved items have no deal or create duplicates.",
+      "applies_to": [
+        "Claude Phase 2 Task 2.1",
+        "Gemini Phase 2",
+        "Codex Phase 3"
+      ],
+      "detection": "DB query for approved quarantine_items with null deal_id or multiple deals per item.",
+      "mitigation": "Single transaction + idempotency key on process endpoint; outbox for folder creation with retries.",
+      "checklist_tags": [
+        "split_brain",
+        "email_ingestion"
+      ]
+    },
+    {
+      "id": 4,
+      "failure": "Folder scaffolding fails or path drifts on rename; DB shows deal but DataRoom missing.",
+      "applies_to": [
+        "Claude Phase 2 Task 2.2",
+        "Gemini Phase 2",
+        "Codex Phase 4"
+      ],
+      "detection": "Periodic reconciliation (deal rows with missing/invalid folder_path).",
+      "mitigation": "Stable folder slug/UUID stored in DB, rename handler, retry queue.",
+      "checklist_tags": [
+        "split_brain",
+        "execution"
+      ]
+    },
+    {
+      "id": 5,
+      "failure": "Stage taxonomy mismatch persists across UI/agent/backend, causing invalid transitions and UI filtering.",
+      "applies_to": [
+        "Claude Phase 0 Tasks 0.4-0.5",
+        "Gemini Phase 3",
+        "Codex Phase 3"
+      ],
+      "detection": "Contract test comparing API stage enum to UI schema + DB check for invalid stages.",
+      "mitigation": "Single source-of-truth enum from backend, versioned in OpenAPI.",
+      "checklist_tags": [
+        "contract_api"
+      ]
+    },
+    {
+      "id": 6,
+      "failure": "API contract drift continues (endpoint paths/payloads differ), causing 404/422 and silent drops.",
+      "applies_to": [
+        "Claude Phase 2 Tasks 2.7-2.9",
+        "Gemini Phase 2/3",
+        "Codex Phase 2"
+      ],
+      "detection": "CI contract tests + runtime 404/422 rate monitoring.",
+      "mitigation": "OpenAPI as source of truth, generated clients, compatibility aliases with deprecation window.",
+      "checklist_tags": [
+        "contract_api"
+      ]
+    },
+    {
+      "id": 7,
+      "failure": "Auth model fragmented (API key + JWT + proxy injection) yields missing user attribution and mystery failures.",
+      "applies_to": [
+        "Claude Decision 2.7 + Phase 5",
+        "Gemini D4 + Phase 3",
+        "Codex Decision set + Phase 0"
+      ],
+      "detection": "deal_events rows with null actor; auth error spikes without clear trace.",
+      "mitigation": "Decide unified auth now, require user_id on all writes, token rotation + clear error codes.",
+      "checklist_tags": [
+        "auth_security"
+      ]
+    },
+    {
+      "id": 8,
+      "failure": "Dashboard token injection becomes a single point of failure or leakage.",
+      "applies_to": [
+        "Claude Phase 5 Tasks 5.1-5.3",
+        "Gemini D4",
+        "Codex Phase 0"
+      ],
+      "detection": "Secrets scan + alerting on long-lived tokens; audit for requests missing service token.",
+      "mitigation": "Short-lived service JWTs, rotation runbook, least-privilege scopes.",
+      "checklist_tags": [
+        "auth_security"
+      ]
+    },
+    {
+      "id": 9,
+      "failure": "Correlation IDs not propagated through email ingestion or async jobs; tracing ends at API boundary.",
+      "applies_to": [
+        "Claude Phase 3 Tasks 3.2-3.4 + Phase 4",
+        "Gemini Phase 0",
+        "Codex Phase 0/4"
+      ],
+      "detection": "Logs for ingestion/actions missing correlation_id.",
+      "mitigation": "Enforce correlation_id in job payloads; generate at ingress and persist in DB.",
+      "checklist_tags": [
+        "observability"
+      ]
+    },
+    {
+      "id": 10,
+      "failure": "Email ingestion idempotency is incomplete, causing duplicate quarantine items and duplicate deals.",
+      "applies_to": [
+        "Claude Decision 2.4 + Phase 4",
+        "Gemini D3 + Phase 0/4",
+        "Codex Decision set + Phase 4"
+      ],
+      "detection": "Duplicate quarantine_items by message_id + mailbox; daily duplicate report.",
+      "mitigation": "Idempotency table keyed on (message_id, mailbox, account) with body-hash fallback.",
+      "checklist_tags": [
+        "email_ingestion"
+      ]
+    },
+    {
+      "id": 11,
+      "failure": "Deal matching false positives/negatives in ingestion cause mis-association and privacy risk.",
+      "applies_to": [
+        "Claude Decision 2.4 + Phase 4",
+        "Gemini D3",
+        "Codex Decision set + Phase 4"
+      ],
+      "detection": "Sampling audit of matched deals; false match rate.",
+      "mitigation": "Conservative matching with confidence threshold; require manual confirmation when ambiguous.",
+      "checklist_tags": [
+        "email_ingestion"
+      ]
+    },
+    {
+      "id": 12,
+      "failure": "Attachment handling unsafe or incomplete (size/type/path traversal/virus).",
+      "applies_to": [
+        "Missing from all plans"
+      ],
+      "detection": "Ingest logs for attachment failures; security scan results.",
+      "mitigation": "Enforce size/type limits, sanitize filenames, checksum + virus scan before attach.",
+      "checklist_tags": [
+        "email_ingestion",
+        "auth_security"
+      ]
+    },
+    {
+      "id": 13,
+      "failure": "RAG indexing becomes stale or inconsistent with DB.",
+      "applies_to": [
+        "Claude Decision 2.5 + Phase 4",
+        "Codex Decision set + Phase 4",
+        "Gemini Phase 0"
+      ],
+      "detection": "Compare deal.updated_at vs rag_last_indexed_at; RAG query misses known content.",
+      "mitigation": "Indexing metadata table + retry queue; periodic reconciliation job.",
+      "checklist_tags": [
+        "rag"
+      ]
+    },
+    {
+      "id": 14,
+      "failure": "HITL approvals remain split across agent DB and backend events; audit cannot link actions to deals.",
+      "applies_to": [
+        "Claude Decision 2.6 + Phase 3",
+        "Gemini Phase 4",
+        "Codex Decision set"
+      ],
+      "detection": "Join query across approvals and deal_events yields null correlation.",
+      "mitigation": "Mirror approvals to backend with correlation_id and deal_id; enforce on approve path.",
+      "checklist_tags": [
+        "hitl"
+      ]
+    },
+    {
+      "id": 15,
+      "failure": "Approval expiry job races with manual approval; expired approvals still execute.",
+      "applies_to": [
+        "Claude Phase 3 Task 3.5",
+        "Gemini Phase 4",
+        "Codex Phase 5"
+      ],
+      "detection": "Approvals executed after expiry timestamp; audit logs.",
+      "mitigation": "Optimistic locking and TTL check at execution time.",
+      "checklist_tags": [
+        "hitl"
+      ]
+    },
+    {
+      "id": 16,
+      "failure": "Actions engine migration is partial; /actions/capabilities or /metrics stays 501 or inconsistent.",
+      "applies_to": [
+        "Claude Phase 1 Task 1.3 + Phase 2 Tasks 2.3-2.4",
+        "Gemini Phase 1/3",
+        "Codex Phase 1/4"
+      ],
+      "detection": "API endpoint checks + action count mismatch between legacy and Postgres.",
+      "mitigation": "Dual-write with reconciliation, cutover flag, migration dry-run.",
+      "checklist_tags": [
+        "contract_api"
+      ]
+    },
+    {
+      "id": 17,
+      "failure": "SSE/real-time updates add instability or auth gaps; UI becomes noisy or insecure.",
+      "applies_to": [
+        "Claude Phase 4 Task 4.8",
+        "Gemini Phase 0",
+        "Codex Phase 5"
+      ],
+      "detection": "Connection count/memory metrics; unauthorized stream access.",
+      "mitigation": "Auth + rate limit on SSE, feature flag, fallback to polling.",
+      "checklist_tags": [
+        "observability",
+        "auth_security"
+      ]
+    },
+    {
+      "id": 18,
+      "failure": "Scheduling/reminders framework remains underspecified and misses deadlines or duplicates.",
+      "applies_to": [
+        "Claude Phase 4 Tasks 4.9-4.10",
+        "Codex Phase 4",
+        "Gemini Backlog ZK-ISSUE-0021"
+      ],
+      "detection": "Reminder logs vs expected schedule; drift report.",
+      "mitigation": "Persist schedules in DB, idempotent job runner with retries.",
+      "checklist_tags": [
+        "execution"
+      ]
+    },
+    {
+      "id": 19,
+      "failure": "Legacy decommission deletes files before runtime dependencies removed; production errors.",
+      "applies_to": [
+        "Claude Phase 6 Tasks 6.1-6.6",
+        "Gemini Phase 5",
+        "Codex Phase 6"
+      ],
+      "detection": "Runtime errors referencing missing legacy modules; canary failures.",
+      "mitigation": "Staged deprecation with compatibility shims + monitoring window, then delete.",
+      "checklist_tags": [
+        "execution",
+        "legacy"
+      ]
+    },
+    {
+      "id": 20,
+      "failure": "Execution realism gap: tasks lack exact file paths/commands, leading to guesswork and regressions.",
+      "applies_to": [
+        "Missing from all plans"
+      ],
+      "detection": "PR churn, conflicting fixes, repeated rework.",
+      "mitigation": "Add per-task implementation playbooks with file paths, commands, expected outputs.",
+      "checklist_tags": [
+        "execution"
+      ]
+    }
+  ],
+  "critical_architecture_decisions": [
+    {
+      "id": 1,
+      "decision": "Canonical deal identity and folder mapping",
+      "recommendation": "Adopt stable internal deal_uuid plus display deal_id (DL-XXXX) and store DataRoom folder_path in Postgres; map legacy DEAL-YYYY IDs into an alias table.",
+      "why": "Prevents ID collisions and enables rename-safe folder linkage; required for single-truth end-state.",
+      "verification_proof": "Migration produces one row per legacy deal with alias mapping; API returns both identifiers; folder_path exists for every deal.",
+      "plan_touchpoints": [
+        "Claude Decision 2.1 + Phase 1",
+        "Codex Source-of-truth DB model + Phase 1",
+        "Gemini D1 + Phase 1"
+      ]
+    },
+    {
+      "id": 2,
+      "decision": "Cutover strategy for split-brain elimination",
+      "recommendation": "Freeze legacy writers, run backfill + validation, then cutover with CI guards; avoid long-term dual-write.",
+      "why": "Dual-write increases inconsistency risk and complexity.",
+      "verification_proof": "Post-cutover file audit shows zero writes to JSON/SQLite; DB counts match migration report.",
+      "plan_touchpoints": [
+        "Claude Phase 1",
+        "Codex Phase 1",
+        "Gemini Phase 1"
+      ]
+    },
+    {
+      "id": 3,
+      "decision": "Auth and token handling model",
+      "recommendation": "OIDC/JWT for users, short-lived service JWTs for internal calls, mandatory user_id on all write operations; API key only for local dev with explicit flag.",
+      "why": "Best-in-class auth and fewer mystery failures.",
+      "verification_proof": "Unauthenticated writes return 401/403; deal_events.actor always populated; token rotation test passes.",
+      "plan_touchpoints": [
+        "Claude Decision 2.7 + Phase 5",
+        "Gemini D4 + Phase 3",
+        "Codex Decision set + Phase 0"
+      ]
+    },
+    {
+      "id": 4,
+      "decision": "Email ingestion matching and idempotency contract",
+      "recommendation": "Define matching policy with confidence scoring + manual review; dedupe on (message_id, mailbox, account) with body-hash fallback; store match_reason.",
+      "why": "Prevents duplicate deals and mis-association.",
+      "verification_proof": "Duplicate ingestion updates existing quarantine item; QA sampling shows low false match rate.",
+      "plan_touchpoints": [
+        "Claude Decision 2.4 + Phase 4",
+        "Codex Email Ingestion Decision + Phase 4",
+        "Gemini D3 + Phase 0/4"
+      ]
+    },
+    {
+      "id": 5,
+      "decision": "HITL approval persistence strategy",
+      "recommendation": "Mirror approvals into backend DB with correlation_id and deal_id; treat backend as audit source of truth.",
+      "why": "Unified audit trail and replay safety.",
+      "verification_proof": "Join query across approvals and deal_events returns matching correlation_id for last N approvals.",
+      "plan_touchpoints": [
+        "Claude Decision 2.6 + Phase 3",
+        "Codex HITL Decision",
+        "Gemini Phase 4"
+      ]
+    },
+    {
+      "id": 6,
+      "decision": "RAG indexing consistency contract",
+      "recommendation": "Index only canonical deal artifacts, store last_indexed_at and content hashes, reindex on deal update with retry queue; define fail-closed behavior.",
+      "why": "Ensures deal-as-knowledge stays consistent with DB.",
+      "verification_proof": "Updated deal content appears in RAG within SLA; reconciliation job shows zero stale items.",
+      "plan_touchpoints": [
+        "Claude Decision 2.5 + Phase 4",
+        "Codex RAG Decision + Phase 4"
+      ]
+    }
+  ],
+  "plan_patch_set": [
+    {
+      "patch_id": 1,
+      "title": "Migration Cutover Playbook",
+      "apply_to": "Phase 1 across Claude/Gemini/Codex",
+      "details": "Add read-only window, id_map table, row-count + field diff validation, rollback script, and CI guard to block legacy writes."
+    },
+    {
+      "patch_id": 2,
+      "title": "Contract Versioning + Contract Tests",
+      "apply_to": "Phase 2 across Claude/Gemini/Codex",
+      "details": "OpenAPI as source of truth, generated clients, compatibility aliases, schema-drift CI checks."
+    },
+    {
+      "patch_id": 3,
+      "title": "Auth Baseline Earlier + Token Hardening",
+      "apply_to": "Claude Decision 2.7 + Phase 5; Gemini D4 + Phase 3; Codex Phase 0",
+      "details": "Require user_id for writes, short-lived service JWTs, rotation runbook, explicit 401/403 behavior."
+    },
+    {
+      "patch_id": 4,
+      "title": "Observability for Async + Ingestion",
+      "apply_to": "Claude Phase 3/4; Gemini Phase 0; Codex Phase 0/4",
+      "details": "Enforce correlation_id on ingestion jobs and action executors; define log schema and trace linking across services."
+    },
+    {
+      "patch_id": 5,
+      "title": "Email Ingestion Safety Spec",
+      "apply_to": "Claude Phase 4; Gemini D3/Phase 0; Codex Phase 4",
+      "details": "Add idempotency keys, match_confidence, attachment scanning, and privacy-safe storage rules."
+    },
+    {
+      "patch_id": 6,
+      "title": "HITL Audit Unification",
+      "apply_to": "Claude Phase 3; Gemini Phase 4; Codex Decision set",
+      "details": "Mirror approvals to backend with correlation_id and enforce idempotent approval processing."
+    },
+    {
+      "patch_id": 7,
+      "title": "RAG Consistency + Reconciliation",
+      "apply_to": "Claude Phase 4; Codex Phase 4",
+      "details": "Add last_indexed_at + content_hash fields, reindex retry queue, and health gate for stale index rate."
+    },
+    {
+      "patch_id": 8,
+      "title": "Execution Playbooks per Phase",
+      "apply_to": "Missing from all plans",
+      "details": "Add a one-page runbook per phase with exact files, commands, expected outputs, and rollback steps."
+    }
+  ],
+  "tough_gates": {
+    "gate_a_code_health": {
+      "requirements": [
+        "Lint/typecheck outputs for backend, agent, dashboard",
+        "Unit tests for modified modules",
+        "rg/CI guard output showing no legacy references"
+      ],
+      "evidence_artifacts": [
+        "ruff/mypy/pytest outputs",
+        "npm/pnpm lint+typecheck outputs",
+        "rg 'deal_registry.json|deal_lifecycle|sys.path' outputs"
+      ]
+    },
+    "gate_b_integration": {
+      "requirements": [
+        "Key endpoints return expected status codes",
+        "DB counts match UI list counts",
+        "Correlation_id visible across dashboard->backend->agent"
+      ],
+      "evidence_artifacts": [
+        "curl outputs for /api/deals, /api/quarantine/{id}/process, /api/deals/{id}/notes, /api/actions/capabilities, /api/actions/metrics",
+        "DB query results showing deal count",
+        "Log snippet with correlation_id spanning services"
+      ]
+    },
+    "gate_c_end_to_end": {
+      "requirements": [
+        "Email ingestion -> quarantine -> approve -> deal -> folder -> RAG -> agent",
+        "Legacy deletion proof"
+      ],
+      "evidence_artifacts": [
+        "Ingestion log + quarantine DB row",
+        "Deal DB row + DataRoom folder listing",
+        "RAG query output for ingested content",
+        "Agent get_deal response",
+        "rg/find outputs showing no legacy files"
+      ]
+    },
+    "qa_pass_1_functional": {
+      "requirements": [
+        "Deal CRUD",
+        "Stage transitions",
+        "Quarantine approve -> deal",
+        "Folder scaffolding",
+        "RAG search success",
+        "Actions executor run"
+      ],
+      "evidence_artifacts": [
+        "curl/DB logs for each flow",
+        "Executor logs"
+      ]
+    },
+    "qa_pass_2_adversarial": {
+      "requirements": [
+        "Missing auth -> 401/403",
+        "Invalid stage -> 400/409",
+        "Duplicate create -> 409",
+        "RAG down -> explicit error",
+        "Concurrent transition -> one wins",
+        "Approval expiry -> safe handling"
+      ],
+      "evidence_artifacts": [
+        "curl outputs for error cases",
+        "Log snippets confirming graceful handling"
+      ]
+    }
+  }
+}

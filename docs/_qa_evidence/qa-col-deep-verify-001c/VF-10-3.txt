@@ -1,0 +1,9 @@
+=== Tier hierarchy ===
+Found in: /home/zaks/zakops-agent-api/apps/agent-api/app/services/retention_policy.py
+Lines 68-76: Priority: compliance > legal_hold > deal_scoped > default
+  if has_compliance_flag -> "compliance"
+  elif has_legal_hold -> "legal_hold"
+  elif scope_type == "deal" -> "deal_scoped"
+  else -> "default"
+Line 79: is_protected = tier in ("legal_hold", "compliance")
+RESULT: PASS — Correct tier hierarchy with highest protection winning

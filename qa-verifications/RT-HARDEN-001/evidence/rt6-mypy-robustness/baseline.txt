@@ -1,0 +1,8 @@
+=== mypy Baseline File ===
+Path: /home/zaks/zakops-agent-api/tools/type_baselines/mypy_baseline.txt
+Content: 83
+Created: 2026-02-06
+
+Purpose: External baseline file for the CI mypy regression gate.
+The CI step reads this file instead of using an inline constant,
+making baseline updates a single-file change without touching CI YAML.

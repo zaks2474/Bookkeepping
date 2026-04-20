@@ -1,0 +1,19 @@
+=== PRE-0.2: Agent DB Identity ===
+--- Agent: Runtime DB Identity ---
+ current_database | current_user | inet_server_addr | inet_server_port |   pg_postmaster_start_time    
+------------------+--------------+------------------+------------------+-------------------------------
+ zakops_agent     | agent        |                  |                  | 2026-02-02 10:51:10.779045+00
+(1 row)
+
+--- Agent: Data Directory ---
+      data_directory      
+--------------------------
+ /var/lib/postgresql/data
+(1 row)
+
+--- Agent: approvals table exists ---
+ approval_count 
+----------------
+              9
+(1 row)
+

@@ -1,0 +1,114 @@
+================================================================================
+AGENT-FORENSIC-004 - Phase 6 Check 6.3: Request Correlation
+================================================================================
+Date: 2026-02-03
+Auditor: Claude Opus 4.5 (Automated)
+Status: PASS
+================================================================================
+
+1. REQUEST_ID IMPLEMENTATION
+----------------------------
+Source: /home/zaks/zakops-agent-api/apps/agent-api/app/core/middleware/__init__.py
+
+LoggingContextMiddleware (Lines 10-22):
+```python
+class LoggingContextMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        # Add request ID to state for logging
+        request_id = request.headers.get("X-Request-ID", str(uuid.uuid4())[:8])
+        request.state.request_id = request_id
+
+        response = await call_next(request)
+
+        # Add request ID to response headers
+        response.headers["X-Request-ID"] = request_id
+        return response
+```
+
+Implementation details:
+- Accepts X-Request-ID from incoming request header
+- Auto-generates 8-char UUID if not provided
+- Stores in request.state.request_id for downstream access
+- Returns X-Request-ID in response headers for client correlation
+
+2. CONTEXT BINDING
+------------------
+Source: /home/zaks/zakops-agent-api/apps/agent-api/app/core/logging.py
+
+Context variables using ContextVar (Lines 98-122):
+```python
+_request_context: ContextVar[Dict[str, Any]] = ContextVar("request_context", default={})
+
+def bind_context(**kwargs: Any) -> None:
+    """Bind context variables to the current request."""
+    current = _request_context.get()
+    _request_context.set({**current, **kwargs})
+
+def clear_context() -> None:
+    """Clear all context variables for the current request."""
+    _request_context.set({})
+
+def get_context() -> Dict[str, Any]:
+    """Get the current logging context."""
+    return _request_context.get()
+```
+
+add_context_to_event_dict processor (Lines 125-141):
+- Adds bound context to every log event
+- Context survives async operations via ContextVar
+
+3. LOGGING CONTEXT MIDDLEWARE (core/middleware.py)
+--------------------------------------------------
+Source: /home/zaks/zakops-agent-api/apps/agent-api/app/core/middleware.py (Lines 58-108)
+
+LoggingContextMiddleware extracts and binds:
+- session_id: From JWT token "sub" claim
+- user_id: From request.state after authentication
+
+4. COST TRACKING INTEGRATION
+----------------------------
+Source: /home/zaks/zakops-agent-api/apps/agent-api/app/core/telemetry/cost_tracking.py
+
+CostRecord includes request_id (Line 82):
+```python
+@dataclass
+class CostRecord:
+    ...
+    request_id: str
+```
+
+All tracking functions accept request_id parameter:
+- track_llm_request() - Line 140
+- track_embedding_request() - Line 189
+- log_cost() - Line 319
+
+5. END-TO-END CORRELATION FLOW
+------------------------------
+1. Request arrives -> X-Request-ID extracted/generated (middleware/__init__.py)
+2. JWT decoded -> session_id bound to context (core/middleware.py)
+3. Auth dependency -> user_id bound to context (core/middleware.py)
+4. Log events -> Context auto-injected (core/logging.py add_context_to_event_dict)
+5. Response -> X-Request-ID header returned
+
+6. EVIDENCE FROM CODE SEARCH
+----------------------------
+Grep results for "request_id" usage:
+- app/core/middleware/__init__.py:15-21 - Request ID handling
+- app/core/telemetry/cost_tracking.py:82,140,189,319 - Cost tracking
+- tests/test_cost_tracking.py - Unit tests with request_id
+- README.md:307 - Documentation
+
+GAPS IDENTIFIED:
+- request_id is stored in request.state but NOT automatically bound to logging context
+- Manual binding required at endpoint level for request_id to appear in logs
+- Cost tracking uses request_id but it's passed explicitly, not from context
+
+RESULT: PASS (with minor observation)
+- X-Request-ID correlation: IMPLEMENTED (header in/out)
+- session_id/user_id binding: IMPLEMENTED (auto from JWT/auth)
+- request_id in logs: PARTIAL (available but not auto-bound)
+- End-to-end correlation: ACHIEVABLE via X-Request-ID header
+
+The implementation provides correlation capability. Request ID propagation
+through logging context could be improved but current implementation is
+functional for tracing requests end-to-end via headers.

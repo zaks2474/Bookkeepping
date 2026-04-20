@@ -1,0 +1,11 @@
+=== CHECK 4.2.6: Verify no tool_execution for rejected approval ===
+Approval ID: 4d05f27e-9caf-4be8-8375-5b70ea8c568d
+Timestamp: 2026-02-03T13:09:00-06:00
+
+time="2026-02-03T13:09:00-06:00" level=warning msg="/home/zaks/zakops-agent-api/apps/agent-api/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-02-03T13:09:00-06:00" level=warning msg="The \"OPENAI_API_KEY\" variable is not set. Defaulting to a blank string."
+ count 
+-------
+     0
+(1 row)
+

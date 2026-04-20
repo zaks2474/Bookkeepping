@@ -1,0 +1,2 @@
+    def inject_canary(
+def inject_canary(text: str, source_id: str, deal_id: str = "", sensitivity: str = "high") -> str:

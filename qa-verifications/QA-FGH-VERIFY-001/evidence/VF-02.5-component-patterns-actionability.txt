@@ -1,0 +1,9 @@
+=== VF-02.5 COMPONENT-PATTERNS ACTIONABILITY ===
+13:- Keep `"use client"` components as leaf nodes — push interactivity down, keep data-fetching parents as server components
+14:- File convention: client components in the same directory, named descriptively (e.g., `DealCardActions.tsx` as the client child of `DealCard.tsx`)
+17:- Every data-dependent component must handle three states: loading, empty, and error
+18:- Loading: use Suspense boundaries with `loading.tsx` files at the route level, or skeleton components at the component level
+19:- Empty: explicit empty-state UI with guidance (not just blank space) — e.g., "No deals found. Create your first deal."
+20:- Error: use `error.tsx` boundaries at the route level; component-level try/catch for server components; error boundaries for client components
+31:- Props flow down, events flow up — no prop drilling beyond 2 levels; use Context or composition instead
+40:- Children-based composition over configuration props: `<Layout sidebar={<Sidebar />}>` over `<Layout showSidebar sidebarItems={[...]} />`

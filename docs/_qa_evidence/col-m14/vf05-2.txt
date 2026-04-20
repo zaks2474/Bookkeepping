@@ -1,0 +1,398 @@
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:957:        Dict with score, status, factors, and recommendations
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:961:    recommendations = []
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:994:                recommendations.append(f"Deal has been in {stage} for too long. Consider advancing or archiving.")
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:1000:                recommendations.append(f"Deal approaching time threshold in {stage}. Review progress.")
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:1020:            recommendations.append("No recent activity. Add a note or update to show progress.")
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:1046:        recommendations.append(f"Complete missing information: {', '.join(missing_fields)}")
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:1057:            recommendations.append("Add diligence notes to document findings.")
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:1064:            recommendations.append("Set estimated deal value for proper tracking.")
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:1085:        "recommendations": recommendations,
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/tools/deal_tools.py:1099:    """R3 REMEDIATION [P4.3]: Get health score and recommendations for a deal.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/passlib/totp.py:1308:    #       all of which must validate; per RFC recommendation.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/urllib3/connection.py:430:            # Otherwise we go off the recommendation of 'body_to_chunks()'.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/urllib3/util/request.py:206:    # No body, we need to make a recommendation on 'Content-Length'
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/opentelemetry/metrics/_internal/instrument.py:359:    histograms, summaries, and percentile.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/opentelemetry/semconv/resource/__init__.py:586:    Note: MUST be unique for each instance of the same `service.namespace,service.name` pair (in other words `service.namespace,service.name,service.instance.id` triplet MUST be globally unique). The ID helps to distinguish instances of the same service that exist at the same time (e.g. instances of a horizontally scaled service). It is preferable for the ID to be persistent and stay the same for the lifetime of the service instance, however it is acceptable that the ID is ephemeral and changes during important lifetime events for the service (e.g. service restarts). If the service has no inherent unique ID that can be used as the value of this attribute it is recommended to generate a random Version 1 or Version 4 RFC 4122 UUID (services aiming for reproducible UUIDs may also use Version 5, see RFC 4122 for more recommendations).
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/pathspec/gitignore.py:31:673 recommendation.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/pathspec/pathspec.py:35:recommendation.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langsmith/schemas.py:789:    """The median (50th percentile) latency for the project."""
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langsmith/schemas.py:791:    """The 99th percentile latency for the project."""
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langsmith/schemas.py:813:    """The median (50th percentile) time to process the first token."""
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langsmith/schemas.py:815:    """The 99th percentile time to process the first token."""
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langsmith/schemas.py:1282:    """The median (50th percentile) latency for the project."""
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langsmith/schemas.py:1284:    """The 99th percentile latency for the project."""
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langsmith/schemas.py:1302:    """The median (50th percentile) time to process the first token."""
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langsmith/schemas.py:1304:    """The 99th percentile time to process the first token."""
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langsmith/client.py:1027:                    recommendation = (
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langsmith/client.py:1040:                            recommendation = size_rec
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langsmith/client.py:1053:                        f" in LangSmith API. {recommendation}"
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/vectorstores/duckdb.py:122:                "security recommendations on configuring the connection."
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/langchain_community/tools/google_books.py:25:        "books of certain topics and generate recommendation based "
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/mysql/mysqldb.py:33:Please see :ref:`mysql_unicode` for current recommendations on unicode
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/dialects/mysql/pymysql.py:21:Please see :ref:`mysql_unicode` for current recommendations on unicode
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/functions.py:477:        set aggregate" functions, including :class:`.percentile_cont`,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/functions.py:1198:        def percentile_cont(self) -> Type[percentile_cont[Any]]: ...
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/functions.py:1201:        def percentile_disc(self) -> Type[percentile_disc[Any]]: ...
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/functions.py:1920:class percentile_cont(OrderedSetAgg[_T]):
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/functions.py:1921:    """Implement the ``percentile_cont`` ordered-set aggregate function.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/functions.py:1936:class percentile_disc(OrderedSetAgg[_T]):
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/functions.py:1937:    """Implement the ``percentile_disc`` ordered-set aggregate function.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/_elements_constructors.py:1840:    set aggregate" functions, including :class:`.percentile_cont`,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/_elements_constructors.py:1850:            func.percentile_cont(0.5).within_group(department.c.salary.desc()),
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/_elements_constructors.py:1854:    ``SELECT department.id, percentile_cont(0.5)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/elements.py:4318:    set aggregate" functions, including ``percentile_cont()``,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/openai/lib/_validators.py:181:                        f"The indices of the long examples has changed as a result of a previously applied recommendation.\nThe {len(long_indexes_to_drop)} long examples to be dropped are now at the following indices: {long_indexes_to_drop}\n"
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/async_qdrant_client.py:442:        """Universal endpoint to run any available operation, such as search, recommendation, discovery, context search.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/async_qdrant_client.py:488:                Defines a location (collection and vector field name), used to lookup vectors for recommendations,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/async_qdrant_client.py:614:        """Universal endpoint to group on any available operation, such as search, recommendation, discovery, context search.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/async_qdrant_client.py:914:        This functionality is especially useful for recommendation over existing collection of points.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/async_qdrant_client.py:956:                Name of the vectors to use for recommendations.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/async_qdrant_client.py:959:                Defines a location (collection and vector field name), used to lookup vectors for recommendations.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/async_qdrant_client.py:972:                Strategy to use for recommendation.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/async_qdrant_client.py:973:                Strategy defines how to combine multiple examples into a recommendation query.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/async_qdrant_client.py:1171:                Name of the vectors to use for recommendations.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/async_qdrant_client.py:1174:                Defines a location (collection and vector field name), used to lookup vectors for recommendations.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/async_qdrant_client.py:1192:                Strategy to use for recommendation.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/async_qdrant_client.py:1193:                Strategy defines how to combine multiple examples into a recommendation query.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/async_qdrant_client.py:1291:                Define which vector to use for recommendation, if not specified - try to use default vector.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:661:        description="Define which vector to use for recommendation, if not specified - try to use default vector",
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:2123:        description="Define which vector to use for recommendation, if not specified - try to use default vector",
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/http/models/models.py:2189:        description="Define which vector to use for recommendation, if not specified - try to use default vector",
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/qdrant_client.py:467:        """Universal endpoint to run any available operation, such as search, recommendation, discovery, context search.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/qdrant_client.py:513:                Defines a location (collection and vector field name), used to lookup vectors for recommendations,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/qdrant_client.py:644:        """Universal endpoint to group on any available operation, such as search, recommendation, discovery, context search.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/qdrant_client.py:951:        This functionality is especially useful for recommendation over existing collection of points.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/qdrant_client.py:993:                Name of the vectors to use for recommendations.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/qdrant_client.py:996:                Defines a location (collection and vector field name), used to lookup vectors for recommendations.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/qdrant_client.py:1009:                Strategy to use for recommendation.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/qdrant_client.py:1010:                Strategy defines how to combine multiple examples into a recommendation query.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/qdrant_client.py:1213:                Name of the vectors to use for recommendations.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/qdrant_client.py:1216:                Defines a location (collection and vector field name), used to lookup vectors for recommendations.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/qdrant_client.py:1234:                Strategy to use for recommendation.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/qdrant_client.py:1235:                Strategy defines how to combine multiple examples into a recommendation query.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/qdrant_client.py:1334:                Define which vector to use for recommendation, if not specified - try to use default vector.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/embed/_inspection_cache.py:2899:                "description": "Define which vector to use for recommendation, if not specified - try to use default vector",
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/qdrant_client/embed/_inspection_cache.py:3730:                "description": "Define which vector to use for recommendation, if not specified - try to use default vector",
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/ddgs/http_client2.py:77:DEFAULT_CIPHERS = [  # https://developers.cloudflare.com/ssl/reference/cipher-suites/recommendations/
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:40:    'select', 'piecewise', 'trim_zeros', 'copy', 'iterable', 'percentile',
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:51:# compute quantile/percentile.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:53:# Below virtual_index refers to the index of the element where the percentile
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:55:# When the sample contains exactly the percentile wanted, the virtual_index is
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:57:# When the percentile wanted is in between two elements, the virtual_index
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:3961:    mean, percentile
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:4006:    # can't be reasonably be implemented in terms of percentile as we have to
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:4061:def _percentile_dispatcher(a, q, axis=None, out=None, overwrite_input=None,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:4067:@array_function_dispatch(_percentile_dispatcher)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:4068:def percentile(a,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:4079:    Compute the q-th percentile of the data along the specified axis.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:4081:    Returns the q-th percentile(s) of the array elements.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:4088:        Percentage or sequence of percentages for the percentiles to compute.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:4091:        Axis or axes along which the percentiles are computed. The
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:4092:        default is to compute the percentile(s) along a flattened
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:4104:        percentile.  There are many different methods, some unique to NumPy.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:4137:        `a` contributes to the percentile according to its associated weight.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:4154:    percentile : scalar or ndarray
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:4155:        If `q` is a single percentile and `axis=None`, then the result
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:4156:        is a scalar. If multiple percentiles are given, first axis of
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:4157:        the result corresponds to the percentiles. The other axes are
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:4167:    median : equivalent to ``percentile(..., 50)``
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:4168:    nanpercentile
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:4169:    quantile : equivalent to percentile, except q in the range [0, 1].
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:4173:    The behavior of `numpy.percentile` with percentage `q` is
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:4184:    >>> np.percentile(a, 50)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:4186:    >>> np.percentile(a, 50, axis=0)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:4188:    >>> np.percentile(a, 50, axis=1)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:4190:    >>> np.percentile(a, 50, axis=1, keepdims=True)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:4194:    >>> m = np.percentile(a, 50, axis=0)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:4196:    >>> np.percentile(a, 50, axis=0, out=out)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:4202:    >>> np.percentile(b, 50, axis=1, overwrite_input=True)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:4229:                p, np.percentile(a, p, method=method),
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:4234:            ylabel='Estimated percentile value',
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:4249:            method, interpolation, "percentile")
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:4383:    percentile : equivalent to quantile, but with q in the range [0, 100].
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:4500:    See also `numpy.percentile` for a visualization of most methods.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:4621:        The indexes where the percentile is supposed to be found in the sorted
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:4782:    See nanpercentile for parameter usage
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_nanfunctions_impl.py:20:- `nanpercentile` -- qth percentile of non-NaN values
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_nanfunctions_impl.py:38:    'nanmedian', 'nanpercentile', 'nanvar', 'nanstd', 'nanprod',
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_nanfunctions_impl.py:1176:    mean, median, percentile
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_nanfunctions_impl.py:1222:def _nanpercentile_dispatcher(
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_nanfunctions_impl.py:1228:@array_function_dispatch(_nanpercentile_dispatcher)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_nanfunctions_impl.py:1229:def nanpercentile(
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_nanfunctions_impl.py:1242:    Compute the qth percentile of the data along the specified axis,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_nanfunctions_impl.py:1245:    Returns the qth percentile(s) of the array elements.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_nanfunctions_impl.py:1253:        Percentile or sequence of percentiles to compute, which must be
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_nanfunctions_impl.py:1256:        Axis or axes along which the percentiles are computed. The default
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_nanfunctions_impl.py:1257:        is to compute the percentile(s) along a flattened version of the
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_nanfunctions_impl.py:1270:        percentile.  There are many different methods, some unique to NumPy.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_nanfunctions_impl.py:1309:        `a` contributes to the percentile according to its associated weight.
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_nanfunctions_impl.py:1325:    percentile : scalar or ndarray
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_nanfunctions_impl.py:1326:        If `q` is a single percentile and `axis=None`, then the result
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_nanfunctions_impl.py:1327:        is a scalar. If multiple percentiles are given, first axis of
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_nanfunctions_impl.py:1328:        the result corresponds to the percentiles. The other axes are
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_nanfunctions_impl.py:1338:    nanmedian : equivalent to ``nanpercentile(..., 50)``
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_nanfunctions_impl.py:1339:    percentile, median, mean
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_nanfunctions_impl.py:1340:    nanquantile : equivalent to nanpercentile, except q in range [0, 1].
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_nanfunctions_impl.py:1344:    The behavior of `numpy.nanpercentile` with percentage `q` is that of
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_nanfunctions_impl.py:1356:    >>> np.percentile(a, 50)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_nanfunctions_impl.py:1358:    >>> np.nanpercentile(a, 50)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_nanfunctions_impl.py:1360:    >>> np.nanpercentile(a, 50, axis=0)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_nanfunctions_impl.py:1362:    >>> np.nanpercentile(a, 50, axis=1, keepdims=True)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_nanfunctions_impl.py:1365:    >>> m = np.nanpercentile(a, 50, axis=0)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_nanfunctions_impl.py:1367:    >>> np.nanpercentile(a, 50, axis=0, out=out)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_nanfunctions_impl.py:1373:    >>> np.nanpercentile(b, 50, axis=1, overwrite_input=True)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_nanfunctions_impl.py:1386:            method, interpolation, "nanpercentile")
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_nanfunctions_impl.py:1529:    nanpercentile : same as nanquantile, but with q in the range [0, 100].
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_nanfunctions_impl.py:1616:    # apply_along_axis in _nanpercentile doesn't handle empty arrays well,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_nanfunctions_impl.py:1643:    See nanpercentile for parameter usage
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_nanfunctions_impl.py:1655:            # Move those axes to the beginning to match percentile's
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_nanfunctions_impl.py:1691:    See nanpercentile for parameter usage
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3148:        assert_equal(np.percentile(x, 0), 0.)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3149:        assert_equal(np.percentile(x, 100), 3.5)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3150:        assert_equal(np.percentile(x, 50), 1.75)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3152:        assert_equal(np.percentile(x, 0), np.nan)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3153:        assert_equal(np.percentile(x, 0, method='nearest'), np.nan)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3154:        assert_equal(np.percentile(x, 0, method='inverted_cdf'), np.nan)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3156:            np.percentile(x, 0, method='inverted_cdf',
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3164:        p = np.percentile(x, Fraction(0))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3168:        p = np.percentile(x, Fraction(100))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3172:        p = np.percentile(x, Fraction(50))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3176:        p = np.percentile(x, [Fraction(50)])
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3182:        np.percentile(d, 5, None, None, False)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3183:        np.percentile(d, 5, None, None, False, 'linear')
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3185:        np.percentile(d, 5, None, o, False, 'linear')
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3189:        assert_raises(TypeError, np.percentile, arr_c, 0.5)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3191:        assert_raises(TypeError, np.percentile, arr_c, 0.5)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3193:        assert_raises(TypeError, np.percentile, arr_c, 0.5)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3201:        assert_array_equal(np.percentile(x, 50, axis=0), [1, 1, 1])
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3207:        res = np.percentile(
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3224:                              (np.percentile, 40.0)])
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3278:        assert_equal(np.percentile(np.arange(10, dtype=dtype), 50,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3280:        assert_equal(np.percentile(np.arange(10, dtype=dtype), 50,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3285:        assert_equal(np.percentile(np.arange(10, dtype=dtype), 51,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3287:        assert_equal(np.percentile(np.arange(9, dtype=dtype) + 1, 50,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3289:        assert_equal(np.percentile(np.arange(11, dtype=dtype), 51,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3291:        assert_equal(np.percentile(np.arange(11, dtype=dtype), 50,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3296:        assert_equal(np.percentile(np.arange(10, dtype=dtype), 51,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3298:        assert_equal(np.percentile(np.arange(10, dtype=dtype), 49,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3304:        actual = np.percentile(arr, 100)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3307:        actual = np.percentile(arr, 0)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3312:        assert_equal(np.percentile(x, [0, 100, 50]), [0, 3.5, 1.75])
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3317:        assert_equal(np.percentile(x, (25, 50, 100)), [2.75, 5.5, 11.0])
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3320:        assert_equal(np.percentile(x, (25, 50, 100), axis=0), r0)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3323:        assert_equal(np.percentile(x, (25, 50, 100), axis=1), np.array(r1).T)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3325:        # ensure qth axis is always first as with np.array(old_percentile(..))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3327:        assert_equal(np.percentile(x, (25, 50)).shape, (2,))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3328:        assert_equal(np.percentile(x, (25, 50, 75)).shape, (3,))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3329:        assert_equal(np.percentile(x, (25, 50), axis=0).shape, (2, 4, 5, 6))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3330:        assert_equal(np.percentile(x, (25, 50), axis=1).shape, (2, 3, 5, 6))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3331:        assert_equal(np.percentile(x, (25, 50), axis=2).shape, (2, 3, 4, 6))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3332:        assert_equal(np.percentile(x, (25, 50), axis=3).shape, (2, 3, 4, 5))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3334:            np.percentile(x, (25, 50, 75), axis=1).shape, (3, 3, 5, 6))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3335:        assert_equal(np.percentile(x, (25, 50),
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3337:        assert_equal(np.percentile(x, (25, 50, 75),
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3339:        assert_equal(np.percentile(x, (25, 50), axis=0,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3341:        assert_equal(np.percentile(x, (25, 50), axis=1,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3343:        assert_equal(np.percentile(x, (25, 50), axis=2,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3345:        assert_equal(np.percentile(x, (25, 50), axis=3,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3347:        assert_equal(np.percentile(x, (25, 50, 75), axis=1,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3351:        # test for no empty dimensions for compatibility with old percentile
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3353:        assert_equal(np.percentile(x, 50), 5.5)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3354:        assert_(np.isscalar(np.percentile(x, 50)))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3356:        assert_equal(np.percentile(x, 50, axis=0), r0)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3357:        assert_equal(np.percentile(x, 50, axis=0).shape, r0.shape)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3359:        assert_almost_equal(np.percentile(x, 50, axis=1), r1)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3360:        assert_equal(np.percentile(x, 50, axis=1).shape, r1.shape)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3363:        assert_equal(np.percentile(x, 50, out=out), 5.5)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3366:        assert_equal(np.percentile(x, 50, axis=0, out=out), r0)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3369:        assert_equal(np.percentile(x, 50, axis=1, out=out), r1)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3372:        # test for no empty dimensions for compatibility with old percentile
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3374:        assert_equal(np.percentile(x, 50, method='lower'), 5.)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3375:        assert_(np.isscalar(np.percentile(x, 50)))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3377:        c0 = np.percentile(x, 50, method='lower', axis=0)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3381:        c1 = np.percentile(x, 50, method='lower', axis=1)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3386:        c = np.percentile(x, 50, method='lower', out=out)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3390:        c = np.percentile(x, 50, method='lower', axis=0, out=out)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3394:        c = np.percentile(x, 50, method='lower', axis=1, out=out)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3399:        assert_raises(ValueError, np.percentile, [1, 2], 56,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3401:        assert_raises(ValueError, np.percentile, [1], 101)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3402:        assert_raises(ValueError, np.percentile, [1], -1)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3403:        assert_raises(ValueError, np.percentile, [1], list(range(50)) + [101])
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3404:        assert_raises(ValueError, np.percentile, [1], list(range(50)) + [-0.1])
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3406:    def test_percentile_list(self):
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3407:        assert_equal(np.percentile([1, 2, 3], 0), 1)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3410:        "percentile, with_weights",
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3412:            (np.percentile, False),
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3413:            (partial(np.percentile, method="inverted_cdf"), True),
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3416:    def test_percentile_out(self, percentile, with_weights):
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3422:        r = percentile(x, p, out=y, weights=weights)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3424:        assert_equal(percentile(x, p, weights=weights), y)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3430:        r = percentile(x, p, axis=0, out=y, weights=weights)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3432:        assert_equal(percentile(x, p, weights=weights, axis=0), y)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3435:        percentile(x, p, axis=1, out=y, weights=weights)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3436:        assert_equal(percentile(x, p, weights=weights, axis=1), y)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3447:            percentile(x, (25, 50), axis=0, out=out, weights=weights), r0
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3452:        assert_equal(np.percentile(x, (25, 50), axis=1, out=out), r1)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3458:        c = np.percentile(x, (25, 50), method='lower', axis=0, out=out)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3463:        c = np.percentile(x, (25, 50), method='lower', axis=1, out=out)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3467:    def test_percentile_empty_dim(self):
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3470:        assert_array_equal(np.percentile(d, 50, axis=0).shape, (1, 2, 1))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3471:        assert_array_equal(np.percentile(d, 50, axis=1).shape, (11, 2, 1))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3472:        assert_array_equal(np.percentile(d, 50, axis=2).shape, (11, 1, 1))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3473:        assert_array_equal(np.percentile(d, 50, axis=3).shape, (11, 1, 2))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3474:        assert_array_equal(np.percentile(d, 50, axis=-1).shape, (11, 1, 2))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3475:        assert_array_equal(np.percentile(d, 50, axis=-2).shape, (11, 1, 1))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3476:        assert_array_equal(np.percentile(d, 50, axis=-3).shape, (11, 2, 1))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3477:        assert_array_equal(np.percentile(d, 50, axis=-4).shape, (1, 2, 1))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3479:        assert_array_equal(np.percentile(d, 50, axis=2,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3482:        assert_array_equal(np.percentile(d, 50, axis=-2,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3486:        assert_array_equal(np.array(np.percentile(d, [10, 50], axis=0)).shape,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3488:        assert_array_equal(np.array(np.percentile(d, [10, 50], axis=1)).shape,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3490:        assert_array_equal(np.array(np.percentile(d, [10, 50], axis=2)).shape,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3492:        assert_array_equal(np.array(np.percentile(d, [10, 50], axis=3)).shape,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3495:    def test_percentile_no_overwrite(self):
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3497:        np.percentile(a, [50], overwrite_input=False)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3501:        np.percentile(a, [50])
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3506:        np.percentile(np.arange(100.), p, method="midpoint")
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3509:        np.percentile(np.arange(100.), p, method="midpoint")
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3512:    def test_percentile_overwrite(self):
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3514:        b = np.percentile(a, [50], overwrite_input=True)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3517:        b = np.percentile([2, 3, 4, 1], [50], overwrite_input=True)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3523:        assert_equal(np.percentile(x, 30, axis=(0, 1)), np.percentile(o, 30))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3525:        assert_equal(np.percentile(x, 30, axis=(-2, -1)), np.percentile(o, 30))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3527:        assert_equal(np.percentile(x, 30, axis=(0, -1)), np.percentile(o, 30))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3530:        assert_equal(np.percentile(x, [25, 60], axis=(0, 1, 2)),
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3531:                     np.percentile(x, [25, 60], axis=None))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3532:        assert_equal(np.percentile(x, [25, 60], axis=(0,)),
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3533:                     np.percentile(x, [25, 60], axis=0))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3537:        assert_equal(np.percentile(d, 25,  axis=(0, 1, 2))[0],
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3538:                     np.percentile(d[:,:,:, 0].flatten(), 25))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3539:        assert_equal(np.percentile(d, [10, 90], axis=(0, 1, 3))[:, 1],
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3540:                     np.percentile(d[:,:, 1,:].flatten(), [10, 90]))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3541:        assert_equal(np.percentile(d, 25, axis=(3, 1, -4))[2],
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3542:                     np.percentile(d[:,:, 2,:].flatten(), 25))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3543:        assert_equal(np.percentile(d, 25, axis=(3, 1, 2))[2],
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3544:                     np.percentile(d[2,:,:,:].flatten(), 25))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3545:        assert_equal(np.percentile(d, 25, axis=(3, 2))[2, 1],
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3546:                     np.percentile(d[2, 1,:,:].flatten(), 25))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3547:        assert_equal(np.percentile(d, 25, axis=(1, -2))[2, 1],
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3548:                     np.percentile(d[2,:,:, 1].flatten(), 25))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3549:        assert_equal(np.percentile(d, 25, axis=(1, 3))[2, 2],
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3550:                     np.percentile(d[2,:, 2,:].flatten(), 25))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3554:        assert_raises(AxisError, np.percentile, d, axis=-5, q=25)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3555:        assert_raises(AxisError, np.percentile, d, axis=(0, -5), q=25)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3556:        assert_raises(AxisError, np.percentile, d, axis=4, q=25)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3557:        assert_raises(AxisError, np.percentile, d, axis=(0, 4), q=25)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3559:        assert_raises(ValueError, np.percentile, d, axis=(1, 1), q=25)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3560:        assert_raises(ValueError, np.percentile, d, axis=(-1, -1), q=25)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3561:        assert_raises(ValueError, np.percentile, d, axis=(3, -1), q=25)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3565:        assert_equal(np.percentile(d, 7, axis=None, keepdims=True).shape,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3567:        assert_equal(np.percentile(d, 7, axis=(0, 1), keepdims=True).shape,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3569:        assert_equal(np.percentile(d, 7, axis=(0, 3), keepdims=True).shape,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3571:        assert_equal(np.percentile(d, 7, axis=(1,), keepdims=True).shape,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3573:        assert_equal(np.percentile(d, 7, (0, 1, 2, 3), keepdims=True).shape,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3575:        assert_equal(np.percentile(d, 7, axis=(0, 1, 3), keepdims=True).shape,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3578:        assert_equal(np.percentile(d, [1, 7], axis=(0, 1, 3),
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3580:        assert_equal(np.percentile(d, [1, 7], axis=(0, 3),
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3605:        result = np.percentile(d, q, axis=axis, keepdims=True, out=out)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3612:        assert_equal(np.percentile(d, 0, 0, out=o), o)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3613:        assert_equal(np.percentile(d, 0, 0, method='nearest', out=o), o)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3615:        assert_equal(np.percentile(d, 1, 1, out=o), o)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3616:        assert_equal(np.percentile(d, 1, 1, method='nearest', out=o), o)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3619:        assert_equal(np.percentile(d, 2, out=o), o)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3620:        assert_equal(np.percentile(d, 2, method='nearest', out=o), o)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3638:            assert_equal(np.percentile(d, 0, 0, out=o, **kwargs), o)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3641:            assert_equal(np.percentile(d, 1, 1, out=o, **kwargs), o)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3644:            assert_equal(np.percentile(d, 1, out=o, **kwargs), o)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3649:        assert_equal(np.percentile(a, 0.3), np.nan)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3650:        assert_equal(np.percentile(a, 0.3, axis=0), np.nan)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3651:        assert_equal(np.percentile(a, [0.3, 0.6], axis=0),
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3659:        assert_equal(np.percentile(a, 0.3), np.nan)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3660:        assert_equal(np.percentile(a, 0.3).ndim, 0)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3663:        b = np.percentile(np.arange(24, dtype=float).reshape(2, 3, 4), 0.3, 0)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3666:        assert_equal(np.percentile(a, 0.3, 0), b)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3669:        b = np.percentile(np.arange(24, dtype=float).reshape(2, 3, 4),
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3673:        assert_equal(np.percentile(a, [0.3, 0.6], 0), b)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3676:        b = np.percentile(np.arange(24, dtype=float).reshape(2, 3, 4), 0.3, 1)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3679:        assert_equal(np.percentile(a, 0.3, 1), b)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3681:        b = np.percentile(
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3685:        assert_equal(np.percentile(a, [0.3, 0.6], 1), b)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3688:        b = np.percentile(
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3692:        assert_equal(np.percentile(a, 0.3, (0, 2)), b)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3694:        b = np.percentile(np.arange(24, dtype=float).reshape(2, 3, 4),
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3698:        assert_equal(np.percentile(a, [0.3, 0.6], (0, 2)), b)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3700:        b = np.percentile(np.arange(24, dtype=float).reshape(2, 3, 4),
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3704:        assert_equal(np.percentile(
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3710:            np.percentile([1, 2, 3, 4.0], np.nan)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3712:            np.percentile([1, 2, 3, 4.0], [np.nan])
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3716:            np.percentile([1, 2, 3, 4.0], q)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3725:        res = np.percentile(a, 30)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3728:        res = np.percentile(a, [30, 60])
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:3734:        res = np.percentile(a, 30, axis=0)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_function_base.py:4444:        res = np.percentile(a, [30, 60])
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:54:        np.nanpercentile: np.percentile,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:407:        [(np.nanquantile, np.quantile), (np.nanpercentile, np.percentile)],
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:408:        ids=["nanquantile", "nanpercentile"],
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1044:        np.nanpercentile(ndat, 30)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1050:            tgt = np.percentile(mat, 70, axis=axis, out=None,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1052:            res = np.nanpercentile(mat, 70, axis=axis, out=None,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1063:            res = np.nanpercentile(d, 90, axis=None, keepdims=True)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1065:            res = np.nanpercentile(d, 90, axis=(0, 1), keepdims=True)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1067:            res = np.nanpercentile(d, 90, axis=(0, 3), keepdims=True)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1069:            res = np.nanpercentile(d, 90, axis=(1,), keepdims=True)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1071:            res = np.nanpercentile(d, 90, axis=(0, 1, 2, 3), keepdims=True)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1073:            res = np.nanpercentile(d, 90, axis=(0, 1, 3), keepdims=True)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1103:        result = np.nanpercentile(d, q, axis=axis, keepdims=True, out=out)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1120:        tgt = np.percentile(mat, 42, axis=1, **w_args)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1121:        res = np.nanpercentile(nan_mat, 42, axis=1, out=resout, **nan_w_args)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1126:        tgt = np.percentile(mat, 42, axis=None, **w_args)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1127:        res = np.nanpercentile(
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1132:        res = np.nanpercentile(
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1140:        assert_raises(TypeError, np.nanpercentile, arr_c, 0.5)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1142:        assert_raises(TypeError, np.nanpercentile, arr_c, 0.5)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1144:        assert_raises(TypeError, np.nanpercentile, arr_c, 0.5)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1150:            percentile = partial(np.percentile, method="inverted_cdf")
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1151:            nanpercentile = partial(np.nanpercentile, method="inverted_cdf")
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1157:            percentile = np.percentile
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1158:            nanpercentile = np.nanpercentile
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1163:        tgt = [percentile(d, 28, weights=gen_weights(d)) for d in _rdat]
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1165:        res = nanpercentile(_ndat, 28, axis=1,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1168:        # Transpose the array to fit the output convention of numpy.percentile
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1169:        tgt = np.transpose([percentile(d, (28, 98), weights=gen_weights(d))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1172:        res = nanpercentile(_ndat, (28, 98), axis=1,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1188:            out = np.nanpercentile(array, 60, axis=axis)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1197:                assert_(np.isnan(np.nanpercentile(mat, 40, axis=axis)).all())
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1203:                assert_equal(np.nanpercentile(mat, 40, axis=axis), np.zeros([]))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1207:        assert_equal(np.nanpercentile(0., 100), 0.)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1209:        r = np.nanpercentile(a, 50, axis=0)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1215:        assert_raises(AxisError, np.nanpercentile, d, q=5, axis=-5)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1216:        assert_raises(AxisError, np.nanpercentile, d, q=5, axis=(0, -5))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1217:        assert_raises(AxisError, np.nanpercentile, d, q=5, axis=4)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1218:        assert_raises(AxisError, np.nanpercentile, d, q=5, axis=(0, 4))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1219:        assert_raises(ValueError, np.nanpercentile, d, q=5, axis=(1, 1))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1221:    def test_multiple_percentiles(self):
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1233:                    val = np.percentile(mat, perc, axis=axis, keepdims=keepdim)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1234:                    nan_val = np.nanpercentile(nan_mat, perc, axis=axis,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1238:                    val = np.percentile(large_mat, perc, axis=axis,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1240:                    nan_val = np.nanpercentile(large_mat, perc, axis=axis,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1246:            np.nanpercentile(megamat, perc, axis=(1, 2)).shape, (2, 3, 6)
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1253:        q_unweighted = np.nanpercentile(x, 50, method="inverted_cdf")
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1258:        q_weighted = np.nanpercentile(x, 50, weights=w, method="inverted_cdf")
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1277:        # For comparison use weighted normal percentile with nan weights at
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1279:        # sufficiently so (if a percentile lies exactly on a 0 value).
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1281:        p_expected = np.percentile(
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1284:        p_unweighted = np.nanpercentile(
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1290:        p_weighted = np.nanpercentile(
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1295:        res = np.nanpercentile(
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1315:                     np.nanpercentile(ar, q=50, **w_args))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1317:                     np.nanpercentile(ar, q=50, axis=0, **w_args))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1319:                     np.nanpercentile(ar, q=50, axis=1, **w_args))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1321:                     np.nanpercentile(ar, q=[50], axis=1, **w_args))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/tests/test_nanfunctions.py:1323:                     np.nanpercentile(ar, q=[25, 50, 75], axis=1, **w_args))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/lib/_histograms_impl.py:225:    iqr = np.subtract(*np.percentile(x, [75, 25]))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/_core/tests/test_regression.py:2257:    def test_empty_percentile(self):
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/_core/tests/test_regression.py:2259:        assert_array_equal(np.percentile(np.arange(10), []), np.array([]))
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/_core/tests/test_deprecations.py:495:        [np.percentile, np.quantile, np.nanpercentile, np.nanquantile])
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/_core/tests/test_deprecations.py:503:            [np.percentile, np.quantile, np.nanpercentile, np.nanquantile])
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/__init__.py:188:        nanmedian, nanmin, nanpercentile, nanprod, nanquantile, nanstd,
+/home/zaks/zakops-agent-api/apps/agent-api/.venv/lib/python3.13/site-packages/numpy/__init__.py:192:        select, piecewise, trim_zeros, copy, iterable, percentile, diff,

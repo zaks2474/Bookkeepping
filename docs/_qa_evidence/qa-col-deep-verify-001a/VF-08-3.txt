@@ -1,0 +1,8 @@
+Lines 175-186:
+  if score >= 80: color='green', label='accelerating'
+  elif score >= 50: color='blue', label='on_track'
+  elif score >= 20: color='amber', label='slowing'
+  else: color='red', label='stalled'
+---
+Bands: green(80-100), blue(50-79), amber(20-49), red(0-19)
+VERDICT: PASS

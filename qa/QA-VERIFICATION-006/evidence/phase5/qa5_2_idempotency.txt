@@ -1,0 +1,22 @@
+=== QA-5.2: T4.2 Idempotency ===
+--- idempotency_keys table ---
+                                    Table "zakops.idempotency_keys"
+        Column         |           Type           | Collation | Nullable |           Default            
+-----------------------+--------------------------+-----------+----------+------------------------------
+ id                    | uuid                     |           | not null | gen_random_uuid()
+ idempotency_key       | character varying(255)   |           | not null | 
+ request_hash          | character varying(64)    |           | not null | 
+ endpoint              | character varying(255)   |           |          | 
+ method                | character varying(10)    |           |          | 
+ response_status       | integer                  |           |          | 
+ response_body         | jsonb                    |           |          | 
+ created_at            | timestamp with time zone |           | not null | now()
+ expires_at            | timestamp with time zone |           | not null | now() + '24:00:00'::interval
+ is_processing         | boolean                  |           |          | false
+ processing_started_at | timestamp with time zone |           |          | 
+Indexes:
+    "idempotency_keys_pkey" PRIMARY KEY, btree (id)
+    "idempotency_keys_idempotency_key_key" UNIQUE CONSTRAINT, btree (idempotency_key)
+    "idx_idempotency_expires" btree (expires_at)
+    "idx_idempotency_key" btree (idempotency_key)
+

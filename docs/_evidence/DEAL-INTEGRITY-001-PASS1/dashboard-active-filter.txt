@@ -1,0 +1,35 @@
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/diligence/DiligenceChecklist.tsx:201:    const activeItems = allItems.filter((i) => i.status !== 'na');
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/diligence/DiligenceChecklist.tsx:203:    const completed = activeItems.filter((i) => i.status === 'complete').length;
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/diligence/DiligenceChecklist.tsx:204:    const blocked = activeItems.filter((i) => i.status === 'blocked').length;
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/diligence/DiligenceChecklist.tsx:205:    const overdue = activeItems.filter(
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/diligence/DiligenceChecklist.tsx:442:    const activeItems = items.filter((i) => i.status !== 'na');
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/diligence/DiligenceChecklist.tsx:444:    const completed = activeItems.filter((i) => i.status === 'complete').length;
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/diligence/DiligenceChecklist.tsx:445:    const blocked = activeItems.filter((i) => i.status === 'blocked').length;
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/diligence/DiligenceProgress.tsx:50:  const activeItems = items.filter((i) => i.status !== 'na');
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/diligence/DiligenceProgress.tsx:52:  const completed = activeItems.filter((i) => i.status === 'complete').length;
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/diligence/DiligenceProgress.tsx:53:  const blocked = activeItems.filter((i) => i.status === 'blocked').length;
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/diligence/DiligenceProgress.tsx:54:  const inProgress = activeItems.filter((i) => i.status === 'in_progress').length;
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/diligence/DiligenceProgress.tsx:55:  const pending = activeItems.filter((i) => i.status === 'pending').length;
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/global-search.tsx:194:      const res = await fetch('/api/deals?status=active');
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/page.tsx:84:        getDeals({ status: 'active' }),
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/dashboard/page.tsx:217:                    {deals.length} active deals across {STAGE_ORDER.filter(s => stageCounts[s] > 0).length} stages
+/home/zaks/zakops-agent-api/apps/dashboard/src/components/deals/DealBoard.tsx:134:  const { data: deals, isLoading, error } = useDeals({ status: 'active' });
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/chat/page.tsx:323:        const dealList = await getDeals({ status: 'active' });
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:123:  const [statusFilter, setStatusFilter] = useState(initialStatus);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:186:          status: statusFilter !== 'all' ? statusFilter as KineticActionStatus : undefined,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:201:  }, [statusFilter, typeFilter, dealIdFilter]);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:275:    if (activeStatFilter === filterId) {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:939:            value={statusFilter}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:187:      events = events.filter(e => EVENT_TYPE_TO_TAB[e.type] === activeTab);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/alerts/route.ts:17:      fetch(backendUrl('/api/deals?status=active'), { headers: hdrs }),
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:39:        getDeals({ status: 'active' }),
+/home/zaks/zakops-agent-api/apps/dashboard/src/__tests__/e2e/integration.test.tsx:81:    status: 'active',
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/new/page.tsx:47:        status: 'active',
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/api/chat/route.ts:29:    const response = await fetch(`${BACKEND_URL}/api/deals?status=active`, {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx:94:  const statusFilterRaw = searchParams.get('status') || 'active';
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx:99:  const statusFilter = statusFilterRaw || ALL_FILTER;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx:111:      if (statusFilterRaw) params.status = statusFilterRaw;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx:124:  }, [stageFilterRaw, statusFilterRaw]);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx:367:                <Select value={statusFilter} onValueChange={(v) => updateFilter('status', v)}>
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx:382:                {(stageFilter !== ALL_FILTER || statusFilter !== 'active' || searchQuery) && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx:387:                      router.push('/deals?status=active');

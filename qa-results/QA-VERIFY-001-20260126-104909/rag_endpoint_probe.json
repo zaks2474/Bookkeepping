@@ -1,0 +1,53 @@
+{
+  "base_url": "http://localhost:8052",
+  "mutation_allowed": false,
+  "name": "rag",
+  "results": [
+    {
+      "method": "GET",
+      "path": "/",
+      "reachable": true,
+      "response_preview": "{\"name\":\"RAG REST API\",\"version\":\"2.0.0\",\"status\":\"running\",\"database_connected\":true,\"endpoints\":[\"POST /rag/query - Search the knowledge base\",\"POST /rag/add - Add content directly\",\"GET /rag/sources - List available sources\",\"GET /rag/stats - Get database statistics\",\"DELETE /rag/url?url=<url> - ",
+      "status_code": 200,
+      "trace_id": null,
+      "url": "http://localhost:8052/"
+    },
+    {
+      "method": "POST",
+      "path": "/rag/query",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "POST",
+      "path": "/rag/add",
+      "reason": "mutation_disabled",
+      "skipped": true
+    },
+    {
+      "method": "GET",
+      "path": "/rag/sources",
+      "reachable": true,
+      "response_preview": "{\"sources\":[{\"source\":\"dataroom.local\",\"chunks\":226}],\"count\":1}",
+      "status_code": 200,
+      "trace_id": null,
+      "url": "http://localhost:8052/rag/sources"
+    },
+    {
+      "method": "GET",
+      "path": "/rag/stats",
+      "reachable": true,
+      "response_preview": "{\"total_chunks\":226,\"unique_urls\":12,\"embedding_model\":\"bge-m3\",\"embedding_dim\":1024}",
+      "status_code": 200,
+      "trace_id": null,
+      "url": "http://localhost:8052/rag/stats"
+    },
+    {
+      "method": "DELETE",
+      "path": "/rag/url",
+      "reason": "mutation_disabled",
+      "skipped": true
+    }
+  ],
+  "timestamp_utc": "2026-01-26T16:49:33.216428+00:00"
+}

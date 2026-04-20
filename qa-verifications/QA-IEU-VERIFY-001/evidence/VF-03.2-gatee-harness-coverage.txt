@@ -1,0 +1,15 @@
+=== VF-03.2 GATE E HARNESS COVERAGE ===
+2:# test-validate-gatee-scan.sh — Fixture-based test harness for Gate E scanner
+3:# Covers: clean file, violation file, empty file, missing file (scanner-error)
+10:PASS=0
+11:FAIL=0
+42:    echo "  PASS: $name (exit=$RC, expected=$expected_exit)"
+43:    PASS=$((PASS + 1))
+45:    echo "  FAIL: $name (exit=$RC, expected=$expected_exit)"
+47:    FAIL=$((FAIL + 1))
+56:# Test 1: Clean file — no violations → exit 0
+57:run_test "Clean file (no httpx)" "$FIXTURES/clean.py" 0
+60:run_test "Violation file (httpx.AsyncClient)" "$FIXTURES/violation.py" 1
+65:# Test 4: Missing target file → exit 1 (scanner error)
+69:echo "Gate E Scanner Test Harness: $PASS/$TOTAL passed$([ "$FAIL" -gt 0 ] && echo ", $FAIL FAILED" || echo "")"
+70:exit "$FAIL"

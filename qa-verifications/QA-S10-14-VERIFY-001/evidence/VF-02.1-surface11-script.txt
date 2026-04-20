@@ -1,0 +1,82 @@
+=== VF-02.1 SURFACE11 SCRIPT ===
+-rwxr-xr-x 1 zaks zaks 4806 Feb 10 11:47 /home/zaks/zakops-agent-api/tools/infra/validate-surface11.sh
+#!/usr/bin/env bash
+# validate-surface11.sh — Surface 11: Secret & Environment Variable Registry Contract
+# Validates ENV-CROSSREF.md against actual .env.example files across services
+# CI-safe: does NOT require running services
+set -euo pipefail
+
+FAILURES=0
+WARNINGS=0
+
+ENV_CROSSREF="/home/zaks/bookkeeping/docs/ENV-CROSSREF.md"
+
+echo "=== SURFACE 11: ENV REGISTRY CONTRACT ==="
+echo ""
+
+# ── CHECK 1: Source artifact exists ──────────────────────────────────
+echo "--- Check 1: Source Artifact ---"
+if [ -f "$ENV_CROSSREF" ]; then
+  LINES=$(wc -l < "$ENV_CROSSREF")
+  echo "  PASS: ENV-CROSSREF.md exists ($LINES lines)"
+else
+  echo "  FAIL: ENV-CROSSREF.md not found at $ENV_CROSSREF"
+  FAILURES=$((FAILURES+1))
+  echo ""
+  echo "================================"
+  echo "FAIL: $FAILURES CHECK(S) FAILED"
+  exit 1
+fi
+
+# ── CHECK 2: Cross-service variables discoverable in .env.example files ──
+echo ""
+echo "--- Check 2: Cross-Service Variable Discovery ---"
+
+# Known .env.example paths
+BACKEND_ENV="/home/zaks/zakops-backend/.env.example"
+AGENT_ENV="/home/zaks/zakops-agent-api/apps/agent-api/.env.example"
+DASHBOARD_ENV="/home/zaks/zakops-agent-api/apps/dashboard/.env.example"
+
+# Critical cross-service variables that MUST appear in at least one .env.example
+# Extracted from ENV-CROSSREF.md "Cross-Service Variables" table
+CROSS_SERVICE_VARS=(
+  "DATABASE_URL"
+  "POSTGRES_PASSWORD"
+  "POSTGRES_DB"
+  "POSTGRES_USER"
+  "POSTGRES_PORT"
+  "LOG_LEVEL"
+  "APP_ENV"
+)
+
+FOUND=0
+MISSING=0
+
+for var in "${CROSS_SERVICE_VARS[@]}"; do
+  IN_ANY=false
+  for envfile in "$BACKEND_ENV" "$AGENT_ENV" "$DASHBOARD_ENV"; do
+    if [ -f "$envfile" ] && grep -q "^${var}=" "$envfile" 2>/dev/null; then
+      IN_ANY=true
+      break
+    fi
+    # Also check for commented-out or partial matches
+    if [ -f "$envfile" ] && grep -q "^#.*${var}=" "$envfile" 2>/dev/null; then
+      IN_ANY=true
+      break
+    fi
+    if [ -f "$envfile" ] && grep -q "${var}" "$envfile" 2>/dev/null; then
+      IN_ANY=true
+      break
+    fi
+  done
+  if [ "$IN_ANY" = true ]; then
+    FOUND=$((FOUND+1))
+  else
+    echo "  WARN: $var declared in ENV-CROSSREF but not found in any .env.example"
+    MISSING=$((MISSING+1))
+    WARNINGS=$((WARNINGS+1))
+  fi
+done
+
+echo "  Cross-service variables: $FOUND found, $MISSING not in .env.example"
+if [ "$MISSING" -gt "$((${#CROSS_SERVICE_VARS[@]} / 2))" ]; then

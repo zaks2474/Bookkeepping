@@ -1,0 +1,36 @@
+=== PF-2 EXECUTION ARTIFACT INVENTORY ===
+total 80
+drwxr-xr-x 17 root root 4096 Feb 10 07:13 .
+drwxr-xr-x 28 zaks zaks 4096 Feb 10 17:15 ..
+-rw-r--r--  1 zaks zaks 9957 Feb 10 07:13 MISSION-COMPLETION-REPORT.md
+drwxr-xr-x  3 root root 4096 Feb  7 18:59 batch-0
+drwxr-xr-x  3 root root 4096 Feb  7 19:50 batch-1
+drwxr-xr-x  3 root root 4096 Feb  7 20:22 batch-2
+drwxr-xr-x  3 root root 4096 Feb  7 21:22 batch-3
+drwxr-xr-x  2 zaks zaks 4096 Feb 10 07:12 batch-9
+drwxr-xr-x  2 zaks zaks 4096 Feb  7 19:08 qa-batch-0-verify-20260207T190453Z
+drwxr-xr-x  2 zaks zaks 4096 Feb  7 18:38 qa-batch-0-verify-20260208T003814Z
+drwxr-xr-x  2 zaks zaks 4096 Feb  7 18:52 qa-batch-0-verify-20260208T003843Z
+drwxr-xr-x  2 zaks zaks 4096 Feb  7 18:52 qa-batch-0-verify-20260208T005218Z
+drwxr-xr-x  2 zaks zaks 4096 Feb  7 19:03 qa-batch-0-verify-20260208T010253Z
+drwxr-xr-x  2 zaks zaks 4096 Feb  7 19:36 qa-batch-1-verify-20260207T193423Z
+drwxr-xr-x  2 zaks zaks 4096 Feb  7 19:46 qa-batch-1-verify-20260207T194402Z
+drwxr-xr-x  2 zaks zaks 4096 Feb  7 19:52 qa-batch-1-verify-20260207T195206Z
+drwxr-xr-x  2 zaks zaks 4096 Feb  7 20:27 qa-batch-2-verify-20260207T202441Z
+drwxr-xr-x  2 zaks zaks 4096 Feb  7 20:59 qa-batch-3-verify-20260207T205608Z
+batch-0: EXISTS files=19
+  - /home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/batch-0/completion-report.md
+batch-1: EXISTS files=19
+  - /home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/batch-1/completion-report.md
+batch-2: EXISTS files=13
+  - /home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/batch-2/completion-report.md
+batch-3: EXISTS files=13
+  - /home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/batch-3/completion-report.md
+batch-4: MISSING
+batch-5: MISSING
+batch-6: MISSING
+batch-7: MISSING
+batch-8: MISSING
+batch-9: EXISTS files=1
+  - /home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/batch-9/completion-report.md
+-rw-r--r-- 1 zaks zaks 9957 Feb 10 07:13 /home/zaks/bookkeeping/qa-verifications/DASHBOARD-R4/MISSION-COMPLETION-REPORT.md

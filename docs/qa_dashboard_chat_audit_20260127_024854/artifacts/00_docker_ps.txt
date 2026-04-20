@@ -1,0 +1,10 @@
+NAMES               IMAGE                                PORTS
+zakops-agent-api    agent-api-agent-api                  0.0.0.0:8095->8000/tcp, [::]:8095->8000/tcp
+zakops-backend-1    zakops-backend                       0.0.0.0:8091->8091/tcp, [::]:8091->8091/tcp
+zakops-agent-db     pgvector/pgvector:pg16               5432/tcp
+openwebui           ghcr.io/open-webui/open-webui:main   0.0.0.0:3000->8080/tcp, [::]:3000->8080/tcp
+vllm-qwen           vllm/vllm-openai:latest              0.0.0.0:8000->8000/tcp, [::]:8000->8000/tcp
+rag-rest-api        zaks-llm-rag-rest-api                0.0.0.0:8052->8080/tcp, [::]:8052->8080/tcp
+rag-db              pgvector/pgvector:pg17               0.0.0.0:5434->5432/tcp, [::]:5434->5432/tcp
+zakops-postgres-1   postgres:15-alpine                   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp
+zakops-redis-1      redis:7-alpine                       0.0.0.0:6379->6379/tcp, [::]:6379->6379/tcp

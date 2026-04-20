@@ -1,0 +1,308 @@
+{
+  "agent_identity": {
+    "agent_name": "Codex",
+    "run_id": "20260204-1728-102efc",
+    "date_time": "2026-02-04T17:28:47Z",
+    "repo_revision": "unknown"
+  },
+  "sources": {
+    "round2_index": "/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_ROUND2_CONTRARIAN_PLAN.md",
+    "round2_reports": [
+      "/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_ROUND2_CONTRARIAN_PLAN.opus.run001.md",
+      "/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_ROUND2_CONTRARIAN_PLAN.Codex.20260204-1651-0e51.md",
+      "/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_ROUND2_CONTRARIAN_PLAN.Gemini-CLI.20260204-1050-gemini.md"
+    ],
+    "v2_issues": "/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_HONEST_ASSESSMENT_V2.md",
+    "pass1": "/home/zaks/bookkeeping/docs/DEAL_LIFECYCLE_ROUND2_EVAL.PASS1.Claude-Opus.20260204-1835-p1r2.md",
+    "qa_baseline_found": false
+  },
+  "top_25_failure_modes": [
+    {
+      "id": 1,
+      "symptom": "Dashboard tables empty despite 200 responses",
+      "root_cause": "Zod safeParse returns [] on mismatch (Opus Layer 5; Codex Q1-2)",
+      "detection": "Browser console ZodError; network 200",
+      "mitigation": "User-visible error + contract gate",
+      "rollback": "Temporary passthrough with banner"
+    },
+    {
+      "id": 2,
+      "symptom": "Action status blank/incorrect",
+      "root_cause": "RUNNING vs PROCESSING enum mismatch (Opus Layer 4)",
+      "detection": "PROCESSING status in API; UI error",
+      "mitigation": "Align enum",
+      "rollback": "Map PROCESSING->RUNNING in UI"
+    },
+    {
+      "id": 3,
+      "symptom": "Quarantine approve does not create deal",
+      "root_cause": "ZK-ISSUE-0003 missing in Round-2 (PASS1)",
+      "detection": "Approved item with null deal_id",
+      "mitigation": "Atomic approve->create flow",
+      "rollback": "Manual create with warning"
+    },
+    {
+      "id": 4,
+      "symptom": "Deals have no DataRoom folders",
+      "root_cause": "ZK-ISSUE-0004 missing in Round-2 (PASS1)",
+      "detection": "DB row without folder",
+      "mitigation": "Folder scaffold hook",
+      "rollback": "Manual scaffold script"
+    },
+    {
+      "id": 5,
+      "symptom": "Quarantine approve 404/405",
+      "root_cause": "ZK-ISSUE-0006 missing in Round-2 (PASS1)",
+      "detection": "Network shows /resolve",
+      "mitigation": "Fix endpoint path",
+      "rollback": "Backend alias"
+    },
+    {
+      "id": 6,
+      "symptom": "Notes add fails",
+      "root_cause": "ZK-ISSUE-0012 missing in Round-2 (PASS1)",
+      "detection": "404 on /notes",
+      "mitigation": "Implement notes endpoint",
+      "rollback": "Disable notes UI"
+    },
+    {
+      "id": 7,
+      "symptom": "Approvals never expire",
+      "root_cause": "ZK-ISSUE-0015 missing in Round-2 (PASS1)",
+      "detection": "Approvals older than TTL",
+      "mitigation": "Expiry job + TTL check",
+      "rollback": "Manual cleanup"
+    },
+    {
+      "id": 8,
+      "symptom": "No retention policy",
+      "root_cause": "ZK-ISSUE-0017 missing in Round-2 (PASS1)",
+      "detection": "No policy doc; no cleanup logs",
+      "mitigation": "Define policy + job",
+      "rollback": "Disable cleanup"
+    },
+    {
+      "id": 9,
+      "symptom": "Executors unwired",
+      "root_cause": "ZK-ISSUE-0019 missing in Round-2 (PASS1)",
+      "detection": "Capabilities empty; no executor logs",
+      "mitigation": "Wire executors",
+      "rollback": "Hide UI actions"
+    },
+    {
+      "id": 10,
+      "symptom": "No scheduling/reminders",
+      "root_cause": "ZK-ISSUE-0021 missing in Round-2 (PASS1)",
+      "detection": "No scheduler logs",
+      "mitigation": "Add scheduler",
+      "rollback": "Manual reminders"
+    },
+    {
+      "id": 11,
+      "symptom": "Archive/restore 404",
+      "root_cause": "ZK-ISSUE-0022 missing in Round-2 (PASS1)",
+      "detection": "404 on /archive",
+      "mitigation": "Implement endpoints",
+      "rollback": "Manual DB update"
+    },
+    {
+      "id": 12,
+      "symptom": "SSE never streams",
+      "root_cause": "Endpoints return 501 (Codex Q1-1)",
+      "detection": "/api/events/stream 501",
+      "mitigation": "Implement SSE or polling",
+      "rollback": "Disable SSE client"
+    },
+    {
+      "id": 13,
+      "symptom": "Schema drift recurs",
+      "root_cause": "Manual schema sources (Opus/Gemini/Codex)",
+      "detection": "safeParse failures; diff reports",
+      "mitigation": "Generate client+Zod from OpenAPI",
+      "rollback": "Pin backend schema"
+    },
+    {
+      "id": 14,
+      "symptom": "Missing auth/correlation headers",
+      "root_cause": "Direct fetch bypasses middleware (Codex Q1-4)",
+      "detection": "Logs missing correlation_id",
+      "mitigation": "Single fetch wrapper",
+      "rollback": "Lint rule to block direct fetch"
+    },
+    {
+      "id": 15,
+      "symptom": "Legacy SQLite/JSON writes",
+      "root_cause": "Adapter defaults to SQLite; legacy paths remain (Codex Q1-5)",
+      "detection": "SQLite/JSON files updated",
+      "mitigation": "Remove legacy adapters + CI guard",
+      "rollback": "Restore env vars"
+    },
+    {
+      "id": 16,
+      "symptom": "Capabilities/metrics endpoint ambiguous",
+      "root_cause": "Duplicate routes (Codex Q1-7)",
+      "detection": "Endpoint toggles 200/501",
+      "mitigation": "Consolidate router",
+      "rollback": "Remove conflicting route"
+    },
+    {
+      "id": 17,
+      "symptom": "Duplicate create returns 500",
+      "root_cause": "Idempotency missing (Codex Q1-3; Gemini UPG-0002)",
+      "detection": "500 on duplicate",
+      "mitigation": "Idempotency-Key middleware",
+      "rollback": "Return 409"
+    },
+    {
+      "id": 18,
+      "symptom": "RAG down breaks agent",
+      "root_cause": "No circuit breaker (Gemini UPG-0005)",
+      "detection": "search_deals exception",
+      "mitigation": "Circuit breaker + fallback",
+      "rollback": "Disable RAG calls"
+    },
+    {
+      "id": 19,
+      "symptom": "DB default stage=lead",
+      "root_cause": "Base DDL still lead (Codex Q1-6)",
+      "detection": "information_schema default",
+      "mitigation": "Fix base DDL + migration",
+      "rollback": "Manual update"
+    },
+    {
+      "id": 20,
+      "symptom": "Outbox side-effects lost",
+      "root_cause": "Outbox worker not running (Codex Q3)",
+      "detection": "Health notes unprocessed actions",
+      "mitigation": "Deploy worker + monitoring",
+      "rollback": "Sync side-effects"
+    },
+    {
+      "id": 21,
+      "symptom": "Contract audit not executed",
+      "root_cause": "CONTRACT-AUDIT-V1/QA-CA-V1 unexecuted (Opus/Codex)",
+      "detection": "No evidence pack",
+      "mitigation": "Make browser console capture a hard gate",
+      "rollback": "Block release"
+    },
+    {
+      "id": 22,
+      "symptom": "Hidden data loss in UI",
+      "root_cause": "Dual DealSchema (Gemini smoking gun)",
+      "detection": "Network shows fields; UI doesn\u2019t",
+      "mitigation": "Delete manual schema; generate client",
+      "rollback": "Import correct schema"
+    },
+    {
+      "id": 23,
+      "symptom": "ActionSource values rejected",
+      "root_cause": "Enum missing agent/api (Opus ZK-UPG-0005)",
+      "detection": "Validation errors",
+      "mitigation": "Add enum values",
+      "rollback": "Map to system/ui"
+    },
+    {
+      "id": 24,
+      "symptom": "Legacy 8090 port used",
+      "root_cause": "Docs/Makefile still reference 8090 (Codex evidence)",
+      "detection": "rg finds 8090",
+      "mitigation": "Remove references + forbidden-pattern gate",
+      "rollback": "Update SERVICE-CATALOG"
+    },
+    {
+      "id": 25,
+      "symptom": "No end-to-end trace",
+      "root_cause": "Correlation not propagated; no OTel (Codex Q1-4/UPG-0005)",
+      "detection": "Missing trace_id in logs",
+      "mitigation": "Enforce headers + OTel",
+      "rollback": "Verbose logging"
+    }
+  ],
+  "split_brain_reintroduction_audit": {
+    "risks": [
+      "SQLite/JSON adapters still present and default to legacy store if env missing (Codex Q1-5)",
+      "Legacy registry paths referenced in production code (Codex evidence index)",
+      "Missing idempotency leads to duplicate deal truth (Codex Q1-3; Gemini UPG-0002)"
+    ],
+    "invariants": [
+      "All deal writes must hit Postgres only; legacy files read-only",
+      "Idempotency-Key required on all mutations",
+      "Folder scaffolding is derived, not authoritative"
+    ],
+    "tests": [
+      "File hash checks on legacy JSON/SQLite",
+      "Replay Idempotency-Key returns identical response",
+      "Folder deletion does not affect deal visibility"
+    ]
+  },
+  "contract_drift_audit": {
+    "drift_sources": [
+      "Manual Zod schemas vs Pydantic models (Opus Layer 4)",
+      "Duplicate DealSchema in api-client.ts (Gemini)",
+      "safeParse returning [] hides drift (Opus Layer 5)"
+    ],
+    "strategy": "OpenAPI as source of truth; generate TS client + Zod; CI contract gate",
+    "ci_gates": [
+      "Contract test against live backend",
+      "Schema diff report",
+      "Forbidden pattern gate for manual schema edits"
+    ]
+  },
+  "auth_security_audit": {
+    "assumptions": [
+      "Direct fetch bypasses middleware injection (Codex Q1-4)",
+      "Idempotency not enforced on writes (Codex Q1-3; Gemini UPG-0002)"
+    ],
+    "required_flows": [
+      "Single apiFetch wrapper injects auth + correlation",
+      "Service tokens/API keys enforced on all write endpoints",
+      "Audit logs include actor_id (NEEDS VERIFICATION)"
+    ]
+  },
+  "observability_audit": {
+    "requirements": [
+      "Correlation ID across UI\u2192backend\u2192agent\u2192DB",
+      "Logs include correlation_id and actor_id",
+      "OTel spans where available (Codex UPG-0005)"
+    ],
+    "must_have_logs": [
+      "API request log with correlation_id",
+      "deal_events row with correlation_id",
+      "agent tool execution log with correlation_id"
+    ]
+  },
+  "patch_set": [
+    "Add missing V2 issues to Round-2 scope: 0003/0004/0006/0012/0015/0017/0019/0021/0022 (PASS1 missing list) with explicit tasks + tests.",
+    "Replace manual schema alignment with generated client+Zod from OpenAPI; add CI contract gate.",
+    "Idempotency-Key on all write endpoints; middleware + response cache.",
+    "Remove/disable legacy SQLite/JSON adapters; add CI guard for legacy patterns.",
+    "Resolve SSE: implement stream or document polling; remove 501 endpoints.",
+    "Enforce correlation header on all client requests; ban direct fetch.",
+    "Make browser console ZodError capture a hard gate.",
+    "Align ActionStatus/ActionSource enums and remove .passthrough().",
+    "Add deal_transitions ledger or explicit alternative with audit log rationale.",
+    "Record absence of QA_VERIFICATION_006_REPORT.md and require baseline capture."
+  ],
+  "tough_gates": {
+    "gate_a_code_health": [
+      "ruff/mypy/pytest",
+      "npm/pnpm lint+typecheck"
+    ],
+    "gate_b_contract_tests": [
+      "Generated client+Zod",
+      "CI schema diff"
+    ],
+    "gate_c_integration": [
+      "UI\u2192backend\u2192agent\u2192DB with correlation_id"
+    ],
+    "gate_d_e2e": [
+      "Browser flow email\u2192deal\u2192folder\u2192RAG\u2192agent"
+    ],
+    "qa_pass_1": [
+      "CRUD, transitions, quarantine approve, executors, RAG"
+    ],
+    "qa_pass_2": [
+      "RAG down, backend down, duplicate POST, SSE down, idempotency replay"
+    ]
+  }
+}

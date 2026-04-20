@@ -1,0 +1,44 @@
+=== QA-DI-VERIFY-UNIFIED-V2 — BATCH 1 SUMMARY (FIX-1 + FIX-5) ===
+Date: 2026-02-09
+Test Deal: DL-0079
+
+--- FIX-1: FSM Bypass Prevention ---
+F1.1  PATCH rejects lifecycle fields ............ PASS
+      Sending {"stage":"archived","status":"deleted"} returns 400 "No fields to update"
+      Deal stage/status remain unchanged (inbound/active)
+
+F1.1b PATCH works for non-lifecycle fields ...... FAIL (pre-existing bug)
+      HTTP 500 — missing DB function zakops.record_deal_event()
+      NOT a regression from FSM fix. Lifecycle blocking works correctly.
+
+F1.2  Retention uses audited soft-delete ........ PASS
+      2 audit_trail references, 0 raw bulk UPDATEs in cleanup.py
+
+F1.3  Zero raw lifecycle UPDATEs outside FSM .... PASS
+      0 bypass paths found in src/ (excluding FSM, migrations, tests, cleanup)
+
+F1.4  DealRegistry lifecycle deprecated ......... PASS
+      4 DeprecationWarning annotations in deal_registry.py
+
+F1.5  Backend healthy ........................... PASS
+      HTTP 200, status=healthy
+
+--- FIX-5: Duplicate Deals ---
+F5.1  Zero duplicate canonical_names ............ PASS
+      0 duplicate groups in active deals
+
+F5.2  Test artifacts cleaned .................... PASS
+      7 test artifacts exist, all deleted=true, 0 active
+
+F5.3  DB/API count consistent .................. PASS
+      DB: 11, API: 11 — match
+
+--- SCORE ---
+PASS: 8/9
+FAIL: 1/9 (F1.1b — pre-existing bug, not regression)
+
+--- BLOCKER ---
+F1.1b: PATCH endpoint calls non-existent zakops.record_deal_event() stored function.
+       This is a pre-existing issue unrelated to the FSM bypass fix.
+       Recommend: create DB migration to add record_deal_event() function,
+       or fix main.py:714 to use Python-side event recording.

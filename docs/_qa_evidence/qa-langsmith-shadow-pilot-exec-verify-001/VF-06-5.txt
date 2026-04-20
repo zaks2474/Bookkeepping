@@ -1,0 +1,15 @@
+12:| **Source Type** | `langsmith_shadow` |
+14:| **Dashboard** | `http://localhost:3003/quarantine` |
+22:You review a `langsmith_shadow` quarantine item and determine it **IS a valid deal opportunity**. The key question to ask yourself:
+26:If YES — it's a True Positive. Approve it in the dashboard (status -> approved).
+35:You review a `langsmith_shadow` quarantine item and determine it is **NOT a valid deal opportunity**. Reject it in the dashboard (status -> rejected).
+97:1. **Open the Dashboard** — Navigate to `http://localhost:3003/quarantine`
+99:2. **Select the Source Type filter** — In the header area, find the "Source Type" dropdown. Select **"LangSmith shadow"**.
+107:   - If it's a valid deal -> Click **Approve** -> Record as **TP** in the daily log
+108:   - If it's not a valid deal -> Click **Reject** -> Record as **FP** in the daily log
+134:FROM zakops.quarantine_items
+143:FROM zakops.quarantine_items
+149:### Approved vs rejected (raw TP/FP proxy)
+156:FROM zakops.quarantine_items
+172:FROM zakops.quarantine_items
+WORKFLOW_STEPS=11

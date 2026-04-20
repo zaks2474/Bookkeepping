@@ -1,0 +1,4 @@
+Migration 029 line 22-23:
+    ADD CONSTRAINT chk_quarantine_status
+    CHECK (status IN ('pending', 'approved', 'rejected', 'hidden'));
+All 4 values present: pending, approved, rejected, hidden

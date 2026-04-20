@@ -1,0 +1,15 @@
+6: * Renders citation strength as colored badges:
+7: * - Green (score >= 0.5): strong citation
+8: * - Amber (0.3-0.5): weak citation
+9: * - Red (< 0.3 or no source): orphan
+53:      label: 'Orphan',
+54:      className: 'bg-red-500/10 text-red-500 border-red-500/20',
+58:  if (score >= 0.5) {
+60:      label: 'Strong',
+61:      className: 'bg-green-500/10 text-green-500 border-green-500/20',
+65:  if (score >= 0.3) {
+67:      label: 'Weak',
+68:      className: 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20',
+73:    label: 'Orphan',
+74:    className: 'bg-red-500/10 text-red-500 border-red-500/20',
+114:            className="text-[10px] px-1.5 py-0 h-4 bg-purple-500/10 text-purple-500 border-purple-500/20 gap-0.5"

@@ -1,0 +1,12 @@
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/trace_sink.py:46:        """Record a span. Called by trace_span() when sink is enabled."""
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:27:from app.core.tracing import get_callbacks
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:494:            "callbacks": get_callbacks(),
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:624:            "callbacks": get_callbacks(),
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:708:            "callbacks": get_callbacks(),
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:746:            "callbacks": get_callbacks(),
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/langgraph/graph.py:778:            "callbacks": get_callbacks(
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/tracing.py:82:def get_callbacks(**kwargs) -> List[Any]:
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/tracing.py:91:        config = {"callbacks": get_callbacks()}
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/tracing.py:93:        config = {"callbacks": get_callbacks(user_id="abc", session_id="xyz")}
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/tracing.py:100:def trace_span(name: str, metadata: Optional[dict] = None):
+/home/zaks/zakops-agent-api/apps/agent-api/app/core/tracing.py:105:        with trace_span("process_approval", {"approval_id": "abc"}):

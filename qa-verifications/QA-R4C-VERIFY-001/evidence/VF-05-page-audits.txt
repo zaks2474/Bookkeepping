@@ -1,0 +1,121 @@
+=== VF-05.1 HQ COMPONENT AUDIT ===
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/error.tsx
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/loading.tsx
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/layout.tsx
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:6:  getPipeline,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:9:  getAgentActivity,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:12:  type AgentActivityResponse,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:13:  type PipelineStage,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:15:import type { PipelineStats, DealStage } from '@/types/api';
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:20:  const [pipelineData, setPipelineData] = useState<{ total_active: number; stages: Record<string, PipelineStage> } | null>(null);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:23:  const [agentActivity, setAgentActivity] = useState<AgentActivityResponse | null>(null);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:30:        getPipeline(),
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:33:        getAgentActivity(100),
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:35:      if (results[0].status === 'fulfilled') setPipelineData(results[0].value);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:41:      if (results[3].status === 'fulfilled') setAgentActivity(results[3].value);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:54:  // DEAL-INTEGRITY-UNIFIED L3: Server-computed stage counts from pipeline summary
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:61:  const events24h = agentActivity?.stats?.runsCompleted24h ?? 0;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:63:  const stats: PipelineStats = {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:84:    summary: a.summary ?? null,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/loading.tsx:35:        {/* Pipeline card */}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/loading.tsx:56:      {/* Activity feed skeleton */}
+
+=== VF-05.2 HQ DATA FETCHING PATTERN ===
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:28:      // DEAL-INTEGRITY-UNIFIED L3+L4: Server-computed counts + Promise.allSettled
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:29:      const results = await Promise.allSettled([
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:54:  // DEAL-INTEGRITY-UNIFIED L3: Server-computed stage counts from pipeline summary
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:56:    acc[stage] = pipelineData?.stages[stage]?.count ?? 0;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:60:  // Get events count from agent activity stats
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:99:    retry_count: a.retry_count,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/loading.tsx:41:            <LoadingSkeleton variant="list" count={5} />
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/loading.tsx:51:            <LoadingSkeleton variant="card" count={3} />
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/loading.tsx:62:          <LoadingSkeleton variant="list" count={4} />
+
+=== VF-05.3 AGENT ACTIVITY STRUCTURE ===
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/error.tsx
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/layout.tsx
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:4: * Full history view of all agent activity.
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:36:import type { AgentActivityEvent, AgentRecentRun, AgentEventType } from '@/types/agent-activity';
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:106:  const initialSelectedRun = searchParams.get('run') || '';
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:128:  // Ref for scrolling to highlighted event
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:136:      // Scroll to highlighted event
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:145:        router.replace('/agent/activity', { scroll: false });
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:152:  // Clear highlight when user clicks any event
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:157:        router.replace('/agent/activity', { scroll: false });
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:176:    router.replace(`/agent/activity?${newParams.toString()}`, { scroll: false });
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:179:  // Filter events by tab and search
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:183:    let events = [...data.recent];
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:187:      events = events.filter(e => EVENT_TYPE_TO_TAB[e.type] === activeTab);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:193:      events = events.filter(
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:201:    return events;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:204:  // Filter runs by search
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:219:  // Selected run details
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:220:  const selectedRun = selectedRunId ? filteredRuns.find(r => r.runId === selectedRunId) : null;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:227:        <h2 className="text-xl font-semibold">Failed to load agent activity</h2>
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:314:            value={data.stats.runsCompleted24h}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:316:            highlighted={highlightedStat === 'runs'}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:317:            onClick={() => handleStatClick('runs', () => {
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:318:              document.getElementById('runs-section')?.scrollIntoView({ behavior: 'smooth' });
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:329:            placeholder="Search activity..."
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:344:          id="activity-section"
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:347:            highlightedSection && highlightedSection !== 'runs' && 'ring-2 ring-primary bg-primary/5 p-2 -m-2'
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:377:                  <p>No activity found</p>
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:393:                    {filteredEvents.map((event) => (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:395:                        key={event.id}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:396:                        ref={event.id === highlightedEventId ? highlightedRef : undefined}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:399:                          event={event}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:400:                          highlighted={event.id === highlightedEventId}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:414:          id="runs-section"
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:417:            highlightedStat === 'runs' && 'ring-2 ring-primary bg-primary/5'
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:434:                <p>No runs found</p>
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:440:                {filteredRuns.map((run) => (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:442:                    key={run.runId}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:443:                    run={run}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:444:                    selected={run.runId === selectedRunId}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:446:                      setSelectedRunId(run.runId);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:447:                      updateUrl({ run: run.runId });
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:468:                  {data.currentRun.status === 'running' ? 'Running' : 'Awaiting Approval'}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:529:  event,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:533:  event: AgentActivityEvent;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:538:  const Icon = getEventIcon(event.type);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:561:            <p className="text-sm font-medium">{event.label}</p>
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:563:              {event.dealName && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:565:                  href={`/deals/${event.dealId}`}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:569:                  {event.dealName}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:573:                {formatDistanceToNow(new Date(event.timestamp), { addSuffix: true })}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:583:                    <p className="font-mono text-xs">{event.type}</p>
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:587:                    <p className="text-xs">{format(new Date(event.timestamp), 'PPpp')}</p>
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:589:                  {event.dealId && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:592:                      <p className="font-mono text-xs">{event.dealId}</p>
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:596:                {event.dealId && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:598:                    <Link href={`/deals/${event.dealId}`} onClick={(e) => e.stopPropagation()}>
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:620:  run,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:624:  run: AgentRecentRun;
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:639:              {getRunStatusBadge(run.status)}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:641:            <p className="text-sm font-medium truncate">{run.summary}</p>
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:642:            {run.dealName && (
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:644:                {run.dealName}
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:650:          <span>{run.toolsCalled} tools</span>
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:651:          <span>{run.approvalsRequested} approvals</span>
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/page.tsx:652:          <span>{formatDistanceToNow(new Date(run.startedAt), { addSuffix: true })}</span>
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/error.tsx:15:    console.error('agent activity page error:', error);
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/error.tsx:24:            Failed to load agent activity
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/agent/activity/error.tsx:27:            An error occurred while loading the agent activity page.
+
+=== VF-05.4 ROUTE LINK INTEGRITY ===
+NO LINK REFS
+
+=== VF-05.5 BULK ARCHIVE WIRING ===
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:73:  bulkArchiveKineticActions,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/actions/page.tsx:538:      const result = await bulkArchiveKineticActions(Array.from(selectedIds));
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx:52:import { archiveDeal, bulkArchiveDeals, getDeals, type Deal } from '@/lib/api';
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/deals/page.tsx:266:        await bulkArchiveDeals(deleteTargetIds, { operator });
+/home/zaks/zakops-backend/src/api/orchestration/main.py:968:    """Request body for POST /api/deals/bulk-archive."""
+/home/zaks/zakops-backend/src/api/orchestration/main.py:974:@app.post("/api/deals/bulk-archive")
+/home/zaks/zakops-backend/src/api/orchestration/main.py:975:async def bulk_archive_deals(
+
+=== VF-05.6 EMPTY ERROR RESILIENCE ===
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:99:    retry_count: a.retry_count,
+/home/zaks/zakops-agent-api/apps/dashboard/src/app/hq/page.tsx:101:    next_retry_at: null,

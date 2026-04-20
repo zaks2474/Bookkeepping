@@ -1,0 +1,9 @@
+Partition declaration:
+117:CREATE TABLE IF NOT EXISTS turn_snapshots ( -- PARTITION BY RANGE(created_at)
+162:) PARTITION BY RANGE (created_at);
+168:CREATE TABLE IF NOT EXISTS cost_ledger ( -- PARTITION BY RANGE(created_at)
+186:) PARTITION BY RANGE (created_at);
+---
+DEFAULT partitions:
+165:CREATE TABLE IF NOT EXISTS turn_snapshots_default PARTITION OF turn_snapshots DEFAULT;
+189:CREATE TABLE IF NOT EXISTS cost_ledger_default PARTITION OF cost_ledger DEFAULT;

@@ -1,0 +1,48 @@
+AGENT-FORENSIC-001 Phase 1 — Step 1.13: Dependency Security
+=============================================================
+Date: 2026-02-02
+Source: pyproject.toml
+
+DEPENDENCIES:
+  fastapi>=0.121.0
+  langchain>=1.0.5
+  langchain-core>=1.0.4
+  langchain-openai>=1.0.2
+  langfuse==3.9.1           — PINNED (good for reproducibility, bad for security patches)
+  langgraph>=1.0.2
+  langgraph-checkpoint-postgres>=3.0.1
+  passlib[bcrypt]>=1.7.4
+  psycopg[binary]>=3.3.2
+  pydantic[email]>=2.11.1
+  pydantic-settings>=2.8.1
+  python-dotenv>=1.1.0
+  python-jose[cryptography]>=3.4.0
+  python-multipart>=0.0.20
+  sqlmodel>=0.0.24
+  structlog>=25.2.0
+  supabase>=2.15.0          — WHY? Not used in source code
+  uvicorn>=0.34.0
+  bcrypt>=4.3.0
+  slowapi>=0.1.9
+  email-validator>=2.2.0
+  prometheus-client>=0.19.0
+  asgiref>=3.8.1
+  duckduckgo-search>=3.9.0
+  langchain-community>=0.4.1
+  tqdm>=4.67.1
+  colorama>=0.4.6
+  ddgs>=9.6.0               — Duplicate of duckduckgo-search?
+  tenacity>=9.1.2
+  mem0ai>=1.0.0
+  uvloop>=0.22.1
+  httpx>=0.27.0
+
+ANALYSIS:
+[WARN] python-jose — known to have security issues; recommended migration to PyJWT
+[WARN] Most dependencies use >= (minimum version only) — no upper bound pins
+       → Could pull in breaking or vulnerable versions on fresh install
+[INFO] langfuse==3.9.1 is the only exact pin
+[WARN] supabase>=2.15.0 appears unused in source — unnecessary attack surface
+[WARN] duckduckgo-search AND ddgs both present — likely redundant
+[INFO] No lock file audited (uv.lock exists but not checked for CVEs)
+[INFO] No automated dependency scanning configured (no dependabot/renovate config found)

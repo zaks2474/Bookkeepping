@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Lab Loop Builder Report",
+  "description": "Schema-enforced output from Builder agent to eliminate drift and ensure machine-verifiable reports",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": ["READY_FOR_QA", "BLOCKED", "ERROR"],
+      "description": "READY_FOR_QA = changes made, run QA. BLOCKED = cannot proceed without human input. ERROR = unexpected failure."
+    },
+    "cycle": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Current cycle number"
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 10,
+      "description": "Brief description of what was done this cycle"
+    },
+    "issues_addressed": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/addressed_issue" },
+      "description": "Issues from QA report that were addressed"
+    },
+    "changed_files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "path": { "type": "string" },
+          "action": { "type": "string", "enum": ["created", "modified", "deleted"] },
+          "lines_changed": { "type": "integer", "minimum": 0 },
+          "description": { "type": "string" }
+        },
+        "required": ["path", "action"]
+      },
+      "description": "Files modified during this cycle with details"
+    },
+    "commands_run": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "command": { "type": "string" },
+          "exit_code": { "type": "integer" },
+          "success": { "type": "boolean" },
+          "output_summary": { "type": "string", "maxLength": 500 }
+        },
+        "required": ["command", "exit_code", "success"]
+      },
+      "description": "Commands executed with their results"
+    },
+    "gate_pre_check": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ran_gate": { "type": "boolean" },
+        "gate_passed": { "type": "boolean" },
+        "gate_exit_code": { "type": "integer" },
+        "failure_summary": { "type": "string" }
+      },
+      "required": ["ran_gate"],
+      "description": "Did Builder run the gate command before finishing?"
+    },
+    "blockers_encountered": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "type": { "type": "string", "enum": ["missing_info", "unclear_requirement", "external_dependency", "permission", "other"] },
+          "description": { "type": "string" },
+          "suggested_resolution": { "type": "string" }
+        },
+        "required": ["type", "description"]
+      },
+      "description": "Blockers that prevented full completion"
+    },
+    "notes_for_qa": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Important notes for QA to consider during verification"
+    },
+    "confidence": {
+      "type": "string",
+      "enum": ["high", "medium", "low"],
+      "description": "Builder's confidence that changes will pass QA"
+    },
+    "diff_stats": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "files_changed": { "type": "integer", "minimum": 0 },
+        "insertions": { "type": "integer", "minimum": 0 },
+        "deletions": { "type": "integer", "minimum": 0 },
+        "total_lines": { "type": "integer", "minimum": 0 }
+      },
+      "description": "Git diff statistics for this cycle"
+    }
+  },
+  "required": [
+    "status",
+    "cycle",
+    "summary",
+    "issues_addressed",
+    "changed_files",
+    "commands_run",
+    "gate_pre_check",
+    "notes_for_qa"
+  ],
+  "$defs": {
+    "addressed_issue": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "severity": { "type": "string", "enum": ["BLOCKER", "MAJOR", "MINOR"] },
+        "original_title": { "type": "string" },
+        "resolution": { "type": "string" },
+        "files_modified": { "type": "array", "items": { "type": "string" } },
+        "verified": { "type": "boolean", "description": "Did Builder verify the fix works?" }
+      },
+      "required": ["severity", "original_title", "resolution", "verified"]
+    }
+  }
+}
